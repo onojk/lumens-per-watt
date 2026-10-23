@@ -158,12 +158,12 @@ Do the past wins survive a bigger sample with error bars? Rho, Hart ×480, and e
 cd evolve && python3 revalidate.py 8
 ```
 
-log₂(mean ops) with a 95% bootstrap interval (10,000 resamples over the numbers in each cell, `random.Random(2026)` per cell, percentile method; * = one number not caught, left out of the mean and interval):
+log₂(mean ops) with a 95% bootstrap interval (10,000 resamples over the numbers in each cell, `random.Random(2026)` per cell, percentile method with 250 resamples outside each end; * = one number not caught, left out of the mean and interval):
 
 | Algorithm | 54 | 60 | 66 | 72 | 78 |
 |---|---|---|---|---|---|
 | Rho | 14.26 [14.09, 14.41] | 15.84 [15.67, 16.01] | 17.42 [17.24, 17.58] | 18.90 [18.73, 19.05] | 20.29 [20.09, 20.47] |
-| Hart ×480 | 14.42 [14.04, 14.74] | 16.94 [16.32, 17.55] | 18.77 [18.37, 19.12] | 20.50 [20.19, 20.78] | 22.37 [22.02, 22.69] |
+| Hart ×480 | 14.42 [14.04, 14.74] | 16.94 [16.32, 17.55] | 18.77 [18.37, 19.12] | 20.50 [20.19, 20.78] | 22.37 [22.02, 22.68] |
 | Run 3 no-luck-21 | 15.08 [14.81, 15.33] | 17.18 [16.93, 17.42] | 18.94 [18.70, 19.17] | 21.28 [21.03, 21.50] | 23.28 [23.01, 23.53] |
 | Run 3 no-luck-22 | 14.64 [14.30, 14.95] | 17.00 [16.51, 17.46] | 18.40 [18.08, 18.69] | 20.79 [20.49, 21.07] | 22.83 [22.44, 23.16] |
 | Run 3 luck-23 | 14.41 [14.25, 14.55] | 15.84 [15.64, 16.02] | 17.33 [17.14, 17.51] | 18.72 [18.49, 18.92] | 20.06 [19.85, 20.25] |

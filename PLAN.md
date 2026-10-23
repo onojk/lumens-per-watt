@@ -96,7 +96,8 @@ numbers, the parity count, and the old-vs-new table.
   - Bootstrap: a fresh random.Random(2026) per (algorithm, size) cell; within a cell,
     10,000 resamples, each n draws of rng.choice(ops), ops in number-generation order
     with misses removed. Percentile method: 2.5th and 97.5th of the sorted resampled
-    values (indices int(0.025 * R) and int(0.975 * R)).
+    values, symmetric tails: indices int(0.025 * R) and int(0.975 * R) - 1 (250 and 9749),
+    so exactly 250 resamples sit outside each end.
   - Misses: excluded from that cell's mean and CI; cell starred with the miss count.
   - Verdict per past win: overlapping intervals = within noise.
 

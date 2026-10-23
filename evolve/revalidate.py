@@ -7,8 +7,8 @@ Statistic per (algorithm, size) cell: log2(mean ops), the total-work scoreboard 
 scale table. Misses are left out of the cell's mean and interval and counted beside it.
 95% interval by bootstrap over numbers: a fresh random.Random(2026) per cell, 10,000
 resamples of n draws each (rng.choice over the cell's ops in number-generation order,
-misses removed), percentile method: sorted resampled values at index int(0.025 * R) and
-int(0.975 * R).
+misses removed), percentile method with symmetric tails: sorted resampled values at index
+int(0.025 * R) and int(0.975 * R) - 1, so exactly 250 resamples sit outside each end.
 
 Verdict for each champion against rho and Hart x480 at each size: "better" if its interval
 lies entirely below the other's, "worse" if entirely above, otherwise "within noise".
@@ -40,7 +40,7 @@ def bootstrap(ops):
     rng = random.Random(2026)
     n = len(ops)
     vals = sorted(math.log2(sum(rng.choice(ops) for _ in range(n)) / n) for _ in range(R))
-    return vals[int(0.025 * R)], vals[int(0.975 * R)]
+    return vals[int(0.025 * R)], vals[int(0.975 * R) - 1]
 
 def job(args):
     name, g, bits = args
