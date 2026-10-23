@@ -57,7 +57,7 @@ Never take a float sqrt of kN itself (loses ~10 bits past 60-bit N).
 4. **parity.py:** 0 mismatches, including the new fields (reference: 3,312 pairs, 0).
 5. **Wide re-score** with scale.py (seed 880000+bits, 40 per size, cap 2^29, sizes
    54-78): Lehman, Hart x480, and every champion with a square-search stage.
-   Reference values (mean log2 ops, old -> new) from an independent run:
+   Reference values (log2(mean ops), old -> new) from an independent run:
    ```
    lehman           17.37->17.37 19.31->19.30 21.15*->21.17 23.31->23.26 25.31->25.31
    run3 no-luck-21  15.33->15.47 16.75->16.93 18.93->19.09 20.86->21.04 23.30->23.46
@@ -81,11 +81,24 @@ numbers, the parity count, and the old-vs-new table.
 
 ## Stage 2: statistical re-validation
 - At least 80 fresh semiprimes per size.
-- 95% confidence interval on mean log2(ops) per size, by bootstrap over numbers:
+- 95% confidence interval on log2(mean ops) per size, by bootstrap over numbers:
   10,000 resamples, resampling within each bit size.
 - Re-validate the Run 3 and Run 4 champions plus rho and Hart x480 under the new
   sample, and give a verdict on which past wins survive. Overlapping intervals mean
   within noise (expected for luck-33 vs rho).
+- Specifics (so results can be checked against an independent reference):
+  - Numbers: semiprimes_pq(bits, 80, 990000 + bits), sizes 54, 60, 66, 72, 78.
+  - Genomes: rho, hart x480, the final champion of each Run 3 and Run 4 run
+    (no-luck-32 included).
+  - Cap 2^29, post-Stage-1 code (inclusive window), coverage rule OFF.
+  - Statistic: log2(mean ops) per algorithm and size (total-work scoreboard, same as
+    every scale table), computed on each resample.
+  - Bootstrap: a fresh random.Random(2026) per (algorithm, size) cell; within a cell,
+    10,000 resamples, each n draws of rng.choice(ops), ops in number-generation order
+    with misses removed. Percentile method: 2.5th and 97.5th of the sorted resampled
+    values (indices int(0.025 * R) and int(0.975 * R)).
+  - Misses: excluded from that cell's mean and CI; cell starred with the miss count.
+  - Verdict per past win: overlapping intervals = within noise.
 
 ## Later stages (outline)
 - **Stages 3-4:** a quadratic-sieve card ("qs") in lamps.py, then its Rust port, gated by

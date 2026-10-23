@@ -150,6 +150,40 @@ What changed:
 
 Data: `evolve/scale_window_fix.json` (old vs new, coverage rule off) and `evolve/scale_coverage.json` (rule on).
 
+## Statistical re-validation (Stage 2, Oct 23, 2026)
+
+Do the past wins survive a bigger sample with error bars? Rho, Hart ×480, and every Run 3 and Run 4 champion on 80 fresh balanced semiprimes per size (`semiprimes_pq(bits, 80, 990000 + bits)`), cap 2^29, post-Stage-1 code, coverage rule off.
+
+```
+cd evolve && python3 revalidate.py 8
+```
+
+log₂(mean ops) with a 95% bootstrap interval (10,000 resamples over the numbers in each cell, `random.Random(2026)` per cell, percentile method; * = one number not caught, left out of the mean and interval):
+
+| Algorithm | 54 | 60 | 66 | 72 | 78 |
+|---|---|---|---|---|---|
+| Rho | 14.26 [14.09, 14.41] | 15.84 [15.67, 16.01] | 17.42 [17.24, 17.58] | 18.90 [18.73, 19.05] | 20.29 [20.09, 20.47] |
+| Hart ×480 | 14.42 [14.04, 14.74] | 16.94 [16.32, 17.55] | 18.77 [18.37, 19.12] | 20.50 [20.19, 20.78] | 22.37 [22.02, 22.69] |
+| Run 3 no-luck-21 | 15.08 [14.81, 15.33] | 17.18 [16.93, 17.42] | 18.94 [18.70, 19.17] | 21.28 [21.03, 21.50] | 23.28 [23.01, 23.53] |
+| Run 3 no-luck-22 | 14.64 [14.30, 14.95] | 17.00 [16.51, 17.46] | 18.40 [18.08, 18.69] | 20.79 [20.49, 21.07] | 22.83 [22.44, 23.16] |
+| Run 3 luck-23 | 14.41 [14.25, 14.55] | 15.84 [15.64, 16.02] | 17.33 [17.14, 17.51] | 18.72 [18.49, 18.92] | 20.06 [19.85, 20.25] |
+| Run 3 luck-24 | 14.42 [14.26, 14.56] | 15.85 [15.65, 16.03] | 17.34 [17.15, 17.52] | 18.73 [18.50, 18.93] | 20.07 [19.87, 20.26] |
+| Run 4 no-luck-31 | 14.64 [14.29, 14.95] | 16.99 [16.51, 17.45] | 18.39 [18.08, 18.68] | 20.79 [20.48, 21.07] | 22.83 [22.44, 23.16] |
+| Run 4 no-luck-32 | 14.73 [14.35, 15.06] | 16.44 [16.12, 16.73] | 18.52* [18.10, 18.90] | 20.84 [20.50, 21.15] | 22.91 [22.55, 23.22] |
+| Run 4 luck-33 | 14.40 [14.23, 14.55] | 16.03 [15.84, 16.20] | 17.35 [17.16, 17.52] | 19.13 [18.97, 19.29] | 20.34 [20.15, 20.51] |
+| Run 4 luck-34 | 14.44 [14.09, 14.74] | 16.78 [16.49, 17.03] | 18.64 [18.34, 18.90] | 20.69 [20.38, 20.97] | 22.88 [22.57, 23.17] |
+
+Which past wins survive (overlapping intervals = within noise):
+
+- **Run 3: "a luck-free evolved bulb beats rho" — no, not at 54–78 bits.** no-luck-22 is within noise of rho at 54 and worse from 60 up. Its win was measured at 36–48 bits, which this sample doesn't cover.
+- **Runs 3–4: "evolved square searches beat Hart ×480" — no, within noise at these sizes.** no-luck-22, no-luck-31, no-luck-32, and luck-34 overlap Hart at every size. no-luck-21 is worse than Hart at 54, 72, and 78.
+- **Run 4: "luck-34 beats rho" — no, not at 54–78 bits.** Within noise at 54, worse from 60 up. (The original claim was at 40 bits.)
+- **Run 4: "luck-33 is a better rho" — within noise at every size,** as Run 4 already concluded. The Run 2–3 rho variants (luck-23, luck-24) are within noise of rho too.
+- **"Rho beats the square searches from 60 bits up" — yes.** Rho and every rho-family champion are better than Hart at 60–78 bits, with intervals that don't overlap, and within noise at 54. This is the scale lesson again, now with error bars.
+- **no-luck-32 misses at 66 bits here** (N = 32724704014144553683). The cause is the one behind its 78-bit miss in the Stage 1 set: its block flash and trial division stop below p (2^32.12), so the number can never be caught, and the trial division runs out the cap first.
+
+Data: `evolve/revalidation.json` (per-cell intervals, verdicts, and every number's ops, winning stage, and k).
+
 ## Run 4: luck-by-design cards and the hit-rate meter (Oct 22, 2026)
 
 Same cumulative scoreboard as Run 3, fresh seeds (31–34), with new cards and a new meter column. Outputs in `evolve/run4/`.
