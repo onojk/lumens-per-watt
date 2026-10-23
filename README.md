@@ -55,6 +55,51 @@ python3 ancestry.py N11-0076   # family line of any named genome
 
 Outputs: `evolve.log`, `results.json`, `lineage.jsonl`, `validation.json`. Runs are seeded, so the same commands reproduce the same numbers on any machine.
 
+## Run 3: cumulative scoreboard, started over (Oct 22, 2026)
+
+Same deck and gate as Run 2, fresh seeds (21–24), but scored on the **cumulative total**: watts summed over every test number (see `NOTES.md`). Outputs in `evolve/run3/`.
+
+```
+cd evolve
+python3 evolve.py 25 20 8 cumulative
+python3 validate.py run3
+python3 curves.py run3 40 120 8
+python3 ancestry.py run3
+```
+
+Validation on 12 fresh semiprimes each at 36–54 bits. Score = log₂(mean watts)/bits at 48 and 54 bits.
+
+| Algorithm | Cumulative score | Lumens per watt | Mean ops at 48 / 54 bits | Worst at 54 bits |
+|---|---|---|---|---|
+| Trial division | N^0.470 | N^0.03 | 2^22.4 / 2^25.5 | 2^26.0 |
+| Pollard–Strassen (block flash) | N^0.464 | N^0.04 | 2^22.7 / 2^24.6 | 2^24.8 |
+| Fermat | N^0.341 | N^0.16 | 2^15.8 / 2^19.0 | 2^20.6 |
+| Lehman | N^0.318 | N^0.18 | 2^15.2 / 2^17.2 | 2^17.7 |
+| Rho | N^0.267 | N^0.23 | 2^12.9 / 2^14.3 | 2^15.4 |
+| Hart ×480 | N^0.264 | N^0.24 | 2^12.3 / 2^14.7 | 2^16.8 |
+| Champion no-luck-21 | N^0.264 | N^0.24 | 2^12.2 / 2^14.8 | 2^15.6 |
+| **Champion no-luck-22** | **N^0.253** | **N^0.25** | **2^11.5 / 2^14.4** | 2^16.0 |
+| Champion luck-23 | N^0.273 | N^0.23 | 2^13.4 / 2^14.3 | 2^15.6 |
+| Champion luck-24 | N^0.273 | N^0.23 | 2^13.4 / 2^14.3 | 2^15.6 |
+
+Curves (`curves.py`, 120 planted secrets at 40 bits):
+
+| Algorithm | Median watts | Mean watts | Worst watts | Lumens per watt |
+|---|---|---|---|---|
+| Evolved no-luck-22 | 2^9.3 | 2^9.9 | 2^12.6 | 2^10.1 |
+| Evolved no-luck-21 | 2^9.6 | 2^10.1 | 2^12.7 | 2^9.9 |
+| Hart ×480 | 2^9.3 | 2^10.6 | 2^15.8 | 2^9.4 |
+| Rho | 2^11.1 | 2^10.9 | 2^12.3 | 2^9.1 |
+| Lehman | 2^12.5 | 2^12.6 | 2^13.6 | 2^7.4 |
+| Trial division | 2^18.3 | 2^18.4 | 2^18.9 | 2^1.6 |
+| Block flash | 2^20.2 | 2^20.2 | 2^20.3 | 2^-0.2 |
+
+What it shows:
+
+- **On the cumulative scoreboard, a luck-free evolved bulb beats rho.** Champion no-luck-22 (a ×720 multiplier square search with a short trial-division tail) has the best cumulative score and the best lumens per watt at 36–48 bits. At 54 bits it is level with rho (2^14.4 vs 2^14.3 mean), so rho's flatter growth may take over above that.
+- **The curve shapes are the story.** The Hart family darkens most secrets very early (median 2^9.3) but has a long tail of stubborn ones (Hart's worst is 2^15.8). Rho's curve is a narrow cliff: almost nothing before 2^9, almost everything by 2^12. The evolved champions keep Hart's early light and shorten its tail.
+- **Worst-case and cumulative scoring pick different winners.** Under Run 2's worst-case meter, rho led. Under the cumulative meter, the layered square search leads, because the score now rewards darkening most secrets cheaply, not just the hardest one.
+
 ## Run 2: honest meter plus the block flash (Oct 22, 2026)
 
 25 generations, population 20, two runs per deck. Validation on 12 fresh semiprimes each at 36, 42, 48, 54 bits, worst case. Score = effective exponent at 48 and 54 bits.
