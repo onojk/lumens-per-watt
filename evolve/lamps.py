@@ -136,7 +136,9 @@ def lamp_pm1(N, g, m):
     d = math.gcd(a - 1, N); m.tick()
     return d if 1 < d < N else None
 
-LAMPS = {"td": lamp_td, "sq": lamp_sq, "rho": lamp_rho, "pm1": lamp_pm1}
+from blockflash import lamp_ps
+
+LAMPS = {"td": lamp_td, "sq": lamp_sq, "rho": lamp_rho, "pm1": lamp_pm1, "ps": lamp_ps}
 
 # ---- genomes ----------------------------------------------------------------
 
@@ -150,15 +152,20 @@ def rand_stage(kind, rng):
                 "c": rng.uniform(0.1, 4.0), "ksq": rng.random() < 0.5}
     if kind == "rho":
         return {"t": "rho", "c": rng.randint(1, 9), "b": rng.choice([1, 4, 16, 64, 128])}
+    if kind == "ps":
+        return {"t": "ps", "a": rng.uniform(0.3, 0.55), "s": rng.uniform(0.1, 0.4),
+                "c": rng.uniform(0.25, 4.0)}
     return {"t": "pm1", "b": rng.uniform(0.05, 0.4)}
 
 def rand_genome(deck, rng):
     return [rand_stage(rng.choice(deck), rng) for _ in range(rng.randint(1, 3))]
 
 def mutate(gen, deck, rng):
+    """Return (child genome, name of the mutation that made it)."""
     g = [dict(s) for s in gen]
     r = rng.random()
     if r < 0.55 and g:
+        op = "tune"
         s = rng.choice(g)
         for key in list(s):
             if key == "t" or rng.random() > 0.5:
@@ -176,14 +183,18 @@ def mutate(gen, deck, rng):
             elif isinstance(v, int):
                 s[key] = max(1, v + rng.choice([-1, 1]) * max(1, v // 2))
     elif r < 0.7 and len(g) < 4:
+        op = "insert"
         g.insert(rng.randint(0, len(g)), rand_stage(rng.choice(deck), rng))
     elif r < 0.8 and len(g) > 1:
+        op = "delete"
         g.pop(rng.randrange(len(g)))
     elif r < 0.9 and len(g) > 1:
+        op = "swap"
         i, j = rng.sample(range(len(g)), 2); g[i], g[j] = g[j], g[i]
     else:
+        op = "replace"
         g[rng.randrange(len(g))] = rand_stage(rng.choice(deck), rng)
-    return g
+    return g, op
 
 def crossover(a, b, rng):
     child = a[:rng.randint(0, len(a))] + b[rng.randint(0, len(b)):]
@@ -217,29 +228,46 @@ def semiprimes(bits, count, seed):
             out.append(p * q)
     return out
 
-SIZES = [20, 26, 32, 38, 44]
-
 def cap_for(bits):
-    return int(3 * 2 ** (0.38 * bits))       # about 3 N^0.38 ops allowed
+    return int(2 ** (0.5 * bits + 6))        # 64x trial division: slow is scored, not a miss
 
-def fitness(gen, tests):
-    """tests: {bits: [N...]}. Worst-case ops per size, fail = 4 sqrt(N) virtual ops.
-    Returns (work exponent e, log2 worst ops at top size, per-size worst log2 ops)."""
-    xs, ys, fails = [], [], 0
-    for bits, Ns in tests.items():
+def slope(xs, ys):
+    if len(xs) < 2:
+        return None
+    mx = sum(xs) / len(xs); my = sum(ys) / len(ys)
+    return sum((x - mx) * (y - my) for x, y in zip(xs, ys)) / sum((x - mx) ** 2 for x in xs)
+
+def measure(gen, tests, abort_log2=None):
+    """Worst case over tests = {bits: [N...]}, largest size first.
+
+    Score (lower is better) is the effective exponent at the top two sizes:
+    log2(worst ops) / bits, averaged. It prices the bulb at the sizes actually run, so
+    being slow on small N can't lower it. The fitted slope is reported as the trend.
+    abort_log2: give up early if the top size already costs more than 2^abort_log2.
+    """
+    sizes = sorted(tests, reverse=True)
+    ys, fails = {}, 0
+    for i, bits in enumerate(sizes):
+        cap = cap_for(bits)
+        if i == 0 and abort_log2 is not None:
+            cap = min(cap, int(2 ** abort_log2))
         worst = 0
-        for N in Ns:
-            ops, d = run(gen, N, cap_for(bits))
+        for N in tests[bits]:
+            ops, d = run(gen, N, cap)
             if ops is None:
                 fails += 1
                 ops = cap_for(bits)
+                if i == 0:                  # missed at the top size: stop measuring
+                    ys[bits] = math.log2(ops)
+                    return {"score": 0.5 + 0.02 * fails, "trend": None, "ys": ys, "fails": fails}
             worst = max(worst, ops)
-        xs.append(bits); ys.append(math.log2(max(worst, 1)))
-    n = len(xs); mx = sum(xs) / n; my = sum(ys) / n
-    slope = sum((x - mx) * (y - my) for x, y in zip(xs, ys)) / sum((x - mx) ** 2 for x in xs)
-    if fails:                       # worst luck: a method that misses any N is not done
-        slope = 0.5 + 0.02 * fails
-    return slope, ys[-1], ys
+        ys[bits] = math.log2(max(worst, 1))
+    top = sizes[:2]
+    score = sum(ys[b] / b for b in top) / len(top)
+    if fails:
+        score = max(score, 0.5) + 0.02 * fails  # worst luck: missing any N means not done
+    asc = sorted(ys)
+    return {"score": score, "trend": slope(asc, [ys[b] for b in asc]), "ys": ys, "fails": fails}
 
 def describe(gen):
     parts = []
@@ -251,6 +279,8 @@ def describe(gen):
             parts.append(f"square search [{kk} up to N^{s['k']:.2f}, window {s['c']:.2f}·N^{s['w']:.2f}/√k{', 4kN' if s['ksq'] else ''}]")
         elif s["t"] == "rho":
             parts.append(f"rho [c={s['c']}, gcd every {s['b']}]")
+        elif s["t"] == "ps":
+            parts.append(f"block flash [to N^{s['a']:.2f}, blocks {s['c']:.2f}·N^{s['s']:.2f}]")
         else:
             parts.append(f"p−1 [B=N^{s['b']:.2f}]")
     return " → ".join(parts)

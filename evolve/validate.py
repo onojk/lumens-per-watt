@@ -1,39 +1,45 @@
-"""Re-test baselines and each run's final winner on fresh, larger semiprimes."""
-import json, math, sys
-from lamps import run, semiprimes, describe
+"""Re-test baselines and each run's champion on fresh, larger semiprimes,
+then project where the block flash would overtake Lehman."""
+import json, math
+from lamps import measure, semiprimes, describe
 from evolve import BASELINES
 
 VSIZES = [36, 42, 48, 54]
 TESTS = {b: semiprimes(b, 12, 777000 + b) for b in VSIZES}
 
-def measure(gen):
-    worst, fails = [], 0
-    for b, Ns in TESTS.items():
-        w = 0
-        for N in Ns:
-            ops, d = run(gen, N, int(4 * 2 ** (0.45 * b)))
-            if ops is None:
-                fails += 1
-                ops = int(4 * 2 ** (0.45 * b))
-            else:
-                assert N % d == 0 and 1 < d < N
-            w = max(w, ops)
-        worst.append(math.log2(w))
-    xs = VSIZES; mx = sum(xs) / len(xs); my = sum(worst) / len(worst)
-    e = sum((x - mx) * (y - my) for x, y in zip(xs, worst)) / sum((x - mx) ** 2 for x in xs)
-    return e, worst, fails
+def fit_offset(ys, exponent, log_power):
+    """Fit log2(ops) = exponent*bits + log_power*log2(bits) + c; return c."""
+    return sum(y - exponent * b - log_power * math.log2(b) for b, y in ys.items()) / len(ys)
+
+def crossover(ps_ys, other_ys, other_exp):
+    c_ps = fit_offset(ps_ys, 0.25, 2)
+    c_o = fit_offset(other_ys, other_exp, 0)
+    for bits in range(54, 2000):
+        if 0.25 * bits + 2 * math.log2(bits) + c_ps < other_exp * bits + c_o:
+            return bits
+    return None
 
 if __name__ == "__main__":
     res = json.load(open("results.json"))
     cands = dict(BASELINES)
     for key, hist in res["runs"].items():
-        cands[f"evolved {key}"] = hist[-1]["genome"]
+        cands[f"champion {key}"] = hist[-1]["champ"]
     out = {}
     for name, g in cands.items():
-        e, worst, fails = measure(g)
-        out[name] = {"e": e, "eff": 0.5 - e, "worst_log2": worst, "fails": fails, "genome": g}
-        print(f"{name:20s} work N^{e:.3f}  lumens/watt N^{0.5-e:.3f}  fails {fails:2d}  "
-              f"worst log2 ops {[round(w,1) for w in worst]}", flush=True)
-        if name.startswith("evolved"):
-            print(f"{'':20s} {describe(g)}", flush=True)
-    json.dump(out, open("validation.json", "w"), indent=1)
+        r = measure(g, TESTS)
+        r["genome"] = g
+        out[name] = r
+        ys = r["ys"]
+        trend = f"N^{r['trend']:.3f}" if r["trend"] is not None else "—"
+        print(f"{name:22s} N^{r['score']:.3f}  lumens/watt N^{0.5-r['score']:.3f}  "
+              f"trend {trend}  misses {r['fails']}  "
+              f"worst log2 ops {[round(ys[b], 1) for b in VSIZES if b in ys]}", flush=True)
+        if name.startswith("champion"):
+            print(f"{'':22s} {describe(g)}", flush=True)
+    ps = out["pollard-strassen"]["ys"]
+    out["projection"] = {
+        "ps_overtakes_lehman_bits": crossover(ps, out["lehman"]["ys"], 1 / 3),
+        "ps_overtakes_trial_bits": crossover(ps, out["trial division"]["ys"], 1 / 2),
+    }
+    print("projection (model: block flash ~ N^(1/4) log^2 N):", out["projection"])
+    json.dump(out, open("validation.json", "w"), indent=1, default=str)
