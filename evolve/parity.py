@@ -8,7 +8,9 @@ Quadratic sieve (qs_pairs): the same fields plus qs's per-phase op breakdown, on
 acceptance numbers (40-60 bits), the Stage 2 numbers at 66/72/78 bits, numbers that make qs
 retry with its next multiplier (asserted), gene variants, qs after another stage, a low
 cap that stops it partway through a phase, random genomes drawn from a deck with qs in it, and
-small sieve intervals (mc 0.05-0.5 at 48-84 bits), where a factor-base prime wider than the
+random genomes drawn from the wide qs ranges for runs after Run 6
+(lamps.use_wide_qs_ranges: mc 0.05-12 log scale, bc 0.7-3.0), small sieve intervals
+(mc 0.05-0.5 at 48-84 bits), where a factor-base prime wider than the
 interval can start past its end and must not step (asserted for mc <= 0.25: lampcore's sieve
 count wrapped there until it was guarded).
 Edge: both cores refuse qs on N >= 2^100 with an error, never a silent wrap.
@@ -74,9 +76,13 @@ def qs_pairs():
         for mc in SMALL_MC:
             yield f"qs small mc {mc}", [dict(QS, kc=32, bc=1.1, mc=mc, tc=1.38)], nums, 2 ** 29, False
             yield f"qs small mc {mc} default genes", [dict(QS, mc=mc)], nums, 2 ** 29, False
+        yield "qs wide corner bc 0.7 mc 0.05", [dict(QS, kc=32, bc=0.7, mc=0.05, tc=1.38)], nums, 2 ** 29, False
     for i, g in enumerate(random_qs_genomes()):
         for b in (28, 34, 40, 46, 54, 60):
             yield f"random qs {i}", g, semiprimes_pq(b, 2, 440000 + b), min(cap_for(b), 2 ** 22), False
+    for i, g in enumerate(random_qs_genomes(30, wide=True)):
+        for b in (34, 46, 60, 72, 84):
+            yield f"random wide qs {i}", g, semiprimes_pq(b, 2, 1600000 + b), min(cap_for(b), 2 ** 24), False
 
 SMALL_MC = (0.05, 0.1, 0.25, 0.5)
 
@@ -85,10 +91,14 @@ def non_stepping(trace):
     return sum(1 for at in trace["attempts"] for poly in at["polys"]
                for p, r in poly["roots"] if (r + poly["M"]) % p >= 2 * poly["M"] + 1)
 
-def random_qs_genomes(n=60):
-    """Random genomes from the full deck plus qs, each with at least one qs stage."""
+def random_qs_genomes(n=60, wide=False):
+    """Random genomes from the full deck plus qs, each with at least one qs stage. wide: qs
+    genes from the post-Run 6 ranges (restored afterwards, so other pairs are unchanged)."""
     use_fine_deck()
-    rng = random.Random(2027)
+    rng = random.Random(2028 if wide else 2027)
+    saved = (dict(lamps.QS_RANGES), dict(lamps.QS_SIGMA), set(lamps.QS_LOG))
+    if wide:
+        lamps.use_wide_qs_ranges()
     deck = ["td", "sq", "ps", "rho", "pm1", "qs"]
     out = []
     while len(out) < n:
@@ -96,6 +106,9 @@ def random_qs_genomes(n=60):
         if not any(st["t"] == "qs" for st in g):
             g.insert(rng.randint(0, len(g)), rand_stage("qs", rng))
         out.append(g[:4])
+    lamps.QS_RANGES.clear(); lamps.QS_RANGES.update(saved[0])
+    lamps.QS_SIGMA.clear(); lamps.QS_SIGMA.update(saved[1])
+    lamps.QS_LOG.clear(); lamps.QS_LOG.update(saved[2])
     return out
 
 PS84 = {"t": "ps", "a": 0.5, "s": 0.4, "c": 4.0}

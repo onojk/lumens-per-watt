@@ -243,7 +243,8 @@ def rand_stage(kind, rng):
         return st
     if kind == "qs":
         return {"t": "qs", "kc": rng.randint(*QS_RANGES["kc"]),
-                **{key: rng.uniform(*QS_RANGES[key]) for key in ("bc", "mc", "tc")}}
+                **{key: (math.exp(rng.uniform(*map(math.log, QS_RANGES[key]))) if key in QS_LOG
+                         else rng.uniform(*QS_RANGES[key])) for key in ("bc", "mc", "tc")}}
     if kind == "ps":
         return {"t": "ps", "a": rng.uniform(0.3, 0.55), "s": rng.uniform(0.1, 0.4),
                 "c": rng.uniform(0.25, 4.0)}
@@ -252,12 +253,20 @@ def rand_stage(kind, rng):
 FINE_DECK = False          # Run 4 turns on the luck-by-design cards
 QS_RANGES = {"kc": (1, 32), "bc": (0.8, 3.0), "mc": (1.0, 12.0), "tc": (1.0, 3.5)}
 QS_SIGMA = {"bc": 0.15, "mc": 0.75, "tc": 0.15}
+QS_LOG = set()             # genes sampled and mutated on a log scale (sigma in log units)
 SQ_MODES = ["one", "seq", "seqm", "smooth"]
 
 def use_fine_deck():
     global FINE_DECK
     FINE_DECK = True
     SQ_MODES.append("ks")
+
+def use_wide_qs_ranges():
+    """For runs after Run 6: mc 0.05..12 on a log scale, bc 0.7..3.0 (both sweeps found the
+    optimum below Run 6's mc floor of 1.0). Opt-in, so replays of Run 6 are unchanged."""
+    QS_RANGES.update(mc=(0.05, 12.0), bc=(0.7, 3.0))
+    QS_SIGMA.update(mc=0.3)
+    QS_LOG.add("mc")
 
 def rand_genome(deck, rng):
     return [rand_stage(rng.choice(deck), rng) for _ in range(rng.randint(1, 3))]
@@ -277,6 +286,8 @@ def mutate(gen, deck, rng):
                 lo, hi = QS_RANGES[key]
                 if key == "kc":
                     s[key] = min(hi, max(lo, v + rng.choice([-1, 1]) * max(1, v // 4)))
+                elif key in QS_LOG:
+                    s[key] = min(hi, max(lo, v * math.exp(rng.gauss(0, QS_SIGMA[key]))))
                 else:
                     s[key] = min(hi, max(lo, v + rng.gauss(0, QS_SIGMA[key])))
             elif isinstance(v, bool):

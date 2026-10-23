@@ -148,4 +148,20 @@ numbers, the parity count, and the old-vs-new table.
     index 250/9749; for the worst case, the max of each resample). Note qs already beats
     L44-0272 on worst case at 78 bits (2^20.41 vs 2^22.04). Report whether evolution
     kept, tuned, or dropped qs.
+- **qs mutation ranges for runs after Run 6** (`lamps.use_wide_qs_ranges()`, opt-in so
+  Run 6 replays are unchanged): mc 0.05..12 drawn and mutated on a log scale (sigma 0.3
+  in log units, so a tune step is ~0.6x-1.6x at the 5th/95th percentile), bc 0.7..3.0;
+  kc and tc as in Run 6. Why: Run 6's champions sat on its mc floor of 1.0, and two
+  sweeps of qs alone (kc 32, tc 1.38, the 78- and 84-bit ACCEPT numbers, cap 2^28) put
+  the optimum below it.
+  - `qs_boundary_sweep.py` (mc 0.25..2 x bc 0.8..1.5): cost falls as mc drops; best
+    cell on the grid edge, mc 0.25, bc 1.1 (84 bits 2^19.22 [19.16, 19.27] vs mc 1.0
+    2^19.44 [19.38, 19.51]).
+  - `qs_boundary_sweep2.py` (mc 0.03..0.25 x bc 0.9..1.2, both cores, 0 disagreements):
+    flat from mc 0.06 to 0.25 (84-bit cells 2^19.13-19.28, intervals mostly
+    overlapping); best cells mc 0.25, bc 1.1-1.2 at 78 bits (2^18.28) and mc 0.06,
+    bc 0.9 at 84 bits (2^19.13 [19.07, 19.18]).
+  - Total gain over mc 1.0, bc 1.1: ~1.2x (2^0.31 at both sizes). The remaining best
+    cells sit on the bc edges (0.9 at 84 bits, 1.2 at 78 bits) by less than the noise;
+    not worth chasing with another sweep. The widened ranges cover both.
 - **Stage 6:** reconcile the four caps and re-score with scale.py.
