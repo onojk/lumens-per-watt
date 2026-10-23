@@ -166,6 +166,16 @@ numbers, the parity count, and the old-vs-new table.
     not worth chasing with another sweep. The widened ranges cover both.
 - **Stage 6:** reconcile the four caps and re-score with scale.py.
 
+## Order of work (after Run 6)
+
+Stage 7 (large primes) -> relation-economy refactor -> Stage 8 (ECM) -> Stage 9 (race)
+-> Stage 10 (qs refinements), then Run 8.
+
+The relation-economy refactor comes before ECM for three reasons:
+- it reshapes the qs card that every later stage builds on;
+- CFRAC, the second relation source, needs the shared ledger;
+- Stage 7 is already changing the same code, so doing it now is cheaper than retrofitting.
+
 ## Relation economy (planning; no code yet)
 
 Comes after Stage 7, the large-prime cost model in NOTES.md, and before Stages 8-10. The
@@ -185,6 +195,11 @@ combined and evolved against one shared, fixed ledger.
     - An invalid relation pays its check and is rejected, so it costs and earns nothing.
     - A relation whose exponent vector is all even is also rejected after its check: it
       can only give a trivial dependency.
+- **Decision: one k per ledger.**
+  - Every source feeding a ledger uses the same multiplier k and the same factor base.
+    CFRAC expands sqrt(kN) with that k, so nothing is lost.
+  - Multi-k ledgers are out of scope. If they are ever wanted, they get their own cost
+    model first.
 - **Refactor qs into SOURCE + LEDGER.**
   - Source: polynomial generation and sieving (qs phases 1, 3, 4) and confirmation
     (phase 5, plus Stage 7's lp phase when lc > 1). It emits relations.
@@ -267,8 +282,9 @@ any scored run, and parity gates the Rust port.
     numbers at 54-66 so the crossover can be seen. Cap 2^28, same bootstrap, mean and
     worst with intervals. ECM's genes are fixed in advance on tuning seeds, never on these
     numbers.
-  - Stated in advance: ECM beats qs below ~80 bits and loses above. Its cost grows with
-    the smaller factor, which is half the bits here, and qs's grows more slowly.
+  - **Prediction (stated before measurement):** ECM beats qs below ~80 bits and loses
+    above. Its cost grows with the smaller factor, which is half the bits here, and
+    qs's grows more slowly.
 - **Stage 9: race combinator ("race").**
   - A genome element holding two stages that run interleaved on one meter: A for sa ops,
     then B for sb ops, alternating, until one finds a factor or the budget runs out.
@@ -305,4 +321,5 @@ any scored run, and parity gates the Rust port.
     references. `run8_accept.py` is written before the run.
   - Seeds: 71-74, proposed (Run 5 used 41-44, Run 6 51-54; 61-64 stay reserved for
     Run 7).
-  - Prerequisites: Stages 8 and 9 accepted, with parity.
+  - Prerequisites: the relation-economy refactor, and Stages 8 and 9, accepted with
+    parity.
