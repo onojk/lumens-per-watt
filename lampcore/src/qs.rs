@@ -1,0 +1,476 @@
+//! Quadratic sieve card ("qs"): a line-by-line port of evolve/qs.py, with every charge made
+//! at the same point and in the same chunk as the Python, so op counts, tests, hits, and the
+//! per-phase breakdown agree exactly (checked by parity.py). Cost model: NOTES.md.
+//!
+//! Values of size kN live in i128 (N must stay below 2^100); products mod N use U256.
+
+use super::{ks_score, Budget, Meter, Num, KS_PRIMES, R};
+use ruint::aliases::U256;
+use serde_json::Value;
+
+pub const MULT: usize = 0;
+pub const FB: usize = 1;
+pub const SETUP: usize = 2;
+pub const SIEVE: usize = 3;
+pub const CONFIRM: usize = 4;
+pub const LA: usize = 5;
+pub const SQRT: usize = 6;
+
+const DELTA: usize = 10; // surplus relations: rows = F + DELTA
+
+fn gene(g: &Value, key: &str, default: f64) -> f64 {
+    g.get(key).and_then(|v| v.as_f64()).unwrap_or(default)
+}
+
+fn primes_upto(n: u64) -> Vec<u64> {
+    let mut s = vec![true; n as usize + 1];
+    s[0] = false;
+    if n >= 1 {
+        s[1] = false;
+    }
+    let mut i = 2usize;
+    while i * i <= n as usize {
+        if s[i] {
+            let mut j = i * i;
+            while j <= n as usize {
+                s[j] = false;
+                j += i;
+            }
+        }
+        i += 1;
+    }
+    (0..=n).filter(|&i| s[i as usize]).collect()
+}
+
+/// Square-and-multiply mod a small prime, 1 op per modular multiply, the base reduction
+/// counted as the first (bit_length(e) + popcount(e) - 1 in all). `b` is already b mod p.
+fn cpow_small(b: u64, e: u64, p: u64, ph: usize, m: &mut Meter) -> Result<(u64, u64), Budget> {
+    let mut r = b % p;
+    m.charge(ph, 1)?;
+    let mut n = 1u64;
+    let bl = 64 - e.leading_zeros();
+    for i in (0..bl.saturating_sub(1)).rev() {
+        r = r * r % p;
+        m.charge(ph, 1)?;
+        n += 1;
+        if (e >> i) & 1 == 1 {
+            r = r * b % p;
+            m.charge(ph, 1)?;
+            n += 1;
+        }
+    }
+    Ok((r, n))
+}
+
+/// The same, mod N.
+fn cpow_n(b: u64, e: u64, n: U256, ph: usize, m: &mut Meter) -> Result<U256, Budget> {
+    let bb = U256::from(b) % n;
+    let mut r = bb;
+    m.charge(ph, 1)?;
+    let bl = 64 - e.leading_zeros();
+    for i in (0..bl.saturating_sub(1)).rev() {
+        r = r.mul_mod(r, n);
+        m.charge(ph, 1)?;
+        if (e >> i) & 1 == 1 {
+            r = r.mul_mod(bb, n);
+            m.charge(ph, 1)?;
+        }
+    }
+    Ok(r)
+}
+
+/// Inverse of a mod `md` by extended Euclid, charged 1 op per division step (one chunk).
+fn euclid_inv(a: i128, md: i128, ph: usize, m: &mut Meter) -> Result<i128, Budget> {
+    let (mut r0, mut r1, mut s0, mut s1, mut steps) = (md, a.rem_euclid(md), 0i128, 1i128, 0u64);
+    while r1 != 0 {
+        let q = r0.div_euclid(r1);
+        let (nr, ns) = (r0 - q * r1, s0 - q * s1);
+        r0 = r1;
+        r1 = nr;
+        s0 = s1;
+        s1 = ns;
+        steps += 1;
+    }
+    m.charge(ph, steps)?;
+    Ok(s0.rem_euclid(md))
+}
+
+/// sqrt(n) mod p for a nonzero residue n, charged 1 op per modular multiply.
+fn tonelli(n: u64, p: u64, m: &mut Meter) -> Result<u64, Budget> {
+    if p % 4 == 3 {
+        return Ok(cpow_small(n, (p + 1) / 4, p, FB, m)?.0);
+    }
+    let (mut q, mut s) = (p - 1, 0u32);
+    while q % 2 == 0 {
+        q /= 2;
+        s += 1;
+    }
+    let mut z = 2u64;
+    loop {
+        let (t, _) = cpow_small(z % p, (p - 1) / 2, p, FB, m)?;
+        if t == p - 1 {
+            break;
+        }
+        z += 1;
+    }
+    let (mut cz, _) = cpow_small(z % p, q, p, FB, m)?;
+    let (mut t, _) = cpow_small(n, q, p, FB, m)?;
+    let (mut r, _) = cpow_small(n, (q + 1) / 2, p, FB, m)?;
+    let mut mm = s;
+    while t != 1 {
+        let (mut i, mut t2) = (0u32, t);
+        while t2 != 1 {
+            t2 = t2 * t2 % p;
+            i += 1;
+        }
+        let mut b = cz;
+        for _ in 0..(mm - i - 1) {
+            b = b * b % p;
+        }
+        r = r * b % p;
+        cz = b * b % p;
+        t = t * cz % p;
+        m.charge(FB, (i + (mm - i - 1) + 3) as u64)?;
+        mm = i;
+    }
+    Ok(r)
+}
+
+/// All s-element combinations of `pool`, in itertools.combinations order.
+fn combinations(pool: &[u64], s: usize) -> Vec<Vec<u64>> {
+    let n = pool.len();
+    let mut out = Vec::new();
+    if s > n {
+        return out;
+    }
+    let mut idx: Vec<usize> = (0..s).collect();
+    loop {
+        out.push(idx.iter().map(|&i| pool[i]).collect());
+        let mut i = s as isize - 1;
+        while i >= 0 && idx[i as usize] == i as usize + n - s {
+            i -= 1;
+        }
+        if i < 0 {
+            return out;
+        }
+        idx[i as usize] += 1;
+        for j in i as usize + 1..s {
+            idx[j] = idx[j - 1] + 1;
+        }
+    }
+}
+
+pub fn lamp_qs(num: &Num, g: &Value, m: &mut Meter) -> R {
+    let n = num.n;
+    if n % U256::from(2u64) == U256::ZERO {
+        return Ok(Some(U256::from(2u64)));
+    }
+    assert!(n < U256::from(1u128 << 100), "qs: N too large for i128 arithmetic");
+    // 1. multiplier
+    let kc = (gene(g, "kc", 16.0) as u64).max(1);
+    m.charge(MULT, kc * KS_PRIMES.len() as u64)?;
+    let mut ranked: Vec<(u64, f64)> = (1..=kc).map(|k| (k, -ks_score(k, num))).collect();
+    ranked.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap().then(a.0.cmp(&b.0)));
+    for (k, _) in ranked {
+        if let Some(d) = attempt(num, g, k, m)? {
+            return Ok(Some(d));
+        }
+    }
+    Ok(None)
+}
+
+fn attempt(num: &Num, g: &Value, k: u64, m: &mut Meter) -> R {
+    let n = num.n;
+    let n_i = n.to::<u128>() as i128;
+    let kn_u = U256::from(k) * n;
+    let kn = kn_u.to::<u128>() as i128;
+
+    // 2. factor base: -1, 2, primes dividing k, odd primes with (kN | p) = 1
+    let ln_n = num.f.ln();
+    let bnd = ((gene(g, "bc", 1.5) * (0.5 * (ln_n * ln_n.ln()).sqrt()).exp()) as u64).max(30);
+    let mut base: Vec<i64> = vec![-1, 2];
+    let mut roots_t: Vec<u64> = vec![0, 0]; // parallel to base
+    for p in primes_upto(bnd).into_iter().skip(1) {
+        let e = (p - 1) / 2;
+        let knp = (kn_u % U256::from(p)).to::<u64>();
+        let (leg, _) = cpow_small(knp, e, p, FB, m)?;
+        if knp == 0 {
+            if k % p != 0 {
+                return Ok(Some(U256::from(p))); // p divides N
+            }
+            base.push(p as i64);
+            roots_t.push(0);
+            continue;
+        }
+        if leg != 1 {
+            continue;
+        }
+        let t = tonelli(knp, p, m)?;
+        base.push(p as i64);
+        roots_t.push(t);
+    }
+    let f = base.len();
+    let pos = |p: u64| base.iter().position(|&b| b == p as i64).unwrap();
+    let logp: Vec<i32> = base
+        .iter()
+        .map(|&p| if p > 2 { ((p as f64).log2().round_ties_even() as i32).max(1) } else { 0 })
+        .collect();
+
+    // 3. polynomials: A = product of s primes near (sqrt(2kN)/M)^(1/s)
+    let mm_ = ((gene(g, "mc", 4.0) * bnd as f64) as i64).max(64);
+    let target = (U256::from(2u64) * kn_u).root(2).to::<u128>() as f64 / mm_ as f64;
+    let pool_all: Vec<u64> =
+        base[2..].iter().map(|&p| p as u64).filter(|&p| k % p != 0 && p > 2).collect();
+    if pool_all.is_empty() {
+        return Ok(None);
+    }
+    let mut s = 1usize;
+    while target.powf(1.0 / s as f64) > *pool_all.last().unwrap() as f64 && s < 8 {
+        s += 1;
+    }
+    while s > 1 && target.powf(1.0 / s as f64) < pool_all[(pool_all.len() - 1).min(2)] as f64 {
+        s -= 1;
+    }
+    let q = target.powf(1.0 / s as f64);
+    let pn = pool_all.len().min(if s == 1 { 40 } else { 16 + 4 * s });
+    let mut by_q = pool_all.clone();
+    by_q.sort_by(|a, b| {
+        ((*a as f64 / q).ln().abs(), *a).partial_cmp(&((*b as f64 / q).ln().abs(), *b)).unwrap()
+    });
+    let mut pool: Vec<u64> = by_q[..pn].to_vec();
+    pool.sort();
+    let mut combos = combinations(&pool, s);
+    m.charge(SETUP, (s as u64 - 1) * combos.len() as u64)?;
+    let key = |c: &Vec<u64>| ((c.iter().product::<u64>() as f64 / target).ln()).abs();
+    combos.sort_by(|a, b| key(a).partial_cmp(&key(b)).unwrap().then_with(|| a.cmp(b)));
+    let thr = (mm_ as f64 * (kn_u.to::<u128>() as f64 / 2.0).sqrt()).log2()
+        - gene(g, "tc", 2.0) * (bnd as f64).log2();
+    let width = (2 * mm_ + 1) as usize;
+    let need = f + DELTA;
+    let mut rels: Vec<(i128, Vec<u32>)> = Vec::new();
+    let mut seen = std::collections::HashSet::new();
+    let mut arr = vec![0i32; width];
+
+    'combos: for qs_ in &combos {
+        let a: i128 = qs_.iter().map(|&x| x as i128).product();
+        let mut bl: Vec<i128> = Vec::with_capacity(s);
+        for &ql in qs_ {
+            let ql_i = ql as i128;
+            let aq = a / ql_i;
+            m.charge(SETUP, 1)?;
+            let inv = euclid_inv(aq.rem_euclid(ql_i), ql_i, SETUP, m)?;
+            let mut gam = (roots_t[pos(ql)] as i128 * inv).rem_euclid(ql_i);
+            m.charge(SETUP, 1)?;
+            if gam > ql_i / 2 {
+                gam = ql_i - gam;
+            }
+            bl.push(aq * gam);
+            m.charge(SETUP, 1)?;
+        }
+        // per sieved prime: (p, roots, 2 B_l A^-1, base index)
+        let mut st: Vec<(i128, Vec<i128>, Vec<i128>, usize)> = Vec::new();
+        let mut bv: i128 = bl.iter().sum();
+        for j in 2..f {
+            let p = base[j] as i128;
+            if a % p == 0 || p == 2 {
+                continue;
+            }
+            let ainv = euclid_inv(a.rem_euclid(p), p, SETUP, m)?;
+            let t = roots_t[j] as i128;
+            let r1 = (ainv * (t - bv).rem_euclid(p)).rem_euclid(p);
+            m.charge(SETUP, 1)?;
+            let r2 = (ainv * (-t - bv).rem_euclid(p)).rem_euclid(p);
+            m.charge(SETUP, 1)?;
+            let mut bainv = Vec::with_capacity(s);
+            for &b in &bl {
+                bainv.push((2 * b * ainv).rem_euclid(p));
+                m.charge(SETUP, 1)?;
+            }
+            st.push((p, if t == 0 { vec![r1] } else { vec![r1, r2] }, bainv, j));
+        }
+        let mut signs = vec![1i128; s];
+        for i in 0..(1usize << (s - 1)) {
+            if i != 0 {
+                // Gray code: flip one B_l, update every root
+                let v = i.trailing_zeros() as usize + 1;
+                let d = signs[v];
+                signs[v] = -d;
+                bv -= 2 * d * bl[v];
+                let mut n_roots = 0u64;
+                for ent in st.iter_mut() {
+                    let p = ent.0;
+                    let bi = ent.2[v];
+                    for r in ent.1.iter_mut() {
+                        *r = (*r + d * bi).rem_euclid(p);
+                    }
+                    n_roots += ent.1.len() as u64;
+                }
+                m.charge(SETUP, n_roots)?;
+            }
+            let c = (bv * bv - kn) / a;
+            // 4. sieve
+            arr.iter_mut().for_each(|x| *x = 0);
+            let mut upd = 0u64;
+            for (p, rs, _, j) in &st {
+                let pu = *p as usize;
+                for &r in rs {
+                    let start = ((r + mm_ as i128) % *p) as usize;
+                    let mut i0 = start;
+                    while i0 < width {
+                        arr[i0] += logp[*j];
+                        i0 += pu;
+                    }
+                    upd += ((width - 1 - start) / pu + 1) as u64;
+                }
+            }
+            m.charge(SIEVE, upd)?;
+            m.charge(SIEVE, width as u64)?;
+            // 5. confirm
+            for i0 in 0..width {
+                if !((arr[i0] as f64) >= thr) {
+                    continue;
+                }
+                let x = i0 as i128 - mm_ as i128;
+                let mut v = (a * x + 2 * bv) * x + c;
+                m.charge(CONFIRM, 2)?;
+                m.charge(CONFIRM, f as u64)?;
+                let mut vec_ = vec![0u32; f];
+                if v < 0 {
+                    vec_[0] = 1;
+                    v = -v;
+                }
+                if v == 0 {
+                    m.test(false);
+                    continue;
+                }
+                for j in 1..f {
+                    let p = base[j] as i128;
+                    if v % p == 0 {
+                        v /= p;
+                        vec_[j] += 1;
+                        while v % p == 0 {
+                            v /= p;
+                            vec_[j] += 1;
+                            m.charge(CONFIRM, 1)?;
+                        }
+                    }
+                }
+                let smooth = v == 1;
+                m.test(smooth);
+                if !smooth {
+                    continue;
+                }
+                let u = a * x + bv;
+                if !seen.insert(u.abs()) {
+                    continue;
+                }
+                for &ql in qs_ {
+                    vec_[pos(ql)] += 1;
+                }
+                rels.push((u, vec_));
+                if rels.len() >= need {
+                    break 'combos;
+                }
+            }
+        }
+    }
+    if rels.len() < need {
+        return Ok(None);
+    }
+
+    // 6. linear algebra: dense GF(2) elimination
+    let rows = rels.len();
+    m.charge(LA, ((rows * f * rows + 63) / 64) as u64)?;
+    let cw = (f + 63) / 64;
+    let rw = (rows + 63) / 64;
+    let mut mat: Vec<Vec<u64>> = rels
+        .iter()
+        .map(|(_, v)| {
+            let mut w = vec![0u64; cw];
+            for j in 0..f {
+                if v[j] & 1 == 1 {
+                    w[j / 64] |= 1 << (j % 64);
+                }
+            }
+            w
+        })
+        .collect();
+    let mut comb: Vec<Vec<u64>> = (0..rows)
+        .map(|i| {
+            let mut w = vec![0u64; rw];
+            w[i / 64] |= 1 << (i % 64);
+            w
+        })
+        .collect();
+    let mut used = vec![false; rows];
+    let bit = |w: &Vec<u64>, j: usize| (w[j / 64] >> (j % 64)) & 1 == 1;
+    for col in 0..f {
+        let piv = (0..rows).find(|&r| !used[r] && bit(&mat[r], col));
+        let Some(piv) = piv else { continue };
+        used[piv] = true;
+        let (pm, pc) = (mat[piv].clone(), comb[piv].clone());
+        for r in 0..rows {
+            if r != piv && bit(&mat[r], col) {
+                for w in 0..cw {
+                    mat[r][w] ^= pm[w];
+                }
+                for w in 0..rw {
+                    comb[r][w] ^= pc[w];
+                }
+            }
+        }
+    }
+    let deps: Vec<Vec<u64>> =
+        (0..rows).filter(|&r| mat[r].iter().all(|&w| w == 0)).map(|r| comb[r].clone()).collect();
+
+    // 7. square root, dependency by dependency
+    for dep in &deps {
+        let members: Vec<usize> = (0..rows).filter(|&i| bit(dep, i)).collect();
+        let mut x = U256::ZERO;
+        for (j, &i) in members.iter().enumerate() {
+            let ui = U256::from(rels[i].0.rem_euclid(n_i) as u128);
+            if j > 0 {
+                x = x.mul_mod(ui, n);
+                m.charge(SQRT, 1)?;
+            } else {
+                x = ui;
+            }
+        }
+        let mut ex = vec![0u64; f];
+        for &i in &members {
+            for (j, &e) in rels[i].1.iter().enumerate() {
+                ex[j] += e as u64;
+            }
+        }
+        let mut y: Option<U256> = None;
+        for j in 1..f {
+            if ex[j] != 0 {
+                let yy = cpow_n(base[j] as u64, ex[j] / 2, n, SQRT, m)?;
+                y = Some(match y {
+                    None => yy,
+                    Some(prev) => {
+                        let z = prev.mul_mod(yy, n);
+                        m.charge(SQRT, 1)?;
+                        z
+                    }
+                });
+            }
+        }
+        let y = y.unwrap_or(U256::from(1u64));
+        let (mut aa, mut bb) = ((x + n - y % n) % n, n);
+        let mut steps = 0u64;
+        while bb != U256::ZERO {
+            let t = aa % bb;
+            aa = bb;
+            bb = t;
+            steps += 1;
+        }
+        m.charge(SQRT, steps)?;
+        let ok = aa > U256::from(1u64) && aa < n;
+        m.test(ok);
+        if ok {
+            return Ok(Some(aa));
+        }
+    }
+    Ok(None)
+}

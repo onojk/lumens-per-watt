@@ -442,7 +442,7 @@ def describe(gen):
                     (f", start {s['x0']}" if s.get("x0", 2) != 2 else "")
             parts.append(f"rho [c={s['c']}, gcd every {s['b']}{extra}]")
         elif s["t"] == "qs":
-            parts.append(f"quadratic sieve [k from 1..{s.get('kc', 1)}, B {s.get('bc', 1.5):.2f}·L^½, "
+            parts.append(f"quadratic sieve [k from 1..{s.get('kc', 16)}, B {s.get('bc', 1.5):.2f}·L^½, "
                          f"M {s.get('mc', 4.0):.1f}·B, slack {s.get('tc', 2.0):.2f}·log B]")
         elif s["t"] == "ps":
             parts.append(f"block flash [to N^{s['a']:.2f}, blocks {s['c']:.2f}·N^{s['s']:.2f}]")

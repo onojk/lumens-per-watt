@@ -7,6 +7,8 @@
 //!   then one line per number: "N p q" in decimal (p, q = its prime factors)
 //! For each number one line comes back:
 //!   "<ops> <factor> <tests> <hits> <stage> <k>"   or   "miss <tests> <hits>"
+//! If the genome has a quadratic-sieve stage, both lines end with qs's seven per-phase op
+//! counts (mult fb setup sieve confirm la sqrt), for the parity check.
 //! stage is the winning stage's index; k is the multiplier a square-search win came from,
 //! "-" for any other lamp (read-only instrumentation: it never changes the op count).
 //!
@@ -17,6 +19,8 @@ use ruint::aliases::U256;
 use serde_json::Value;
 use std::io::{self, BufRead, BufWriter, Write};
 
+mod qs;
+
 struct Budget;
 type R = Result<Option<U256>, Budget>;
 
@@ -26,6 +30,7 @@ struct Meter {
     tests: u64,
     hits: u64,
     k: Option<u64>, // instrumentation: the k a square-search win came from
+    phases: [u64; 7], // qs's ops by phase (see qs.rs)
 }
 
 impl Meter {
@@ -37,6 +42,11 @@ impl Meter {
         } else {
             Ok(())
         }
+    }
+    #[inline]
+    fn charge(&mut self, phase: usize, k: u64) -> Result<(), Budget> {
+        self.phases[phase] += k;
+        self.tick(k)
     }
     #[inline]
     fn test(&mut self, hit: bool) {
@@ -450,8 +460,8 @@ struct Win {
     k: Option<u64>,
 }
 
-fn run(genome: &[Value], num: &Num, cap: u64) -> (Option<Win>, u64, u64) {
-    let mut m = Meter { ops: 0, cap, tests: 0, hits: 0, k: None };
+fn run(genome: &[Value], num: &Num, cap: u64) -> (Option<Win>, u64, u64, [u64; 7]) {
+    let mut m = Meter { ops: 0, cap, tests: 0, hits: 0, k: None, phases: [0; 7] };
     for (i, s) in genome.iter().enumerate() {
         let r = match s["t"].as_str().unwrap() {
             "td" => lamp_td(num, s, &mut m),
@@ -459,17 +469,19 @@ fn run(genome: &[Value], num: &Num, cap: u64) -> (Option<Win>, u64, u64) {
             "rho" => lamp_rho(num, s, &mut m),
             "pm1" => lamp_pm1(num, s, &mut m),
             "ps" => lamp_ps(num, s, &mut m),
+            "qs" => qs::lamp_qs(num, s, &mut m),
             other => panic!("unknown lamp {other}"),
         };
         match r {
             Ok(Some(d)) => {
-                return (Some(Win { ops: m.ops, d, stage: i, k: m.k }), m.tests, m.hits)
+                let w = Win { ops: m.ops, d, stage: i, k: m.k };
+                return (Some(w), m.tests, m.hits, m.phases);
             }
             Ok(None) => continue,
-            Err(Budget) => return (None, m.tests, m.hits),
+            Err(Budget) => return (None, m.tests, m.hits, m.phases),
         }
     }
-    (None, m.tests, m.hits)
+    (None, m.tests, m.hits, m.phases)
 }
 
 fn main() {
@@ -478,6 +490,7 @@ fn main() {
     let genome: Value = serde_json::from_str(&lines.next().unwrap().unwrap()).unwrap();
     let genome = genome.as_array().unwrap().clone();
     let cap: u64 = lines.next().unwrap().unwrap().trim().parse().unwrap();
+    let has_qs = genome.iter().any(|s| s["t"] == "qs");
     let out = io::stdout();
     let mut out = BufWriter::new(out.lock());
     for line in lines {
@@ -490,12 +503,18 @@ fn main() {
         let p: U256 = parts[1].parse().unwrap();
         let q: U256 = parts[2].parse().unwrap();
         let num = Num { n, f: n.to::<u128>() as f64, p, q };
-        match run(&genome, &num, cap) {
-            (Some(w), t, h) => {
+        let (res, t, h, ph) = run(&genome, &num, cap);
+        let tail = if has_qs {
+            ph.iter().map(|x| format!(" {x}")).collect::<String>()
+        } else {
+            String::new()
+        };
+        match res {
+            Some(w) => {
                 let k = w.k.map_or("-".to_string(), |k| k.to_string());
-                writeln!(out, "{} {} {t} {h} {} {k}", w.ops, w.d, w.stage).unwrap()
+                writeln!(out, "{} {} {t} {h} {} {k}{tail}", w.ops, w.d, w.stage).unwrap()
             }
-            (None, t, h) => writeln!(out, "miss {t} {h}").unwrap(),
+            None => writeln!(out, "miss {t} {h}{tail}").unwrap(),
         }
     }
 }

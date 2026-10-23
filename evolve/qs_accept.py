@@ -9,17 +9,21 @@
    sum over polynomials of (2M + 1) * sum_{sieved p} r_p / p, and root switches equal
    to sum of r_p per new B.
 
-  python3 qs_accept.py [workers]
+  python3 qs_accept.py [workers] [rust]
 
-Writes qs_accept.json.
+Writes qs_accept.json. With "rust", the measured side (ops, factor, per-phase breakdown)
+comes from lampcore instead, and is checked against the formulas recomputed from the
+Python run's raw inputs for the same number (the two runs are identical by parity.py);
+writes qs_accept_rust.json.
 """
 import json, math, sys
 from multiprocessing import Pool
 import qs
 from lamps import run, LAST, KS_PRIMES
-from fastlamps import semiprimes_pq
+from fastlamps import semiprimes_pq, run_many
 
 WORKERS = int(sys.argv[1]) if len(sys.argv) > 1 else 2
+RUST = len(sys.argv) > 2 and sys.argv[2] == "rust"
 SIZES = [40, 44, 48, 52, 56, 60]
 COUNT = 40
 CAP = 2 ** 29
@@ -132,6 +136,9 @@ def job(args):
         return out
     f, model = formulas(tr, base_of)
     measured = {ph: tr["ops"].get(ph, 0) for ph in PHASES}
+    if RUST:
+        r = run_many(GENOME, [(N, p, q)], CAP, phases=True)[0]
+        ops, d, measured = r[0], r[1], r[4]
     return {"bits": bits, "N": str(N), "ops": ops, "factor_ok": d is not None and N % d == 0 and 1 < d < N,
             "attempts": len(tr["attempts"]), "measured": measured, "formula": f,
             "total_ok": ops is None or sum(measured.values()) == ops, "model": model}
@@ -166,6 +173,7 @@ if __name__ == "__main__":
         for ph in PHASES:
             print(f"    {ph:8s} measured {meas[ph]:>12d}  formula {form[ph]:>12d}")
     out["pass"] = all_ok
-    json.dump(out, open("qs_accept.json", "w"), indent=1)
+    out["core"] = "rust" if RUST else "python"
+    json.dump(out, open("qs_accept_rust.json" if RUST else "qs_accept.json", "w"), indent=1)
     print("ACCEPTANCE", "PASS" if all_ok else "FAIL")
     sys.exit(0 if all_ok else 1)

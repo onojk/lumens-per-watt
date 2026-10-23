@@ -20,7 +20,7 @@ The charges are exactly the ones listed there:
 Tests and hits for the luck meter: one test per candidate confirmed (hit = smooth), one
 per dependency tried (hit = it splits N).
 
-Genes: kc (multipliers 1..kc ranked by ks score), bc (B = bc * exp(0.5 sqrt(ln N ln ln N)),
+Genes: kc (multipliers 1..kc ranked by ks score, default 16), bc (B = bc * exp(0.5 sqrt(ln N ln ln N)),
 default 1.5),
 mc (M = mc * B), tc (threshold = log2(M sqrt(kN/2)) - tc * log2(B)).
 
@@ -75,7 +75,7 @@ def lamp_qs(N, g, m):
         return 2
 
     # 1. multiplier
-    kc = max(1, int(g.get("kc", 1)))
+    kc = max(1, int(g.get("kc", 16)))
     charge("mult", kc * len(KS_PRIMES))
     if tr is not None:
         tr["k_cands"] = kc
