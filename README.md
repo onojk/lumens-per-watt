@@ -55,6 +55,38 @@ python3 ancestry.py N11-0076   # family line of any named genome
 
 Outputs: `evolve.log`, `results.json`, `lineage.jsonl`, `validation.json`. Runs are seeded, so the same commands reproduce the same numbers on any machine.
 
+## At scale: 54–78 bits through the Rust core (Oct 22, 2026)
+
+`lampcore/` is a Rust port of the lamps with operation counting identical to `lamps.py`. `evolve/parity.py` checks this before any big-number result is trusted: 3,312 genome × number pairs (every baseline, every champion of Runs 2–4, 120 random genomes) matched exactly on ops, factor, tests, and hits. The block flash is replayed rather than recomputed: its charges depend only on block sizes, and which block lights up is fixed by where p and q sit; parity confirms the replay against the real polynomial arithmetic.
+
+```
+(cd lampcore && cargo build --release)
+cd evolve && python3 parity.py && python3 scale.py 40 8
+```
+
+Mean cumulative ops per number, log₂, 40 fresh balanced semiprimes per size, cap 2^29 (* = one number not caught):
+
+| Algorithm | 54 | 60 | 66 | 72 | 78 | Trend | Worst at 78 |
+|---|---|---|---|---|---|---|---|
+| Rho | 14.3 | 15.7 | 17.1 | 18.7 | 20.3 | N^0.249 | 2^21.2 |
+| Run 4 luck-33 (rho variant) | 14.3 | 15.8 | 17.5 | 19.0 | 20.2 | N^0.250 | 2^21.4 |
+| Runs 2–3 luck champions (rho variants) | 14.1 | 15.8 | 17.4 | 18.6–18.7 | 20.4–20.5 | N^0.258 | 2^21.3 |
+| Hart ×480 | 14.8 | 17.2 | 18.5 | 20.4 | 22.7 | N^0.314 | 2^25.1 |
+| Run 3 no-luck-22 | 15.3 | 16.6 | 18.5 | 20.5 | 22.8 | N^0.317 | 2^24.8 |
+| Run 4 no-luck-31 | 15.3 | 16.5 | 18.5 | 20.5 | 22.8 | N^0.317 | 2^24.8 |
+| Run 4 no-luck-32 | 15.0 | 16.4 | 18.3 | 20.7 | 22.6* | N^0.317 | 2^25.0 |
+| Run 4 luck-34 (square search + backups) | 14.6 | 16.7 | 18.9 | 20.3 | 22.8 | N^0.334 | 2^24.7 |
+| Lehman | 17.4 | 19.3 | 21.1* | 23.3 | 25.3 | N^0.331 | 2^26.3 |
+| Block flash | 24.6 | 26.3 | 28.1 | over cap | over cap | N^0.292 | — |
+
+What it shows:
+
+- **Rho wins from about 60 bits up, and the gap widens.** At 78 bits it needs 2^20.3 operations on average; the best luck-free bulb needs 2^22.6, about 5× more.
+- **Measured exponents match theory.** Rho variants: 0.249–0.258 (theory 1/4). Hart and every evolved square-search champion: 0.31–0.33 (Hart's heuristic 1/3). Lehman: 0.33 (proven 1/3). The block flash trends at 0.29 and is still falling toward its 1/4, but its ballast puts it over the cap past 66 bits.
+- **Run 3's "luck-free beats rho" was a small-number effect.** The Hart family has a smaller constant but a larger exponent; the lines cross between 54 and 60 bits.
+- **Evolution at 32–48 bits tuned constants, never exponents.** Every champion sits on its parent method's exponent line. Within this deck, nothing grew a new exponent.
+- The two misses are real: Lehman's window constant here is tighter than Lehman's theorem needs, and no-luck-32's stages stop just short of √N.
+
 ## Run 4: luck-by-design cards and the hit-rate meter (Oct 22, 2026)
 
 Same cumulative scoreboard as Run 3, fresh seeds (31–34), with new cards and a new meter column. Outputs in `evolve/run4/`.
