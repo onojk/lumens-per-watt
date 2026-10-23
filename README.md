@@ -16,7 +16,7 @@ Growing factoring algorithms by evolution, and measuring them by **lumens per wa
 - **"Luck by design" only pays when guessing is cheaper than trying.** Making each test luckier cost more than it saved, so evolution mostly ignored those parts.
 - **Size changes everything.** To test bigger numbers, the core was rebuilt in Rust and proven to give identical answers to the Python version, case for case. On bigger numbers the winner flipped: the square searches that led at small sizes lose clearly to rho from about 60 bits up. At small sizes fixed overhead decides the race; at large sizes the growth rate does. Every growth rate we measured matched what the mathematics predicts.
 
-**The honest bottom line.** Evolution has become good at fine-tuning known algorithms, but nothing it has grown beats the known speed limits of its parts. That's a clean, reproducible measurement of where those limits sit, and the tools are now strong enough to keep pushing.
+**The honest bottom line.** Evolution has become good at fine-tuning known algorithms. Scored on big numbers, it found a combination (p − 1 before rho) that beats plain rho by 1.3–1.6×, but nothing it has grown beats the known speed limits of its parts. That's a clean, reproducible measurement of where those limits sit, and the tools are now strong enough to keep pushing.
 
 The sections below have the details: the parts, the scoring rules, every run's results, and how to reproduce them.
 
@@ -72,6 +72,28 @@ python3 ancestry.py N11-0076   # family line of any named genome
 ```
 
 Outputs: `evolve.log`, `results.json`, `lineage.jsonl`, `validation.json`. Runs are seeded, so the same commands reproduce the same numbers on any machine.
+
+## Run 5: evolution scored at scale (Oct 23, 2026)
+
+Fitness measured through `lampcore` at 52, 58, and 64 bits (6 fresh numbers each per generation), gate at 68 bits, fine deck, seeds 41–44, cap 2^23. Outputs in `evolve/run5/`; script `evolve/evolve_scale.py`.
+
+Champions rechecked on 80 fresh numbers per size (mean / worst ops, log₂):
+
+| Algorithm | 64 bits | 72 bits | 78 bits |
+|---|---|---|---|
+| Rho | 16.80 / 18.52 | 18.99 / 20.21 | 20.41 / 21.57 |
+| **Run 5 luck-44 (L44-0272: p − 1, then rho)** | **16.15** / 18.24 | **18.61** / 20.39 | **19.73** / 21.54 |
+| Run 5 luck-43 (rho variant) | 16.88 / 18.30 | 18.93 / 20.27 | 20.55 / 22.12 |
+| Run 5 no-luck-41 (×480 square search) | 18.08 / 20.70 | 20.92 / 23.37 | 22.71 / 24.99 |
+| Run 5 no-luck-42 (square search) | 20.28 / 23.27 | 22.81 / 25.62 | 25.11 / 28.21 |
+
+What it shows:
+
+- **The first evolved bulb to beat plain rho at scale.** L44-0272 runs p − 1 (bound N^0.21) before rho and needs 1.3–1.6× fewer operations on average at 64–78 bits. The cheap p − 1 stage catches secrets whose p − 1 is made of small factors; at 64 bits the median drops from 2^16.4 to 2^14.9.
+- **A better constant, not a better exponent.** Its growth from 64 to 78 bits is about N^0.256, the same as rho's, and its worst case is unchanged. Running p − 1 before rho is also established practice: evolution rediscovered it.
+- **The first time luck by design paid.** The p − 1 stage is a cheap bet that wins often enough to save watts overall, which is the rule from Run 4: guessing has to cost less than trying.
+- **The scale lesson holds.** Scored at 52–64 bits, the no-luck champions still sit on the N^(1/3) line.
+- **Two baseline notes.** The block-flash baseline logs "misses 1" here only because it is over budget: it needs about 2^27 operations at 64 bits, far above this run's 2^23 cap, so it isn't a correctness miss. Lehman is clean at 52–64 bits, but that doesn't cover its known 66-bit miss, which is a window-rounding issue fixed in Stage 1 (see `PLAN.md`).
 
 ## At scale: 54–78 bits through the Rust core (Oct 22, 2026)
 
