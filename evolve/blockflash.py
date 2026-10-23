@@ -88,6 +88,11 @@ def lamp_ps(N, g, m):
     L = int(N ** g["a"]) + 1
     B = max(2, int(g["c"] * N ** g["s"]))
     nblocks = (L + B - 1) // B
+    # The two product trees charge at least one op per merge. If even that can't fit in the
+    # budget the run would miss anyway (before any test), so stop before allocating B leaves.
+    if m.ops + (B - 1) + (nblocks - 1) > m.cap:
+        from lamps import Budget
+        raise Budget()
     f = product_tree([[j % N, 1] for j in range(1, B + 1)], N, m)[-1][0]
     vals = multipoint(f, [i * B for i in range(nblocks)], N, m)
     for i, v in enumerate(vals):

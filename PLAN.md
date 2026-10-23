@@ -106,8 +106,37 @@ numbers, the parity count, and the old-vs-new table.
   parity.py. Write its cost model into NOTES.md before any scored run.
 - **Run 6** (the plan's original Stage 5): island model (4 islands, top-2 migration
   every 5 generations, ring, 2-slot diversity reserve) with qs in the deck,
-  evolve/run6/, seeds 51-54.
-  Prerequisites: qs chainable and in both decks, with mutation genes and rand_stage.
-  ACCEPT compares against L44-0272 and plain rho, and reports whether evolution kept
-  or dropped qs.
+  evolve/run6/, seeds 51-54 (51-52 no-luck, 53-54 luck), 4 islands x 16 genomes per run.
+  - Prerequisites (done): qs chainable and in both decks (no-luck: td, sq, ps, qs;
+    luck: td, sq, ps, rho, pm1, qs; fine deck on); rand_stage and mutation ranges
+    kc 1..32 (int), bc 0.8..3.0, mc 1..12, tc 1.0..3.5; parity on random genomes with qs;
+    qs refuses N >= 2^100.
+  - Sizes: train at 66, 72, 78 bits, 6 fresh numbers per size per generation (as Run 5);
+    score = cumulative, top two sizes (72 and 78), as in Run 3+. Validation gate at
+    84 bits, 12 fixed numbers. These sizes let the score see qs's exponent: qs crosses
+    rho near 72 bits on the Stage 2 numbers.
+  - Caps: training 2^26 (score sizes 66/72/78); the 84-bit gate and the final ACCEPT
+    2^28. These are Run 6's own caps; Stage 6 still reconciles the other four.
+    Worst cases, from 200 fresh numbers per size (semiprimes_pq(bits, 200, 1100000 + bits))
+    under a 2^34 cap: at 84 bits rho 2^23.31, L44-0272 2^23.21, qs default 2^21.39,
+    Hart x480 2^27.26; at 78 bits 2^21.54, 2^22.17, 2^20.63, 2^25.67.
+    - Training cap is a time setting, not a measurement: a miss is cheap (scoring stops
+      at the first top-size miss), and a slow loser scores as a loser whether it misses
+      or finishes. Rho and L44-0272's worst at 84 bits (~2^23.3) is 6x under 2^26, and
+      every 78-bit worst above, Hart's included, fits under it.
+    - 2^28 where precise numbers matter (gate, ACCEPT): the smallest power of two that
+      keeps every worst case above a scored number, Hart's 84-bit 2^27.26 included.
+  - Memory guards (prerequisite for these sizes): block flash stops before allocating
+    product trees whose minimum charge already exceeds the budget; p - 1 stops before
+    sieving when a lower bound on pi(B) already exceeds it (both cores); lampcore's p - 1
+    sieve is bit-packed and its prime-power loop uses u128 (u64 wrapped past 2^32);
+    Python's p - 1 sieves bounds past 2^26 a segment at a time. Parity covers each.
+  - ACCEPT: compare the run champions against qs-default ({kc 16, bc 1.5, mc 4.0,
+    tc 2.0}), L44-0272, and rho on the Stage 2 numbers at 72 and 78 bits
+    (semiprimes_pq(bits, 80, 990000 + bits)) plus 80 fresh 84-bit numbers, cap 2^28.
+    Per size, report log2(mean ops) and the worst case, each with a 95% bootstrap
+    interval (revalidate.py's: random.Random(2026) per cell, 10,000 resamples, tails at
+    index 250/9749; for the worst case, the max of each resample). Note qs already beats
+    L44-0272 on worst case at 78 bits (2^20.41 vs 2^22.04). Report whether evolution
+    kept, tuned, or dropped qs.
 - **Stage 6:** reconcile the four caps and re-score with scale.py.

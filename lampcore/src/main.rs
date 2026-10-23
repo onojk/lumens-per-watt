@@ -309,15 +309,17 @@ fn lamp_pm1(num: &Num, g: &Value, m: &mut Meter) -> R {
     if bnd > (1 << 26) && (m.ops as f64 + lower_pi) > m.cap as f64 {
         return Err(Budget);
     }
-    let mut sieve = vec![true; bnd as usize + 1];
-    sieve[0] = false;
-    sieve[1] = false;
+    // Bit-packed sieve (one bit per number): a bound near 2^31 takes 256 MB, not 2 GB.
+    let words = bnd as usize / 64 + 1;
+    let mut composite = vec![0u64; words];
+    composite[0] |= 0b11; // 0 and 1
+    let is_comp = |c: &Vec<u64>, i: usize| (c[i / 64] >> (i % 64)) & 1 == 1;
     let mut i = 2usize;
     while i * i <= bnd as usize {
-        if sieve[i] {
+        if !is_comp(&composite, i) {
             let mut j = i * i;
             while j <= bnd as usize {
-                sieve[j] = false;
+                composite[j / 64] |= 1 << (j % 64);
                 j += i;
             }
         }
@@ -326,11 +328,12 @@ fn lamp_pm1(num: &Num, g: &Value, m: &mut Meter) -> R {
     let n = num.n;
     let mut a = U256::from(2u64);
     for p in 2..=bnd {
-        if !sieve[p as usize] {
+        if is_comp(&composite, p as usize) {
             continue;
         }
         let mut pk = p;
-        while pk * p <= bnd {
+        while (pk as u128) * (p as u128) <= bnd as u128 {
+            // u128: for a bound past 2^32, p * p overflows u64 (Python's ints don't)
             pk *= p;
         }
         a = a.pow_mod(U256::from(pk), n);
@@ -414,6 +417,11 @@ fn lamp_ps(num: &Num, g: &Value, m: &mut Meter) -> R {
     let l = (num.f.powf(gf(g, "a")) as u64) + 1;
     let b = ((gf(g, "c") * num.f.powf(gf(g, "s"))) as u64).max(2);
     let nblocks = (l + b - 1) / b;
+    // Same guard as lamps.py: the two product trees charge at least one op per merge, so if
+    // that can't fit, the run misses before any test; stop before allocating b leaves.
+    if m.ops + (b - 1) + (nblocks - 1) > m.cap {
+        return Err(Budget);
+    }
     let f_len = product_tree_len(b as usize, m)?.last().unwrap()[0];
     let tree = product_tree_len(nblocks as usize, m)?;
     let mut rems = vec![pmod_len(f_len, tree.last().unwrap()[0], m)?];

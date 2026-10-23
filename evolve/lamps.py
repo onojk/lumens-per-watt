@@ -184,11 +184,32 @@ def primes_upto(n):
         _PR = (n, [i for i in range(n + 1) if s[i]])
     return [p for p in _PR[1] if p <= n]
 
+def primes_segmented(n, seg=1 << 22):
+    """Primes up to n in order, sieved a segment at a time (for bounds too big to sieve whole)."""
+    small = primes_upto(math.isqrt(n))
+    lo = 2
+    while lo <= n:
+        hi = min(lo + seg - 1, n)
+        s = bytearray([1]) * (hi - lo + 1)
+        for p in small:
+            if p * p > hi:
+                break
+            start = max(p * p, (lo + p - 1) // p * p)
+            s[start - lo::p] = bytearray(len(s[start - lo::p]))
+        for i, v in enumerate(s):
+            if v:
+                yield lo + i
+        lo = hi + 1
+
 def lamp_pm1(N, g, m):
     """Pollard p-1 with bound N^b."""
     B = max(10, int(N ** g["b"]))
+    # Same guard as lampcore: each prime ticks at least once, so if a lower bound on pi(B)
+    # can't fit in the budget the run would miss anyway; stop before sieving a huge range.
+    if B > (1 << 26) and m.ops + B / math.log(B) > m.cap:
+        raise Budget()
     a = 2
-    for p in primes_upto(B):
+    for p in (primes_upto(B) if B <= (1 << 26) else primes_segmented(B)):
         pk = p
         while pk * p <= B:
             pk *= p
@@ -220,12 +241,17 @@ def rand_stage(kind, rng):
             st["d"] = rng.choice([2, 2, 4, 6, 8])
             st["x0"] = rng.randint(2, 9)
         return st
+    if kind == "qs":
+        return {"t": "qs", "kc": rng.randint(*QS_RANGES["kc"]),
+                **{key: rng.uniform(*QS_RANGES[key]) for key in ("bc", "mc", "tc")}}
     if kind == "ps":
         return {"t": "ps", "a": rng.uniform(0.3, 0.55), "s": rng.uniform(0.1, 0.4),
                 "c": rng.uniform(0.25, 4.0)}
     return {"t": "pm1", "b": rng.uniform(0.05, 0.4)}
 
 FINE_DECK = False          # Run 4 turns on the luck-by-design cards
+QS_RANGES = {"kc": (1, 32), "bc": (0.8, 3.0), "mc": (1.0, 12.0), "tc": (1.0, 3.5)}
+QS_SIGMA = {"bc": 0.15, "mc": 0.75, "tc": 0.15}
 SQ_MODES = ["one", "seq", "seqm", "smooth"]
 
 def use_fine_deck():
@@ -247,7 +273,13 @@ def mutate(gen, deck, rng):
             if key == "t" or rng.random() > 0.5:
                 continue
             v = s[key]
-            if isinstance(v, bool):
+            if s["t"] == "qs":                 # its own ranges; other stages untouched
+                lo, hi = QS_RANGES[key]
+                if key == "kc":
+                    s[key] = min(hi, max(lo, v + rng.choice([-1, 1]) * max(1, v // 4)))
+                else:
+                    s[key] = min(hi, max(lo, v + rng.gauss(0, QS_SIGMA[key])))
+            elif isinstance(v, bool):
                 s[key] = not v
             elif isinstance(v, float):
                 lo, hi = (0.1, 6.0) if key == "c" else (0.0, 0.55)

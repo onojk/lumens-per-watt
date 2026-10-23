@@ -24,7 +24,8 @@ Genes: kc (multipliers 1..kc ranked by ks score, default 16), bc (B = bc * exp(0
 default 1.5),
 mc (M = mc * B), tc (threshold = log2(M sqrt(kN/2)) - tc * log2(B)).
 
-Set qs.TRACE = {} before a run to record realized counts for the accounting test.
+Set qs.TRACE = {} before a run to record realized counts for the accounting test; with more
+than one qs stage in a genome, the counts add up over the run, as lampcore's do.
 """
 import math
 from itertools import combinations
@@ -43,9 +44,8 @@ def lamp_qs(N, g, m):
     import numpy as np
     from lamps import ks_score, KS_PRIMES
     tr = TRACE
-    if tr is not None:
-        tr.clear()
-        tr.update(ops={}, k_cands=0, attempts=[])
+    if tr is not None:                         # accumulates over every qs stage of the run
+        tr.setdefault("ops", {}); tr.setdefault("k_cands", 0); tr.setdefault("attempts", [])
     def charge(phase, n):
         if tr is not None:
             tr["ops"][phase] = tr["ops"].get(phase, 0) + n
@@ -73,12 +73,14 @@ def lamp_qs(N, g, m):
 
     if N % 2 == 0:
         return 2
+    if N >= 1 << 100:                          # lampcore's limit (i128 arithmetic), kept here too
+        raise ValueError(f"qs supports N < 2^100, got a {N.bit_length()}-bit N")
 
     # 1. multiplier
     kc = max(1, int(g.get("kc", 16)))
     charge("mult", kc * len(KS_PRIMES))
     if tr is not None:
-        tr["k_cands"] = kc
+        tr["k_cands"] += kc
     def attempt(k, at):
         kN = k * N
 

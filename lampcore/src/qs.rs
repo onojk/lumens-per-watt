@@ -165,7 +165,11 @@ pub fn lamp_qs(num: &Num, g: &Value, m: &mut Meter) -> R {
     if n % U256::from(2u64) == U256::ZERO {
         return Ok(Some(U256::from(2u64)));
     }
-    assert!(n < U256::from(1u128 << 100), "qs: N too large for i128 arithmetic");
+    if n >= U256::from(1u128 << 100) {
+        // kN-sized values live in i128: refuse rather than risk a silent wrap
+        eprintln!("lampcore: qs supports N < 2^100, got a {}-bit N", n.bit_len());
+        std::process::exit(2);
+    }
     // 1. multiplier
     let kc = (gene(g, "kc", 16.0) as u64).max(1);
     m.charge(MULT, kc * KS_PRIMES.len() as u64)?;
