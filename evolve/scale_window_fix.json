@@ -1,0 +1,615 @@
+{
+ "what": "Stage 1 window fix: old (int(width)) vs new (inclusive s+f+width) window, scale.py's set (semiprimes_pq(bits, 40, 880000+bits)), cap 2^29, coverage rule off. mean_log2 = log2(mean ops) over caught numbers; falls/rises = numbers whose ops fell/rose; drop_rule_violations must be 0.",
+ "sizes": [
+  54,
+  60,
+  66,
+  72,
+  78
+ ],
+ "results": {
+  "hart x480": {
+   "54": {
+    "old": {
+     "mean_log2": 14.842598334419973,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 14.842598334419973,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 0,
+    "drop_rule_violations": 0
+   },
+   "60": {
+    "old": {
+     "mean_log2": 17.240867479635543,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 17.240867479635543,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 0,
+    "drop_rule_violations": 0
+   },
+   "66": {
+    "old": {
+     "mean_log2": 18.51630926267768,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 18.51630926267768,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 0,
+    "drop_rule_violations": 0
+   },
+   "72": {
+    "old": {
+     "mean_log2": 20.413857241442972,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 20.413857241442972,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 0,
+    "drop_rule_violations": 0
+   },
+   "78": {
+    "old": {
+     "mean_log2": 22.664298082275504,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 22.664298082275504,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 0,
+    "drop_rule_violations": 0
+   }
+  },
+  "lehman": {
+   "54": {
+    "old": {
+     "mean_log2": 17.369111876580618,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 17.370448175005215,
+     "misses": 0
+    },
+    "falls": 1,
+    "rises": 39,
+    "drop_rule_violations": 0
+   },
+   "60": {
+    "old": {
+     "mean_log2": 19.313162544723536,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 19.29598058742433,
+     "misses": 0
+    },
+    "falls": 1,
+    "rises": 38,
+    "drop_rule_violations": 0
+   },
+   "66": {
+    "old": {
+     "mean_log2": 21.146158556067373,
+     "misses": 1
+    },
+    "new": {
+     "mean_log2": 21.171039095177065,
+     "misses": 0
+    },
+    "falls": 1,
+    "rises": 39,
+    "drop_rule_violations": 0
+   },
+   "72": {
+    "old": {
+     "mean_log2": 23.30678038373839,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 23.258925541498318,
+     "misses": 0
+    },
+    "falls": 2,
+    "rises": 38,
+    "drop_rule_violations": 0
+   },
+   "78": {
+    "old": {
+     "mean_log2": 25.309473409993856,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 25.305672716462258,
+     "misses": 0
+    },
+    "falls": 1,
+    "rises": 39,
+    "drop_rule_violations": 0
+   }
+  },
+  "run 2 no-luck-11": {
+   "54": {
+    "old": {
+     "mean_log2": 15.75142310592291,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 15.752615849396806,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 40,
+    "drop_rule_violations": 0
+   },
+   "60": {
+    "old": {
+     "mean_log2": 18.211983444391585,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 18.212592326087705,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 40,
+    "drop_rule_violations": 0
+   },
+   "66": {
+    "old": {
+     "mean_log2": 19.523110938081754,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 19.523793560708743,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 40,
+    "drop_rule_violations": 0
+   },
+   "72": {
+    "old": {
+     "mean_log2": 21.321879567446455,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 21.32245253288239,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 40,
+    "drop_rule_violations": 0
+   },
+   "78": {
+    "old": {
+     "mean_log2": 23.3901935156263,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 23.39059072251683,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 40,
+    "drop_rule_violations": 0
+   }
+  },
+  "run 2 no-luck-12": {
+   "54": {
+    "old": {
+     "mean_log2": 14.700617172155663,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 14.70129021530137,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 40,
+    "drop_rule_violations": 0
+   },
+   "60": {
+    "old": {
+     "mean_log2": 18.11763625352214,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 18.117748224748517,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 40,
+    "drop_rule_violations": 0
+   },
+   "66": {
+    "old": {
+     "mean_log2": 19.190750649662363,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 19.190838464781926,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 40,
+    "drop_rule_violations": 0
+   },
+   "72": {
+    "old": {
+     "mean_log2": 20.770330363881083,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 20.770379769999643,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 40,
+    "drop_rule_violations": 0
+   },
+   "78": {
+    "old": {
+     "mean_log2": 23.150924496286812,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 23.150939951366492,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 40,
+    "drop_rule_violations": 0
+   }
+  },
+  "run 3 no-luck-21": {
+   "54": {
+    "old": {
+     "mean_log2": 15.329861143142068,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 15.47040467706564,
+     "misses": 0
+    },
+    "falls": 2,
+    "rises": 38,
+    "drop_rule_violations": 0
+   },
+   "60": {
+    "old": {
+     "mean_log2": 16.747858283265092,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 16.92500816837503,
+     "misses": 0
+    },
+    "falls": 2,
+    "rises": 37,
+    "drop_rule_violations": 0
+   },
+   "66": {
+    "old": {
+     "mean_log2": 18.933798261855358,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 19.086132790306596,
+     "misses": 0
+    },
+    "falls": 3,
+    "rises": 37,
+    "drop_rule_violations": 0
+   },
+   "72": {
+    "old": {
+     "mean_log2": 20.863257752625145,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 21.04495244418725,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 40,
+    "drop_rule_violations": 0
+   },
+   "78": {
+    "old": {
+     "mean_log2": 23.29651059935547,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 23.457543439951557,
+     "misses": 0
+    },
+    "falls": 2,
+    "rises": 38,
+    "drop_rule_violations": 0
+   }
+  },
+  "run 3 no-luck-22": {
+   "54": {
+    "old": {
+     "mean_log2": 15.32206897619609,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 15.32366965406694,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 40,
+    "drop_rule_violations": 0
+   },
+   "60": {
+    "old": {
+     "mean_log2": 16.551678225185412,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 16.55360154720675,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 40,
+    "drop_rule_violations": 0
+   },
+   "66": {
+    "old": {
+     "mean_log2": 18.46496895107102,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 18.466371853114858,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 40,
+    "drop_rule_violations": 0
+   },
+   "72": {
+    "old": {
+     "mean_log2": 20.532427794549154,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 20.53342669662575,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 40,
+    "drop_rule_violations": 0
+   },
+   "78": {
+    "old": {
+     "mean_log2": 22.839423356433066,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 22.84000837401126,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 40,
+    "drop_rule_violations": 0
+   }
+  },
+  "run 4 luck-34": {
+   "54": {
+    "old": {
+     "mean_log2": 14.583140076813836,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 14.64425484826007,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 40,
+    "drop_rule_violations": 0
+   },
+   "60": {
+    "old": {
+     "mean_log2": 16.727426264424373,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 16.768438935087882,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 40,
+    "drop_rule_violations": 0
+   },
+   "66": {
+    "old": {
+     "mean_log2": 18.925788968856637,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 18.86591831629786,
+     "misses": 0
+    },
+    "falls": 1,
+    "rises": 38,
+    "drop_rule_violations": 0
+   },
+   "72": {
+    "old": {
+     "mean_log2": 20.314351979933196,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 20.350357495981292,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 40,
+    "drop_rule_violations": 0
+   },
+   "78": {
+    "old": {
+     "mean_log2": 22.795177114169444,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 22.815129130330018,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 40,
+    "drop_rule_violations": 0
+   }
+  },
+  "run 4 no-luck-31": {
+   "54": {
+    "old": {
+     "mean_log2": 15.319726799520394,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 15.319726799520394,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 0,
+    "drop_rule_violations": 0
+   },
+   "60": {
+    "old": {
+     "mean_log2": 16.548594663685925,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 16.548595792473584,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 3,
+    "drop_rule_violations": 0
+   },
+   "66": {
+    "old": {
+     "mean_log2": 18.46256088328913,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 18.462564777271183,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 30,
+    "drop_rule_violations": 0
+   },
+   "72": {
+    "old": {
+     "mean_log2": 20.530694538488955,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 20.530699086194556,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 40,
+    "drop_rule_violations": 0
+   },
+   "78": {
+    "old": {
+     "mean_log2": 22.83837382699713,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 22.838376900116067,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 40,
+    "drop_rule_violations": 0
+   }
+  },
+  "run 4 no-luck-32": {
+   "54": {
+    "old": {
+     "mean_log2": 15.015817922735105,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 15.015823366158662,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 5,
+    "drop_rule_violations": 0
+   },
+   "60": {
+    "old": {
+     "mean_log2": 16.413986095876474,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 16.41399270480983,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 16,
+    "drop_rule_violations": 0
+   },
+   "66": {
+    "old": {
+     "mean_log2": 18.302221888026637,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 18.302227020820595,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 35,
+    "drop_rule_violations": 0
+   },
+   "72": {
+    "old": {
+     "mean_log2": 20.72553713607629,
+     "misses": 0
+    },
+    "new": {
+     "mean_log2": 20.725538363396883,
+     "misses": 0
+    },
+    "falls": 0,
+    "rises": 36,
+    "drop_rule_violations": 0
+   },
+   "78": {
+    "old": {
+     "mean_log2": 22.587617156467225,
+     "misses": 1
+    },
+    "new": {
+     "mean_log2": 22.58761774336106,
+     "misses": 1
+    },
+    "falls": 0,
+    "rises": 39,
+    "drop_rule_violations": 0
+   }
+  }
+ }
+}

@@ -127,6 +127,29 @@ What it shows:
 - **Evolution at 32–48 bits tuned constants, never exponents.** Every champion sits on its parent method's exponent line. Within this deck, nothing grew a new exponent.
 - The two misses are real: Lehman's window constant here is tighter than Lehman's theorem needs, and no-luck-32's stages stop just short of √N.
 
+## Re-scored after the square-search window fix (Stage 1, Oct 23, 2026)
+
+The Oct 22 table above stays as it was; this is the same set re-run (`scale.py`'s numbers, 40 per size, cap 2^29) after Stage 1 of `PLAN.md`. Every square-search genome, old → new mean cumulative ops per number, log₂ (* = one number not caught):
+
+| Algorithm | 54 | 60 | 66 | 72 | 78 | Trend | Worst at 78 |
+|---|---|---|---|---|---|---|---|
+| Lehman | 17.37 → 17.37 | 19.31 → 19.30 | 21.15* → **21.17** | 23.31 → 23.26 | 25.31 → 25.31 | N^0.331 | 2^26.3 |
+| Run 3 no-luck-21 | 15.33 → 15.47 | 16.75 → 16.93 | 18.93 → 19.09 | 20.86 → 21.04 | 23.30 → 23.46 | N^0.335 | 2^25.2 |
+| Run 3 no-luck-22 | 15.32 | 16.55 | 18.46 → 18.47 | 20.53 | 22.84 | N^0.317 | 2^24.8 |
+| Run 4 luck-34 | 14.58 → 14.64 | 16.73 → 16.77 | 18.93 → 18.87 | 20.31 → 20.35 | 22.80 → 22.82 | N^0.332 | 2^24.7 |
+| Run 4 no-luck-32 | 15.02 | 16.41 | 18.30 | 20.73 | 22.59* | N^0.317 | 2^25.0 |
+| Hart ×480, Run 2 no-luck-11/12, Run 4 no-luck-31 | unchanged | | | | | | |
+
+What changed:
+
+- **Lehman's 66-bit miss was the window, not the constant.** On N = 23736149549216675201 (p = 4638920653), Lehman's theorem catches it at k = 59881 on the second x of the window. The theory width there is N^(1/6)/(4√k) = 1.73, but the window was `int(1.73)` = 1 wide, so only the first x was tested. The search used up every multiplier and stopped after 4,426,055 tests, far below the cap, with no factor. The 0.25 constant was right all along; the note above blaming it is wrong.
+- **The fix.** The window now ends at √(kN) + width, inclusive. √(kN) is taken as s + f from the exact integer square root s, never from a float square root of kN, which loses about 10 bits past 60-bit N. Lehman now catches the number in exactly 1,643,747 operations. Windows only ever get wider, so a mean can rise (more x tested per k) or fall (caught at an earlier k).
+- **Every drop has a reason.** Each number whose cost fell was caught either by the same square-search stage at an earlier multiplier, or by a square-search stage where a later stage used to catch it (16 numbers, counting Lehman's former miss; no exceptions). Trends move by at most 0.002, and no conclusion of the Oct 22 table changes.
+- **Checks.** The Rust core reports which stage won and, for a square-search win, its k. `parity.py 120 6` matches 3,312 pairs on ops, factor, tests, hits, stage, and k. Turning the instrumentation on changes no op count (4,448 pairs compared).
+- **Coverage rule.** A run champion whose stages stop short of √N is now scored with a fallback tail: trial division to √N for a no-luck deck, rho for a luck deck. The tail is charged like any stage and flagged (`fallback` in `lineage.jsonl` and in `scale_coverage.json`). It changed no number in this table: no-luck-32's 78-bit miss (p = 2^38.3, above both its block flash's and its trial division's reach) is still over budget, because its block-flash stage uses up the 2^29 cap by itself before the tail is reached. Trial division to √N would need about 2^37.3 operations there.
+
+Data: `evolve/scale_window_fix.json` (old vs new, coverage rule off) and `evolve/scale_coverage.json` (rule on).
+
 ## Run 4: luck-by-design cards and the hit-rate meter (Oct 22, 2026)
 
 Same cumulative scoreboard as Run 3, fresh seeds (31–34), with new cards and a new meter column. Outputs in `evolve/run4/`.

@@ -1,8 +1,8 @@
 """Parity: the Rust lamp core must match lamps.py exactly.
 
 For every genome x number pair, both must agree on ops (or both miss), the factor found,
-and the test and hit counts. Genomes: every baseline, every champion of Runs 2-4, and
-random fine-deck genomes. Numbers: 28-48 bits.
+the test and hit counts, the winning stage, and a square-search win's k. Genomes: every
+baseline, every champion of Runs 2-4, and random fine-deck genomes. Numbers: 28-48 bits.
 
   python3 parity.py [random_genomes] [numbers_per_size]
 """
@@ -37,10 +37,10 @@ if __name__ == "__main__":
     for name, g in genomes().items():
         for b in sizes:
             cap = min(cap_for(b), 2 ** 22)
-            fast = run_many(g, nums[b], cap)
+            fast = run_many(g, nums[b], cap, inst=True)
             for (N, p, q), f in zip(nums[b], fast):
                 ops, d = run(g, N, cap)
-                slow = (ops, d, LAST["tests"], LAST["hits"])
+                slow = (ops, d, LAST["tests"], LAST["hits"], LAST["stage"], LAST["k"])
                 checked += 1
                 if slow != f:
                     mismatches += 1

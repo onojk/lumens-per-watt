@@ -6,7 +6,9 @@
 //!   line 2: op cap (a run that would exceed it is a miss)
 //!   then one line per number: "N p q" in decimal (p, q = its prime factors)
 //! For each number one line comes back:
-//!   "<ops> <factor> <tests> <hits>"   or   "miss <tests> <hits>"
+//!   "<ops> <factor> <tests> <hits> <stage> <k>"   or   "miss <tests> <hits>"
+//! stage is the winning stage's index; k is the multiplier a square-search win came from,
+//! "-" for any other lamp (read-only instrumentation: it never changes the op count).
 //!
 //! p and q are used only by the block-flash replay (see lamp_ps). Every other lamp
 //! computes on N alone.
@@ -23,6 +25,7 @@ struct Meter {
     cap: u64,
     tests: u64,
     hits: u64,
+    k: Option<u64>, // instrumentation: the k a square-search win came from
 }
 
 impl Meter {
@@ -137,12 +140,14 @@ fn sq_one_k(num: &Num, g: &Value, k: u64, m: &mut Meter) -> R {
     if g["ksq"].as_bool().unwrap() {
         kn *= U256::from(4u64);
     }
-    let mut x0 = isqrt(kn);
-    if x0 * x0 < kn {
-        x0 += U256::from(1u64);
-    }
-    let w = (gf(g, "c") * num.f.powf(gf(g, "w")) / (k as f64).sqrt()) as u64;
-    let w = w.max(1);
+    // Same window as lamps.py: x0 ..= s + floor(f + width), with sqrt(kN) ~ s + f.
+    let s = isqrt(kn);
+    let exact = s * s == kn;
+    let x0 = if exact { s } else { s + U256::from(1u64) };
+    let f = (kn - s * s).to::<u128>() as f64 / (s * U256::from(2u64)).to::<u128>() as f64;
+    let width = gf(g, "c") * num.f.powf(gf(g, "w")) / (k as f64).sqrt();
+    let steps = (f + width).floor() as u64;
+    let w = (if exact { steps + 1 } else { steps }).max(1);
     for i in 0..w {
         m.tick(1)?;
         let x = x0 + U256::from(i);
@@ -153,6 +158,7 @@ fn sq_one_k(num: &Num, g: &Value, k: u64, m: &mut Meter) -> R {
         if ok {
             let d = (x - y).gcd(num.n);
             if d > U256::from(1u64) && d < num.n {
+                m.k = Some(k);
                 return Ok(Some(d));
             }
         }
@@ -437,9 +443,16 @@ fn lamp_ps(num: &Num, g: &Value, m: &mut Meter) -> R {
 
 // ---- driver ---------------------------------------------------------------------------
 
-fn run(genome: &[Value], num: &Num, cap: u64) -> (Option<(u64, U256)>, u64, u64) {
-    let mut m = Meter { ops: 0, cap, tests: 0, hits: 0 };
-    for s in genome {
+struct Win {
+    ops: u64,
+    d: U256,
+    stage: usize,
+    k: Option<u64>,
+}
+
+fn run(genome: &[Value], num: &Num, cap: u64) -> (Option<Win>, u64, u64) {
+    let mut m = Meter { ops: 0, cap, tests: 0, hits: 0, k: None };
+    for (i, s) in genome.iter().enumerate() {
         let r = match s["t"].as_str().unwrap() {
             "td" => lamp_td(num, s, &mut m),
             "sq" => lamp_sq(num, s, &mut m),
@@ -449,7 +462,9 @@ fn run(genome: &[Value], num: &Num, cap: u64) -> (Option<(u64, U256)>, u64, u64)
             other => panic!("unknown lamp {other}"),
         };
         match r {
-            Ok(Some(d)) => return (Some((m.ops, d)), m.tests, m.hits),
+            Ok(Some(d)) => {
+                return (Some(Win { ops: m.ops, d, stage: i, k: m.k }), m.tests, m.hits)
+            }
             Ok(None) => continue,
             Err(Budget) => return (None, m.tests, m.hits),
         }
@@ -476,7 +491,10 @@ fn main() {
         let q: U256 = parts[2].parse().unwrap();
         let num = Num { n, f: n.to::<u128>() as f64, p, q };
         match run(&genome, &num, cap) {
-            (Some((ops, d)), t, h) => writeln!(out, "{ops} {d} {t} {h}").unwrap(),
+            (Some(w), t, h) => {
+                let k = w.k.map_or("-".to_string(), |k| k.to_string());
+                writeln!(out, "{} {} {t} {h} {} {k}", w.ops, w.d, w.stage).unwrap()
+            }
             (None, t, h) => writeln!(out, "miss {t} {h}").unwrap(),
         }
     }

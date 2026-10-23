@@ -17,6 +17,7 @@ Meter (v2):
 import json, math, random, sys, time
 from multiprocessing import Pool
 from lamps import *
+import lamps
 
 SIZES = [32, 38, 44]
 PER_SIZE = 8
@@ -64,15 +65,18 @@ def evolve(deck, gens, pop_n, seed, pool, log, key, lineage):
     pop = [born(rand_genome(deck, rng), [], "seed", 0) for _ in range(pop_n)]
     champ, champ_gate = None, None
     hist = []
+    luck = "rho" in deck
+    def scored(ind):           # with the coverage rule on, a fallback tail is scored too
+        return with_fallback(ind["genes"], luck)[0] if lamps.COVERAGE else ind["genes"]
     for gi in range(gens):
         tests = train_set(seed * 100000 + gi)
-        results = pool.map(score_job, [(ind["genes"], tests, None) for ind in pop[:2]])
+        results = pool.map(score_job, [(scored(ind), tests, None) for ind in pop[:2]])
         tops = [r[WORST_KEY].get(SIZES[-1]) for r in results if not r["fails"]]
         abort = (min(tops) + 4) if tops else None          # 16x the elite's top-size cost
-        results += pool.map(score_job, [(ind["genes"], tests, abort) for ind in pop[2:]])
+        results += pool.map(score_job, [(scored(ind), tests, abort) for ind in pop[2:]])
         ranked = sorted(zip(results, pop), key=lambda t: t[0]["score"])
         best_r, best = ranked[0]
-        gate = METER(best["genes"], GATE)
+        gate = METER(scored(best), GATE)
         crowned = champ is None or gate["score"] < champ_gate["score"]
         if crowned:
             champ, champ_gate = best, gate
@@ -86,7 +90,9 @@ def evolve(deck, gens, pop_n, seed, pool, log, key, lineage):
                                   if r.get("luck") and r["luck"]["hit_rate_log2"] is not None else None),
                 "gate": round(gate["score"], 4) if rank == 0 else None,
                 "champion": ind["name"] == champ["name"],
-                "describe": describe(ind["genes"]), "genes": ind["genes"]}) + "\n")
+                "describe": describe(ind["genes"]), "genes": ind["genes"],
+                **({"fallback": with_fallback(ind["genes"], luck)[1]} if lamps.COVERAGE else {}),
+                }) + "\n")
         lineage.flush()
         hist.append({"gen": gi, "train": best_r["score"], "gate": gate["score"],
                      "champ_gate": champ_gate["score"], "best": best["name"],

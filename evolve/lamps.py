@@ -21,6 +21,7 @@ class Meter:
         self.cap = cap
         self.tests = 0
         self.hits = 0
+        self.k = None           # instrumentation: the k a square-search win came from
     def tick(self, k=1):
         self.ops += k
         if self.ops > self.cap:
@@ -113,10 +114,13 @@ def lamp_sq(N, g, m):
         kN = k * N
         if g["ksq"]:
             kN *= 4
-        x0 = math.isqrt(kN)
-        if x0 * x0 < kN:
-            x0 += 1
-        W = max(1, int(g["c"] * (N ** g["w"]) / math.sqrt(k)))
+        # Window ends at sqrt(kN) + width, with sqrt(kN) ~ s + f taken from the exact
+        # isqrt (a float sqrt of kN itself loses ~10 bits past 60-bit N).
+        s = math.isqrt(kN)
+        x0 = s if s * s == kN else s + 1
+        f = float(kN - s * s) / float(2 * s)
+        width = g["c"] * (N ** g["w"]) / math.sqrt(k)
+        W = max(1, s + math.floor(f + width) - x0 + 1)
         for x in range(x0, x0 + W):
             m.tick()
             ok, y = is_square(x * x - kN)
@@ -124,6 +128,7 @@ def lamp_sq(N, g, m):
             if ok:
                 d = math.gcd(x - y, N)
                 if 1 < d < N:
+                    m.k = k
                     return d
     return None
 
@@ -267,25 +272,59 @@ def mutate(gen, deck, rng):
         g[rng.randrange(len(g))] = rand_stage(rng.choice(deck), rng)
     return g, op
 
+COVERAGE = False           # Stage 1 coverage rule; off for replays of Runs 2-5
+
+def use_coverage_rule():
+    global COVERAGE
+    COVERAGE = True
+
+def covered(gen):
+    """True if some stage provably finds a factor of any balanced semiprime: trial
+    division to sqrt(N), or Lehman (trial to N^(1/3), then 4kN for every k up to N^(1/3)
+    with window at least N^(1/6)/(4 sqrt k))."""
+    td_third = False
+    for s in gen:
+        if s["t"] == "td":
+            if s["a"] >= 0.5:
+                return True
+            td_third = td_third or s["a"] >= 1 / 3
+        elif (s["t"] == "sq" and td_third and s["mode"] == "seq" and s["ksq"]
+              and s["k"] >= 1 / 3 and s["w"] >= 1 / 6 and s["c"] >= 0.25):
+            return True
+    return False
+
+def with_fallback(gen, luck):
+    """Coverage rule: a genome whose stages stop short of sqrt(N) gets a fallback tail,
+    charged like any stage. No-luck deck: trial division to sqrt(N), complete but it can
+    exceed the cap. Luck deck: rho with a c no rho stage already uses, heuristic.
+    Returns (genome to score, whether the tail was added)."""
+    if covered(gen):
+        return gen, False
+    if not luck:
+        return gen + [{"t": "td", "a": 0.5}], True
+    used = {s["c"] for s in gen if s["t"] == "rho"}
+    return gen + [{"t": "rho", "c": min(c for c in range(1, 10) if c not in used), "b": 64}], True
+
 def crossover(a, b, rng):
     child = a[:rng.randint(0, len(a))] + b[rng.randint(0, len(b)):]
     return [dict(s) for s in (child or a)][:4]
 
-LAST = {"tests": 0, "hits": 0}
+LAST = {"tests": 0, "hits": 0, "stage": None, "k": None}
 
 def run(gen, N, cap):
     """Returns (ops, factor), or (None, None) on a miss. Test and hit counts of the
-    latest run are left in LAST for the luck meter."""
+    latest run are left in LAST for the luck meter, with the winning stage's index and,
+    for a square-search win, its k (read-only instrumentation; None on a miss)."""
     m = Meter(cap)
     try:
-        for s in gen:
+        for i, s in enumerate(gen):
             d = LAMPS[s["t"]](N, s, m)
             if d:
-                LAST["tests"], LAST["hits"] = m.tests, m.hits
+                LAST.update(tests=m.tests, hits=m.hits, stage=i, k=m.k)
                 return m.ops, d
     except Budget:
         pass
-    LAST["tests"], LAST["hits"] = m.tests, m.hits
+    LAST.update(tests=m.tests, hits=m.hits, stage=None, k=None)
     return None, None
 
 # ---- test semiprimes ---------------------------------------------------------

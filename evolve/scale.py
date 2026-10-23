@@ -1,18 +1,23 @@
 """Scaled validation through the Rust lamp core: baselines and every run's champion on
 fresh balanced semiprimes at 54-78 bits, cumulative totals and worst cases.
 
-  python3 scale.py [count] [workers]
+  python3 scale.py [count] [workers] [out]
 
-Writes scale.json. Trial division and Fermat are left out: at these sizes they need
-2^30+ operations per number and only measure the cap.
+Writes scale.json (or out). Trial division and Fermat are left out: at these sizes they
+need 2^30+ operations per number and only measure the cap.
+
+Coverage rule (Stage 1): a run champion whose stages stop short of sqrt(N) is scored with
+its deck's fallback tail (lamps.with_fallback), flagged in the output.
 """
 import json, math, sys
 from multiprocessing import Pool
 from fastlamps import semiprimes_pq, run_many
 from evolve import BASELINES
+from lamps import with_fallback
 
 COUNT = int(sys.argv[1]) if len(sys.argv) > 1 else 40
 WORKERS = int(sys.argv[2]) if len(sys.argv) > 2 else 2
+OUT = sys.argv[3] if len(sys.argv) > 3 else "scale.json"
 SIZES = [54, 60, 66, 72, 78]
 CAP = 2 ** 29
 
@@ -23,6 +28,16 @@ def candidates():
         for key, hist in res["runs"].items():
             gs[f"{label} {key}"] = hist[-1]["champ"]
     return gs
+
+FALLBACK = {}
+def with_tails(gs):
+    out = {}
+    for name, g in gs.items():
+        if name in BASELINES:
+            out[name] = g
+        else:
+            out[name], FALLBACK[name] = with_fallback(g, luck=" luck-" in name)
+    return out
 
 def job(args):
     name, g, bits = args
@@ -43,7 +58,7 @@ def job(args):
     }
 
 if __name__ == "__main__":
-    gs = candidates()
+    gs = with_tails(candidates())
     jobs = [(n, g, b) for n, g in gs.items() for b in SIZES]
     out = {"sizes": SIZES, "count": COUNT, "cap_log2": 29, "results": {}}
     with Pool(WORKERS) as pool:
@@ -58,5 +73,7 @@ if __name__ == "__main__":
             xs, ys = zip(*pts)
             mx, my = sum(xs) / len(xs), sum(ys) / len(ys)
             by["trend"] = sum((x - mx) * (y - my) for x, y in pts) / sum((x - mx) ** 2 for x in xs)
-    json.dump(out, open("scale.json", "w"), indent=1)
+        if name in FALLBACK:
+            by["fallback"] = FALLBACK[name]
+    json.dump(out, open(OUT, "w"), indent=1)
     print("done")
