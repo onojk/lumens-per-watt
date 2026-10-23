@@ -29,6 +29,8 @@ def semiprimes_pq(bits, count, seed):
     return out
 
 def run_many(genome, nums, cap, inst=False, phases=False):
+    if any(st["t"] == "qs" and st.get("lc", 1.0) > 1.0 for st in genome):
+        raise ValueError("lampcore has no large primes yet (qs lc > 1): run it in lamps.py")
     text = json.dumps(genome) + "\n" + str(int(cap)) + "\n" + \
         "".join(f"{N} {p} {q}\n" for N, p, q in nums)
     res = subprocess.run([BIN], input=text, capture_output=True, text=True, check=True)

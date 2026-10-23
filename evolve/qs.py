@@ -15,14 +15,19 @@ The charges are exactly the ones listed there:
   confirm 2 ops to form g(x), 1 per factor-base entry tried, 1 per extra division
   la      ceil(rows * cols * rows / 64), dense GF(2) elimination
   sqrt    per dependency: multiplies forming X and Y (powers by square-and-multiply),
-          1 op per Euclid step of gcd(X - Y, N)
+          1 op per large prime multiplied into Y, 1 op per Euclid step of gcd(X - Y, N)
+  lp      large primes (Stage 7, only when lc > 1): per candidate with cofactor q > 1,
+          1 op bound check (q < L); if q < L, 1 op N mod q, 1 op hash lookup, then 1 op
+          insert (new q) or 1 op u1*u2 mod N + F ops vector add (combine)
 
 Tests and hits for the luck meter: one test per candidate confirmed (hit = smooth), one
 per dependency tried (hit = it splits N).
 
 Genes: kc (multipliers 1..kc ranked by ks score, default 16), bc (B = bc * exp(0.5 sqrt(ln N ln ln N)),
 default 1.5),
-mc (M = mc * B), tc (threshold = log2(M sqrt(kN/2)) - tc * log2(B)).
+mc (M = mc * B), tc (threshold = log2(M sqrt(kN/2)) - (tc + lc - 1) * log2(B)),
+lc (large-prime bound L = B^lc, 1.0..2.0, default 1.0 = no large primes: today's qs op for op;
+NOTES.md, "Stage 7").
 
 Set qs.TRACE = {} before a run to record realized counts for the accounting test; with more
 than one qs stage in a genome, the counts add up over the run, as lampcore's do.
@@ -130,10 +135,16 @@ def lamp_qs(N, g, m):
         combos.sort(key=lambda c: (abs(math.log(math.prod(c) / target)), c))
         if at is not None:
             at["combos"], at["s"] = len(combos), s
-        T = math.log2(M * math.sqrt(kN / 2)) - g.get("tc", 2.0) * math.log2(B)
+        lc = min(2.0, max(1.0, g.get("lc", 1.0)))
+        LP = lc > 1.0                              # lc = 1.0: no large-prime work at all
+        L = B ** lc                                # <= B^2, so a cofactor below it is prime
+        T = math.log2(M * math.sqrt(kN / 2)) - (g.get("tc", 2.0) + (lc - 1.0)) * math.log2(B)
         width = 2 * M + 1
         need = F + DELTA
-        rels, seen = [], set()
+        rels, seen = [], set()                     # relations (u, vec, y): u^2 = y^2 prod p^e
+        partials, seen_c = {}, set()               # q -> (u, vec); combined u's (up to sign)
+        if at is not None:
+            at["lp"] = dict(cof=0, lt=0, inserts=0, combos=0, dup=0, F=F)
         for qs_ in combos:
             A = math.prod(qs_)
             if at is not None:
@@ -219,7 +230,42 @@ def lamp_qs(N, g, m):
                                 if at is not None:
                                     at["extra_div"] += 1
                     smooth = v == 1
-                    m.test(smooth)
+                    partial = False
+                    if LP and not smooth:              # 8. large primes
+                        charge("lp", 1)                # bound check
+                        partial = v < L
+                        if at is not None:
+                            at["lp"]["cof"] += 1; at["lp"]["lt"] += partial
+                    m.test(smooth or partial)
+                    if partial:
+                        charge("lp", 1)                # N mod q
+                        if N % v == 0:
+                            return v
+                        u = A * x + Bv
+                        for ql in qs_:
+                            vec[idx[ql]] += 1
+                        charge("lp", 1)                # hash lookup
+                        other = partials.get(v)
+                        if other is None:
+                            charge("lp", 1)            # insert
+                            partials[v] = (u, vec)
+                            if at is not None:
+                                at["lp"]["inserts"] += 1
+                            continue
+                        cu = other[0] * u % N; charge("lp", 1)
+                        cvec = [a + b for a, b in zip(other[1], vec)]; charge("lp", F)
+                        if at is not None:
+                            at["lp"]["combos"] += 1
+                        key = min(cu, N - cu)
+                        if key in seen_c:
+                            if at is not None:
+                                at["lp"]["dup"] += 1
+                            continue
+                        seen_c.add(key)
+                        rels.append((cu, cvec, v))
+                        if len(rels) >= need:
+                            break
+                        continue
                     if not smooth:
                         continue
                     u = A * x + Bv
@@ -228,7 +274,7 @@ def lamp_qs(N, g, m):
                     seen.add(abs(u))
                     for ql in qs_:
                         vec[idx[ql]] += 1
-                    rels.append((u, vec))
+                    rels.append((u, vec, 1))
                     if len(rels) >= need:
                         break
                 if len(rels) >= need:
@@ -243,7 +289,7 @@ def lamp_qs(N, g, m):
         charge("la", -(-rows * F * rows // 64))
         if at is not None:
             at["rows"] = rows
-        mat = [sum(1 << j for j in range(F) if vec[j] & 1) for _, vec in rels]
+        mat = [sum(1 << j for j in range(F) if vec[j] & 1) for _, vec, _ in rels]
         comb = [1 << i for i in range(rows)]
         used = [False] * rows
         for col in range(F):
@@ -280,6 +326,10 @@ def lamp_qs(N, g, m):
                     else:
                         Y = Y * y % N; charge("sqrt", 1); mults += 1
             Y = 1 if Y is None else Y
+            ys = 0
+            for i in members:                      # large primes, squared in each combined relation
+                if rels[i][2] != 1:
+                    Y = Y * rels[i][2] % N; charge("sqrt", 1); mults += 1; ys += 1
             a, b, steps = (X - Y) % N, N, 0
             while b:
                 a, b = b, a % b
@@ -287,7 +337,7 @@ def lamp_qs(N, g, m):
             charge("sqrt", steps)
             if at is not None:
                 at["deps"].append({"mults": mults, "gcd_steps": steps, "members": len(members),
-                                   "h": hs, "xy": (X - Y) % N})
+                                   "h": hs, "xy": (X - Y) % N, "ys": ys})
             m.test(1 < a < N)
             if 1 < a < N:
                 return a
