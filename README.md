@@ -184,6 +184,34 @@ Which past wins survive (overlapping intervals = within noise):
 
 Data: `evolve/revalidation.json` (per-cell intervals, verdicts, and every number's ops, winning stage, and k).
 
+## qs vs rho on the Stage 2 numbers (Oct 23, 2026)
+
+A measurement, not a scored run. The quadratic-sieve card alone (its acceptance genome, never tuned above 60 bits) runs on Stage 2's 80 numbers per size, cap 2^29, with Stage 2's bootstrap. qs runs in the Python core, whose accounting was verified phase by phase; the Rust port and parity check are pending (Stage 4). The other rows run through `lampcore`. Rho and Hart ×480 reproduce their Stage 2 rows exactly.
+
+```
+cd evolve && python3 qs_stage2.py 8
+```
+
+log₂(mean ops) [95% interval], then worst:
+
+| Algorithm | 54 | 60 | 66 | 72 | 78 | Growth per bit |
+|---|---|---|---|---|---|---|
+| **qs** | 16.09 [16.01, 16.18] / 16.92 | 17.03 [16.96, 17.11] / 17.72 | 17.91 [17.84, 17.98] / 18.58 | 18.88 [18.81, 18.95] / 19.78 | **19.73** [19.66, 19.79] / **20.41** | **0.152** |
+| Rho | 14.26 [14.09, 14.41] / 15.58 | 15.84 [15.67, 16.01] / 17.32 | 17.42 [17.24, 17.58] / 19.01 | 18.90 [18.73, 19.05] / 20.06 | 20.29 [20.09, 20.47] / 21.56 | 0.252 |
+| Run 5 L44-0272 (p − 1, then rho) | 13.94 [13.68, 14.18] / 16.07 | 15.52 [15.26, 15.75] / 17.27 | 16.94 [16.67, 17.17] / 18.38 | 18.56 [18.28, 18.82] / 20.19 | 20.05 [19.76, 20.30] / 22.04 | 0.254 |
+| Hart ×480 | 14.42 [14.04, 14.74] / 17.01 | 16.94 [16.32, 17.55] / 21.10 | 18.77 [18.37, 19.12] / 21.09 | 20.50 [20.19, 20.78] / 22.40 | 22.37 [22.02, 22.68] / 24.91 | 0.325 |
+
+What it shows:
+
+- **qs crosses rho at about 72 bits.** The two are tied at 72 bits (intervals overlap). At 78 bits qs is ahead and the intervals separate: about 1.5× fewer operations on average (19.73 vs 20.29).
+- **The worst case crosses first.** qs's worst case drops below rho's from 66 bits (2^18.58 vs 2^19.01), before the means cross. At 78 bits its worst case is about 2.2× lower (2^20.41 vs 2^21.56).
+- **The first exponent win in the project.** qs grows about 0.15 log₂-ops per bit; rho, L44-0272 and every earlier winner grow about 0.25 or more. Every earlier win was a constant.
+- **Not yet ahead of the best evolved bulb.** Against L44-0272, qs is within noise at 78 bits (intervals overlap) and behind below 72. L44-0272 grows like rho, so the gap should open past 78 bits, but these numbers don't show it yet.
+- **Conservative, not a fair fight.** qs is overcharged by rule (every small-number step costs a full op), and its genes were tuned only at 40–60 bits.
+- **Narrow intervals.** qs's cost depends on the size of N much more than on which N it is, so its intervals are less than half as wide as rho's.
+
+Data: `evolve/qs_stage2.json`.
+
 ## Run 4: luck-by-design cards and the hit-rate meter (Oct 22, 2026)
 
 Same cumulative scoreboard as Run 3, fresh seeds (31–34), with new cards and a new meter column. Outputs in `evolve/run4/`.
