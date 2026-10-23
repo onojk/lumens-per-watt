@@ -165,3 +165,79 @@ numbers, the parity count, and the old-vs-new table.
     cells sit on the bc edges (0.9 at 84 bits, 1.2 at 78 bits) by less than the noise;
     not worth chasing with another sweep. The widened ranges cover both.
 - **Stage 6:** reconcile the four caps and re-score with scale.py.
+
+## Stages 8-10 and Run 8 (planning; no code yet)
+
+Same rules as Stages 3-4 and 7: each card's cost model goes into NOTES.md before any code;
+every op is counted, never estimated; when in doubt, overcharge. Acceptance comes before
+any scored run, and parity gates the Rust port.
+
+- **Stage 8: ECM card ("ecm").**
+  - Cost model (NOTES first):
+    - 1 op per modular multiply mod N, counted as performed: Montgomery-curve x-only
+      ladder (each xDBL and xADD charged by its multiplies and squarings).
+    - Stage 1: the ladder over every prime power <= B1.
+    - Stage 2 (optional, B2 > B1): a standard continuation to B2, charged per multiply,
+      including the running product of differences.
+    - Curve setup: parametrization multiplies plus 1 op per extended-Euclid step for
+      each inverse, as in qs's polynomial setup.
+    - The final gcd (and any gcd a stage takes) is charged as in rho: 1 op per gcd.
+    - A curve that fails pays in full, and the next curve pays again.
+  - Genes: B1, B2 (as a multiple of B1; 0 = no stage 2), curves (how many before giving
+    up), family: plain Suyama, or a torsion-12 / torsion-16 family. The torsion
+    families raise the chance that the group order is smooth; this is the "luck by
+    design" knob, so the luck meter records it. Luck meter: one test per curve, and a
+    hit when the curve finds a factor.
+  - Acceptance:
+    - Completeness: 100% of fresh semiprimes at 40-84 bits with default genes, cap
+      2^29, on a seed range no earlier stage used.
+    - Exact accounting: each phase (setup, stage 1, stage 2, gcd) equals its formula on
+      the run's realized counts. Tolerance 0, and a one-op change must be caught.
+    - Group-order check (harness only): for small p, ECM finds p on a curve exactly when
+      that curve's order mod p, computed by brute force, is B1/B2-smooth as the stages
+      require.
+    - Parity after the Rust port.
+  - Comparison: against tuned qs (kc 32, bc 1.1, mc 0.25, tc 1.38) and rho, on the ACCEPT
+    numbers (Stage 2 numbers at 72/78, `semiprimes_pq(84, 80, 1300084)`), plus the Stage 2
+    numbers at 54-66 so the crossover can be seen. Cap 2^28, same bootstrap, mean and
+    worst with intervals. ECM's genes are fixed in advance on tuning seeds, never on these
+    numbers.
+  - Stated in advance: ECM beats qs below ~80 bits and loses above. Its cost grows with
+    the smaller factor, which is half the bits here, and qs's grows more slowly.
+- **Stage 9: race combinator ("race").**
+  - A genome element holding two stages that run interleaved on one meter: A for sa ops,
+    then B for sb ops, alternating, until one finds a factor or the budget runs out.
+  - Genes: the two stages, slice sizes sa and sb, and a budget split (the share of the
+    remaining budget either side may spend before it is stopped).
+  - Ops: the race costs exactly what both sides spent. Switching sides costs nothing,
+    since it does no arithmetic. A slice ends at the first charge that reaches or passes
+    its size: charges come in chunks, and this rule is written down so both cores agree.
+  - Prerequisite: every stage has to be resumable mid-run (a coroutine in Python, a state
+    machine in lampcore), with no change to any stage's op count.
+  - Acceptance:
+    - Parity.
+    - Identity: a race with sb = 0 equals stage A run alone, op for op (ops, factor,
+      tests, hits, phases), and the same holds with the sides swapped.
+- **Stage 10: qs refinements**, each with its own cost model in NOTES first, an identity
+  check that the off setting equals the current card op for op, and a comparison against
+  the best qs so far on the ACCEPT numbers.
+  1. Small-prime skip: primes below a gene-set bound are not sieved, and the threshold is
+     lowered to compensate; confirmation still tries every factor-base entry.
+  2. Double large prime: the cofactor may reach L². Splitting it is charged by the ops
+     of the method that does it (counted). Cycle finding in the partial graph is charged
+     1 op per union-find step, and combining a cycle is charged as in Stage 7.
+- **Run 8: islands as Run 6 (`evolve_run6.py`'s harness), with ECM and the race element
+  in the decks.**
+  - Wide ranges on: `use_wide_qs_ranges()`, plus the lc range from Stage 7 if Stage 7
+    has passed.
+  - Decks, proposed:
+    - no-luck: td, sq, ps, qs, race (racing no-luck stages only);
+    - luck: td, sq, ps, rho, pm1, qs, ecm, race. ECM is randomized like rho and pm1, so
+      it goes in the luck deck.
+  - Sizes, caps, gate and ACCEPT as in Run 6 (train 66/72/78 at 2^26, gate 84 at 2^28),
+    re-checked by a one-generation dry run before launch.
+  - ACCEPT adds tuned qs, the best ECM genome from Stage 8, and N51-0917 to Run 6's
+    references. `run8_accept.py` is written before the run.
+  - Seeds: 71-74, proposed (Run 5 used 41-44, Run 6 51-54; 61-64 stay reserved for
+    Run 7).
+  - Prerequisites: Stages 8 and 9 accepted, with parity.
