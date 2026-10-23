@@ -1,0 +1,12 @@
+[package]
+name = "lampcore"
+version = "0.1.0"
+edition = "2021"
+description = "lumens-per-watt lamps in Rust, with operation counting identical to evolve/lamps.py"
+
+[dependencies]
+ruint = { version = "=1.20.1", default-features = false, features = ["std"] }
+serde_json = "=1.0.154"
+
+[profile.release]
+opt-level = 3
