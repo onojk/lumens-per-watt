@@ -166,6 +166,71 @@ numbers, the parity count, and the old-vs-new table.
     not worth chasing with another sweep. The widened ranges cover both.
 - **Stage 6:** reconcile the four caps and re-score with scale.py.
 
+## Relation economy (planning; no code yet)
+
+Comes after Stage 7, the large-prime cost model in NOTES.md, and before Stages 8-10. The
+idea: separate *finding relations* from *using them*, so relation sources can be compared,
+combined and evolved against one shared, fixed ledger.
+
+- **The invariant.**
+  - A relation is (u, e): u mod N and an exponent vector e over a shared factor base
+    (one multiplier k, so one base: -1, the primes dividing k, and the primes p <= B
+    with (kN | p) = 1). Valid means u^2 = prod p^(e_p) (mod N).
+  - A combined large-prime relation (Stage 7) carries its extra square:
+    u^2 = y^2 * prod p^(e_p), with y = q, or a product of large primes after Stage 10's
+    double large prime.
+  - The ledger checks every relation it receives and charges the check:
+    - 1 op per modular multiply: one for u^2, and square-and-multiply for each
+      p^(e_p) and for y, charged as in qs phase 7.
+    - An invalid relation pays its check and is rejected, so it costs and earns nothing.
+    - A relation whose exponent vector is all even is also rejected after its check: it
+      can only give a trivial dependency.
+- **Refactor qs into SOURCE + LEDGER.**
+  - Source: polynomial generation and sieving (qs phases 1, 3, 4) and confirmation
+    (phase 5, plus Stage 7's lp phase when lc > 1). It emits relations.
+  - Ledger, shared by every source: the factor base (phase 2, owned here so all sources
+    share one), dedupe, linear algebra (phase 6) and square root (phase 7).
+  - The check has a switch. Off: qs as today, trusting its own relations. On: every
+    relation is checked and charged. Any comparison between sources has it on for all
+    of them.
+  - Identity check, both cores, on the parity numbers:
+    - check off: refactored qs equals today's qs op for op (ops, factor, tests, hits,
+      every phase);
+    - check on: it differs by exactly the check's formula, evaluated on the relations
+      it submitted.
+- **New fitness for source evolution: relation yield.**
+  - Run a source on fixed numbers under a fixed op budget, with no factoring. The
+    numbers are a new seed range at 72/78/84 bits, not the ACCEPT numbers.
+  - Count useful relations, not rows: yield is the GF(2) rank the accepted relations
+    add to the exponent matrix, measured by the harness after the run and not charged.
+    So relations built by combining earlier ones (valid but dependent) add nothing.
+  - Normalize by what factoring needs: rank / (F + delta) per op, the share of the
+    matrix filled per op. Sources with different factor-base sizes then compare fairly.
+  - The existing full-factoring score is the gate: a source is only kept if
+    source + ledger factors the gate numbers.
+- **First second source: continued fractions (CFRAC) into the same ledger.**
+  - Cost model in NOTES first. CFRAC expands sqrt(kN): 1 op per step for the multiply
+    mod N, small-number steps overcharged at 1 op each as in qs, and every Q_i a
+    candidate, confirmed at qs's phase-5 rate (no sieve to filter them).
+  - Acceptance:
+    - CFRAC alone factors 100% at 40-60 bits;
+    - every relation it submits passes the ledger check;
+    - parity after the Rust port.
+  - The test: do qs + CFRAC together beat qs alone per op? Both feed one ledger,
+    interleaved in fixed op slices (Stage 9's race element, or a fixed split before it
+    exists). Measured by relation yield, and by full-factoring ops on the ACCEPT numbers
+    with the usual bootstrap.
+  - Stated in advance: no. If each source's yield per op is roughly constant, a mix
+    can't beat the better source. CFRAC confirms every candidate at F ops, so it should
+    lose to qs at 72-84 bits. A win would mean qs's yield per op falls as relations
+    accumulate, or that CFRAC finds relations qs doesn't.
+- **Later: evolvable source genomes.**
+  - Polynomial families beyond SIQS's, and candidate filters (thresholds, early-abort
+    trial division), evolved with relation yield as fitness.
+  - The ledger's check is the only correctness requirement: a source may do anything
+    that produces relations, and pays for everything it does.
+  - The ledger, its check and the factor base are fixed, never evolved.
+
 ## Stages 8-10 and Run 8 (planning; no code yet)
 
 Same rules as Stages 3-4 and 7: each card's cost model goes into NOTES.md before any code;
