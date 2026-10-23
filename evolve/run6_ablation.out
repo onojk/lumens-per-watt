@@ -1,0 +1,62 @@
+full rows reproduce run6/accept.json
+
+N51-0917: qs -> sq -> sq
+  72 bits  winning stage (full): {'0:qs': 80}
+    full      17.813 [17.74, 17.89]  worst 18.60 [18.48, 18.60]  misses 0
+    qs only   17.813 [17.74, 17.89]  worst 18.60 [18.48, 18.60]  misses 0  | vs full: total ops x1.000, per number cheaper 0 / same 80 / dearer 0
+    first qs  17.813 [17.74, 17.89]  worst 18.60 [18.48, 18.60]  misses 0  | vs full: total ops x1.000, per number cheaper 0 / same 80 / dearer 0
+  78 bits  winning stage (full): {'0:qs': 80}
+    full      18.597 [18.52, 18.68]  worst 19.45 [19.20, 19.45]  misses 0
+    qs only   18.597 [18.52, 18.68]  worst 19.45 [19.20, 19.45]  misses 0  | vs full: total ops x1.000, per number cheaper 0 / same 80 / dearer 0
+    first qs  18.597 [18.52, 18.68]  worst 19.45 [19.20, 19.45]  misses 0  | vs full: total ops x1.000, per number cheaper 0 / same 80 / dearer 0
+  84 bits  winning stage (full): {'0:qs': 80}
+    full      19.449 [19.38, 19.52]  worst 20.27 [19.93, 20.27]  misses 0
+    qs only   19.449 [19.38, 19.52]  worst 20.27 [19.93, 20.27]  misses 0  | vs full: total ops x1.000, per number cheaper 0 / same 80 / dearer 0
+    first qs  19.449 [19.38, 19.52]  worst 20.27 [19.93, 20.27]  misses 0  | vs full: total ops x1.000, per number cheaper 0 / same 80 / dearer 0
+
+N52-0833: qs -> td -> qs
+  72 bits  winning stage (full): {'0:qs': 80}
+    full      17.873 [17.79, 17.95]  worst 18.68 [18.44, 18.68]  misses 0
+    qs only   17.873 [17.79, 17.95]  worst 18.68 [18.44, 18.68]  misses 0  | vs full: total ops x1.000, per number cheaper 0 / same 80 / dearer 0
+    first qs  17.873 [17.79, 17.95]  worst 18.68 [18.44, 18.68]  misses 0  | vs full: total ops x1.000, per number cheaper 0 / same 80 / dearer 0
+  78 bits  winning stage (full): {'0:qs': 80}
+    full      18.660 [18.57, 18.75]  worst 19.73 [19.33, 19.73]  misses 0
+    qs only   18.660 [18.57, 18.75]  worst 19.73 [19.33, 19.73]  misses 0  | vs full: total ops x1.000, per number cheaper 0 / same 80 / dearer 0
+    first qs  18.660 [18.57, 18.75]  worst 19.73 [19.33, 19.73]  misses 0  | vs full: total ops x1.000, per number cheaper 0 / same 80 / dearer 0
+  84 bits  winning stage (full): {'0:qs': 80}
+    full      19.513 [19.44, 19.59]  worst 20.38 [19.99, 20.38]  misses 0
+    qs only   19.513 [19.44, 19.59]  worst 20.38 [19.99, 20.38]  misses 0  | vs full: total ops x1.000, per number cheaper 0 / same 80 / dearer 0
+    first qs  19.513 [19.44, 19.59]  worst 20.38 [19.99, 20.38]  misses 0  | vs full: total ops x1.000, per number cheaper 0 / same 80 / dearer 0
+
+L53-0972: pm1 -> qs -> pm1 -> qs
+  72 bits  winning stage (full): {'0:pm1': 23, '1:qs': 57}
+    full      17.653 [17.45, 17.83]  worst 18.80 [18.60, 18.80]  misses 0
+    qs only   17.960 [17.87, 18.05]  worst 18.78 [18.60, 18.78]  misses 0  | vs full: total ops x1.238, per number cheaper 57 / same 0 / dearer 23
+    first qs  17.960 [17.87, 18.05]  worst 18.78 [18.60, 18.78]  misses 0  | vs full: total ops x1.238, per number cheaper 57 / same 0 / dearer 23
+  78 bits  winning stage (full): {'0:pm1': 18, '1:qs': 62}
+    full      18.625 [18.45, 18.78]  worst 19.68 [19.51, 19.68]  misses 0
+    qs only   18.759 [18.67, 18.85]  worst 19.67 [19.39, 19.67]  misses 0  | vs full: total ops x1.097, per number cheaper 62 / same 0 / dearer 18
+    first qs  18.759 [18.67, 18.85]  worst 19.67 [19.39, 19.67]  misses 0  | vs full: total ops x1.097, per number cheaper 62 / same 0 / dearer 18
+  84 bits  winning stage (full): {'0:pm1': 18, '1:qs': 62}
+    full      19.573 [19.41, 19.71]  worst 20.62 [20.22, 20.62]  misses 0
+    qs only   19.641 [19.58, 19.71]  worst 20.48 [20.04, 20.48]  misses 0  | vs full: total ops x1.048, per number cheaper 62 / same 0 / dearer 18
+    first qs  19.641 [19.58, 19.71]  worst 20.48 [20.04, 20.48]  misses 0  | vs full: total ops x1.048, per number cheaper 62 / same 0 / dearer 18
+
+L54-0938: pm1 -> qs -> td
+  72 bits  winning stage (full): {'0:pm1': 14, '1:qs': 66}
+    full      18.063 [17.90, 18.20]  worst 18.92 [18.76, 18.92]  misses 0
+    qs only   18.288 [18.23, 18.34]  worst 18.89 [18.78, 18.89]  misses 0  | vs full: total ops x1.169, per number cheaper 66 / same 0 / dearer 14
+    first qs  18.288 [18.23, 18.34]  worst 18.89 [18.78, 18.89]  misses 0  | vs full: total ops x1.169, per number cheaper 66 / same 0 / dearer 14
+  78 bits  winning stage (full): {'0:pm1': 12, '1:qs': 68}
+    full      18.959 [18.81, 19.09]  worst 19.74 [19.57, 19.74]  misses 0
+    qs only   19.144 [19.09, 19.20]  worst 19.70 [19.59, 19.70]  misses 0  | vs full: total ops x1.136, per number cheaper 68 / same 0 / dearer 12
+    first qs  19.144 [19.09, 19.20]  worst 19.70 [19.59, 19.70]  misses 0  | vs full: total ops x1.136, per number cheaper 68 / same 0 / dearer 12
+  84 bits  winning stage (full): {'1:qs': 66, '0:pm1': 14}
+    full      19.834 [19.67, 19.97]  worst 20.86 [20.33, 20.86]  misses 0
+    qs only   20.054 [20.01, 20.10]  worst 20.83 [20.29, 20.83]  misses 0  | vs full: total ops x1.165, per number cheaper 66 / same 0 / dearer 14
+    first qs  20.054 [20.01, 20.10]  worst 20.83 [20.29, 20.83]  misses 0  | vs full: total ops x1.165, per number cheaper 66 / same 0 / dearer 14
+
+
+real	0m2.532s
+user	0m16.112s
+sys	0m0.084s

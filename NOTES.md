@@ -92,3 +92,7 @@ The op unit is the one rho pays: one modular multiply of N-sized numbers = 1 op.
   bit-packed, and both cores skip the sieve when B/ln B alone exceeds the budget). The
   prime-power loop's `pk * p` would wrap in u64 for primes past 2^32 (now u128). No cap used
   so far reaches primes that large, so the wrap never affected a result.
+
+## 2026-10-23 — Run 6
+
+- Run 6: evolution keeps qs on both decks; within the luck champions the leading p − 1 pays (removing it costs 1.05–1.24×; it wins 12–23 of 80); they lose to N51-0917 on weaker qs genes. Stages after the first qs never run (ablation, 240/240), so the no-luck champions are tuned qs; mc pinned at the bottom of its mutation range (1.0).

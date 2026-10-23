@@ -73,6 +73,44 @@ python3 ancestry.py N11-0076   # family line of any named genome
 
 Outputs: `evolve.log`, `results.json`, `lineage.jsonl`, `validation.json`. Runs are seeded, so the same commands reproduce the same numbers on any machine.
 
+## Run 6: island model with qs in the deck (Oct 23, 2026)
+
+Four islands of 16 genomes per run, top-2 ring migration every 5 generations, a 2-slot diversity reserve, 20 generations, seeds 51–54 (51–52 no-luck, 53–54 luck), qs in both decks. Training at 66, 72, and 78 bits (cap 2^26), gate at 84 bits (cap 2^28). Outputs in `evolve/run6/`; harness `evolve/evolve_run6.py`; plan in `PLAN.md`.
+
+ACCEPT (`evolve/run6_accept.py`, written before the run): the four champions against qs-default, Run 5's L44-0272, and rho, through `lampcore` at cap 2^28, on Stage 2's 80 numbers at 72 and 78 bits plus 80 fresh 84-bit numbers (`semiprimes_pq(84, 80, 1300084)`). The reference rows reproduce `qs_stage2.json` exactly at 72 and 78 bits. No misses.
+
+```
+cd evolve && python3 run6_accept.py 8
+```
+
+log₂(mean ops) [95% interval] / worst [95% interval]:
+
+| Algorithm | 72 bits | 78 bits | 84 bits | Growth per bit, 72→84 |
+|---|---|---|---|---|
+| **N51-0917** (no-luck-51: qs → 2 square searches) | **17.81** [17.74, 17.89] / 18.60 [18.48, 18.60] | **18.60** [18.52, 18.68] / 19.45 [19.20, 19.45] | **19.45** [19.38, 19.52] / **20.27** [19.93, 20.27] | **0.136** |
+| N52-0833 (no-luck-52: qs → trial → qs) | 17.87 [17.79, 17.95] / 18.68 [18.44, 18.68] | 18.66 [18.57, 18.75] / 19.73 [19.33, 19.73] | 19.51 [19.44, 19.59] / 20.38 [19.99, 20.38] | 0.137 |
+| L53-0972 (luck-53: p − 1 → qs → p − 1 → qs) | 17.65 [17.45, 17.83] / 18.80 [18.60, 18.80] | 18.63 [18.45, 18.78] / 19.68 [19.51, 19.68] | 19.57 [19.41, 19.71] / 20.62 [20.22, 20.62] | 0.160 |
+| L54-0938 (luck-54: p − 1 → qs → trial) | 18.06 [17.90, 18.20] / 18.92 [18.76, 18.92] | 18.96 [18.81, 19.09] / 19.74 [19.57, 19.74] | 19.83 [19.67, 19.97] / 20.86 [20.33, 20.86] | 0.148 |
+| qs default | 18.88 [18.81, 18.95] / 19.78 [19.30, 19.78] | 19.73 [19.66, 19.79] / 20.41 [20.20, 20.41] | 20.67 [20.61, 20.72] / 21.13 [21.02, 21.13] | 0.149 |
+| Run 5 L44-0272 (p − 1, then rho) | 18.56 [18.28, 18.82] / 20.19 [20.16, 20.19] | 20.05 [19.76, 20.30] / 22.04 [21.23, 22.04] | 21.58 [21.32, 21.81] / 23.38 [23.05, 23.38] | 0.252 |
+| Rho | 18.90 [18.73, 19.05] / 20.06 [20.02, 20.06] | 20.29 [20.09, 20.47] / 21.56 [21.27, 21.56] | 21.94 [21.76, 22.10] / 23.15 [23.12, 23.15] | 0.253 |
+
+What it shows:
+
+- **Evolution kept qs on both decks.** All four champions contain qs, each with a tuned first qs stage: kc 10–32, bc 1.06–1.89, mc 1.0–1.83, tc 1.07–1.68 (qs-default is kc 16, bc 1.5, mc 4.0, tc 2.0).
+- **The best bulb so far.** At 84 bits the best no-luck champion, N51-0917, needs 2.3× fewer operations on average than qs-default, 4.4× fewer than L44-0272 and 5.6× fewer than rho; on the worst case, 1.8×, 8.6× and 7.4×. Its intervals separate from all three on both the mean and the worst case.
+- **Luck champions: no better overall.** L53-0972's intervals overlap N51-0917's at every size, and L54-0938, whose chain is p − 1 → qs, is the weakest of the four. Within the luck champions the leading p − 1 pays (removing it costs 1.05–1.24×; it wins 12–23 of 80); they lose to N51-0917 on weaker qs genes. Stages after the first qs never run (ablation, 240/240), so the no-luck champions are tuned qs.
+- **Mostly tuned constants.** N51-0917 grows 0.136 log₂-ops per bit from 72 to 84 bits (N52-0833 0.137), against qs-default's 0.149 and 0.25 for rho and L44-0272. Most of its lead over qs-default is already there at 72 bits (1.07 of the 1.22 log₂ at 84), so it is mostly a better constant, with a small exponent gain on top.
+- **Still under the overcharging rule.** Every small-number step in qs costs a full op, so these totals overstate qs's real work.
+- **The mutation range binds.** Three champions sit at or near mc = 1.0, the bottom of mc's mutation range (1.0–12.0), so the optimum may lie below it.
+
+Data: `evolve/run6/accept.json`, `results.json`, `lineage.jsonl`, `evolve.log` (`nohup.out` is the same log captured by nohup).
+
+Two follow-up measurements on the ACCEPT numbers (cap 2^28, same bootstrap; not scored runs):
+
+- **Ablation** (`evolve/run6_ablation.py`): each champion in full, with every non-qs stage removed, and with only its first qs stage. On every one of its 240 numbers, each champion was finished by its first qs or a stage before it; removing the later stages changes nothing, op for op. Removing the leading p − 1 from the luck champions costs 1.05–1.24× (L53-0972) and 1.14–1.17× (L54-0938) in total ops at 72–84 bits.
+- **Boundary sweep** (`evolve/qs_boundary_sweep.py`): qs alone with N51-0917's kc 32 and tc 1.38, mc ∈ {0.25, 0.5, 0.75, 1, 1.5, 2} × bc ∈ {0.8, 1.0, 1.1, 1.3, 1.5} at 78 and 84 bits. Cost falls as mc drops in every column but one (78 bits, bc 0.8: mc 0.25 and 0.5 within noise); the best cell is the grid's edge, mc 0.25, bc 1.1: 2^19.22 [19.16, 19.27] at 84 bits against 2^19.44 [19.38, 19.51] at mc 1.0, bc 1.1 (about 1.17× fewer ops, intervals separated). The optimum is below Run 6's mutation floor of mc = 1.0. Every cell was computed by `lamps.py`, because at mc 0.25 lampcore disagreed on all 80 numbers per cell: a sieved prime wider than the interval made `qs.rs` underflow (fixed in the next commit, with parity pairs).
+
 ## Run 5: evolution scored at scale (Oct 23, 2026)
 
 Fitness measured through `lampcore` at 52, 58, and 64 bits (6 fresh numbers each per generation), gate at 68 bits, fine deck, seeds 41–44, cap 2^23. Outputs in `evolve/run5/`; script `evolve/evolve_scale.py`.
