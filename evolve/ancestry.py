@@ -1,9 +1,10 @@
 """Trace a genome's family line from lineage.jsonl.
 
-  python3 ancestry.py                 # every run's final champion
+  python3 ancestry.py                 # every run's final champion (Run 2 files)
   python3 ancestry.py L13-0412        # one named genome
+  python3 ancestry.py run3            # Run 3 champions; run3 L23-0100 for one genome
 """
-import json, sys
+import json, os, sys
 
 def load(path="lineage.jsonl"):
     rows = [json.loads(line) for line in open(path)]
@@ -35,7 +36,11 @@ def show(name, first):
               f"{other}\n             {r['describe']}")
 
 if __name__ == "__main__":
-    first, last_champ = load()
-    names = sys.argv[1:] or list(last_champ.values())
+    args = sys.argv[1:]
+    path = "lineage.jsonl"
+    if args and os.path.isdir(args[0]):
+        path = os.path.join(args.pop(0), "lineage.jsonl")
+    first, last_champ = load(path)
+    names = args or list(last_champ.values())
     for n in names:
         show(n, first)

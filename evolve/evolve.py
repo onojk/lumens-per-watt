@@ -1,5 +1,10 @@
 """Evolve factoring algorithms, scored by lumens per watt.
 
+  python3 evolve.py GENS POP WORKERS [cumulative|worst]
+  cumulative (default, Run 3): score = cumulative total watts over every test number;
+                               outputs go to run3/
+  worst (Run 2):               score = worst case; outputs go to this folder
+
 Meter (v2):
 - Fresh training semiprimes every generation, so nothing can memorize them.
 - Score = effective exponent at the top two training sizes, log2(worst ops)/bits.
@@ -18,12 +23,16 @@ GATE = {48: semiprimes(48, 12, 4848)}
 def train_set(seed):
     return {b: semiprimes(b, PER_SIZE, seed * 1000 + b) for b in SIZES}
 
+MODE = sys.argv[4] if len(sys.argv) > 4 else "cumulative"     # "cumulative" (Run 3) or "worst" (Run 2)
+METER = measure_cumulative if MODE == "cumulative" else measure
+WORST_KEY = "worst" if MODE == "cumulative" else "ys"
+
 def score_job(args):
     gen, tests, abort = args
     try:
-        return measure(gen, tests, abort)
+        return METER(gen, tests, abort)
     except Exception:
-        return {"score": 9.0, "trend": None, "ys": {}, "fails": 99}
+        return {"score": 9.0, "trend": None, "ys": {}, "worst": {}, "fails": 99}
 
 BASELINES = {
     "trial division": [{"t": "td", "a": 0.5}],
@@ -53,12 +62,12 @@ def evolve(deck, gens, pop_n, seed, pool, log, key, lineage):
     for gi in range(gens):
         tests = train_set(seed * 100000 + gi)
         results = pool.map(score_job, [(ind["genes"], tests, None) for ind in pop[:2]])
-        tops = [r["ys"].get(SIZES[-1]) for r in results if not r["fails"]]
+        tops = [r[WORST_KEY].get(SIZES[-1]) for r in results if not r["fails"]]
         abort = (min(tops) + 4) if tops else None          # 16x the elite's top-size cost
         results += pool.map(score_job, [(ind["genes"], tests, abort) for ind in pop[2:]])
         ranked = sorted(zip(results, pop), key=lambda t: t[0]["score"])
         best_r, best = ranked[0]
-        gate = measure(best["genes"], GATE)
+        gate = METER(best["genes"], GATE)
         crowned = champ is None or gate["score"] < champ_gate["score"]
         if crowned:
             champ, champ_gate = best, gate
@@ -67,6 +76,7 @@ def evolve(deck, gens, pop_n, seed, pool, log, key, lineage):
                 "run": key, "gen": gi, "rank": rank, "name": ind["name"],
                 "parents": ind["parents"], "op": ind["op"], "born": ind["born"],
                 "train": round(r["score"], 4),
+                "worst_top": round(r.get(WORST_KEY, {}).get(SIZES[-1], 0), 2),
                 "gate": round(gate["score"], 4) if rank == 0 else None,
                 "champion": ind["name"] == champ["name"],
                 "describe": describe(ind["genes"]), "genes": ind["genes"]}) + "\n")
@@ -95,24 +105,29 @@ def evolve(deck, gens, pop_n, seed, pool, log, key, lineage):
         pop = nxt
     return hist
 
-DECKS = [("no-luck", ["td", "sq", "ps"], 11), ("no-luck", ["td", "sq", "ps"], 12),
-         ("luck", ["td", "sq", "ps", "rho", "pm1"], 13),
-         ("luck", ["td", "sq", "ps", "rho", "pm1"], 14)]
+SEEDS = (21, 22, 23, 24) if MODE == "cumulative" else (11, 12, 13, 14)
+DECKS = [("no-luck", ["td", "sq", "ps"], SEEDS[0]), ("no-luck", ["td", "sq", "ps"], SEEDS[1]),
+         ("luck", ["td", "sq", "ps", "rho", "pm1"], SEEDS[2]),
+         ("luck", ["td", "sq", "ps", "rho", "pm1"], SEEDS[3])]
+OUT = "run3/" if MODE == "cumulative" else ""
 
 if __name__ == "__main__":
     gens = int(sys.argv[1]) if len(sys.argv) > 1 else 30
     pop_n = int(sys.argv[2]) if len(sys.argv) > 2 else 24
     workers = int(sys.argv[3]) if len(sys.argv) > 3 else 2
-    out = {"baselines": {}, "runs": {}}
-    logf = open("evolve.log", "w")
-    lineage = open("lineage.jsonl", "w")
+    out = {"mode": MODE, "baselines": {}, "runs": {}}
+    import os
+    if OUT:
+        os.makedirs(OUT, exist_ok=True)
+    logf = open(OUT + "evolve.log", "w")
+    lineage = open(OUT + "lineage.jsonl", "w")
     def log(s):
         print(s, flush=True); logf.write(s + "\n"); logf.flush()
     with Pool(workers) as pool:
         t0 = time.time()
         bt = train_set(999)
         for name, g in BASELINES.items():
-            r = measure(g, bt)
+            r = METER(g, bt)
             out["baselines"][name] = r
             log(f"baseline {name:17s} N^{r['score']:.3f}  lumens/watt N^{0.5-r['score']:.3f}  "
                 f"misses {r['fails']}")
@@ -120,5 +135,5 @@ if __name__ == "__main__":
             key = f"{deck_name}-{seed}"
             log(f"run {key}")
             out["runs"][key] = evolve(deck, gens, pop_n, seed, pool, log, key, lineage)
-            json.dump(out, open("results.json", "w"), indent=1)
+            json.dump(out, open(OUT + "results.json", "w"), indent=1)
         log(f"done in {time.time()-t0:.0f}s")

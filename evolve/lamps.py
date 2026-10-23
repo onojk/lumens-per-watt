@@ -237,6 +237,39 @@ def slope(xs, ys):
     mx = sum(xs) / len(xs); my = sum(ys) / len(ys)
     return sum((x - mx) * (y - my) for x, y in zip(xs, ys)) / sum((x - mx) ** 2 for x in xs)
 
+def measure_cumulative(gen, tests, abort_log2=None):
+    """Cumulative scoring (Run 3). tests = {bits: [N...]}, largest size first.
+
+    Watts are summed over every test number at a size: the cumulative total to darken
+    all of their secrets. Score (lower is better) = log2(cumulative watts / count) / bits,
+    averaged over the top two sizes, so lumens per watt is N^(1/2 - score).
+    Worst cases are kept alongside. Missing any number counts as not finished.
+    """
+    sizes = sorted(tests, reverse=True)
+    cum, worst, per_n, fails = {}, {}, {}, 0
+    for i, bits in enumerate(sizes):
+        cap = cap_for(bits)
+        if i == 0 and abort_log2 is not None:
+            cap = min(cap, int(2 ** abort_log2))
+        total, w, opsl = 0, 0, []
+        for N in tests[bits]:
+            ops, d = run(gen, N, cap)
+            if ops is None:
+                fails += 1
+                if i == 0:
+                    return {"score": 0.5 + 0.02 * fails, "cum": cum, "worst": worst,
+                            "per_n": per_n, "fails": fails}
+                ops = cap_for(bits)
+            total += ops; w = max(w, ops); opsl.append(ops)
+        cum[bits] = math.log2(total / len(tests[bits]))
+        worst[bits] = math.log2(max(w, 1))
+        per_n[bits] = opsl
+    top = sizes[:2]
+    score = sum(cum[b] / b for b in top) / len(top)
+    if fails:
+        score = max(score, 0.5) + 0.02 * fails
+    return {"score": score, "cum": cum, "worst": worst, "per_n": per_n, "fails": fails}
+
 def measure(gen, tests, abort_log2=None):
     """Worst case over tests = {bits: [N...]}, largest size first.
 
