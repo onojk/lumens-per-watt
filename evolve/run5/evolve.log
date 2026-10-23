@@ -1,0 +1,89 @@
+baseline lehman            N^0.322  lumens/watt N^0.178  misses 0
+baseline hart x480         N^0.274  lumens/watt N^0.226  misses 0
+baseline pollard-strassen  N^0.520  lumens/watt N^-0.020  misses 1
+baseline rho               N^0.266  lumens/watt N^0.234  misses 0
+run no-luck-41
+  gen   0  N41-0005 train N^0.328  gate N^0.520  NEW CHAMPION  champion N41-0005 N^0.520  trial to N^0.07 → square search [k=1.. up to N^0.30, window 3.56·N^0.09/√k] → square search [k=1.. up to N^0.33, window 2.69·N^0.20/√k, 4kN]
+  gen   1  N41-0005 train N^0.334  gate N^0.520  champion N41-0005 N^0.520  trial to N^0.07 → square search [k=1.. up to N^0.30, window 3.56·N^0.09/√k] → square search [k=1.. up to N^0.33, window 2.69·N^0.20/√k, 4kN]
+  gen   2  N41-0037 train N^0.309  gate N^0.520  champion N41-0005 N^0.520  trial to N^0.14 → square search [k=1.. up to N^0.30, window 3.54·N^0.12/√k, 4kN] → square search [k=1.. up to N^0.33, window 2.69·N^0.20/√k, 4kN]
+  gen   3  N41-0037 train N^0.300  gate N^0.520  champion N41-0005 N^0.520  trial to N^0.14 → square search [k=1.. up to N^0.30, window 3.54·N^0.12/√k, 4kN] → square search [k=1.. up to N^0.33, window 2.69·N^0.20/√k, 4kN]
+  gen   4  N41-0060 train N^0.297  gate N^0.300  NEW CHAMPION  champion N41-0060 N^0.300  trial to N^0.14 → square search [smooth k up to N^0.36, window 3.56·N^0.11/√k] → square search [k=1.. up to N^0.30, window 3.56·N^0.09/√k]
+  gen   5  N41-0060 train N^0.306  gate N^0.300  champion N41-0060 N^0.300  trial to N^0.14 → square search [smooth k up to N^0.36, window 3.56·N^0.11/√k] → square search [k=1.. up to N^0.30, window 3.56·N^0.09/√k]
+  gen   6  N41-0060 train N^0.306  gate N^0.300  champion N41-0060 N^0.300  trial to N^0.14 → square search [smooth k up to N^0.36, window 3.56·N^0.11/√k] → square search [k=1.. up to N^0.30, window 3.56·N^0.09/√k]
+  gen   7  N41-0106 train N^0.302  gate N^0.300  NEW CHAMPION  champion N41-0106 N^0.300  square search [smooth k up to N^0.36, window 3.56·N^0.11/√k] → trial to N^0.14 → square search [k=1.. up to N^0.30, window 3.56·N^0.09/√k] → trial to N^0.41
+  gen   8  N41-0122 train N^0.295  gate N^0.296  NEW CHAMPION  champion N41-0122 N^0.296  trial to N^0.14 → square search [smooth k up to N^0.36, window 3.04·N^0.12/√k, 4kN] → square search [k=1.. up to N^0.30, window 3.56·N^0.09/√k] → trial to N^0.14
+  gen   9  N41-0122 train N^0.295  gate N^0.296  champion N41-0122 N^0.296  trial to N^0.14 → square search [smooth k up to N^0.36, window 3.04·N^0.12/√k, 4kN] → square search [k=1.. up to N^0.30, window 3.56·N^0.09/√k] → trial to N^0.14
+  gen  10  N41-0148 train N^0.280  gate N^0.285  NEW CHAMPION  champion N41-0148 N^0.285  trial to N^0.14 → square search [k=24i up to N^0.36, window 3.11·N^0.11/√k, 4kN] → square search [k=1.. up to N^0.30, window 3.56·N^0.09/√k] → trial to N^0.14
+  gen  11  N41-0148 train N^0.279  gate N^0.285  champion N41-0148 N^0.285  trial to N^0.14 → square search [k=24i up to N^0.36, window 3.11·N^0.11/√k, 4kN] → square search [k=1.. up to N^0.30, window 3.56·N^0.09/√k] → trial to N^0.14
+  gen  12  N41-0148 train N^0.274  gate N^0.285  champion N41-0148 N^0.285  trial to N^0.14 → square search [k=24i up to N^0.36, window 3.11·N^0.11/√k, 4kN] → square search [k=1.. up to N^0.30, window 3.56·N^0.09/√k] → trial to N^0.14
+  gen  13  N41-0186 train N^0.277  gate N^0.282  NEW CHAMPION  champion N41-0186 N^0.282  trial to N^0.14 → square search [k=480i up to N^0.36, window 3.11·N^0.08/√k] → square search [k=1.. up to N^0.30, window 3.56·N^0.09/√k] → trial to N^0.14
+  gen  14  N41-0200 train N^0.270  gate N^0.285  champion N41-0186 N^0.282  square search [k=24i up to N^0.32, window 3.11·N^0.09/√k, 4kN] → square search [k=1.. up to N^0.30, window 3.56·N^0.09/√k] → trial to N^0.14
+  gen  15  N41-0200 train N^0.270  gate N^0.285  champion N41-0186 N^0.282  square search [k=24i up to N^0.32, window 3.11·N^0.09/√k, 4kN] → square search [k=1.. up to N^0.30, window 3.56·N^0.09/√k] → trial to N^0.14
+  gen  16  N41-0186 train N^0.278  gate N^0.282  champion N41-0186 N^0.282  trial to N^0.14 → square search [k=480i up to N^0.36, window 3.11·N^0.08/√k] → square search [k=1.. up to N^0.30, window 3.56·N^0.09/√k] → trial to N^0.14
+  gen  17  N41-0246 train N^0.274  gate N^0.285  champion N41-0186 N^0.282  trial to N^0.14 → square search [k=24i up to N^0.36, window 3.11·N^0.11/√k, 4kN] → square search [k=1.. up to N^0.30, window 3.39·N^0.09/√k, 4kN] → square search [k=1.. up to N^0.08, window 3.05·N^0.08/√k]
+  gen  18  N41-0246 train N^0.280  gate N^0.285  champion N41-0186 N^0.282  trial to N^0.14 → square search [k=24i up to N^0.36, window 3.11·N^0.11/√k, 4kN] → square search [k=1.. up to N^0.30, window 3.39·N^0.09/√k, 4kN] → square search [k=1.. up to N^0.08, window 3.05·N^0.08/√k]
+  gen  19  N41-0186 train N^0.276  gate N^0.282  champion N41-0186 N^0.282  trial to N^0.14 → square search [k=480i up to N^0.36, window 3.11·N^0.08/√k] → square search [k=1.. up to N^0.30, window 3.56·N^0.09/√k] → trial to N^0.14
+run no-luck-42
+  gen   0  N42-0001 train N^0.520  gate N^0.520  NEW CHAMPION  champion N42-0001 N^0.520  trial to N^0.06 → square search [k=1.. up to N^0.07, window 2.99·N^0.05/√k] → square search [k=1 up to N^0.05, window 2.45·N^0.12/√k]
+  gen   1  N42-0001 train N^0.520  gate N^0.520  champion N42-0001 N^0.520  trial to N^0.06 → square search [k=1.. up to N^0.07, window 2.99·N^0.05/√k] → square search [k=1 up to N^0.05, window 2.45·N^0.12/√k]
+  gen   2  N42-0001 train N^0.520  gate N^0.520  champion N42-0001 N^0.520  trial to N^0.06 → square search [k=1.. up to N^0.07, window 2.99·N^0.05/√k] → square search [k=1 up to N^0.05, window 2.45·N^0.12/√k]
+  gen   3  N42-0001 train N^0.520  gate N^0.520  champion N42-0001 N^0.520  trial to N^0.06 → square search [k=1.. up to N^0.07, window 2.99·N^0.05/√k] → square search [k=1 up to N^0.05, window 2.45·N^0.12/√k]
+  gen   4  N42-0001 train N^0.520  gate N^0.520  champion N42-0001 N^0.520  trial to N^0.06 → square search [k=1.. up to N^0.07, window 2.99·N^0.05/√k] → square search [k=1 up to N^0.05, window 2.45·N^0.12/√k]
+  gen   5  N42-0001 train N^0.520  gate N^0.520  champion N42-0001 N^0.520  trial to N^0.06 → square search [k=1.. up to N^0.07, window 2.99·N^0.05/√k] → square search [k=1 up to N^0.05, window 2.45·N^0.12/√k]
+  gen   6  N42-0001 train N^0.520  gate N^0.520  champion N42-0001 N^0.520  trial to N^0.06 → square search [k=1.. up to N^0.07, window 2.99·N^0.05/√k] → square search [k=1 up to N^0.05, window 2.45·N^0.12/√k]
+  gen   7  N42-0001 train N^0.520  gate N^0.520  champion N42-0001 N^0.520  trial to N^0.06 → square search [k=1.. up to N^0.07, window 2.99·N^0.05/√k] → square search [k=1 up to N^0.05, window 2.45·N^0.12/√k]
+  gen   8  N42-0001 train N^0.520  gate N^0.520  champion N42-0001 N^0.520  trial to N^0.06 → square search [k=1.. up to N^0.07, window 2.99·N^0.05/√k] → square search [k=1 up to N^0.05, window 2.45·N^0.12/√k]
+  gen   9  N42-0001 train N^0.520  gate N^0.520  champion N42-0001 N^0.520  trial to N^0.06 → square search [k=1.. up to N^0.07, window 2.99·N^0.05/√k] → square search [k=1 up to N^0.05, window 2.45·N^0.12/√k]
+  gen  10  N42-0001 train N^0.520  gate N^0.520  champion N42-0001 N^0.520  trial to N^0.06 → square search [k=1.. up to N^0.07, window 2.99·N^0.05/√k] → square search [k=1 up to N^0.05, window 2.45·N^0.12/√k]
+  gen  11  N42-0001 train N^0.520  gate N^0.520  champion N42-0001 N^0.520  trial to N^0.06 → square search [k=1.. up to N^0.07, window 2.99·N^0.05/√k] → square search [k=1 up to N^0.05, window 2.45·N^0.12/√k]
+  gen  12  N42-0001 train N^0.520  gate N^0.520  champion N42-0001 N^0.520  trial to N^0.06 → square search [k=1.. up to N^0.07, window 2.99·N^0.05/√k] → square search [k=1 up to N^0.05, window 2.45·N^0.12/√k]
+  gen  13  N42-0001 train N^0.520  gate N^0.520  champion N42-0001 N^0.520  trial to N^0.06 → square search [k=1.. up to N^0.07, window 2.99·N^0.05/√k] → square search [k=1 up to N^0.05, window 2.45·N^0.12/√k]
+  gen  14  N42-0001 train N^0.520  gate N^0.520  champion N42-0001 N^0.520  trial to N^0.06 → square search [k=1.. up to N^0.07, window 2.99·N^0.05/√k] → square search [k=1 up to N^0.05, window 2.45·N^0.12/√k]
+  gen  15  N42-0001 train N^0.520  gate N^0.520  champion N42-0001 N^0.520  trial to N^0.06 → square search [k=1.. up to N^0.07, window 2.99·N^0.05/√k] → square search [k=1 up to N^0.05, window 2.45·N^0.12/√k]
+  gen  16  N42-0001 train N^0.520  gate N^0.520  champion N42-0001 N^0.520  trial to N^0.06 → square search [k=1.. up to N^0.07, window 2.99·N^0.05/√k] → square search [k=1 up to N^0.05, window 2.45·N^0.12/√k]
+  gen  17  N42-0001 train N^0.520  gate N^0.520  champion N42-0001 N^0.520  trial to N^0.06 → square search [k=1.. up to N^0.07, window 2.99·N^0.05/√k] → square search [k=1 up to N^0.05, window 2.45·N^0.12/√k]
+  gen  18  N42-0001 train N^0.520  gate N^0.520  champion N42-0001 N^0.520  trial to N^0.06 → square search [k=1.. up to N^0.07, window 2.99·N^0.05/√k] → square search [k=1 up to N^0.05, window 2.45·N^0.12/√k]
+  gen  19  N42-0001 train N^0.520  gate N^0.520  champion N42-0001 N^0.520  trial to N^0.06 → square search [k=1.. up to N^0.07, window 2.99·N^0.05/√k] → square search [k=1 up to N^0.05, window 2.45·N^0.12/√k]
+run luck-43
+  gen   0  L43-0003 train N^0.258  gate N^0.261  NEW CHAMPION  champion L43-0003 N^0.261  rho [c=7, gcd every 4, start 3] → trial to N^0.22 → trial to N^0.12
+  gen   1  L43-0018 train N^0.263  gate N^0.266  champion L43-0003 N^0.261  rho [c=10, gcd every 4] → trial to N^0.22 → trial to N^0.12
+  gen   2  L43-0018 train N^0.261  gate N^0.266  champion L43-0003 N^0.261  rho [c=10, gcd every 4] → trial to N^0.22 → trial to N^0.12
+  gen   3  L43-0003 train N^0.258  gate N^0.261  champion L43-0003 N^0.261  rho [c=7, gcd every 4, start 3] → trial to N^0.22 → trial to N^0.12
+  gen   4  L43-0060 train N^0.255  gate N^0.266  champion L43-0003 N^0.261  rho [c=10, gcd every 4] → trial to N^0.29 → trial to N^0.11
+  gen   5  L43-0084 train N^0.261  gate N^0.265  champion L43-0003 N^0.261  rho [c=10, gcd every 6] → trial to N^0.22 → trial to N^0.15
+  gen   6  L43-0003 train N^0.256  gate N^0.261  champion L43-0003 N^0.261  rho [c=7, gcd every 4, start 3] → trial to N^0.22 → trial to N^0.12
+  gen   7  L43-0102 train N^0.263  gate N^0.265  champion L43-0003 N^0.261  rho [c=10, gcd every 6] → trial to N^0.15 → trial to N^0.22
+  gen   8  L43-0003 train N^0.262  gate N^0.261  champion L43-0003 N^0.261  rho [c=7, gcd every 4, start 3] → trial to N^0.22 → trial to N^0.12
+  gen   9  L43-0142 train N^0.260  gate N^0.264  champion L43-0003 N^0.261  rho [c=15, gcd every 3, start 3] → trial to N^0.11 → rho [c=2, gcd every 128, x^8, start 6] → trial to N^0.22
+  gen  10  L43-0142 train N^0.259  gate N^0.264  champion L43-0003 N^0.261  rho [c=15, gcd every 3, start 3] → trial to N^0.11 → rho [c=2, gcd every 128, x^8, start 6] → trial to N^0.22
+  gen  11  L43-0142 train N^0.259  gate N^0.264  champion L43-0003 N^0.261  rho [c=15, gcd every 3, start 3] → trial to N^0.11 → rho [c=2, gcd every 128, x^8, start 6] → trial to N^0.22
+  gen  12  L43-0142 train N^0.266  gate N^0.264  champion L43-0003 N^0.261  rho [c=15, gcd every 3, start 3] → trial to N^0.11 → rho [c=2, gcd every 128, x^8, start 6] → trial to N^0.22
+  gen  13  L43-0003 train N^0.262  gate N^0.261  champion L43-0003 N^0.261  rho [c=7, gcd every 4, start 3] → trial to N^0.22 → trial to N^0.12
+  gen  14  L43-0142 train N^0.261  gate N^0.264  champion L43-0003 N^0.261  rho [c=15, gcd every 3, start 3] → trial to N^0.11 → rho [c=2, gcd every 128, x^8, start 6] → trial to N^0.22
+  gen  15  L43-0213 train N^0.262  gate N^0.266  champion L43-0003 N^0.261  rho [c=22, gcd every 4, start 3] → rho [c=3, gcd every 128, x^4, start 6] → trial to N^0.22
+  gen  16  L43-0213 train N^0.252  gate N^0.266  champion L43-0003 N^0.261  rho [c=22, gcd every 4, start 3] → rho [c=3, gcd every 128, x^4, start 6] → trial to N^0.22
+  gen  17  L43-0213 train N^0.260  gate N^0.266  champion L43-0003 N^0.261  rho [c=22, gcd every 4, start 3] → rho [c=3, gcd every 128, x^4, start 6] → trial to N^0.22
+  gen  18  L43-0213 train N^0.263  gate N^0.266  champion L43-0003 N^0.261  rho [c=22, gcd every 4, start 3] → rho [c=3, gcd every 128, x^4, start 6] → trial to N^0.22
+  gen  19  L43-0282 train N^0.255  gate N^0.262  champion L43-0003 N^0.261  rho [c=8, gcd every 3] → rho [c=22, gcd every 4, start 3] → p−1 [B=N^0.11] → trial to N^0.22
+run luck-44
+  gen   0  L44-0009 train N^0.260  gate N^0.261  NEW CHAMPION  champion L44-0009 N^0.261  rho [c=6, gcd every 128, start 6] → square search [k=1 up to N^0.44, window 2.45·N^0.29/√k]
+  gen   1  L44-0009 train N^0.263  gate N^0.261  champion L44-0009 N^0.261  rho [c=6, gcd every 128, start 6] → square search [k=1 up to N^0.44, window 2.45·N^0.29/√k]
+  gen   2  L44-0034 train N^0.264  gate N^0.268  champion L44-0009 N^0.261  p−1 [B=N^0.24] → rho [c=3, gcd every 16, x^6, start 9] → trial to N^0.13
+  gen   3  L44-0046 train N^0.264  gate N^0.269  champion L44-0009 N^0.261  rho [c=7, gcd every 16, x^4, start 3] → rho [c=6, gcd every 128, start 6] → trial to N^0.07
+  gen   4  L44-0009 train N^0.265  gate N^0.261  champion L44-0009 N^0.261  rho [c=6, gcd every 128, start 6] → square search [k=1 up to N^0.44, window 2.45·N^0.29/√k]
+  gen   5  L44-0080 train N^0.261  gate N^0.259  NEW CHAMPION  champion L44-0080 N^0.259  rho [c=3, gcd every 128, start 9] → square search [k=1 up to N^0.44, window 2.45·N^0.29/√k] → rho [c=7, gcd every 128, x^4, start 4] → square search [k=1 up to N^0.37, window 2.45·N^0.26/√k, 4kN]
+  gen   6  L44-0094 train N^0.264  gate N^0.265  champion L44-0080 N^0.259  rho [c=7, gcd every 16, start 6] → square search [k=1 up to N^0.44, window 2.45·N^0.29/√k] → p−1 [B=N^0.07]
+  gen   7  L44-0101 train N^0.256  gate N^0.261  champion L44-0080 N^0.259  rho [c=6, gcd every 128, start 6] → square search [k=1 up to N^0.44, window 2.48·N^0.29/√k, 4kN] → p−1 [B=N^0.21] → square search [k=1 up to N^0.44, window 2.45·N^0.29/√k]
+  gen   8  L44-0080 train N^0.257  gate N^0.259  champion L44-0080 N^0.259  rho [c=3, gcd every 128, start 9] → square search [k=1 up to N^0.44, window 2.45·N^0.29/√k] → rho [c=7, gcd every 128, x^4, start 4] → square search [k=1 up to N^0.37, window 2.45·N^0.26/√k, 4kN]
+  gen   9  L44-0101 train N^0.252  gate N^0.261  champion L44-0080 N^0.259  rho [c=6, gcd every 128, start 6] → square search [k=1 up to N^0.44, window 2.48·N^0.29/√k, 4kN] → p−1 [B=N^0.21] → square search [k=1 up to N^0.44, window 2.45·N^0.29/√k]
+  gen  10  L44-0080 train N^0.259  gate N^0.259  champion L44-0080 N^0.259  rho [c=3, gcd every 128, start 9] → square search [k=1 up to N^0.44, window 2.45·N^0.29/√k] → rho [c=7, gcd every 128, x^4, start 4] → square search [k=1 up to N^0.37, window 2.45·N^0.26/√k, 4kN]
+  gen  11  L44-0157 train N^0.261  gate N^0.261  champion L44-0080 N^0.259  rho [c=4, gcd every 128, start 5] → square search [k=1 up to N^0.44, window 2.45·N^0.29/√k] → rho [c=7, gcd every 128, x^4, start 4] → square search [k=1 up to N^0.37, window 2.45·N^0.26/√k, 4kN]
+  gen  12  L44-0080 train N^0.255  gate N^0.259  champion L44-0080 N^0.259  rho [c=3, gcd every 128, start 9] → square search [k=1 up to N^0.44, window 2.45·N^0.29/√k] → rho [c=7, gcd every 128, x^4, start 4] → square search [k=1 up to N^0.37, window 2.45·N^0.26/√k, 4kN]
+  gen  13  L44-0194 train N^0.258  gate N^0.261  champion L44-0080 N^0.259  rho [c=9, gcd every 128, start 3] → rho [c=6, gcd every 16, start 6] → trial to N^0.24
+  gen  14  L44-0194 train N^0.261  gate N^0.261  champion L44-0080 N^0.259  rho [c=9, gcd every 128, start 3] → rho [c=6, gcd every 16, start 6] → trial to N^0.24
+  gen  15  L44-0213 train N^0.262  gate N^0.261  champion L44-0080 N^0.259  rho [c=4, gcd every 128, start 5] → rho [c=7, gcd every 128, x^4, start 4] → square search [k=1 up to N^0.37, window 2.45·N^0.26/√k, 4kN]
+  gen  16  L44-0231 train N^0.255  gate N^0.255  NEW CHAMPION  champion L44-0231 N^0.255  rho [c=5, gcd every 64, start 3] → rho [c=3, gcd every 24, start 6] → trial to N^0.24
+  gen  17  L44-0080 train N^0.260  gate N^0.259  champion L44-0231 N^0.255  rho [c=3, gcd every 128, start 9] → square search [k=1 up to N^0.44, window 2.45·N^0.29/√k] → rho [c=7, gcd every 128, x^4, start 4] → square search [k=1 up to N^0.37, window 2.45·N^0.26/√k, 4kN]
+  gen  18  L44-0080 train N^0.263  gate N^0.259  champion L44-0231 N^0.255  rho [c=3, gcd every 128, start 9] → square search [k=1 up to N^0.44, window 2.45·N^0.29/√k] → rho [c=7, gcd every 128, x^4, start 4] → square search [k=1 up to N^0.37, window 2.45·N^0.26/√k, 4kN]
+  gen  19  L44-0272 train N^0.256  gate N^0.244  NEW CHAMPION  champion L44-0272 N^0.244  p−1 [B=N^0.21] → rho [c=3, gcd every 128, start 9] → square search [k=1 up to N^0.44, window 2.45·N^0.29/√k] → square search [k=1 up to N^0.40, window 2.45·N^0.26/√k, 4kN]
+done in 264s
