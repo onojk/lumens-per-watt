@@ -76,3 +76,19 @@ The op unit is the one rho pays: one modular multiply of N-sized numbers = 1 op.
 ## 2026-10-23 — qs in lampcore (Stage 4)
 
 - `lampcore/src/qs.rs` is a line-by-line port of `evolve/qs.py`, with every charge made at the same point and in the same chunk, so even a run cut off by the cap stops in the same phase with the same tests and hits. No new charges. `parity.py` matches 692 qs pairs on ops, factor, tests, hits, stage, k, and the per-phase breakdown. These cover the acceptance numbers, the Stage 2 numbers at 66–78 bits, 12 numbers that force a retry, gene variants, qs after another stage, and a low cap. The 3,312 existing pairs still match. `qs_accept.py 8 rust` passes 240/240 with exact accounting. Rust is about 7× faster than the numpy-backed Python at 72–78 bits. The `kc` default is now 16 in both cores (it was 1 in Python; every committed run set it explicitly).
+
+## 2026-10-23 — Bugs only random genomes caught
+
+- Hand-picked parity cases missed three bugs; random genomes from the Run 6 decks found them.
+  Parity now covers each, and none changed a committed result.
+- **Two qs stages, one trace.** With qs twice in a genome, Python's per-phase trace kept only
+  the last stage (lampcore's added up). Ops and factors always matched; only the per-phase
+  report was wrong. The trace now accumulates over the run.
+- **Block flash allocated before charging.** At 78–84 bits a random block size can mean
+  2^30+ leaves, so lampcore built product trees of tens to hundreds of GB before charging a
+  single op. Both cores now stop before allocating when the trees' minimum charge exceeds
+  the budget (the run would miss anyway).
+- **p − 1 sieve size and overflow.** A large bound made lampcore sieve ~2 GB per worker (now
+  bit-packed, and both cores skip the sieve when B/ln B alone exceeds the budget). The
+  prime-power loop's `pk * p` would wrap in u64 for primes past 2^32 (now u128). No cap used
+  so far reaches primes that large, so the wrap never affected a result.

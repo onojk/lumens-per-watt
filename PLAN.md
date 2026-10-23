@@ -107,6 +107,14 @@ numbers, the parity count, and the old-vs-new table.
 - **Run 6** (the plan's original Stage 5): island model (4 islands, top-2 migration
   every 5 generations, ring, 2-slot diversity reserve) with qs in the deck,
   evolve/run6/, seeds 51-54 (51-52 no-luck, 53-54 luck), 4 islands x 16 genomes per run.
+  - Harness: evolve/evolve_run6.py, 20 generations. Per island per generation: the top
+    two survive (plus the island's gate champion if it fell out); the diversity reserve is
+    two more survivors, the best-ranked genomes that solved every training number and whose
+    card set (set of stage types) differs from every elite's and each other's, with fresh
+    random genomes filling any empty slot; after every 5th generation each island's top
+    two are copied into the next island (ring), replacing two children; the rest are bred
+    from the top half (30% crossover). Every island's best goes through the gate; the run
+    champion is the best gate score seen. Coverage rule off.
   - Prerequisites (done): qs chainable and in both decks (no-luck: td, sq, ps, qs;
     luck: td, sq, ps, rho, pm1, qs; fine deck on); rand_stage and mutation ranges
     kc 1..32 (int), bc 0.8..3.0, mc 1..12, tc 1.0..3.5; parity on random genomes with qs;
@@ -133,7 +141,8 @@ numbers, the parity count, and the old-vs-new table.
     Python's p - 1 sieves bounds past 2^26 a segment at a time. Parity covers each.
   - ACCEPT: compare the run champions against qs-default ({kc 16, bc 1.5, mc 4.0,
     tc 2.0}), L44-0272, and rho on the Stage 2 numbers at 72 and 78 bits
-    (semiprimes_pq(bits, 80, 990000 + bits)) plus 80 fresh 84-bit numbers, cap 2^28.
+    (semiprimes_pq(bits, 80, 990000 + bits)) plus 80 fresh 84-bit numbers
+    (semiprimes_pq(84, 80, 1300084)), cap 2^28; evolve/run6_accept.py, written before the run.
     Per size, report log2(mean ops) and the worst case, each with a 95% bootstrap
     interval (revalidate.py's: random.Random(2026) per cell, 10,000 resamples, tails at
     index 250/9749; for the worst case, the max of each resample). Note qs already beats
