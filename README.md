@@ -55,6 +55,70 @@ python3 ancestry.py N11-0076   # family line of any named genome
 
 Outputs: `evolve.log`, `results.json`, `lineage.jsonl`, `validation.json`. Runs are seeded, so the same commands reproduce the same numbers on any machine.
 
+## Run 4: luck-by-design cards and the hit-rate meter (Oct 22, 2026)
+
+Same cumulative scoreboard as Run 3, fresh seeds (31–34), with new cards and a new meter column. Outputs in `evolve/run4/`.
+
+```
+cd evolve
+python3 evolve.py 25 20 8 cumulative fine
+python3 validate.py run4
+python3 curves.py run4 40 120 8
+python3 ancestry.py run4
+```
+
+**New cards**
+
+- **Ranked multipliers** (square search mode `ks`): multipliers are taken in chunks of `r` (a gene), each chunk scored Knuth–Schroeppel-style for how square-friendly kN is mod small primes, and tried best-first. Scoring costs one op per small prime per candidate, charged to the meter.
+- **Rho degree and start**: genes `d` (x^d + c, d even; costs about log₂d + popcount(d) − 1 multiplies per step) and `x0` (starting value).
+
+**New meter column: hit rate.** Every lamp counts *tests* (checks against its invariant event: a division, a square test, a gcd) and *hits* (the event firing, useful or not). Hit rate = hits ÷ tests separates "luckier per test" from "cheaper per test".
+
+**The cards tested alone**, cumulative at 42 and 48 bits:
+
+| Bulb | Mean ops at 48 bits | Hit rate |
+|---|---|---|
+| Hart ×480, plain order | 2^13.1 | 2^-12.2 |
+| Hart ×480, ranked multipliers | 2^17.0 | 2^-12.2 |
+| Rho x² | 2^12.6 | 2^-4.7 |
+| Rho x⁴ | 2^13.3 | 2^-4.5 |
+| Rho x⁶ | 2^13.4 | 2^-4.2 |
+
+- **Ranking multipliers doesn't pay for a Hart-style search.** Scoring a candidate costs 14 ops; just trying it costs 1. The ranking also left the hit rate unchanged, so it predicts the wrong thing for this method. Luck by design only pays when a test is much more expensive than predicting it (as in the quadratic sieve, where one multiplier choice feeds millions of sieve steps).
+- **Higher-degree rho is luckier per test but costs more per step**, so its cumulative total gets worse: the two levers trading against each other.
+
+**Run 4 validation** (12 fresh semiprimes each at 36–54 bits):
+
+| Algorithm | Cumulative score | Hit rate | Mean ops at 48 / 54 bits | Worst at 54 bits |
+|---|---|---|---|---|
+| Rho | N^0.267 | 2^-5.3 | 2^12.9 / 2^14.3 | 2^15.4 |
+| Hart ×480 | N^0.264 | 2^-13.0 | 2^12.3 / 2^14.7 | 2^16.8 |
+| **Champion no-luck-31** | **N^0.253** | 2^-12.7 | 2^11.5 / 2^14.4 | 2^16.0 |
+| Champion no-luck-32 | N^0.263 | 2^-12.9 | 2^12.4 / 2^14.5 | 2^16.4 |
+| Champion luck-33 | N^0.262 | 2^-7.1 | 2^12.9 / 2^13.8 | 2^14.6 |
+| Champion luck-34 | N^0.265 | 2^-13.0 | 2^12.5 / 2^14.6 | 2^15.6 |
+
+Champions: no-luck-31 = ×720 square search → block flash → a small ranked-multiplier tail; luck-33 = rho (c = 13, gcd every 13, start 4) → short trial division; luck-34 = ×24 square search → p − 1 → block flash.
+
+What it shows:
+
+- **Evolution mostly declined the new cards.** No champion uses a higher-degree rho. Ranked multipliers survive only as a small tail stage. The best no-luck score ties Run 3's (N^0.253).
+- **The luck deck chose a luck-free bulb.** Champion luck-34 is a square search with p − 1 and block-flash backups, not rho, and it beats rho on lumens per watt at 40 bits (2^10.0 vs 2^9.1).
+- **Luck-33 looked like a better rho, but a bigger sample says not really.** Its 54-bit mean on the 12 validation numbers was 2^13.8 vs rho's 2^14.3. On 80 fresh 54-bit numbers it was 2^14.23 vs 2^14.40 (about 12% fewer ops, same worst case). Rho with the same constant but the default start showed no gain, and theory says a starting value shouldn't help on average, so this is treated as within noise.
+- **Low hit rate doesn't mean unlucky.** Luck-33's hit rate (2^-7.1) is lower than rho's (2^-5.3) only because it runs a gcd test every 13 steps instead of every 64, so it makes more, cheaper tests.
+
+Curves (`curves.py`, 120 planted secrets at 40 bits):
+
+| Algorithm | Median watts | Mean watts | Worst watts | Lumens per watt |
+|---|---|---|---|---|
+| Champion no-luck-31 | 2^9.3 | 2^9.9 | 2^12.6 | 2^10.1 |
+| Champion no-luck-32 | 2^9.5 | 2^10.0 | 2^12.6 | 2^10.0 (1 of 120 never dark) |
+| Champion luck-34 | 2^9.5 | 2^10.0 | 2^12.2 | 2^10.0 |
+| Champion luck-33 | 2^10.6 | 2^10.9 | 2^12.3 | 2^9.1 |
+| Rho | 2^11.1 | 2^10.9 | 2^12.3 | 2^9.1 |
+
+"Never dark" means the bulb's stages stop short of √N, so a secret sitting there is never caught. That secret adds no lumens; the curves tool now counts it instead of crashing.
+
 ## Run 3: cumulative scoreboard, started over (Oct 22, 2026)
 
 Same deck and gate as Run 2, fresh seeds (21–24), but scored on the **cumulative total**: watts summed over every test number (see `NOTES.md`). Outputs in `evolve/run3/`.

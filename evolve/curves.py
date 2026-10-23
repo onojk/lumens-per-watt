@@ -28,11 +28,16 @@ def job(args):
     return ops
 
 def curve(gen, Ns, pool):
-    ops = sorted(pool.map(job, [(gen, N) for N in Ns]))
+    """A secret the algorithm never catches stays dark-less: it is counted in
+    `never_dark`, adds no lumens, and is left out of the watt statistics."""
+    raw = pool.map(job, [(gen, N) for N in Ns])
+    ops = sorted(o for o in raw if o is not None)
+    never = len(raw) - len(ops)
     total = sum(ops)
     stations = 2 ** (BITS / 2)                 # candidates for p, about sqrt(N)
     return {
         "darkening_watts": ops,
+        "never_dark": never,
         "cumulative_watts": total,
         "cumulative_lumens": stations * len(ops),
         "lumens_per_watt_log2": math.log2(stations * len(ops) / total),
@@ -57,6 +62,7 @@ if __name__ == "__main__":
             c["genome"] = g
             out["curves"][name] = c
             print(f"{name:22s} mean 2^{c['mean_log2']:.1f}  median 2^{c['median_log2']:.1f}  "
-                  f"worst 2^{c['worst_log2']:.1f}  lumens/watt 2^{c['lumens_per_watt_log2']:.1f}",
+                  f"worst 2^{c['worst_log2']:.1f}  lumens/watt 2^{c['lumens_per_watt_log2']:.1f}"
+                  f"{'  never dark ' + str(c['never_dark']) + '/' + str(COUNT) if c['never_dark'] else ''}",
                   flush=True)
     json.dump(out, open(DIR + "curves.json", "w"), indent=1)

@@ -1,8 +1,10 @@
 """Evolve factoring algorithms, scored by lumens per watt.
 
-  python3 evolve.py GENS POP WORKERS [cumulative|worst]
+  python3 evolve.py GENS POP WORKERS [cumulative|worst] [fine]
   cumulative (default, Run 3): score = cumulative total watts over every test number;
                                outputs go to run3/
+  cumulative fine (Run 4):     same score, plus the luck-by-design cards and the hit-rate
+                               meter; outputs go to run4/
   worst (Run 2):               score = worst case; outputs go to this folder
 
 Meter (v2):
@@ -23,7 +25,10 @@ GATE = {48: semiprimes(48, 12, 4848)}
 def train_set(seed):
     return {b: semiprimes(b, PER_SIZE, seed * 1000 + b) for b in SIZES}
 
-MODE = sys.argv[4] if len(sys.argv) > 4 else "cumulative"     # "cumulative" (Run 3) or "worst" (Run 2)
+MODE = sys.argv[4] if len(sys.argv) > 4 else "cumulative"     # "cumulative" (Run 3+) or "worst" (Run 2)
+FINE = len(sys.argv) > 5 and sys.argv[5] == "fine"             # Run 4: luck-by-design cards
+if FINE:
+    use_fine_deck()
 METER = measure_cumulative if MODE == "cumulative" else measure
 WORST_KEY = "worst" if MODE == "cumulative" else "ys"
 
@@ -77,6 +82,8 @@ def evolve(deck, gens, pop_n, seed, pool, log, key, lineage):
                 "parents": ind["parents"], "op": ind["op"], "born": ind["born"],
                 "train": round(r["score"], 4),
                 "worst_top": round(r.get(WORST_KEY, {}).get(SIZES[-1], 0), 2),
+                "hit_rate_log2": (round(r["luck"]["hit_rate_log2"], 2)
+                                  if r.get("luck") and r["luck"]["hit_rate_log2"] is not None else None),
                 "gate": round(gate["score"], 4) if rank == 0 else None,
                 "champion": ind["name"] == champ["name"],
                 "describe": describe(ind["genes"]), "genes": ind["genes"]}) + "\n")
@@ -105,11 +112,11 @@ def evolve(deck, gens, pop_n, seed, pool, log, key, lineage):
         pop = nxt
     return hist
 
-SEEDS = (21, 22, 23, 24) if MODE == "cumulative" else (11, 12, 13, 14)
+SEEDS = (31, 32, 33, 34) if FINE else (21, 22, 23, 24) if MODE == "cumulative" else (11, 12, 13, 14)
 DECKS = [("no-luck", ["td", "sq", "ps"], SEEDS[0]), ("no-luck", ["td", "sq", "ps"], SEEDS[1]),
          ("luck", ["td", "sq", "ps", "rho", "pm1"], SEEDS[2]),
          ("luck", ["td", "sq", "ps", "rho", "pm1"], SEEDS[3])]
-OUT = "run3/" if MODE == "cumulative" else ""
+OUT = "run4/" if FINE else "run3/" if MODE == "cumulative" else ""
 
 if __name__ == "__main__":
     gens = int(sys.argv[1]) if len(sys.argv) > 1 else 30

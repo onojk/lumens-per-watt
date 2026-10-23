@@ -6,9 +6,11 @@ from evolve import BASELINES
 
 # python3 validate.py            Run 2 (worst-case), files in this folder
 # python3 validate.py run3       Run 3 (cumulative), files in run3/
+# python3 validate.py run4       Run 4 (cumulative, fine deck), files in run4/
 RUN = sys.argv[1] if len(sys.argv) > 1 else ""
 DIR = RUN + "/" if RUN else ""
-METER = measure_cumulative if RUN == "run3" else measure
+CUMULATIVE = RUN in ("run3", "run4")
+METER = measure_cumulative if CUMULATIVE else measure
 
 VSIZES = [36, 42, 48, 54]
 TESTS = {b: semiprimes(b, 12, 777000 + b) for b in VSIZES}
@@ -35,10 +37,12 @@ if __name__ == "__main__":
         r = METER(g, TESTS)
         r["genome"] = g
         out[name] = r
-        if RUN == "run3":
+        if CUMULATIVE:
             r["ys"] = r["worst"]
+            L = r.get("luck") or {}
+            hr = f"2^{L['hit_rate_log2']:.1f}" if L.get("hit_rate_log2") is not None else "—"
             print(f"{name:22s} N^{r['score']:.3f}  lumens/watt N^{0.5-r['score']:.3f}  "
-                  f"misses {r['fails']}  "
+                  f"misses {r['fails']}  hit rate {hr}  "
                   f"mean log2 ops {[round(r['cum'][b], 1) for b in VSIZES if b in r['cum']]}  "
                   f"worst {[round(r['worst'][b], 1) for b in VSIZES if b in r['worst']]}", flush=True)
             r.pop("per_n", None)

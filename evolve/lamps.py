@@ -10,13 +10,25 @@ class Budget(Exception):
     pass
 
 class Meter:
+    """Counts watts (ops), plus tests and hits for the luck meter.
+
+    A test is one check against the method's invariant event (does this station divide N,
+    is this x^2 - kN a square, does this gcd exceed 1). A hit is the event firing, useful
+    or not. Hit rate = hits / tests: how lucky each test is, apart from how cheap it is.
+    """
     def __init__(self, cap):
         self.ops = 0
         self.cap = cap
+        self.tests = 0
+        self.hits = 0
     def tick(self, k=1):
         self.ops += k
         if self.ops > self.cap:
             raise Budget()
+    def test(self, hit):
+        self.tests += 1
+        if hit:
+            self.hits += 1
 
 def is_square(n):
     if n < 0:
@@ -34,7 +46,9 @@ def lamp_td(N, g, m):
     d = 3
     while d <= lim:
         m.tick()
-        if N % d == 0:
+        hit = N % d == 0
+        m.test(hit)
+        if hit:
             return d
         d += 2
     return None
@@ -63,11 +77,39 @@ def multipliers(mode, K, mult):
             if k not in seen:
                 yield k
 
+KS_PRIMES = [3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
+def ks_score(k, N):
+    """Knuth–Schroeppel-style score: how square-friendly kN is mod small primes."""
+    kN = k * N
+    r8 = kN % 8
+    s = (2.0 if r8 == 1 else 1.0 if r8 == 5 else 0.5) * math.log(2) - 0.5 * math.log(k)
+    for p in KS_PRIMES:
+        if k % p == 0:
+            s += math.log(p) / p
+        elif pow(kN % p, (p - 1) // 2, p) == 1:
+            s += 2 * math.log(p) / (p - 1)
+    return s
+
+def ks_order(N, K, mult, chunk, m):
+    """Luck by design: multipliers mult*i, i <= K, taken in chunks of `chunk`.
+
+    Each chunk is scored (one op per small prime per candidate, charged when the chunk
+    is reached) and tried best-first, so ranking cost is only paid as it's used.
+    """
+    i = 1
+    while i <= K:
+        block = [mult * j for j in range(i, min(K, i + chunk - 1) + 1)]
+        m.tick(len(block) * len(KS_PRIMES))
+        block.sort(key=lambda k: -ks_score(k, N))
+        yield from block
+        i += chunk
+
 def lamp_sq(N, g, m):
     """Square search on kN: Fermat (k=1, wide window), Lehman (windows ~N^(1/6)/sqrt k),
     Hart (window 1). Every test of x^2 - kN is one op."""
     K = max(1, int(N ** g["k"]))
-    for k in multipliers(g["mode"], K, g.get("mult", 1)):
+    ks = ks_order(N, K, g.get("mult", 1), g.get("r", 16), m) if g["mode"] == "ks" else None
+    for k in (ks if ks is not None else multipliers(g["mode"], K, g.get("mult", 1))):
         kN = k * N
         if g["ksq"]:
             kN *= 4
@@ -78,6 +120,7 @@ def lamp_sq(N, g, m):
         for x in range(x0, x0 + W):
             m.tick()
             ok, y = is_square(x * x - kN)
+            m.test(ok)
             if ok:
                 d = math.gcd(x - y, N)
                 if 1 < d < N:
@@ -85,30 +128,42 @@ def lamp_sq(N, g, m):
     return None
 
 def lamp_rho(N, g, m):
-    """Brent rho, x -> x^2 + c, gcds batched every b steps."""
+    """Brent rho, x -> x^d + c (d = 2 by default), gcds batched every b steps.
+
+    Luck-by-design genes: degree d (even) and start x0. x^d costs about
+    log2(d) + popcount(d) - 1 multiplies per step instead of 1.
+    """
     c = g["c"]
     b = max(1, g["b"])
-    y, r, q, G = 2, 1, 1, 1
+    d = g.get("d", 2)
+    step_cost = max(1, d.bit_length() - 1 + bin(d).count("1") - 1)
+    if d == 2:
+        f = lambda v: (v * v + c) % N
+    else:
+        f = lambda v: (pow(v, d, N) + c) % N
+    y, r, q, G = g.get("x0", 2), 1, 1, 1
     while True:
         x = y
         for _ in range(r):
-            y = (y * y + c) % N; m.tick()
+            y = f(y); m.tick(step_cost)
         k = 0
         while k < r and G == 1:
             ys = y
             for _ in range(min(b, r - k)):
-                y = (y * y + c) % N
+                y = f(y)
                 q = q * abs(x - y) % N
-                m.tick(2)
+                m.tick(step_cost + 1)
             G = math.gcd(q, N); m.tick()
+            m.test(G != 1)
             k += b
         r *= 2
         if G != 1:
             break
     if G == N:
         while True:
-            ys = (ys * ys + c) % N; m.tick()
+            ys = f(ys); m.tick(step_cost)
             G = math.gcd(abs(x - ys), N); m.tick()
+            m.test(G != 1)
             if G > 1:
                 break
     return G if 1 < G < N else None
@@ -134,6 +189,7 @@ def lamp_pm1(N, g, m):
             pk *= p
         a = pow(a, pk, N); m.tick(max(1, pk.bit_length()))
     d = math.gcd(a - 1, N); m.tick()
+    m.test(d != 1)
     return d if 1 < d < N else None
 
 from blockflash import lamp_ps
@@ -146,16 +202,29 @@ def rand_stage(kind, rng):
     if kind == "td":
         return {"t": "td", "a": rng.uniform(0.05, 0.5)}
     if kind == "sq":
-        return {"t": "sq", "mode": rng.choice(["one", "seq", "seqm", "smooth"]),
+        return {"t": "sq", "mode": rng.choice(SQ_MODES),
                 "mult": rng.choice([1, 2, 6, 12, 30, 60, 120, 480]),
                 "k": rng.uniform(0.0, 0.5), "w": rng.uniform(0.0, 0.5),
-                "c": rng.uniform(0.1, 4.0), "ksq": rng.random() < 0.5}
+                "c": rng.uniform(0.1, 4.0), "ksq": rng.random() < 0.5,
+                **({"r": rng.choice([4, 8, 16, 32, 64])} if FINE_DECK else {})}
     if kind == "rho":
-        return {"t": "rho", "c": rng.randint(1, 9), "b": rng.choice([1, 4, 16, 64, 128])}
+        st = {"t": "rho", "c": rng.randint(1, 9), "b": rng.choice([1, 4, 16, 64, 128])}
+        if FINE_DECK:
+            st["d"] = rng.choice([2, 2, 4, 6, 8])
+            st["x0"] = rng.randint(2, 9)
+        return st
     if kind == "ps":
         return {"t": "ps", "a": rng.uniform(0.3, 0.55), "s": rng.uniform(0.1, 0.4),
                 "c": rng.uniform(0.25, 4.0)}
     return {"t": "pm1", "b": rng.uniform(0.05, 0.4)}
+
+FINE_DECK = False          # Run 4 turns on the luck-by-design cards
+SQ_MODES = ["one", "seq", "seqm", "smooth"]
+
+def use_fine_deck():
+    global FINE_DECK
+    FINE_DECK = True
+    SQ_MODES.append("ks")
 
 def rand_genome(deck, rng):
     return [rand_stage(rng.choice(deck), rng) for _ in range(rng.randint(1, 3))]
@@ -177,7 +246,9 @@ def mutate(gen, deck, rng):
                 lo, hi = (0.1, 6.0) if key == "c" else (0.0, 0.55)
                 s[key] = min(hi, max(lo, v + rng.gauss(0, 0.05 if key != "c" else 0.4)))
             elif key == "mode":
-                s[key] = rng.choice(["one", "seq", "seqm", "smooth"])
+                s[key] = rng.choice(SQ_MODES)
+            elif key == "d":
+                s[key] = rng.choice([2, 4, 6, 8])
             elif key == "mult":
                 s[key] = rng.choice([1, 2, 4, 6, 12, 24, 30, 60, 120, 240, 480, 720])
             elif isinstance(v, int):
@@ -200,15 +271,21 @@ def crossover(a, b, rng):
     child = a[:rng.randint(0, len(a))] + b[rng.randint(0, len(b)):]
     return [dict(s) for s in (child or a)][:4]
 
+LAST = {"tests": 0, "hits": 0}
+
 def run(gen, N, cap):
+    """Returns (ops, factor), or (None, None) on a miss. Test and hit counts of the
+    latest run are left in LAST for the luck meter."""
     m = Meter(cap)
     try:
         for s in gen:
             d = LAMPS[s["t"]](N, s, m)
             if d:
+                LAST["tests"], LAST["hits"] = m.tests, m.hits
                 return m.ops, d
     except Budget:
         pass
+    LAST["tests"], LAST["hits"] = m.tests, m.hits
     return None, None
 
 # ---- test semiprimes ---------------------------------------------------------
@@ -247,6 +324,7 @@ def measure_cumulative(gen, tests, abort_log2=None):
     """
     sizes = sorted(tests, reverse=True)
     cum, worst, per_n, fails = {}, {}, {}, 0
+    t_all, h_all, solved = 0, 0, 0
     for i, bits in enumerate(sizes):
         cap = cap_for(bits)
         if i == 0 and abort_log2 is not None:
@@ -254,12 +332,15 @@ def measure_cumulative(gen, tests, abort_log2=None):
         total, w, opsl = 0, 0, []
         for N in tests[bits]:
             ops, d = run(gen, N, cap)
+            t_all += LAST["tests"]; h_all += LAST["hits"]
             if ops is None:
                 fails += 1
                 if i == 0:
                     return {"score": 0.5 + 0.02 * fails, "cum": cum, "worst": worst,
-                            "per_n": per_n, "fails": fails}
+                            "per_n": per_n, "fails": fails, "luck": None}
                 ops = cap_for(bits)
+            else:
+                solved += 1
             total += ops; w = max(w, ops); opsl.append(ops)
         cum[bits] = math.log2(total / len(tests[bits]))
         worst[bits] = math.log2(max(w, 1))
@@ -268,7 +349,11 @@ def measure_cumulative(gen, tests, abort_log2=None):
     score = sum(cum[b] / b for b in top) / len(top)
     if fails:
         score = max(score, 0.5) + 0.02 * fails
-    return {"score": score, "cum": cum, "worst": worst, "per_n": per_n, "fails": fails}
+    luck = {"tests": t_all, "hits": h_all,
+            "hit_rate_log2": math.log2(h_all / t_all) if h_all and t_all else None,
+            "useful_share": solved / h_all if h_all else None}
+    return {"score": score, "cum": cum, "worst": worst, "per_n": per_n, "fails": fails,
+            "luck": luck}
 
 def measure(gen, tests, abort_log2=None):
     """Worst case over tests = {bits: [N...]}, largest size first.
@@ -308,10 +393,13 @@ def describe(gen):
         if s["t"] == "td":
             parts.append(f"trial to N^{s['a']:.2f}")
         elif s["t"] == "sq":
-            kk = {"one": "k=1", "seq": "k=1..", "seqm": f"k={s['mult']}i", "smooth": "smooth k"}[s["mode"]]
+            kk = {"one": "k=1", "seq": "k=1..", "seqm": f"k={s['mult']}i", "smooth": "smooth k",
+                  "ks": f"k={s['mult']}i ranked by {s.get('r', 16)}s"}[s["mode"]]
             parts.append(f"square search [{kk} up to N^{s['k']:.2f}, window {s['c']:.2f}·N^{s['w']:.2f}/√k{', 4kN' if s['ksq'] else ''}]")
         elif s["t"] == "rho":
-            parts.append(f"rho [c={s['c']}, gcd every {s['b']}]")
+            extra = (f", x^{s['d']}" if s.get("d", 2) != 2 else "") + \
+                    (f", start {s['x0']}" if s.get("x0", 2) != 2 else "")
+            parts.append(f"rho [c={s['c']}, gcd every {s['b']}{extra}]")
         elif s["t"] == "ps":
             parts.append(f"block flash [to N^{s['a']:.2f}, blocks {s['c']:.2f}·N^{s['s']:.2f}]")
         else:
