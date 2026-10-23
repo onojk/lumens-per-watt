@@ -92,6 +92,12 @@ The op unit is the one rho pays: one modular multiply of N-sized numbers = 1 op.
   bit-packed, and both cores skip the sieve when B/ln B alone exceeds the budget). The
   prime-power loop's `pk * p` would wrap in u64 for primes past 2^32 (now u128). No cap used
   so far reaches primes that large, so the wrap never affected a result.
+- **qs sieve count past the interval.** With a small sieve interval (mc below about 0.5), a
+  factor-base prime can be wider than the interval (p > 2M + 1), so a root can start past its
+  end. Python counts (width - 1 - start) // p + 1 = 0 steps there; lampcore computed it in
+  usize, which wrapped to ~2^58 sieve ops and missed. Found by the boundary sweep below; no
+  committed run used mc < 1. lampcore now guards start < width, and parity covers mc 0.05,
+  0.1, 0.25 and 0.5 at 48-84 bits, asserting such roots occur for mc <= 0.25.
 
 ## 2026-10-23 — Run 6
 

@@ -5,11 +5,11 @@ cap 2^28, grid mc in {0.25, 0.5, 0.75, 1.0, 1.5, 2} x bc in {0.8, 1.0, 1.1, 1.3,
 Per cell: log2 mean [95% CI] (run6_accept.py's bootstrap), worst, misses.
 Question: does the optimum sit below mc = 1.0, the bottom of Run 6's mutation range?
 
-mc < 1 is outside parity.py's coverage, and lampcore is wrong there: qs.rs:327 computes
-(width - 1 - start) in usize, which wraps when a sieved prime exceeds the interval (2M < p,
-mc below about 0.5), charging ~2^58 sieve ops and missing. So every cell runs in BOTH cores;
-the cell's numbers come from lamps.py (the reference core) and the per-cell count of
-lampcore disagreements (ops, factor, tests, hits) is reported beside it.
+Every cell runs in BOTH cores; the cell's numbers come from lamps.py (the reference core) and
+the per-cell count of lampcore disagreements (ops, factor, tests, hits) is reported beside it.
+When this ran (qs_boundary_sweep.out), lampcore was wrong below mc ~0.5: qs.rs computed
+(width - 1 - start) in usize, which wrapped when a sieved prime was wider than the interval,
+so every mc 0.25 cell disagrees there. Fixed since, with parity pairs at mc 0.05-0.5.
 
   python3 qs_boundary_sweep.py [workers]  -> qs_boundary_sweep.json
 """

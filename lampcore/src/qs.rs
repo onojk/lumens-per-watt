@@ -324,7 +324,11 @@ fn attempt(num: &Num, g: &Value, k: u64, m: &mut Meter) -> R {
                         arr[i0] += logp[*j];
                         i0 += pu;
                     }
-                    upd += ((width - 1 - start) / pu + 1) as u64;
+                    // a prime wider than the interval may start past its end: no steps,
+                    // as Python's (width - 1 - start) // p + 1 = 0 (usize would wrap)
+                    if start < width {
+                        upd += ((width - 1 - start) / pu + 1) as u64;
+                    }
                 }
             }
             m.charge(SIEVE, upd)?;

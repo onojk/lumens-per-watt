@@ -7,7 +7,10 @@ baseline, every champion of Runs 2-4, and random fine-deck genomes. Numbers: 28-
 Quadratic sieve (qs_pairs): the same fields plus qs's per-phase op breakdown, on the
 acceptance numbers (40-60 bits), the Stage 2 numbers at 66/72/78 bits, numbers that make qs
 retry with its next multiplier (asserted), gene variants, qs after another stage, a low
-cap that stops it partway through a phase, and random genomes drawn from a deck with qs in it.
+cap that stops it partway through a phase, random genomes drawn from a deck with qs in it, and
+small sieve intervals (mc 0.05-0.5 at 48-84 bits), where a factor-base prime wider than the
+interval can start past its end and must not step (asserted for mc <= 0.25: lampcore's sieve
+count wrapped there until it was guarded).
 Edge: both cores refuse qs on N >= 2^100 with an error, never a silent wrap.
 
 Guards (guard_pairs): block flash whose two product trees can't fit in the budget, and p-1
@@ -66,9 +69,21 @@ def qs_pairs():
             if b <= 60 or name != "qs kc1 small base":
                 yield name, g, nums, 2 ** 29, False
         yield "qs low cap", [QS], nums, 2 ** 14, False
+    for b in (48, 54, 60, 66, 72, 78, 84):
+        nums = semiprimes_pq(b, 4, 1500000 + b)
+        for mc in SMALL_MC:
+            yield f"qs small mc {mc}", [dict(QS, kc=32, bc=1.1, mc=mc, tc=1.38)], nums, 2 ** 29, False
+            yield f"qs small mc {mc} default genes", [dict(QS, mc=mc)], nums, 2 ** 29, False
     for i, g in enumerate(random_qs_genomes()):
         for b in (28, 34, 40, 46, 54, 60):
             yield f"random qs {i}", g, semiprimes_pq(b, 2, 440000 + b), min(cap_for(b), 2 ** 22), False
+
+SMALL_MC = (0.05, 0.1, 0.25, 0.5)
+
+def non_stepping(trace):
+    """Sieve roots, over every polynomial of the run, whose start lies past the interval."""
+    return sum(1 for at in trace["attempts"] for poly in at["polys"]
+               for p, r in poly["roots"] if (r + poly["M"]) % p >= 2 * poly["M"] + 1)
 
 def random_qs_genomes(n=60):
     """Random genomes from the full deck plus qs, each with at least one qs stage."""
@@ -182,6 +197,7 @@ def check_qs_limit():
 
 def check_qs():
     checked = mismatches = 0
+    wide = {}                                    # mc -> (pairs, non-stepping roots)
     for label, g, nums, cap, must_retry in qs_pairs():
         fast = run_many(g, nums, cap, inst=True, phases=True)
         for (N, p, q), f in zip(nums, fast):
@@ -191,11 +207,19 @@ def check_qs():
             slow = (ops, d, LAST["tests"], LAST["hits"], LAST["stage"], LAST["k"], ph)
             if must_retry:
                 assert len(qs.TRACE["attempts"]) > 1, ("expected a retry", N)
+            if label.startswith("qs small mc"):
+                mc, ns = g[0]["mc"], non_stepping(qs.TRACE)
+                if mc <= 0.25:
+                    assert ns > 0, ("expected a prime wider than the interval", label, N)
+                pairs, total = wide.get(mc, (0, 0))
+                wide[mc] = (pairs + 1, total + ns)
             checked += 1
             if slow != f:
                 mismatches += 1
                 if mismatches <= 10:
                     print("MISMATCH", label, N, "python", slow, "rust", f)
+    print("qs small mc: " + ", ".join(f"mc {mc}: {pr} pairs, {ns} non-stepping roots"
+                                       for mc, (pr, ns) in sorted(wide.items())))
     return checked, mismatches
 
 if __name__ == "__main__":
