@@ -339,3 +339,5 @@ The no-luck winners had overfit, and the luck-3 slope came mostly from being slo
 - Sizes here are small (32–54 bits). Constants and log factors matter a lot, which is exactly why the block flash loses. Asymptotic claims need bigger numbers.
 - Op counts are a model: one ring multiply, square test, or gcd = 1 op regardless of operand size, and block-flash polynomial products are charged at FFT cost.
 - Hart's method and rho are heuristic: they behave well in practice, but neither has a proven worst-case bound like Lehman or Pollard–Strassen.
+- The quadratic-sieve card (`evolve/qs.py`, cost model in `NOTES.md`) is deliberately overcharged. Every small-number step (an add mod p, a log-add into a sieve cell, a word XOR, a Euclid step) costs a full op, the same as one of rho's multiplies mod N. The rule is that qs is never cheaper than rho per unit of work. Its acceptance test factored 240/240 fresh numbers at 40–60 bits, with 1 retry paid in full, and every phase's op count matched its written formula exactly.
+- The sieve array uses numpy for speed. This changes no op count: updates and scanned cells are charged one by one, whatever does the arithmetic.

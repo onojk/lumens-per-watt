@@ -107,6 +107,7 @@ numbers, the parity count, and the old-vs-new table.
 - **Run 6** (the plan's original Stage 5): island model (4 islands, top-2 migration
   every 5 generations, ring, 2-slot diversity reserve) with qs in the deck,
   evolve/run6/, seeds 51-54.
+  Prerequisites: qs chainable and in both decks, with mutation genes and rand_stage.
   ACCEPT compares against L44-0272 and plain rho, and reports whether evolution kept
   or dropped qs.
 - **Stage 6:** reconcile the four caps and re-score with scale.py.
