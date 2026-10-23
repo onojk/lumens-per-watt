@@ -2,6 +2,24 @@
 
 Growing factoring algorithms by evolution, and measuring them by **lumens per watt**.
 
+## In plain English
+
+**The idea.** Picture a factoring algorithm as a light moving along the number line, ruling out spots where the secret factor could be hiding. That gives a way to grade any algorithm: how much of the line it darkens for each unit of work. We call that **lumens per watt**. More light per watt means a better bulb.
+
+**What this repo does.** It breeds factoring algorithms the way a gardener breeds plants. It starts with a box of known parts (trial division, square searches, rho, and so on), snaps them together in random combinations, tests each one on real numbers, keeps the best, mutates them, and repeats. Every algorithm gets a name and a family tree, so you can trace how a winner came to be.
+
+**What we've learned so far.**
+
+- **The scoring has to be cheat-proof.** Early on, algorithms "won" by memorizing the test numbers or by being slow on small numbers so their growth looked flatter. The scoring now uses fresh numbers every round, and every winner is rechecked on numbers it has never seen.
+- **Evolution rediscovers real tricks.** Starting from a plain search, it worked out on its own the multiplier trick that Hart published.
+- **How you keep score decides who wins.** Judged by the worst case, rho (the "lucky" method) won. Judged by total work across many numbers, a luck-free square search won. We chose the running total as the scoreboard and wrote that down in `NOTES.md`.
+- **"Luck by design" only pays when guessing is cheaper than trying.** Making each test luckier cost more than it saved, so evolution mostly ignored those parts.
+- **Size changes everything.** To test bigger numbers, the core was rebuilt in Rust and proven to give identical answers to the Python version, case for case. On bigger numbers the winner flipped: the square searches that led at small sizes lose clearly to rho from about 60 bits up. At small sizes fixed overhead decides the race; at large sizes the growth rate does. Every growth rate we measured matched what the mathematics predicts.
+
+**The honest bottom line.** Evolution has become good at fine-tuning known algorithms, but nothing it has grown beats the known speed limits of its parts. That's a clean, reproducible measurement of where those limits sit, and the tools are now strong enough to keep pushing.
+
+The sections below have the details: the parts, the scoring rules, every run's results, and how to reproduce them.
+
 ## The idea
 
 Every algorithm lights up the number line as it runs: some stations are queued, some staged, some being crunched, some kept as afterglow. Two quantities fall out of that picture:
