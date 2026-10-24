@@ -222,7 +222,7 @@ from blockflash import lamp_ps
 from qs import lamp_qs
 from cfrac import lamp_cfrac                              # in no deck: tests and comparisons only
 from ecm import lamp_ecm                                  # in no deck until Run 8
-from race import lamp_race                                # Stage 9; in no deck until Run 8
+from race import lamp_race, validate as race_validate     # Stage 9; in no deck until Run 8
 
 LAMPS = {"td": lamp_td, "sq": lamp_sq, "rho": lamp_rho, "pm1": lamp_pm1, "ps": lamp_ps,
          "qs": lamp_qs, "cfrac": lamp_cfrac, "ecm": lamp_ecm, "race": lamp_race}
@@ -357,22 +357,84 @@ def crossover(a, b, rng):
     child = a[:rng.randint(0, len(a))] + b[rng.randint(0, len(b)):]
     return [dict(s) for s in (child or a)][:4]
 
-LAST = {"tests": 0, "hits": 0, "stage": None, "k": None}
+LAST = {"tests": 0, "hits": 0, "stage": None, "k": None, "ob": []}
+
+class StageBudget(Exception):
+    """A stage's own op budget ("ob") is spent: the stage ends without a factor."""
+
+OB_MUTATE = 0    # mutation hook for ob_accept.py: 1 = never end, 2 = end one charge early
+
+class StageMeter:
+    """What a stage with an op budget sees (NOTES.md, "Per-stage op budget"): every charge
+    goes to the shared meter whole; the charge that takes the stage's own spending past
+    ob is applied, then the stage ends. ops, cap and k are the shared meter's."""
+    def __init__(self, m, ob):
+        self._m, self.ob, self.spent = m, ob, 0
+    def tick(self, k=1):
+        if OB_MUTATE == 2 and self.spent + k > self.ob:
+            raise StageBudget()
+        self._m.tick(k)                       # may raise Budget: the whole run misses
+        self.spent += k
+        if self.spent > self.ob and OB_MUTATE != 1:
+            raise StageBudget()
+    def test(self, hit):
+        self._m.test(hit)
+    @property
+    def ops(self):
+        return self._m.ops
+    @property
+    def cap(self):
+        return self._m.cap
+    @property
+    def k(self):
+        return self._m.k
+    @k.setter
+    def k(self, v):
+        self._m.k = v
+
+def validate_genome(gen):
+    """Raises ValueError for a genome that may not be built: a bad ob, an ob on a race or
+    on a race's side, or an invalid race (race.validate)."""
+    for s in gen:
+        if "ob" in s and (not isinstance(s["ob"], int) or isinstance(s["ob"], bool) or s["ob"] < 0):
+            raise ValueError("ob must be a non-negative integer")
+        if s["t"] == "race":
+            if "ob" in s or "ob" in s.get("a", {}) or "ob" in s.get("b", {}):
+                raise ValueError("ob is not allowed on a race or its sides")
+            race_validate(s)
 
 def run(gen, N, cap):
     """Returns (ops, factor), or (None, None) on a miss. Test and hit counts of the
     latest run are left in LAST for the luck meter, with the winning stage's index and,
-    for a square-search win, its k (read-only instrumentation; None on a miss)."""
+    for a square-search win, its k (read-only instrumentation; None on a miss). LAST["ob"]
+    lists, per stage with an op budget that ran, (index, ob, spent, ended by its budget)."""
+    validate_genome(gen)
     m = Meter(cap)
+    obs = []
     try:
         for i, s in enumerate(gen):
-            d = LAMPS[s["t"]](N, s, m)
+            ob = s.get("ob")
+            if ob is None:
+                d = LAMPS[s["t"]](N, s, m)
+            elif ob == 0:
+                continue                          # skipped: no lamp code runs
+            else:
+                sm = StageMeter(m, ob)
+                try:
+                    d = LAMPS[s["t"]](N, s, sm)
+                    obs.append((i, ob, sm.spent, False))
+                except StageBudget:
+                    obs.append((i, ob, sm.spent, True))
+                    d = None
+                except Budget:
+                    obs.append((i, ob, sm.spent, False))
+                    raise
             if d:
-                LAST.update(tests=m.tests, hits=m.hits, stage=i, k=m.k)
+                LAST.update(tests=m.tests, hits=m.hits, stage=i, k=m.k, ob=obs)
                 return m.ops, d
     except Budget:
         pass
-    LAST.update(tests=m.tests, hits=m.hits, stage=None, k=None)
+    LAST.update(tests=m.tests, hits=m.hits, stage=None, k=None, ob=obs)
     return None, None
 
 # ---- test semiprimes ---------------------------------------------------------

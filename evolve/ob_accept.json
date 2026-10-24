@@ -1,0 +1,69 @@
+{
+ "cases": {
+  "td": {
+   "24": 16,
+   "28": 16
+  },
+  "sq": {
+   "36": 16,
+   "40": 16
+  },
+  "ps": {
+   "32": 16,
+   "36": 16
+  },
+  "rho": {
+   "40": 16,
+   "48": 16
+  },
+  "pm1": {
+   "40": 16,
+   "48": 16
+  },
+  "qs": {
+   "40": 16,
+   "60": 16,
+   "84": 16
+  },
+  "qs lc 1.4": {
+   "40": 16,
+   "60": 16,
+   "84": 16
+  },
+  "cfrac": {
+   "40": 16,
+   "52": 16
+  },
+  "ecm": {
+   "40": 16,
+   "60": 16,
+   "84": 16
+  }
+ },
+ "caps_and_validation": 8,
+ "mutation": {
+  "never ends": {
+   "td": "caught",
+   "sq": "caught",
+   "ps": "caught",
+   "rho": "caught",
+   "pm1": "caught",
+   "qs": "caught",
+   "qs lc 1.4": "caught",
+   "cfrac": "caught",
+   "ecm": "caught"
+  },
+  "ends one charge early": {
+   "td": "caught",
+   "sq": "caught",
+   "ps": "caught",
+   "rho": "caught",
+   "pm1": "caught",
+   "qs": "caught",
+   "qs lc 1.4": "caught",
+   "cfrac": "caught",
+   "ecm": "caught"
+  }
+ },
+ "failures": 0
+}
