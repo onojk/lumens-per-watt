@@ -408,6 +408,49 @@ any scored run, and parity gates the Rust port.
         and evolution must show value on structure.
       - Evolution beats TPE: check TPE's convergence before crediting evolution.
       - Random search matches both: the fitness surface is flat at that genome.
+  - **Run 8 design (Oct 24, planning; predictions written now).** Where it differs from the
+    deck and size outline above, this design governs the evolution-vs-control comparison.
+    - **Shared genome space, identical bounds for evolution, TPE (Optuna, pinned) and random
+      search:** pre-stage budgets td, rho, ecm in {0} ∪ [2^8, 2^20] (log scale), pm1 in
+      {0, full}; card order of the four pre-stages as one categorical gene (24 orders); final
+      qs genes kc in 1..32, bc 0.7..3.0, mc 0.05..12 (log), tc 1.0..3.5, lc 1.0..2.0 (the
+      wide ranges and Stage 7's lc range). Stage genes fixed at the partition study's
+      values (td a 0.5, rho c 1 / b 64, pm1 b 0.1991, ECM 1.0 / 50).
+    - **Budget: Run 6's actual one.** Run 6 made 1,360 genome evaluations per run (20
+      generations × (4 islands × 16 genomes re-scored, plus 4 island-best gate evaluations)),
+      5,440 over its 4 runs (`evolve_run6.py`; `run6/lineage.jsonl` holds the 5,120 training
+      ones). Run 8: **1,360 evaluations per run per method, 4 seeds per method** (71–74).
+      Every method sees the same fixed tuning numbers for a given seed (a change from Run 6's
+      fresh set per generation, so TPE's objective is stationary; the sealed verdict guards
+      against overfitting). Reported: best-of-4 and median-of-4 final fitness, and
+      evaluations-to-best.
+    - **Order: a small balanced sanity arm first** (balanced 84-bit numbers, 18 per
+      evaluation, 340 evaluations per run): every method should find about qs alone; worse
+      means a harness bug, and the mixed arm does not start until it is fixed. **Then the
+      mixed arm** (84-bit N, smaller factor in the partition study's seven bands, 6 per band =
+      42 numbers per evaluation).
+    - **Fitness (c), robust**, reference qs + lc 1.4 alone on the same numbers; **ACCEPT
+      gate** (no band worse than 1.5× the reference under any pricing); **verdict on sealed
+      numbers, run once.** Seeds: tuning 8000000 + 100·pb + 84, sealed 8500000 + 100·pb + 84
+      (unused so far); every population through `oracle.check`.
+    - **Reported:** the winning genomes' cards and budgets, per-band ratios under all three
+      pricings, and the official-only vs robust difference (as in the partition study).
+    - **Prediction (two clauses, each falsifiable):**
+      - (a) TPE reaches a fitness at least as good as evolution's best-of-4 final fitness
+        within fewer evaluations;
+      - (b) at the full budget, TPE's best ties or beats evolution's best.
+      - TIE = the paired bootstrap interval of the per-number log-ratio on the same sealed
+        numbers includes 0. If a clause fails, it is recorded which: (a) failing = evolution
+        converges faster; (b) failing = evolution finds better genomes. Random search is
+        predicted clearly worst.
+    - **Time estimate, from measured evaluation costs** (lampcore --types, one process, Oct 24):
+      0.16–0.31 s per evaluation on the mixed arm (qs alone 0.31, allocation A 0.16, the
+      official-only optimum 0.21, wide budgets 0.29) and 0.14–0.33 s on the balanced arm.
+      Allowing 0.5 s for slow genomes: mixed arm 3 methods × 4 seeds × 1,360 evaluations =
+      16,320 evaluations, 1.1–2.3 core-hours, about 9–17 minutes on 8 cores. TPE runs its 4
+      seeds in parallel, sequential within a seed (6–11 minutes per seed plus Optuna's own
+      overhead). The sanity arm is about a quarter of that; the sealed verdict is a few
+      minutes.
   - **Consequence: every run scored for Run 8 must record per-type op counts** (the
     types `calibrate.py` reprices), not just total ops. **MET Oct 24:** lampcore --types,
     with parity against Python on every parity pair and existing results recomputed exactly
