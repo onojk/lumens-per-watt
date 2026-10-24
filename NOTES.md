@@ -479,3 +479,165 @@ The price table and the calibrated re-score are reported under both references. 
 - These are one laptop's prices; a different CPU (cache sizes, divider latency) changes them.
 - The i128 and U256 code paths are lampcore's, not the fastest possible ones.
 - The results are a sanity check on the op model, not a replacement for it.
+
+## 2026-10-23 — Stage 9: race combinator ("race"), cost model, written before any code (DRAFT, under review)
+
+**DRAFT, under review.** Nothing below is implemented; the entry may still change before any code is written.
+
+**Element.** `{"t": "race", "a": stageA, "b": stageB, "sa": opsA, "sb": opsB}`, where a and b are any non-race stages (td, sq, ps, rho, pm1, qs, cfrac, ecm). A runs for a slice of sa ops, then B for a slice of sb ops, alternating on **one meter**, until one side returns a factor or the cap is reached.
+- Nesting a race inside a race is out of scope.
+- sa = sb = 0 is invalid: rejected when the genome is built, never run.
+
+**Ops: the race costs exactly the sum of the slices actually run.** Switching sides is bookkeeping, with no arithmetic, and costs **0 ops**. No op is charged for the race itself. Resume is free in ops; any wall-clock cost of the handoff is not measured and not scored.
+
+**The slice rule** (written down so both cores agree):
+- A slice starts with a fresh slice counter at 0. Every charge the running side makes is applied whole, to the meter and to the counter, exactly as it would be alone: a chunk is never split.
+- The slice ends at the first charge that brings the counter to or past the slice size. The overshoot counts as ops spent by that side, and nothing carries over: the next slice of either side starts at 0.
+- The cap is the shared meter's cap. A charge that crosses it raises Budget inside whichever side is running, and the whole race ends as a miss, exactly as a single stage does.
+- Prechecks that read the meter (ps's product-tree fit, pm1's stop before a huge sieve) read the shared meter, which includes the other side's spending. That is consistent with one meter, and it leaves the identity cases unchanged, since the idle side never adds ops.
+
+**When a side ends without a factor** (td or sq exhausted, pm1's gcd is 1 or N, ECM's curves used up, qs or CFRAC out of multipliers), the race continues with the other side alone until it finishes or the cap is reached, with no further switching. If both end without a factor, the race returns None and the genome moves to its next stage, as for any stage.
+
+**Found mid-slice:** the race returns at once; total ops are the meter's.
+
+**Luck meter and instrumentation:** tests and hits accumulate on the shared meter, from both sides, in the order they happen. The winning stage index is the race element's index. A square-search win's k is kept per side, and the winner's k is reported.
+
+**What "resume" means.** Each side keeps its whole state between slices, and nothing is redone:
+
+| Lamp | State kept between slices |
+|---|---|
+| rho | x, y, q, r, k, the batch position |
+| pm1 | the running power a, the position in the prime list |
+| ECM | the curve, its σ, the ladder position within the prime power, stage-2 baby/giant tables and the accumulator |
+| qs | the ledger (relations, dedupe sets), the partials table, the polynomial list and position, the Gray-code state, the sieve array of the polynomial in progress |
+| CFRAC | the expansion state (P, Q, A, i) and the ledger |
+| td | the next divisor |
+| sq | the multiplier k and the window position x |
+| ps | the product tree or multipoint evaluation in progress |
+
+- **Mechanism, proposed.** Each side runs as its own coroutine with its own stack, with control handed over at a charge boundary when the slice counter fills:
+  - in Python, a thread per side with strict handoff (exactly one runs at any moment, so it stays deterministic);
+  - in lampcore, the same pattern with two threads and a handoff, rather than rewriting every lamp as a state machine.
+
+  The point is that **no lamp's code changes**. Resuming is exact by construction, so the identity cases follow structurally rather than from per-lamp care. A paused side whose race has ended (a factor found, or the cap) is torn down without running further.
+- **No lamp needs special handling, because every pause falls on a charge boundary.** The only effect of big single charges is overshoot:
+  - qs's linear algebra is one chunk of rows·F·rows/64, about 2^16.5 at 84 bits;
+  - ps's product-tree precheck can raise Budget before allocating.
+
+  A side whose next charge is a large chunk therefore overshoots its slice by up to that chunk. The overshoot is recorded, not avoided.
+
+**Acceptance (before any scored run):**
+- **Identity:** sb = 0 equals A alone, and sa = 0 equals B alone, op for op: ops, factor, tests, hits, stage, k, and every phase. This covers every pair of lamp types (including qs with lc 1.4, CFRAC, and ECM), on numbers at 40–84 bits.
+- **Interleaving check:** in a race, each side's own charge sequence (phase, size, in order) equals the prefix of that lamp's charge sequence when run alone. That proves nothing is redone or skipped. Each slice's length is at least its size, and below its size plus the side's largest single charge, except the final slice of the race.
+- **The race bound (a provable property, checked on every run).** With slices s_a = s_b = s, if A alone needs T_A ops and B alone T_B, the race uses at most 2·min(T_A, T_B) + s + c ops, where c is the larger side's largest single charge. A single-side end and the cap are handled as above.
+- **Caps that stop mid-slice** on either side, and in the middle of a large chunk, asserted.
+- **Parity** after the Rust port, on all of the above, plus random races.
+
+**PLAN's budget-split gene** (the share of the remaining budget either side may spend) is deferred. The first implementation has sa and sb only. The split comes as an addendum with its own identity case: a split of 1.0 equals no split.
+
+**First comparison.** race(ECM, qs + lc 1.4) and race(rho, qs + lc 1.4), each against its two sides alone, on both Stage 8 populations (balanced 54–84 bits; unbalanced 72/78/84 × 24/28/32), cap 2^28. Slice sizes are genes. For this comparison, three settings fixed before measurement, sa = sb ∈ {2^8, 2^10, 2^14}, are all reported, so the sensitivity to slice size is visible. Tuning them on seeds comes with Run 8. Means and worst cases with intervals, under the official count and under the calibrated prices (both references, calibrate.py).
+
+**Prediction (stated before measurement).**
+- **Per number:** a race costs at most about twice the cheaper side, by the race bound. So it can never beat the better side alone on a given number by more than one slice, and it loses to it by up to 2× where one side dominates.
+- **Where a race wins on the mean:** in cells where neither side dominates, it wins against both, because there it takes the cheaper of two variable times. ECM's time is heavy-tailed; qs's is nearly fixed.
+- **Balanced, official count:**
+  - race(ECM, qs): its mean is worse than ECM alone by 1.3–2×, and better than qs alone by about 1.3–1.6×. Its worst case is no worse than about 2× qs's (qs's near-fixed time caps ECM's tail), so it is better than ECM's worst at 84 bits.
+  - race(rho, qs) is about 2× qs alone at 72–84 bits, where qs dominates. At 54–60 bits it may beat both, because the two are close there.
+- **Balanced, calibrated:** qs dominates at 60–84 bits, so both races lose to qs alone by up to 2×.
+- **Unbalanced:**
+  - race(rho, qs) is within about 2× of rho at 24-bit p (far better than qs alone), and close to qs at 32-bit p.
+  - race(ECM, qs) beats qs alone in every cell, and is within about 2× of ECM, under both counts.
+- **What the race is for:** not the best mean on any one population, but robustness on a mixed one, never far from the best side on any number. That is what the partition study will measure.
+- **How the result is judged.** The race's bar is robustness: never far from the better side. It is not winning. A result like "loses to ECM by 1.8× on balanced numbers" is within this prediction, not a failure. A failure would be a race that is more than about 2× the better side (beyond the race bound's slice and chunk terms), or one that is worse than the worse side.
+
+**Addenda to the Stage 9 cost model** (before review):
+
+1. **Resume is free, and nothing is set up again: per lamp.** Under the coroutine mechanism each side's state lives in its own frame, so resuming charges **0 ops for every lamp**, and no setup is repeated:
+   - qs does not rebuild its factor base or polynomials;
+   - ECM does not restart its curve or recompute its baby steps;
+   - pm1 does not restart its power;
+   - rho does not restart its walk;
+   - td and sq do not restart their scan.
+
+   If the Rust port ever implements a lamp as a state machine that recomputes anything on resume (a cached table, say), that recomputation is charged as performed, in the lamp's own phase, and stated in an addendum before the port is accepted. The one-switch identity below would catch an uncharged recomputation.
+2. **One-switch identity, for every lamp as the resumed side.** For each lamp X (td, sq, ps, rho, pm1, qs with lc 1.0 and 1.4, CFRAC, ECM):
+   - **Setup:** race(X, E) with E a stage that ends without a factor during its first slice: td with a bound far below the factor (`{"t": "td", "a": 0.05}`) at sizes where that bound is exhausted. sa is chosen so that X is paused exactly once, mid-run, after its first slice.
+   - **Check 1:** total ops = X alone + E alone; factor = X's; tests and hits = the sums.
+   - **Check 2:** X's charge sequence in the race equals X alone's, with E's whole sequence inserted at the one switch point.
+   - **Coverage:** tested at three switch points per lamp (early, mid-run, inside X's largest-chunk phase), including mid-stage-2 for ECM and between polynomials for qs.
+3. **Switches per run:** reported for every run (mean, median and max per cell), with the ops each side spent. That makes it visible whether a race really interleaved or one side did nearly all the work.
+4. **Prediction per pricing reference.** The race prediction above is stated three times: under the official count, under the ruint-calibrated prices and under the Montgomery-calibrated prices. Under each, it follows that reference's leader table from `calibrate.py` (balanced sizes and unbalanced cells), which is fixed before any race runs:
+   - where one side leads with separated intervals, the race loses to that side by up to 2× and beats the other;
+   - where the two sides are tied, the race beats both.
+
+   Wherever the references disagree on the leader, the race prediction disagrees with them, and the race comparison is reported per reference without picking one.
+
+**Slice overshoot: reported, and the large-chunk lamps.**
+- **Per run and per side:** the mean and maximum ops by which a slice exceeded its size, and the share of slices that overshot. This goes beside the official totals.
+- **Lamps that charge in large chunks,** so that a slice smaller than the chunk cannot really interleave with them (the effective slice is the chunk):
+  - **qs:** each polynomial's sieve updates are one charge (thousands at 84 bits) and its cell scan another (2M + 1). Forming the A's is one charge of (s − 1)·combinations at the start, the linear algebra is one charge of rows·F·rows/64 (about 2^16.5 at 84 bits), and each confirmation charges F at once.
+  - **ps:** each product-tree and multipoint multiply is one fft_cost chunk, growing to the full tree at the top.
+  - **pm1:** bit_length(p^e) per prime, which is small.
+  - **CFRAC:** F per residue.
+  - **ECM, rho and td** charge 1–2 ops at a time, so they interleave at any slice size.
+
+  At sa = sb = 2^8 and 2^10 in the first comparison, qs's slices will mostly be a single polynomial: an effective qs slice of a few thousand ops at 84 bits. The race bound's c term carries that, and the overshoot report shows its size.
+
+## 2026-10-23 — Op-price calibration: result (measurement only)
+
+Nothing here changes a score; the official count stays as it is. Code: `lampcore/src/bin/opbench.rs`, `evolve/calibrate.py` (modes counts, price, extra); outputs `evolve/calibrate_counts.json`, `evolve/calibrate.json`. Plan: the entry "Op-price calibration on this laptop" above.
+
+**Deviations from the plan, and one failed run.**
+- The first run hung on "sieve update" and was killed after 25 primitives. Its update count was (width − 1 − start)/p + 1, and primes above the sieve width (the base reaches B ≈ 2,295, the width is 1,147) can start past the end, so the subtraction wrapped. Each call then returned a huge count after one pass, and the batch-size doubling overflowed to 0 and spun. Fixed: a prime that misses the interval counts 0.
+- Batching changed: each batch is sized from a short probe to ~50 ms (not "at least 10⁷ operations"), warm-up is ~0.1 s per primitive (not 10⁶ iterations), and a primitive past 30 s records a timeout. No timeouts occurred; each run took about 48 s.
+- The 25 lines of the killed run are reproduced within 10% by all three P-core repeats (worst 8.2%).
+- The cost of one gcd mod N is timed directly (`U256::gcd` on random residues, with its mean Euclid steps reported), not computed per number.
+
+**Price spread** (ratios to one 84-bit multiply; P1-P3 on cpu 2, E1 on cpu 5; all in `calibrate.json`):
+- Across the three P-core repeats every price agrees within 7.5%, except sieve update: 17% (1.054 / 0.929 / 0.901 ns).
+- The E-core changes the ratios: its big multiplies are 1.4–1.6× slower, while gcd, Euclid steps and small mulmod are only 1.0–1.2× slower, so most small-number ratios fall by 10–35% (xor rises 30%).
+- The two references differ 3.7×: one 84-bit multiply is 27.3 ns with ruint and 7.37 ns with Montgomery. Every small-number price moves by that factor. For example, a sieve update is 0.032–0.039 ruint multiplies, or 0.12–0.14 Montgomery multiplies.
+
+**Leaders** (median P-core prices; a tie means intervals overlapping the leader's):
+
+| Cell | Official | ruint | Montgomery | Agree? |
+|---|---|---|---|---|
+| 54 | ECM | N51-0917 (tie qs) | ECM | no |
+| 60 | ECM | N51-0917 (tie qs) | N51-0917 (tie ECM, qs) | leader yes, ties differ |
+| 66 | ECM | N51-0917 | N51-0917 (tie ECM) | leader yes, ties differ |
+| 72, 78, 84 | ECM | N51-0917 | N51-0917 | yes |
+| 72/24, 78/24, 84/24 | rho | rho | rho | yes |
+| 72/28 | ECM | N51-0917 | ECM | no |
+| 72/32 | ECM | N51-0917 | N51-0917 (tie ECM) | leader yes, ties differ |
+| 78/28 | rho (tie ECM) | N51-0917 | ECM (tie rho) | no |
+| 78/32 | ECM | N51-0917 | ECM (tie N51-0917) | no |
+| 84/28 | rho (tie ECM) | N51-0917 (tie ECM, rho) | rho (tie ECM) | no |
+| 84/32 | ECM | N51-0917 | ECM | no |
+
+- **Where the references disagree** (54, 72/28, 78/28, 78/32, 84/28, 84/32), the meter's calibration decides the winner, not the algorithms.
+- ECM's official lead on balanced numbers does not survive calibration at 72–84 bits under either reference, as the 1/8 and 1/32 re-pricings had suggested.
+- **N51-0917 overtakes tuned qs + lc 1.4 under calibration**: 15.38 against 16.63 at 84 bits (ruint), and 17.06 against 17.64 (Montgomery), where the official count has 19.45 against 19.08. Its work leans more on cheap sieve operations.
+- Within a reference: ruint leaders are identical in P1–P3, and E1 only drops ties. Under Montgomery the tied cells reorder between runs (at 60 bits P1's leader is qs, and P2/P3's is N51-0917; E1 reorders the ECM–N51-0917 ties at 72/32, 78/32 and 84/32).
+
+**Is the price ratio stable enough to settle qs against ECM?** The multiplier on all of qs's small-number prices at which qs + lc 1.4 and ECM are level (above 1: qs leads by that margin):
+
+| | 54 | 60 | 66 | 72 | 78 | 84 |
+|---|---|---|---|---|---|---|
+| ruint | 1.88 | 4.43 | 4.29 | 5.14 | 4.85 | 4.53 |
+| Montgomery | 0.52 | 1.20 | 1.16 | 1.39 | 1.31 | 1.22 |
+
+Under ruint, qs's lead at 60–84 bits is settled: the margin is far beyond any measured spread. Under Montgomery it is not: the 16–22% margins at 60–84 bits are the size of the sieve update's 17% spread between P-core repeats. The 3.7× gap between the references is larger than every margin, so the ratio settles the question only once a reference is chosen.
+
+**The gcd finding (a model finding; not corrected).** The official model charges 1 op per gcd mod N. Measured: at 84 bits one gcd is 49.6 Euclid steps, about 214 ns, which is 7.8 ruint or 29 Montgomery multiplies; at 100 bits, 59.5 steps × about 19.9 ns. The effect on scores is small, because both lamps batch their gcds:
+- ECM: 4–15 gcds per number against 10⁴–10⁵ ops, so 0.01 log₂ or less.
+- rho: gcds are about 0.45% of its ops, raising its calibrated score by 0.04 (ruint) and 0.13–0.17 (Montgomery) log₂.
+- It decides no cell. The only cell it could touch, 84/28, is a tie under every scoring.
+- qs's square-root gcd is already charged per Euclid step.
+
+**Run 8 scoring rule: OPEN.** Not decided here. The options:
+- (a) the official count decides; calibrated scores are reported beside it;
+- (b) one calibrated pricing decides, with its reference fixed in advance;
+- (c) the official count decides, and a wall-clock claim is made only for cells where the official count and both calibrated pricings agree;
+- (d) a cell is decided only where all three agree, and is reported as undecided elsewhere.
+
+**Caveats.** One laptop, one build. The i128 and U256 paths are lampcore's, not the fastest possible. The confirm, lp and cf_step mappings are upper bounds, as planned. One unexplained oddity, not used in any price: the loop-overhead baseline is 0.31 ns on the E-core against 1.25 ns on the P-core.
