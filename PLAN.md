@@ -323,3 +323,76 @@ any scored run, and parity gates the Rust port.
     Run 7).
   - Prerequisites: the relation-economy refactor, and Stages 8 and 9, accepted with
     parity.
+
+## Illumination maps (planning; visualization only)
+
+Pictures of what each lamp touches, op by op. Nothing here changes a score, a cap or a
+card: every op count stays exactly as it is.
+
+- **Opt-in tracer.**
+  - Start from `~/lpwvideo/tracer_draft.patch`: a module-level `lamps.EVENTS`, None by
+    default. Set it to [] and each lamp appends (kind, op index, ...) tuples naming what
+    each op touched. It covers td, sq, rho, pm1, ps, and the stage boundaries in run();
+    qs needs its own events (below).
+  - Read-only: events read m.ops and never charge.
+  - Acceptance:
+    - parity.py unchanged and still 0 mismatches. The tracer is Python only; lampcore
+      is untouched.
+    - A new check: on the parity numbers, EVENTS on vs off gives identical ops, factor,
+      tests, hits and phases. Every event's op index is non-decreasing, and the last
+      one is at most the run's total.
+- **Per-lamp station maps.**
+  - One map per lamp: the positions it visits (td's divisors, sq's x per multiplier k,
+    rho's walk, pm1's primes, ps's blocks), against the op clock.
+  - Counts drawn on each map:
+    - overlap: positions visited more than once, within a lamp or across the stages of
+      one genome (e.g. td's divisors re-covered by a ps block);
+    - waste: ops spent on positions that could not have split this N. For planted
+      factors this is known exactly: td past p, sq windows that cannot contain the
+      square, a ps block that contains neither p nor q.
+- **The qs ledger picture.**
+  - qs events: each polynomial, each sieve candidate (full, partial, discarded), each
+    relation entering the matrix, each large-prime pair combined, the dependency that
+    split N.
+  - The picture: rows filling toward F + delta on the op clock, coloured by source
+    (full vs combined), with the phase split underneath. It is the relation economy's
+    ledger, drawn before the refactor exists.
+- **Parallel lines on a shared op clock.**
+  - Per lamp: the stages of one genome as parallel lines, so a run reads as which lamp
+    was lit when.
+  - Per number: several numbers on one clock, the same genome on each, so the spread
+    behind the mean and the worst case is visible.
+  - CRT view: one lamp's walk shown twice, mod p and mod q, as two lines. A split is the
+    moment one line closes (a collision, a square, p-1 smooth) and the other does not.
+    For rho and pm1 this is the whole mechanism.
+  - Visualization only: no op is charged for any of it, and nothing is read back into a
+    score or into evolution.
+
+## Partition study (planning; no code yet)
+
+How should a fixed op budget be split across lamps when the size of the smaller factor
+is not known in advance?
+
+- **Cost map.**
+  - Bands: the smaller factor p in log-spaced bands, bits(p) in [b, b + w) for a fixed
+    width w, from small factors up to balanced (p near sqrt N).
+  - Planted factors: in each band, numbers N = p * q of a fixed total size with p drawn
+    uniformly from the band (fixed seeds, new seed range).
+  - Each lamp (and the tuned qs card) is run on every band, giving the ops to factor
+    by band, with the usual bootstrap intervals and misses at the cap marked.
+- **Optimal search allocation under a prior.**
+  - A prior: the probability of each band.
+  - Allocation: a schedule of (lamp, op slice) pairs (Stage 9's race element when it
+    exists, a fixed sequence before) that minimizes expected ops under the prior, given
+    the cost map. Computed from the map, then measured by running it, not trusted as
+    computed.
+- **Scores.**
+  - Total ops over the population (expected cost under the prior).
+  - The largest band's ops (the worst band's mean), so an allocation cannot buy a good
+    total by abandoning one band.
+- **Prediction (stated before measurement).**
+  - Balanced semiprimes: little gain. The prior puts all its mass on one band, so the
+    best allocation is close to the best single lamp for that band.
+  - A mixed population (prior spread over bands): clear gain over any single lamp,
+    because cheap small-factor lamps (td, rho, pm1, ECM) clear the low bands for a
+    small share of the budget before qs takes the rest.
