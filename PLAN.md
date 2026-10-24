@@ -168,8 +168,12 @@ numbers, the parity count, and the old-vs-new table.
 
 ## Order of work (after Run 6)
 
-Stage 7 (large primes) -> relation-economy refactor -> Stage 8 (ECM) -> Stage 9 (race)
--> Stage 10 (qs refinements), then Run 8.
+Stage 7 (large primes, done) -> relation-economy refactor, with the illumination tracer as
+a side task -> Stage 8 (ECM) -> Stage 9 (race) -> partition study -> Stage 10 (qs
+refinements) -> Run 8.
+
+The partition study comes after Stage 9 because its allocations run as race schedules,
+and it needs ECM in the cost map.
 
 The relation-economy refactor comes before ECM for three reasons:
 - it reshapes the qs card that every later stage builds on;
