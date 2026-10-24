@@ -1,0 +1,199 @@
+{
+ "genome": {
+  "t": "cfrac",
+  "kc": 32,
+  "bc": 1.1
+ },
+ "cap_log2": 29,
+ "seed": "770000 + bits",
+ "count": 40,
+ "sizes": {
+  "40": {
+   "n": 40,
+   "solved": 40,
+   "exact_runs": 40,
+   "retries": 8,
+   "period_ends": 0,
+   "mean_log2": 13.449332453447038,
+   "measured": {
+    "mult": 17920,
+    "fb": 21194,
+    "cf_step": 66844,
+    "cf_td": 319165,
+    "la": 12134,
+    "sqrt": 10160
+   },
+   "formula": {
+    "mult": 17920,
+    "fb": 21194,
+    "cf_step": 66844,
+    "cf_td": 319165,
+    "la": 12134,
+    "sqrt": 10160
+   },
+   "residues": 16216,
+   "smooth": 1386,
+   "relations": 1386,
+   "bad_relations": 0,
+   "dependencies": 311,
+   "bad_dependencies": 0,
+   "pass": true
+  },
+  "44": {
+   "n": 40,
+   "solved": 40,
+   "exact_runs": 40,
+   "retries": 8,
+   "period_ends": 0,
+   "mean_log2": 14.16306389461663,
+   "measured": {
+    "mult": 17920,
+    "fb": 28124,
+    "cf_step": 96344,
+    "cf_td": 559593,
+    "la": 19964,
+    "sqrt": 11837
+   },
+   "formula": {
+    "mult": 17920,
+    "fb": 28124,
+    "cf_step": 96344,
+    "cf_td": 559593,
+    "la": 19964,
+    "sqrt": 11837
+   },
+   "residues": 23538,
+   "smooth": 1597,
+   "relations": 1597,
+   "bad_relations": 0,
+   "dependencies": 306,
+   "bad_dependencies": 0,
+   "pass": true
+  },
+  "48": {
+   "n": 40,
+   "solved": 40,
+   "exact_runs": 40,
+   "retries": 7,
+   "period_ends": 0,
+   "mean_log2": 14.886071629217469,
+   "measured": {
+    "mult": 17920,
+    "fb": 38996,
+    "cf_step": 134536,
+    "cf_td": 971393,
+    "la": 33164,
+    "sqrt": 15186
+   },
+   "formula": {
+    "mult": 17920,
+    "fb": 38996,
+    "cf_step": 134536,
+    "cf_td": 971393,
+    "la": 33164,
+    "sqrt": 15186
+   },
+   "residues": 33047,
+   "smooth": 1827,
+   "relations": 1827,
+   "bad_relations": 0,
+   "dependencies": 361,
+   "bad_dependencies": 0,
+   "pass": true
+  },
+  "52": {
+   "n": 40,
+   "solved": 40,
+   "exact_runs": 40,
+   "retries": 3,
+   "period_ends": 0,
+   "mean_log2": 15.469292833344944,
+   "measured": {
+    "mult": 17920,
+    "fb": 49901,
+    "cf_step": 174699,
+    "cf_td": 1509085,
+    "la": 48274,
+    "sqrt": 14722
+   },
+   "formula": {
+    "mult": 17920,
+    "fb": 49901,
+    "cf_step": 174699,
+    "cf_td": 1509085,
+    "la": 48274,
+    "sqrt": 14722
+   },
+   "residues": 43100,
+   "smooth": 1929,
+   "relations": 1929,
+   "bad_relations": 0,
+   "dependencies": 299,
+   "bad_dependencies": 0,
+   "pass": true
+  },
+  "56": {
+   "n": 40,
+   "solved": 40,
+   "exact_runs": 40,
+   "retries": 6,
+   "period_ends": 0,
+   "mean_log2": 16.453045114892372,
+   "measured": {
+    "mult": 17920,
+    "fb": 74063,
+    "cf_step": 287454,
+    "cf_td": 3101418,
+    "la": 91037,
+    "sqrt": 16667
+   },
+   "formula": {
+    "mult": 17920,
+    "fb": 74063,
+    "cf_step": 287454,
+    "cf_td": 3101418,
+    "la": 91037,
+    "sqrt": 16667
+   },
+   "residues": 71200,
+   "smooth": 2455,
+   "relations": 2455,
+   "bad_relations": 0,
+   "dependencies": 308,
+   "bad_dependencies": 0,
+   "pass": true
+  },
+  "60": {
+   "n": 40,
+   "solved": 40,
+   "exact_runs": 40,
+   "retries": 1,
+   "period_ends": 0,
+   "mean_log2": 16.95784031083963,
+   "measured": {
+    "mult": 17920,
+    "fb": 88595,
+    "cf_step": 338196,
+    "cf_td": 4496170,
+    "la": 137313,
+    "sqrt": 13691
+   },
+   "formula": {
+    "mult": 17920,
+    "fb": 88595,
+    "cf_step": 338196,
+    "cf_td": 4496170,
+    "la": 137313,
+    "sqrt": 13691
+   },
+   "residues": 83917,
+   "smooth": 2585,
+   "relations": 2585,
+   "bad_relations": 0,
+   "dependencies": 223,
+   "bad_dependencies": 0,
+   "pass": true
+  }
+ },
+ "pass": true
+}
