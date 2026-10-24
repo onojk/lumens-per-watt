@@ -480,9 +480,9 @@ The price table and the calibrated re-score are reported under both references. 
 - The i128 and U256 code paths are lampcore's, not the fastest possible ones.
 - The results are a sanity check on the op model, not a replacement for it.
 
-## 2026-10-23 — Stage 9: race combinator ("race"), cost model, written before any code (DRAFT, under review)
+## 2026-10-23 — Stage 9: race combinator ("race"), cost model, written before any code (accepted for implementation, Oct 23)
 
-**DRAFT, under review.** Nothing below is implemented; the entry may still change before any code is written.
+**Accepted for implementation (Oct 23),** with the review folded in (addenda 5–8, the restated calibrated predictions, and the race bound under each pricing). The predictions below are fixed before any race runs.
 
 **Element.** `{"t": "race", "a": stageA, "b": stageB, "sa": opsA, "sb": opsB}`, where a and b are any non-race stages (td, sq, ps, rho, pm1, qs, cfrac, ecm). A runs for a slice of sa ops, then B for a slice of sb ops, alternating on **one meter**, until one side returns a factor or the cap is reached.
 - Nesting a race inside a race is out of scope.
@@ -535,7 +535,7 @@ The price table and the calibrated re-score are reported under both references. 
 
 **PLAN's budget-split gene** (the share of the remaining budget either side may spend) is deferred. The first implementation has sa and sb only. The split comes as an addendum with its own identity case: a split of 1.0 equals no split.
 
-**First comparison.** race(ECM, qs + lc 1.4) and race(rho, qs + lc 1.4) (and race(ECM, N51-0917): addendum 6), each against its two sides alone, on both Stage 8 populations (balanced 54–84 bits; unbalanced 72/78/84 × 24/28/32), cap 2^28. Slice sizes are genes. For this comparison, three settings fixed before measurement, sa = sb ∈ {2^8, 2^10, 2^14}, are all reported, so the sensitivity to slice size is visible. Tuning them on seeds comes with Run 8. Means and worst cases with intervals, under the official count and under the calibrated prices (both references, calibrate.py).
+**First comparison.** race(ECM, qs + lc 1.4), race(rho, qs + lc 1.4) and race(ECM, N51-0917's qs stage) (addenda 6 and 7), each against its two sides alone, on both Stage 8 populations (balanced 54–84 bits; unbalanced 72/78/84 × 24/28/32), cap 2^28. Slice sizes are genes. For this comparison, three settings fixed before measurement, sa = sb ∈ {2^8, 2^10, 2^14}, are all reported, so the sensitivity to slice size is visible. Tuning them on seeds comes with Run 8. Means and worst cases with intervals; the pricings and the per-cell calls are as in addendum 6.
 
 **Prediction (stated before measurement).**
 - **Per number:** a race costs at most about twice the cheaper side, by the race bound. So it can never beat the better side alone on a given number by more than one slice, and it loses to it by up to 2× where one side dominates.
@@ -543,12 +543,29 @@ The price table and the calibrated re-score are reported under both references. 
 - **Balanced, official count:**
   - race(ECM, qs): its mean is worse than ECM alone by 1.3–2×, and better than qs alone by about 1.3–1.6×. Its worst case is no worse than about 2× qs's (qs's near-fixed time caps ECM's tail), so it is better than ECM's worst at 84 bits.
   - race(rho, qs) is about 2× qs alone at 72–84 bits, where qs dominates. At 54–60 bits it may beat both, because the two are close there.
-- **Balanced, calibrated:** qs dominates at 60–84 bits, so both races lose to qs alone by up to 2×.
-- **Unbalanced:**
+- **Unbalanced, official count:**
   - race(rho, qs) is within about 2× of rho at 24-bit p (far better than qs alone), and close to qs at 32-bit p.
-  - race(ECM, qs) beats qs alone in every cell, and is within about 2× of ECM, under both counts.
+  - race(ECM, qs) beats qs alone in every cell, and is within about 2× of ECM.
+  - race(ECM, N51-0917's qs): ECM leads in every cell, so the race is within about 2× of ECM and beats N51-0917's qs.
+- **Calibrated, restated from the committed leader tables** (`evolve/calibrate.json`, median P-core prices; pairwise calls between the race's two sides, a tie meaning overlapping intervals). The rule, per cell and per pricing (addendum 4): where one side leads, the race loses to it by up to the pricing's bound (below) and beats the other side; where the sides are tied, the race beats both.
+  - **Balanced:**
+    - At 60–84 bits the leader among all four algorithms is N51-0917's qs under both calibrated references, not qs + lc 1.4.
+    - race(ECM, qs + lc 1.4): ruint: qs + lc 1.4 leads at 54–84, so the race loses to qs alone and beats ECM. Montgomery: ECM leads at 54 (the race loses to ECM, beats qs); tied at 60–84, so the race beats both.
+    - race(rho, qs + lc 1.4): qs leads at 54–84 under both references, so the race loses to qs alone and beats rho.
+    - race(ECM, N51-0917's qs): ruint: N51-0917 leads at 54–84, so the race loses to it and beats ECM. Montgomery: ECM leads at 54 (the race loses to ECM, beats N51-0917); tied at 60 and 66, so there the race beats both sides alone; N51-0917 leads at 72–84 (the race loses to it).
+    - **54 bits,** per pricing: official, ECM leads both its pairs and rho leads qs, so every race is within the bound of ECM or rho; ruint, the qs side leads every pair, so every race is within the bound of its qs side; Montgomery, ECM leads both its pairs and qs leads rho.
+  - **Unbalanced:**
+    - race(ECM, qs + lc 1.4): ruint: qs leads 72/32; ECM leads 78/24, 84/24, 84/28; tied (the race beats both) at 72/24, 72/28, 78/28, 78/32, 84/32. Montgomery: ECM leads every cell except 72/32, which is tied.
+    - race(rho, qs + lc 1.4): ruint: rho leads 72/24, 78/24, 84/24, 84/28; qs leads 72/28, 72/32, 78/32, 84/32; tied at 78/28. Montgomery: rho leads 72/24, 78/24, 78/28, 84/24, 84/28; qs leads 72/32, 78/32; tied at 72/28 and 84/32.
+    - race(ECM, N51-0917's qs): ruint: N51-0917 leads 72/28, 72/32, 78/28, 78/32, 84/32 (the race loses to it and beats ECM); ECM leads 84/24; tied at 72/24, 78/24, 84/28. Montgomery: ECM leads every cell except 72/32 and 78/32, which are tied.
+    - **Where N51-0917 leads all four under ruint** (72/28, 78/28, 78/32, 84/32), race(ECM, qs + lc 1.4) beats or ties its own sides but is expected to stay behind N51-0917 alone: a race cannot cost less than the cheaper side on each number, and N51-0917 leads both of its sides there. race(ECM, N51-0917's qs) is within the bound of N51-0917 there.
 - **What the race is for:** not the best mean on any one population, but robustness on a mixed one, never far from the best side on any number. That is what the partition study will measure.
-- **How the result is judged.** The race's bar is robustness: never far from the better side. It is not winning. A result like "loses to ECM by 1.8× on balanced numbers" is within this prediction, not a failure. A failure would be a race that is more than about 2× the better side (beyond the race bound's slice and chunk terms), or one that is worse than the worse side.
+- **The race bound under each pricing.** Scheduling stays on official ops (addendum 5). Under a pricing in which side A's average price per official op is π_A and side B's is π_B (its calibrated cost divided by its official ops), equal slices give approximately
+
+  race cost ≤ (1 + π_other / π_winner) · (winner alone's cost) + slice terms,
+
+  because the losing side spends about as many official ops as the winner before the winner finishes. Under the official count π_A = π_B = 1 and this is the 2× bound. Under a calibrated pricing it exceeds 2× wherever the losing side costs more per official op than the winner (ECM's multiplies against qs's cheap sieve ops, for example). Measured π_A / π_B is reported per cell and per pricing, so the bound can be checked. Unequal slices (sa : sb, already genes) could equalize the calibrated spend; tuning that is Run 8 work, not the first comparison.
+- **How the result is judged.** The race's bar is robustness: never far from the better side. It is not winning. A result like "loses to ECM by 1.8× on balanced numbers" is within this prediction, not a failure. The failure test is applied **under each of the three pricings**: a failure is a race that is worse than about 2× the better side (beyond the slice and chunk terms), or worse than the worse side. Where that pricing's π ratio makes the bound itself exceed 2×, a failure is reported with the measured ratio, so "predicted by the bound" and "beyond the bound" stay distinguishable. The robust verdict per cell is the worst of the three, with the (e) call per cell (addendum 6).
 
 **Addenda to the Stage 9 cost model** (before review):
 
@@ -584,7 +601,7 @@ The price table and the calibrated re-score are reported under both references. 
   At sa = sb = 2^8 and 2^10 in the first comparison, qs's slices will mostly be a single polynomial: an effective qs slice of a few thousand ops at 84 bits. The race bound's c term carries that, and the overshoot report shows its size.
 
 5. **Slices are measured on the official meter.** sa and sb count official ops, so the schedule (which side runs when, and every switch point) is deterministic and identical under every pricing. Calibrated scores are computed afterwards from per-type counts, never used to schedule. The race records per-type counts (the types `calibrate.py` reprices) separately for each side, so each pricing can reprice both sides; the per-type counts of the two sides sum to the race's totals, checked on every acceptance run.
-6. **The comparison adds race(ECM, N51-0917)**, because N51-0917 leads balanced 60–84 bits under both calibrated pricings (calibration result entry). race(ECM, qs + lc 1.4) and race(rho, qs + lc 1.4) stay. Every race result is reported under all three pricings (official, ruint-calibrated, Montgomery-calibrated, with median P-core prices), plus the (e) call per cell: the leader where all three pricings agree, "undecided" elsewhere.
+6. **The comparison adds race(ECM, N51-0917)** (meaning N51-0917's qs stage: addendum 7), because N51-0917 leads balanced 60–84 bits under both calibrated pricings (calibration result entry). race(ECM, qs + lc 1.4) and race(rho, qs + lc 1.4) stay. Every race result is reported under all three pricings (official, ruint-calibrated, Montgomery-calibrated, with median P-core prices), plus the (e) call per cell: the leader where all three pricings agree, "undecided" elsewhere.
 
 ## 2026-10-23 — Op-price calibration: result (measurement only)
 
@@ -650,3 +667,5 @@ Under ruint, qs's lead at 60–84 bits is settled: the margin is far beyond any 
 Recommended: (c) as evolution's fitness + (e) in reports. Decision (Oct 23, user): (c) as fitness, (e) in reports.
 
 **Caveats.** One laptop, one build. The i128 and U256 paths are lampcore's, not the fastest possible. The confirm, lp and cf_step mappings are upper bounds, as planned. One unexplained oddity, not used in any price: the loop-overhead baseline is 0.31 ns on the E-core against 1.25 ns on the P-core.
+7. **race(ECM, N51-0917) is race(ECM, N51-0917's qs stage)**: `{"t": "qs", "kc": 32, "bc": 1.13, "mc": 1.00, "tc": 1.38}` (exact values from `run6/accept.json`), with no lc. A race side is a single stage, and N51-0917's two sq stages never run: the Run 6 ablation (240/240 finished by the first qs), and on the Stage 8 populations `calibrate.py`'s trace assert (each run's ops equal its qs trace's). This race and race(ECM, qs + lc 1.4) differ in the qs genes and also in large primes (lc 1.0 against 1.4).
+8. **Per-type counts in Stage 9 come from Python traces**, per side, which is fine at this scale. Lampcore per-type counters are a Run 8 prerequisite (PLAN.md, Run 8) and do not block Stage 9.
