@@ -27,7 +27,7 @@ pub(crate) fn gene(g: &Value, key: &str, default: f64) -> f64 {
     g.get(key).and_then(|v| v.as_f64()).unwrap_or(default)
 }
 
-fn primes_upto(n: u64) -> Vec<u64> {
+pub(crate) fn primes_upto(n: u64) -> Vec<u64> {
     let mut s = vec![true; n as usize + 1];
     s[0] = false;
     if n >= 1 {

@@ -344,3 +344,34 @@ All of this is uncertain by about 2× either way: the estimate of expected curve
   - a baby/giant-step difference can be O when the stage-1 point's order is small.
 
   Then the card's point mod p leaves the group law, and it may "find" p where group theory says it cannot, or miss it. Any gcd it takes is still a true divisor, so its answers stay correct; only the ideal prediction fails. That is ordinary x-only ECM behavior and the card is not changed. The group-order check detects these curves and counts them separately. They are common only when B1 is small, because Suyama orders are divisible by 12 and leftover factors of 2 and 3 beyond the stage-1 prime powers then make giant-step differences O. So the check runs at b1 = 4 (B1 ≈ 220) on its small numbers, with both factors below 2^20 (not 2^24: brute-force point counting stays cheap).
+
+**Tuning (`ecm_tune.py`, seeds 3000000 + bits at 72/78/84, 40 numbers each, cap 2^29).** Grid: b1 ∈ {0.25, 0.5, 1, 2, 4} × b2 ∈ {0, 25, 50, 100, 200}. Rule, fixed before running: the lowest average of log₂(mean ops) over the three sizes. The winner is **b1 = 1.0, b2 = 50** (the defaults), at 15.70 / 17.03 / 17.80 for 72 / 78 / 84 bits. These are now frozen for the comparison. The intervals are wide, because the number of curves has a heavy tail, and 1.0/25 is within noise; the rule decides.
+
+## 2026-10-23 — Pricing sensitivity for the ECM comparison, stated before running
+
+The official op counts stay as they are; this is reported beside them, never in place of them. The question is whether ECM's lead over qs survives if qs's small-number work is priced fairly. Every op of ECM and rho is a multiply, squaring or gcd on N-sized numbers (ECM's Euclid steps run on den mod N), so ECM and rho are not re-priced.
+
+qs's charges split by operand size. A **small-number** op works on numbers below the factor-base bound (or on bytes and machine words); it is re-priced at r = 1/8 and r = 1/32 of a modular multiply. Everything else stays at 1. The split by phase, from the cost model's own charges:
+
+| Phase | Small-number (× r) | Full price (× 1) |
+|---|---|---|
+| mult | — | all (ks scoring, 14 per multiplier; under 2^9 ops in total) |
+| fb | all: Euler's criterion and Tonelli–Shanks are arithmetic mod p ≤ B | — |
+| setup | per A and q_l: the inverse mod q_l (Euclid steps) and γ (mod q_l); per sieved prime: the inverse mod p, the 2 root multiplies, the s values 2B_l·A⁻¹ mod p; every Gray-code root update | forming A ((s − 1) per combination), A/q_l, and B_l = (A/q_l)·γ (numbers of about half of N's size): (s − 1)·combinations + 2·s per A |
+| sieve | all: array updates and cell scans | — |
+| confirm | the F trial divisions per candidate and every extra division (a big g(x) by one small prime) | the 2 ops forming g(x) = (Ax + 2B)x + C |
+| la | all: 64-bit word operations | — |
+| sqrt | — | all (multiplies and the gcd mod N) |
+| lp (lc 1.4) | the bound check, N mod q (one small modulus, like a trial division), the hash lookup and insert, the F-entry vector add | u₁u₂ mod N |
+
+fb and lp are not in the brief's list (sieve, cell scans, confirmation trial division, setup's small arithmetic, la word ops). They are added here because their operands are just as small.
+
+The split is computed per run from lamps.py's trace, never estimated:
+- setup full = (s − 1)·combinations + 2·s·(polynomials A tried);
+- confirm full = 2·candidates;
+- lp full = combinations of partials;
+- every other op of those phases is small.
+
+Re-priced qs = mult + sqrt + setup full + confirm full + lp full + r·(fb + setup small + sieve + confirm small + la + lp small).
+
+Reported: re-priced log₂(mean) at r = 1/8 and r = 1/32 for tuned qs + lc 1.4 on both populations, beside ECM's and rho's unchanged numbers, and whether ECM still leads at each size.

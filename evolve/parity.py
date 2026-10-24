@@ -24,6 +24,12 @@ CFRAC (cfrac_pairs): the cfrac acceptance numbers (40-60 bits), 66/72 bits, numb
 it retry (asserted), period ends at 20-28 bits (asserted, with kc 1 a miss and with kc 4 the
 next k), caps that stop inside cf_step and inside cf_td (asserted), td then cfrac, cfrac with
 the check on, and random kc/bc genomes; the per-phase check includes cf_step and cf_td.
+ECM (ecm_pairs): the ecm acceptance numbers, balanced (40-84 bits) and unbalanced (24-32-bit
+factor at 72-84), a setup factor (s0 = p: asserted), a degenerate first curve (s0 = N:
+asserted), curves that find both factors at once in stage 1 and in stage 2 (asserted), no
+stage 2 (b2 = 0), a curve limit that ends in a miss, caps inside each of ecm_setup, ecm_s1,
+ecm_s2 and ecm_gcd (asserted), td then ecm, and random b1/b2/s0 genomes; the per-phase check
+includes the four ecm phases.
 Edge: both cores refuse qs on N >= 2^100 with an error, never a silent wrap.
 
 Guards (guard_pairs): block flash whose two product trees can't fit in the budget, and p-1
@@ -35,7 +41,7 @@ threshold at 40 bits.
   python3 parity.py [random_genomes] [numbers_per_size]
 """
 import json, math, os, random, sys
-import qs, cfrac
+import qs, cfrac, ecm
 import lamps, blockflash
 import subprocess
 from lamps import run, LAST, rand_genome, rand_stage, use_fine_deck, cap_for, Meter, LAMPS
@@ -97,6 +103,7 @@ def qs_pairs():
     yield from lp_pairs()
     yield from check_pairs()
     yield from cfrac_pairs()
+    yield from ecm_pairs()
 
 TUNED = dict(QS, kc=32, bc=1.1, mc=0.25, tc=1.38)
 # (genes, seed, bits, index) of numbers on which an lc > 1 run retries (searched, seed 550040)
@@ -123,13 +130,13 @@ def lp_stop_caps(g, nums, nth=10, phase="lp"):
         lps = [before for ph, before in tr["ops"].log if ph == phase]
         if len(lps) >= nth:
             out.append((N, p, q, lps[nth - 1]))
-    qs.TRACE = cfrac.TRACE = None
+    qs.TRACE = cfrac.TRACE = ecm.TRACE = None
     return out
 
 def new_trace():
     """One trace shared by qs and cfrac, so a genome with both adds up as lampcore does."""
     tr = {"ops": ChargeLog()}
-    qs.TRACE = cfrac.TRACE = tr
+    qs.TRACE = cfrac.TRACE = ecm.TRACE = tr
     return tr
 
 def lp_pairs():
@@ -209,6 +216,42 @@ def cfrac_pairs():
         g = [{"t": "cfrac", "kc": rng.randint(1, 32), "bc": round(rng.uniform(0.7, 3.0), 3)}]
         for b in (34, 46, 60):
             yield f"random cfrac {i}", g, semiprimes_pq(b, 2, 2500000 + b), min(cap_for(b), 2 ** 24), False
+
+ECM_BOTH = {"s1": (36, (27, 73, 94)), "s2": (40, (3, 6, 9))}   # semiprimes_pq(bits, ., 3200000 + bits)
+
+def ecm_pairs():
+    """The ECM card (ecm.py)."""
+    from fastlamps import semiprimes_unbalanced
+    E = {"t": "ecm"}
+    for b in range(40, 85, 4):
+        yield "ecm balanced", [E], semiprimes_pq(b, 6, 2700000 + b), 2 ** 29, False
+    for b in (72, 84):
+        for pb in (24, 32):
+            yield "ecm unbalanced", [E], semiprimes_unbalanced(b, pb, 4, 2800000 + 100 * pb + b), 2 ** 29, False
+    for b in (40, 56, 72):
+        for N, p, q in semiprimes_pq(b, 2, 3300000 + b):
+            yield "ecm setup factor", [dict(E, s0=p)], [(N, p, q)], 2 ** 29, False
+        for N, p, q in semiprimes_pq(40, 2, 3300040 + b):
+            yield "ecm degenerate", [dict(E, s0=N)], [(N, p, q)], 2 ** 29, False
+    for st, (b, idx) in ECM_BOTH.items():
+        all_n = semiprimes_pq(b, max(idx) + 1, 3200000 + b)
+        for i in idx:
+            yield f"ecm both {st}", [E], all_n[i:i + 1], 2 ** 29, False
+    for b in (48, 72):
+        nums = semiprimes_pq(b, 4, 3400000 + b)
+        yield "ecm no stage 2", [dict(E, b2=0)], nums, 2 ** 29, False
+        yield "ecm curve limit", [dict(E, b1=0.1, b2=0, curves=2)], nums, 2 ** 29, False
+        yield "td then ecm", [{"t": "td", "a": 0.1}, E], nums, 2 ** 29, False
+    for b in (48, 72):
+        for phase, nth in (("ecm_setup", 25), ("ecm_s1", 5000), ("ecm_s2", 3000), ("ecm_gcd", 3)):
+            for N, p, q, cap in lp_stop_caps([E], semiprimes_pq(b, 3, 3500000 + b), nth, phase):
+                yield f"ecm cap inside {phase}", [E], [(N, p, q)], cap, False
+    rng = random.Random(2032)
+    for i in range(20):
+        g = [{"t": "ecm", "b1": round(rng.uniform(0.25, 4.0), 3), "b2": rng.choice([0, 10, 25, 50, 100, 200]),
+              "s0": rng.randint(6, 1000)}]
+        for b in (34, 52, 72):
+            yield f"random ecm {i}", g, semiprimes_pq(b, 2, 3600000 + b), min(cap_for(b), 2 ** 24), False
 
 SMALL_MC = (0.05, 0.1, 0.25, 0.5)
 
@@ -357,6 +400,18 @@ def check_qs():
                 if label == "cfrac period end kc 4":
                     assert len(tr["attempts"]) > 1 and tr["attempts"][0]["period_end"], \
                         ("expected the next k after a period end", N)
+            if label.startswith("ecm cap inside "):
+                want = label.rsplit(" ", 1)[1]
+                assert ops is None and last_phase == want, ("expected a miss inside " + want, N, last_phase)
+            ends = [cv["end"] for cv in tr.get("curves", [])]
+            if label == "ecm setup factor":
+                assert ends == ["setup factor"], ("expected a setup factor", N, ends)
+            if label == "ecm degenerate":
+                assert ends[0] == "degenerate", ("expected a degenerate first curve", N, ends)
+            if label.startswith("ecm both "):
+                assert label[-2:] + " both" in ends, ("expected both factors at once", N, ends)
+            if label == "ecm curve limit":
+                assert ops is None and len(ends) == 2, ("expected a miss after 2 curves", N, ends)
             if label == "check cap inside check":
                 assert ops is None and last_phase == "check", ("expected a miss inside check", N, last_phase)
             if label == "check trivial reject":
