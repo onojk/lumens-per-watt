@@ -33,7 +33,7 @@ from lamps import run
 from fastlamps import run_many
 from revalidate import bootstrap, R
 from ecm_compare import BAL, UNB, balanced, unbalanced, ECM, QS, RHO, CAP
-from ecm_accept import setup_parts
+from optypes import qs_counts, ecm_counts
 
 N51 = json.load(open("run6/accept.json"))["genomes"]["N51-0917"]
 ALGS = {"ecm": ECM, "qs + lc 1.4": QS, "rho": RHO, "N51-0917": N51}
@@ -43,33 +43,12 @@ def pops():
     p.update({f"{b}/{pb}": unbalanced(b, pb) for b, pb in UNB})
     return p
 
-def qs_counts(tr):
-    o = tr["ops"]
-    ats = tr["attempts"]
-    setup_full = sum((a["s"] - 1) * a["combos"] + 2 * a["s"] * a["a_count"] for a in ats)
-    setup_euc = sum(st for a in ats for _, _, st in a["inv"])
-    scans = sum(2 * p["M"] + 1 for a in ats for p in a["polys"])
-    confirm_full = sum(2 * len(a["cands"]) for a in ats)
-    sqrt_gcd = sum(d["gcd_steps"] for a in ats for d in a["deps"])
-    lp_full = sum(a["lp"]["combos"] for a in ats if "lp" in a)
-    return {"mult": o.get("mult", 0), "fb": o.get("fb", 0),
-            "setup_full": setup_full, "setup_euclid": setup_euc,
-            "setup_small": o.get("setup", 0) - setup_full - setup_euc,
-            "sieve_update": o.get("sieve", 0) - scans, "sieve_scan": scans,
-            "confirm_full": confirm_full, "confirm_td": o.get("confirm", 0) - confirm_full,
-            "la": o.get("la", 0), "sqrt_mul": o.get("sqrt", 0) - sqrt_gcd, "sqrt_gcd": sqrt_gcd,
-            "lp_full": lp_full, "lp_small": o.get("lp", 0) - lp_full}
-
 def count_job(args):
     alg, key, N = args
     if alg == "ecm":
         ecm.TRACE = {}
         ops, d = run(ECM, N, CAP)
-        tr = ecm.TRACE
-        steps = sum(setup_parts(N, cv["sigma"])[4] for cv in tr["curves"])
-        o = tr["ops"]
-        return alg, key, N, ops, {"setup_mul": o.get("ecm_setup", 0) - steps, "setup_euclid_N": steps,
-                                  "mul": o.get("ecm_s1", 0) + o.get("ecm_s2", 0), "gcd": o.get("ecm_gcd", 0)}
+        return alg, key, N, ops, ecm_counts(ecm.TRACE, N)
     qs.TRACE = {}
     ops, d = run(ALGS[alg], N, CAP)
     c = qs_counts(qs.TRACE)
