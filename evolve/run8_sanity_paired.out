@@ -1,0 +1,22 @@
+evolution: median-of-8 tuning 1.014; PASSED
+  best-of-8      (seed 73): tuning 0.920 [0.724, 1.237]   sealed 0.969 [0.856, 1.087]
+  median rank 4  (seed 77): tuning 0.998 [0.953, 1.046]   sealed 0.993 [0.974, 1.011]
+  median rank 5  (seed 75): tuning 1.029 [0.991, 1.070]   sealed 1.049 [1.025, 1.073]
+tpe: median-of-8 tuning 0.943; PASSED
+  best-of-8      (seed 71): tuning 0.817 [0.585, 1.080]   sealed 0.951 [0.866, 1.030]
+  median rank 4  (seed 76): tuning 0.927 [0.890, 0.960]   sealed 0.999 [0.972, 1.059]
+  median rank 5  (seed 72): tuning 0.959 [0.908, 1.008]   sealed 0.983 [0.961, 1.003]
+random: median-of-8 tuning 1.172; FAILED
+  best-of-8      (seed 72): tuning 1.073 [1.021, 1.125]   sealed 1.072 [1.046, 1.098]
+  median rank 4  (seed 75): tuning 1.164 [1.116, 1.215]   sealed 1.147 [1.117, 1.176]
+  median rank 5  (seed 77): tuning 1.180 [0.844, 1.649]   sealed 1.181 [1.039, 1.345]
+evolution-fresh: median-of-8 tuning 1.047; PASSED
+  best-of-8      (seed 78): tuning 1.029 [0.993, 1.192]   sealed 1.096 [1.027, 1.178]
+  median rank 4  (seed 72): tuning 1.274 [1.043, 1.475]   sealed 1.265 [1.152, 1.370]
+  median rank 5  (seed 76): tuning 1.100 [0.898, 1.356]   sealed 1.073 [0.988, 1.153]
+
+Optuna's own time per trial (free objective): {340: '7.4 ms', 1360: '26.9 ms'}
+secs per run, evolution: median 107 (min 101, max 117); per evaluation 0.314 s
+secs per run, tpe: median 77 (min 68, max 123); per evaluation 0.227 s
+secs per run, random: median 243 (min 234, max 260); per evaluation 0.716 s
+secs per run, evolution-fresh: median 141 (min 123, max 153); per evaluation 0.415 s
