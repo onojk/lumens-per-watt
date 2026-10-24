@@ -7,8 +7,9 @@
 //!   then one line per number: "N p q" in decimal (p, q = its prime factors)
 //! For each number one line comes back:
 //!   "<ops> <factor> <tests> <hits> <stage> <k>"   or   "miss <tests> <hits>"
-//! If the genome has a quadratic-sieve stage, both lines end with qs's nine per-phase op
-//! counts (mult fb setup sieve confirm la sqrt lp check), for the parity check.
+//! If the genome has a quadratic-sieve or continued-fraction stage, both lines end with the
+//! eleven per-phase op counts of the relation cards (mult fb setup sieve confirm la sqrt lp
+//! check cf_step cf_td), for the parity check.
 //! stage is the winning stage's index; k is the multiplier a square-search win came from,
 //! "-" for any other lamp (read-only instrumentation: it never changes the op count).
 //!
@@ -19,6 +20,7 @@ use ruint::aliases::U256;
 use serde_json::Value;
 use std::io::{self, BufRead, BufWriter, Write};
 
+mod cfrac;
 mod qs;
 
 struct Budget;
@@ -30,7 +32,7 @@ struct Meter {
     tests: u64,
     hits: u64,
     k: Option<u64>, // instrumentation: the k a square-search win came from
-    phases: [u64; 9], // qs's ops by phase (see qs.rs)
+    phases: [u64; 11], // relation cards' ops by phase (see qs.rs, cfrac.rs)
 }
 
 impl Meter {
@@ -468,8 +470,8 @@ struct Win {
     k: Option<u64>,
 }
 
-fn run(genome: &[Value], num: &Num, cap: u64) -> (Option<Win>, u64, u64, [u64; 9]) {
-    let mut m = Meter { ops: 0, cap, tests: 0, hits: 0, k: None, phases: [0; 9] };
+fn run(genome: &[Value], num: &Num, cap: u64) -> (Option<Win>, u64, u64, [u64; 11]) {
+    let mut m = Meter { ops: 0, cap, tests: 0, hits: 0, k: None, phases: [0; 11] };
     for (i, s) in genome.iter().enumerate() {
         let r = match s["t"].as_str().unwrap() {
             "td" => lamp_td(num, s, &mut m),
@@ -478,6 +480,7 @@ fn run(genome: &[Value], num: &Num, cap: u64) -> (Option<Win>, u64, u64, [u64; 9
             "pm1" => lamp_pm1(num, s, &mut m),
             "ps" => lamp_ps(num, s, &mut m),
             "qs" => qs::lamp_qs(num, s, &mut m),
+            "cfrac" => cfrac::lamp_cfrac(num, s, &mut m),
             other => panic!("unknown lamp {other}"),
         };
         match r {
@@ -498,7 +501,7 @@ fn main() {
     let genome: Value = serde_json::from_str(&lines.next().unwrap().unwrap()).unwrap();
     let genome = genome.as_array().unwrap().clone();
     let cap: u64 = lines.next().unwrap().unwrap().trim().parse().unwrap();
-    let has_qs = genome.iter().any(|s| s["t"] == "qs");
+    let has_qs = genome.iter().any(|s| s["t"] == "qs" || s["t"] == "cfrac");
     let out = io::stdout();
     let mut out = BufWriter::new(out.lock());
     for line in lines {

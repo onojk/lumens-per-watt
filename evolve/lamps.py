@@ -220,9 +220,10 @@ def lamp_pm1(N, g, m):
 
 from blockflash import lamp_ps
 from qs import lamp_qs
+from cfrac import lamp_cfrac                              # in no deck: tests and comparisons only
 
 LAMPS = {"td": lamp_td, "sq": lamp_sq, "rho": lamp_rho, "pm1": lamp_pm1, "ps": lamp_ps,
-         "qs": lamp_qs}
+         "qs": lamp_qs, "cfrac": lamp_cfrac}
 
 # ---- genomes ----------------------------------------------------------------
 

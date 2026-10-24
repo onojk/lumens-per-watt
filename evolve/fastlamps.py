@@ -7,7 +7,7 @@ hundreds of shared cases before any big-number result is trusted.
   nums = semiprimes_pq(72, 40, seed)            # [(N, p, q), ...]
   results = run_many(genome, nums, cap)         # [(ops or None, factor, tests, hits), ...]
   run_many(genome, nums, cap, inst=True)        # adds (winning stage, square-search k)
-  run_many(genome, nums, cap, phases=True)      # adds qs's per-phase ops (genomes with qs)
+  run_many(genome, nums, cap, phases=True)      # adds per-phase ops (genomes with qs or cfrac)
 """
 import json, os, random, subprocess
 from lamps import rand_prime
@@ -16,7 +16,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 BIN = os.environ.get("LAMPCORE",
                      os.path.join(HERE, "..", "lampcore", "target", "release", "lampcore"))
 
-PHASES = ["mult", "fb", "setup", "sieve", "confirm", "la", "sqrt", "lp", "check"]   # qs's, in lampcore's order
+PHASES = ["mult", "fb", "setup", "sieve", "confirm", "la", "sqrt", "lp", "check",
+          "cf_step", "cf_td"]           # qs's and cfrac's, in lampcore's order
 
 def semiprimes_pq(bits, count, seed):
     """Same numbers as lamps.semiprimes(bits, count, seed), with their factors."""

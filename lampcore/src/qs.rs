@@ -23,7 +23,7 @@ pub const CHECK: usize = 8; // the ledger's relation check, opt-in ("check": 1)
 
 const DELTA: usize = 10; // surplus relations: rows = F + DELTA
 
-fn gene(g: &Value, key: &str, default: f64) -> f64 {
+pub(crate) fn gene(g: &Value, key: &str, default: f64) -> f64 {
     g.get(key).and_then(|v| v.as_f64()).unwrap_or(default)
 }
 
@@ -202,13 +202,13 @@ pub fn lamp_qs(num: &Num, g: &Value, m: &mut Meter) -> R {
 
 /// Relation ledger (evolve/ledger.py): one N, one multiplier k, one factor base. Owns the
 /// factor base (phase 2), dedupe (free), linear algebra (6) and the square root (7).
-struct Ledger {
+pub(crate) struct Ledger {
     n: U256,
-    n_i: i128,
+    pub(crate) n_i: i128,
     bnd: u64, // factor-base bound B
-    base: Vec<i64>,
+    pub(crate) base: Vec<i64>,
     roots_t: Vec<u64>, // parallel to base
-    f: usize,
+    pub(crate) f: usize,
     need: usize,
     // relations (u, vec, y): u^2 = y^2 prod p^e (mod N); y = 1 for a full relation
     rels: Vec<(i128, Vec<u32>, i128)>,
@@ -219,7 +219,7 @@ struct Ledger {
 impl Ledger {
     /// Phase 2: -1, 2, primes dividing k, odd primes with (kN | p) = 1. Err(p) if a prime
     /// p dividing N turns up.
-    fn build(num: &Num, k: u64, bnd: u64, m: &mut Meter) -> Result<Result<Ledger, U256>, Budget> {
+    pub(crate) fn build(num: &Num, k: u64, bnd: u64, m: &mut Meter) -> Result<Result<Ledger, U256>, Budget> {
         let n = num.n;
         let kn_u = U256::from(k) * n;
         let mut base: Vec<i64> = vec![-1, 2];
@@ -258,7 +258,7 @@ impl Ledger {
         }))
     }
 
-    fn full(&self) -> bool {
+    pub(crate) fn full(&self) -> bool {
         self.rels.len() >= self.need
     }
 
@@ -315,7 +315,7 @@ impl Ledger {
 
     /// Keep the relation unless it fails the check (when on) or repeats one already kept.
     /// True once full.
-    fn add(&mut self, u: i128, v: Vec<u32>, y: i128, chk: bool, m: &mut Meter) -> Result<bool, Budget> {
+    pub(crate) fn add(&mut self, u: i128, v: Vec<u32>, y: i128, chk: bool, m: &mut Meter) -> Result<bool, Budget> {
         if chk && !self.check(u, &v, y, m)? {
             return Ok(false);
         }
@@ -328,7 +328,7 @@ impl Ledger {
     }
 
     /// Phases 6 and 7 on a full ledger: a factor, or None if no dependency splits N.
-    fn solve(&self, m: &mut Meter) -> R {
+    pub(crate) fn solve(&self, m: &mut Meter) -> R {
         let (n, n_i, f, rels, base) = (self.n, self.n_i, self.f, &self.rels, &self.base);
         // 6. linear algebra: dense GF(2) elimination
         let rows = rels.len();

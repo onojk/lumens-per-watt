@@ -20,6 +20,10 @@ run stops on its 10th lp charge (asserted: a miss whose last charge is lp). Ledg
 check ("check": 1, check_pairs): default, tuned and tuned + lc 1.4 qs at 40-72 bits, a number
 on which the check rejects a trivial combined relation (asserted), caps that stop inside the
 check phase (asserted), and random genomes with the check on; the per-phase check includes it.
+CFRAC (cfrac_pairs): the cfrac acceptance numbers (40-60 bits), 66/72 bits, numbers that make
+it retry (asserted), period ends at 20-28 bits (asserted, with kc 1 a miss and with kc 4 the
+next k), caps that stop inside cf_step and inside cf_td (asserted), td then cfrac, cfrac with
+the check on, and random kc/bc genomes; the per-phase check includes cf_step and cf_td.
 Edge: both cores refuse qs on N >= 2^100 with an error, never a silent wrap.
 
 Guards (guard_pairs): block flash whose two product trees can't fit in the budget, and p-1
@@ -31,7 +35,7 @@ threshold at 40 bits.
   python3 parity.py [random_genomes] [numbers_per_size]
 """
 import json, math, os, random, sys
-import qs
+import qs, cfrac
 import lamps, blockflash
 import subprocess
 from lamps import run, LAST, rand_genome, rand_stage, use_fine_deck, cap_for, Meter, LAMPS
@@ -92,6 +96,7 @@ def qs_pairs():
             yield f"random wide qs {i}", g, semiprimes_pq(b, 2, 1600000 + b), min(cap_for(b), 2 ** 24), False
     yield from lp_pairs()
     yield from check_pairs()
+    yield from cfrac_pairs()
 
 TUNED = dict(QS, kc=32, bc=1.1, mc=0.25, tc=1.38)
 # (genes, seed, bits, index) of numbers on which an lc > 1 run retries (searched, seed 550040)
@@ -113,13 +118,19 @@ def lp_stop_caps(g, nums, nth=10, phase="lp"):
     total charged before that charge), so the run misses inside that phase."""
     out = []
     for N, p, q in nums:
-        qs.TRACE = {"ops": ChargeLog()}
+        tr = new_trace()
         run(g, N, 2 ** 29)
-        lps = [before for ph, before in qs.TRACE["ops"].log if ph == phase]
+        lps = [before for ph, before in tr["ops"].log if ph == phase]
         if len(lps) >= nth:
             out.append((N, p, q, lps[nth - 1]))
-    qs.TRACE = None
+    qs.TRACE = cfrac.TRACE = None
     return out
+
+def new_trace():
+    """One trace shared by qs and cfrac, so a genome with both adds up as lampcore does."""
+    tr = {"ops": ChargeLog()}
+    qs.TRACE = cfrac.TRACE = tr
+    return tr
 
 def lp_pairs():
     """Stage 7: the lc gene (single large prime)."""
@@ -161,6 +172,43 @@ def check_pairs():
         g = [dict(st, lc=rng.uniform(1.0, 2.0), check=1) if st["t"] == "qs" else st for st in g]
         for b in (34, 46, 60, 72):
             yield f"random check qs {i}", g, semiprimes_pq(b, 2, 2100000 + b), min(cap_for(b), 2 ** 24), False
+
+CF = {"t": "cfrac", "kc": 32, "bc": 1.1}
+CF_RETRY = (6, 8, 10, 17, 20, 21)                # indices into semiprimes_pq(40, ., 550040)
+CF_PERIOD = {20: (39, 45, 48), 24: (27, 31, 54), 28: (132, 136, 178)}   # seed 560000 + bits, kc 1
+CF_PERIOD_NEXT = {20: (43, 64, 81), 24: (27, 133, 154), 28: (132, 352, 467)}  # kc 4: period end, then next k
+
+def cfrac_pairs():
+    """The CFRAC card (cfrac.py): a second relation source into the ledger."""
+    for b in (40, 44, 48, 52, 56, 60):
+        nums = semiprimes_pq(b, 8, 770000 + b)
+        yield "cfrac acceptance", [CF], nums, 2 ** 29, False
+        yield "cfrac default genes", [{"t": "cfrac"}], nums[:4], 2 ** 29, False
+    for b in (66, 72):
+        yield "cfrac large", [CF], semiprimes_pq(b, 4, 2200000 + b), 2 ** 29, False
+    for i in CF_RETRY:
+        yield "cfrac retry", [CF], semiprimes_pq(40, i + 1, 550040)[i:], 2 ** 29, True
+    for b, idx in CF_PERIOD.items():
+        all_n = semiprimes_pq(b, max(idx) + 1, 560000 + b)
+        for i in idx:
+            yield "cfrac period end", [dict(CF, kc=1, bc=3.0)], all_n[i:i + 1], 2 ** 29, False
+    for b, idx in CF_PERIOD_NEXT.items():
+        all_n = semiprimes_pq(b, max(idx) + 1, 560000 + b)
+        for i in idx:
+            yield "cfrac period end kc 4", [dict(CF, kc=4, bc=3.0)], all_n[i:i + 1], 2 ** 29, False
+    for b in (48, 60):
+        for phase, nth in (("cf_step", 200), ("cf_td", 200)):
+            for N, p, q, cap in lp_stop_caps([CF], semiprimes_pq(b, 3, 2300000 + b), nth, phase):
+                yield f"cfrac cap inside {phase}", [CF], [(N, p, q)], cap, False
+    for b in (40, 52, 60):
+        nums = semiprimes_pq(b, 4, 2400000 + b)
+        yield "td then cfrac", [{"t": "td", "a": 0.1}, CF], nums, 2 ** 29, False
+        yield "cfrac check on", [dict(CF, check=1)], nums, 2 ** 29, False
+    rng = random.Random(2031)
+    for i in range(20):
+        g = [{"t": "cfrac", "kc": rng.randint(1, 32), "bc": round(rng.uniform(0.7, 3.0), 3)}]
+        for b in (34, 46, 60):
+            yield f"random cfrac {i}", g, semiprimes_pq(b, 2, 2500000 + b), min(cap_for(b), 2 ** 24), False
 
 SMALL_MC = (0.05, 0.1, 0.25, 0.5)
 
@@ -292,15 +340,23 @@ def check_qs():
     for label, g, nums, cap, must_retry in qs_pairs():
         fast = run_many(g, nums, cap, inst=True, phases=True)
         for (N, p, q), f in zip(nums, fast):
-            qs.TRACE = {"ops": ChargeLog()}
+            tr = new_trace()
             ops, d = run(g, N, cap)
-            ph = {k: qs.TRACE.get("ops", {}).get(k, 0) for k in PHASES}
-            last_phase = qs.TRACE["ops"].log[-1][0] if qs.TRACE["ops"].log else None
+            ph = {k: tr["ops"].get(k, 0) for k in PHASES}
+            last_phase = tr["ops"].log[-1][0] if tr["ops"].log else None
             slow = (ops, d, LAST["tests"], LAST["hits"], LAST["stage"], LAST["k"], ph)
             if must_retry:
                 assert len(qs.TRACE["attempts"]) > 1, ("expected a retry", N)
             if label == "lc cap inside lp":
                 assert ops is None and last_phase == "lp", ("expected a miss inside lp", N, last_phase)
+            if label.startswith("cfrac cap inside "):
+                want = label.rsplit(" ", 1)[1]
+                assert ops is None and last_phase == want, ("expected a miss inside " + want, N, last_phase)
+            if label.startswith("cfrac period end"):
+                assert any(at.get("period_end") for at in tr["attempts"]), ("expected a period end", N)
+                if label == "cfrac period end kc 4":
+                    assert len(tr["attempts"]) > 1 and tr["attempts"][0]["period_end"], \
+                        ("expected the next k after a period end", N)
             if label == "check cap inside check":
                 assert ops is None and last_phase == "check", ("expected a miss inside check", N, last_phase)
             if label == "check trivial reject":

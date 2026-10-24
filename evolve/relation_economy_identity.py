@@ -6,7 +6,8 @@ binary built from the same commit (path given as the first argument).
 Pairs: every qs pair parity.py checks with the ledger check off (parity.qs_pairs: lc 1.0
 and lc 1.2-2.0, retries, caps that stop mid-phase and inside lp, qs after another stage,
 random genomes with random lc), plus tuned qs at lc 1.0 and lc 1.4 on the Run 6 ACCEPT
-numbers (cap 2^28). Pairs with the check on are skipped: the reference has no check.
+numbers (cap 2^28). Pairs with the check on, or with a cfrac stage, are skipped: the
+reference has neither.
 
 Python: the refactored and reference cards must agree on ops (or both miss), factor, tests,
 hits, winning stage, the whole trace (every realized count the accounting tests read), and
@@ -69,7 +70,7 @@ def job(args):
 
 def pairs():
     for label, g, nums, cap, must_retry in qs_pairs():
-        if not any(st.get("check") for st in g):
+        if not any(st.get("check") or st["t"] == "cfrac" for st in g):
             yield label, g, nums, cap
     for lc in (1.0, 1.4):
         for b, (c, s) in SETS.items():
@@ -101,7 +102,9 @@ if __name__ == "__main__":
                 fastlamps.BIN, fastlamps.PHASES = keep, keep_ph
             rust_n += len(nums)
             for (N, p, q), x, y in zip(nums, new, old):
-                x = x[:-1] + ({k: v for k, v in x[-1].items() if k != "check"},) if x[-1]["check"] == 0 else x
+                new_cols = ("check", "cf_step", "cf_td")       # columns added after 78b2dae
+                if all(x[-1][c] == 0 for c in new_cols):
+                    x = x[:-1] + ({k: v for k, v in x[-1].items() if k not in new_cols},)
                 if x != y:
                     rust_bad += 1
                     if rust_bad <= 10:
