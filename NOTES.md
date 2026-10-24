@@ -213,3 +213,18 @@ Relation: A²ᵢ₋₁ ≡ (−1)ⁱ Qᵢ (mod kN), so mod N, with 0 < Qᵢ < 2�
 - every relation passes the harness relation check;
 - a one-op mutation of each charge is caught;
 - parity after the Rust port.
+
+**Result (`cfrac_compare.py`, Run 6 ACCEPT numbers, cap 2^28, no misses).**
+- **CFRAC alone** (tuned qs's kc 32, bc 1.1) needs 3.7× tuned qs's ops at 72 bits and 5.2× at 84 (paired, intervals well clear of 1). The prediction was ~6× and ~10×. The result is inside the stated 2–3× uncertainty, but on the low side: the smoothness estimate was about 1.7× pessimistic.
+- **Growth:** 0.188 log₂-ops per bit over 72→84, against tuned qs's 0.149. Steeper, as predicted, so the gap widens with size.
+- **Where the ops go:** about 95% are in cf_td, the trial division of every residue (2^21.50 of 2^21.58 at 84 bits). That is exactly what early abort targets.
+- **qs + CFRAC into one ledger** (fixed split: CFRAC first, to cs·(F + 10) relations) is worse than qs alone at every share, as predicted:
+
+  | cs | Ops vs tuned qs |
+  |---|---|
+  | 0.1 | 1.30–1.43× |
+  | 0.25 | 1.70–2.05× |
+  | 0.5 | 2.39–3.14× |
+
+  A CFRAC relation costs more than the sieving it saves.
+- **Identity:** the split card at cs = 0 equals tuned qs op for op on all 240 numbers.

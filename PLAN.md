@@ -170,8 +170,8 @@ numbers, the parity count, and the old-vs-new table.
 
 ## Order of work (after Run 6)
 
-Stage 7 (large primes, done) -> relation-economy refactor, with the illumination tracer as
-a side task -> Stage 8 (ECM) -> Stage 9 (race) -> partition study -> Stage 10 (qs
+Stage 7 (large primes, done) -> relation-economy refactor (done), with the illumination
+tracer as a side task -> Stage 8 (ECM) -> Stage 9 (race) -> partition study -> Stage 10 (qs
 refinements) -> Run 8.
 
 The partition study comes after Stage 9 because its allocations run as race schedules,
@@ -182,7 +182,20 @@ The relation-economy refactor comes before ECM for three reasons:
 - CFRAC, the second relation source, needs the shared ledger;
 - Stage 7 is already changing the same code, so doing it now is cheaper than retrofitting.
 
-## Relation economy (planning; no code yet)
+## Relation economy (done, Oct 23)
+
+Done, each accepted with parity:
+- qs split into source + ledger (`ledger.py`), op for op unchanged;
+- the opt-in charged relation check;
+- CFRAC as a second source. Comparison in README ("Relation economy: CFRAC").
+
+Decisions:
+- CFRAC stays in no deck: it loses to tuned qs, and mixing it in only costs.
+- Early abort (NOTES, CFRAC entry) stays a planned gene, low priority: it can only narrow
+  a constant, and CFRAC's growth is steeper than qs's.
+
+Not started: relation-yield fitness and evolvable source genomes (below).
+
 
 Comes after Stage 7, the large-prime cost model in NOTES.md, and before Stages 8-10. The
 idea: separate *finding relations* from *using them*, so relation sources can be compared,

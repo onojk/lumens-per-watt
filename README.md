@@ -73,6 +73,54 @@ python3 ancestry.py N11-0076   # family line of any named genome
 
 Outputs: `evolve.log`, `results.json`, `lineage.jsonl`, `validation.json`. Runs are seeded, so the same commands reproduce the same numbers on any machine.
 
+## Relation economy: CFRAC (Oct 23, 2026)
+
+qs is now a relation *source* feeding a shared *ledger* (`evolve/ledger.py`: factor base, dedupe, linear algebra, square root), and is op for op unchanged (`evolve/relation_economy_identity.py`, both cores). The ledger has an opt-in charged relation check (`evolve/ledger_accept.py`). A second source, continued fractions (`evolve/cfrac.py`, cost model in `NOTES.md`), feeds the same ledger with one multiplier k and one factor base. It is accepted at 40–60 bits (`evolve/cfrac_accept.py`), with lampcore parity.
+
+The comparison (`evolve/cfrac_compare.py`) runs three setups on the Run 6 ACCEPT numbers, cap 2^28; there were no misses:
+- CFRAC alone, with tuned qs's kc 32 and bc 1.1;
+- tuned qs;
+- qs + CFRAC into one ledger: CFRAC fills a fixed share cs of the needed relations first, then qs fills the rest.
+
+log₂(mean ops) [95% interval] / worst:
+
+| Algorithm | 72 bits | 78 bits | 84 bits | Growth per bit, 72→84 | Ops vs tuned qs (72 / 84 bits) |
+|---|---|---|---|---|---|
+| **tuned qs** | **17.43** [17.36, 17.51] / 18.30 | **18.28** [18.21, 18.36] / 19.10 | **19.22** [19.16, 19.27] / 19.90 | 0.149 | 1 |
+| qs + CFRAC, cs 0.1 | 17.80 [17.73, 17.88] / 18.67 | 18.74 [18.66, 18.82] / 19.67 | 19.74 [19.68, 19.79] / 20.36 | 0.161 | 1.30× / 1.43× |
+| qs + CFRAC, cs 0.25 | 18.19 [18.12, 18.27] / 18.90 | 19.21 [19.12, 19.29] / 20.18 | 20.25 [20.19, 20.31] / 21.02 | 0.171 | 1.70× / 2.05× |
+| qs + CFRAC, cs 0.5 | 18.69 [18.62, 18.76] / 19.29 | 19.74 [19.66, 19.82] / 20.63 | 20.87 [20.80, 20.94] / 21.82 | 0.182 | 2.39× / 3.14× |
+| CFRAC alone | 19.32 [19.26, 19.38] / 19.82 | 20.42 [20.34, 20.50] / 21.34 | 21.58 [21.51, 21.65] / 22.59 | 0.188 | 3.7× / 5.2× |
+
+What it shows:
+
+- **CFRAC loses, as predicted.** It needs 3.7× tuned qs's ops at 72 bits and 5.2× at 84. The prediction stated in advance was ~6× and ~10×, so this is inside the stated uncertainty, on the low side. Its growth is steeper, so the gap widens with size.
+- **Mixing doesn't help.** Every share of CFRAC makes qs worse, and more CFRAC is worse still: a CFRAC relation costs more than the sieving it saves.
+- **Where CFRAC's ops go.** About 95% go to trial-dividing every residue (there is no sieve). That is the target of the planned early-abort gene.
+
+Data: `evolve/cfrac_compare.json` (and `.out`), `evolve/cfrac_accept.json`, `evolve/ledger_accept.json`.
+
+## Growth to 96 bits (Oct 23, 2026)
+
+Does N51-0917's 0.136 log₂-ops per bit hold past 84 bits? 80 fresh numbers each at 90 and 96 bits (`semiprimes_pq(bits, 80, 1400000 + bits)`, cap 2^30), joined to the committed ACCEPT rows at 72/78/84 (cap 2^28). Same bootstrap; no misses. log₂(mean ops):
+
+| Algorithm | 72 | 78 | 84 | 90 | 96 | Growth 72→84 | 84→96 | 72→96 |
+|---|---|---|---|---|---|---|---|---|
+| **tuned qs + lc 1.4** | **17.24** | **18.14** | **19.08** | **20.03** [20.00, 20.07] | **20.83** [20.80, 20.86] | 0.153 | 0.146 | 0.151 |
+| tuned qs | 17.43 | 18.28 | 19.22 | 20.17 [20.12, 20.22] | 20.94 [20.89, 20.99] | 0.149 | 0.143 | 0.148 |
+| N51-0917 | 17.81 | 18.60 | 19.45 | 20.43 [20.37, 20.49] | 21.25 [21.19, 21.31] | 0.136 | 0.150 | 0.145 |
+| rho | 18.90 | 20.29 | 21.94 | 23.29 [23.11, 23.45] | 24.84 [24.67, 24.99] | 0.253 | 0.242 | 0.248 |
+
+What it shows:
+
+- **One exponent for every qs variant.** All three grow about 0.145–0.15 log₂-ops per bit over 72–96.
+- **N51-0917's 0.136 at 72–84 was constants.** From 84 to 96 bits it grows 0.150, and it falls further behind tuned qs: 0.23 log₂ at 84 bits, 0.31 at 96. That fits its mc of 1.0, above the boundary sweep's optimum.
+- **lc 1.4's lead persists to 96 bits:** a constant 0.1–0.2 log₂ below tuned qs.
+- **Rho stays at 0.248 per bit.**
+- **A seam:** 72–84 are the ACCEPT numbers and 90/96 are new seeds, so slopes across 84→90 mix two sets of numbers. Tuned qs's 0.143 dip from 84 to 96 is likely that seam, not a real change.
+
+The run used a scratch script, not committed; the data are as above.
+
 ## Stage 7: large primes (Oct 23, 2026)
 
 qs gains one gene, lc: a sieve candidate whose leftover cofactor is a prime below L = B^lc is kept as a partial relation, and two partials with the same large prime combine into one full relation (lc = 1.0 is today's qs, op for op). Cost model in `NOTES.md` ("Stage 7"), written before the code; acceptance in `evolve/stage7_accept.py` (40–60 bits: complete, exact per-phase accounting including the new lp phase, every relation and dependency verified, every lp charge caught by a one-op mutation); lampcore parity on 2,638 qs pairs. lc = 1.4 was fixed in advance on separate tuning seeds (`evolve/stage7_lc_sweep.py`).
