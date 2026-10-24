@@ -7,8 +7,8 @@
 //!   then one line per number: "N p q" in decimal (p, q = its prime factors)
 //! For each number one line comes back:
 //!   "<ops> <factor> <tests> <hits> <stage> <k>"   or   "miss <tests> <hits>"
-//! If the genome has a quadratic-sieve stage, both lines end with qs's seven per-phase op
-//! counts (mult fb setup sieve confirm la sqrt), for the parity check.
+//! If the genome has a quadratic-sieve stage, both lines end with qs's eight per-phase op
+//! counts (mult fb setup sieve confirm la sqrt lp), for the parity check.
 //! stage is the winning stage's index; k is the multiplier a square-search win came from,
 //! "-" for any other lamp (read-only instrumentation: it never changes the op count).
 //!
@@ -30,7 +30,7 @@ struct Meter {
     tests: u64,
     hits: u64,
     k: Option<u64>, // instrumentation: the k a square-search win came from
-    phases: [u64; 7], // qs's ops by phase (see qs.rs)
+    phases: [u64; 8], // qs's ops by phase (see qs.rs)
 }
 
 impl Meter {
@@ -468,8 +468,8 @@ struct Win {
     k: Option<u64>,
 }
 
-fn run(genome: &[Value], num: &Num, cap: u64) -> (Option<Win>, u64, u64, [u64; 7]) {
-    let mut m = Meter { ops: 0, cap, tests: 0, hits: 0, k: None, phases: [0; 7] };
+fn run(genome: &[Value], num: &Num, cap: u64) -> (Option<Win>, u64, u64, [u64; 8]) {
+    let mut m = Meter { ops: 0, cap, tests: 0, hits: 0, k: None, phases: [0; 8] };
     for (i, s) in genome.iter().enumerate() {
         let r = match s["t"].as_str().unwrap() {
             "td" => lamp_td(num, s, &mut m),

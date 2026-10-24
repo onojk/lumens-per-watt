@@ -16,7 +16,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 BIN = os.environ.get("LAMPCORE",
                      os.path.join(HERE, "..", "lampcore", "target", "release", "lampcore"))
 
-PHASES = ["mult", "fb", "setup", "sieve", "confirm", "la", "sqrt"]   # qs's, in lampcore's order
+PHASES = ["mult", "fb", "setup", "sieve", "confirm", "la", "sqrt", "lp"]   # qs's, in lampcore's order
 
 def semiprimes_pq(bits, count, seed):
     """Same numbers as lamps.semiprimes(bits, count, seed), with their factors."""
@@ -29,8 +29,6 @@ def semiprimes_pq(bits, count, seed):
     return out
 
 def run_many(genome, nums, cap, inst=False, phases=False):
-    if any(st["t"] == "qs" and st.get("lc", 1.0) > 1.0 for st in genome):
-        raise ValueError("lampcore has no large primes yet (qs lc > 1): run it in lamps.py")
     text = json.dumps(genome) + "\n" + str(int(cap)) + "\n" + \
         "".join(f"{N} {p} {q}\n" for N, p, q in nums)
     res = subprocess.run([BIN], input=text, capture_output=True, text=True, check=True)
@@ -46,7 +44,8 @@ def run_many(genome, nums, cap, inst=False, phases=False):
                  None if f[5] == "-" else int(f[5]))
         r = r if inst else r[:4]
         if phases:
-            ph = [int(x) for x in f[3:10]] if f[0] == "miss" else [int(x) for x in f[6:13]]
+            ph = [int(x) for x in (f[3:] if f[0] == "miss" else f[6:])]
+            assert len(ph) == len(PHASES), line
             r = r + (dict(zip(PHASES, ph)),)
         out.append(r)
     return out

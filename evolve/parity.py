@@ -12,7 +12,11 @@ random genomes drawn from the wide qs ranges for runs after Run 6
 (lamps.use_wide_qs_ranges: mc 0.05-12 log scale, bc 0.7-3.0), small sieve intervals
 (mc 0.05-0.5 at 48-84 bits), where a factor-base prime wider than the
 interval can start past its end and must not step (asserted for mc <= 0.25: lampcore's sieve
-count wrapped there until it was guarded).
+count wrapped there until it was guarded). Large primes (Stage 7, lc gene): lc = 1.0 identity
+pairs, lc 1.2-2.0 variants at 40-84 bits, numbers that make an lc > 1 run retry (asserted),
+td then qs with lc, and random genomes with a
+random lc in every qs stage; the per-phase check includes lp. Caps chosen per number so the
+run stops on its 10th lp charge (asserted: a miss whose last charge is lp).
 Edge: both cores refuse qs on N >= 2^100 with an error, never a silent wrap.
 
 Guards (guard_pairs): block flash whose two product trees can't fit in the budget, and p-1
@@ -83,6 +87,59 @@ def qs_pairs():
     for i, g in enumerate(random_qs_genomes(30, wide=True)):
         for b in (34, 46, 60, 72, 84):
             yield f"random wide qs {i}", g, semiprimes_pq(b, 2, 1600000 + b), min(cap_for(b), 2 ** 24), False
+    yield from lp_pairs()
+
+TUNED = dict(QS, kc=32, bc=1.1, mc=0.25, tc=1.38)
+# (genes, seed, bits, index) of numbers on which an lc > 1 run retries (searched, seed 550040)
+LP_RETRY = [(dict(QS, lc=1.4), 550040, 40, i) for i in (38, 162, 515, 1445)] + \
+           [(dict(TUNED, lc=1.4), 550040, 40, i) for i in (58, 62, 82, 108, 167, 169)] + \
+           [(dict(QS, kc=8, bc=1.0, mc=2.0, tc=1.5, lc=1.8), 550040, 40, i) for i in (12, 30, 43, 52)]
+
+class ChargeLog(dict):
+    """qs.TRACE["ops"] that also remembers each charge: (phase, ops charged before it)."""
+    def __init__(self):
+        super().__init__(); self.log = []; self.total = 0
+    def __setitem__(self, phase, value):
+        n = value - self.get(phase, 0)
+        self.log.append((phase, self.total)); self.total += n
+        super().__setitem__(phase, value)
+
+def lp_stop_caps(g, nums, nth=10):
+    """Per number, the cap at which a qs-only genome stops on its nth lp charge (the total
+    charged before that charge), so the run misses inside the lp phase."""
+    out = []
+    for N, p, q in nums:
+        qs.TRACE = {"ops": ChargeLog()}
+        run(g, N, 2 ** 29)
+        lps = [before for phase, before in qs.TRACE["ops"].log if phase == "lp"]
+        if len(lps) >= nth:
+            out.append((N, p, q, lps[nth - 1]))
+    qs.TRACE = None
+    return out
+
+def lp_pairs():
+    """Stage 7: the lc gene (single large prime)."""
+    for b in (48, 60, 72, 84):
+        nums = semiprimes_pq(b, 6, 1800000 + b)
+        yield "lc 1.0 identity default", [dict(QS, lc=1.0)], nums, 2 ** 29, False
+        yield "lc 1.0 identity tuned", [dict(TUNED, lc=1.0)], nums, 2 ** 29, False
+    for b in (40, 48, 56, 60, 66, 72, 78, 84):
+        nums = semiprimes_pq(b, 6, 1800000 + b)
+        for lc in (1.2, 1.4, 1.6, 2.0):
+            yield f"lc {lc} tuned", [dict(TUNED, lc=lc)], nums, 2 ** 29, False
+        yield "lc 1.4 default", [dict(QS, lc=1.4)], nums, 2 ** 29, False
+        yield "td then qs lc 1.4", [{"t": "td", "a": 0.1}, dict(TUNED, lc=1.4)], nums, 2 ** 29, False
+    for b in (48, 56, 60, 72):
+        g = [dict(TUNED, lc=1.4)]
+        for N, p, q, cap in lp_stop_caps(g, semiprimes_pq(b, 6, 1800000 + b)):
+            yield "lc cap inside lp", g, [(N, p, q)], cap, False
+    for g, seed, b, i in LP_RETRY:
+        yield "lc retry", [g], semiprimes_pq(b, i + 1, seed)[i:], 2 ** 29, True
+    rng = random.Random(2029)
+    for i, g in enumerate(random_qs_genomes(30, wide=True)):
+        g = [dict(st, lc=rng.uniform(1.0, 2.0)) if st["t"] == "qs" else st for st in g]
+        for b in (34, 46, 60, 72, 84):
+            yield f"random lc qs {i}", g, semiprimes_pq(b, 2, 1900000 + b), min(cap_for(b), 2 ** 24), False
 
 SMALL_MC = (0.05, 0.1, 0.25, 0.5)
 
@@ -214,12 +271,15 @@ def check_qs():
     for label, g, nums, cap, must_retry in qs_pairs():
         fast = run_many(g, nums, cap, inst=True, phases=True)
         for (N, p, q), f in zip(nums, fast):
-            qs.TRACE = {}
+            qs.TRACE = {"ops": ChargeLog()}
             ops, d = run(g, N, cap)
             ph = {k: qs.TRACE.get("ops", {}).get(k, 0) for k in PHASES}
+            last_phase = qs.TRACE["ops"].log[-1][0] if qs.TRACE["ops"].log else None
             slow = (ops, d, LAST["tests"], LAST["hits"], LAST["stage"], LAST["k"], ph)
             if must_retry:
                 assert len(qs.TRACE["attempts"]) > 1, ("expected a retry", N)
+            if label == "lc cap inside lp":
+                assert ops is None and last_phase == "lp", ("expected a miss inside lp", N, last_phase)
             if label.startswith("qs small mc"):
                 mc, ns = g[0]["mc"], non_stepping(qs.TRACE)
                 if mc <= 0.25:

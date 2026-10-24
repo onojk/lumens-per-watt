@@ -15,6 +15,7 @@ pub const SIEVE: usize = 3;
 pub const CONFIRM: usize = 4;
 pub const LA: usize = 5;
 pub const SQRT: usize = 6;
+pub const LP: usize = 7; // large primes (Stage 7), only when lc > 1
 
 const DELTA: usize = 10; // surplus relations: rows = F + DELTA
 
@@ -247,12 +248,19 @@ fn attempt(num: &Num, g: &Value, k: u64, m: &mut Meter) -> R {
     m.charge(SETUP, (s as u64 - 1) * combos.len() as u64)?;
     let key = |c: &Vec<u64>| ((c.iter().product::<u64>() as f64 / target).ln()).abs();
     combos.sort_by(|a, b| key(a).partial_cmp(&key(b)).unwrap().then_with(|| a.cmp(b)));
+    let lc = gene(g, "lc", 1.0).max(1.0).min(2.0);
+    let lp_on = lc > 1.0; // lc = 1.0: no large-prime work at all
+    let l_bound = (bnd as f64).powf(lc); // <= B^2, so a cofactor below it is prime
     let thr = (mm_ as f64 * (kn_u.to::<u128>() as f64 / 2.0).sqrt()).log2()
-        - gene(g, "tc", 2.0) * (bnd as f64).log2();
+        - (gene(g, "tc", 2.0) + (lc - 1.0)) * (bnd as f64).log2();
     let width = (2 * mm_ + 1) as usize;
     let need = f + DELTA;
-    let mut rels: Vec<(i128, Vec<u32>)> = Vec::new();
+    // relations (u, vec, y): u^2 = y^2 prod p^e (mod N); y = 1 for a full relation
+    let mut rels: Vec<(i128, Vec<u32>, i128)> = Vec::new();
     let mut seen = std::collections::HashSet::new();
+    let mut partials: std::collections::HashMap<i128, (i128, Vec<u32>)> =
+        std::collections::HashMap::new();
+    let mut seen_c = std::collections::HashSet::new(); // combined u's, up to sign
     let mut arr = vec![0i32; width];
 
     'combos: for qs_ in &combos {
@@ -364,7 +372,43 @@ fn attempt(num: &Num, g: &Value, k: u64, m: &mut Meter) -> R {
                     }
                 }
                 let smooth = v == 1;
-                m.test(smooth);
+                let mut partial = false;
+                if lp_on && !smooth {
+                    // 8. large primes
+                    m.charge(LP, 1)?; // bound check
+                    partial = (v as f64) < l_bound; // exact: L < 2^53, and v > 2^53 rounds above it
+                }
+                m.test(smooth || partial);
+                if partial {
+                    m.charge(LP, 1)?; // N mod q
+                    if n_i % v == 0 {
+                        return Ok(Some(U256::from(v as u128)));
+                    }
+                    let u = a * x + bv;
+                    for &ql in qs_ {
+                        vec_[pos(ql)] += 1;
+                    }
+                    m.charge(LP, 1)?; // hash lookup
+                    let Some((u1, v1)) = partials.get(&v) else {
+                        m.charge(LP, 1)?; // insert
+                        partials.insert(v, (u, vec_));
+                        continue;
+                    };
+                    let cu = U256::from(u1.rem_euclid(n_i) as u128)
+                        .mul_mod(U256::from(u.rem_euclid(n_i) as u128), n)
+                        .to::<u128>() as i128;
+                    m.charge(LP, 1)?;
+                    let cvec: Vec<u32> = v1.iter().zip(&vec_).map(|(a, b)| a + b).collect();
+                    m.charge(LP, f as u64)?;
+                    if !seen_c.insert(cu.min(n_i - cu)) {
+                        continue;
+                    }
+                    rels.push((cu, cvec, v));
+                    if rels.len() >= need {
+                        break 'combos;
+                    }
+                    continue;
+                }
                 if !smooth {
                     continue;
                 }
@@ -375,7 +419,7 @@ fn attempt(num: &Num, g: &Value, k: u64, m: &mut Meter) -> R {
                 for &ql in qs_ {
                     vec_[pos(ql)] += 1;
                 }
-                rels.push((u, vec_));
+                rels.push((u, vec_, 1));
                 if rels.len() >= need {
                     break 'combos;
                 }
@@ -393,7 +437,7 @@ fn attempt(num: &Num, g: &Value, k: u64, m: &mut Meter) -> R {
     let rw = (rows + 63) / 64;
     let mut mat: Vec<Vec<u64>> = rels
         .iter()
-        .map(|(_, v)| {
+        .map(|(_, v, _)| {
             let mut w = vec![0u64; cw];
             for j in 0..f {
                 if v[j] & 1 == 1 {
@@ -464,7 +508,14 @@ fn attempt(num: &Num, g: &Value, k: u64, m: &mut Meter) -> R {
                 });
             }
         }
-        let y = y.unwrap_or(U256::from(1u64));
+        let mut y = y.unwrap_or(U256::from(1u64));
+        for &i in &members {
+            // large primes, squared in each combined relation
+            if rels[i].2 != 1 {
+                y = y.mul_mod(U256::from(rels[i].2 as u128), n);
+                m.charge(SQRT, 1)?;
+            }
+        }
         let (mut aa, mut bb) = ((x + n - y % n) % n, n);
         let mut steps = 0u64;
         while bb != U256::ZERO {
