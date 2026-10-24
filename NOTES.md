@@ -736,3 +736,23 @@ Code: `evolve/race.py`, `lampcore/src/race.rs` (accepted: `race_accept.py`, 0 fa
 
 **Verdict: the fixed-slice race is RULED OUT** for ECM or rho against qs (tuned qs + lc 1.4, or N51-0917's qs), on the Stage 8 populations (balanced 54–84 bits; unbalanced 72/78/84 × 24/28/32), with equal slices 2^8 / 2^10 / 2^14 or addendum 9's π-scaled slices, under all three pricings. The combinator itself stays (accepted, with parity), since later work runs schedules through it. Conditions not tested, any of which would reopen the question: qs's sieve charged in smaller chunks per polynomial (smaller overshoot), adaptive or budget-split slices, a race between two non-qs lamps, and a mixed population (the partition study).
 
+## 2026-10-24 — Per-stage op budget ("ob"): cost model, written before any code
+
+Prerequisite for the partition study's sequential budgets (PLAN.md, Partition study). Checked first: no stage has an op-budget gene today; a stage ends only by its own bounds (td's a, pm1's b, ECM's curves) or the shared cap, which ends the whole run as a miss.
+
+**The gene.** `"ob": n`, a non-negative integer, on any lamp stage (td, sq, ps, rho, pm1, ecm, cfrac; allowed on qs, where a final qs doesn't need it). The stage may spend up to n official ops of its own. The charge that takes its spending past n is applied whole (a charge is never split, as in Stage 9), and then the stage ends **without a factor** and the next stage runs. The ops spent count; nothing carries over (sunk cost). Not allowed on a race element or on a race's sides (rejected when the genome is built, both cores): the race has its own slices, and combining the two is out of scope.
+
+**Why "past n", not "reaching n".** A stage whose natural total is exactly n would otherwise end on its last charge, before returning its factor, and the identity "ob at the natural end = today's behaviour" would fail in the "at" case. With "past", the stage spends at most n plus the overshoot of one charge, and the overshoot is between 1 and that charge's size minus 1: always below the stage's largest single charge. It is recorded per stage.
+
+**Charging: zero extra ops.** The check reads the stage's own spending, counted as charges are applied; it does no arithmetic. Prechecks that read the meter (ps, pm1) still read the shared meter and cap, not the stage budget (no lamp code changes).
+
+**Identities (both cores, op for op: ops, factor, tests, hits, stage, k, per-phase ops):**
+- ob absent = today's genome;
+- ob = 0 = the stage skipped (no lamp code runs; the winning stage index still counts it);
+- ob at or past the stage's natural end (its total ops when run alone, whether it ends with a factor or without) = today's behaviour.
+- Below the natural end: the stage's charge sequence is today's prefix up to and including the first charge that takes it past ob, and the rest of the genome runs after it exactly as it would alone.
+
+**Acceptance:** the identities for every lamp; overshoot below the stage's largest single charge; a mutation test in which an ob that fails to end the stage, and one that ends it one charge early, must each be caught. Parity: budget pairs in parity.py.
+
+**Prediction (stated before measurement):** on its own the gene changes nothing measurable on the Stage 8 single-kind populations unless it is set below a stage's natural length. It exists for the partition study.
+
