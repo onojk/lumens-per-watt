@@ -73,6 +73,15 @@ python3 ancestry.py N11-0076   # family line of any named genome
 
 Outputs: `evolve.log`, `results.json`, `lineage.jsonl`, `validation.json`. Runs are seeded, so the same commands reproduce the same numbers on any machine.
 
+## Partition study: cheap lamps first, in fixed budgets (Oct 24, 2026)
+
+On a mixed population (84-bit N whose smaller factor is 16 to 42 bits, seven bands, 80 numbers each), a genome gives each cheap lamp a fixed op budget, in order (td, rho, p-1, ECM), and then runs qs to the end. The budgets were chosen on tuning numbers from a cost map of each lamp run alone, and measured once on sealed numbers (`evolve/partition.py`; cost model and predictions in `NOTES.md`, written first).
+
+- **It pays.** With qs + lc 1.4 as the final stage, the chosen budgets (rho 2^12.5 ops, ECM 2^15, td and p-1 off) are 2.19× faster than qs alone on the official count, 1.51× under ruint prices and 1.85× under Montgomery prices. The map predicted it: the sealed result fell inside the map's 95% interval overall and in 6 of 7 bands.
+- **It ranks first under the robust score.** Against qs + lc 1.4 alone as the one reference, its worst ratio over the three pricings is 0.67, ahead of the N51-0917 allocation (0.91) and the Run 6 p-1 front genome (1.67).
+- **On balanced numbers alone, every budget goes to 0:** qs alone is best.
+- **What it can't do:** in the 24–42-bit bands it costs 2–10× the best single lamp for that band. It wins by covering the bands, not within them, and since every N here is 84 bits, nothing free reveals the band, so no selector could close that gap.
+
 ## Stage 9: racing two lamps on one meter (Oct 24, 2026)
 
 A race element runs two stages interleaved on one meter, in fixed slices of official ops, until either finds a factor (`evolve/race.py`, `lampcore/src/race.rs`; cost model and predictions in `NOTES.md`, written first). Switching is free, each side resumes exactly where it stopped (checked op for op for every lamp), and both cores agree on every race. The first comparison (`evolve/race_compare.py`, 21,600 races) raced ECM and rho against tuned qs + lc 1.4, and ECM against N51-0917's qs, on the Stage 8 numbers, with slices of 2^8, 2^10 and 2^14 ops, equal or scaled by calibrated price.

@@ -795,3 +795,38 @@ How should a fixed op budget be split across cheap lamps before qs, when the sma
 - **Expected budget shape:** td small, rho moderate (catches 16–24-bit p), ECM largest (28–36-bit p), p-1 off, or on at full length.
   - **Why p-1 is on or off:** Dickman estimates with B ≈ 2^16.7 give p − 1 B-smooth for certain at 16-bit p, about 60–80% at 20–24 bits, about 30–45% at 28–32, and about 13% per factor at 42 (either factor counts, so about 25% on balanced numbers). So p-1 competes with rho and ECM for the small bands: on if its full length beats their cost there, otherwise off. The budgets are one vector for the whole population, not per band.
 
+## 2026-10-24 — Partition study result: sequential budgets pay on the mixed population
+
+Code: `evolve/partition.py` (map, optimize and sealed modes, each committed before it ran); outputs `partition_map.json`/`.out` (tuning seeds), `partition_alloc.json`/`.out` (allocations and the map's predictions), `partition_sealed.json`/`.out` (the sealed run, once). Prerequisites: the ob gene with the precheck fix, td/pm1 price mappings (`price_accept.py`), per-stage tests in the ob record. On the sealed run, lampcore agreed on every official count, and every run's per-stage split summed exactly to its ops.
+
+**Chosen allocations** (tuning map, fitness (c) as per-pricing ratios to the variant's qs alone):
+- **A, qs + lc 1.4:** rho 5,793 (2^12.5), ECM 32,768 (2^15); td and pm1 off.
+- **B, N51-0917's qs:** rho 5,793 only; ECM off, because ruint is the binding pricing there (N51-0917's qs costs about 0.06 ruint per official op, so ECM's spending costs more than the qs work it saves).
+- **Balanced control,** both variants: every budget 0 (qs alone).
+
+**Sealed results** (log₂ mean, 95% interval; speed-up over the variant's own qs alone):
+
+| | official | ruint | Montgomery |
+|---|---|---|---|
+| A | 17.96 [17.86, 18.06]: 2.19× | 16.04 [15.95, 16.13]: 1.51× | 16.76 [16.67, 16.85]: 1.85× |
+| qs + lc 1.4 alone | 19.09 [19.07, 19.11] | 16.63 [16.57, 16.68] | 17.65 [17.62, 17.68] |
+| B | 18.95 [18.91, 18.99]: 1.44× | 15.08 [15.04, 15.11]: 1.26× | 16.62 [16.58, 16.66]: 1.38× |
+| N51-0917's qs alone | 19.48 [19.45, 19.50] | 15.41 [15.39, 15.43] | 17.09 [17.06, 17.11] |
+| L53-0972 (p-1 front) | 19.00 [18.91, 19.09] | 17.36 [17.35, 17.38] | 17.79 [17.74, 17.83] |
+
+- **Worst band** (ratio to its own qs alone): A's is the 36-bit band, 0.90× official, 1.20× ruint, 1.01× Montgomery; B's is 32 bits, 1.01×, 1.14×, 1.05×. Under ruint both allocations cost more than qs alone in their hard bands; the population mean still wins.
+- **(e) calls:** A over qs + lc 1.4 alone: **A**. A over L53-0972: **A**. B over N51-0917's qs alone: **B**. B against L53-0972: undecided (tie under official). L53-0972 against qs + lc 1.4 alone: undecided.
+- **Cross-comparison under one reference (qs + lc 1.4 alone), robust ratio = max over pricings:** A 0.666 (map 0.641), B 0.907 (map 0.896), N51-0917's qs alone 1.305, L53-0972 1.667. **A ranks first.** B is cheapest under ruint (0.34) and Montgomery (0.49), but its official 0.91 binds. The (e) call between A and B is **undecided** (official A; ruint and Montgomery B).
+- **The p-1 front genome loses to qs + lc 1.4 alone under ruint** (1.67×): its weaker qs genes and its full-multiply p-1 cost dominate at real prices.
+
+**Predictions, scored as written:**
+- **Mixed, official, about 2×: holds for A** (2.19×); **miss for B** (1.44×).
+- **Mixed, calibrated, 1.3–1.7×:** A ruint 1.51× holds; **A Montgomery 1.85× is a miss on the high side**; **B ruint 1.26× is a miss on the low side**; B Montgomery 1.38× holds.
+- **The sealed mean falls inside the map's 95% interval overall and in at least 5 of 7 bands: holds** for both allocations under all three pricings (A 6/7 bands, B 5/7; the 20-bit band misses for both, and B's 42-bit band too).
+- **Balanced-only control, budgets about 0: holds** (exactly 0 for both variants).
+- **Budget shape:** td small (0) holds; rho moderate holds; p-1 off holds (so the pm1 per-band report and the rho-absorption check did not trigger); **ECM largest held only for qs + lc 1.4** (with N51-0917's qs, ECM is off).
+
+**The gap to the best single lamp per band (hindsight, information only).** In the 24–42-bit bands A costs 2.3–9.6× the best single lamp for that band (official), so the allocation pays by covering the bands, not by beating the right lamp within a band. This gap cannot be closed by a selector on this population: every N is 84 bits, so no free feature reveals the band, and the budgets are the probe. Stage 9.5's selector is only useful where free features differ (mixed sizes).
+
+**Limitations:** stage genes fixed, not retuned for the small bands (ECM's b1/b2 were tuned on 24–42-bit factors); one population shape (84-bit N, seven bands, uniform prior).
+
