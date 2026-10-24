@@ -145,6 +145,7 @@ def lamp_qs(N, g, m):
         partials, seen_c = {}, set()               # q -> (u, vec); combined u's (up to sign)
         if at is not None:
             at["lp"] = dict(cof=0, lt=0, inserts=0, combos=0, dup=0, F=F)
+            at["rels"] = rels                      # for the acceptance relation check
         for qs_ in combos:
             A = math.prod(qs_)
             if at is not None:
@@ -337,7 +338,8 @@ def lamp_qs(N, g, m):
             charge("sqrt", steps)
             if at is not None:
                 at["deps"].append({"mults": mults, "gcd_steps": steps, "members": len(members),
-                                   "h": hs, "xy": (X - Y) % N, "ys": ys})
+                                   "h": hs, "xy": (X - Y) % N, "ys": ys,
+                                   "idx": members, "X": X, "Y": Y})
             m.test(1 < a < N)
             if 1 < a < N:
                 return a

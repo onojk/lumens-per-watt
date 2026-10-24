@@ -1,0 +1,258 @@
+{
+ "genome": [
+  {
+   "t": "qs",
+   "kc": 32,
+   "bc": 1.1,
+   "mc": 0.25,
+   "tc": 1.38,
+   "lc": 1.4
+  }
+ ],
+ "cap_log2": 29,
+ "seed": "770000 + bits",
+ "count": 40,
+ "sizes": {
+  "40": {
+   "solved": 40,
+   "exact_runs": 40,
+   "n": 40,
+   "retries": 1,
+   "mean_log2": 13.203420655957867,
+   "measured": {
+    "mult": 17920,
+    "fb": 18147,
+    "setup": 84380,
+    "sieve": 173644,
+    "confirm": 56640,
+    "lp": 9591,
+    "la": 10411,
+    "sqrt": 6566
+   },
+   "formula": {
+    "mult": 17920,
+    "fb": 18147,
+    "setup": 84380,
+    "sieve": 173644,
+    "confirm": 56640,
+    "lp": 9591,
+    "la": 10411,
+    "sqrt": 6566
+   },
+   "relations": 1187,
+   "combined": 255,
+   "bad_relations": 0,
+   "dependencies": 104,
+   "bad_dependencies": 0,
+   "lp": {
+    "cof": 1561,
+    "lt": 1033,
+    "inserts": 770,
+    "combos": 263,
+    "dup": 8
+   },
+   "pass": true
+  },
+  "44": {
+   "solved": 40,
+   "exact_runs": 40,
+   "n": 40,
+   "retries": 0,
+   "mean_log2": 13.734055962640914,
+   "measured": {
+    "mult": 17920,
+    "fb": 23788,
+    "setup": 156867,
+    "sieve": 219880,
+    "confirm": 87242,
+    "lp": 14039,
+    "la": 17242,
+    "sqrt": 8055
+   },
+   "formula": {
+    "mult": 17920,
+    "fb": 23788,
+    "setup": 156867,
+    "sieve": 219880,
+    "confirm": 87242,
+    "lp": 14039,
+    "la": 17242,
+    "sqrt": 8055
+   },
+   "relations": 1345,
+   "combined": 317,
+   "bad_relations": 0,
+   "dependencies": 94,
+   "bad_dependencies": 0,
+   "lp": {
+    "cof": 2175,
+    "lt": 1422,
+    "inserts": 1103,
+    "combos": 319,
+    "dup": 2
+   },
+   "pass": true
+  },
+  "48": {
+   "solved": 40,
+   "exact_runs": 40,
+   "n": 40,
+   "retries": 0,
+   "mean_log2": 14.26900062780894,
+   "measured": {
+    "mult": 17920,
+    "fb": 33352,
+    "setup": 272915,
+    "sieve": 290961,
+    "confirm": 118490,
+    "lp": 17779,
+    "la": 28711,
+    "sqrt": 9563
+   },
+   "formula": {
+    "mult": 17920,
+    "fb": 33352,
+    "setup": 272915,
+    "sieve": 290961,
+    "confirm": 118490,
+    "lp": 17779,
+    "la": 28711,
+    "sqrt": 9563
+   },
+   "relations": 1562,
+   "combined": 357,
+   "bad_relations": 0,
+   "dependencies": 97,
+   "bad_dependencies": 0,
+   "lp": {
+    "cof": 2398,
+    "lt": 1643,
+    "inserts": 1281,
+    "combos": 362,
+    "dup": 5
+   },
+   "pass": true
+  },
+  "52": {
+   "solved": 40,
+   "exact_runs": 40,
+   "n": 40,
+   "retries": 0,
+   "mean_log2": 14.685813704788055,
+   "measured": {
+    "mult": 17920,
+    "fb": 46621,
+    "setup": 355013,
+    "sieve": 366663,
+    "confirm": 184563,
+    "lp": 26151,
+    "la": 45439,
+    "sqrt": 11848
+   },
+   "formula": {
+    "mult": 17920,
+    "fb": 46621,
+    "setup": 355013,
+    "sieve": 366663,
+    "confirm": 184563,
+    "lp": 26151,
+    "la": 45439,
+    "sqrt": 11848
+   },
+   "relations": 1801,
+   "combined": 451,
+   "bad_relations": 0,
+   "dependencies": 96,
+   "bad_dependencies": 0,
+   "lp": {
+    "cof": 3436,
+    "lt": 2307,
+    "inserts": 1856,
+    "combos": 451,
+    "dup": 0
+   },
+   "pass": true
+  },
+  "56": {
+   "solved": 40,
+   "exact_runs": 40,
+   "n": 40,
+   "retries": 0,
+   "mean_log2": 15.125973382903615,
+   "measured": {
+    "mult": 17920,
+    "fb": 64651,
+    "setup": 401067,
+    "sieve": 538460,
+    "confirm": 280794,
+    "lp": 35153,
+    "la": 79008,
+    "sqrt": 13262
+   },
+   "formula": {
+    "mult": 17920,
+    "fb": 64651,
+    "setup": 401067,
+    "sieve": 538460,
+    "confirm": 280794,
+    "lp": 35153,
+    "la": 79008,
+    "sqrt": 13262
+   },
+   "relations": 2135,
+   "combined": 505,
+   "bad_relations": 0,
+   "dependencies": 89,
+   "bad_dependencies": 0,
+   "lp": {
+    "cof": 4381,
+    "lt": 2963,
+    "inserts": 2457,
+    "combos": 506,
+    "dup": 1
+   },
+   "pass": true
+  },
+  "60": {
+   "solved": 40,
+   "exact_runs": 40,
+   "n": 40,
+   "retries": 0,
+   "mean_log2": 15.578557704664327,
+   "measured": {
+    "mult": 17920,
+    "fb": 86409,
+    "setup": 448953,
+    "sieve": 772420,
+    "confirm": 430673,
+    "lp": 49733,
+    "la": 134347,
+    "sqrt": 16916
+   },
+   "formula": {
+    "mult": 17920,
+    "fb": 86409,
+    "setup": 448953,
+    "sieve": 772420,
+    "confirm": 430673,
+    "lp": 49733,
+    "la": 134347,
+    "sqrt": 16916
+   },
+   "relations": 2524,
+   "combined": 618,
+   "bad_relations": 0,
+   "dependencies": 87,
+   "bad_dependencies": 0,
+   "lp": {
+    "cof": 5689,
+    "lt": 3674,
+    "inserts": 3055,
+    "combos": 619,
+    "dup": 1
+   },
+   "pass": true
+  }
+ },
+ "pass": true
+}
