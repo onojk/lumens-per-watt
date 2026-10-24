@@ -1,0 +1,21 @@
+
+lc 1.0 (tuned qs)  (growth 0.149 log2-ops per bit, 72->84)
+  72 bits: mean 17.43 [17.36, 17.51]  worst 18.30 [18.02, 18.30]  retries 0
+           phases (log2 mean): mult 8.81  fb 12.27  setup 14.93  sieve 16.62  confirm 14.32  la 14.13  sqrt 9.29
+  78 bits: mean 18.28 [18.21, 18.36]  worst 19.10 [18.89, 19.10]  retries 0
+           phases (log2 mean): mult 8.81  fb 12.81  setup 15.86  sieve 17.41  confirm 15.14  la 15.32  sqrt 9.50
+  84 bits: mean 19.22 [19.16, 19.27]  worst 19.90 [19.57, 19.90]  retries 0
+           phases (log2 mean): mult 8.81  fb 13.34  setup 16.80  sieve 18.30  confirm 16.07  la 16.49  sqrt 9.86
+
+lc 1.4  (growth 0.153 log2-ops per bit, 72->84)
+  72 bits: mean 17.24 [17.18, 17.30]  worst 18.15 [17.61, 18.15]  retries 0  partials 16289 yield 0.154 combined rows 0.291
+           phases (log2 mean): mult 8.81  fb 12.27  setup 14.53  sieve 15.96  confirm 15.25  la 14.13  sqrt 9.23  lp 11.96
+  78 bits: mean 18.14 [18.09, 18.20]  worst 18.79 [18.59, 18.79]  retries 0  partials 23224 yield 0.144 combined rows 0.297
+           phases (log2 mean): mult 8.81  fb 12.81  setup 15.53  sieve 16.77  confirm 16.18  la 15.32  sqrt 9.64  lp 12.73
+  84 bits: mean 19.08 [19.03, 19.12]  worst 19.54 [19.43, 19.54]  retries 0  partials 33400 yield 0.139 combined rows 0.316
+           phases (log2 mean): mult 8.81  fb 13.34  setup 16.53  sieve 17.64  confirm 17.07  la 16.49  sqrt 9.86  lp 13.55
+
+paired log2(total ops lc 1.4 / total ops lc 1.0) [95% CI], same numbers (supplementary):
+  72 bits: -0.192 [-0.226, -0.158]  (1.14x)
+  78 bits: -0.139 [-0.172, -0.107]  (1.10x)
+  84 bits: -0.140 [-0.167, -0.113]  (1.10x)
