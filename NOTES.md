@@ -837,6 +837,19 @@ Code: `evolve/partition.py` (map, optimize and sealed modes, each committed befo
   
   Where p-1 succeeds, it often replaces an ECM success that would have come cheaper, so even its successes save nothing in the small bands. In the hard bands, under the official count, its successes save about as much as its failures cost. Under ruint, qs is cheap, so p-1's full-multiply length never pays. (The 16-bit band never reaches p-1: rho finishes first.)
 
+**Per band and pricing: official-only best against robust best (map only, tuning numbers; `evolve/partition_bands.py`/`.out`).** Ratios to qs + lc 1.4 alone. The official-only optimum is rho 3,158 and ECM 2^20 (td and p-1 off); the robust optimum A is rho 5,793 and ECM 2^15.
+
+| | official-only | A | primefac |
+|---|---|---|---|
+| all bands, official | 0.144 | 0.450 | 0.493 |
+| all bands, ruint | 0.782 | 0.641 | 1.102 |
+| all bands, Montgomery | 0.392 | 0.527 | 0.764 |
+| robust (max of the three) | 0.782 | **0.641** | 1.102 |
+
+- **The difference is ECM's budget, not rho's.** On the official count, ECM alone costs less than qs alone in every band (0.03–0.37), so the official-only optimum lets ECM run almost to completion, and it is 3.1× cheaper than A there. Under ruint, ECM alone costs more than qs alone at 36 and 42 bits (1.68×, 1.97×), and 132% of the official-only plan's extra ruint cost comes from those two bands (50% + 82%), partly offset by its savings at 24–32 bits (−36%). So A gives up 3.1× on the official count to avoid that.
+- **Rho is cheaper than qs at 20–28 bits under every pricing** (rho alone over qs alone: 0.005, 0.021, 0.069 official; 0.027, 0.112, 0.395 ruint; 0.016, 0.063, 0.212 Montgomery), and cheaper than ECM alone there too. Yet both optima keep rho small (3,158 and 5,793 ops).
+- **The rho side of the between-band trade** shows against primefac's 168,000-op rho budget. It makes 20–28 bits cheaper than A under ruint (0.03, 0.11, 0.40 against 0.05, 0.37, 0.71), but every number at 32–42 bits pays the whole budget: 1.9–2.7× qs alone under ruint, against A's 1.0–1.2×. qs's cost is cheap at real prices, so a failed rho budget weighs more there than on the official count.
+
 **Limitations:** stage genes fixed, not retuned for the small bands (ECM's b1/b2 were tuned on 24–42-bit factors); one population shape (84-bit N, seven bands, uniform prior).
 
 ## 2026-10-24 — lampcore per-type op counters: cost model, written before any code (Run 8 prerequisite)
