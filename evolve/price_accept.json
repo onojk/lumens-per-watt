@@ -1,0 +1,29 @@
+{
+ "runs": 40,
+ "types": [
+  "confirm_full",
+  "confirm_td",
+  "fb",
+  "gcd",
+  "la",
+  "lp_full",
+  "lp_small",
+  "mul",
+  "mult",
+  "setup_euclid",
+  "setup_euclid_N",
+  "setup_full",
+  "setup_mul",
+  "setup_small",
+  "sieve_scan",
+  "sieve_update",
+  "sqrt_gcd",
+  "sqrt_mul",
+  "td_mod"
+ ],
+ "mutation_caught": {
+  "td_mod": true,
+  "gcd": true
+ },
+ "failures": 0
+}

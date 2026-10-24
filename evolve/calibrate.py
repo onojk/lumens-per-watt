@@ -89,7 +89,8 @@ def prices(b, ref):
             "mult": sm, "fb": sm, "setup_full": 1.0, "setup_euclid": r("ext euclid small per step"),
             "setup_small": sm, "sieve_update": r("sieve update"), "sieve_scan": r("cell scan"),
             "confirm_full": 1.0, "confirm_td": td, "la": r("xor word"), "sqrt_mul": 1.0,
-            "sqrt_gcd": r("gcd U256 Euclid per step", 84), "lp_full": 1.0, "lp_small": td}
+            "sqrt_gcd": r("gcd U256 Euclid per step", 84), "lp_full": 1.0, "lp_small": td,
+            "td_mod": r("N84 mod small d (i128)")}       # td: one N mod d per divisor
 
 def cell(vals):
     return {"mean_log2": math.log2(sum(vals) / len(vals)), "ci95": list(bootstrap(vals))}

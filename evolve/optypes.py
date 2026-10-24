@@ -2,10 +2,13 @@
 into the types calibrate.py prices. Shared by calibrate.py and race.py.
 
   rho:  mul = ops - tests, gcd = tests (one luck-meter test per gcd)
+  pm1:  the same split: its charges are bit_length(p^e) multiplies per prime power and one
+        gcd at the end (one test); its prime generation is not charged
+  td:   td_mod = ops, one N mod d per divisor (its divisor stepping is not charged)
   ecm:  setup_mul, setup_euclid_N (each curve's Euclid steps, recomputed from its sigma),
         mul (stage 1 + stage 2), gcd
   qs:   the trace split of qs_counts below
-  other lamps: one unpriced type, "<lamp>_ops" (no price mapping yet)
+  other lamps (sq, ps, cfrac): one unpriced type, "<lamp>_ops" (no price mapping yet)
 
 Every split sums to the run's ops exactly. For a run stopped mid-way (a race side torn down
 when the other side wins), the split is exact for every finished unit; for qs, the unit in
@@ -67,8 +70,10 @@ def per_type(stage, tr, ops, tests, N):
         c = qs_counts(tr)
     elif t == "ecm":
         c = ecm_counts(tr, N)
-    elif t == "rho":
+    elif t in ("rho", "pm1"):
         c = rho_counts(ops, tests)
+    elif t == "td":
+        c = {"td_mod": ops}
     else:
         c = {f"{t}_ops": ops}
     assert sum(c.values()) == ops, ("per-type split does not add up", t, c, ops)
