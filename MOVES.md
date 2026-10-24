@@ -35,6 +35,9 @@ A move is a transformation that recurs across algorithms: batching, pruning, cha
 | Quantum / Ising | Shor; annealing | — | — | RULED OUT (argument, not measured) | Not runnable here. | — |
 | Sieve, then batch (SIQS) | Milan's SIQS | sieving with a batch test behind it | A looser sieve threshold, with the extra candidates confirmed by a batch test instead of trial division. Genes: tc x batch, tuned jointly. Same METER QUESTION as the Batch row. | untested | — | [Milan] |
 | Fermat (McKee greedy variant) | McKee | Fermat-type square search | — | untested (outside evidence: loses to SQUFOF at 45-60 bits) | — | [Milan] |
+| Quality-diversity archive (MAP-Elites) | Mouret & Clune 2015 | — | One elite genome per (total bits x smaller-factor bits) cell (PLAN, "Search structure after Run 8") | untested | — | — |
+| Co-evolved environments (POET) | Wang et al. 2019 | — | Generated training populations paired with champions, with transfers; verdicts stay on sealed populations | untested | — | — |
+| Speciation / innovation protection (NEAT) | Stanley & Miikkulainen 2002 | — | A protected tuning budget for a new card structure before it competes overall | untested | — | — |
 | Cycle segments (parallel SQUFOF) | Parallel SQUFOF | segments of one SQUFOF cycle, reached by powers of a form, one lane each | Split one cycle into segments, one lane each. Saves span, not work. METER QUESTION: span is reported next to total ops for parallel studies, never as fitness unless decided. | untested | — | [McMath et al.] |
 
 Rules:

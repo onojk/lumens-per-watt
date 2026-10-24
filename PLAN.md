@@ -478,6 +478,33 @@ is not known in advance?
     because cheap small-factor lamps (td, rho, pm1, ECM) clear the low bands for a
     small share of the budget before qs takes the rest.
 
+## Search structure after Run 8 (planning only)
+
+Ideas from evolving bodies over terrain, for after Run 8. Each gets a cost model and a
+prediction in NOTES before code, as usual. Fitness is (c) robust throughout (Run 8 scoring).
+
+1. **MAP-Elites over the number line** (Mouret & Clune 2015, arXiv 1504.04909).
+   - Grid = total bits x smaller-factor bits (the leader-table cells).
+   - One elite genome per cell, fitness (c) robust. Each step: mutate a random cell's
+     elite, evaluate it, and replace an elite only if better.
+   - The filled grid is the illumination map, which ties the tracer side task to search.
+   - Optional second grid by behaviour: shares of ops in sieve / ECM / rho.
+   - Prediction: the per-cell elites match or beat Run 8's single-fitness winner in most
+     cells, with lineages crossing cells (stepping stones).
+2. **POET-style populations** (Wang et al. 2019, arXiv 1901.01753).
+   - Mutate population settings (bits, factor ratio, p-1 smoothness, multiplier class).
+     Keep a population only if no lamp finishes it trivially and not all hit the cap.
+   - Pair each population with its champion. Try transfers between pairs; replace only if
+     better.
+   - **Guard:** generated populations are training only. Verdicts stay on the fixed sealed
+     populations.
+3. **NEAT-style protection of new structure** (Stanley & Miikkulainen 2002).
+   - Group genomes by card structure. A new structure gets a fixed tuning budget inside its
+     group before competing overall.
+   - Required before new cards (SQUFOF mode, p+1, torsion ECM) enter Run 8-style evolution.
+4. **Structure and genes co-evolved** (Sims 1994): which cards, and in what order, evolve
+   together with their genes. After Run 8.
+
 ## Learning from all algorithms
 
 Status: Phase 0 (MOVES.md) done, Oct 23. Phase 1 waits for Stage 9. The code-level pilot

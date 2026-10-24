@@ -669,3 +669,7 @@ Recommended: (c) as evolution's fitness + (e) in reports. Decision (Oct 23, user
 **Caveats.** One laptop, one build. The i128 and U256 paths are lampcore's, not the fastest possible. The confirm, lp and cf_step mappings are upper bounds, as planned. One unexplained oddity, not used in any price: the loop-overhead baseline is 0.31 ns on the E-core against 1.25 ns on the P-core.
 7. **race(ECM, N51-0917) is race(ECM, N51-0917's qs stage)**: `{"t": "qs", "kc": 32, "bc": 1.13, "mc": 1.00, "tc": 1.38}` (exact values from `run6/accept.json`), with no lc. A race side is a single stage, and N51-0917's two sq stages never run: the Run 6 ablation (240/240 finished by the first qs), and on the Stage 8 populations `calibrate.py`'s trace assert (each run's ops equal its qs trace's). This race and race(ECM, qs + lc 1.4) differ in the qs genes and also in large primes (lc 1.0 against 1.4).
 8. **Per-type counts in Stage 9 come from Python traces**, per side, which is fine at this scale. Lampcore per-type counters are a Run 8 prerequisite (PLAN.md, Run 8) and do not block Stage 9.
+
+## 2026-10-24 — Meter safety: the outside case
+
+Digital-evolution anecdotes of evolved agents exploiting simulator bugs (Lehman et al. 2018, arXiv 1803.03453) are the outside case for the sealed meter, the mutation tests and robust pricing: an evolved genome that finds an under-charge in our meter would "win" in exactly that way.
