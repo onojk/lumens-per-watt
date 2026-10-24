@@ -3,4 +3,3 @@ __pycache__/
 evolve/run.out
 evolve/*.out
 lampcore/target/
-lampcore/Cargo.lock
