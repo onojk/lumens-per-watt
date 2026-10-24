@@ -378,7 +378,7 @@ def check_guards():
                 setattr(mod, spy, orig)
             assert bool(calls) == allocates, (label, N, cap, "python reached", spy, bool(calls))
             if "ob guard" in label:
-                assert LAST["stage"] == 1 and LAST["ob"] == [(0, 1000, 0, True)], (label, N, LAST["ob"])
+                assert LAST["stage"] == 1 and [x[:4] for x in LAST["ob"]] == [(0, 1000, 0, True)], (label, N, LAST["ob"])
             slow = (ops, d, LAST["tests"], LAST["hits"], LAST["stage"], LAST["k"])
             checked += 1
             if slow != f:

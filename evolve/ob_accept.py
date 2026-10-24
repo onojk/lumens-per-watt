@@ -60,7 +60,7 @@ def recorded(gen, N, cap=CAP):
         qs.TRACE = cfrac.TRACE = ecm.TRACE = None
     m = holder["m"]
     return dict(ops=ops, d=d, tests=LAST["tests"], hits=LAST["hits"], stage=LAST["stage"], k=LAST["k"],
-                ob=list(LAST["ob"]), phases=tr.get("ops", {})), m.charges
+                ob=[x[:4] for x in LAST["ob"]], phases=tr.get("ops", {})), m.charges
 
 def compare_key(r):
     return {k: r[k] for k in ("ops", "d", "tests", "hits", "stage", "k", "phases")}
@@ -102,6 +102,11 @@ def lamp_case(name, X, bits, mutate=False):
             if not 1 <= b < T:
                 continue
             r, rch = recorded([dict(X, ob=b), Y], N)
+            rec = LAST["ob"][0]
+            if not mutate:
+                # per-stage tests/hits (read-only): the budgeted stage's own plus Y's = the run's
+                check(rec[4] + y["tests"] == r["tests"] and rec[5] + y["hits"] == r["hits"],
+                      "per-stage tests/hits", name, bits, N, b, rec, y["tests"], r["tests"])
             if precheck_min(X, N) > b:
                 ok = rch == ych and r["ops"] == y["ops"] and r["d"] == y["d"] and r["ob"] == [(0, b, 0, True)]
             else:
@@ -130,7 +135,7 @@ def precheck_cases():
             setattr(mod, spy, lambda *a, **k: (calls.append(1), orig(*a, **k))[1])
             try:
                 ops, d = run([st, QS], N, 2 ** 40)
-                rec = list(LAST["ob"]); stage = LAST["stage"]
+                rec = [x[:4] for x in LAST["ob"]]; stage = LAST["stage"]
             finally:
                 setattr(mod, spy, orig)
             q_ops, q_d = run([QS], N, 2 ** 40)

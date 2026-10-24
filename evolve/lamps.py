@@ -370,6 +370,7 @@ class StageMeter:
     ob is applied, then the stage ends. ops, cap and k are the shared meter's."""
     def __init__(self, m, ob):
         self._m, self.ob, self.spent = m, ob, 0
+        self.tests = self.hits = 0                # this stage's own (read-only instrumentation)
     def tick(self, k=1):
         if OB_MUTATE == 2 and self.spent + k > self.ob:
             raise StageBudget()
@@ -379,6 +380,8 @@ class StageMeter:
             raise StageBudget()
     def test(self, hit):
         self._m.test(hit)
+        self.tests += 1
+        self.hits += bool(hit)
     @property
     def ops(self):
         return self._m.ops
@@ -409,7 +412,8 @@ def run(gen, N, cap):
     """Returns (ops, factor), or (None, None) on a miss. Test and hit counts of the
     latest run are left in LAST for the luck meter, with the winning stage's index and,
     for a square-search win, its k (read-only instrumentation; None on a miss). LAST["ob"]
-    lists, per stage with an op budget that ran, (index, ob, spent, ended by its budget)."""
+    lists, per stage with an op budget that ran, (index, ob, spent, ended by its budget,
+    its own tests, its own hits)."""
     validate_genome(gen)
     m = Meter(cap)
     obs = []
@@ -425,18 +429,18 @@ def run(gen, N, cap):
                 start = m.ops
                 try:
                     d = LAMPS[s["t"]](N, s, sm)
-                    obs.append((i, ob, sm.spent, False))
+                    obs.append((i, ob, sm.spent, False, sm.tests, sm.hits))
                 except StageBudget:
-                    obs.append((i, ob, sm.spent, True))
+                    obs.append((i, ob, sm.spent, True, sm.tests, sm.hits))
                     d = None
                 except Budget:
                     # a precheck (no charge crossed the cap) that the stage's budget made
                     # binding ends the stage, not the run
                     if m.ops <= m.cap and start + ob < m.cap:
-                        obs.append((i, ob, sm.spent, True))
+                        obs.append((i, ob, sm.spent, True, sm.tests, sm.hits))
                         d = None
                     else:
-                        obs.append((i, ob, sm.spent, False))
+                        obs.append((i, ob, sm.spent, False, sm.tests, sm.hits))
                         raise
             if d:
                 LAST.update(tests=m.tests, hits=m.hits, stage=i, k=m.k, ob=obs)
