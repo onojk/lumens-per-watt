@@ -3,8 +3,21 @@ amendments): sequential op budgets td(ob1) -> rho(ob2) -> pm1(ob3) -> ecm(ob4) -
 
   python3 partition.py map [workers]  -> partition_map.json   (tuning seeds only)
   python3 partition.py optimize       -> partition_alloc.json (from the map; prints the report)
+  python3 partition.py sealed [workers] -> partition_sealed.json (run ONCE, after review)
 
-The sealed run is a separate mode, written and run only after the allocations are reviewed.
+sealed: on the sealed seeds (5000000 + 100 pb + 84), run once: allocation A (qs + lc 1.4's
+mixed allocation), allocation B (N51-0917's qs's), qs + lc 1.4 alone, N51-0917's qs alone,
+and the p-1 front genome L53-0972 as accepted. Exact per-type counts per stage: every stage
+but the last runs with an op budget (its chosen ob, or 2^40, which is today's behaviour by
+the ob identity), so the ob record gives each stage's spending and its own tests; qs and ECM
+counts come from their own traces; the split must sum to the run's ops. Official ops are
+cross-checked against lampcore on every run. Each pre-stage alone on the sealed numbers
+gives the best-single-per-band column (hindsight, information only). Reported: per band and
+overall log2 means with 95% intervals under all three pricings, the worst band (ratio to
+the genome's own qs alone), against the best single lamp per band, where each allocation's
+sealed point lands in the map's interval (prediction: inside overall and in >= 5 of 7
+bands), the (e) call per comparison, and the cross-comparison under one reference (qs +
+lc 1.4 alone): every genome's robust ratio, map and sealed, with the (e) call between A and B.
 
 map: on every tuning number (mixed: 84-bit N, smaller factor 16/20/24/28/32/36/42 bits, 80
 per band; seeds 4000000 + 100 pb + 84), each pre-stage alone (Python, cap 2^21) records its
@@ -203,6 +216,173 @@ def optimize(M, mask):
         if not moved:
             return tuple(vec)
 
+# ---- sealed ---------------------------------------------------------------------------
+
+BIG = 2 ** 40
+L53 = json.load(open("run6/accept.json"))["genomes"]["L53-0972"]
+
+def alloc_genome(budgets, qname):
+    g = []
+    for name in ("td", "rho", "pm1", "ecm"):
+        b = budgets[name]
+        g.append(dict(PRE[name], ob=(BIG if b == "full" else b)))
+    return g + [QS_VARIANTS[qname]]
+
+def with_budgets(gen):
+    """Every stage but the last gets ob = 2^40 if it has none (the ob identity: today's
+    behaviour), so the ob record covers it."""
+    return [dict(st, ob=st.get("ob", BIG)) if i < len(gen) - 1 else dict(st) for i, st in enumerate(gen)]
+
+def sealed_job(args):
+    from lamps import run, LAST
+    gname, gen, pb, N = args
+    trq, tre = {}, {}
+    qs.TRACE, ecm.TRACE = trq, tre
+    try:
+        ops, d = run(gen, N, QS_CAP)
+    finally:
+        qs.TRACE = ecm.TRACE = None
+    assert ops is not None, (gname, N)
+    counts = {}
+    add = lambda c: [counts.__setitem__(t, counts.get(t, 0) + n) for t, n in c.items()]
+    for i, ob, spent, ended, tests, hits in LAST["ob"]:
+        t = gen[i]["t"]
+        if t == "td":
+            add({"td_mod": spent})
+        elif t in ("rho", "pm1"):
+            add(optypes.rho_counts(spent, tests))
+        elif t == "ecm":
+            c = optypes.ecm_counts(tre, N)
+            assert sum(c.values()) == spent, ("ecm split", N)
+            add(c)
+    if trq.get("attempts"):
+        add(optypes.qs_counts(trq))
+    assert sum(counts.values()) == ops, ("per-stage split does not add up", gname, N, counts, ops)
+    return gname, pb, str(N), ops, counts
+
+def sealed(workers):
+    from fastlamps import run_many
+    alloc = json.load(open("partition_alloc.json"))["allocations"]
+    G = {"A: qs + lc 1.4 allocation": alloc_genome(alloc["qs + lc 1.4 | mixed"]["budgets"], "qs + lc 1.4"),
+         "B: N51-0917's qs allocation": alloc_genome(alloc["N51-0917's qs | mixed"]["budgets"], "N51-0917's qs"),
+         "qs + lc 1.4 alone": [QS_VARIANTS["qs + lc 1.4"]],
+         "N51-0917's qs alone": [QS_VARIANTS["N51-0917's qs"]],
+         "L53-0972 (p-1 front)": with_budgets(L53)}
+    pop = population(SEALED)
+    jobs = [(gname, g, pb, N) for gname, g in G.items() for pb in BANDS for N, p, q in pop[pb]]
+    alone_jobs = [(pb, N) for pb in BANDS for N, p, q in pop[pb]]
+    with Pool(workers) as pool:
+        res = pool.map(sealed_job, jobs, chunksize=2)
+        alone = pool.map(map_job, alone_jobs, chunksize=2)
+    for gname, g in G.items():                       # lampcore agrees on every official count
+        for pb in BANDS:
+            rust = [r[0] for r in run_many(g, pop[pb], QS_CAP)]
+            py = [r[3] for r in res if r[0] == gname and r[1] == pb]
+            assert rust == py, ("cores disagree", gname, pb)
+    PR = prices()
+    price = lambda c, P: float(sum(c.values())) if P == "official" else cost_of(c, PR[P])
+    cost = {gname: {P: {pb: [price(r[4], P) for r in res if r[0] == gname and r[1] == pb] for pb in BANDS}
+                    for P in PRICINGS} for gname in G}
+    out = {"genomes": G, "cells": {}, "map_landing": {}, "calls": {}, "cross": {}, "best_single": {}}
+    def cell(by_band):
+        allv = [v for pb in BANDS for v in by_band[pb]]
+        return {"mean_log2": math.log2(sum(allv) / len(allv)), "ci95": boot_overall(by_band),
+                "bands": {pb: {"mean_log2": math.log2(sum(v) / len(v)), "ci95": boot_band(v)} for pb, v in by_band.items()}}
+    for gname in G:
+        out["cells"][gname] = {P: cell(cost[gname][P]) for P in PRICINGS}
+    # worst band against the genome's own qs alone
+    own = {"A: qs + lc 1.4 allocation": "qs + lc 1.4 alone", "B: N51-0917's qs allocation": "N51-0917's qs alone",
+           "L53-0972 (p-1 front)": "qs + lc 1.4 alone"}
+    out["worst_band"] = {}
+    for gname, ref in own.items():
+        out["worst_band"][gname] = {}
+        for P in PRICINGS:
+            ratios = {pb: (sum(cost[gname][P][pb]) / sum(cost[ref][P][pb])) for pb in BANDS}
+            wb = max(ratios, key=ratios.get)
+            out["worst_band"][gname][P] = {"band": wb, "ratio": ratios[wb], "ratios": ratios}
+    # map landing
+    for gname, key in (("A: qs + lc 1.4 allocation", "qs + lc 1.4 | mixed"), ("B: N51-0917's qs allocation", "N51-0917's qs | mixed")):
+        out["map_landing"][gname] = {}
+        for P in PRICINGS:
+            pr = alloc[key]["prediction"][P]
+            sc = out["cells"][gname][P]
+            inside = lambda x, ci: ci[0] <= x <= ci[1]
+            bands_in = {pb: inside(sc["bands"][pb]["mean_log2"], pr["bands"][str(pb)]["ci95"]) for pb in BANDS}
+            out["map_landing"][gname][P] = {"overall_inside": inside(sc["mean_log2"], pr["ci95"]),
+                                            "map": [pr["mean_log2"], pr["ci95"]], "sealed": sc["mean_log2"],
+                                            "bands_inside": sum(bands_in.values()), "bands": {
+                                                pb: {"sealed": sc["bands"][pb]["mean_log2"], "map_ci95": pr["bands"][str(pb)]["ci95"],
+                                                     "inside": bands_in[pb]} for pb in BANDS}}
+    # (e) calls between pairs
+    def call(a, b):
+        L = {}
+        for P in PRICINGS:
+            A, B = out["cells"][a][P], out["cells"][b][P]
+            best, other = (a, b) if A["mean_log2"] <= B["mean_log2"] else (b, a)
+            tie = out["cells"][other][P]["ci95"][0] <= out["cells"][best][P]["ci95"][1]
+            L[P] = (best, tie)
+        same = len({L[P][0] for P in PRICINGS}) == 1 and not any(L[P][1] for P in PRICINGS)
+        return {"leaders": {P: [L[P][0], L[P][1]] for P in PRICINGS}, "call": L["official"][0] if same else "undecided"}
+    names = list(G)
+    for a, b in ((names[0], names[2]), (names[0], names[4]), (names[1], names[3]), (names[1], names[4]),
+                 (names[0], names[1]), (names[4], names[2])):
+        out["calls"][f"{a} vs {b}"] = call(a, b)
+    # cross-comparison under one reference: qs + lc 1.4 alone (sealed, and the map's)
+    ref = "qs + lc 1.4 alone"
+    for gname in G:
+        sc = {P: sum(sum(v) for v in cost[gname][P].values()) / sum(sum(v) for v in cost[ref][P].values()) for P in PRICINGS}
+        out["cross"][gname] = {"sealed": sc, "sealed_robust": max(sc.values())}
+    rows = json.load(open("partition_map.json"))["rows"]
+    MA, MB = Map(rows, "qs + lc 1.4", PR), Map(rows, "N51-0917's qs", PR)
+    for gname, M, key in (("A: qs + lc 1.4 allocation", MA, "qs + lc 1.4 | mixed"), ("B: N51-0917's qs allocation", MB, "N51-0917's qs | mixed")):
+        b = alloc[key]["budgets"]
+        vec = (b["td"], b["rho"], 1 if b["pm1"] == "full" else 0, b["ecm"])
+        sc = {P: M.costs(vec, P).mean() / MA.qs[P].mean() for P in PRICINGS}
+        out["cross"][gname].update(map=sc, map_robust=max(sc.values()))
+    # best single lamp per band on the sealed numbers (hindsight, information only)
+    for P in PRICINGS:
+        out["best_single"][P] = {}
+        for pb in BANDS:
+            rr = [r for r in alone if r["band"] == pb]
+            cand = {}
+            for s in list(PRE) + list(QS_VARIANTS):
+                if all(r[s]["T"] is not None for r in rr):
+                    cand[s] = sum(price(r[s]["per_type"], P) for r in rr) / len(rr)
+            best = min(cand, key=cand.get)
+            out["best_single"][P][pb] = {"lamp": best, **{g: (sum(cost[g][P][pb]) / len(cost[g][P][pb])) / cand[best] for g in G}}
+    return out
+
+def print_sealed(out):
+    for gname, cells in out["cells"].items():
+        print(f"\n{gname}")
+        for P in PRICINGS:
+            c = cells[P]
+            print(f"  {P:10s} {c['mean_log2']:.2f} [{c['ci95'][0]:.2f}, {c['ci95'][1]:.2f}]  bands: "
+                  + "  ".join(f"{pb}: {v['mean_log2']:.2f}" for pb, v in c["bands"].items()))
+            if gname in out["worst_band"]:
+                w = out["worst_band"][gname][P]
+                print(f"             worst band {w['band']} (x{w['ratio']:.2f} its qs alone)")
+    print("\nmap landing (sealed point in the map's 95% interval):")
+    for gname, by in out["map_landing"].items():
+        for P, v in by.items():
+            print(f"  {gname} {P:10s} overall {'inside' if v['overall_inside'] else 'OUTSIDE'} "
+                  f"(map {v['map'][0]:.2f} [{v['map'][1][0]:.2f}, {v['map'][1][1]:.2f}], sealed {v['sealed']:.2f}); "
+                  f"bands inside {v['bands_inside']}/7: " + " ".join(f"{pb}{'' if b['inside'] else '*'}" for pb, b in v["bands"].items()))
+    short = {"A: qs + lc 1.4 allocation": "A", "B: N51-0917's qs allocation": "B", "qs + lc 1.4 alone": "qsA",
+             "N51-0917's qs alone": "qsB", "L53-0972 (p-1 front)": "L53", "undecided": "undecided"}
+    print("\n(e) calls (A, B = the allocations; qsA = qs + lc 1.4 alone; qsB = N51-0917's qs alone; L53 = the p-1 front):")
+    for k, v in out["calls"].items():
+        a_, b_ = k.split(" vs ")
+        print(f"  {short[a_]} vs {short[b_]}: {short[v['call']]}   " + "  ".join(f"{P[:4]} {short[l[0]]}{' (tie)' if l[1] else ''}" for P, l in v["leaders"].items()))
+    print("\ncross-comparison, one reference (qs + lc 1.4 alone): robust ratio = max over pricings")
+    for g, v in out["cross"].items():
+        m = f"map {v['map_robust']:.3f} (" + " ".join(f"{P[:4]} {x:.2f}" for P, x in v["map"].items()) + ")  " if "map" in v else ""
+        print(f"  {g:30s} {m}sealed {v['sealed_robust']:.3f} (" + " ".join(f"{P[:4]} {x:.2f}" for P, x in v["sealed"].items()) + ")")
+    print("\nagainst the best single lamp per band (hindsight; genome / best):")
+    for P, by in out["best_single"].items():
+        A, B = "A: qs + lc 1.4 allocation", "B: N51-0917's qs allocation"
+        print(f"  {P}: " + "  ".join(f"{pb} {v['lamp']}: A x{v[A]:.2f} B x{v[B]:.2f}" for pb, v in by.items()))
+
 def boot_band(vals):
     rng = random.Random(2026)
     n = len(vals)
@@ -275,6 +455,11 @@ if __name__ == "__main__":
             rr = [r for r in rows if r["band"] == pb]
             print(pb, {s: f"{sum(1 for r in rr if r[s]['T'] is not None)}/{len(rr)}" for s in PRE},
                   {q: round(math.log2(statistics.mean(r[q]["ops"] for r in rr)), 2) for q in QS_VARIANTS})
+        sys.exit(0)
+    if mode == "sealed":
+        out = sealed(int(ARGS[1]) if len(ARGS) > 1 else 8)
+        json.dump(out, open("partition_sealed.json", "w"), indent=1)
+        print_sealed(out)
         sys.exit(0)
     data = json.load(open("partition_map.json"))
     assert data["fine"] == FINE
