@@ -937,5 +937,12 @@ Small parts are phase total minus full parts, as in Python. The split is taken *
 - **td depends on p's size only:** a strong correlation with log p within its band, and none with any other feature.
 - Any gap correlation that survives Holm is a candidate pattern only, and is re-tested on the sealed partition numbers before it is believed. A null result goes into MOVES as ruled out (conditions: these sizes, these lamps).
 
+**Result (`evolve/primes_gaps.py`/`.out`/`.json`; 40 tests).**
+- **Positive control holds:** p-1's success against log LPF(p − 1) / log p, rank correlation −0.528, Holm-adjusted p 0.004. The test can see a real arithmetic dependence.
+- **td depends on p's size only: holds** (+1.000 with log p within its band; nothing else survives).
+- **rho, ECM and qs show no correlation with the gap features: holds.** No gap, twin, smoothness or residue feature survives Holm for any of them (the largest raw effect, ECM against the gap after p, +0.094, raw p 0.026, Holm 0.90). With 560 numbers and Holm over 40 tests, this rules out within-band rank correlations above about 0.15.
+- **Size effects:** qs + lc 1.4 against log p within its band, +0.164 (Holm 0.004), and rho, +0.145 (Holm 0.056). For qs this is N's size, not p's: within a band log N tracks log p (+0.71 to +0.88), and qs's cost tracks log N at least as strongly (+0.19 to +0.29 against +0.13 to +0.30). For rho it is the expected sqrt(p) scaling.
+- No gap correlation survived, so there is no candidate pattern to re-test on the sealed numbers. Recorded in MOVES as ruled out.
+
 **Also (visualization, information only):** an exact picture at small sizes (N ~ 2^24-2^32): the candidate line 2..√N with every prime as a point and every gap as a span, and per lamp which stations its work rules out or finds over time: td walks every station; rho lights primes by size; p-1 lights only primes whose p − 1 is B-smooth; ECM is a probabilistic speckle; sq lights primes near √N; qs finds the answer without walking the line. With it, td's share of work spent on gap interiors (composites) against primes.
 

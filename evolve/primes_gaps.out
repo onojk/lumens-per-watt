@@ -1,0 +1,52 @@
+40 (lamp, feature) tests; Holm-adjusted p < 0.05 marked *
+
+td:
+  gap before / ln p  n 160 (2 bands)  rank corr -0.129  p 0.1059  Holm 1.0000
+  gap after / ln p   n 160 (2 bands)  rank corr -0.030  p 0.7116  Holm 1.0000
+  twin               n 160 (2 bands)  rank corr +0.061  p 0.4474  Holm 1.0000
+  LPF(p-1)           n 160 (2 bands)  rank corr +0.019  p 0.8142  Holm 1.0000
+  LPF(p+1)           n 160 (2 bands)  rank corr +0.021  p 0.7840  Holm 1.0000
+  p mod 4            n 160 (2 bands)  rank corr +0.019  p 0.8109  Holm 1.0000
+  p mod 3            n 160 (2 bands)  rank corr +0.068  p 0.3880  Holm 1.0000
+  log p              n 160 (2 bands)  rank corr +1.000  p 0.0001  Holm 0.0040  *
+
+rho:
+  gap before / ln p  n 494 (7 bands)  rank corr +0.031  p 0.4979  Holm 1.0000
+  gap after / ln p   n 494 (7 bands)  rank corr -0.048  p 0.2891  Holm 1.0000
+  twin               n 494 (7 bands)  rank corr +0.061  p 0.1744  Holm 1.0000
+  LPF(p-1)           n 494 (7 bands)  rank corr -0.026  p 0.5685  Holm 1.0000
+  LPF(p+1)           n 494 (7 bands)  rank corr +0.018  p 0.6889  Holm 1.0000
+  p mod 4            n 494 (7 bands)  rank corr +0.032  p 0.4782  Holm 1.0000
+  p mod 3            n 494 (7 bands)  rank corr +0.079  p 0.0790  Holm 1.0000
+  log p              n 494 (7 bands)  rank corr +0.145  p 0.0015  Holm 0.0555
+
+ecm:
+  gap before / ln p  n 560 (7 bands)  rank corr +0.072  p 0.0909  Holm 1.0000
+  gap after / ln p   n 560 (7 bands)  rank corr +0.094  p 0.0257  Holm 0.8994
+  twin               n 560 (7 bands)  rank corr -0.031  p 0.4819  Holm 1.0000
+  LPF(p-1)           n 560 (7 bands)  rank corr -0.062  p 0.1429  Holm 1.0000
+  LPF(p+1)           n 560 (7 bands)  rank corr +0.001  p 0.9839  Holm 1.0000
+  p mod 4            n 560 (7 bands)  rank corr -0.074  p 0.0779  Holm 1.0000
+  p mod 3            n 560 (7 bands)  rank corr +0.053  p 0.2104  Holm 1.0000
+  log p              n 560 (7 bands)  rank corr +0.102  p 0.0178  Holm 0.6407
+
+pm1:
+  gap before / ln p  n 560 (7 bands)  rank corr +0.007  p 0.8796  Holm 1.0000
+  gap after / ln p   n 560 (7 bands)  rank corr -0.033  p 0.4404  Holm 1.0000
+  twin               n 560 (7 bands)  rank corr +0.010  p 0.8053  Holm 1.0000
+  LPF(p-1)           n 560 (7 bands)  rank corr -0.528  p 0.0001  Holm 0.0040  *
+  LPF(p+1)           n 560 (7 bands)  rank corr -0.020  p 0.6372  Holm 1.0000
+  p mod 4            n 560 (7 bands)  rank corr -0.050  p 0.2332  Holm 1.0000
+  p mod 3            n 560 (7 bands)  rank corr -0.028  p 0.5144  Holm 1.0000
+  log p              n 560 (7 bands)  rank corr +0.001  p 0.9861  Holm 1.0000
+
+qs + lc 1.4:
+  gap before / ln p  n 560 (7 bands)  rank corr -0.080  p 0.0618  Holm 1.0000
+  gap after / ln p   n 560 (7 bands)  rank corr -0.020  p 0.6421  Holm 1.0000
+  twin               n 560 (7 bands)  rank corr +0.059  p 0.1664  Holm 1.0000
+  LPF(p-1)           n 560 (7 bands)  rank corr +0.026  p 0.5331  Holm 1.0000
+  LPF(p+1)           n 560 (7 bands)  rank corr +0.026  p 0.5412  Holm 1.0000
+  p mod 4            n 560 (7 bands)  rank corr -0.040  p 0.3509  Holm 1.0000
+  p mod 3            n 560 (7 bands)  rank corr +0.006  p 0.8827  Holm 1.0000
+  log p              n 560 (7 bands)  rank corr +0.164  p 0.0001  Holm 0.0040  *
+54.78 s
