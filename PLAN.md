@@ -440,6 +440,13 @@ number from what is known about it before any work is done.
   That ties it to the partition study, which measures that population.
 - Cost model and prediction go into NOTES before any code, as for every stage.
 
+## Sanity checks after Stage 9 (outside references only)
+
+- ECM miss rate at 56-70 bits against Milan's ~1% (two-prime numbers, tuned B1/B2).
+- Our tuned qs factor-base size and sieve width against Milan's SIQS table (60 bits: FB 60,
+  M 10000; 80 bits: FB 110, M 14000), as a reference only. Any large gap is explained;
+  his values are not copied.
+
 ## Partition study (planning; no code yet)
 
 How should a fixed op budget be split across lamps when the size of the smaller factor
@@ -462,6 +469,8 @@ is not known in advance?
   - Total ops over the population (expected cost under the prior).
   - The largest band's ops (the worst band's mean), so an allocation cannot buy a good
     total by abandoning one band.
+  - Span reported alongside work: span = max ops over lanes, work = total ops. Span is
+    never fitness unless decided.
 - **Prediction (stated before measurement).**
   - Balanced semiprimes: little gain. The prior puts all its mass on one band, so the
     best allocation is close to the best single lamp for that band.
@@ -499,12 +508,17 @@ a model propose code changes to one card, under a harness it cannot touch.
 - **Phase 1: five moves, one at a time, in this order, each through the full sequence.**
   1. CFRAC early abort (genes a, b; charging already in NOTES).
   2. SQUFOF mode on the CFRAC card (the same sqrt(kN) recurrence and Q_i stream; its
-     rival is rho/Hart, class N^1/4, not qs).
+     rival is rho/Hart, class N^1/4, not qs). Its multiplier race (none first, then
+     Gower-Wagstaff's 15 square-free multipliers) runs through the Stage 9 race.
   3. Batch smoothness test (product / remainder tree in place of per-candidate trial
      division), checked on qs's confirmation as well as on CFRAC's residues.
+     Prerequisite: the oversized-multiply pricing rule (rounded up to N-sized multiplies)
+     in NOTES first.
   4. p + 1 card (Lucas sequences).
   5. ECM torsion gene (family suyama12 | z2z8, both in Montgomery form, the same x-only
      ladder).
+  - Outside priors (MOVES.md, outside evidence), stated in each move's prediction: CFRAC
+    still loses after batching; SQUFOF is only competitive below ~60 bits.
   - Per move, in order:
     1. cost model and predicted ratio in NOTES, before code;
     2. implementation;
