@@ -172,7 +172,8 @@ numbers, the parity count, and the old-vs-new table.
 
 Stage 7 (large primes, done) -> relation-economy refactor (done), with the illumination
 tracer as a side task -> Stage 8 (ECM) -> Stage 9 (race) -> partition study -> Stage 10 (qs
-refinements) -> Run 8.
+refinements) -> Run 8. Learning from all algorithms: the move catalogue is done (MOVES.md);
+its Phase 1 follows Stage 9; the code-level pilot follows Run 8.
 
 The partition study comes after Stage 9 because its allocations run as race schedules,
 and it needs ECM in the cost map.
@@ -427,3 +428,87 @@ is not known in advance?
   - A mixed population (prior spread over bands): clear gain over any single lamp,
     because cheap small-factor lamps (td, rho, pm1, ECM) clear the low bands for a
     small share of the budget before qs takes the rest.
+
+## Learning from all algorithms
+
+Status: Phase 0 (MOVES.md) done, Oct 23. Phase 1 waits for Stage 9. The code-level pilot
+comes after Run 8.
+
+So far evolution only tunes genes inside cards we wrote. This asks where new cards and new
+code come from: first by cataloguing the moves good algorithms are made of, then by letting
+a model propose code changes to one card, under a harness it cannot touch.
+
+- **Move catalogue (`MOVES.md`, repo root).**
+  - One row per move: where it comes from, where it already appears in factoring, one
+    untried candidate in our deck, and Status | Conditions | Evidence.
+  - A catalogue, not a commitment: a row becomes work only with a full cost model in
+    NOTES first, as for any card. The cost-model sketch for a row is written then.
+  - Pilot proposals (below) name the move they use, so wins and losses can be read back
+    against the catalogue.
+- **Phase 0: create MOVES.md (done, Oct 23).**
+  - Built from the deep-dive table: 16 moves, plus the two measured rows below.
+  - Status column per move: pays / ruled out / untested, each with its conditions: the
+    sizes, the pricing (official, ruint- or Montgomery-calibrated), and the cards it was
+    measured with.
+  - Statuses at creation: Portfolio and selection IN PROGRESS (Stage 9); every other move
+    untested; and two measured rows, from results already in NOTES/README:
+    - p - 1 front (leading p - 1 before qs): PAYS 1.05-1.24x in total ops at 72-84 bits
+      (Run 6 ablation, L53-0972; 1.14-1.17x for L54-0938), official pricing.
+    - CFRAC standalone: RULED OUT. 3.7x / 5.2x tuned qs's ops at 72 / 84 bits (predicted
+      ~6x / ~10x), official op pricing.
+- **Phase 1: three moves, one at a time, each through the full sequence.**
+  - The moves: CFRAC early abort (genes a, b; charging already in NOTES), a batch
+    smoothness test (product / remainder tree in place of per-candidate trial division),
+    and a p + 1 card.
+  - Per move, in order:
+    1. cost model and predicted ratio in NOTES, before code;
+    2. implementation;
+    3. one-op mutation test;
+    4. Python/Rust parity;
+    5. genes fixed on tuning seeds, then the verdict on sealed seeds (run once);
+    6. scored under the official count and both calibrated pricings (`calibrate.py`);
+    7. verdict recorded in MOVES.md with its conditions.
+  - A loss is recorded, not deleted. A ruled-out move is not retried unless its
+    conditions change (a different size, pricing or card), and the entry says which
+    changed.
+- **Code-level evolution pilot: one card, CFRAC first (after Run 8).**
+  - Why CFRAC: it loses (3.7x / 5.2x tuned qs's ops at 72/84 bits), and its cost has an
+    obvious target. Every Q_i is a candidate, trial-divided at F ops, with no sieve to
+    filter them.
+  - Baseline: if Phase 1 has run (it comes first), the baseline is CFRAC with early abort,
+    not plain CFRAC.
+  - A proposal that rediscovers a move already in the deck is recorded as "rediscovered",
+    not counted as a win.
+  - What the model may change: the card's source only (`cfrac.py`). It never sees or
+    edits the harness: meter, ledger, factor base, relation check, acceptance tests,
+    parity, numbers.
+  - Charging lives in the harness, not the card:
+    - The card receives a meter it cannot modify or bypass. Arithmetic on N-sized values
+      goes through charged harness operations.
+    - A static check on every proposal (AST, before it runs) rejects imports outside an
+      allowlist and any uncharged route to the same arithmetic (builtin three-argument
+      pow, math.gcd, other big-number libraries, reaching into the meter's state).
+    - If the existing card cannot be written against that interface as it stands, the
+      interface comes first, with an identity check: today's CFRAC on it equals today's
+      CFRAC op for op.
+    - The ledger's relation check is on for every proposal (required for evolved sources,
+      per the relation-economy rules), so an invalid relation pays and earns nothing.
+  - Every proposal, before it is scored:
+    - acceptance as for CFRAC (100% at 40-60 bits, every relation passes the check);
+    - mutation tests: a one-op change to the charging of the touched code is caught;
+    - the cfrac identity and parity checks rerun. Parity for the final candidate needs
+      its Rust port, which is done by hand and checked like any port.
+  - Selection on tuning seeds only (a new seed range at 72/78/84 bits). The final verdict
+    is on sealed numbers: a seed range fixed and written here before the pilot starts,
+    never run until the verdict, run once.
+  - Budget stated in advance: a fixed number of proposals and evaluation runs, written
+    here before the pilot starts. No rerunning the sealed numbers.
+  - Success: a correct, honestly charged change that beats the baseline on the sealed
+    numbers (log2 mean ops, with the usual bootstrap interval clear of the baseline's).
+  - Prediction (stated before measurement): a win on the trial-division target, narrowing
+    CFRAC's constant but not its growth, so it still loses to tuned qs. Beating qs is not
+    the test. Against plain CFRAC the obvious win is early abort; against the
+    early-abort baseline that would only be "rediscovered", so the prediction is restated
+    with the baseline when the pilot starts.
+  - Reported whatever the outcome, including proposals that failed the static check,
+    acceptance or mutation tests, and why.

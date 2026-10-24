@@ -73,6 +73,15 @@ python3 ancestry.py N11-0076   # family line of any named genome
 
 Outputs: `evolve.log`, `results.json`, `lineage.jsonl`, `validation.json`. Runs are seeded, so the same commands reproduce the same numbers on any machine.
 
+## Direction: learning from all algorithms (Oct 23, 2026)
+
+- **Most of factoring's tools were imported from other fields.** Rho came from collision and cycle finding, and QS from Eratosthenes' sieve plus GF(2) linear algebra. Block Lanczos came from numerical analysis, ECM's stage 2 from baby-step giant-step, and our race from SAT-solver portfolios.
+- **We catalogue those moves and let the meter score each one.** [MOVES.md](MOVES.md) lists them: where each comes from, where it already appears in factoring, one untried candidate in our deck, and a measured status with its conditions and evidence.
+- **Failures are results.** A loss rules a move out under stated conditions (sizes, pricing, cards). It is recorded, never deleted, and retried only if those conditions change.
+- **Honest limit.** Imports win on constants inside L[1/2] or L[1/3]. The one jump in complexity class in factoring's history, the number field sieve, came from a new place to look for squares, not from an imported move.
+
+The plan, with its phases (the catalogue now; three moves through the full pipeline after Stage 9; a code-level evolution pilot after Run 8), is in [PLAN.md, "Learning from all algorithms"](PLAN.md#learning-from-all-algorithms).
+
 ## Stage 8: elliptic curves (Oct 23, 2026)
 
 A new card, ECM (`evolve/ecm.py`; cost model in `NOTES.md`, written before the code): Montgomery curves, x-only, Suyama's parametrization, a stage 1 ladder and a baby-step giant-step stage 2. Every modular multiply is charged: 11 per ladder bit. It is accepted at 40–84 bits on balanced and unbalanced numbers (`evolve/ecm_accept.py`: exact accounting with an independent ladder recount, a group-order check, a mutation test), with lampcore parity. Its genes (b1 1.0, b2 50) were fixed on separate tuning seeds (`evolve/ecm_tune.py`). Comparison: `evolve/ecm_compare.py`, cap 2^28, no misses.
