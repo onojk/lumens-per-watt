@@ -18,8 +18,26 @@ Staged plan from the Oct 23 review.
   - `lamps.cap_for(bits)=2^(bits/2+6)`
   - parity.py `min(cap_for, 2^22)`
   - evolve_scale.py `CAP_LOG2=23`
-- Working rule: one Claude session owns the repo at a time; others read only. Unfinished work
-  is parked in scratch while long tests run (after the Oct 23 stray-revert incident).
+
+## Working rules
+
+- **Reuse rule: don't rebuild what exists unless rebuilding helps.**
+  - **Build** in-house only what the meter must see: card arithmetic. Published algorithms
+    are ported step by step, with every op charged.
+  - **Reuse** everything else:
+    - search machinery: a quality-diversity library for MAP-Elites (e.g. pyribs);
+      OpenEvolve or ShinkaEvolve for the Phase 2 LLM loop, with our harness as the
+      evaluator;
+    - published parameters as starting genes (Gower-Wagstaff's SQUFOF multipliers,
+      Milan's fast-return threshold and early-abort constant);
+    - existing factoring tools (TIFA, YAFU) as reference oracles for correctness and
+      sanity checks, never for cost.
+  - Before adopting a dependency: its license is compatible, it is maintained, and its
+    version is pinned. It never sits inside a charged code path.
+  - When a section of this plan proposes building something, it names the existing tool it
+    considered and says, in one line, why it isn't used.
+- One Claude session owns the repo at a time; others read only. Unfinished work is parked
+  in scratch while long tests run (after the Oct 23 stray-revert incident).
 
 ## Stage 1: square-search window fix, instrumentation, coverage rule
 
@@ -491,6 +509,8 @@ prediction in NOTES before code, as usual. Fitness is (c) robust throughout (Run
    - Optional second grid by behaviour: shares of ops in sieve / ECM / rho.
    - Prediction: the per-cell elites match or beat Run 8's single-fitness winner in most
      cells, with lineages crossing cells (stepping stones).
+   - Tool: pyribs, reused (reuse rule); our harness is its evaluator, outside any charged
+     path.
 2. **POET-style populations** (Wang et al. 2019, arXiv 1901.01753).
    - Mutate population settings (bits, factor ratio, p-1 smoothness, multiplier class).
      Keep a population only if no lamp finishes it trivially and not all hit the cap.
@@ -498,12 +518,17 @@ prediction in NOTES before code, as usual. Fitness is (c) robust throughout (Run
      better.
    - **Guard:** generated populations are training only. Verdicts stay on the fixed sealed
      populations.
+   - Tool considered: Uber's POET reference code. Not used: it is built around its own
+     terrain generator and neural-network agents; the outer loop is small enough to write.
 3. **NEAT-style protection of new structure** (Stanley & Miikkulainen 2002).
    - Group genomes by card structure. A new structure gets a fixed tuning budget inside its
      group before competing overall.
    - Required before new cards (SQUFOF mode, p+1, torsion ECM) enter Run 8-style evolution.
+   - Tool considered: neat-python. Not used: it evolves neural networks; we borrow only the
+     speciation idea, a grouping step inside our existing islands harness.
 4. **Structure and genes co-evolved** (Sims 1994): which cards, and in what order, evolve
-   together with their genes. After Run 8.
+   together with their genes. After Run 8. Tool: none to reuse; our mutation operators
+   already change card lists and genes, and this extends them.
 
 ## Learning from all algorithms
 
