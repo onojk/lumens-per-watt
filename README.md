@@ -6,15 +6,26 @@ Growing factoring algorithms by evolution, and measuring them by **lumens per wa
 
 **The idea.** Picture a factoring algorithm as a light moving along the number line, ruling out spots where the secret factor could be hiding. That gives a way to grade any algorithm: how much of the line it darkens for each unit of work. We call that **lumens per watt**. More light per watt means a better bulb.
 
-**What this repo does.** It breeds factoring algorithms the way a gardener breeds plants. It starts with a box of known parts (trial division, square searches, rho, and so on), snaps them together in random combinations, tests each one on real numbers, keeps the best, mutates them, and repeats. Every algorithm gets a name and a family tree, so you can trace how a winner came to be.
+**What this repo does.** It breeds factoring algorithms the way a gardener breeds plants, and measures them honestly. It starts with a box of known parts (trial division, square searches, rho, p − 1, elliptic curves, continued fractions, the quadratic sieve), snaps them together, tests each combination on real numbers, keeps the best, and repeats. Every algorithm gets a name and a family tree.
+
+**What it has grown into.** Three things now matter as much as the breeding:
+- **An honest meter.** Every operation is charged, and the price list was checked against real timings on this laptop. The official count and real prices can disagree on who wins, so a method now has to win under all three pricings (the official count and two calibrated ones), not just one.
+- **Learning from all algorithms.** Most of factoring's best tricks were borrowed from other fields: probability, algebra, signal processing, SAT solvers. [MOVES.md](MOVES.md) catalogues those moves, drawn from computer science and a survey of sixteen branches of mathematics, and the meter decides which ones pay.
+- **Failures are results.** Every idea gets a prediction written down before it is tested. A loss is recorded with its prediction and conditions, never deleted, and marks the idea as ruled out until those conditions change.
 
 **What we've learned so far.**
+
+- **The meter can pick the winner.** Under the official count, elliptic curves led on balanced numbers; under real prices, a quadratic-sieve genome led from 60 bits up. Run 6's luck champion (p − 1 first) turned out 1.67× slower than plain tuned qs under real prices.
+- **Racing two methods lost; taking turns in order won.** Interleaving two methods in fixed slices never beat the better method alone (0 of 810 cases): the sieve's large steps hog the turns. Running cheap methods first, each for a fixed budget, then the sieve, was 1.5–2.2× faster on numbers whose smaller factor ranges from 16 to 42 bits.
+- **Covering, not knowing.** That gain comes from covering every factor size cheaply, not from picking the right method per number. At a fixed size, nothing free reveals how big the hidden factor is.
 
 - **The scoring has to be cheat-proof.** Early on, algorithms "won" by memorizing the test numbers or by being slow on small numbers so their growth looked flatter. The scoring now uses fresh numbers every round, and every winner is rechecked on numbers it has never seen.
 - **Evolution rediscovers real tricks.** Starting from a plain search, it worked out on its own the multiplier trick that Hart published.
 - **How you keep score decides who wins.** Judged by the worst case, rho (the "lucky" method) won. Judged by total work across many numbers, a luck-free square search won. We chose the running total as the scoreboard and wrote that down in `NOTES.md`.
 - **"Luck by design" only pays when guessing is cheaper than trying.** Making each test luckier cost more than it saved, so evolution mostly ignored those parts.
 - **Size changes everything.** To test bigger numbers, the core was rebuilt in Rust and proven to give identical answers to the Python version, case for case. On bigger numbers the winner flipped: the square searches that led at small sizes lose clearly to rho from about 60 bits up. At small sizes fixed overhead decides the race; at large sizes the growth rate does. Every growth rate we measured matched what the mathematics predicts.
+
+**Where it's heading.** Next: per-operation counters in the fast core, so every score can be priced three ways (now built); then a big evolution run (Run 8) with control arms, a standard optimizer and random search given the same budget, to test whether evolution adds anything; then imported moves (SQUFOF, p + 1, smarter elliptic-curve arithmetic) and a carefully fenced experiment letting an AI model propose code changes under a meter it can't touch. Existing tools (Python, Java, Rust and C factoring libraries) are used as references and correctness checks, never inside the meter. The plan is in [PLAN.md](PLAN.md), and the reasoning and every result in [NOTES.md](NOTES.md).
 
 **The honest bottom line.** Evolution has become good at fine-tuning known algorithms. Scored on big numbers, it found a combination (p − 1 before rho) that beats plain rho by 1.3–1.6×, but nothing it has grown beats the known speed limits of its parts. That's a clean, reproducible measurement of where those limits sit, and the tools are now strong enough to keep pushing.
 
