@@ -435,10 +435,18 @@ any scored run, and parity gates the Rust port.
     - **Third arm** (reported separately, not in the primary comparison): evolution on fresh
       batches each generation, as Run 6 did, with the same budget and seeds. It shows
       whether the fixed tuning set changes evolution's result.
-    - **Probe** (separate, not a candidate): TPE warm-started from allocation A, with qs
-      genes = qs + lc 1.4. Question: is A near-optimal? Improvement is judged by the paired
-      bootstrap interval on the sealed numbers, and NOTES records either "A near-optimal" or
-      "partition study under-explored by Z".
+    - **qs-gene probe (warm-started TPE)** (separate, not a candidate): TPE warm-started from
+      allocation A, with qs genes = qs + lc 1.4, compared with cold-start TPE on the qs-gene
+      sub-experiment below (does the prior help?). Question: is A near-optimal? Improvement
+      is judged by the paired bootstrap interval on the sealed numbers, and NOTES records
+      either "A near-optimal" or "partition study under-explored by Z".
+    - **qs-gene sub-experiment:** budgets and order fixed at A; all three methods search
+      only kc, bc, mc, tc and lc, with the same evaluation counting, seeds and fitness.
+    - **Convergence, pre-registered:** T1 = evaluations to enter A's paired interval; T2 =
+      evaluations to reach A's point estimate or better. A's values are computed on each
+      seed's own tuning set, not the partition map's.
+    - **Winning genomes reported split** into budgets / order and qs genes, side by side
+      across methods.
     - **Card order, pre-registered:** evolution changes it by swap mutation (transpositions);
       TPE and random search treat it as a 24-way categorical. This tests whether
       structural locality helps.
