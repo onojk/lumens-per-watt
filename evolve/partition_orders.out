@@ -1,0 +1,40 @@
+A (td -> rho -> pm1 -> ecm; rho 5793, ecm 32768): fitness 0.6408
+
+all 24 orders: exact optimum over the map's budget grid | after 1/8-octave refinement | refined vs best, log2 [paired 95%]
+  td -> rho -> pm1 -> ecm      grid 0.6480 (td       0  rho    4096  pm1    0  ecm   32768) | refined 0.6408 (td       0  rho    5793  pm1    0  ecm   32768) | +0.0000 [+0.0000, +0.0000]
+  td -> rho -> ecm -> pm1      grid 0.6480 (td       0  rho    4096  pm1    0  ecm   32768) | refined 0.6408 (td       0  rho    5793  pm1    0  ecm   32768) | +0.0000 [+0.0000, +0.0000]
+  td -> pm1 -> rho -> ecm      grid 0.6480 (td       0  rho    4096  pm1    0  ecm   32768) | refined 0.6408 (td       0  rho    5793  pm1    0  ecm   32768) | +0.0000 [+0.0000, +0.0000]
+  rho -> td -> pm1 -> ecm      grid 0.6480 (td       0  rho    4096  pm1    0  ecm   32768) | refined 0.6408 (td       0  rho    5793  pm1    0  ecm   32768) | +0.0000 [+0.0000, +0.0000]
+  rho -> td -> ecm -> pm1      grid 0.6480 (td       0  rho    4096  pm1    0  ecm   32768) | refined 0.6408 (td       0  rho    5793  pm1    0  ecm   32768) | +0.0000 [+0.0000, +0.0000]
+  rho -> pm1 -> td -> ecm      grid 0.6480 (td       0  rho    4096  pm1    0  ecm   32768) | refined 0.6408 (td       0  rho    5793  pm1    0  ecm   32768) | +0.0000 [+0.0000, +0.0000]
+  rho -> pm1 -> ecm -> td      grid 0.6480 (td       0  rho    4096  pm1    0  ecm   32768) | refined 0.6408 (td       0  rho    5793  pm1    0  ecm   32768) | +0.0000 [+0.0000, +0.0000]
+  rho -> ecm -> td -> pm1      grid 0.6480 (td       0  rho    4096  pm1    0  ecm   32768) | refined 0.6408 (td       0  rho    5793  pm1    0  ecm   32768) | +0.0000 [+0.0000, +0.0000]
+  rho -> ecm -> pm1 -> td      grid 0.6480 (td       0  rho    4096  pm1    0  ecm   32768) | refined 0.6408 (td       0  rho    5793  pm1    0  ecm   32768) | +0.0000 [+0.0000, +0.0000]
+  pm1 -> td -> rho -> ecm      grid 0.6480 (td       0  rho    4096  pm1    0  ecm   32768) | refined 0.6408 (td       0  rho    5793  pm1    0  ecm   32768) | +0.0000 [+0.0000, +0.0000]
+  pm1 -> rho -> td -> ecm      grid 0.6480 (td       0  rho    4096  pm1    0  ecm   32768) | refined 0.6408 (td       0  rho    5793  pm1    0  ecm   32768) | +0.0000 [+0.0000, +0.0000]
+  pm1 -> rho -> ecm -> td      grid 0.6480 (td       0  rho    4096  pm1    0  ecm   32768) | refined 0.6408 (td       0  rho    5793  pm1    0  ecm   32768) | +0.0000 [+0.0000, +0.0000]
+  td -> pm1 -> ecm -> rho      grid 0.6731 (td       0  rho       0  pm1    0  ecm   65536) | refined 0.6731 (td       0  rho       0  pm1    0  ecm   65536) | +0.0709 [+0.0060, +0.1313]
+  td -> ecm -> rho -> pm1      grid 0.6731 (td       0  rho       0  pm1    0  ecm   65536) | refined 0.6731 (td       0  rho       0  pm1    0  ecm   65536) | +0.0709 [+0.0060, +0.1313]
+  td -> ecm -> pm1 -> rho      grid 0.6731 (td       0  rho       0  pm1    0  ecm   65536) | refined 0.6731 (td       0  rho       0  pm1    0  ecm   65536) | +0.0709 [+0.0060, +0.1313]
+  pm1 -> td -> ecm -> rho      grid 0.6731 (td       0  rho       0  pm1    0  ecm   65536) | refined 0.6731 (td       0  rho       0  pm1    0  ecm   65536) | +0.0709 [+0.0060, +0.1313]
+  pm1 -> ecm -> td -> rho      grid 0.6731 (td       0  rho       0  pm1    0  ecm   65536) | refined 0.6731 (td       0  rho       0  pm1    0  ecm   65536) | +0.0709 [+0.0060, +0.1313]
+  pm1 -> ecm -> rho -> td      grid 0.6731 (td       0  rho       0  pm1    0  ecm   65536) | refined 0.6731 (td       0  rho       0  pm1    0  ecm   65536) | +0.0709 [+0.0060, +0.1313]
+  ecm -> td -> rho -> pm1      grid 0.6731 (td       0  rho       0  pm1    0  ecm   65536) | refined 0.6731 (td       0  rho       0  pm1    0  ecm   65536) | +0.0709 [+0.0060, +0.1313]
+  ecm -> td -> pm1 -> rho      grid 0.6731 (td       0  rho       0  pm1    0  ecm   65536) | refined 0.6731 (td       0  rho       0  pm1    0  ecm   65536) | +0.0709 [+0.0060, +0.1313]
+  ecm -> rho -> td -> pm1      grid 0.6731 (td       0  rho       0  pm1    0  ecm   65536) | refined 0.6731 (td       0  rho       0  pm1    0  ecm   65536) | +0.0709 [+0.0060, +0.1313]
+  ecm -> rho -> pm1 -> td      grid 0.6731 (td       0  rho       0  pm1    0  ecm   65536) | refined 0.6731 (td       0  rho       0  pm1    0  ecm   65536) | +0.0709 [+0.0060, +0.1313]
+  ecm -> pm1 -> td -> rho      grid 0.6731 (td       0  rho       0  pm1    0  ecm   65536) | refined 0.6731 (td       0  rho       0  pm1    0  ecm   65536) | +0.0709 [+0.0060, +0.1313]
+  ecm -> pm1 -> rho -> td      grid 0.6731 (td       0  rho       0  pm1    0  ecm   65536) | refined 0.6731 (td       0  rho       0  pm1    0  ecm   65536) | +0.0709 [+0.0060, +0.1313]
+
+card order: MATTERS (12 of 24 orders have an interval above 0)
+overall best: td -> rho -> pm1 -> ecm, refined fitness 0.6408; log2(best / A) = +0.0000 [+0.0000, +0.0000]
+
+landscape: 131712 grid combinations; best grid point 0.6480 (td -> rho -> pm1 -> ecm; td       0  rho    4096  pm1    0  ecm   32768), its own 95% interval of log2 fitness [-0.7122, -0.5400] -> fitness up to 0.6878
+  within that interval: 2600 combinations (1.97%)
+    td: [0, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536]
+    rho: [0, 256, 512, 1024, 2048, 4096, 8192, 16384]
+    pm1: [0]
+    ecm: [32768, 65536, 131072]
+    rho before ecm in 1744/2600
+  fitness quantiles (min, 1%, 5%, 25%, median, 75%, max): 0.648, 0.676, 0.728, 0.887, 1.435, 1.889, 4.325
+34.83 s
