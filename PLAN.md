@@ -335,7 +335,9 @@ any scored run, and parity gates the Rust port.
     the small end), not an exponent change. ECM's distinct shape shows on unbalanced
     numbers (one factor much smaller than sqrt N): the partition study and Run 8's mixed
     population are where it should pay.
-- **Stage 9: race combinator ("race").**
+- **Stage 9: race combinator ("race"). Done (Oct 24).** The combinator is accepted with
+  parity; the fixed-slice race against qs is ruled out (NOTES.md, "Stage 9 result").
+  Finer qs charge chunks stay a condition that would reopen the race; not planned.
   - A genome element holding two stages that run interleaved on one meter: A for sa ops,
     then B for sb ops, alternating, until one finds a factor or the budget runs out.
   - Genes: the two stages, slice sizes sa and sb, and a budget split (the share of the
@@ -479,10 +481,20 @@ is not known in advance?
     by band, with the usual bootstrap intervals and misses at the cap marked.
 - **Optimal search allocation under a prior.**
   - A prior: the probability of each band.
-  - Allocation: a schedule of (lamp, op slice) pairs (Stage 9's race element when it
-    exists, a fixed sequence before) that minimizes expected ops under the prior, given
-    the cost map. Computed from the map, then measured by running it, not trusted as
-    computed.
+  - Allocation: **sequential budgets, not races** (Stage 9 ruled out the fixed-slice race
+    against qs). Each pre-stage (td, rho, p-1, ECM) gets a fixed op budget, in order, then
+    qs runs to the cap. The budgets are the genes: the deferred budget-split idea, without
+    interleaving. The allocation minimizes expected ops under the prior, given the cost
+    map; it is computed from the map, then measured by running it, not trusted as computed.
+  - **Prerequisite: a per-stage op-budget gene.** Checked Oct 24: no stage has one. Stages
+    end only by their own bounds (td's a, pm1's b, ECM's curves) or the shared cap, which
+    ends the whole run as a miss. The gene is added so that reaching a stage's budget ends
+    that stage without a factor and the next stage runs. Cost model and prediction in NOTES
+    first; then a one-switch identity (budget 0 = stage skipped; budget at or past the
+    stage's own end = today's behaviour), parity and a mutation test.
+  - **Prediction (to be written in NOTES before it runs):** on a mixed population,
+    sequential budgets beat qs alone, as the p-1 front already does; on a single-kind
+    balanced population, budgets near 0 win (qs alone).
 - **Scores.**
   - Total ops over the population (expected cost under the prior).
   - The largest band's ops (the worst band's mean), so an allocation cannot buy a good
