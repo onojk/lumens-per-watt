@@ -40,7 +40,10 @@ def semiprimes_unbalanced(bits, pbits, count, seed):
             out.append((p * q, min(p, q), max(p, q)))
     return out
 
-def run_many(genome, nums, cap, inst=False, phases=False):
+def run_many(genome, nums, cap, inst=False, phases=False, race=False):
+    """One lampcore run per number. Each result: (ops, factor, tests, hits[, stage, k])
+    [+ (phase dict,) with phases] [+ ((side A ops, side B ops, switches),) with race, for
+    genomes with a race stage: the last race that ran]."""
     text = json.dumps(genome) + "\n" + str(int(cap)) + "\n" + \
         "".join(f"{N} {p} {q}\n" for N, p, q in nums)
     res = subprocess.run([BIN], input=text, capture_output=True, text=True, check=True)
@@ -49,6 +52,11 @@ def run_many(genome, nums, cap, inst=False, phases=False):
         if not line:
             continue
         f = line.split()
+        rinfo = None
+        if "R" in f:
+            i = f.index("R")
+            rinfo = tuple(int(x) for x in f[i + 1:i + 4])
+            f = f[:i]
         if f[0] == "miss":
             r = (None, None, int(f[1]), int(f[2]), None, None)
         else:
@@ -59,5 +67,7 @@ def run_many(genome, nums, cap, inst=False, phases=False):
             ph = [int(x) for x in (f[3:] if f[0] == "miss" else f[6:])]
             assert len(ph) == len(PHASES), line
             r = r + (dict(zip(PHASES, ph)),)
+        if race:
+            r = r + (rinfo,)
         out.append(r)
     return out

@@ -32,6 +32,16 @@ ecm_s2 and ecm_gcd (asserted), td then ecm, and random b1/b2/s0 genomes; the per
 includes the four ecm phases.
 Edge: both cores refuse qs on N >= 2^100 with an error, never a silent wrap.
 
+Race (race_pairs, Stage 9): every ordered pair of lamp types (td, sq, ps, rho, pm1, qs, qs lc
+1.4, cfrac, ecm) at 32-40 bits under three slice settings; the Stage 9 comparison races
+(race(ECM, qs + lc 1.4), race(rho, qs + lc 1.4), race(ECM, N51-0917's qs)) at 54-84 bits and
+on unbalanced numbers, at 2^8 / 2^10 / 2^14 and unequal slices; a disabled side (sa or sb = 0);
+a side that ends without a factor (the other runs alone, asserted); both sides ending, so the
+next stage runs (asserted); a race after another stage; caps that stop mid-race (asserted
+misses); and random races of random stages and slices. Fields: the usual ones, per-phase ops
+summed over both sides, and per-side ops and switches. Both cores refuse a nested race and
+sa = sb = 0 with an error.
+
 Guards (guard_pairs): block flash whose two product trees can't fit in the budget, and p-1
 whose bound is past 2^32 at 84 bits, both stopping before allocating (asserted on the Python
 side; lampcore must finish them within a 256 MB address space), plus p-1 past 2^32 that runs to the cap through the
@@ -431,6 +441,114 @@ def check_qs():
                                        for mc, (pr, ns) in sorted(wide.items())))
     return checked, mismatches
 
+import race
+N51_QS = {"t": "qs", "kc": 32, "bc": 1.1275106842116758, "mc": 1.0028451156262428, "tc": 1.378994531313155}
+RACE_STAGES = {
+    "td": {"t": "td", "a": 0.5},
+    "sq": {"t": "sq", "mode": "seqm", "mult": 60, "k": 0.3, "w": 0.25, "c": 1.2, "ksq": False, "r": 64},
+    "ps": {"t": "ps", "a": 0.5, "s": 0.25, "c": 1.0},
+    "rho": {"t": "rho", "c": 1, "b": 64},
+    "pm1": {"t": "pm1", "b": 0.3},
+    "qs": {"t": "qs", "kc": 32, "bc": 1.1, "mc": 0.25, "tc": 1.38},
+    "qs lc 1.4": {"t": "qs", "kc": 32, "bc": 1.1, "mc": 0.25, "tc": 1.38, "lc": 1.4},
+    "cfrac": {"t": "cfrac", "kc": 32, "bc": 1.1},
+    "ecm": {"t": "ecm", "b1": 1.0, "b2": 50},
+}
+TD_END = {"t": "td", "a": 0.05}          # ends without a factor in a few ops
+
+def R_(a, b, sa, sb):
+    return {"t": "race", "a": a, "b": b, "sa": sa, "sb": sb}
+
+def race_pairs():
+    """(label, genome, numbers, cap, assertion on the Python run or None)."""
+    nums = {b: semiprimes_pq(b, 2, 2600000 + b) for b in (32, 36, 40)}
+    for i, (x, A) in enumerate(RACE_STAGES.items()):
+        for j, (y, B) in enumerate(RACE_STAGES.items()):
+            b = (32, 36, 40)[(i + j) % 3]
+            for sa, sb in ((16, 16), (256, 1024), (4096, 256)):
+                yield f"pair {x}/{y}", [R_(A, B, sa, sb)], nums[b], 2 ** 26, None
+    E, Q, RH = RACE_STAGES["ecm"], RACE_STAGES["qs lc 1.4"], RACE_STAGES["rho"]
+    for b in (54, 72, 84):
+        ns = semiprimes_pq(b, 2, 2700000 + b)
+        for s in (256, 1024, 16384):
+            for A, B in ((E, Q), (RH, Q), (E, N51_QS)):
+                yield f"stage 9 {b} {s}", [R_(A, B, s, s)], ns, 2 ** 28, None
+            yield f"stage 9 unequal {b} {s}", [R_(E, Q, s, 6 * s)], ns, 2 ** 28, None
+    from fastlamps import semiprimes_unbalanced
+    ns = semiprimes_unbalanced(84, 24, 2, 2800084)
+    for s in (256, 16384):
+        yield "stage 9 84/24", [R_(E, Q, s, s)], ns, 2 ** 28, None
+        yield "stage 9 84/24 rho", [R_(RH, Q, s, s)], ns, 2 ** 28, None
+    n48 = semiprimes_pq(48, 3, 2900048)
+    yield "disabled sb", [R_(E, Q, 64, 0)], n48, 2 ** 28, None
+    yield "disabled sa", [R_(E, Q, 0, 64)], n48, 2 ** 28, None
+    yield "side ends, other alone", [R_(TD_END, E, 64, 64)], n48, 2 ** 28, "ends"
+    yield "side ends mid-race", [R_(E, {"t": "pm1", "b": 0.05}, 32, 32)], n48, 2 ** 28, None
+    yield "both end, next stage", [R_(TD_END, {"t": "td", "a": 0.06}, 4, 4), RH], n48, 2 ** 28, "next"
+    yield "race after a stage", [TD_END, R_(RH, Q, 512, 512)], n48, 2 ** 28, None
+    for N, p, q in n48:
+        full = run([R_(E, Q, 256, 256)], N, 2 ** 28)[0]
+        for frac in (0.25, 0.5, 0.9):
+            yield "cap mid-race", [R_(E, Q, 256, 256)], [(N, p, q)], int(full * frac), "miss"
+    rng = random.Random(909)
+    kinds = ["td", "sq", "rho", "pm1", "ps", "qs", "cfrac", "ecm"]
+    for _ in range(60):
+        A, B = (rand_stage(k, rng) if k in ("td", "sq", "rho", "pm1", "ps") else dict(RACE_STAGES[k])
+                for k in (rng.choice(kinds), rng.choice(kinds)))
+        sa, sb = (rng.choice((0, 1, 4, 64, 1000, 4096, 1 << 14)) for _ in range(2))
+        if sa == sb == 0:
+            sa = 64
+        b = rng.choice((32, 36, 40))
+        yield "random race", [R_(A, B, sa, sb)], semiprimes_pq(b, 1, rng.randint(1, 10 ** 6)), 2 ** 24, None
+
+def check_race_refusals():
+    S = RACE_STAGES["rho"]
+    ok = True
+    for g in ([R_(R_(S, S, 1, 1), S, 1, 1)], [R_(S, S, 0, 0)]):
+        r = subprocess.run([BIN], input=json.dumps(g) + "\n1000\n1000036000099 1000003 1000033\n",
+                           capture_output=True, text=True)
+        rust_ok = r.returncode != 0 and "race:" in r.stderr and r.stdout == ""
+        try:
+            run(g, 1000036000099, 1000)
+            py_ok = False
+        except ValueError:
+            py_ok = True
+        ok = ok and rust_ok and py_ok
+    return ok
+
+def check_race():
+    checked = mismatches = 0
+    phased = lambda st: st["t"] in ("qs", "cfrac", "ecm") or (st["t"] == "race" and {st["a"]["t"], st["b"]["t"]} & {"qs", "cfrac", "ecm"})
+    for label, g, nums, cap, expect in race_pairs():
+        has_ph = any(phased(st) for st in g)
+        fast = run_many(g, nums, cap, inst=True, phases=has_ph, race=True)
+        for (N, p, q), f in zip(nums, fast):
+            tr = new_trace()
+            race.TRACE = rt = {}
+            ops, d = run(g, N, cap)
+            ph = {k: tr["ops"].get(k, 0) for k in PHASES}
+            for sd in rt.get("sides", []):
+                for k, v in (sd["phases"] or {}).items():
+                    ph[k] += v
+            rinfo = (rt["sides"][0]["ops"], rt["sides"][1]["ops"], rt["switches"]) if rt else (0, 0, 0)
+            if not has_ph:
+                ph = None
+            slow = (ops, d, LAST["tests"], LAST["hits"], LAST["stage"], LAST["k"]) + ((ph,) if ph is not None else ()) + (rinfo,)
+            if expect == "ends":
+                assert rt["sides"][0]["end"] == "none" and rt["sides"][1]["end"] == "found", (label, N, rt["sides"])
+            if expect == "next":
+                assert LAST["stage"] == 1 and all(sd["end"] == "none" for sd in rt["sides"]), (label, N)
+            if expect == "miss":
+                assert ops is None, (label, N)
+            race.TRACE = None
+            checked += 1
+            if slow != f:
+                mismatches += 1
+                if mismatches <= 10:
+                    print("MISMATCH", label, N, "python", slow, "rust", f)
+    qs.TRACE = cfrac.TRACE = ecm.TRACE = None
+    return checked, mismatches
+
 if __name__ == "__main__":
     sizes = [28, 34, 40, 46]
     nums = {b: semiprimes_pq(b, PER, 90000 + b) for b in sizes}
@@ -457,4 +575,9 @@ if __name__ == "__main__":
           f"{LIMIT_MB} MB: {'yes' if bounded else 'NO'}")
     limit = check_qs_limit()
     print(f"qs on N >= 2^100: both cores refuse with an error: {'yes' if limit else 'NO'}")
-    sys.exit(1 if mismatches or qm or gm or not bounded or not limit else 0)
+    rc, rm = check_race()
+    print(f"race: checked {rc} genome x number pairs (ops, factor, tests, hits, stage, k, "
+          f"per-phase ops, per-side ops and switches), mismatches {rm}")
+    refuse = check_race_refusals()
+    print(f"race: both cores refuse a nested race and sa = sb = 0 with an error: {'yes' if refuse else 'NO'}")
+    sys.exit(1 if mismatches or qm or gm or not bounded or not limit or rm or not refuse else 0)

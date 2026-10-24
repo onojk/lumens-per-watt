@@ -10,6 +10,9 @@
 //! If the genome has a quadratic-sieve, continued-fraction or elliptic-curve stage, both lines
 //! end with fifteen per-phase op counts (mult fb setup sieve confirm la sqrt lp check cf_step
 //! cf_td ecm_setup ecm_s1 ecm_s2 ecm_gcd), for the parity check.
+//! If the genome has a race stage (Stage 9, race.rs), the line then ends with
+//! " R <side A ops> <side B ops> <switches>" for the last race that ran (and the phase columns
+//! are printed when either side is a qs, cfrac or ecm stage).
 //! stage is the winning stage's index; k is the multiplier a square-search win came from,
 //! "-" for any other lamp (read-only instrumentation: it never changes the op count).
 //!
@@ -23,6 +26,7 @@ use std::io::{self, BufRead, BufWriter, Write};
 mod cfrac;
 mod ecm;
 mod qs;
+mod race;
 
 struct Budget;
 type R = Result<Option<U256>, Budget>;
@@ -34,17 +38,24 @@ struct Meter {
     hits: u64,
     k: Option<u64>, // instrumentation: the k a square-search win came from
     phases: [u64; 15], // per-phase ops of qs, cfrac and ecm (see qs.rs, cfrac.rs, ecm.rs)
+    hook: Option<Box<race::Hook>>, // set only on a race side's meter (race.rs)
+    race: Option<(u64, u64, u64)>, // the last race's side A ops, side B ops, switches
 }
 
 impl Meter {
     #[inline]
     fn tick(&mut self, k: u64) -> Result<(), Budget> {
         self.ops += k;
-        if self.ops > self.cap {
-            Err(Budget)
-        } else {
-            Ok(())
+        if let Some(h) = self.hook.as_mut() {
+            h.side_ops += k; // counted before the cap check, as race.py does
         }
+        if self.ops > self.cap {
+            return Err(Budget);
+        }
+        if let Some(h) = self.hook.as_mut() {
+            h.after_charge(k, &mut self.ops)?;
+        }
+        Ok(())
     }
     #[inline]
     fn charge(&mut self, phase: usize, k: u64) -> Result<(), Budget> {
@@ -471,30 +482,41 @@ struct Win {
     k: Option<u64>,
 }
 
-fn run(genome: &[Value], num: &Num, cap: u64) -> (Option<Win>, u64, u64, [u64; 15]) {
-    let mut m = Meter { ops: 0, cap, tests: 0, hits: 0, k: None, phases: [0; 15] };
-    for (i, s) in genome.iter().enumerate() {
-        let r = match s["t"].as_str().unwrap() {
-            "td" => lamp_td(num, s, &mut m),
-            "sq" => lamp_sq(num, s, &mut m),
-            "rho" => lamp_rho(num, s, &mut m),
-            "pm1" => lamp_pm1(num, s, &mut m),
-            "ps" => lamp_ps(num, s, &mut m),
-            "qs" => qs::lamp_qs(num, s, &mut m),
-            "cfrac" => cfrac::lamp_cfrac(num, s, &mut m),
-            "ecm" => ecm::lamp_ecm(num, s, &mut m),
-            other => panic!("unknown lamp {other}"),
-        };
-        match r {
-            Ok(Some(d)) => {
-                let w = Win { ops: m.ops, d, stage: i, k: m.k };
-                return (Some(w), m.tests, m.hits, m.phases);
-            }
-            Ok(None) => continue,
-            Err(Budget) => return (None, m.tests, m.hits, m.phases),
+fn run_stage(num: &Num, s: &Value, m: &mut Meter) -> R {
+    match s["t"].as_str().unwrap() {
+        "td" => lamp_td(num, s, m),
+        "sq" => lamp_sq(num, s, m),
+        "rho" => lamp_rho(num, s, m),
+        "pm1" => lamp_pm1(num, s, m),
+        "ps" => lamp_ps(num, s, m),
+        "qs" => qs::lamp_qs(num, s, m),
+        "cfrac" => cfrac::lamp_cfrac(num, s, m),
+        "ecm" => ecm::lamp_ecm(num, s, m),
+        "race" => race::lamp_race(num, s, m),
+        other => panic!("unknown lamp {other}"),
+    }
+}
+
+type RunOut = (Option<Win>, u64, u64, [u64; 15], Option<(u64, u64, u64)>);
+
+fn run(genome: &[Value], num: &Num, cap: u64) -> RunOut {
+    for s in genome {
+        if s["t"] == "race" {
+            race::validate(s); // rejected before any number runs, as race.validate_genome
         }
     }
-    (None, m.tests, m.hits, m.phases)
+    let mut m = Meter { ops: 0, cap, tests: 0, hits: 0, k: None, phases: [0; 15], hook: None, race: None };
+    for (i, s) in genome.iter().enumerate() {
+        match run_stage(num, s, &mut m) {
+            Ok(Some(d)) => {
+                let w = Win { ops: m.ops, d, stage: i, k: m.k };
+                return (Some(w), m.tests, m.hits, m.phases, m.race);
+            }
+            Ok(None) => continue,
+            Err(Budget) => return (None, m.tests, m.hits, m.phases, m.race),
+        }
+    }
+    (None, m.tests, m.hits, m.phases, m.race)
 }
 
 fn main() {
@@ -503,7 +525,9 @@ fn main() {
     let genome: Value = serde_json::from_str(&lines.next().unwrap().unwrap()).unwrap();
     let genome = genome.as_array().unwrap().clone();
     let cap: u64 = lines.next().unwrap().unwrap().trim().parse().unwrap();
-    let has_qs = genome.iter().any(|s| s["t"] == "qs" || s["t"] == "cfrac" || s["t"] == "ecm");
+    let phased = |s: &Value| s["t"] == "qs" || s["t"] == "cfrac" || s["t"] == "ecm";
+    let has_qs = genome.iter().any(|s| phased(s) || (s["t"] == "race" && (phased(&s["a"]) || phased(&s["b"]))));
+    let has_race = genome.iter().any(|s| s["t"] == "race");
     let out = io::stdout();
     let mut out = BufWriter::new(out.lock());
     for line in lines {
@@ -516,12 +540,16 @@ fn main() {
         let p: U256 = parts[1].parse().unwrap();
         let q: U256 = parts[2].parse().unwrap();
         let num = Num { n, f: n.to::<u128>() as f64, p, q };
-        let (res, t, h, ph) = run(&genome, &num, cap);
-        let tail = if has_qs {
+        let (res, t, h, ph, rc) = run(&genome, &num, cap);
+        let mut tail = if has_qs {
             ph.iter().map(|x| format!(" {x}")).collect::<String>()
         } else {
             String::new()
         };
+        if has_race {
+            let (a, b, sw) = rc.unwrap_or((0, 0, 0));
+            tail += &format!(" R {a} {b} {sw}");
+        }
         match res {
             Some(w) => {
                 let k = w.k.map_or("-".to_string(), |k| k.to_string());
