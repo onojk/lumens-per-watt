@@ -784,6 +784,8 @@ How should a fixed op budget be split across cheap lamps before qs, when the sma
 
 **Verdict.** Run the chosen allocation **once** on the sealed seeds, with exact per-type counts per stage. Compare against qs alone (each variant), the Run 6 p-1 front genome (L53-0972, as accepted), and the map's prediction for the sealed numbers. Report means with intervals under all three pricings, the worst band's mean, and the (e) call per comparison (the leader where all three pricings agree, else "undecided").
 - **Also reported, information only (not fitness): against the best single lamp per band.** For each band, the cheapest of td, rho, pm1, ECM and qs run alone on that band's numbers. This is a hindsight benchmark (it knows each number's band), so it shows whether the allocation helps within bands or only by covering them.
+- **If pm1 turns on:** reported per band, its savings where it succeeds and the cost it adds where it fails (it runs its full length on every number that reaches it), so "earned its budget" can be told apart from "won by a hair".
+- **If pm1 turns on but gains less than the p-1 front's 1.05–1.24×:** check first whether rho's larger ob absorbed the small-band gain (rho is pm1's real competitor there), before blaming the smoothness estimates.
 
 **Predictions (stated before any study code):**
 - **Mixed population, official:** sequential budgets beat qs alone by about 2×. Reason: bands 16–28 are solved for 2^8–2^16 ops by rho/ECM against qs's ~2^19, and the budgets added to the hard bands are small next to 2^19.

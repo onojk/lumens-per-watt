@@ -504,6 +504,8 @@ is not known in advance?
     total by abandoning one band.
   - Span reported alongside work: span = max ops over lanes, work = total ops. Span is
     never fitness unless decided.
+  - The "best single lamp per band" column is a hindsight benchmark: it needs each
+    number's band, i.e. the unknown factor size, so it must never be promoted to fitness.
 - **Prediction (stated before measurement).**
   - Balanced semiprimes: little gain. The prior puts all its mass on one band, so the
     best allocation is close to the best single lamp for that band.
