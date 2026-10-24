@@ -828,5 +828,13 @@ Code: `evolve/partition.py` (map, optimize and sealed modes, each committed befo
 
 **The gap to the best single lamp per band (hindsight, information only).** In the 24–42-bit bands A costs 2.3–9.6× the best single lamp for that band (official), so the allocation pays by covering the bands, not by beating the right lamp within a band. This gap cannot be closed by a selector on this population: every N is 84 bits, so no free feature reveals the band, and the budgets are the probe. Stage 9.5's selector is only useful where free features differ (mixed sizes).
 
+**Mechanisms, from the tuning map (information only, no new runs; ratio = forced allocation's mean cost / the chosen one's, per pricing):**
+- **ECM off in B (N51-0917's qs + rho 2^12.5): ruint binds.** Forcing ECM to 2^10 gives 1.001 / 1.020 / 1.007 (official / ruint / Montgomery); 2^12 gives 1.006 / 1.081 / 1.028; 2^14 gives **0.985** / 1.292 / 1.076. ECM would help slightly on the official count at 2^14, but it costs more than it saves under real prices, where N51-0917's qs is cheap.
+- **p-1 off because rho + ECM cover the small bands more cheaply than p-1's full ~2^17.** p-1's full length is 2^17.13 ops on average (124,044–160,609). Forcing it on in A gives 1.005 / **2.121** / **1.526**: neutral on the official count, much worse under real prices. Per band (mean per number of the band, saved where p-1 succeeds / added where it fails):
+  - official: 24 bits −16,514 / 32,462; 28 bits +77,040 / 67,951; 32 bits +113,798 / 85,291; 42 bits +107,973 / 104,062;
+  - ruint: negative savings in every band (e.g. 28 bits −33,891 / 67,955; 42 bits −5,583 / 104,067).
+  
+  Where p-1 succeeds, it often replaces an ECM success that would have come cheaper, so even its successes save nothing in the small bands. In the hard bands, under the official count, its successes save about as much as its failures cost. Under ruint, qs is cheap, so p-1's full-multiply length never pays. (The 16-bit band never reaches p-1: rho finishes first.)
+
 **Limitations:** stage genes fixed, not retuned for the small bands (ECM's b1/b2 were tuned on 24–42-bit factors); one population shape (84-bit N, seven bands, uniform prior).
 

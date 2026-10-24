@@ -384,6 +384,9 @@ any scored run, and parity gates the Rust port.
       The first wording (the worst raw cost) collapsed to the official count.
     - Reports call a cell only where all three pricings agree; otherwise the cell is
       "undecided".
+    - **ACCEPT gate (written Oct 24, before Run 8):** a champion must not be worse than 1.5×
+      the reference genome on any band, under any pricing. A gate, not fitness: a
+      champion that fails it is not accepted, whatever its score.
   - **Consequence: every run scored for Run 8 must record per-type op counts** (the
     types `calibrate.py` reprices), not just total ops. **Not met today:**
     - Run 8's evaluation path (Run 6's harness: `evolve_scale.measure_fast` ->
