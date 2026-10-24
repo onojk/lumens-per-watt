@@ -1,6 +1,8 @@
-//! Quadratic sieve card ("qs"): a line-by-line port of evolve/qs.py, with every charge made
-//! at the same point and in the same chunk as the Python, so op counts, tests, hits, and the
-//! per-phase breakdown agree exactly (checked by parity.py). Cost model: NOTES.md.
+//! Quadratic sieve card ("qs"): a line-by-line port of evolve/qs.py and evolve/ledger.py,
+//! with every charge made at the same point and in the same chunk as the Python, so op
+//! counts, tests, hits, and the per-phase breakdown agree exactly (checked by parity.py).
+//! Cost model: NOTES.md. Split as the Python is (PLAN.md, "Relation economy"): a source
+//! (sieve_source: phases 1, 3, 4, 5, 8) feeding a Ledger (phases 2, 6, 7), one per k.
 //!
 //! Values of size kN live in i128 (N must stay below 2^100); products mod N use U256.
 
@@ -176,45 +178,214 @@ pub fn lamp_qs(num: &Num, g: &Value, m: &mut Meter) -> R {
     m.charge(MULT, kc * KS_PRIMES.len() as u64)?;
     let mut ranked: Vec<(u64, f64)> = (1..=kc).map(|k| (k, -ks_score(k, num))).collect();
     ranked.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap().then(a.0.cmp(&b.0)));
+    let ln_n = num.f.ln();
+    let bnd = ((gene(g, "bc", 1.5) * (0.5 * (ln_n * ln_n.ln()).sqrt()).exp()) as u64).max(30);
+    // a failed attempt is retried with the next k: a fresh ledger (2. factor base) for each
     for (k, _) in ranked {
-        if let Some(d) = attempt(num, g, k, m)? {
+        let mut led = match Ledger::build(num, k, bnd, m)? {
+            Ok(led) => led,
+            Err(p) => return Ok(Some(p)), // p divides N
+        };
+        if let Some(d) = sieve_source(num, g, k, &mut led, m)? {
             return Ok(Some(d));
+        }
+        if led.full() {
+            if let Some(d) = led.solve(m)? {
+                return Ok(Some(d));
+            }
         }
     }
     Ok(None)
 }
 
-fn attempt(num: &Num, g: &Value, k: u64, m: &mut Meter) -> R {
+/// Relation ledger (evolve/ledger.py): one N, one multiplier k, one factor base. Owns the
+/// factor base (phase 2), dedupe (free), linear algebra (6) and the square root (7).
+struct Ledger {
+    n: U256,
+    n_i: i128,
+    bnd: u64, // factor-base bound B
+    base: Vec<i64>,
+    roots_t: Vec<u64>, // parallel to base
+    f: usize,
+    need: usize,
+    // relations (u, vec, y): u^2 = y^2 prod p^e (mod N); y = 1 for a full relation
+    rels: Vec<(i128, Vec<u32>, i128)>,
+    seen: std::collections::HashSet<i128>,   // full |u|'s
+    seen_c: std::collections::HashSet<i128>, // combined u's, up to sign
+}
+
+impl Ledger {
+    /// Phase 2: -1, 2, primes dividing k, odd primes with (kN | p) = 1. Err(p) if a prime
+    /// p dividing N turns up.
+    fn build(num: &Num, k: u64, bnd: u64, m: &mut Meter) -> Result<Result<Ledger, U256>, Budget> {
+        let n = num.n;
+        let kn_u = U256::from(k) * n;
+        let mut base: Vec<i64> = vec![-1, 2];
+        let mut roots_t: Vec<u64> = vec![0, 0];
+        for p in primes_upto(bnd).into_iter().skip(1) {
+            let e = (p - 1) / 2;
+            let knp = (kn_u % U256::from(p)).to::<u64>();
+            let (leg, _) = cpow_small(knp, e, p, FB, m)?;
+            if knp == 0 {
+                if k % p != 0 {
+                    return Ok(Err(U256::from(p)));
+                }
+                base.push(p as i64);
+                roots_t.push(0);
+                continue;
+            }
+            if leg != 1 {
+                continue;
+            }
+            let t = tonelli(knp, p, m)?;
+            base.push(p as i64);
+            roots_t.push(t);
+        }
+        let f = base.len();
+        Ok(Ok(Ledger {
+            n,
+            n_i: n.to::<u128>() as i128,
+            bnd,
+            base,
+            roots_t,
+            f,
+            need: f + DELTA,
+            rels: Vec::new(),
+            seen: std::collections::HashSet::new(),
+            seen_c: std::collections::HashSet::new(),
+        }))
+    }
+
+    fn full(&self) -> bool {
+        self.rels.len() >= self.need
+    }
+
+    /// Keep the relation unless it repeats one already kept. True once full.
+    fn add(&mut self, u: i128, v: Vec<u32>, y: i128) -> bool {
+        let fresh = if y == 1 { self.seen.insert(u.abs()) } else { self.seen_c.insert(u.min(self.n_i - u)) };
+        if !fresh {
+            return false;
+        }
+        self.rels.push((u, v, y));
+        self.full()
+    }
+
+    /// Phases 6 and 7 on a full ledger: a factor, or None if no dependency splits N.
+    fn solve(&self, m: &mut Meter) -> R {
+        let (n, n_i, f, rels, base) = (self.n, self.n_i, self.f, &self.rels, &self.base);
+        // 6. linear algebra: dense GF(2) elimination
+        let rows = rels.len();
+        m.charge(LA, ((rows * f * rows + 63) / 64) as u64)?;
+        let cw = (f + 63) / 64;
+        let rw = (rows + 63) / 64;
+        let mut mat: Vec<Vec<u64>> = rels
+            .iter()
+            .map(|(_, v, _)| {
+                let mut w = vec![0u64; cw];
+                for j in 0..f {
+                    if v[j] & 1 == 1 {
+                        w[j / 64] |= 1 << (j % 64);
+                    }
+                }
+                w
+            })
+            .collect();
+        let mut comb: Vec<Vec<u64>> = (0..rows)
+            .map(|i| {
+                let mut w = vec![0u64; rw];
+                w[i / 64] |= 1 << (i % 64);
+                w
+            })
+            .collect();
+        let mut used = vec![false; rows];
+        let bit = |w: &Vec<u64>, j: usize| (w[j / 64] >> (j % 64)) & 1 == 1;
+        for col in 0..f {
+            let piv = (0..rows).find(|&r| !used[r] && bit(&mat[r], col));
+            let Some(piv) = piv else { continue };
+            used[piv] = true;
+            let (pm, pc) = (mat[piv].clone(), comb[piv].clone());
+            for r in 0..rows {
+                if r != piv && bit(&mat[r], col) {
+                    for w in 0..cw {
+                        mat[r][w] ^= pm[w];
+                    }
+                    for w in 0..rw {
+                        comb[r][w] ^= pc[w];
+                    }
+                }
+            }
+        }
+        let deps: Vec<Vec<u64>> =
+            (0..rows).filter(|&r| mat[r].iter().all(|&w| w == 0)).map(|r| comb[r].clone()).collect();
+
+        // 7. square root, dependency by dependency
+        for dep in &deps {
+            let members: Vec<usize> = (0..rows).filter(|&i| bit(dep, i)).collect();
+            let mut x = U256::ZERO;
+            for (j, &i) in members.iter().enumerate() {
+                let ui = U256::from(rels[i].0.rem_euclid(n_i) as u128);
+                if j > 0 {
+                    x = x.mul_mod(ui, n);
+                    m.charge(SQRT, 1)?;
+                } else {
+                    x = ui;
+                }
+            }
+            let mut ex = vec![0u64; f];
+            for &i in &members {
+                for (j, &e) in rels[i].1.iter().enumerate() {
+                    ex[j] += e as u64;
+                }
+            }
+            let mut y: Option<U256> = None;
+            for j in 1..f {
+                if ex[j] != 0 {
+                    let yy = cpow_n(base[j] as u64, ex[j] / 2, n, SQRT, m)?;
+                    y = Some(match y {
+                        None => yy,
+                        Some(prev) => {
+                            let z = prev.mul_mod(yy, n);
+                            m.charge(SQRT, 1)?;
+                            z
+                        }
+                    });
+                }
+            }
+            let mut y = y.unwrap_or(U256::from(1u64));
+            for &i in &members {
+                // large primes, squared in each combined relation
+                if rels[i].2 != 1 {
+                    y = y.mul_mod(U256::from(rels[i].2 as u128), n);
+                    m.charge(SQRT, 1)?;
+                }
+            }
+            let (mut aa, mut bb) = ((x + n - y % n) % n, n);
+            let mut steps = 0u64;
+            while bb != U256::ZERO {
+                let t = aa % bb;
+                aa = bb;
+                bb = t;
+                steps += 1;
+            }
+            m.charge(SQRT, steps)?;
+            let ok = aa > U256::from(1u64) && aa < n;
+            m.test(ok);
+            if ok {
+                return Ok(Some(aa));
+            }
+        }
+        Ok(None)
+    }
+}
+
+/// SIQS relation source on kN: phases 3, 4, 5 and 8 until the ledger is full or the
+/// polynomials run out. Some(d) if a factor turns up on the way (a large prime dividing N).
+fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -> R {
     let n = num.n;
-    let n_i = n.to::<u128>() as i128;
+    let n_i = led.n_i;
     let kn_u = U256::from(k) * n;
     let kn = kn_u.to::<u128>() as i128;
-
-    // 2. factor base: -1, 2, primes dividing k, odd primes with (kN | p) = 1
-    let ln_n = num.f.ln();
-    let bnd = ((gene(g, "bc", 1.5) * (0.5 * (ln_n * ln_n.ln()).sqrt()).exp()) as u64).max(30);
-    let mut base: Vec<i64> = vec![-1, 2];
-    let mut roots_t: Vec<u64> = vec![0, 0]; // parallel to base
-    for p in primes_upto(bnd).into_iter().skip(1) {
-        let e = (p - 1) / 2;
-        let knp = (kn_u % U256::from(p)).to::<u64>();
-        let (leg, _) = cpow_small(knp, e, p, FB, m)?;
-        if knp == 0 {
-            if k % p != 0 {
-                return Ok(Some(U256::from(p))); // p divides N
-            }
-            base.push(p as i64);
-            roots_t.push(0);
-            continue;
-        }
-        if leg != 1 {
-            continue;
-        }
-        let t = tonelli(knp, p, m)?;
-        base.push(p as i64);
-        roots_t.push(t);
-    }
-    let f = base.len();
+    let (bnd, base, roots_t, f) = (led.bnd, led.base.clone(), led.roots_t.clone(), led.f);
     let pos = |p: u64| base.iter().position(|&b| b == p as i64).unwrap();
     let logp: Vec<i32> = base
         .iter()
@@ -254,16 +425,11 @@ fn attempt(num: &Num, g: &Value, k: u64, m: &mut Meter) -> R {
     let thr = (mm_ as f64 * (kn_u.to::<u128>() as f64 / 2.0).sqrt()).log2()
         - (gene(g, "tc", 2.0) + (lc - 1.0)) * (bnd as f64).log2();
     let width = (2 * mm_ + 1) as usize;
-    let need = f + DELTA;
-    // relations (u, vec, y): u^2 = y^2 prod p^e (mod N); y = 1 for a full relation
-    let mut rels: Vec<(i128, Vec<u32>, i128)> = Vec::new();
-    let mut seen = std::collections::HashSet::new();
     let mut partials: std::collections::HashMap<i128, (i128, Vec<u32>)> =
         std::collections::HashMap::new();
-    let mut seen_c = std::collections::HashSet::new(); // combined u's, up to sign
     let mut arr = vec![0i32; width];
 
-    'combos: for qs_ in &combos {
+    for qs_ in &combos {
         let a: i128 = qs_.iter().map(|&x| x as i128).product();
         let mut bl: Vec<i128> = Vec::with_capacity(s);
         for &ql in qs_ {
@@ -379,156 +545,39 @@ fn attempt(num: &Num, g: &Value, k: u64, m: &mut Meter) -> R {
                     partial = (v as f64) < l_bound; // exact: L < 2^53, and v > 2^53 rounds above it
                 }
                 m.test(smooth || partial);
-                if partial {
-                    m.charge(LP, 1)?; // N mod q
-                    if n_i % v == 0 {
-                        return Ok(Some(U256::from(v as u128)));
-                    }
-                    let u = a * x + bv;
-                    for &ql in qs_ {
-                        vec_[pos(ql)] += 1;
-                    }
-                    m.charge(LP, 1)?; // hash lookup
-                    let Some((u1, v1)) = partials.get(&v) else {
-                        m.charge(LP, 1)?; // insert
-                        partials.insert(v, (u, vec_));
-                        continue;
-                    };
-                    let cu = U256::from(u1.rem_euclid(n_i) as u128)
-                        .mul_mod(U256::from(u.rem_euclid(n_i) as u128), n)
-                        .to::<u128>() as i128;
-                    m.charge(LP, 1)?;
-                    let cvec: Vec<u32> = v1.iter().zip(&vec_).map(|(a, b)| a + b).collect();
-                    m.charge(LP, f as u64)?;
-                    if !seen_c.insert(cu.min(n_i - cu)) {
-                        continue;
-                    }
-                    rels.push((cu, cvec, v));
-                    if rels.len() >= need {
-                        break 'combos;
-                    }
-                    continue;
-                }
-                if !smooth {
+                if !(smooth || partial) {
                     continue;
                 }
                 let u = a * x + bv;
-                if !seen.insert(u.abs()) {
-                    continue;
-                }
                 for &ql in qs_ {
                     vec_[pos(ql)] += 1;
                 }
-                rels.push((u, vec_, 1));
-                if rels.len() >= need {
-                    break 'combos;
-                }
-            }
-        }
-    }
-    if rels.len() < need {
-        return Ok(None);
-    }
-
-    // 6. linear algebra: dense GF(2) elimination
-    let rows = rels.len();
-    m.charge(LA, ((rows * f * rows + 63) / 64) as u64)?;
-    let cw = (f + 63) / 64;
-    let rw = (rows + 63) / 64;
-    let mut mat: Vec<Vec<u64>> = rels
-        .iter()
-        .map(|(_, v, _)| {
-            let mut w = vec![0u64; cw];
-            for j in 0..f {
-                if v[j] & 1 == 1 {
-                    w[j / 64] |= 1 << (j % 64);
-                }
-            }
-            w
-        })
-        .collect();
-    let mut comb: Vec<Vec<u64>> = (0..rows)
-        .map(|i| {
-            let mut w = vec![0u64; rw];
-            w[i / 64] |= 1 << (i % 64);
-            w
-        })
-        .collect();
-    let mut used = vec![false; rows];
-    let bit = |w: &Vec<u64>, j: usize| (w[j / 64] >> (j % 64)) & 1 == 1;
-    for col in 0..f {
-        let piv = (0..rows).find(|&r| !used[r] && bit(&mat[r], col));
-        let Some(piv) = piv else { continue };
-        used[piv] = true;
-        let (pm, pc) = (mat[piv].clone(), comb[piv].clone());
-        for r in 0..rows {
-            if r != piv && bit(&mat[r], col) {
-                for w in 0..cw {
-                    mat[r][w] ^= pm[w];
-                }
-                for w in 0..rw {
-                    comb[r][w] ^= pc[w];
-                }
-            }
-        }
-    }
-    let deps: Vec<Vec<u64>> =
-        (0..rows).filter(|&r| mat[r].iter().all(|&w| w == 0)).map(|r| comb[r].clone()).collect();
-
-    // 7. square root, dependency by dependency
-    for dep in &deps {
-        let members: Vec<usize> = (0..rows).filter(|&i| bit(dep, i)).collect();
-        let mut x = U256::ZERO;
-        for (j, &i) in members.iter().enumerate() {
-            let ui = U256::from(rels[i].0.rem_euclid(n_i) as u128);
-            if j > 0 {
-                x = x.mul_mod(ui, n);
-                m.charge(SQRT, 1)?;
-            } else {
-                x = ui;
-            }
-        }
-        let mut ex = vec![0u64; f];
-        for &i in &members {
-            for (j, &e) in rels[i].1.iter().enumerate() {
-                ex[j] += e as u64;
-            }
-        }
-        let mut y: Option<U256> = None;
-        for j in 1..f {
-            if ex[j] != 0 {
-                let yy = cpow_n(base[j] as u64, ex[j] / 2, n, SQRT, m)?;
-                y = Some(match y {
-                    None => yy,
-                    Some(prev) => {
-                        let z = prev.mul_mod(yy, n);
-                        m.charge(SQRT, 1)?;
-                        z
+                if smooth {
+                    if led.add(u, vec_, 1) {
+                        return Ok(None);
                     }
-                });
+                    continue;
+                }
+                m.charge(LP, 1)?; // N mod q
+                if n_i % v == 0 {
+                    return Ok(Some(U256::from(v as u128)));
+                }
+                m.charge(LP, 1)?; // hash lookup
+                let Some((u1, v1)) = partials.get(&v) else {
+                    m.charge(LP, 1)?; // insert
+                    partials.insert(v, (u, vec_));
+                    continue;
+                };
+                let cu = U256::from(u1.rem_euclid(n_i) as u128)
+                    .mul_mod(U256::from(u.rem_euclid(n_i) as u128), n)
+                    .to::<u128>() as i128;
+                m.charge(LP, 1)?;
+                let cvec: Vec<u32> = v1.iter().zip(&vec_).map(|(a, b)| a + b).collect();
+                m.charge(LP, f as u64)?;
+                if led.add(cu, cvec, v) {
+                    return Ok(None);
+                }
             }
-        }
-        let mut y = y.unwrap_or(U256::from(1u64));
-        for &i in &members {
-            // large primes, squared in each combined relation
-            if rels[i].2 != 1 {
-                y = y.mul_mod(U256::from(rels[i].2 as u128), n);
-                m.charge(SQRT, 1)?;
-            }
-        }
-        let (mut aa, mut bb) = ((x + n - y % n) % n, n);
-        let mut steps = 0u64;
-        while bb != U256::ZERO {
-            let t = aa % bb;
-            aa = bb;
-            bb = t;
-            steps += 1;
-        }
-        m.charge(SQRT, steps)?;
-        let ok = aa > U256::from(1u64) && aa < n;
-        m.test(ok);
-        if ok {
-            return Ok(Some(aa));
         }
     }
     Ok(None)

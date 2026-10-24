@@ -14,8 +14,9 @@ Genome: the pre-registered one, tuned qs with lc 1.4 (kc 32, bc 1.1, mc 0.25, tc
 3. Relation check (harness only, not charged): every relation kept satisfies
    u^2 = y^2 prod p^e (mod N) (y = q for a combined relation, 1 for a full one), and every
    dependency tried satisfies X^2 = Y^2 (mod N).
-4. Mutation test (python3 stage7_accept.py WORKERS mutate): each lp charge in qs.py in turn
-   gets one extra op; the accounting must fail on the mutated card for every one of them.
+4. Mutation test (python3 stage7_accept.py WORKERS mutate): each lp charge in qs.py (and
+   the large prime multiplied into Y, in ledger.py) in turn gets one extra op; the accounting
+   must fail on the mutated card for every one of them.
 
   python3 stage7_accept.py [workers] [mutate]
 
@@ -24,6 +25,7 @@ Writes stage7_accept.json (not in mutate mode).
 import json, math, re, sys, types
 from multiprocessing import Pool
 import qs
+import ledger
 import lamps
 from lamps import run
 from fastlamps import semiprimes_pq
@@ -118,28 +120,37 @@ def job(args):
              factor_ok=d is not None and 1 < d < N and N % d == 0)
     return r
 
-LP_CHARGES = [                                     # (name, exact source line) of each lp charge
-    ("bound check", 'charge("lp", 1)                # bound check'),
-    ("N mod q", 'charge("lp", 1)                # N mod q'),
-    ("lookup", 'charge("lp", 1)                # hash lookup'),
-    ("insert", 'charge("lp", 1)            # insert'),
-    ("combine u1*u2", 'cu = other[0] * u % N; charge("lp", 1)'),
-    ("combine F", 'charge("lp", F)'),
-    ("y into Y", 'Y = Y * rels[i][2] % N; charge("sqrt", 1)'),
+LP_CHARGES = [                                     # (name, module, exact source line) of each lp charge
+    ("bound check", "qs", 'charge("lp", 1)                # bound check'),
+    ("N mod q", "qs", 'charge("lp", 1)                    # N mod q'),
+    ("lookup", "qs", 'charge("lp", 1)                    # hash lookup'),
+    ("insert", "qs", 'charge("lp", 1)                # insert'),
+    ("combine u1*u2", "qs", 'cu = other[0] * u % N; charge("lp", 1)'),
+    ("combine F", "qs", 'charge("lp", F)'),
+    ("y into Y", "ledger", 'Y = Y * rels[i][2] % N; ch.charge("sqrt", 1)'),
 ]
 
-def mutant(line):
-    """qs.py with one charge on `line` raised by one op, as a fresh module."""
-    src = open(qs.__file__).read()
-    assert src.count(line) == 1, line
-    new = re.sub(r'charge\("(\w+)", (\w+)\)', r'charge("\1", \2 + 1)', line)
-    mod = types.ModuleType("qs_mutant")
-    exec(compile(src.replace(line, new), qs.__file__, "exec"), mod.__dict__)
+def load(src, path, name):
+    mod = types.ModuleType(name)
+    exec(compile(src, path, "exec"), mod.__dict__)
     return mod
 
+def mutant(where, line):
+    """qs.py, with one charge on `line` (in qs.py or ledger.py) raised by one op, as a
+    fresh module."""
+    where = {"qs": qs, "ledger": ledger}[where]
+    src = open(where.__file__).read()
+    assert src.count(line) == 1, line
+    new = re.sub(r'charge\("(\w+)", (\w+)\)', r'charge("\1", \2 + 1)', line)
+    src = src.replace(line, new)
+    if where is qs:
+        return load(src, qs.__file__, "qs_mutant")
+    sys.modules["ledger"] = load(src, ledger.__file__, "ledger")   # qs.py imports it (worker only)
+    return load(open(qs.__file__).read(), qs.__file__, "qs_mutant")
+
 def mutate_job(args):
-    name, line = args
-    mod = mutant(line)
+    name, where, line = args
+    mod = mutant(where, line)
     lamps.LAMPS["qs"] = mod.lamp_qs                # run() dispatches through LAMPS
     caught = runs = 0
     for bits in (48, 56, 60):
