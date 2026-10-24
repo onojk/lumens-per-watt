@@ -870,3 +870,18 @@ Small parts are phase total minus full parts, as in Python. The split is taken *
 
 **Prediction (stated before measurement):** the hot path costs at most about 2%. The counters are integer adds at a few event points beside existing charges, plus a per-stage snapshot. Measured against the current binary.
 
+## 2026-10-24 — Library references and oracles (reuse rule): references, test oracles, published parameters; never inside a charged path
+
+**Repo license: none.** The repo has no LICENSE file and no license field in `lampcore/Cargo.toml`, so it is all rights reserved by default. Consequences: no GPL (or other third-party) code is copied in. Algorithms are ported step by step from their published descriptions and from reading reference implementations, with every op charged and attribution in code comments and here. Choosing a license, and whether GPL-derived code could ever be accepted, is the user's decision.
+
+**References** (read, never imported into a card):
+- **Python.** primefac 2.0.12 (MIT): Williams p+1 (`williams_pp1`) for the p+1 card; two-stage `pollard_pm1` for the p-1 stage 2 candidate (MOVES, Meet in the middle row, linked to the checkpointed p-1 row). sympy.ntheory (`pollard_pm1`, `ecm`, `qs`): readable cross-references. FLINT's qsieve: relation filtering (`reduce_matrix`, then block Lanczos) for the filtering + excess-stop pick; its size-indexed tuning table is a published starting point for qs genes (reference only: any large gap from ours is explained, not copied).
+- **Java.** java-math-library (Tilman Neumann, GPL-3): SquFoF31Preload / SquFoF63 for the SQUFOF mode, Hart / Lehman for the sq card, PollardRhoBrentMontgomery64 (Montgomery-arithmetic rho), TinyEcm (small-factor ECM settings), CFrac63. Its stated size limits are outside reference points, to be recorded from its documentation when a move that uses it is ported (not checked here). GPL-3: read for the algorithm, never copied.
+- **C.** GMP-ECM (GPL program, LGPL library): p+1, p-1 stage 2, ECM PRAC and stage 2. CADO-NFS: out of range (the NFS crossover is far above 96 bits).
+
+**primefac's default plan, read from its source** (primefac 2.0.12, `primefac()`; downloaded to a scratch folder and read, not installed): trial division by the primes up to `trial = 1000`; then plain Floyd rho, not Brent, for up to `rho = 42000` rounds, each round three squarings mod n and one gcd; then `multifactor` on what is left. In our charging, one round is 4 ops (3 modular multiplies + 1 gcd), so 42,000 rounds = 168,000 ops. Trial division to 1000 is our td with ob = 499 (odd divisors 3-999 and the one passing charge, 500 ops), which overcharges primefac's 168 prime trials by about 330 ops.
+
+**Outside baseline for the partition study (map only, no new sealed run), prediction written before it is computed:** primefac's plan encoded as td(ob 499) → rho(ob 168,000) → final qs + lc 1.4, evaluated from the existing map on the tuning numbers under all three pricings, as **information beside allocation A**. **Prediction: A beats it by about 1.1–1.3×,** because its larger rho budget is mostly spent on bands rho can't reach.
+
+**Oracles** (harness and tests only; versions pinned and recorded with the oracle commit): Python, `sympy.factorint` plus a primality check on every newly generated (N, p, q); Rust, num-prime as a lampcore dev-dependency only, unreachable from charged code (shown by `cargo tree`). gmpy2 / primesieve are allowed only in the harness (generation, primality), not used yet.
+
