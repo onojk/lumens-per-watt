@@ -97,6 +97,9 @@ fn euclid_inv(a: i128, md: i128, ph: usize, m: &mut Meter) -> Result<i128, Budge
         steps += 1;
     }
     m.charge(ph, steps)?;
+    if ph == SETUP {
+        m.ev(crate::EV_SETUP_EUCLID, steps); // per-type counter: Python's at["inv"] append
+    }
     Ok(s0.rem_euclid(md))
 }
 
@@ -425,6 +428,7 @@ impl Ledger {
                 steps += 1;
             }
             m.charge(SQRT, steps)?;
+            m.ev(crate::EV_SQRT_GCD, steps); // at["deps"] append
             let ok = aa > U256::from(1u64) && aa < n;
             m.test(ok);
             if ok {
@@ -474,6 +478,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
     pool.sort();
     let mut combos = combinations(&pool, s);
     m.charge(SETUP, (s as u64 - 1) * combos.len() as u64)?;
+    m.ev(crate::EV_SETUP_FULL, (s as u64 - 1) * combos.len() as u64); // at["combos"], at["s"]
     let key = |c: &Vec<u64>| ((c.iter().product::<u64>() as f64 / target).ln()).abs();
     combos.sort_by(|a, b| key(a).partial_cmp(&key(b)).unwrap().then_with(|| a.cmp(b)));
     let lc = gene(g, "lc", 1.0).max(1.0).min(2.0);
@@ -488,6 +493,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
     let mut arr = vec![0i32; width];
 
     for qs_ in &combos {
+        m.ev(crate::EV_SETUP_FULL, 2 * s as u64); // at["a_count"] += 1, before the A's charges
         let a: i128 = qs_.iter().map(|&x| x as i128).product();
         let mut bl: Vec<i128> = Vec::with_capacity(s);
         for &ql in qs_ {
@@ -565,6 +571,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
             }
             m.charge(SIEVE, upd)?;
             m.charge(SIEVE, width as u64)?;
+            m.ev(crate::EV_SIEVE_SCAN, width as u64); // at["polys"] append
             // 5. confirm
             for i0 in 0..width {
                 if !((arr[i0] as f64) >= thr) {
@@ -574,6 +581,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 let mut v = (a * x + 2 * bv) * x + c;
                 m.charge(CONFIRM, 2)?;
                 m.charge(CONFIRM, f as u64)?;
+                m.ev(crate::EV_CONFIRM_FULL, 2); // at["cands"] append
                 let mut vec_ = vec![0u32; f];
                 if v < 0 {
                     vec_[0] = 1;
@@ -632,6 +640,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 m.charge(LP, 1)?;
                 let cvec: Vec<u32> = v1.iter().zip(&vec_).map(|(a, b)| a + b).collect();
                 m.charge(LP, f as u64)?;
+                m.ev(crate::EV_LP_FULL, 1); // at["lp"]["combos"] += 1
                 if led.add(cu, cvec, v, chk, m)? {
                     return Ok(None);
                 }

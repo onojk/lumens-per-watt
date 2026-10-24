@@ -32,6 +32,11 @@ ecm_s2 and ecm_gcd (asserted), td then ecm, and random b1/b2/s0 genomes; the per
 includes the four ecm phases.
 Edge: both cores refuse qs on N >= 2^100 with an error, never a silent wrap.
 
+Per-type counts (check_types): on every pair above (general, qs, guards, race, ob), lampcore
+--types equals Python's per-stage split (lamps.TYPES), and on every solved run the counts sum
+to its ops. Mutation: for each type in use, lampcore's output with that type dropped or
+doubled (LAMPCORE_TYPES_MUTATE) must be caught.
+
 Race (race_pairs, Stage 9): every ordered pair of lamp types (td, sq, ps, rho, pm1, qs, qs lc
 1.4, cfrac, ecm) at 32-40 bits under three slice settings; the Stage 9 comparison races
 (race(ECM, qs + lc 1.4), race(rho, qs + lc 1.4), race(ECM, N51-0917's qs)) at 54-84 bits and
@@ -628,6 +633,66 @@ def check_race():
     qs.TRACE = cfrac.TRACE = ecm.TRACE = None
     return checked, mismatches
 
+def all_pairs():
+    """(label, genome, numbers, cap) for every pair the sections above check."""
+    sizes = [28, 34, 40, 46]
+    nums = {b: semiprimes_pq(b, PER, 90000 + b) for b in sizes}
+    for name, g in genomes().items():
+        for b in sizes:
+            yield "general " + name, g, nums[b], min(cap_for(b), 2 ** 22)
+    for label, g, ns, cap, _ in qs_pairs():
+        yield label, g, ns, cap
+    for label, g, ns, cap, _, _ in guard_pairs():
+        yield label, g, ns, cap
+    for label, g, ns, cap, _ in race_pairs():
+        yield label, g, ns, cap
+    for label, g, ns, cap, _ in ob_pairs():
+        yield label, g, ns, cap
+
+def check_types(mutation_sample=40):
+    from optypes import TYPE_ORDER
+    checked = mismatches = identity = 0
+    sample, in_use = [], set()
+    for label, g, ns, cap in all_pairs():
+        fast = run_many(g, ns, cap, types=True)
+        for (N, p, q), f in zip(ns, fast):
+            lamps.TYPES = True
+            try:
+                ops, d = run(g, N, cap)
+                py = {t: LAST["types"].get(t, 0) for t in TYPE_ORDER}
+            finally:
+                lamps.TYPES = False
+            checked += 1
+            if f[0] is not None and sum(f[4].values()) != f[0]:
+                identity += 1
+            if py != f[4] or ops != f[0]:
+                mismatches += 1
+                if mismatches <= 10:
+                    print("TYPES MISMATCH", label, N, {t: (py[t], f[4][t]) for t in TYPE_ORDER if py[t] != f[4][t]})
+            used = {t for t, n in py.items() if n}
+            if used - in_use or len(sample) < mutation_sample:
+                sample.append((g, (N, p, q), cap, py, ops))
+                in_use |= used
+    # mutation: each type in use, dropped and doubled in lampcore's output, must be caught
+    caught = {}
+    for t in sorted(in_use):
+        for how in ("drop", "double"):
+            os.environ["LAMPCORE_TYPES_MUTATE"] = f"{t}:{how}"
+            try:
+                hit = False
+                for g, num, cap, py, ops in sample:
+                    if not py[t]:
+                        continue
+                    f = run_many(g, [num], cap, types=True)[0]
+                    if f[4] != py or (f[0] is not None and sum(f[4].values()) != f[0]):
+                        hit = True
+                        break
+                caught[f"{t}:{how}"] = hit
+            finally:
+                del os.environ["LAMPCORE_TYPES_MUTATE"]
+    qs.TRACE = cfrac.TRACE = ecm.TRACE = None
+    return checked, mismatches, identity, caught
+
 if __name__ == "__main__":
     sizes = [28, 34, 40, 46]
     nums = {b: semiprimes_pq(b, PER, 90000 + b) for b in sizes}
@@ -663,4 +728,9 @@ if __name__ == "__main__":
     print(f"ob: checked {oc} genome x number pairs (ops, factor, tests, hits, stage, k, per-phase ops), mismatches {om}")
     obref = check_ob_refusals()
     print(f"ob: both cores refuse bad ob values and ob on a race or its side with an error: {'yes' if obref else 'NO'}")
-    sys.exit(1 if mismatches or qm or gm or not bounded or not limit or rm or not refuse or om or not obref else 0)
+    tc, tm, tid, tmut = check_types()
+    print(f"types: checked {tc} genome x number pairs (lampcore --types vs Python's per-stage split), "
+          f"mismatches {tm}, sum-identity failures {tid}; mutations caught {sum(tmut.values())}/{len(tmut)}"
+          + ("" if all(tmut.values()) else f" (missed: {[k for k, v in tmut.items() if not v]})"))
+    sys.exit(1 if mismatches or qm or gm or not bounded or not limit or rm or not refuse or om or not obref
+             or tm or tid or not all(tmut.values()) else 0)

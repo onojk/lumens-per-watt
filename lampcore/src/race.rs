@@ -27,6 +27,7 @@ struct SideEnd {
     hits: u64,
     k: Option<u64>,
     phases: [u64; 15],
+    types: crate::Types,
 }
 
 /// The per-side part of a Meter inside a race.
@@ -97,6 +98,9 @@ pub fn lamp_race(num: &Num, g: &Value, m: &mut Meter) -> R {
             for (a, b) in m.phases.iter_mut().zip(e.phases.iter()) {
                 *a += b;
             }
+            for (a, b) in m.types.iter_mut().zip(e.types.iter()) {
+                *a += b;
+            }
             side_ops[i] = e.side_ops;
         };
         let result = loop {
@@ -109,10 +113,11 @@ pub fn lamp_race(num: &Num, g: &Value, m: &mut Meter) -> R {
                 let (stage, size, ops) = (stages[cur], sizes[cur], shared);
                 sc.spawn(move || {
                     let hook = Hook { size, counter: 0, side_ops: 0, solo, tx: tx.clone(), rx: crx };
-                    let mut sm = Meter { ops, cap, tests: 0, hits: 0, k: None, phases: [0; 15], hook: Some(Box::new(hook)), race: None, ob: None, ob_spent: 0, ob_hit: false };
+                    let mut sm = Meter { ops, cap, tests: 0, hits: 0, k: None, phases: [0; 15], hook: Some(Box::new(hook)), race: None, ob: None, ob_spent: 0, ob_hit: false, ev: [0; 7], types: [0; 23] };
                     let res = crate::run_stage(num, stage, &mut sm);
                     let h = sm.hook.take().unwrap();
-                    let end = SideEnd { res, ops: sm.ops, side_ops: h.side_ops, tests: sm.tests, hits: sm.hits, k: sm.k, phases: sm.phases };
+                    let types = crate::stage_types(stage["t"].as_str().unwrap(), h.side_ops, sm.tests, &sm.phases, &sm.ev);
+                    let end = SideEnd { res, ops: sm.ops, side_ops: h.side_ops, tests: sm.tests, hits: sm.hits, k: sm.k, phases: sm.phases, types };
                     tx.send(Ev::Done(end)).unwrap();
                 });
             } else {

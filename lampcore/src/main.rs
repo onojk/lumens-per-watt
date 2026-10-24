@@ -13,6 +13,8 @@
 //! If the genome has a race stage (Stage 9, race.rs), the line then ends with
 //! " R <side A ops> <side B ops> <switches>" for the last race that ran (and the phase columns
 //! are printed when either side is a qs, cfrac or ecm stage).
+//! With --types, each line then ends with " T" and the run's per-type op counts, in
+//! TYPE_NAMES order (the types evolve/optypes.py splits; read-only instrumentation).
 //! stage is the winning stage's index; k is the multiplier a square-search win came from,
 //! "-" for any other lamp (read-only instrumentation: it never changes the op count).
 //!
@@ -29,6 +31,64 @@ mod qs;
 mod race;
 
 struct Budget;
+
+/// Per-type op counts (NOTES.md, "lampcore per-type op counters"): the types optypes.py
+/// splits, in its TYPE_ORDER.
+pub const TYPE_NAMES: [&str; 23] = [
+    "mult", "fb", "setup_full", "setup_euclid", "setup_small", "sieve_update", "sieve_scan",
+    "confirm_full", "confirm_td", "la", "sqrt_mul", "sqrt_gcd", "lp_full", "lp_small", "check",
+    "setup_mul", "setup_euclid_N", "mul", "gcd", "td_mod", "sq_ops", "ps_ops", "cfrac_ops",
+];
+/// Event counters for the full-price parts, at the program points of Python's trace updates.
+pub const EV_SETUP_FULL: usize = 0;
+pub const EV_SETUP_EUCLID: usize = 1;
+pub const EV_SIEVE_SCAN: usize = 2;
+pub const EV_CONFIRM_FULL: usize = 3;
+pub const EV_SQRT_GCD: usize = 4;
+pub const EV_LP_FULL: usize = 5;
+pub const EV_ECM_EUCLID: usize = 6;
+pub type Types = [i64; 23];
+
+/// One stage's per-type counts from its own deltas (ops, tests, phases, event counters).
+fn stage_types(t: &str, d_ops: u64, d_tests: u64, ph: &[u64; 15], ev: &[u64; 7]) -> Types {
+    let mut o = [0i64; 23];
+    let (p, e) = (|i: usize| ph[i] as i64, |i: usize| ev[i] as i64);
+    match t {
+        "qs" => {
+            o[0] = p(qs::MULT);
+            o[1] = p(qs::FB);
+            o[2] = e(EV_SETUP_FULL);
+            o[3] = e(EV_SETUP_EUCLID);
+            o[4] = p(qs::SETUP) - e(EV_SETUP_FULL) - e(EV_SETUP_EUCLID);
+            o[5] = p(qs::SIEVE) - e(EV_SIEVE_SCAN);
+            o[6] = e(EV_SIEVE_SCAN);
+            o[7] = e(EV_CONFIRM_FULL);
+            o[8] = p(qs::CONFIRM) - e(EV_CONFIRM_FULL);
+            o[9] = p(qs::LA);
+            o[10] = p(qs::SQRT) - e(EV_SQRT_GCD);
+            o[11] = e(EV_SQRT_GCD);
+            o[12] = e(EV_LP_FULL);
+            o[13] = p(qs::LP) - e(EV_LP_FULL);
+            o[14] = p(qs::CHECK);
+        }
+        "ecm" => {
+            o[15] = p(ecm::ECM_SETUP) - e(EV_ECM_EUCLID);
+            o[16] = e(EV_ECM_EUCLID);
+            o[17] = p(ecm::ECM_S1) + p(ecm::ECM_S2);
+            o[18] = p(ecm::ECM_GCD);
+        }
+        "rho" | "pm1" => {
+            o[17] = d_ops as i64 - d_tests as i64;
+            o[18] = d_tests as i64;
+        }
+        "td" => o[19] = d_ops as i64,
+        "sq" => o[20] = d_ops as i64,
+        "ps" => o[21] = d_ops as i64,
+        "cfrac" => o[22] = d_ops as i64,
+        other => panic!("no per-type split for {other}"),
+    }
+    o
+}
 type R = Result<Option<U256>, Budget>;
 
 struct Meter {
@@ -43,6 +103,8 @@ struct Meter {
     ob: Option<u64>, // the running stage's op budget ("ob"; NOTES.md, "Per-stage op budget")
     ob_spent: u64,   // that stage's own spending
     ob_hit: bool,    // set when the budget, not the cap, ended the stage
+    ev: [u64; 7],    // per-type event counters (read-only instrumentation)
+    types: Types,    // the run's per-type op counts, added per stage
 }
 
 impl Meter {
@@ -71,6 +133,10 @@ impl Meter {
     fn charge(&mut self, phase: usize, k: u64) -> Result<(), Budget> {
         self.phases[phase] += k;
         self.tick(k)
+    }
+    #[inline]
+    fn ev(&mut self, i: usize, k: u64) {
+        self.ev[i] += k;
     }
     /// What the ps / pm1 prechecks compare against: the cap, or the meter total at which the
     /// running stage's op budget runs out, whichever is lower.
@@ -515,7 +581,7 @@ fn run_stage(num: &Num, s: &Value, m: &mut Meter) -> R {
     }
 }
 
-type RunOut = (Option<Win>, u64, u64, [u64; 15], Option<(u64, u64, u64)>);
+type RunOut = (Option<Win>, u64, u64, [u64; 15], Option<(u64, u64, u64)>, Types);
 
 fn run(genome: &[Value], num: &Num, cap: u64) -> RunOut {
     for s in genome {
@@ -530,7 +596,7 @@ fn run(genome: &[Value], num: &Num, cap: u64) -> RunOut {
         }
     }
     let mut m = Meter { ops: 0, cap, tests: 0, hits: 0, k: None, phases: [0; 15], hook: None, race: None,
-                        ob: None, ob_spent: 0, ob_hit: false };
+                        ob: None, ob_spent: 0, ob_hit: false, ev: [0; 7], types: [0; 23] };
     for (i, s) in genome.iter().enumerate() {
         let ob = s.get("ob").and_then(|v| v.as_u64());
         if ob == Some(0) {
@@ -539,7 +605,17 @@ fn run(genome: &[Value], num: &Num, cap: u64) -> RunOut {
         m.ob = ob;
         m.ob_spent = 0;
         let start = m.ops;
+        let (t0, ph0, ev0) = (m.tests, m.phases, m.ev);
         let r = run_stage(num, s, &mut m);
+        if s["t"] != "race" {
+            // a race adds its sides' split itself (race.rs)
+            let ph: [u64; 15] = std::array::from_fn(|i| m.phases[i] - ph0[i]);
+            let ev: [u64; 7] = std::array::from_fn(|i| m.ev[i] - ev0[i]);
+            let st = stage_types(s["t"].as_str().unwrap(), m.ops - start, m.tests - t0, &ph, &ev);
+            for (a, b) in m.types.iter_mut().zip(st.iter()) {
+                *a += b;
+            }
+        }
         // a precheck (no charge crossed the cap) that the stage's budget made binding ends
         // the stage, not the run
         let precheck_ob = matches!(r, Err(Budget)) && !m.ob_hit && m.ops <= cap
@@ -550,14 +626,14 @@ fn run(genome: &[Value], num: &Num, cap: u64) -> RunOut {
         match r {
             Ok(Some(d)) => {
                 let w = Win { ops: m.ops, d, stage: i, k: m.k };
-                return (Some(w), m.tests, m.hits, m.phases, m.race);
+                return (Some(w), m.tests, m.hits, m.phases, m.race, m.types);
             }
             Ok(None) => continue,
             Err(Budget) if ended_by_ob => continue, // the stage's budget: next stage
-            Err(Budget) => return (None, m.tests, m.hits, m.phases, m.race),
+            Err(Budget) => return (None, m.tests, m.hits, m.phases, m.race, m.types),
         }
     }
-    (None, m.tests, m.hits, m.phases, m.race)
+    (None, m.tests, m.hits, m.phases, m.race, m.types)
 }
 
 fn main() {
@@ -569,6 +645,13 @@ fn main() {
     let phased = |s: &Value| s["t"] == "qs" || s["t"] == "cfrac" || s["t"] == "ecm";
     let has_qs = genome.iter().any(|s| phased(s) || (s["t"] == "race" && (phased(&s["a"]) || phased(&s["b"]))));
     let has_race = genome.iter().any(|s| s["t"] == "race");
+    let types_out = std::env::args().any(|a| a == "--types");
+    // test hook for the per-type mutation check: "<type>:drop" or "<type>:double", applied
+    // to the output only
+    let mutate: Option<(usize, bool)> = std::env::var("LAMPCORE_TYPES_MUTATE").ok().map(|v| {
+        let (name, how) = v.split_once(':').unwrap();
+        (TYPE_NAMES.iter().position(|t| *t == name).unwrap(), how == "double")
+    });
     let out = io::stdout();
     let mut out = BufWriter::new(out.lock());
     for line in lines {
@@ -581,7 +664,7 @@ fn main() {
         let p: U256 = parts[1].parse().unwrap();
         let q: U256 = parts[2].parse().unwrap();
         let num = Num { n, f: n.to::<u128>() as f64, p, q };
-        let (res, t, h, ph, rc) = run(&genome, &num, cap);
+        let (res, t, h, ph, rc, mut ty) = run(&genome, &num, cap);
         let mut tail = if has_qs {
             ph.iter().map(|x| format!(" {x}")).collect::<String>()
         } else {
@@ -590,6 +673,15 @@ fn main() {
         if has_race {
             let (a, b, sw) = rc.unwrap_or((0, 0, 0));
             tail += &format!(" R {a} {b} {sw}");
+        }
+        if types_out {
+            if let Some((i, double)) = mutate {
+                ty[i] = if double { 2 * ty[i] } else { 0 };
+            }
+            tail += " T";
+            for x in ty.iter() {
+                tail += &format!(" {x}");
+            }
         }
         match res {
             Some(w) => {

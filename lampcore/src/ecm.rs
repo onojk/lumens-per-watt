@@ -167,6 +167,7 @@ pub fn lamp_ecm(num: &Num, g: &Value, m: &mut Meter) -> R {
             steps += 1;
         }
         m.charge(ECM_SETUP, steps)?;
+        m.ev(crate::EV_ECM_EUCLID, steps); // per-type: this curve's setup Euclid steps
         if r0 != 1 {
             if r0 < n_i {
                 m.test(true);

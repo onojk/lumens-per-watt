@@ -40,18 +40,27 @@ def semiprimes_unbalanced(bits, pbits, count, seed):
             out.append((p * q, min(p, q), max(p, q)))
     return out
 
-def run_many(genome, nums, cap, inst=False, phases=False, race=False):
+def run_many(genome, nums, cap, inst=False, phases=False, race=False, types=False):
     """One lampcore run per number. Each result: (ops, factor, tests, hits[, stage, k])
     [+ (phase dict,) with phases] [+ ((side A ops, side B ops, switches),) with race, for
-    genomes with a race stage: the last race that ran]."""
+    genomes with a race stage: the last race that ran] [+ (per-type count dict,) with types:
+    lampcore --types, keys optypes.TYPE_ORDER]."""
     text = json.dumps(genome) + "\n" + str(int(cap)) + "\n" + \
         "".join(f"{N} {p} {q}\n" for N, p, q in nums)
-    res = subprocess.run([BIN], input=text, capture_output=True, text=True, check=True)
+    res = subprocess.run([BIN] + (["--types"] if types else []), input=text, capture_output=True,
+                         text=True, check=True)
     out = []
     for line in res.stdout.split("\n"):
         if not line:
             continue
         f = line.split()
+        tinfo = None
+        if "T" in f:
+            from optypes import TYPE_ORDER
+            i = f.index("T")
+            tinfo = dict(zip(TYPE_ORDER, map(int, f[i + 1:])))
+            assert len(f) - i - 1 == len(TYPE_ORDER), line
+            f = f[:i]
         rinfo = None
         if "R" in f:
             i = f.index("R")
@@ -69,5 +78,7 @@ def run_many(genome, nums, cap, inst=False, phases=False, race=False):
             r = r + (dict(zip(PHASES, ph)),)
         if race:
             r = r + (rinfo,)
+        if types:
+            r = r + (tinfo,)
         out.append(r)
     return out
