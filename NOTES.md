@@ -228,3 +228,109 @@ Relation: A²ᵢ₋₁ ≡ (−1)ⁱ Qᵢ (mod kN), so mod N, with 0 < Qᵢ < 2�
 
   A CFRAC relation costs more than the sieving it saves.
 - **Identity:** the split card at cs = 0 equals tuned qs op for op on all 240 numbers.
+
+## 2026-10-23 — Stage 8: elliptic-curve card ("ecm"), cost model, written before any code
+
+Same principle as every card: **every op counted as performed, never cheaper per unit of work than rho, when in doubt overcharge.** As in rho (where y² + c is one op), 1 op is one multiply or squaring mod N. Additions and subtractions mod N are free, and so is generating primes, as in pm1. Four phases, so the breakdown is checkable: "ecm_setup", "ecm_s1", "ecm_s2", "ecm_gcd". lampcore appends them after cf_td.
+
+**Arithmetic.** Montgomery curves By² = x³ + Ax² + x, x-only in projective (X : Z), with a24 = (A + 2)/4 kept as a residue.
+
+- **xDBL:** (X+Z)², (X−Z)², their product, a24·(difference), and the final multiply for Z: 2 squarings + 3 multiplies = **5 ops**.
+- **xADD** (differential, P + Q from P, Q and P − Q = (X_d : Z_d)): two cross multiplies, two squarings, then multiplies by Z_d and X_d = **6 ops**. These are always performed, even when Z_d = 1: no special case, an overcharge.
+- **Ladder for a scalar k ≥ 2:** R₀ = P, R₁ = xDBL(P), then for each bit of k below the top bit, one xADD and one xDBL. That is **5 + 11·(bit_length(k) − 1) ops**. It is used for every scalar multiply below, including powers of 2: one rule, an overcharge for 2^e.
+- **Per ladder bit: 11 modular multiplies, every one charged:**
+
+  | Step | Multiplies | Squarings |
+  |---|---|---|
+  | xADD | 4 (two cross products, then ·Z_d and ·X_d) | 2 |
+  | xDBL | 3 | 2 |
+
+  Optimized implementations do the same step in 10 or fewer (by keeping Z_d = 1, or merging with a24), so 11 is an overcharge.
+- **The ladder is where an under-charge would hide.** It is more than 90% of a curve's stage-1 ops and runs one bit at a time inside two loops, so a step that skips a multiply, or charges a step once per prime instead of once per bit, would cut the total silently. The acceptance test therefore recounts the ladder independently: bits per scalar times 11, plus 5 per ladder. The mutation test raises each of the 11 charges in turn.
+
+**Curve setup ("ecm_setup") and gcds are charged on rho's rule:** 1 op per modular multiply, and 1 op per gcd. Rho's own setup has no arithmetic (its x0 and c are genes). ECM's setup does arithmetic, so every multiply in it is charged, plus 1 op per Euclid step of its one inverse, as in qs's polynomial setup. That is an overcharge against rho's flat gcd charge.
+
+**Curve setup, Suyama's parametrization, per curve.** σ is the curve's parameter (genes below). u = σ² − 5, v = 4σ; the starting point is (X : Z) = (u³ : v³), projective, so it needs no inverse. Then a24 = (v − u)³(3u + v) / (16u³v).
+
+- **Charges:** 1 op each for σ², u², u³, v², v³, (v − u)², (v − u)³, ·(3u + v), u³·v, and ·16 (an overcharge: a small constant, still 1 op). One inverse of the denominator, 1 op per extended-Euclid step, as in qs's polynomial setup. 1 op for numerator · inverse. In all **11 + Euclid steps**.
+- If the denominator is not invertible, gcd(denominator, N) is already computed by that Euclid run. If it is a proper factor, the card returns it (found in setup, still a hit for that curve). If it equals N, the curve is degenerate: it pays its setup and the next σ is tried.
+- Suyama curves have group order divisible by 12. That is the torsion this family gives.
+
+**Stage 1 ("ecm_s1").** For each prime p ≤ B1 in increasing order, multiply the point by q = p^e, the largest power of p not above B1, by the ladder: 5 + 11·(bit_length(q) − 1) ops. Then **1 op** for gcd(Z, N) ("ecm_gcd"; rho's charge for a gcd).
+- 1 < g < N: return g, a hit.
+- g = N: the curve failed (both factors at once). It pays and the next curve is tried, not stage 2.
+- g = 1: go on to stage 2 if B2 > B1, else to the next curve.
+
+As a rough check, stage 1 costs about 11·log₂(lcm(1..B1)) ≈ 16·B1 ops.
+
+**Stage 2 ("ecm_s2", optional; B2 = b2·B1, b2 = 0 means none).** Standard baby-step giant-step continuation with fixed w = 210 (not a gene). Q is the stage-1 point.
+
+- **Baby steps:** 2Q by xDBL (5 ops), then bQ for odd b < w/2 by xADD chains (b + 2 from b, 2Q and b − 2): 6 ops each, about 52 xADDs. Only the 24 values of b coprime to 210 are kept.
+- **Giant steps:** W = wQ by the ladder; S_j0 = j₀W and S_(j0+1) by one ladder (it yields both), with j₀ = ⌊B1/w⌋. Then S_(j+1) = S_j + W, with difference S_(j−1): 6 ops per giant step, up to ⌈B2/w⌉.
+- **Per pair (j, b)** where jw + b or jw − b is a prime in (B1, B2]: the cross term X_(S_j)·Z_b − X_b·Z_(S_j) (2 ops) multiplied into the running product (1 op), so **3 ops per pair**. One term covers both jw ± b.
+- **Stage 2 is charged on the same rule as stage 1:** every modular multiply.
+  - Baby and giant steps are xADDs at 6 each (4 multiplies + 2 squarings), and their ladders are charged as above.
+  - The cross terms are 2 multiplies and the accumulation 1.
+  - Nothing is precomputed for free except the primes in (B1, B2] and the list of b coprime to w.
+- **Final:** 1 op for gcd(product, N) ("ecm_gcd"), read as after stage 1.
+
+**Failures pay in full:** a curve that finds nothing pays setup, stage 1, stage 2 and its gcds, and the next curve (σ + 1) pays again. The card stops at the first factor, after `curves` curves, or at the cap.
+
+**Genes.**
+- **b1:** B1 = max(10, ⌊b1·exp((1/√2)·√(ln s · ln ln s))⌋) with s = √N, the factor size of a balanced semiprime (the card does not know p). That is about 570 at 72 bits and 1,100 at 84 with b1 = 1. Default 1.0.
+- **b2:** B2 = b2·B1 (0 = no stage 2). Default 50.
+- **curves:** default 10,000, so in practice the cap decides.
+- **s0:** the first σ, an integer ≥ 6; curve i uses σ = s0 + i. Default 6. It is deterministic, so both cores agree.
+
+**Luck meter (PLAN):** one test per curve, and a hit when the curve finds a factor (in setup, stage 1 or stage 2).
+
+**Torsion families: a change from PLAN.md to review.** PLAN lists "plain Suyama, or a torsion-12 / torsion-16 family", but plain Suyama already is the torsion-12 family.
+- **Proposal:** the first implementation is Suyama only. A second family with Z/2 × Z/8 torsion (16 | order), the luck-by-design knob, comes as a gene `family` with its own NOTES addendum: its parametrization multiplies are listed and counted the same way. They are not written here because I would rather pin the exact formula than state one I have not checked.
+
+**Acceptance (before any scored run):**
+- **Completeness, balanced:** default genes, cap 2^29, 100% of `semiprimes_pq(bits, 40, 2700000 + bits)` at 40–84 bits, a seed range no stage has used.
+- **Completeness, unbalanced:** the same, on 40 semiprimes at each of 72, 78 and 84 bits with a smaller factor of 24, 28 and 32 bits. They come from a new generator `semiprimes_unbalanced(bits, pbits, count, seed)`: p a random pbits-bit prime, q a random (bits − pbits)-bit prime, seeds 2800000 + 100·pbits + bits. The card's B1 still comes from s = √N: it does not know p, and that is part of what is tested.
+- **Exact accounting:** each of the four phases equals its formula on the run's realized counts (curves, Euclid steps per setup, prime powers ≤ B1, baby/giant steps, prime pairs, gcds), recomputed independently. Tolerance 0, and a one-op mutation of each charge is caught.
+- **Group-order check (harness only):** for factors p < 2^24, ECM finds p on a curve exactly when that curve's group order mod p, counted by brute force, is B1-smooth (stage 1). The same holds with stage 2 for an order that is B1-smooth apart from one prime in (B1, B2]. The check allows the cases where both factors are found at once.
+- **Parity** after the Rust port, including degenerate σ, a curve that finds both factors at once, and caps inside each phase.
+
+**Tuning:** before the comparison, b1 and b2 are fixed on tuning seeds `semiprimes_pq(bits, 40, 3000000 + bits)` at 72/78/84 bits, a new range, then frozen. curves stays at its default, and s0 at 6. They are never chosen on the acceptance or comparison numbers. The acceptance runs at the defaults above.
+
+**Comparison (PLAN), on two populations.** Against tuned qs and rho, cap 2^28, reporting mean and worst with intervals, curves per number, the phase breakdown, and growth per bit:
+- **Balanced:** the ACCEPT numbers plus the Stage 2 numbers at 54–66 bits.
+- **Unbalanced:** 80 numbers at each (N bits, p bits) in {72, 78, 84} × {24, 28, 32}, from `semiprimes_unbalanced` with new seeds 2900000 + 100·pbits + bits. On this population it also reports growth per bit of p at fixed N.
+
+**The complexity class.** On balanced semiprimes, with p ≈ √N, ECM's L_p[1/2, √2] equals L_N[1/2, 1], the same class as qs. So expect a constants race, a crossover with ECM possibly ahead at the small end, not an exponent change (PLAN.md, Stage 8).
+
+**Prediction 1 (PLAN.md, stated before measurement):** ECM beats qs below ~80 bits and loses above.
+
+**Prediction 2 (refined from this cost model, stated before measurement).** A rough estimate moves the crossover lower:
+
+| | p at 36 bits (72-bit N) | p at 42 bits (84-bit N) |
+|---|---|---|
+| B1 | ≈ 300–600 | ≈ 1,000 |
+| Expected curves | ≈ 10 | ≈ 15 |
+| Ops per curve (stage 1 + stage 2) | ≈ 15,000 | ≈ 50,000 |
+| ECM total | ≈ 2^17.2 | ≈ 2^19.5 |
+| Tuned qs | 2^17.4 | 2^19.2 |
+
+So prediction 2 is:
+- **Means:** ECM and tuned qs within 2× of each other at 72 bits; ECM behind at 84 bits by about 1.5–3×.
+- **Growth:** steeper, about 0.18–0.2 log₂-ops per bit against qs's 0.149.
+- **Crossover:** somewhere in 60–78 bits, most likely near 72.
+- **Worst case:** worse than qs's at every size, because the number of curves has a long tail. A number that needs 3× the expected curves costs 3×.
+- **Against rho:** ECM beats rho from about 60 bits up (rho grows 0.25 per bit), and is roughly level with it at 54 bits (both near 2^14.5 by this estimate).
+
+All of this is uncertain by about 2× either way: the estimate of expected curves and the overcharged ladder dominate.
+
+**Unbalanced prediction (stated before measurement).** With p of 24–32 bits, ECM's cost follows p, not N.
+
+| p | ECM estimate |
+|---|---|
+| 24 bits | about 2^13–2^14 |
+| 32 bits | about 2^15–2^16 |
+
+- **Against qs:** whose cost does not depend on p, ECM is far cheaper, by roughly 8× or more at every (N, p) cell.
+- **Against rho:** rho also follows p (about √p steps). The two are roughly level at 24-bit p, and ECM pulls ahead as p grows toward 32 bits.
+- **The B1 handicap:** it is sized for balanced numbers, so it is too large here. That costs ECM a constant, but not the ordering.
+- **Growth:** at fixed N, growth per bit of p should be well below rho's 0.5 per bit of p.

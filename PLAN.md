@@ -311,6 +311,11 @@ any scored run, and parity gates the Rust port.
   - **Prediction (stated before measurement):** ECM beats qs below ~80 bits and loses
     above. Its cost grows with the smaller factor, which is half the bits here, and
     qs's grows more slowly.
+  - On balanced semiprimes, with p ~ sqrt(N), ECM's L_p[1/2, sqrt2] equals L_N[1/2, 1],
+    the same class as qs: expect a constants race (a crossover, ECM possibly ahead at
+    the small end), not an exponent change. ECM's distinct shape shows on unbalanced
+    numbers (one factor much smaller than sqrt N): the partition study and Run 8's mixed
+    population are where it should pay.
 - **Stage 9: race combinator ("race").**
   - A genome element holding two stages that run interleaved on one meter: A for sa ops,
     then B for sb ops, alternating, until one finds a factor or the budget runs out.
