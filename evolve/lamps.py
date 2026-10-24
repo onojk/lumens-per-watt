@@ -4,7 +4,7 @@ Watts = operations (one modular multiply, square test, or gcd = 1 op).
 Lumens = candidate stations for p ruled out, about sqrt(N) for a balanced semiprime.
 Efficacy exponent = 1/2 - work exponent, where work ~ N^e (worst case over test N).
 """
-import math, random
+import math, random, sys
 
 class Budget(Exception):
     pass
@@ -374,8 +374,8 @@ class StageMeter:
     def tick(self, k=1):
         if OB_MUTATE == 2 and self.spent + k > self.ob:
             raise StageBudget()
+        self.spent += k                       # counted before the cap check, as Meter.tick does
         self._m.tick(k)                       # may raise Budget: the whole run misses
-        self.spent += k
         if self.spent > self.ob and OB_MUTATE != 1:
             raise StageBudget()
     def test(self, hit):
@@ -408,46 +408,75 @@ def validate_genome(gen):
                 raise ValueError("ob is not allowed on a race or its sides")
             race_validate(s)
 
+TYPES = False    # True: LAST["types"] gets the run's per-type op counts (optypes.py), per stage
+NO_BUDGET = 1 << 200
+
+def _stage_types(s, tr, spent, tests, N):
+    import optypes
+    if s["t"] == "race":
+        out = {}
+        for sd in tr.get("sides", []):
+            for t, n in sd["per_type"].items():
+                out[t] = out.get(t, 0) + n
+        return out
+    return optypes.per_type(s, tr, spent, tests, N)
+
 def run(gen, N, cap):
     """Returns (ops, factor), or (None, None) on a miss. Test and hit counts of the
     latest run are left in LAST for the luck meter, with the winning stage's index and,
     for a square-search win, its k (read-only instrumentation; None on a miss). LAST["ob"]
     lists, per stage with an op budget that ran, (index, ob, spent, ended by its budget,
-    its own tests, its own hits)."""
+    its own tests, its own hits). With TYPES on, LAST["types"] holds the run's per-type op
+    counts, taken per stage (each stage on its own counting meter and with its own traces;
+    read-only, no op changes)."""
     validate_genome(gen)
     m = Meter(cap)
     obs = []
+    types = {}
     try:
         for i, s in enumerate(gen):
             ob = s.get("ob")
-            if ob is None:
-                d = LAMPS[s["t"]](N, s, m)
-            elif ob == 0:
+            if ob == 0:
                 continue                          # skipped: no lamp code runs
+            if ob is None and not TYPES:
+                d = LAMPS[s["t"]](N, s, m)
             else:
-                sm = StageMeter(m, ob)
+                budget = ob if ob is not None else NO_BUDGET
+                sm = StageMeter(m, budget)
                 start = m.ops
+                mod = sys.modules.get(s["t"]) if TYPES and s["t"] in ("qs", "ecm", "cfrac", "race") else None
+                if mod is not None:
+                    saved, tr = mod.TRACE, {}
+                    mod.TRACE = tr
                 try:
                     d = LAMPS[s["t"]](N, s, sm)
-                    obs.append((i, ob, sm.spent, False, sm.tests, sm.hits))
+                    if ob is not None:
+                        obs.append((i, ob, sm.spent, False, sm.tests, sm.hits))
                 except StageBudget:
                     obs.append((i, ob, sm.spent, True, sm.tests, sm.hits))
                     d = None
                 except Budget:
                     # a precheck (no charge crossed the cap) that the stage's budget made
                     # binding ends the stage, not the run
-                    if m.ops <= m.cap and start + ob < m.cap:
+                    if m.ops <= m.cap and start + budget < m.cap:
                         obs.append((i, ob, sm.spent, True, sm.tests, sm.hits))
                         d = None
                     else:
-                        obs.append((i, ob, sm.spent, False, sm.tests, sm.hits))
+                        if ob is not None:
+                            obs.append((i, ob, sm.spent, False, sm.tests, sm.hits))
                         raise
+                finally:
+                    if TYPES:
+                        if mod is not None:
+                            mod.TRACE = saved
+                        for t, n in _stage_types(s, tr if mod is not None else None, sm.spent, sm.tests, N).items():
+                            types[t] = types.get(t, 0) + n
             if d:
-                LAST.update(tests=m.tests, hits=m.hits, stage=i, k=m.k, ob=obs)
+                LAST.update(tests=m.tests, hits=m.hits, stage=i, k=m.k, ob=obs, types=types)
                 return m.ops, d
     except Budget:
         pass
-    LAST.update(tests=m.tests, hits=m.hits, stage=None, k=None, ob=obs)
+    LAST.update(tests=m.tests, hits=m.hits, stage=None, k=None, ob=obs, types=types)
     return None, None
 
 # ---- test semiprimes ---------------------------------------------------------

@@ -32,7 +32,7 @@ def qs_counts(tr):
             "sieve_update": o.get("sieve", 0) - scans, "sieve_scan": scans,
             "confirm_full": confirm_full, "confirm_td": o.get("confirm", 0) - confirm_full,
             "la": o.get("la", 0), "sqrt_mul": o.get("sqrt", 0) - sqrt_gcd, "sqrt_gcd": sqrt_gcd,
-            "lp_full": lp_full, "lp_small": o.get("lp", 0) - lp_full}
+            "lp_full": lp_full, "lp_small": o.get("lp", 0) - lp_full, "check": o.get("check", 0)}
 
 def ecm_setup_steps(N, sigma):
     """(Euclid steps of den^-1 mod N, whether den is invertible) for a Suyama curve."""
@@ -63,6 +63,40 @@ def ecm_counts(tr, N):
 
 def rho_counts(ops, tests):
     return {"mul": ops - tests, "gcd": tests}
+
+# The fixed type order of lampcore's --types output (lampcore/src/main.rs, TYPE_NAMES).
+TYPE_ORDER = ["mult", "fb", "setup_full", "setup_euclid", "setup_small", "sieve_update", "sieve_scan",
+              "confirm_full", "confirm_td", "la", "sqrt_mul", "sqrt_gcd", "lp_full", "lp_small", "check",
+              "setup_mul", "setup_euclid_N", "mul", "gcd", "td_mod", "sq_ops", "ps_ops", "cfrac_ops"]
+
+def prices(path="calibrate.json"):
+    """Per pricing, the price of each type: official 1 for every op; ruint and Montgomery from
+    calibrate.json, the median of the three P-core runs (the price table lives there only)."""
+    import json
+    cal = json.load(open(path))
+    out = {"official": None}
+    for ref in ("ruint", "montgomery"):
+        names = cal["prices"][f"{ref} P1"]
+        out[ref] = {t: sorted(cal["prices"][f"{ref} {r}"][t] for r in ("P1", "P2", "P3"))[1] for t in names}
+    return out
+
+def cost(counts, pricing, pr):
+    """Cost of one run's per-type counts under a pricing; raises on an unpriced type."""
+    if pricing == "official":
+        return float(sum(counts.values()))
+    missing = [t for t, n in counts.items() if n and t not in pr[pricing]]
+    if missing:
+        raise KeyError(f"unpriced op types under {pricing}: {missing}")
+    return float(sum(pr[pricing][t] * n for t, n in counts.items() if n))
+
+def robust(runs, ref_runs, pr=None):
+    """(c) fitness: per pricing, the mean cost of `runs` over the mean cost of `ref_runs` (the
+    reference genome on the same numbers); the fitness is the max over the three pricings.
+    runs, ref_runs: lists of per-type count dicts. Returns (fitness, {pricing: ratio})."""
+    pr = pr or prices()
+    ratios = {P: (sum(cost(c, P, pr) for c in runs) / len(runs)) / (sum(cost(c, P, pr) for c in ref_runs) / len(ref_runs))
+              for P in ("official", "ruint", "montgomery")}
+    return max(ratios.values()), ratios
 
 def per_type(stage, tr, ops, tests, N):
     t = stage["t"]
