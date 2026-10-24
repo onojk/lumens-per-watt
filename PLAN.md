@@ -653,6 +653,10 @@ a model propose code changes to one card, under a harness it cannot touch.
     conditions change (a different size, pricing or card), and the entry says which
     changed.
 - **Code-level evolution pilot: one card, CFRAC first (after Run 8).**
+  - **License gate (Phase 2, before the pilot starts; the repo is MIT):** a code-similarity
+    check of generated code against the known GPL factoring codebases (java-math-library,
+    GMP-ECM, YAFU, msieve), or a stated restriction on what the model may be shown and
+    produce. No pilot run without one of the two in place.
   - Why CFRAC: it loses (3.7x / 5.2x tuned qs's ops at 72/84 bits), and its cost has an
     obvious target. Every Q_i is a candidate, trial-divided at F ops, with no sieve to
     filter them.
