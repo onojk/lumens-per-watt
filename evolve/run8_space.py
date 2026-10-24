@@ -17,6 +17,7 @@ Stage genes are fixed at the partition study's values (STAGES).
   mutate(point, rng) evolution's mutation: one or two genes changed, every gene reachable
   crossover(a, b, rng)  uniform per gene (the order as a whole from one parent)
   BOUNDS             the table TPE's distributions are built from
+  QS_GENES, restrict(pt, base)   the qs-gene sub-experiment: budgets and order fixed at base
 """
 import math, random
 
@@ -89,10 +90,18 @@ def _mutate_gene(pt, g, rng):
         lo, hi = BOUNDS[g][1:]
         pt[g] = _clip(pt[g] + rng.gauss(0, SIGMA[g]), lo, hi)
 
-def mutate(pt, rng):
-    """Return (child, the genes changed): one gene, or two with probability 1/3."""
+QS_GENES = ("kc", "bc", "mc", "tc", "lc")
+
+def restrict(pt, base):
+    """pt with every non-qs gene (budgets, pm1, order) taken from base."""
+    return {g: (pt[g] if g in QS_GENES else base[g]) for g in BOUNDS}
+
+def mutate(pt, rng, genes_allowed=None):
+    """Return (child, the genes changed): one gene, or two with probability 1/3, chosen from
+    genes_allowed (all genes by default)."""
     child = dict(pt)
-    genes = rng.sample(list(BOUNDS), 2 if rng.random() < 1 / 3 else 1)
+    pool = list(genes_allowed or BOUNDS)
+    genes = rng.sample(pool, min(len(pool), 2 if rng.random() < 1 / 3 else 1))
     for g in genes:
         _mutate_gene(child, g, rng)
     return child, genes

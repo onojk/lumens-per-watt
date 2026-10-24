@@ -3,3 +3,4 @@ __pycache__/
 evolve/run.out
 evolve/*.out
 lampcore/target/
+.venv/
