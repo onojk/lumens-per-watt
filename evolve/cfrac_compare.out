@@ -1,0 +1,56 @@
+split card at cs = 0 vs tuned qs: 240 numbers (ops, factor, tests, hits, every phase), mismatches 0
+
+tuned qs  (growth 0.149 log2-ops per bit, 72->84)
+  72 bits: mean 17.43 [17.36, 17.51]  worst 18.30 [18.02, 18.30]  misses 0
+           phases (log2 mean): mult 8.81  fb 12.27  setup 14.93  sieve 16.62  confirm 14.32  la 14.13  sqrt 9.29
+  78 bits: mean 18.28 [18.21, 18.36]  worst 19.10 [18.89, 19.10]  misses 0
+           phases (log2 mean): mult 8.81  fb 12.81  setup 15.86  sieve 17.41  confirm 15.14  la 15.32  sqrt 9.50
+  84 bits: mean 19.22 [19.16, 19.27]  worst 19.90 [19.57, 19.90]  misses 0
+           phases (log2 mean): mult 8.81  fb 13.34  setup 16.80  sieve 18.30  confirm 16.07  la 16.49  sqrt 9.86
+
+cfrac alone  (growth 0.188 log2-ops per bit, 72->84)
+  72 bits: mean 19.32 [19.26, 19.38]  worst 19.82 [19.76, 19.82]  misses 0
+           phases (log2 mean): mult 8.81  fb 12.27  la 14.13  sqrt 8.71  cf_step 14.60  cf_td 19.21
+  78 bits: mean 20.42 [20.34, 20.50]  worst 21.34 [20.94, 21.34]  misses 0
+           phases (log2 mean): mult 8.81  fb 12.81  la 15.32  sqrt 9.01  cf_step 15.31  cf_td 20.33
+  84 bits: mean 21.58 [21.51, 21.65]  worst 22.59 [22.05, 22.59]  misses 0
+           phases (log2 mean): mult 8.81  fb 13.34  la 16.49  sqrt 9.37  cf_step 16.07  cf_td 21.50
+
+qs + cfrac, cs 0.1  (growth 0.161 log2-ops per bit, 72->84)
+  72 bits: mean 17.80 [17.73, 17.88]  worst 18.67 [18.40, 18.67]  misses 0
+           phases (log2 mean): mult 8.81  fb 12.27  setup 14.83  sieve 16.46  confirm 14.16  la 14.13  sqrt 9.10  cf_step 11.41  cf_td 15.98
+  78 bits: mean 18.74 [18.66, 18.82]  worst 19.67 [19.40, 19.67]  misses 0
+           phases (log2 mean): mult 8.81  fb 12.81  setup 15.78  sieve 17.26  confirm 14.98  la 15.32  sqrt 9.35  cf_step 12.09  cf_td 17.09
+  84 bits: mean 19.74 [19.68, 19.79]  worst 20.36 [20.08, 20.36]  misses 0
+           phases (log2 mean): mult 8.81  fb 13.34  setup 16.73  sieve 18.14  confirm 15.92  la 16.49  sqrt 9.75  cf_step 12.79  cf_td 18.21
+
+qs + cfrac, cs 0.25  (growth 0.171 log2-ops per bit, 72->84)
+  72 bits: mean 18.19 [18.12, 18.27]  worst 18.90 [18.68, 18.90]  misses 0
+           phases (log2 mean): mult 8.81  fb 12.27  setup 14.67  sieve 16.20  confirm 13.89  la 14.13  sqrt 9.05  cf_step 12.63  cf_td 17.23
+  78 bits: mean 19.21 [19.12, 19.29]  worst 20.18 [19.90, 20.18]  misses 0
+           phases (log2 mean): mult 8.81  fb 12.81  setup 15.64  sieve 17.00  confirm 14.73  la 15.32  sqrt 9.33  cf_step 13.35  cf_td 18.36
+  84 bits: mean 20.25 [20.19, 20.31]  worst 21.02 [20.69, 21.02]  misses 0
+           phases (log2 mean): mult 8.81  fb 13.34  setup 16.62  sieve 17.87  confirm 15.65  la 16.49  sqrt 9.51  cf_step 14.07  cf_td 19.49
+
+qs + cfrac, cs 0.5  (growth 0.182 log2-ops per bit, 72->84)
+  72 bits: mean 18.69 [18.62, 18.76]  worst 19.29 [19.22, 19.29]  misses 0
+           phases (log2 mean): mult 8.81  fb 12.27  setup 14.35  sieve 15.61  confirm 13.30  la 14.13  sqrt 8.97  cf_step 13.62  cf_td 18.22
+  78 bits: mean 19.74 [19.66, 19.82]  worst 20.63 [20.39, 20.63]  misses 0
+           phases (log2 mean): mult 8.81  fb 12.81  setup 15.39  sieve 16.42  confirm 14.14  la 15.32  sqrt 9.24  cf_step 14.31  cf_td 19.33
+  84 bits: mean 20.87 [20.80, 20.94]  worst 21.82 [21.31, 21.82]  misses 0
+           phases (log2 mean): mult 8.81  fb 13.34  setup 16.42  sieve 17.30  confirm 15.06  la 16.49  sqrt 9.37  cf_step 15.08  cf_td 20.51
+
+paired log2(total ops / tuned qs's) [95% CI], same numbers (supplementary):
+  cfrac alone          72 bits: +1.892 [+1.837, +1.943]  (3.71x tuned qs's ops)
+  cfrac alone          78 bits: +2.140 [+2.085, +2.194]  (4.41x tuned qs's ops)
+  cfrac alone          84 bits: +2.364 [+2.315, +2.413]  (5.15x tuned qs's ops)
+  qs + cfrac, cs 0.1   72 bits: +0.373 [+0.346, +0.402]  (1.30x tuned qs's ops)
+  qs + cfrac, cs 0.1   78 bits: +0.460 [+0.430, +0.490]  (1.38x tuned qs's ops)
+  qs + cfrac, cs 0.1   84 bits: +0.520 [+0.493, +0.547]  (1.43x tuned qs's ops)
+  qs + cfrac, cs 0.25  72 bits: +0.764 [+0.725, +0.802]  (1.70x tuned qs's ops)
+  qs + cfrac, cs 0.25  78 bits: +0.922 [+0.881, +0.962]  (1.89x tuned qs's ops)
+  qs + cfrac, cs 0.25  84 bits: +1.035 [+1.002, +1.069]  (2.05x tuned qs's ops)
+  qs + cfrac, cs 0.5   72 bits: +1.257 [+1.213, +1.299]  (2.39x tuned qs's ops)
+  qs + cfrac, cs 0.5   78 bits: +1.460 [+1.417, +1.503]  (2.75x tuned qs's ops)
+  qs + cfrac, cs 0.5   84 bits: +1.650 [+1.609, +1.692]  (3.14x tuned qs's ops)
+exit 0

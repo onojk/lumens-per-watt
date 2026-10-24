@@ -65,9 +65,12 @@ def lamp_cfrac(N, g, m):
                 return d
     return None
 
-def cf_source(N, k, g, led, ch, at):
-    """CFRAC relation source on kN until `led` is full or the period ends. Always None:
-    it never finds a factor on its own."""
+def cf_source(N, k, g, led, ch, at, until=None):
+    """CFRAC relation source on kN until `led` is full (or holds `until` relations, for a
+    fixed split with another source) or the period ends. Always None: it never finds a
+    factor on its own."""
+    if until is not None and len(led.rels) >= until:
+        return None                            # nothing to add: no op charged
     charge = ch.charge
     kN = k * N
     base, F = led.base, led.F
@@ -107,7 +110,7 @@ def cf_source(N, k, g, led, ch, at):
                 while v % p == 0:
                     v //= p; vec[j] += 1; charge("cf_td", 1)
         ch.m.test(v == 1)
-        if v == 1 and led.add(A, vec, 1, chk):
+        if v == 1 and (led.add(A, vec, 1, chk) or (until is not None and len(led.rels) >= until)):
             return None
         P, Qp, Q, a = P1, Q, Q1, a1
         Ap, A = A, An
