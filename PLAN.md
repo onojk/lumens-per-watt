@@ -36,6 +36,14 @@ Staged plan from the Oct 23 review.
     version is pinned. It never sits inside a charged code path.
   - When a section of this plan proposes building something, it names the existing tool it
     considered and says, in one line, why it isn't used.
+- **Reporting rules (all comparisons from Oct 24 on):**
+  - A paired bootstrap of per-number log-ratios is reported beside the separate intervals
+    (the same numbers give tighter intervals; old results stay comparable).
+  - Before each comparison, a power estimate: the numbers per cell needed to detect the
+    predicted effect. A test too small to see its own prediction is not run.
+  - Each stage's write-up counts the predictions scored (held / missed), so chance holds and
+    misses stay visible.
+  - The median is reported beside the mean (fitness stays the mean).
 - One Claude session owns the repo at a time; others read only. Unfinished work is parked
   in scratch while long tests run (after the Oct 23 stray-revert incident).
 
@@ -190,8 +198,11 @@ numbers, the parity count, and the old-vs-new table.
 
 Stage 7 (large primes, done) -> relation-economy refactor (done), with the illumination
 tracer as a side task -> Stage 8 (ECM) -> Stage 9 (race) -> Stage 9.5 (across-numbers selector,
-planning only) -> partition study -> Stage 10 (qs refinements) -> Run 8. Learning from all algorithms: the move catalogue is done (MOVES.md);
-its Phase 1 follows Stage 9; the code-level pilot follows Run 8.
+planning only) -> partition study (done) -> per-type counters (done) -> partition study part 2
+(map only) -> Stage 10 (qs refinements) -> theory checks -> Run 8 with control arms.
+Learning from all algorithms: the move catalogue is done (MOVES.md); its Phase 1 follows
+Stage 9, with the math-survey items appended; the code-level pilot follows Run 8. Nothing
+from the math survey jumps the queue.
 
 The partition study comes after Stage 9 because its allocations run as race schedules,
 and it needs ECM in the cost map.
@@ -387,8 +398,21 @@ any scored run, and parity gates the Rust port.
     - **ACCEPT gate (written Oct 24, before Run 8):** a champion must not be worse than 1.5×
       the reference genome on any band, under any pricing. A gate, not fitness: a
       champion that fails it is not accepted, whatever its score.
+    - **Report: population-robust score** (report only): a champion's worst ratio across
+      several fixed populations (balanced, mixed, mixed with another band spread).
+  - **Control arms** (same evaluation budget, seeds and fitness as evolution):
+    - TPE (Optuna) as the primary baseline; its license and maintenance checked and its
+      version pinned (reuse rule). Random search as the null. CMA-ES (pycma) optional.
+    - Pre-registered meanings, stated neutrally:
+      - TPE matches evolution on gene tuning: gene tuning needs no evolution machinery,
+        and evolution must show value on structure.
+      - Evolution beats TPE: check TPE's convergence before crediting evolution.
+      - Random search matches both: the fitness surface is flat at that genome.
   - **Consequence: every run scored for Run 8 must record per-type op counts** (the
-    types `calibrate.py` reprices), not just total ops. **Not met today:**
+    types `calibrate.py` reprices), not just total ops. **MET Oct 24:** lampcore --types,
+    with parity against Python on every parity pair and existing results recomputed exactly
+    (NOTES.md, lampcore per-type op counters). Remaining: Run 8's harness must call
+    run_many(types=True) and optypes.robust; sq, ps and cfrac stay unpriced. As it stood:
     - Run 8's evaluation path (Run 6's harness: `evolve_scale.measure_fast` ->
       `fastlamps.run_many`) records total ops, factor, tests and hits only, without
       even the phase columns.
@@ -446,6 +470,9 @@ card: every op count stays exactly as it is.
     For rho and pm1 this is the whole mechanism.
   - Visualization only: no op is charged for any of it, and nothing is read back into a
     score or into evolution.
+- **Bits-per-op measures (report only, never fitness),** two separate measures, never
+  merged: (1) size-posterior bits removed per op, for all lamps; (2) location-window facts
+  per op, only for td, sq and ps.
 
 ## Stage 9.5: across-numbers selector (planning only)
 
@@ -515,6 +542,19 @@ is not known in advance?
   - A mixed population (prior spread over bands): clear gain over any single lamp,
     because cheap small-factor lamps (td, rho, pm1, ECM) clear the low bands for a
     small share of the budget before qs takes the rest.
+
+## Partition study part 2 (map only, no new runs)
+
+- Index-rule stage order (Weitzman 1979): order the pre-stages by success chance per unit
+  cost from the existing partition map, and compare with td -> rho -> pm1 -> ecm.
+
+## Theory checks (after Stage 10)
+
+- Fitted L-constants against theory: qs ~1, CFRAC ~sqrt 2, ECM ~sqrt 2 in p.
+- Psi(x, y)-predicted qs relation yield against measured, per size.
+- rho steps against sqrt(pi p / 2) plus Brent's overhead.
+- A pre-registered extrapolation: fit on 54-84 bits, predict cost and crossovers at 96-100
+  bits, write the predictions down, then measure.
 
 ## Search structure after Run 8 (planning only)
 
@@ -589,6 +629,16 @@ a model propose code changes to one card, under a harness it cannot touch.
   4. p + 1 card (Lucas sequences).
   5. ECM torsion gene (family suyama12 | z2z8, both in Montgomery form, the same x-only
      ladder).
+  6. Residue filters before square tests (sq card, SQUFOF mode).
+  7. Luby restarts for rho.
+  8. ECM PRAC chains.
+  9. ECM batch inversion across curves.
+  10. Relation filtering + excess-stop rule (ledger).
+  (6-10 appended from the math survey; MOVES.md has each row's prediction.)
+  - **Before Phase 2 (the code-level pilot): the charged number type in lampcore** (MOVES.md,
+    meter guard).
+- **Race reopened (from the math survey):** geometric (doubling) slices on the mixed
+  population, against sequential budgets (MOVES.md, "Geometric (doubling) race slices").
   - Outside priors (MOVES.md, outside evidence), stated in each move's prediction: CFRAC
     still loses after batching; SQUFOF is only competitive below ~60 bits.
   - Per move, in order:
