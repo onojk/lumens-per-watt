@@ -486,6 +486,18 @@ any scored run, and parity gates the Rust port.
         numbers includes 0. If a clause fails, it is recorded which: (a) failing = evolution
         converges faster; (b) failing = evolution finds better genomes. Random search is
         predicted clearly worst.
+    - **Secondary arm "tpe-tuned"** (chosen after the sanity arm, pre-registered before the
+      mixed arm, Oct 24): TPE with n_startup_trials = 10% of the budget (136 of 1,360) and
+      multivariate=True; same seeds, budget and fitness. Reported separately and never
+      substituted for the primary TPE, which stays at Optuna's defaults (n_startup_trials 10,
+      multivariate off) and is the arm the two-clause prediction applies to.
+    - **Time estimate, measured on the sanity arm (Oct 24), supersedes the one below:** per
+      evaluation at 18 numbers, evolution 0.314 s, TPE 0.227 s (Optuna's own overhead 7.4 ms
+      per trial over 340 trials, 26.9 ms over 1,360), random 0.716 s, fresh batches 0.415 s.
+      Scaled to 84 numbers (x4.67): mixed arm, 40 runs (5 methods incl. tpe-tuned) about 27
+      core-hours, about 3.4 h on 8 cores; mixed-qs arm, 32 runs at about 0.65 s per
+      evaluation, about 8 core-hours, about 1 h. About 4-4.5 h together. Likely high: mixed
+      numbers are cheaper per number than balanced ones for genomes with rho or ECM budgets.
     - **Time estimate, re-measured at 84 numbers per evaluation** (lampcore --types, one
       process, Oct 24): 0.31–0.76 s per evaluation on the mixed arm (allocation A 0.32, the
       official-only optimum 0.31, wide budgets 0.57, qs + lc 1.4 alone 0.65, slow qs genes

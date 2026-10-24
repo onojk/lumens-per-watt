@@ -17,7 +17,9 @@ sealed: 80 per band, 8500000 + 100 pb + 84 (balanced arm: the 42-bit band's 80).
 The fresh-batch arm draws a new tuning set each generation (seed 8200000 + 1000 s + 10 gen).
 
 Arms: sanity (balanced, full space: evolution, TPE, random, evolution-fresh); mixed (the
-partition population, full space: the same four); mixed-qs (the qs-gene sub-experiment:
+partition population, full space: the same four, plus "tpe-tuned", a secondary arm chosen
+after the sanity arm and pre-registered before the mixed arm: n_startup_trials = 10% of the
+budget, multivariate=True; reported separately, never substituted for the primary TPE); mixed-qs (the qs-gene sub-experiment:
 budgets and order fixed at allocation A, only kc, bc, mc, tc, lc searched: evolution, TPE,
 random, and the qs-gene probe "tpe-warm", TPE warm-started from A).
 
@@ -207,10 +209,16 @@ def point_params(pt, qs_only=False):
             p[g] = pt[g]
     return p
 
-def tpe(ev, budget, seed, warm=None, qs_only=False):
+def tpe(ev, budget, seed, warm=None, qs_only=False, tuned=False):
     import optuna
     optuna.logging.set_verbosity(optuna.logging.WARNING)
-    study = optuna.create_study(direction="minimize", sampler=optuna.samplers.TPESampler(seed=seed))
+    if tuned:     # the secondary arm: 10% random start-up, multivariate TPE
+        import warnings
+        warnings.filterwarnings("ignore", category=optuna.exceptions.ExperimentalWarning)
+        sampler = optuna.samplers.TPESampler(seed=seed, n_startup_trials=budget // 10, multivariate=True)
+    else:         # the primary arm: Optuna's defaults
+        sampler = optuna.samplers.TPESampler(seed=seed)
+    study = optuna.create_study(direction="minimize", sampler=sampler)
     if warm is not None:
         study.enqueue_trial(point_params(warm, qs_only))
     study.optimize(lambda t: ev(tpe_space(t, qs_only)), n_trials=budget)
@@ -275,7 +283,7 @@ def one_run(args):
     nums = tuning_set(arm, s)
     oracle.check(nums)
     ev = Evaluator(nums, pr)
-    rng = random.Random(1000 * s + {"evolution": 1, "random": 2, "tpe": 3, "evolution-fresh": 4, "tpe-warm": 5}[method])
+    rng = random.Random(1000 * s + {"evolution": 1, "random": 2, "tpe": 3, "evolution-fresh": 4, "tpe-warm": 5, "tpe-tuned": 6}[method])
     qs_only = arm == "mixed-qs"
     if method == "random":
         res = random_search(ev, budget, rng, qs_only)
@@ -290,6 +298,8 @@ def one_run(args):
         res = tpe(ev, budget, s, qs_only=qs_only)
     elif method == "tpe-warm":
         res = tpe(ev, budget, s, warm=A_POINT, qs_only=qs_only)
+    elif method == "tpe-tuned":
+        res = tpe(ev, budget, s, tuned=True)
     if arm != "sanity" and method != "evolution-fresh":
         res["convergence"] = convergence(ev, ev.history)
     res.update(arm=arm, method=method, seed=s, evaluations=ev.count, secs=round(time.time() - t0, 1),
@@ -299,7 +309,9 @@ def one_run(args):
 if __name__ == "__main__":
     arm = ARGS[0]
     workers = int(ARGS[1]) if len(ARGS) > 1 else 8
-    methods = ["evolution", "tpe", "random", "tpe-warm"] if arm == "mixed-qs" else ["evolution", "tpe", "random", "evolution-fresh"]
+    methods = {"mixed-qs": ["evolution", "tpe", "random", "tpe-warm"],
+               "mixed": ["evolution", "tpe", "random", "evolution-fresh", "tpe-tuned"],
+               "sanity": ["evolution", "tpe", "random", "evolution-fresh"]}[arm]
     jobs = [(arm, m, s) for m in methods for s in SEEDS]
     with Pool(workers) as pool:
         results = pool.map(one_run, jobs, chunksize=1)

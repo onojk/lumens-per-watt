@@ -946,3 +946,12 @@ Small parts are phase total minus full parts, as in Python. The split is taken *
 
 **Also (visualization, information only):** an exact picture at small sizes (N ~ 2^24-2^32): the candidate line 2..√N with every prime as a point and every gap as a span, and per lamp which stations its work rules out or finds over time: td walks every station; rho lights primes by size; p-1 lights only primes whose p − 1 is B-smooth; ECM is a probabilistic speckle; sq lights primes near √N; qs finds the answer without walking the line. With it, td's share of work spent on gap interiors (composites) against primes.
 
+## 2026-10-24 — Run 8 balanced sanity arm: verdicts (before the mixed arm)
+
+`evolve/run8_sanity.json`, `run8_sanity_report.out`, `run8_sanity_paired.out`; 8 seeds x 4 methods x 340 evaluations, balanced 84-bit numbers (18 per evaluation), sealed 80. Fitness against qs + lc 1.4 alone (1.0); paired 95% intervals.
+- **Evolution: passed.** Best-of-8 0.920 tuning / 0.969 sealed [0.856, 1.087]; median genomes 0.993 [0.974, 1.011] and 1.049 [1.025, 1.073] sealed.
+- **TPE: passed.** Best-of-8 0.817 tuning / 0.951 sealed [0.866, 1.030]; median genomes 0.999 [0.972, 1.059] and 0.983 [0.961, 1.003] sealed. **Seeds 77 and 78 stuck on flat regions** (best 1.714 and 1.896): more than half of seed 78's trials scored exactly 1.896, in a region where a 725k-op ECM budget run first finishes every balanced number, so the qs genes TPE kept varying change nothing; seed 77 settled around p-1 on at full length. Deterministic (the exact jobs reproduce their traces; no evaluation missed): search behaviour on plateaus, not a scoring fault.
+- **Random search: failed, as predicted** (every pick worse than qs alone beyond noise; best-of-8 sealed 1.072 [1.046, 1.098]).
+- **Fresh-batch evolution: borderline** (median genomes 1.265 [1.152, 1.370] and 1.073 [0.988, 1.153] sealed; median-of-8 sealed 1.203): 18-number batches are noisy.
+- **Decisions for the mixed arm:** the primary TPE stays at Optuna's defaults and carries the two-clause prediction; a secondary "tpe-tuned" arm (n_startup_trials 136 = 10%, multivariate) is pre-registered and reported separately. The OVERFIT bracket (gap against A's gap, bracketed by qs alone's 0, paired bootstrap) and both clauses are computed by `evolve/run8_final_report.py`, written and tested on the sanity data before the mixed arm ran. Time estimate revised to about 4-4.5 h (PLAN).
+

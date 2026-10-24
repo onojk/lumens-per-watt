@@ -84,6 +84,7 @@ if __name__ == "__main__":
         check(len(fb.evs) == budget // (R.ISLANDS * R.PER_ISLAND), "fresh-batch generations", budget, len(fb.evs))
         if optuna:
             st = Stub(); R.tpe(st, budget, 5); check(st.count == budget, "TPE count", budget, st.count)
+            st = Stub(); R.tpe(st, budget, 7, tuned=True); check(st.count == budget, "TPE-tuned count", budget, st.count)
             st = Stub(); R.tpe(st, budget, 6, warm=R.A_POINT)
             check(st.count == budget and st.history[0][2] == R.A_POINT, "warm-start count or first trial", budget, st.count)
     # 4. qs-gene sub-experiment
