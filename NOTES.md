@@ -146,3 +146,65 @@ Same principle as qs: **never cheaper per unit of work than rho; when in doubt, 
 **lc sweep (`evolve/stage7_lc_sweep.py`, tuning seeds).** lc = 1.4 is pre-registered for the ACCEPT comparison: best mean at 72/78/84 on the tuning seeds, tied with 1.2 at 84. Pairing yield is 0.07–0.21 combined relations per partial, so partials do pair. The gain over lc = 1.0 is about 1.1×, inside the intervals at 78 and 84 bits. Identity check (`evolve/stage7_identity.py`): lc = 1.0, and lc absent, equal today's qs op for op on 1,920 runs.
 
 **Comparison against tuned qs (the bar).** Tuned qs means qs alone with kc 32, bc 1.1, mc 0.25, tc 1.38 (the best cell of `qs_boundary_sweep.py`). The large-prime card uses the same genes plus one lc. That lc is fixed in advance from a sweep over lc ∈ {1.0, 1.2, 1.4, 1.6, 1.8}, with bc and mc held at tuned qs's values. The sweep sees only the tuning seeds, `semiprimes_pq(bits, 40, 1700000 + bits)` at 72, 78 and 84 bits; their one job is to pick lc, and they are never used to judge the card. For each lc the sweep reports the pairing yield (combined relations per partial) beside the cost. A flat result can then be told apart from one where partials never paired, which would mean lc did nothing. The comparison runs on the Run 6 ACCEPT numbers: the Stage 2 numbers at 72 and 78 bits, and `semiprimes_pq(84, 80, 1300084)`, cap 2^28. For each size it reports log₂(mean ops) and the worst case with the index-250/9749 bootstrap, the per-phase breakdown (how much of any gain comes from fewer polynomials versus more confirmation), the pairing yield (combined relations per partial), and the growth per bit from 72 to 84. Verdict: a win only where the large-prime card's interval sits below tuned qs's; overlap means within noise. The expectation, stated in advance: at 72–84 bits the gain is small or negative. A single large prime typically pays off at larger N than these, and the overcharged confirmation (F ops per extra candidate) works against it here.
+
+## 2026-10-23 — Ledger: the charged relation check, cost model, written before any code
+
+Part of the relation-economy refactor (PLAN.md, "Relation economy"; `ledger.py`, `qs.rs`'s `Ledger`). Same principle as every card: **every op counted, when in doubt overcharge.** The check is new phase 9, "check", charged by the ledger; phases 1–8 are unchanged.
+
+**Switch.** The check is a per-source setting, **off by default**. With it off, the ledger trusts what it is given and every source costs exactly what it costs today, op for op (qs: `relation_economy_identity.py`). qs never turns it on: its relations are correct by construction (the harness relation check in `stage7_accept.py` verifies that on every run). The check exists for sources whose relations are *not* correct by construction, first of all evolved source genomes (PLAN.md, "Later"), where it is required. A source opts in; the ledger then checks every relation that source submits, before dedupe.
+
+**Charges, per relation (u, e, y) checked**, for u² ≡ y²·∏ p^(e_p) (mod N):
+
+- **u²:** square-and-multiply as in qs phase 7: cpow(u, 2, N) = 2 ops (the reduction of u mod N counted as the first multiply, then the square).
+- **Right-hand side:** for each base entry with e_p > 0 (p ≥ 2), cpow(p, e_p, N) = bit_length(e_p) + popcount(e_p) − 1 ops, and 1 op per multiply joining it to the running product after the first. A combined relation (y > 1) adds cpow(y, 2, N) = 2 ops and 1 op to multiply it in. The sign entry e₋₁ costs 1 op when odd (negation mod N).
+- **Compare:** 1 op (the two residues; an overcharge, it is not a multiply).
+- **Parity scan:** ceil(F/64) ops to read e mod 2 as F bits, at the same 64-bit-word rate as phase 6.
+
+**Rejections pay first.**
+
+- An **invalid** relation (the two sides differ) has paid the multiplies and the compare. It is rejected: not deduped, never a row.
+- An **all-even** relation (every e_p even, y included) is a one-row dependency on its own: X = u, Y = y·∏ p^(e_p/2). It splits N exactly when u ≢ ±Y (mod N), so it is **not** rejected for being all even. That is the useful case of the square-Qᵢ relations CFRAC can produce below. It is rejected only when it is **trivial**, u ≡ ±Y (mod N): the gaming case, e.g. a source that submits u = 6 with e = (2 at 2, 2 at 3). Testing costs, for all-even relations only: cpow(p, e_p/2, N) per entry with e_p > 0, 1 op per joining multiply, 2 ops for y if y > 1 (1 op to raise y to the first power, 1 to multiply it in), and 2 ops for the two compares (u = Y, u = N − Y). This replaces "an all-even relation pays and is rejected" from the first brief and PLAN.md (decided with this entry). Rejecting every all-even relation would throw away real splits, and with the check on would change qs's relation set, so qs's ops would differ by more than the check's formula.
+
+**Identity rule.** Check off: today's ops exactly, on every phase, every pair (parity's qs pairs plus the Run 6 ACCEPT numbers), Python and Rust. Check on, for qs as a test only: ops equal the check-off run's plus the formula above evaluated on the relations qs submitted, with the identical relation set, provided nothing was rejected. The run reports the rejection count; the expectation for qs is 0.
+
+**Acceptance test:**
+- the identity rule above;
+- injected relations, harness only: a corrupted u (invalid), a trivial all-even relation, and a nontrivial all-even one are each charged exactly the formula. The first two are rejected, and the third is kept and splits N or not as its gcd says;
+- a one-op mutation of each check charge is caught;
+- parity after the Rust port, with lampcore printing a 9th phase column, "check" (0 when off), appended after lp.
+
+**Comparisons between sources:** the check is on for all sources in a comparison if and only if any of them needs it. qs vs CFRAC runs with it off: both are correct by construction, and the harness relation check verifies both. (Decided with this entry; PLAN.md's relation-economy section amended to match, along with the all-even rule.)
+
+## 2026-10-23 — CFRAC as a second relation source, cost model, written before any code
+
+Continued fractions (Morrison–Brillhart) feeding the same `Ledger` as qs: one multiplier k per ledger, the same factor base (−1, 2, primes dividing k, odd p ≤ B with (kN | p) = 1). The base fits CFRAC unchanged: a prime p can divide Qᵢ only if kN is a square mod p. Same principle: **every op counted, every small-number step a full op, when in doubt overcharge.** Its own phases, "cf_step" and "cf_td", so the per-phase breakdown separates it from qs in a mixed run.
+
+**The expansion of √(kN).** g = ⌊√(kN)⌋; P₀ = 0, Q₀ = 1, a₀ = g; then
+Pᵢ₊₁ = aᵢQᵢ − Pᵢ, Qᵢ₊₁ = Qᵢ₋₁ + aᵢ(Pᵢ − Pᵢ₊₁), aᵢ₊₁ = ⌊(g + Pᵢ₊₁)/Qᵢ₊₁⌋, and numerators Aᵢ = aᵢAᵢ₋₁ + Aᵢ₋₂ (mod N), A₋₁ = 1, A₀ = g.
+Relation: A²ᵢ₋₁ ≡ (−1)ⁱ Qᵢ (mod kN), so mod N, with 0 < Qᵢ < 2√(kN). So u = Aᵢ₋₁, y = 1, and e is (−1)ⁱQᵢ's exponent vector. It is correct by construction, so the ledger check stays off (see the ledger section).
+
+**Charges.**
+
+1. **Multiplier ("mult"):** as qs: 14 ops per candidate multiplier (ks scoring, kc candidates). On failure the next k gets a fresh ledger and pays again for everything.
+2. **Factor base ("fb"):** the ledger's, as qs phase 2.
+3. **Setup ("cf_step"):** g = ⌊√(kN)⌋, charged bit_length(kN) ops: an overcharge, since Newton converges in far fewer iterations.
+4. **Per step ("cf_step"): 4 ops.** 1 for aᵢ₊₁ (one division), 1 for Pᵢ₊₁ (the multiply aᵢQᵢ), 1 for Qᵢ₋₁ + aᵢ(Pᵢ − Pᵢ₊₁) (one multiply), 1 for Aᵢ mod N (one modular multiply plus add). Every Qᵢ is produced at that price.
+5. **Trial division of every Qᵢ ("cf_td"):** there is no sieve, so every residue is a candidate. The charge is qs phase 5's rate without the 2 ops to form g(x), since Qᵢ is already formed: F ops (1 per base entry tried, −1 included, as qs) plus 1 per extra division. The sign entry is free (the parity of i). One luck-meter test per residue; hit = smooth.
+6. **Into the ledger:** a smooth Qᵢ gives (Aᵢ₋₁, e, 1), submitted with dedupe as qs's (free). Phases 6 and 7 (linear algebra, square root) are the ledger's, unchanged.
+
+**Stopping.** The source runs until the ledger is full, or until Qᵢ = 1 at some i > 0, after that step is paid. That marks the end of the period, after which the relations repeat, and the attempt fails to the next k. Either way the cap applies, as everywhere.
+
+**Genes.** kc and bc, read exactly as qs reads them (so a shared ledger built from either source's genes is the same ledger). There are no sieve genes. Large primes for CFRAC (the cofactor rule from Stage 7) are out of scope here, a later gene with its own cost model.
+
+**Planned gene, not in the first implementation: early abort (genes a, b).** After trial division of Qᵢ by the first a primes of the base, the residue is dropped unless what is left has shrunk below Qᵢ^b. It is charged as the trial division actually done: an abandoned residue pays 1 op per base entry tried up to that point (−1 and 2 included, as now), plus its extra divisions, plus 1 op for the size comparison. A residue that survives goes on to pay the rest of the F entries as usual. No relation is ever accepted on a partial division. a = F (or b = 1) is today's charge plus the compare, so the identity is stated with the early abort absent, not at a particular (a, b). It is written down now so that the prediction below can be revisited with it: early abort is the classic remedy for CFRAC's full trial division of every residue, and could shrink the predicted gap by a constant factor, not change the growth.
+
+**Residue size vs qs's.** CFRAC: 0 < Qᵢ < 2√(kN), typically about √(kN). qs: |g(x)| ≤ about M·√(kN/2), with M = mc·B. With tuned qs (mc 0.25, bc 1.1), B ≈ 1,190 at 72 bits and ≈ 2,400 at 84 bits, so M ≈ 300 and 600. qs's residues are about 2^7.7 and 2^8.7 times larger: CFRAC's are the smoother numbers, by roughly 8–9 bits. qs makes up for it by sieving: it confirms only the few cells above its threshold, while CFRAC trial-divides every residue at F ops each.
+
+**Prediction (stated before measurement).** CFRAC alone, with tuned qs's kc and bc, loses to tuned qs at 72–84 bits, and the gap grows with size, because its growth per bit is steeper than qs's 0.149 (heuristically L^√2 against qs's L^1). The rough estimate behind the numbers: a CFRAC residue of about √(kN) is B-smooth with probability ≈ ρ(u), u = log Qᵢ / log B (Dickman's function; the base's half-density is offset by each base prime dividing twice as often). That gives about ρ(3.7) ≈ 0.01 at 72 bits and ρ(3.9) ≈ 0.006 at 84 bits, at F + 6 ops per residue and F + 10 relations needed. CFRAC alone is then about 2^20 at 72 bits and 2^22.5 at 84 bits: about 6× and about 10× tuned qs's 2^17.4 and 2^19.2. These are uncertain by about 2–3× either way, and a different bc may suit CFRAC better. qs + CFRAC into one ledger: no better than qs alone, as PLAN.md already states.
+
+**Acceptance test:**
+- CFRAC alone factors 100% of `semiprimes_pq(bits, 40, 770000 + bits)` at 40–60 bits, cap 2^29;
+- exact accounting of every phase against the formulas above, on the realized counts (steps, residues, extra divisions);
+- every relation passes the harness relation check;
+- a one-op mutation of each charge is caught;
+- parity after the Rust port.

@@ -193,12 +193,16 @@ combined and evolved against one shared, fixed ledger.
   - A combined large-prime relation (Stage 7) carries its extra square:
     u^2 = y^2 * prod p^(e_p), with y = q, or a product of large primes after Stage 10's
     double large prime.
-  - The ledger checks every relation it receives and charges the check:
+  - With the check on (see the switch below), the ledger checks every relation a source
+    submits and charges the check (cost model: NOTES.md, "Ledger: the charged relation
+    check"):
     - 1 op per modular multiply: one for u^2, and square-and-multiply for each
       p^(e_p) and for y, charged as in qs phase 7.
     - An invalid relation pays its check and is rejected, so it costs and earns nothing.
-    - A relation whose exponent vector is all even is also rejected after its check: it
-      can only give a trivial dependency.
+    - A relation whose exponent vector is all even is a one-row dependency: it splits N
+      unless u = +-Y (mod N), Y = y * prod p^(e_p/2). It is kept unless it is trivial
+      (u = +-Y), which costs an extra test, charged only on all-even relations; a
+      trivial one pays and is rejected.
 - **Decision: one k per ledger.**
   - Every source feeding a ledger uses the same multiplier k and the same factor base.
     CFRAC expands sqrt(kN) with that k, so nothing is lost.
@@ -209,14 +213,16 @@ combined and evolved against one shared, fixed ledger.
     (phase 5, plus Stage 7's lp phase when lc > 1). It emits relations.
   - Ledger, shared by every source: the factor base (phase 2, owned here so all sources
     share one), dedupe, linear algebra (phase 6) and square root (phase 7).
-  - The check has a switch. Off: qs as today, trusting its own relations. On: every
-    relation is checked and charged. Any comparison between sources has it on for all
-    of them.
+  - The check has a per-source switch, off by default. Off: the source's relations are
+    trusted, and qs costs exactly what it costs today. On: every relation the source
+    submits is checked and charged. qs never needs it (correct by construction); it is
+    opt-in for other sources, and required for evolved ones. In a comparison between
+    sources the check is on for all of them if and only if any of them needs it.
   - Identity check, both cores, on the parity numbers:
     - check off: refactored qs equals today's qs op for op (ops, factor, tests, hits,
       every phase);
     - check on: it differs by exactly the check's formula, evaluated on the relations
-      it submitted.
+      it submitted, with nothing rejected (rejections reported; expected 0 for qs).
 - **New fitness for source evolution: relation yield.**
   - Run a source on fixed numbers under a fixed op budget, with no factoring. The
     numbers are a new seed range at 72/78/84 bits, not the ACCEPT numbers.
@@ -233,7 +239,8 @@ combined and evolved against one shared, fixed ledger.
     candidate, confirmed at qs's phase-5 rate (no sieve to filter them).
   - Acceptance:
     - CFRAC alone factors 100% at 40-60 bits;
-    - every relation it submits passes the ledger check;
+    - every relation it submits passes the harness relation check (and the ledger
+      check, turned on as a test);
     - parity after the Rust port.
   - The test: do qs + CFRAC together beat qs alone per op? Both feed one ledger,
     interleaved in fixed op slices (Stage 9's race element, or a fixed split before it
