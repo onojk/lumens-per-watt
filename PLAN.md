@@ -425,7 +425,24 @@ any scored run, and parity gates the Rust port.
       Reported: best-of-8 and median-of-8 final fitness, and evaluations-to-best.
     - **Overfitting check:** each method's tuning-vs-sealed gap (its genomes' fitness on the
       tuning set against the same genomes on the sealed numbers), since TPE optimizes against
-      a fixed set more aggressively.
+      a fixed set more aggressively, compared with the gap of an untuned reference genome
+      (allocation A) on the same tuning and sealed sets. A run is marked **OVERFIT** if its gap
+      exceeds A's by more than the paired bootstrap interval (not a fixed percentage).
+    - **Third arm** (reported separately, not in the primary comparison): evolution on fresh
+      batches each generation, as Run 6 did, with the same budget and seeds. It shows
+      whether the fixed tuning set changes evolution's result.
+    - **Probe** (separate, not a candidate): TPE warm-started from allocation A, with qs
+      genes = qs + lc 1.4. Question: is A near-optimal? Improvement is judged by the paired
+      bootstrap interval on the sealed numbers, and NOTES records either "A near-optimal" or
+      "partition study under-explored by Z".
+    - **Card order, pre-registered:** evolution changes it by swap mutation (transpositions);
+      TPE and random search treat it as a 24-way categorical. This tests whether
+      structural locality helps.
+    - **Free exhaustive baseline, before Run 8 (map only):** with qs fixed at qs + lc 1.4,
+      the best budgets for each of the 24 stage orders from partition_map, and the overall
+      best order: the exact optimum of that subspace (on the map's grid). Prediction: td ->
+      rho -> ECM (p-1 off), or an order with ECM before rho at large budgets; within noise of
+      A. The Run 8 searches should reach at least this on that subspace.
     - **Operators:** evolution's mutation and crossover come from `evolve/run8_space.py`, one
       bounds table shared with random search and TPE (the existing card-list operators did
       not cover this space); `run8_space_test.py` shows they reach all 24 orders, pm1 on and
