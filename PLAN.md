@@ -377,8 +377,11 @@ any scored run, and parity gates the Rust port.
     parity.
   - **Scoring, decided (Oct 23, user): (c) as fitness, (e) in reports** (NOTES.md,
     calibration result).
-    - Fitness = the worst result across official, ruint-calibrated and
-      Montgomery-calibrated, using median P-core prices.
+    - Fitness, corrected Oct 24 (NOTES.md, partition study): per pricing P (official,
+      ruint-calibrated, Montgomery-calibrated, median P-core prices), score_P(g) = mean cost
+      of g under P / mean cost of the reference genome under P, on the same numbers; fitness
+      = max over P of score_P. Reference for Run 8: tuned qs + lc 1.4 (default, named here).
+      The first wording (the worst raw cost) collapsed to the official count.
     - Reports call a cell only where all three pricings agree; otherwise the cell is
       "undecided".
   - **Consequence: every run scored for Run 8 must record per-type op counts** (the
