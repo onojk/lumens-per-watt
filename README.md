@@ -80,7 +80,7 @@ Outputs: `evolve.log`, `results.json`, `lineage.jsonl`, `validation.json`. Runs 
 - **Failures are results.** A loss rules a move out under stated conditions (sizes, pricing, cards). It is recorded, never deleted, and retried only if those conditions change.
 - **Honest limit.** Imports win on constants inside L[1/2] or L[1/3]. The one jump in complexity class in factoring's history, the number field sieve, came from a new place to look for squares, not from an imported move.
 
-The plan, with its phases (the catalogue now; three moves through the full pipeline after Stage 9; a code-level evolution pilot after Run 8), is in [PLAN.md, "Learning from all algorithms"](PLAN.md#learning-from-all-algorithms).
+The plan, with its phases (the catalogue now; five moves through the full pipeline after Stage 9; a code-level evolution pilot after Run 8), is in [PLAN.md, "Learning from all algorithms"](PLAN.md#learning-from-all-algorithms).
 
 ## Stage 8: elliptic curves (Oct 23, 2026)
 

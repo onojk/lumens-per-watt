@@ -171,8 +171,8 @@ numbers, the parity count, and the old-vs-new table.
 ## Order of work (after Run 6)
 
 Stage 7 (large primes, done) -> relation-economy refactor (done), with the illumination
-tracer as a side task -> Stage 8 (ECM) -> Stage 9 (race) -> partition study -> Stage 10 (qs
-refinements) -> Run 8. Learning from all algorithms: the move catalogue is done (MOVES.md);
+tracer as a side task -> Stage 8 (ECM) -> Stage 9 (race) -> Stage 9.5 (across-numbers selector,
+planning only) -> partition study -> Stage 10 (qs refinements) -> Run 8. Learning from all algorithms: the move catalogue is done (MOVES.md);
 its Phase 1 follows Stage 9; the code-level pilot follows Run 8.
 
 The partition study comes after Stage 9 because its allocations run as race schedules,
@@ -400,6 +400,25 @@ card: every op count stays exactly as it is.
   - Visualization only: no op is charged for any of it, and nothing is read back into a
     score or into evolution.
 
+## Stage 9.5: across-numbers selector (planning only)
+
+After Stage 9, before the partition study. The portfolio move (MOVES.md, "Learned selector
+across numbers"): instead of racing stages on every number, choose the stage or race for each
+number from what is known about it before any work is done.
+
+- **Selector input:** only what is free or charged. N's bit length is free. Any feature that
+  does arithmetic on N (a quick trial division, a residue test) is charged as performed, on
+  the same meter as the factoring.
+- **Learned across numbers, not within one:** trained on tuning seeds, scored on sealed
+  numbers, with the usual bootstrap.
+- **Why not a per-N bandit:** rho and ECM report only success (ECM's curves are
+  memoryless), so within one number they give no reward signal before they finish. Only qs
+  reports progress (relations found / relations needed). A per-N bandit could only steer qs.
+- **Expected shape:** on balanced numbers of one size, a selector by size alone reduces to a
+  lookup table of the best genome per size, so it should only pay on a mixed population.
+  That ties it to the partition study, which measures that population.
+- Cost model and prediction go into NOTES before any code, as for every stage.
+
 ## Partition study (planning; no code yet)
 
 How should a fixed op budget be split across lamps when the size of the smaller factor
@@ -456,10 +475,15 @@ a model propose code changes to one card, under a harness it cannot touch.
       (Run 6 ablation, L53-0972; 1.14-1.17x for L54-0938), official pricing.
     - CFRAC standalone: RULED OUT. 3.7x / 5.2x tuned qs's ops at 72 / 84 bits (predicted
       ~6x / ~10x), official op pricing.
-- **Phase 1: three moves, one at a time, each through the full sequence.**
-  - The moves: CFRAC early abort (genes a, b; charging already in NOTES), a batch
-    smoothness test (product / remainder tree in place of per-candidate trial division),
-    and a p + 1 card.
+- **Phase 1: five moves, one at a time, in this order, each through the full sequence.**
+  1. CFRAC early abort (genes a, b; charging already in NOTES).
+  2. SQUFOF mode on the CFRAC card (the same sqrt(kN) recurrence and Q_i stream; its
+     rival is rho/Hart, class N^1/4, not qs).
+  3. Batch smoothness test (product / remainder tree in place of per-candidate trial
+     division), checked on qs's confirmation as well as on CFRAC's residues.
+  4. p + 1 card (Lucas sequences).
+  5. ECM torsion gene (family suyama12 | z2z8, both in Montgomery form, the same x-only
+     ladder).
   - Per move, in order:
     1. cost model and predicted ratio in NOTES, before code;
     2. implementation;

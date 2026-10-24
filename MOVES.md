@@ -15,15 +15,27 @@ A move is a transformation that recurs across algorithms: batching, pruning, cha
 | Iterative sparse solver | Lanczos / Wiedemann | Block Lanczos in big sieves | Ledger LA, only if per-phase counts say it matters | untested | — | — |
 | Lattice reduction | LLL | Coppersmith; NFS poly selection | Small: polynomial choice in SIQS | untested | — | — |
 | Divide and conquer | Mergesort; recursion | Recursive cofactor splitting | Route cofactors back into the race as new numbers | untested | — | — |
-| Portfolio and selection | SAT solvers (SATzilla) | ECM-before-sieve pipelines | Learned selector on N's size; Stage 9 race | IN PROGRESS | Stage 9: race(ECM, qs + lc 1.4) and race(rho, qs + lc 1.4) on the Stage 8 populations, slices 2^8 / 2^10 / 2^14 | NOTES.md, Stage 9 (draft, under review) |
+| Portfolio and selection | SAT solvers (SATzilla) | ECM-before-sieve pipelines | Stage 9 race (the learned selector has its own row) | IN PROGRESS | Stage 9: race(ECM, qs + lc 1.4) and race(rho, qs + lc 1.4) on the Stage 8 populations, slices 2^8 / 2^10 / 2^14 | NOTES.md, Stage 9 (draft, under review) |
 | Adaptive scheduling | Multi-armed bandits | not seen | Bandit-chosen race slices instead of fixed 2^8/2^10/2^14 | untested | — | — |
 | Restart on bad luck | SAT solver restarts | New curves in ECM | Rho restart with a new polynomial after a budget | untested | — | — |
 | Fast multiplication | Karatsuba; FFT | Inside bignum libraries | METER QUESTION, not a gene (a multiply costs 1 op) | untested | — | — |
 | Memory layout / buckets | Bucket sort; cache blocking | Lattice-siever bucket sieving | METER QUESTION, not a gene (meter counts ops, not memory) | untested | — | — |
-| p-1 front | Pipelines: a cheap specialist before the general method | p-1 / ECM run before sieving | measured (leading p-1 before qs, evolved in Run 6) | PAYS | 1.05-1.24x in total ops at 72-84 bits (Run 6 ablation, L53-0972; 1.14-1.17x for L54-0938), official pricing. | README.md, Run 6; `evolve/run6_ablation.py` |
-| CFRAC standalone | Continued fractions; Morrison-Brillhart | CFRAC, the method before QS | measured (CFRAC card into the shared ledger) | RULED OUT | 3.7x / 5.2x tuned qs's ops at 72 / 84 bits (predicted ~6x / ~10x), official op pricing. | NOTES.md, CFRAC result; `evolve/cfrac_compare.json` |
+| p-1 front | Pollard p-1 (1974) | cheap first stage before a sieve (common in practice) | measured (leading p-1 before qs, evolved in Run 6) | PAYS | 1.05-1.24x in total ops at 72-84 bits (Run 6 ablation, L53-0972; 1.14-1.17x for L54-0938), official pricing. | README.md, Run 6; `evolve/run6_ablation.py` |
+| CFRAC standalone | Morrison-Brillhart (1975), continued fractions | the first L[1/2] method | measured (CFRAC card into the shared ledger) | RULED OUT | 3.7x / 5.2x tuned qs's ops at 72 / 84 bits (predicted ~6x / ~10x), official op pricing. | NOTES.md, CFRAC result; `evolve/cfrac_compare.json` |
+| Quadratic-form cycle | Shanks | SQUFOF | A SQUFOF mode of the CFRAC card: the same sqrt(kN) recurrence and Q_i stream; stop at a square Q at an even index, then walk the reverse cycle. Class N^1/4, so its rival is rho/Hart, not qs. Prediction: beats rho/Hart at 40-52 bits; loses to qs above (class gap). | untested | — | — |
+| Higher-torsion curves | EECM-MPFQ (Bernstein, Birkner, Lange, Peters) | ECM with Suyama (order divisible by 12), in our deck | Family gene suyama12 \| z2z8, both in Montgomery form, the same x-only ladder at 11 ops/bit. Prediction: 1.05-1.15x, larger at the top sizes. | untested | — | — |
+| Infrastructure + Gauss composition | Murru-Salvatori, arXiv 2409.03486 (v2, Jan 2025) | claimed L[1/2, 3/sqrt(8) ~ 1.06]; theoretical only, no benchmarks | Cost model only. If the claim holds, it would beat CFRAC and lose to qs. | untested | cost model only | — |
+| Learned selector across numbers | SAT solvers (SATzilla) | — | Stage 9.5 (PLAN). Note: a per-N bandit has no reward signal for rho/ECM (success only; curves are memoryless); only qs reports progress (relations / needed). | untested | — | — |
+| Class-group square-free decomposition | Mulder, ANTS XVI, arXiv 2308.06130 | — | — | RULED OUT (argument, not measured) | Finds a^2 b; gives nothing for a squarefree pq, which is all we factor. | the paper's scope |
+| SAT + lattice | SAT solving; lattice reduction | factoring with partial key exposure | — | RULED OUT (argument, not measured) | Needs leaked bits of a factor; we have none. | — |
+| Coppersmith / LLL | Coppersmith; LLL | Coppersmith's method | — | RULED OUT (argument, not measured) | Needs leaked bits of a factor; we have none. The polynomial-choice use stays in the Lattice reduction row. | — |
+| Number field sieve | NFS | the L[1/3] method | — | RULED OUT (argument, not measured) | Crossover with qs around 100+ digits, far above our sizes (up to 96 bits, about 29 digits). | — |
+| Hyperelliptic ECM (HECM) | Hyperelliptic curves | HECM | — | RULED OUT (argument, not measured) | Not competitive with elliptic curves. | — |
+| Pell conics | Conics x^2 - D y^2 = 1 | — | — | RULED OUT (argument, not measured) | The same move as p+1 (Change the group row). | — |
+| Quantum / Ising | Shor; annealing | — | — | RULED OUT (argument, not measured) | Not runnable here. | — |
 
 Rules:
 - A loss is recorded, never deleted.
 - A ruled-out move is retried only if its conditions change, and the entry says which condition changed.
 - Pricing is never a gene.
+- "RULED OUT (argument, not measured)" rows rest on the stated reason, not on a run. If the reason stops holding (new sizes, new information about the numbers), the row goes back to untested.

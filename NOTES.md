@@ -585,7 +585,7 @@ The price table and the calibrated re-score are reported under both references. 
 
 ## 2026-10-23 — Op-price calibration: result (measurement only)
 
-Nothing here changes a score; the official count stays as it is. Code: `lampcore/src/bin/opbench.rs`, `evolve/calibrate.py` (modes counts, price, extra); outputs `evolve/calibrate_counts.json`, `evolve/calibrate.json`. Plan: the entry "Op-price calibration on this laptop" above.
+Nothing here changes a score; the official count stays as it is. Code: `lampcore/src/bin/opbench.rs`, `evolve/calibrate.py` (modes counts, price, extra); outputs `evolve/calibrate_counts.json`, `evolve/calibrate.json`, and the raw benchmark runs in `evolve/calibrate_bench/`. Plan: the entry "Op-price calibration on this laptop" above.
 
 **Deviations from the plan, and one failed run.**
 - The first run hung on "sieve update" and was killed after 25 primitives. Its update count was (width − 1 − start)/p + 1, and primes above the sieve width (the base reaches B ≈ 2,295, the width is 1,147) can start past the end, so the subtraction wrapped. Each call then returned a huge count after one pass, and the batch-size doubling overflowed to 0 and spun. Fixed: a prime that misses the interval counts 0.
@@ -597,6 +597,8 @@ Nothing here changes a score; the official count stays as it is. Code: `lampcore
 - Across the three P-core repeats every price agrees within 7.5%, except sieve update: 17% (1.054 / 0.929 / 0.901 ns).
 - The E-core changes the ratios: its big multiplies are 1.4–1.6× slower, while gcd, Euclid steps and small mulmod are only 1.0–1.2× slower, so most small-number ratios fall by 10–35% (xor rises 30%).
 - The two references differ 3.7×: one 84-bit multiply is 27.3 ns with ruint and 7.37 ns with Montgomery. Every small-number price moves by that factor. For example, a sieve update is 0.032–0.039 ruint multiplies, or 0.12–0.14 Montgomery multiplies.
+
+**Scoring uses P-core prices only** (the median of the three P-core repeats). The E-core run is reported for spread, not used to score: its ratios shift by 10–35%.
 
 **Leaders** (median P-core prices; a tie means intervals overlapping the leader's):
 
@@ -614,6 +616,7 @@ Nothing here changes a score; the official count stays as it is. Code: `lampcore
 | 84/28 | rho (tie ECM) | N51-0917 (tie ECM, rho) | rho (tie ECM) | no |
 | 84/32 | ECM | N51-0917 | ECM | no |
 
+- **Official pricing and both calibrated pricings disagree on the balanced leader from 60 bits up** (ECM against N51-0917; under Montgomery, ECM is still tied with the leader at 60 and 66 bits, and is separated from 72 bits up): the pricing decides the winner. The 24-bit-p cells (rho) agree under all three.
 - **Where the references disagree** (54, 72/28, 78/28, 78/32, 84/28, 84/32), the meter's calibration decides the winner, not the algorithms.
 - ECM's official lead on balanced numbers does not survive calibration at 72–84 bits under either reference, as the 1/8 and 1/32 re-pricings had suggested.
 - **N51-0917 overtakes tuned qs + lc 1.4 under calibration**: 15.38 against 16.63 at 84 bits (ruint), and 17.06 against 17.64 (Montgomery), where the official count has 19.45 against 19.08. Its work leans more on cheap sieve operations.
@@ -634,10 +637,13 @@ Under ruint, qs's lead at 60–84 bits is settled: the margin is far beyond any 
 - It decides no cell. The only cell it could touch, 84/28, is a tie under every scoring.
 - qs's square-root gcd is already charged per Euclid step.
 
-**Run 8 scoring rule: OPEN.** Not decided here. The options:
-- (a) the official count decides; calibrated scores are reported beside it;
-- (b) one calibrated pricing decides, with its reference fixed in advance;
-- (c) the official count decides, and a wall-clock claim is made only for cells where the official count and both calibrated pricings agree;
-- (d) a cell is decided only where all three agree, and is reported as undecided elsewhere.
+**Run 8 scoring rule: OPEN.** The options:
+- (a) The official count decides.
+- (b) One calibrated pricing, named in advance, decides.
+- (c) **Robust:** a candidate's score is its worst result across the three pricings (official, ruint-calibrated and Montgomery-calibrated, with median P-core prices).
+- (d) **Lexicographic:** rank by the worst-case pricing first, with ties broken by the official count.
+- (e) **Reporting rule:** a cell is called only where all three pricings agree, and is "undecided" elsewhere.
+
+Recommended: (c) as evolution's fitness + (e) in reports. Decision: OPEN (user).
 
 **Caveats.** One laptop, one build. The i128 and U256 paths are lampcore's, not the fastest possible. The confirm, lp and cf_step mappings are upper bounds, as planned. One unexplained oddity, not used in any price: the loop-overhead baseline is 0.31 ns on the E-core against 1.25 ns on the P-core.
