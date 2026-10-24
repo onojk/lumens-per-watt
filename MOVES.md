@@ -39,6 +39,7 @@ A move is a transformation that recurs across algorithms: batching, pruning, cha
 | Quality-diversity archive (MAP-Elites) | Mouret & Clune 2015 | — | One elite genome per (total bits x smaller-factor bits) cell (PLAN, "Search structure after Run 8") | untested | — | — |
 | Co-evolved environments (POET) | Wang et al. 2019 | — | Generated training populations paired with champions, with transfers; verdicts stay on sealed populations | untested | — | — |
 | Speciation / innovation protection (NEAT) | Stanley & Miikkulainen 2002 | — | A protected tuning budget for a new card structure before it competes overall | untested | — | — |
+| Checkpointed p-1 (periodic gcd) | Production p-1 implementations | periodic gcd checks in p-1 / ECM stage 1 | A gcd every k primes, so a budget cut-off can still find a factor. Charging: each gcd as usual (official 1 op; calibrated a gcd is about 8-29 N-sized multiplies, so it costs real time). It only matters where p-1 runs under a budget (partition study). | untested | — | NOTES.md, partition study (pm1's single end gcd) |
 | Cycle segments (parallel SQUFOF) | Parallel SQUFOF | segments of one SQUFOF cycle, reached by powers of a form, one lane each | Split one cycle into segments, one lane each. Saves span, not work. METER QUESTION: span is reported next to total ops for parallel studies, never as fitness unless decided. | untested | — | [McMath et al.] |
 
 Rules:

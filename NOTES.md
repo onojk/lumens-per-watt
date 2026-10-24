@@ -758,3 +758,34 @@ Prerequisite for the partition study's sequential budgets (PLAN.md, Partition st
 
 **Prediction (stated before measurement):** on its own the gene changes nothing measurable on the Stage 8 single-kind populations unless it is set below a stage's natural length. It exists for the partition study.
 
+## 2026-10-24 — Partition study: cost model and predictions (written before any study code)
+
+How should a fixed op budget be split across cheap lamps before qs, when the smaller factor's size is not known in advance? (PLAN.md, Partition study: sequential budgets, not races.)
+
+**Populations** (fixed now; tuning and sealed seeds disjoint, and unused by any earlier stage):
+- **Mixed:** 84-bit N, smaller factor in one of seven bands, 16, 20, 24, 28, 32, 36 or 42 bits (42 = balanced), 80 numbers per band: `semiprimes_unbalanced(84, pb, 80, seed)`, or `semiprimes_pq(84, 80, seed)` for 42. Equal counts per band make the prior exactly uniform over the bands (stratified, a proposal: the brief said "drawn uniformly"). Tuning seeds 4000000 + 100·pb + 84; sealed seeds 5000000 + 100·pb + 84.
+- **Single-kind control:** balanced 84 only (the 42-bit band's numbers, from the same two seed ranges).
+
+**Genome:** td(ob1) → rho(ob2) → pm1(ob3) → ecm(ob4) → final qs, with two final-qs variants: tuned qs + lc 1.4, and N51-0917's qs stage. Fixed stage genes (not tuned here): td a = 0.5 (so only its budget stops it short of √N), rho c = 1, b = 64 (the rho baseline), pm1 b = 0.1991 (L53-0972's p-1 front), ECM b1 = 1.0, b2 = 50 (Stage 8).
+- **pm1 takes one gcd, at the end.** A pm1 budget below its natural total finds nothing and wastes everything it spent. The optimizer searches pm1's ob over {0, natural total} only. The map already reflects this: pm1's ops-to-success, when it succeeds, is always its full length.
+- **ECM ends per curve** (a gcd at the end of each curve's stage 1 and stage 2), so a budget wastes at most one partial curve; searching ECM's ob on the log grid is fine.
+- td and rho test as they go (td every divisor, rho every batch), so any budget can succeed.
+
+**Cost map** (tuning seeds only). Each lamp is run alone on every tuning number (Python, with traces): its ops-to-success (or "none within the largest budget", run to a cap of 2^21), its charge sequence, and its per-type counts; each final qs alone to the cap of 2^28. From these, the cost of any budget vector on a number is composed exactly: a stage whose ops-to-success T is at most its ob finds the factor at T; otherwise it spends its charge prefix up to and including the first charge past ob (or 0, where the precheck rule applies) and the next stage runs.
+- **Proposal: per-number composition.** Lamps compute on N alone and never read another stage's state (only the ps/pm1 prechecks read the meter, and pm1 here has B < 2^26), so composing per number on the same numbers is exact on the tuning seeds and needs **no independence assumption**. The brief's version, from each lamp's per-band ops-to-success distribution with stages assumed independent per number, is the alternative. It would be needed only to extrapolate to bands not run. With per-number composition, a gap between the map and the sealed measurement is sampling (the tuning numbers differ from the sealed ones), not dependence.
+- Calibrated costs of a truncated stage: its official prefix × that stage's price per official op on that band (π, from its alone runs). This is exact for td (every op is N mod d) and for pm1's multiplies, and close for rho and ECM, whose gcd share is under 0.5%. The verdict run uses exact per-type counts per stage.
+- **Prerequisite, before study code:** price mappings for td and pm1 in `optypes.py` / `calibrate.py`, as the calibration plan already specified them: td's N mod d at #4 ("N84 mod small d (i128)"); pm1's multiplies at #1 and its gcd as ECM's.
+
+**Allocation.** Minimize under the prior, on the map: a coarse grid of ob ∈ {0, 2^8, 2^9, …, 2^20} for td, rho and ECM, ob ∈ {0, natural} for pm1, then coordinate refinement on log₂ ob (scipy's bounded scalar minimization per coordinate, repeated until no coordinate moves). numpy/scipy, no optimizer built. One allocation per final-qs variant.
+
+**Fitness: (c) robust.** The worst (largest) of log₂(mean cost) under the official count, ruint-calibrated and Montgomery-calibrated prices (median P-core prices), each in its own unit. The units are commensurable by construction: one official op is one multiply, and the calibrated unit is one reference multiply. Also reported: the worst band's mean, so an allocation can't buy a good average by sacrificing a band.
+
+**Verdict.** Run the chosen allocation **once** on the sealed seeds, with exact per-type counts per stage. Compare against qs alone (each variant), the Run 6 p-1 front genome (L53-0972, as accepted), and the map's prediction for the sealed numbers. Report means with intervals under all three pricings, the worst band's mean, and the (e) call per comparison (the leader where all three pricings agree, else "undecided").
+
+**Predictions (stated before any study code):**
+- **Mixed population, official:** sequential budgets beat qs alone by about 2×. Reason: bands 16–28 are solved for 2^8–2^16 ops by rho/ECM against qs's ~2^19, and the budgets added to the hard bands are small next to 2^19.
+- **Mixed, calibrated (ruint, Montgomery):** still beats qs alone, but by less (about 1.3–1.7×). qs's work is cheaper per op under real prices, so rho/ECM time costs relatively more.
+- **The map predicts the sealed measured cost within about 10%.** If it doesn't, the first suspect is the independence assumption, or (with per-number composition, which has none) sampling between the tuning and sealed numbers.
+- **Balanced-only control:** the optimizer drives all budgets to about 0 (qs alone wins), or at most a small p-1 budget (the p-1 front's 1.05–1.24×).
+- **Expected budget shape:** td small, rho moderate (catches 16–24-bit p), ECM largest (28–36-bit p), p-1 small (with its search over {0, natural}: off, or on only if its whole length pays).
+
