@@ -1,0 +1,49 @@
+sanity: budget 340 evaluations per run, seeds 71-78
+
+reference gaps (log2 sealed / tuning, median over the seeds' tuning sets):
+  qs + lc 1.4 alone    tuning 1.000  sealed 1.000  gap +0.000
+  allocation A         tuning 1.255  sealed 1.234  gap -0.025
+
+evolution: best-of-8 0.920 (seed 73), median-of-8 1.014, evaluations-to-best median 304, evaluations [340], secs median 107
+  sealed: best seed's genome 0.969; median over seeds 1.014; tuning-vs-sealed gap median +0.019 (range -0.057 to +0.075)
+    seed 71: tuning 1.043  sealed 1.002 | order pm1>rho>ecm>td  td 539  rho 761  pm1 0  ecm 0 | kc 26  bc 0.90  mc 0.882  tc 1.39  lc 1.46
+    seed 72: tuning 0.989  sealed 1.009 | order pm1>ecm>rho>td  td 399  rho 1686  pm1 0  ecm 4250 | kc 17  bc 1.21  mc 0.353  tc 1.07  lc 1.51
+    seed 73: tuning 0.920  sealed 0.969 | order rho>pm1>td>ecm  td 2715  rho 0  pm1 0  ecm 72178 | kc 27  bc 1.10  mc 1.578  tc 1.34  lc 1.32
+    seed 74: tuning 1.029  sealed 1.026 | order pm1>rho>td>ecm  td 735  rho 0  pm1 0  ecm 3207 | kc 2  bc 1.09  mc 0.240  tc 1.00  lc 1.63
+    seed 75: tuning 1.029  sealed 1.049 | order td>pm1>rho>ecm  td 0  rho 3310  pm1 0  ecm 3954 | kc 27  bc 1.03  mc 0.889  tc 1.44  lc 1.36
+    seed 76: tuning 0.976  sealed 1.019 | order td>pm1>rho>ecm  td 0  rho 1394  pm1 0  ecm 0 | kc 32  bc 0.98  mc 0.793  tc 1.19  lc 1.46
+    seed 77: tuning 0.998  sealed 0.993 | order td>rho>ecm>pm1  td 3144  rho 8217  pm1 0  ecm 0 | kc 19  bc 1.08  mc 0.347  tc 1.29  lc 1.44
+    seed 78: tuning 1.045  sealed 1.054 | order pm1>ecm>td>rho  td 962  rho 313  pm1 0  ecm 1391 | kc 18  bc 1.23  mc 0.547  tc 1.16  lc 1.29
+
+tpe: best-of-8 0.817 (seed 71), median-of-8 0.943, evaluations-to-best median 264, evaluations [340], secs median 77
+  sealed: best seed's genome 0.951; median over seeds 0.991; tuning-vs-sealed gap median +0.067 (range -0.047 to +0.220)
+    seed 71: tuning 0.817  sealed 0.951 | order td>ecm>pm1>rho  td 0  rho 4237  pm1 0  ecm 34764 | kc 18  bc 1.21  mc 0.516  tc 1.31  lc 1.41
+    seed 72: tuning 0.959  sealed 0.983 | order td>rho>pm1>ecm  td 0  rho 0  pm1 0  ecm 506 | kc 26  bc 0.90  mc 0.734  tc 1.39  lc 1.48
+    seed 73: tuning 0.878  sealed 0.873 | order td>pm1>ecm>rho  td 0  rho 1180  pm1 0  ecm 65201 | kc 8  bc 1.21  mc 0.418  tc 1.25  lc 1.21
+    seed 74: tuning 0.960  sealed 0.976 | order td>ecm>rho>pm1  td 1087  rho 0  pm1 0  ecm 0 | kc 23  bc 1.06  mc 0.325  tc 1.36  lc 1.35
+    seed 75: tuning 0.927  sealed 1.063 | order ecm>td>rho>pm1  td 703  rho 442  pm1 0  ecm 4602 | kc 6  bc 0.92  mc 0.406  tc 1.24  lc 1.48
+    seed 76: tuning 0.927  sealed 0.999 | order ecm>pm1>rho>td  td 672  rho 0  pm1 0  ecm 0 | kc 32  bc 0.90  mc 0.525  tc 1.26  lc 1.52
+    seed 77: tuning 1.714  sealed 1.660 | order ecm>rho>pm1>td  td 0  rho 0  pm1 full  ecm 0 | kc 24  bc 0.94  mc 1.414  tc 1.26  lc 1.34
+    seed 78: tuning 1.896  sealed 2.030 | order ecm>rho>pm1>td  td 663645  rho 4544  pm1 0  ecm 725400 | kc 21  bc 0.85  mc 0.081  tc 3.30  lc 1.15
+
+random: best-of-8 1.073 (seed 72), median-of-8 1.172, evaluations-to-best median 186, evaluations [340], secs median 243
+  sealed: best seed's genome 1.072; median over seeds 1.181; tuning-vs-sealed gap median -0.008 (range -0.106 to +0.079)
+    seed 71: tuning 1.159  sealed 1.147 | order rho>pm1>td>ecm  td 3250  rho 0  pm1 0  ecm 344 | kc 1  bc 0.91  mc 0.772  tc 1.31  lc 1.76
+    seed 72: tuning 1.073  sealed 1.072 | order pm1>td>rho>ecm  td 1364  rho 1058  pm1 0  ecm 333 | kc 31  bc 0.94  mc 0.849  tc 1.70  lc 1.28
+    seed 73: tuning 1.222  sealed 1.210 | order ecm>td>rho>pm1  td 13877  rho 4235  pm1 0  ecm 113947 | kc 19  bc 1.19  mc 9.588  tc 1.02  lc 1.85
+    seed 74: tuning 1.473  sealed 1.369 | order td>ecm>rho>pm1  td 271  rho 0  pm1 0  ecm 3984 | kc 29  bc 1.23  mc 0.147  tc 1.72  lc 1.27
+    seed 75: tuning 1.164  sealed 1.147 | order rho>pm1>td>ecm  td 36550  rho 0  pm1 0  ecm 16681 | kc 17  bc 1.09  mc 0.559  tc 1.15  lc 1.20
+    seed 76: tuning 1.134  sealed 1.181 | order rho>ecm>pm1>td  td 0  rho 7388  pm1 0  ecm 0 | kc 1  bc 1.19  mc 0.327  tc 1.46  lc 1.22
+    seed 77: tuning 1.180  sealed 1.181 | order ecm>pm1>rho>td  td 0  rho 578  pm1 0  ecm 112598 | kc 15  bc 1.04  mc 3.365  tc 1.23  lc 1.93
+    seed 78: tuning 1.184  sealed 1.251 | order pm1>td>ecm>rho  td 0  rho 3148  pm1 0  ecm 1791 | kc 3  bc 1.10  mc 0.224  tc 1.07  lc 1.95
+
+evolution-fresh: best-of-8 1.023 (seed 78), median-of-8 1.047, evaluations-to-best median 340, evaluations [340], secs median 141
+  sealed: best seed's genome 1.096; median over seeds 1.203; tuning-vs-sealed gap median +0.065 (range -0.033 to +0.299)
+    seed 71: tuning 1.031  sealed 1.141 | order rho>ecm>td>pm1  td 0  rho 344  pm1 0  ecm 30828 | kc 9  bc 1.22  mc 0.310  tc 1.28  lc 1.78
+    seed 72: tuning 1.044  sealed 1.265 | order pm1>td>rho>ecm  td 47005  rho 0  pm1 0  ecm 56960 | kc 4  bc 1.55  mc 0.281  tc 1.34  lc 1.19
+    seed 73: tuning 1.169  sealed 1.439 | order rho>td>pm1>ecm  td 27694  rho 0  pm1 0  ecm 4257 | kc 26  bc 0.89  mc 0.313  tc 1.25  lc 1.73
+    seed 74: tuning 1.316  sealed 1.327 | order rho>pm1>td>ecm  td 674  rho 9322  pm1 0  ecm 0 | kc 3  bc 1.69  mc 0.104  tc 1.18  lc 1.18
+    seed 75: tuning 1.376  sealed 1.345 | order rho>td>pm1>ecm  td 9567  rho 0  pm1 0  ecm 1046 | kc 6  bc 1.00  mc 0.473  tc 1.91  lc 1.07
+    seed 76: tuning 1.050  sealed 1.073 | order pm1>rho>td>ecm  td 88342  rho 0  pm1 0  ecm 34716 | kc 3  bc 1.11  mc 0.394  tc 1.00  lc 1.52
+    seed 77: tuning 1.028  sealed 1.018 | order rho>pm1>td>ecm  td 0  rho 1487  pm1 0  ecm 4361 | kc 18  bc 0.95  mc 0.509  tc 1.46  lc 1.54
+    seed 78: tuning 1.023  sealed 1.096 | order pm1>ecm>td>rho  td 3595  rho 3862  pm1 0  ecm 0 | kc 17  bc 0.93  mc 0.470  tc 1.17  lc 1.83
