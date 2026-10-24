@@ -18,6 +18,8 @@ Staged plan from the Oct 23 review.
   - `lamps.cap_for(bits)=2^(bits/2+6)`
   - parity.py `min(cap_for, 2^22)`
   - evolve_scale.py `CAP_LOG2=23`
+- Working rule: one Claude session owns the repo at a time; others read only. Unfinished work
+  is parked in scratch while long tests run (after the Oct 23 stray-revert incident).
 
 ## Stage 1: square-search window fix, instrumentation, coverage rule
 
