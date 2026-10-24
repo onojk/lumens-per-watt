@@ -838,3 +838,34 @@ Code: `evolve/partition.py` (map, optimize and sealed modes, each committed befo
 
 **Limitations:** stage genes fixed, not retuned for the small bands (ECM's b1/b2 were tuned on 24–42-bit factors); one population shape (84-bit N, seven bands, uniform prior).
 
+## 2026-10-24 — lampcore per-type op counters: cost model, written before any code (Run 8 prerequisite)
+
+PLAN.md, Run 8: every run scored for Run 8 must record per-type op counts, the types `optypes.py` splits and `calibrate.py` prices, not just total ops. Today they come only from Python traces. This adds them to lampcore. **Read-only instrumentation: no op count changes.**
+
+**What is counted, per run** (every card, race sides and budgeted stages included), using the types `optypes.per_type` emits:
+- qs: mult, fb, setup_full, setup_euclid, setup_small, sieve_update, sieve_scan, confirm_full, confirm_td, la, sqrt_mul, sqrt_gcd, lp_full, lp_small, and **check** (the opt-in ledger check phase; added now to `optypes.qs_counts`, priced at a full multiply, as the calibration plan's phase table says);
+- ecm: setup_mul, setup_euclid_N, mul, gcd;
+- rho and pm1: mul, gcd; td: td_mod;
+- sq, ps, cfrac: one type each (sq_ops, ps_ops, cfrac_ops), still unpriced, as in `optypes.py`.
+
+**How lampcore matches the Python split exactly.** Python's qs split takes each full-price part from trace events and each small part as the phase total minus it. lampcore keeps one event counter per full-price part, incremented at the same program points as Python's trace updates:
+- (s − 1)·combinations after forming the A's, and 2s at the start of each A (before its charges, as Python's a_count);
+- each setup Euclid inverse's steps after its charge;
+- 2M + 1 after each polynomial's sieve charges;
+- 2 after each candidate's confirm charges;
+- each sqrt gcd's steps after its charge;
+- 1 after each large-prime combination's charges;
+- for ECM, each curve's setup Euclid steps at their charge (this reproduces `ecm_counts`' rule for a curve still in setup).
+
+Small parts are phase total minus full parts, as in Python. The split is taken **per stage** from that stage's own deltas (ops, tests, phases, event counters), so genomes mixing cards that share phases (qs and cfrac share the ledger's) split correctly; rho and pm1 split by the stage's ops and tests; a race adds each side's split; a budgeted stage's split covers what it spent. The in-progress attribution documented in `optypes.py` (a torn-down side's unfinished unit) is reproduced, not corrected, because the counters sit where Python's trace updates do.
+
+**Output.** Behind a flag (`lampcore --types`), so the default output stays byte-identical: each line gains " T" and the counts in a fixed type order. `fastlamps.run_many(types=True)` parses them. A robust-fitness helper (in `optypes.py`) prices counts with `calibrate.json`'s median P-core prices (the price table is not duplicated) and computes the (c) fitness: per pricing, mean cost / the reference's mean cost on the same numbers, then the max over the three pricings.
+
+**Checks:**
+- **Identities, every run:** the per-type counts sum to total ops, and each card's types sum to its phases' ops.
+- **Parity:** lampcore's counts equal the Python per-type counts (per-stage traces) on every parity pair (parity.py extended).
+- **Mutation:** a counter that drops or double-counts one type must be caught (by the sum identity or by parity).
+- **Against existing results:** calibrate.json's per-number counts and scores, and the partition study's sealed per-number counts and costs, recomputed from lampcore's counters, must match the Python-trace values exactly.
+
+**Prediction (stated before measurement):** the hot path costs at most about 2%. The counters are integer adds at a few event points beside existing charges, plus a per-stage snapshot. Measured against the current binary.
+
