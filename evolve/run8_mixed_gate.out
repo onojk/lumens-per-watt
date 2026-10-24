@@ -1,0 +1,9 @@
+mixed: ACCEPT gate (no band > 1.5x qs + lc 1.4 alone, any pricing), sealed numbers, 560 (80 per band)
+  allocation A    passes 1/1; worst band ratio 1.266 (seed None, band 36, ruint)
+  evolution       passes 7/8; worst band ratio 2.055 (seed 73, band 42, ruint); FAIL: seed 73 2.055 band 42 ruint
+  tpe             passes 6/8; worst band ratio 2.170 (seed 75, band 42, ruint); FAIL: seed 72 2.019 band 42 ruint, seed 75 2.170 band 42 ruint
+  random          passes 7/8; worst band ratio 4.548 (seed 73, band 42, montgomery); FAIL: seed 73 4.548 band 42 montgomery
+  evolution-fresh passes 7/8; worst band ratio 2.151 (seed 73, band 42, ruint); FAIL: seed 73 2.151 band 42 ruint
+  tpe-tuned       passes 7/8; worst band ratio 2.009 (seed 73, band 42, ruint); FAIL: seed 73 2.009 band 42 ruint
+
+clause (a), best-of-4 over seeds 71-74 (literal wording): {'seeds': (71, 72, 73, 74), 'target': 0.473465362368492, 'evolution_evaluations': 1347, 'tpe_evaluations': 439, 'holds': True}

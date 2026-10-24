@@ -955,3 +955,146 @@ Small parts are phase total minus full parts, as in Python. The split is taken *
 - **Fresh-batch evolution: borderline** (median genomes 1.265 [1.152, 1.370] and 1.073 [0.988, 1.153] sealed; median-of-8 sealed 1.203): 18-number batches are noisy.
 - **Decisions for the mixed arm:** the primary TPE stays at Optuna's defaults and carries the two-clause prediction; a secondary "tpe-tuned" arm (n_startup_trials 136 = 10%, multivariate) is pre-registered and reported separately. The OVERFIT bracket (gap against A's gap, bracketed by qs alone's 0, paired bootstrap) and both clauses are computed by `evolve/run8_final_report.py`, written and tested on the sanity data before the mixed arm ran. Time estimate revised to about 4-4.5 h (PLAN).
 
+
+## 2026-10-24 — Run 8 mixed and mixed-qs arms: results (sealed numbers, run once)
+
+Files (all in `evolve/`): `run8_mixed.json`, `run8_mixed-qs.json` (runs, traces, convergence); `run8_mixed.out`, `run8_mixed-qs.out` (wall times; both arms exited 0); `run8_mixed_final.out`/`.json`, `run8_mixed-qs_final.out`/`.json` (`run8_final_report.py`, committed before launch in 3b0e015); `run8_mixed_gate.out`/`.json`, `run8_mixed-qs_gate.out`/`.json` (`run8_gate.py`, written after the run: no new selection, only checks of what was pre-registered). 8 seeds (71–78) × 1,360 evaluations per method; mixed: 84 tuning numbers per evaluation (12 per band); sealed 560 (80 per band, seven bands 16–42). Fitness (c) = robust ratio to qs + lc 1.4 alone (1.0); lower is better. Intervals are paired 95% bootstraps resampled within bands (10,000).
+
+**Fixes to the report script after the run (both found reading the output; neither changes a number the run produced):**
+1. clause (a) printed `evolution_evaluations: None`: the target recomputed on the tuning set (0.3896320334158959) differed from the traced value (0.389632033415896) in the last ulp, so `f <= target` never fired. Now compared with a 1e-12 relative tolerance. Evolution now reaches the target at 1,356; TPE still never reaches it, so the verdict did not change.
+2. A sealed miss was scored at its capped cost. The mixed-qs evolution genome for seed 74 (kc 1) does not factor sealed number 446 (83-bit N, band 36) within 2^28. The report printed sealed 0.474; it is now scored as the Evaluator scores a miss (MISS, gap +inf, counted OVERFIT). This is the only sealed miss among the 72 genomes. The run itself scored misses during tuning as 1e9: mixed 26, mixed-qs 181 such evaluations.
+
+**Headline.**
+- **qs + lc 1.4 alone is beaten by about 2x on the mixed population**, and most of the gain comes from the five qs genes, not from budgets or order.
+- Best sealed fitness:
+  - mixed: TPE 0.455 (evolution 0.484, tpe-tuned 0.459, fresh batches 0.525, random 0.561);
+  - mixed-qs (budgets and order fixed at A): TPE 0.472 (random 0.472, evolution 0.480, probe 0.482).
+- Allocation A, with qs genes at qs + lc 1.4, scores 0.675 on the same sealed numbers.
+- The mixed winners' budgets and order sit near A: rho before ECM (except random's), td 0 or small, pm1 off, rho about 1k–14k, ECM about 32k–71k. That is what the partition study found.
+
+### Best-of-8 and median-of-8 (tuning / sealed)
+
+| arm | method | best-of-8 tuning (seed) | its sealed | median-of-8 tuning | median-of-8 sealed |
+|---|---|---|---|---|---|
+| mixed | evolution | 0.390 (77) | 0.484 | 0.481 | 0.503 |
+| mixed | TPE | 0.452 (71) | 0.455 | 0.494 | 0.509 |
+| mixed | random | 0.558 (72) | 0.561 | 0.577 | 0.624 |
+| mixed | evolution-fresh (third arm) | 0.449 (77) | 0.525 | 0.534 | 0.538 |
+| mixed | tpe-tuned (secondary) | 0.417 (76) | 0.459 | 0.478 | 0.511 |
+| mixed-qs | evolution | 0.381 (77) | 0.480 | 0.444 | 0.470 (seed 74 MISS counted as worst) |
+| mixed-qs | TPE | 0.377 (77) | 0.472 | 0.448 | 0.469 |
+| mixed-qs | random | 0.398 (77) | 0.472 | 0.477 | 0.496 |
+| mixed-qs | tpe-warm (probe) | 0.379 (77) | 0.482 | 0.446 | 0.465 |
+
+**Failure mode of best-of-8 by tuning fitness.** It compares fitness across eight different tuning sets, so it partly selects the easiest set. Seed 77's set gives the best-of-8 for all four methods in mixed-qs and for two of five in mixed. Its gap is +0.25 to +0.35 log2 for every method there. Sealed fitness is the comparable number.
+
+### T1 / T2 (evaluations; median [IQR], seeds reached of 8; against A on each seed's own tuning set)
+
+| arm | method | T1 (enter A's interval) | T2 (reach A's point) |
+|---|---|---|---|
+| mixed | evolution | 16 [11, 78], 8/8 | 162 [108, 252], 8/8 |
+| mixed | TPE | 10 [3, 30], 6/8 | 40 [21, 63], 6/8 |
+| mixed | random | 6 [5, 17], 8/8 | 138 [75, 320], 8/8 |
+| mixed | tpe-tuned | 34 [5, 152], 8/8 | 146 [48, 366], 8/8 |
+| mixed | evolution-fresh | not computed (no fixed tuning set) | — |
+| mixed-qs | evolution | 14 [6, 23], 8/8 | 20 [6, 42], 8/8 |
+| mixed-qs | TPE | 6 [6, 8], 8/8 | 8 [6, 10], 8/8 |
+| mixed-qs | random | 16 [8, 42], 8/8 | 35 [14, 86], 8/8 |
+| mixed-qs | tpe-warm | 1 [1, 1], 8/8 | 1 [1, 2], 8/8 (trivial: trial 1 is A) |
+
+**TPE stalls in the mixed arm**, the same failure as in the sanity arm. Seeds 72 and 75 never reached A. They ended at 0.859 and 0.881, each with pm1 on at full length and an ECM budget of 451k–837k: the plateau where ECM finishes nearly everything and the qs genes stop mattering. tpe-tuned (136 startup trials, multivariate) had no stalled seed.
+
+### Winning genomes (best-of-8 by tuning), split
+
+| arm | method | order | td | rho | pm1 | ecm | kc | bc | mc | tc | lc |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| — | allocation A (reference for T1/T2) | td>rho>pm1>ecm | 0 | 5793 | 0 | 32768 | 32 | 1.10 | 0.250 | 1.38 | 1.40 |
+| mixed | evolution | rho>td>pm1>ecm | 0 | 11811 | 0 | 33422 | 11 | 0.99 | 0.925 | 1.26 | 1.35 |
+| mixed | TPE | rho>pm1>ecm>td | 0 | 12593 | 0 | 32795 | 7 | 1.13 | 0.476 | 1.24 | 1.38 |
+| mixed | random | ecm>td>pm1>rho | 0 | 1129 | 0 | 71413 | 22 | 1.27 | 1.125 | 1.28 | 1.31 |
+| mixed | evolution-fresh | rho>pm1>ecm>td | 5043 | 5001 | 0 | 49369 | 26 | 1.09 | 0.893 | 1.45 | 1.13 |
+| mixed | tpe-tuned | pm1>td>rho>ecm | 504 | 13762 | 0 | 31959 | 6 | 1.08 | 0.434 | 1.27 | 1.33 |
+| mixed-qs | evolution | (A) | | | | | 5 | 1.01 | 0.672 | 1.04 | 1.63 |
+| mixed-qs | TPE | (A) | | | | | 4 | 0.90 | 0.734 | 1.10 | 1.66 |
+| mixed-qs | random | (A) | | | | | 7 | 1.05 | 0.577 | 1.39 | 1.41 |
+| mixed-qs | tpe-warm | (A) | | | | | 2 | 0.85 | 0.801 | 1.08 | 1.72 |
+
+- **Effective order.** pm1 is off in every winner, and td is 0 in most, so rho runs before ECM in every mixed winner except random's (ECM first, rho 1.1k).
+- **qs genes, against qs + lc 1.4.** Lower kc (2–11 in the TPE and evolution winners, against 32), higher mc (0.43–0.93 against 0.25), lower tc (1.04–1.27 against 1.38). With budgets fixed at A (mixed-qs), lc is higher in the evolution, TPE and probe winners (1.63–1.72 against 1.40).
+- Per-seed genomes are in the `_final.out` files.
+
+### OVERFIT bracket (gap = log2 sealed/tuning of each run's best; paired bootstrap)
+
+| arm | method | OVERFIT (gap above A's) | overfit at all (gap above 0) |
+|---|---|---|---|
+| mixed | evolution | 1/8 (seed 73) | 2/8 |
+| mixed | TPE | 0/8 | 0/8 |
+| mixed | random | 1/8 (seed 73) | 1/8 |
+| mixed | evolution-fresh | 1/8 (seed 73) | 1/8 |
+| mixed | tpe-tuned | 1/8 (seed 73) | 2/8 |
+| mixed-qs | evolution | 1/8 (seed 74, sealed MISS) | 2/8 |
+| mixed-qs | TPE | 0/8 | 1/8 |
+| mixed-qs | random | 0/8 | 0/8 |
+| mixed-qs | tpe-warm | 1/8 (seed 77) | 1/8 |
+
+- **Seed 73's tuning set misleads four of five methods** in the mixed arm toward ECM budgets of 392k–1.05M. On sealed numbers those genomes run 1.4x–2.2x worse than on tuning (gap +0.45 to +1.13 log2).
+- **The premise that TPE optimizes against a fixed set more aggressively** (the reason for the check) is not borne out: TPE has the fewest OVERFIT runs (0/8 in both arms).
+
+### ACCEPT gate (no band worse than 1.5x qs + lc 1.4 alone under any pricing; sealed, 80 per band)
+
+- **Every method's best-of-8 champion passes in both arms.** The worst champion band is 1.058: evolution-fresh, band 36, official. Allocation A passes, at worst 1.266 (band 36, ruint).
+- **Non-champion runs that fail:**
+  - mixed: seed 73 for evolution (2.055), random (4.548, Montgomery), evolution-fresh (2.151) and tpe-tuned (2.009); TPE seeds 72 (2.019) and 75 (2.170). All are band 42, ruint unless noted, and all have ECM budgets of 392k or more.
+  - mixed-qs: evolution seed 74 (the sealed miss).
+
+### Per-band sealed ratios, best-of-8 genome (official / ruint / Montgomery)
+
+| arm | method | 16 | 20 | 24 | 28 | 32 | 36 | 42 |
+|---|---|---|---|---|---|---|---|---|
+| mixed | evolution | .001/.008/.005 | .006/.031/.018 | .077/.192/.118 | .570/.541/.475 | .718/.680/.596 | 1.010/.775/.763 | .989/.753/.747 |
+| mixed | TPE | .001/.008/.005 | .006/.031/.018 | .073/.191/.119 | .550/.564/.516 | .676/.704/.635 | .946/.812/.824 | .916/.780/.795 |
+| mixed | random | .034/.179/.092 | .056/.237/.125 | .118/.342/.193 | .429/.579/.430 | .659/.743/.592 | .965/.930/.803 | .989/.921/.815 |
+| mixed | evolution-fresh | .001/.008/.005 | .012/.064/.034 | .190/.354/.234 | .620/.613/.529 | .745/.716/.626 | 1.058/.857/.822 | 1.035/.829/.803 |
+| mixed | tpe-tuned | .002/.009/.006 | .006/.032/.019 | .073/.196/.122 | .533/.578/.518 | .677/.739/.655 | .940/.829/.836 | .934/.837/.831 |
+| mixed-qs | evolution | .001/.008/.005 | .006/.036/.020 | .191/.315/.224 | .585/.546/.509 | .678/.625/.580 | .940/.729/.757 | .939/.705/.741 |
+| mixed-qs | TPE | .001/.008/.005 | .006/.036/.020 | .185/.313/.221 | .577/.543/.502 | .656/.619/.569 | .921/.724/.746 | .940/.722/.751 |
+| mixed-qs | random | .001/.008/.005 | .006/.036/.020 | .191/.320/.235 | .586/.566/.543 | .668/.660/.622 | .927/.755/.803 | .910/.743/.789 |
+| mixed-qs | tpe-warm | .001/.008/.005 | .006/.036/.020 | .191/.314/.223 | .626/.558/.526 | .659/.619/.568 | .944/.726/.749 | .931/.703/.734 |
+
+- **The three pricings agree** (all below 1) on every band except three mixed-arm cells above 1 under official only: evolution band 36 and evolution-fresh bands 36 and 42. Per (e), those cells are undecided.
+- **At band 42** (balanced 84-bit), the mixed-qs genes are about 0.70–0.75x the reference under the calibrated pricings but about 0.93x official. The gain on balanced numbers comes mostly from operations the calibrated pricings charge more, consistent with the sanity arm's best of 0.951 (official dominating the robust max there).
+- **Bands 16–24 are decided by the pre-stages**; the qs genes barely matter there.
+
+### Predictions, scored as written
+
+1. **Clause (a)**, as written in PLAN: "TPE reaches a fitness at least as good as evolution's best-of-4 final fitness within fewer evaluations". The wording predates the move to 8 seeds, and the report committed before launch implements it as best-of-8, so both readings are given.
+   - mixed, best-of-4 (seeds 71–74, target 0.473): **holds**. TPE reaches it at 439, evolution at 1,347.
+   - mixed, best-of-8 (target 0.390, evolution's seed 77): **fails**. Evolution reaches it at 1,356; TPE never does (its best is 0.452). Recorded as "evolution converges faster" per the pre-registered meaning. The target is seed 77's tuning value, which overfits (gap +0.313 [+0.070, +0.487]).
+   - mixed-qs, best-of-4 (target 0.427): **fails** (TPE never reaches it). Best-of-8 (target 0.381): **holds** (TPE 405, evolution 1,275).
+2. **Clause (b)**, "at the full budget, TPE's best ties or beats evolution's best" (sealed, paired):
+   - mixed: **holds, TPE better**. log2 TPE/evolution −0.090 [−0.107, −0.063].
+   - mixed-qs: **holds, tie**. −0.023 [−0.053, +0.010].
+3. **"Random search is predicted clearly worst."**
+   - mixed: **holds**. Random's best sealed 0.561 against 0.484 (evolution) and 0.455 (TPE); median-of-8 sealed 0.624 against 0.503 and 0.509.
+   - mixed-qs: **fails**. Random's best sealed is 0.472, equal to TPE's and below evolution's 0.480. The pre-registered meaning ("the fitness surface is flat at that genome") fits only near the winners: random found the same region all methods found, about 1.4x better than A.
+4. **Exhaustive baseline: "The Run 8 searches should reach at least this [A] on that subspace."** **Holds.** Every method's best-of-8 beats A's sealed 0.675 in both arms. Every mixed-arm method reached T2 on 8/8 seeds, except TPE (6/8).
+5. **Probe vs cold TPE ("does the prior help?"): no.** log2 warm/cold +0.031 [−0.014, +0.076], a tie.
+6. **"A near-optimal" or "partition study under-explored by Z": partition study under-explored by 1.40x.**
+   - The probe's own best (tpe-warm, seed 77) against A: log2 −0.485 [−0.543, −0.429].
+   - The best method overall (cold TPE): 1.43x [−0.574, −0.458].
+   - The under-exploration is in the qs genes, which the partition study held fixed at qs + lc 1.4. On its own axes (budgets, order) the mixed winners stay near A.
+
+Predictions scored in this entry: 6. (a) holds or fails depending on the reading, as above; (b) holds in both arms; 3 holds in mixed and fails in mixed-qs; 4 holds; 5 and 6 are answered questions, not directional predictions.
+
+**Omissions against the reporting rules (PLAN).**
+- No power estimate was written before the clause (b) comparison. For the record, the intervals' half-widths are about 0.02 log2, which resolves differences of about 1.5%.
+- The paired intervals are of each method's best-of-8 genome. Separate per-method intervals beside them were not computed.
+
+**Timing.**
+- mixed: 5,475 s. mixed-qs: 3,642 s. Total 2.5 h, against the measured estimate of 4–4.5 h. The estimate was flagged as likely high, because mixed numbers are cheaper for genomes with rho or ECM budgets.
+
+**Next experiments, ranked by information per compute.**
+1. **Re-run the partition map with the mixed-qs qs genes** (for example TPE's kc 4 / bc 0.90 / mc 0.734 / tc 1.10 / lc 1.66). This shows whether A's budgets stay optimal once qs is cheaper. Map only, minutes.
+2. **The qs-gene winners on the balanced population** (sanity arm's sealed set) under all three pricings. This checks whether the new qs genes should replace qs + lc 1.4 as the reference. Minutes.
+3. **A paired comparison of the mixed winners against the mixed-qs winners** on sealed numbers. This measures what budget and order freedom adds beyond A (point estimates: 0.455 against 0.472, about 3.5%). Minutes, with a power estimate first.
+4. **The illumination picture** (primes and gaps brief), already queued.

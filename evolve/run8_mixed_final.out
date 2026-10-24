@@ -1,0 +1,88 @@
+mixed: 1360 evaluations per run, seeds 71-78; fitness = robust ratio to qs + lc 1.4 alone
+
+evolution: best-of-8 tuning 0.390 (seed 77), sealed 0.484; median-of-8 tuning 0.481, sealed 0.503
+  T1: reached 8/8, median 16, IQR [11, 78]
+  T2: reached 8/8, median 162, IQR [108, 252]
+  OVERFIT (gap above A's): 1/8 runs; overfit at all (gap above 0): 2/8
+  winner: order rho>td>pm1>ecm td 0 rho 11811 pm1 0 ecm 33422 | kc 11 bc 0.99 mc 0.925 tc 1.26 lc 1.35
+  sealed per band, official: 16: 0.001  20: 0.006  24: 0.077  28: 0.570  32: 0.718  36: 1.010  42: 0.989
+  sealed per band, ruint: 16: 0.008  20: 0.031  24: 0.192  28: 0.541  32: 0.680  36: 0.775  42: 0.753
+  sealed per band, montgomery: 16: 0.005  20: 0.018  24: 0.118  28: 0.475  32: 0.596  36: 0.763  42: 0.747
+    seed 71: tuning 0.488 sealed 0.501 gap +0.035 [-0.170,+0.285] minus A +0.089 [-0.096,+0.298] | order rho>pm1>td>ecm td 0 rho 3069 pm1 0 ecm 66338 | kc 28 bc 0.75 mc 3.871 tc 1.21 lc 1.58
+    seed 72: tuning 0.504 sealed 0.508 gap +0.011 [-0.192,+0.215] minus A +0.024 [-0.145,+0.177] | order rho>ecm>td>pm1 td 5468 rho 4681 pm1 0 ecm 64750 | kc 30 bc 1.14 mc 1.111 tc 1.33 lc 1.24
+    seed 73: tuning 0.573 sealed 0.837 gap +0.548 [+0.220,+0.877] minus A +0.660 [+0.356,+0.973] OVERFIT | order rho>ecm>pm1>td td 30232 rho 1601 pm1 0 ecm 392355 | kc 2 bc 2.33 mc 0.168 tc 1.32 lc 1.88
+    seed 74: tuning 0.473 sealed 0.505 gap +0.093 [-0.090,+0.226] minus A -0.016 [-0.297,+0.197] | order rho>pm1>td>ecm td 557 rho 40535 pm1 0 ecm 0 | kc 7 bc 1.01 mc 0.556 tc 1.26 lc 1.44
+    seed 75: tuning 0.517 sealed 0.519 gap +0.007 [-0.225,+0.240] minus A +0.002 [-0.191,+0.183] | order pm1>td>rho>ecm td 0 rho 2942 pm1 0 ecm 63776 | kc 26 bc 1.52 mc 0.326 tc 1.19 lc 1.03
+    seed 76: tuning 0.442 sealed 0.497 gap +0.167 [-0.062,+0.407] minus A +0.080 [-0.118,+0.283] | order rho>td>pm1>ecm td 0 rho 6012 pm1 0 ecm 62693 | kc 32 bc 0.99 mc 1.608 tc 1.29 lc 1.14
+    seed 77: tuning 0.390 sealed 0.484 gap +0.313 [+0.070,+0.487] minus A +0.155 [-0.048,+0.295] | order rho>td>pm1>ecm td 0 rho 11811 pm1 0 ecm 33422 | kc 11 bc 0.99 mc 0.925 tc 1.26 lc 1.35
+    seed 78: tuning 0.449 sealed 0.495 gap +0.141 [-0.108,+0.322] minus A +0.109 [-0.124,+0.269] | order rho>td>ecm>pm1 td 2265 rho 3003 pm1 0 ecm 63384 | kc 31 bc 1.00 mc 1.521 tc 1.11 lc 1.44
+tpe: best-of-8 tuning 0.452 (seed 71), sealed 0.455; median-of-8 tuning 0.494, sealed 0.509
+  T1: reached 6/8, median 10, IQR [3, 30]
+  T2: reached 6/8, median 40, IQR [21, 63]
+  OVERFIT (gap above A's): 0/8 runs; overfit at all (gap above 0): 0/8
+  winner: order rho>pm1>ecm>td td 0 rho 12593 pm1 0 ecm 32795 | kc 7 bc 1.13 mc 0.476 tc 1.24 lc 1.38
+  sealed per band, official: 16: 0.001  20: 0.006  24: 0.073  28: 0.550  32: 0.676  36: 0.946  42: 0.916
+  sealed per band, ruint: 16: 0.008  20: 0.031  24: 0.191  28: 0.564  32: 0.704  36: 0.812  42: 0.780
+  sealed per band, montgomery: 16: 0.005  20: 0.018  24: 0.119  28: 0.516  32: 0.635  36: 0.824  42: 0.795
+    seed 71: tuning 0.452 sealed 0.455 gap +0.008 [-0.245,+0.213] minus A +0.062 [-0.125,+0.185] | order rho>pm1>ecm>td td 0 rho 12593 pm1 0 ecm 32795 | kc 7 bc 1.13 mc 0.476 tc 1.24 lc 1.38
+    seed 72: tuning 0.859 sealed 0.841 gap -0.031 [-0.375,+0.332] minus A -0.018 [-0.335,+0.321] | order td>ecm>rho>pm1 td 0 rho 0 pm1 full ecm 836834 | kc 29 bc 0.75 mc 0.297 tc 1.55 lc 1.46
+    seed 73: tuning 0.505 sealed 0.497 gap -0.022 [-0.255,+0.235] minus A +0.091 [-0.116,+0.315] | order pm1>td>rho>ecm td 0 rho 6110 pm1 0 ecm 64540 | kc 16 bc 1.11 mc 1.856 tc 1.23 lc 1.21
+    seed 74: tuning 0.458 sealed 0.499 gap +0.124 [-0.120,+0.344] minus A +0.015 [-0.149,+0.135] | order pm1>rho>td>ecm td 1118 rho 0 pm1 0 ecm 34902 | kc 8 bc 1.03 mc 0.624 tc 1.40 lc 1.39
+    seed 75: tuning 0.881 sealed 0.843 gap -0.064 [-0.407,+0.299] minus A -0.070 [-0.413,+0.266] | order rho>ecm>pm1>td td 239844 rho 2498 pm1 full ecm 451119 | kc 1 bc 1.07 mc 1.822 tc 1.84 lc 1.37
+    seed 76: tuning 0.497 sealed 0.519 gap +0.063 [-0.100,+0.187] minus A -0.024 [-0.295,+0.198] | order td>rho>ecm>pm1 td 0 rho 47260 pm1 0 ecm 0 | kc 10 bc 1.08 mc 0.439 tc 1.16 lc 1.46
+    seed 77: tuning 0.492 sealed 0.528 gap +0.102 [-0.087,+0.283] minus A -0.056 [-0.270,+0.152] | order pm1>td>rho>ecm td 0 rho 29460 pm1 0 ecm 40030 | kc 2 bc 0.98 mc 0.633 tc 1.00 lc 1.55
+    seed 78: tuning 0.455 sealed 0.499 gap +0.133 [-0.087,+0.325] minus A +0.101 [-0.096,+0.266] | order td>pm1>rho>ecm td 409 rho 5826 pm1 0 ecm 63223 | kc 29 bc 1.21 mc 0.890 tc 1.21 lc 1.29
+random: best-of-8 tuning 0.558 (seed 72), sealed 0.561; median-of-8 tuning 0.577, sealed 0.624
+  T1: reached 8/8, median 6, IQR [5, 17]
+  T2: reached 8/8, median 138, IQR [75, 320]
+  OVERFIT (gap above A's): 1/8 runs; overfit at all (gap above 0): 1/8
+  winner: order ecm>td>pm1>rho td 0 rho 1129 pm1 0 ecm 71413 | kc 22 bc 1.27 mc 1.125 tc 1.28 lc 1.31
+  sealed per band, official: 16: 0.034  20: 0.056  24: 0.118  28: 0.429  32: 0.659  36: 0.965  42: 0.989
+  sealed per band, ruint: 16: 0.179  20: 0.237  24: 0.342  28: 0.579  32: 0.743  36: 0.930  42: 0.921
+  sealed per band, montgomery: 16: 0.092  20: 0.125  24: 0.193  28: 0.430  32: 0.592  36: 0.803  42: 0.815
+    seed 71: tuning 0.575 sealed 0.532 gap -0.112 [-0.353,+0.142] minus A -0.058 [-0.257,+0.125] | order rho>pm1>ecm>td td 377 rho 689 pm1 0 ecm 35279 | kc 28 bc 0.95 mc 1.003 tc 1.51 lc 1.25
+    seed 72: tuning 0.558 sealed 0.561 gap +0.009 [-0.190,+0.213] minus A +0.022 [-0.150,+0.183] | order ecm>td>pm1>rho td 0 rho 1129 pm1 0 ecm 71413 | kc 22 bc 1.27 mc 1.125 tc 1.28 lc 1.31
+    seed 73: tuning 0.578 sealed 1.268 gap +1.133 [+0.723,+1.601] minus A +1.246 [+0.858,+1.703] OVERFIT | order rho>pm1>ecm>td td 0 rho 2540 pm1 0 ecm 396689 | kc 4 bc 1.24 mc 0.143 tc 3.48 lc 1.96
+    seed 74: tuning 0.568 sealed 0.605 gap +0.091 [-0.151,+0.363] minus A -0.018 [-0.160,+0.125] | order rho>ecm>td>pm1 td 0 rho 0 pm1 0 ecm 38058 | kc 26 bc 1.61 mc 0.219 tc 1.20 lc 1.22
+    seed 75: tuning 0.594 sealed 0.563 gap -0.079 [-0.246,+0.107] minus A -0.085 [-0.380,+0.203] | order ecm>rho>pm1>td td 0 rho 49150 pm1 0 ecm 0 | kc 16 bc 0.91 mc 1.617 tc 1.56 lc 1.59
+    seed 76: tuning 0.598 sealed 0.674 gap +0.173 [-0.062,+0.421] minus A +0.087 [-0.102,+0.263] | order ecm>rho>pm1>td td 0 rho 800 pm1 0 ecm 45828 | kc 2 bc 0.98 mc 0.362 tc 1.05 lc 1.83
+    seed 77: tuning 0.569 sealed 0.643 gap +0.177 [-0.056,+0.417] minus A +0.019 [-0.169,+0.210] | order td>pm1>ecm>rho td 0 rho 3239 pm1 0 ecm 53489 | kc 25 bc 0.84 mc 1.574 tc 1.47 lc 1.75
+    seed 78: tuning 0.616 sealed 0.652 gap +0.084 [-0.152,+0.331] minus A +0.052 [-0.174,+0.282] | order td>rho>pm1>ecm td 1360 rho 446 pm1 0 ecm 100914 | kc 18 bc 0.95 mc 0.859 tc 1.27 lc 1.92
+evolution-fresh: best-of-8 tuning 0.449 (seed 77), sealed 0.525; median-of-8 tuning 0.534, sealed 0.538
+  T1: reached 0/0
+  T2: reached 0/0
+  OVERFIT (gap above A's): 1/8 runs; overfit at all (gap above 0): 1/8
+  winner: order rho>pm1>ecm>td td 5043 rho 5001 pm1 0 ecm 49369 | kc 26 bc 1.09 mc 0.893 tc 1.45 lc 1.13
+  sealed per band, official: 16: 0.001  20: 0.012  24: 0.190  28: 0.620  32: 0.745  36: 1.058  42: 1.035
+  sealed per band, ruint: 16: 0.008  20: 0.064  24: 0.354  28: 0.613  32: 0.716  36: 0.857  42: 0.829
+  sealed per band, montgomery: 16: 0.005  20: 0.034  24: 0.234  28: 0.529  32: 0.626  36: 0.822  42: 0.803
+    seed 71: tuning 0.557 sealed 0.550 gap -0.016 [-0.281,+0.275] minus A +0.037 [-0.150,+0.227] | order pm1>rho>td>ecm td 595 rho 2352 pm1 0 ecm 51565 | kc 9 bc 0.84 mc 1.432 tc 1.13 lc 1.41
+    seed 72: tuning 0.551 sealed 0.523 gap -0.075 [-0.199,+0.045] minus A -0.062 [-0.310,+0.158] | order rho>ecm>td>pm1 td 514 rho 47974 pm1 0 ecm 2232 | kc 31 bc 1.12 mc 0.798 tc 1.14 lc 1.53
+    seed 73: tuning 0.608 sealed 0.829 gap +0.448 [+0.126,+0.774] minus A +0.560 [+0.259,+0.866] OVERFIT | order rho>pm1>ecm>td td 0 rho 9000 pm1 0 ecm 1048576 | kc 13 bc 0.95 mc 7.476 tc 3.21 lc 1.12
+    seed 74: tuning 0.491 sealed 0.517 gap +0.074 [-0.204,+0.313] minus A -0.035 [-0.207,+0.088] | order td>rho>ecm>pm1 td 2928 rho 2937 pm1 0 ecm 48991 | kc 6 bc 0.88 mc 1.272 tc 1.54 lc 1.39
+    seed 75: tuning 0.522 sealed 0.519 gap -0.010 [-0.260,+0.218] minus A -0.015 [-0.214,+0.150] | order pm1>rho>ecm>td td 17005 rho 3042 pm1 0 ecm 69906 | kc 10 bc 0.92 mc 2.109 tc 1.28 lc 1.33
+    seed 76: tuning 0.496 sealed 0.550 gap +0.149 [-0.072,+0.375] minus A +0.062 [-0.153,+0.266] | order rho>pm1>ecm>td td 833 rho 256 pm1 0 ecm 69285 | kc 7 bc 1.18 mc 0.557 tc 1.02 lc 1.61
+    seed 77: tuning 0.449 sealed 0.525 gap +0.226 [-0.051,+0.449] minus A +0.067 [-0.139,+0.229] | order rho>pm1>ecm>td td 5043 rho 5001 pm1 0 ecm 49369 | kc 26 bc 1.09 mc 0.893 tc 1.45 lc 1.13
+    seed 78: tuning 0.545 sealed 0.562 gap +0.045 [-0.167,+0.275] minus A +0.013 [-0.120,+0.154] | order td>rho>pm1>ecm td 725 rho 1271 pm1 0 ecm 40103 | kc 3 bc 0.72 mc 1.664 tc 1.41 lc 1.56
+tpe-tuned: best-of-8 tuning 0.417 (seed 76), sealed 0.459; median-of-8 tuning 0.478, sealed 0.511
+  T1: reached 8/8, median 34, IQR [5, 152]
+  T2: reached 8/8, median 146, IQR [48, 366]
+  OVERFIT (gap above A's): 1/8 runs; overfit at all (gap above 0): 2/8
+  winner: order pm1>td>rho>ecm td 504 rho 13762 pm1 0 ecm 31959 | kc 6 bc 1.08 mc 0.434 tc 1.27 lc 1.33
+  sealed per band, official: 16: 0.002  20: 0.006  24: 0.073  28: 0.533  32: 0.677  36: 0.940  42: 0.934
+  sealed per band, ruint: 16: 0.009  20: 0.032  24: 0.196  28: 0.578  32: 0.739  36: 0.829  42: 0.837
+  sealed per band, montgomery: 16: 0.006  20: 0.019  24: 0.122  28: 0.518  32: 0.655  36: 0.836  42: 0.831
+    seed 71: tuning 0.488 sealed 0.495 gap +0.020 [-0.189,+0.259] minus A +0.074 [-0.115,+0.273] | order td>rho>pm1>ecm td 0 rho 3300 pm1 0 ecm 65504 | kc 9 bc 0.75 mc 3.053 tc 1.01 lc 1.68
+    seed 72: tuning 0.514 sealed 0.518 gap +0.012 [-0.182,+0.202] minus A +0.025 [-0.148,+0.180] | order rho>pm1>td>ecm td 0 rho 0 pm1 0 ecm 63245 | kc 19 bc 1.12 mc 1.020 tc 1.14 lc 1.24
+    seed 73: tuning 0.572 sealed 0.816 gap +0.512 [+0.187,+0.841] minus A +0.625 [+0.322,+0.935] OVERFIT | order td>rho>pm1>ecm td 0 rho 1546 pm1 0 ecm 710966 | kc 31 bc 0.91 mc 2.878 tc 2.86 lc 1.16
+    seed 74: tuning 0.466 sealed 0.482 gap +0.049 [-0.125,+0.179] minus A -0.060 [-0.332,+0.144] | order td>ecm>rho>pm1 td 0 rho 46358 pm1 0 ecm 0 | kc 4 bc 1.08 mc 0.341 tc 1.00 lc 1.56
+    seed 75: tuning 0.479 sealed 0.518 gap +0.112 [-0.139,+0.339] minus A +0.107 [-0.051,+0.226] | order pm1>ecm>td>rho td 1030 rho 670 pm1 0 ecm 32110 | kc 29 bc 1.09 mc 0.827 tc 1.02 lc 1.68
+    seed 76: tuning 0.417 sealed 0.459 gap +0.140 [-0.110,+0.323] minus A +0.054 [-0.132,+0.176] | order pm1>td>rho>ecm td 504 rho 13762 pm1 0 ecm 31959 | kc 6 bc 1.08 mc 0.434 tc 1.27 lc 1.33
+    seed 77: tuning 0.423 sealed 0.504 gap +0.251 [+0.009,+0.458] minus A +0.093 [-0.070,+0.210] | order rho>pm1>ecm>td td 0 rho 6365 pm1 0 ecm 36858 | kc 17 bc 1.14 mc 0.617 tc 1.30 lc 1.52
+    seed 78: tuning 0.477 sealed 0.518 gap +0.121 [-0.121,+0.308] minus A +0.089 [-0.135,+0.252] | order rho>ecm>td>pm1 td 323 rho 0 pm1 0 ecm 62686 | kc 9 bc 0.98 mc 1.227 tc 1.26 lc 1.15
+
+clause_a: {'target': np.float64(0.3896320334158959), 'evolution_evaluations': 1356, 'tpe_evaluations': None, 'holds': False}
+
+clause_b: {'log2_tpe_over_evolution': -0.0901102185485178, 'ci': [-0.10712960864349512, -0.06301991361740379], 'tie': False, 'tpe_better': True, 'holds': True}
+
+random_clearly_worst: True

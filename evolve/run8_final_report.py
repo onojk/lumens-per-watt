@@ -100,8 +100,11 @@ for m, rs in by.items():
                "gap": math.log2(cg_s.fit(all_s) / cg_t.fit(all_t)), "gap_ci": q(gaps),
                "gap_minus_A": math.log2(cg_s.fit(all_s) / cg_t.fit(all_t)) - math.log2(cA_sealed.fit(all_s) / cA_t.fit(all_t)),
                "gap_minus_A_ci": q(diffs), "convergence": r.get("convergence"), "trace": r.get("trace")}
-        row["overfit_at_all"] = row["gap_ci"][0] > 0
-        row["OVERFIT"] = row["gap_minus_A_ci"][0] > 0
+        row["sealed_miss"] = cg_s.miss          # a sealed number not factored within the cap
+        if cg_s.miss:                           # scored as Evaluator scores a miss (added after the run)
+            row["sealed"], row["gap"], row["gap_minus_A"] = R.MISS_FITNESS, math.inf, math.inf
+        row["overfit_at_all"] = row["gap_ci"][0] > 0 or cg_s.miss
+        row["OVERFIT"] = row["gap_minus_A_ci"][0] > 0 or cg_s.miss
         rows.append(row)
         best_costs.setdefault(m, {})[r["seed"]] = cg_s
     tun = [x["tuning"] for x in rows]
@@ -143,8 +146,9 @@ if "evolution" in out["methods"] and "tpe" in out["methods"] and by["tpe"][0].ge
     E, T = out["methods"]["evolution"], out["methods"]["tpe"]
     target = E["best_of_8"]["tuning"]
     te, tt = best_traj("evolution"), best_traj("tpe")
-    ie = next((i + 1 for i, f in enumerate(te) if f <= target), None)
-    it_ = next((i + 1 for i, f in enumerate(tt) if f <= target), None)
+    tol = target * (1 + 1e-12)         # the recomputed target can differ from the traced value in the last ulp
+    ie = next((i + 1 for i, f in enumerate(te) if f <= tol), None)
+    it_ = next((i + 1 for i, f in enumerate(tt) if f <= tol), None)
     out["clause_a"] = {"target": target, "evolution_evaluations": ie, "tpe_evaluations": it_,
                        "holds": it_ is not None and ie is not None and it_ < ie}
     ce, ct = best_costs["evolution"][E["best_of_8"]["seed"]], best_costs["tpe"][T["best_of_8"]["seed"]]
@@ -188,7 +192,7 @@ for m, o in out["methods"].items():
         print(f"  sealed per band, {P}: " + "  ".join(f"{pb}: {v:.3f}" for pb, v in o["per_band_sealed_best"][P].items()))
     for x in o["rows"]:
         a, bq = fmt(x["point"])
-        print(f"    seed {x['seed']}: tuning {x['tuning']:.3f} sealed {x['sealed']:.3f} gap {x['gap']:+.3f} [{x['gap_ci'][0]:+.3f},{x['gap_ci'][1]:+.3f}]"
+        print(f"    seed {x['seed']}: tuning {x['tuning']:.3f} sealed {'MISS' if x['sealed_miss'] else format(x['sealed'], '.3f')} gap {x['gap']:+.3f} [{x['gap_ci'][0]:+.3f},{x['gap_ci'][1]:+.3f}]"
               f" minus A {x['gap_minus_A']:+.3f} [{x['gap_minus_A_ci'][0]:+.3f},{x['gap_minus_A_ci'][1]:+.3f}]{' OVERFIT' if x['OVERFIT'] else ''} | {a} | {bq}")
 for k in ("clause_a", "clause_b", "random_clearly_worst", "probe_vs_cold_tpe", "A_check"):
     if k in out:

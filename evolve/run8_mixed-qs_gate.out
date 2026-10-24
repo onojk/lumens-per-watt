@@ -1,0 +1,10 @@
+mixed-qs: ACCEPT gate (no band > 1.5x qs + lc 1.4 alone, any pricing), sealed numbers, 560 (80 per band)
+  allocation A    passes 1/1; worst band ratio 1.266 (seed None, band 36, ruint)
+  evolution       passes 7/8; worst band ratio 0.948 (seed 74, band 36, official); FAIL: seed 74 0.948 band 36 official (miss)
+  tpe             passes 8/8; worst band ratio 0.960 (seed 74, band 36, official)
+  random          passes 8/8; worst band ratio 1.010 (seed 76, band 36, official)
+  tpe-warm        passes 8/8; worst band ratio 0.944 (seed 77, band 36, official)
+
+clause (a), best-of-4 over seeds 71-74 (literal wording): {'seeds': (71, 72, 73, 74), 'target': 0.42733987162372505, 'evolution_evaluations': 1181, 'tpe_evaluations': None, 'holds': False}
+
+probe (tpe-warm best-of-8) vs A, sealed: {'probe_seed': 77, 'probe_sealed': np.float64(0.4821070374783072), 'A_sealed': np.float64(0.6748812590783602), 'log2': -0.4852802023893171, 'ci': [-0.5430191912723223, -0.4293093104045622], 'verdict': 'partition study under-explored by 1.400x'}
