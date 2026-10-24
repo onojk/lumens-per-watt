@@ -73,6 +73,29 @@ python3 ancestry.py N11-0076   # family line of any named genome
 
 Outputs: `evolve.log`, `results.json`, `lineage.jsonl`, `validation.json`. Runs are seeded, so the same commands reproduce the same numbers on any machine.
 
+## Stage 7: large primes (Oct 23, 2026)
+
+qs gains one gene, lc: a sieve candidate whose leftover cofactor is a prime below L = B^lc is kept as a partial relation, and two partials with the same large prime combine into one full relation (lc = 1.0 is today's qs, op for op). Cost model in `NOTES.md` ("Stage 7"), written before the code; acceptance in `evolve/stage7_accept.py` (40–60 bits: complete, exact per-phase accounting including the new lp phase, every relation and dependency verified, every lp charge caught by a one-op mutation); lampcore parity on 2,638 qs pairs. lc = 1.4 was fixed in advance on separate tuning seeds (`evolve/stage7_lc_sweep.py`).
+
+Comparison (`evolve/stage7_compare.py`): tuned qs (kc 32, bc 1.1, mc 0.25, tc 1.38) against the same genes with lc 1.4, on the Run 6 ACCEPT numbers, cap 2^28, no misses, no retries.
+
+log₂(mean ops) [95% interval] / worst [95% interval]:
+
+| Algorithm | 72 bits | 78 bits | 84 bits | Growth per bit, 72→84 |
+|---|---|---|---|---|
+| **qs + lc 1.4** | **17.24** [17.18, 17.30] / 18.15 [17.61, 18.15] | **18.14** [18.09, 18.20] / **18.79** [18.59, 18.79] | **19.08** [19.03, 19.12] / **19.54** [19.43, 19.54] | 0.153 |
+| tuned qs (lc 1.0) | 17.43 [17.36, 17.51] / 18.30 [18.02, 18.30] | 18.28 [18.21, 18.36] / 19.10 [18.89, 19.10] | 19.22 [19.16, 19.27] / 19.90 [19.57, 19.90] | 0.149 |
+
+What it shows:
+
+- **A constant gain of about 1.1×.** On the same numbers lc 1.4 needs 1.14×, 1.10× and 1.10× fewer ops at 72, 78 and 84 bits. The mean intervals separate at every size (at 78 bits by 0.01). The worst case is better at 78 and 84 bits; at 72 the intervals overlap.
+- **Growth unchanged.** 0.153 log₂-ops per bit against 0.149: a better constant, not a better exponent.
+- **Where the ops moved.** Sieving falls about 1.6× and polynomial setup 1.2–1.3× (fewer polynomials are needed); confirmation rises 1.9–2.1× (more candidates, each paying full trial division); the lp phase itself costs 2^12–2^13.5. About 0.14 combined relations per partial, and about 30% of the matrix rows are combined relations.
+- **The comparison favours tuned qs.** Tuned qs's genes were picked by the boundary sweep on these same ACCEPT numbers, while lc 1.4 was picked on separate seeds, so tuned qs's numbers carry some selection bias in its favour.
+- **Against the prediction.** NOTES expected little or no gain at 72–84 bits, because confirmation is overcharged; the gain is small but real.
+
+Data: `evolve/stage7_compare.json` (and `.out`), `evolve/stage7_accept.json`, `evolve/stage7_lc_sweep.json`.
+
 ## Run 6: island model with qs in the deck (Oct 23, 2026)
 
 Four islands of 16 genomes per run, top-2 ring migration every 5 generations, a 2-slot diversity reserve, 20 generations, seeds 51–54 (51–52 no-luck, 53–54 luck), qs in both decks. Training at 66, 72, and 78 bits (cap 2^26), gate at 84 bits (cap 2^28). Outputs in `evolve/run6/`; harness `evolve/evolve_run6.py`; plan in `PLAN.md`.
