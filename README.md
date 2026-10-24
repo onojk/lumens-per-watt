@@ -73,6 +73,14 @@ python3 ancestry.py N11-0076   # family line of any named genome
 
 Outputs: `evolve.log`, `results.json`, `lineage.jsonl`, `validation.json`. Runs are seeded, so the same commands reproduce the same numbers on any machine.
 
+## Stage 9: racing two lamps on one meter (Oct 24, 2026)
+
+A race element runs two stages interleaved on one meter, in fixed slices of official ops, until either finds a factor (`evolve/race.py`, `lampcore/src/race.rs`; cost model and predictions in `NOTES.md`, written first). Switching is free, each side resumes exactly where it stopped (checked op for op for every lamp), and both cores agree on every race. The first comparison (`evolve/race_compare.py`, 21,600 races) raced ECM and rho against tuned qs + lc 1.4, and ECM against N51-0917's qs, on the Stage 8 numbers, with slices of 2^8, 2^10 and 2^14 ops, equal or scaled by calibrated price.
+
+- **The race never won.** Its mean was below both of its sides alone in 0 of 810 cases, its worst case never beat both sides' worst, and it failed its own bar (never more than about 2× the better side) in 253 of 270 combinations under at least one of the three pricings.
+- **Why:** qs charges each polynomial's sieve as one chunk, so its turns overrun the slice (by 1.6 slices on average at 2^8). The qs side ends up spending most of the race's ops even when the other side is the one that finds the factor.
+- **Verdict:** the fixed-slice race is ruled out under these conditions (`MOVES.md`, Portfolio row). Finer-grained qs charging, adaptive slices or a mixed population would reopen it.
+
 ## Direction: learning from all algorithms (Oct 23, 2026)
 
 - **Most of factoring's tools were imported from other fields.** Rho came from collision and cycle finding, and QS from Eratosthenes' sieve plus GF(2) linear algebra. Block Lanczos came from numerical analysis, ECM's stage 2 from baby-step giant-step, and our race from SAT-solver portfolios.

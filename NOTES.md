@@ -710,3 +710,29 @@ Digital-evolution anecdotes of evolved agents exploiting simulator bugs (Lehman 
 ## 2026-10-24 — Phase 1 pricing rule: oversized multiplies (before the batch smoothness move is built)
 
 Oversized multiplies (product/remainder trees) are charged per actual operand sizes: ⌈L1/b_N⌉ · ⌈L2/b_N⌉ N-sized multiplies per product, minimum 1, where b_N = bit length of N and L1, L2 are the operands' bit lengths. Each remainder-tree reduction is charged as a multiply of the same operand sizes. This is overcharge-safe against Karatsuba/FFT; a faster implementation is an unclaimed improvement, not a meter defect.
+
+## 2026-10-24 — Stage 9 result: the fixed-slice race fails its robustness bar
+
+Code: `evolve/race.py`, `lampcore/src/race.rs` (accepted: `race_accept.py`, 0 failures; parity 653 race pairs, 0 mismatches). Comparison: `evolve/race_compare.py` (committed before running), `race_compare.json`/`.out`; scoring against the predictions above: `race_report.py`/`.out`. 21,600 races (3 races × 15 Stage 8 cells × 6 slice settings × 80 numbers), cap 2^28, no misses; Python and lampcore agree on every race's ops and per-side ops. The unequal-slice ratios were asserted equal to addendum 9's table before the run.
+
+**Headline.**
+- The race's mean is below both its sides alone in **0 of 810** (race, setting, cell, pricing) cases.
+- Its official worst case is below both sides' worst in **0 of 135** equal-slice cells.
+- The robust verdict (a failure under any pricing: worse than 2× the better side, or worse than the worse side) fails in **253 of 270** (race, setting, cell) combinations.
+
+**The measured cause: qs's per-slice overshoot.** qs charges each polynomial's sieve updates and scan as single chunks, so its turns run past the slice: mean overshoot 1.6 s at s = 2^8, 0.9 s at 2^10 and 0.5 s at 2^14 (against tuned qs + lc 1.4; against N51-0917's qs, with its wider interval, 4.2 s, 2.2 s and 0.2 s). The qs side spends 65–83% of the race's official ops at 2^8 and 2^10, and 45–52% at 2^14. Equal official slices already give about 2× the faster side when one side dominates; the overshoot pushes the race past that.
+
+**Predictions, scored** (stated before measurement; none restated):
+- **"At most about twice the cheaper side": PREDICTION MISS** at 2^8 and 2^10, with the cumulative overshoot as the measured cause (the bound correction, Oct 24). Official race(ECM, qs) over ECM: balanced 1.95–2.49× at 2^8 and 1.90–2.31× at 2^10; unbalanced 2.4–4.9× and 2.2–4.2×. At 2^14 it holds on balanced numbers (1.27–1.93×) and misses on unbalanced (1.48–3.29×).
+- **Tied sides → the race beats both: PREDICTION MISS in every tied cell** (0 of 126 tie cases across races, settings and the calibrated pricings).
+- **Balanced, official, race(ECM, qs):** worse than ECM by 1.3–2×: holds at 2^14 (1.27–1.93×), misses at most sizes at 2^8 and 2^10 (1.90–2.49×). Better than qs alone by 1.3–1.6×: **miss** (0.94–1.13× at 2^8 and 2^10; 1.14–2.04× at 2^14, in range only at 66 bits). Worst case no worse than about 2× qs's: **holds** (1.2–1.9×).
+- **race(rho, qs) about 2× qs at 72–84, official: holds** (1.31–1.91×). It does not beat both at 54–60 bits.
+- **Unbalanced, official:** race(rho, qs) within about 2× of rho at 24-bit p: **miss** (3.1–5.0× at 2^8, 1.6–2.9× at 2^14); close to qs at 32-bit p: holds (0.71–1.72×). race(ECM, qs) beats qs alone in every cell: **holds** (9/9 at every s); within about 2× of ECM: **miss** (2.4–4.9× at 2^8, 1.5–3.3× at 2^14). race(ECM, N51-0917's qs) within about 2× of ECM: **miss** at 2^8 and 2^10 (3.2–6.0×), 1.5–2.1× at 2^14.
+- **Calibrated, the addendum 4 rule** (lose to a leading side by at most the pricing's bound and beat the other; beat both when tied), passes per setting out of 15 cells: race(ECM, qs + lc 1.4) ruint 0–7, Montgomery 0–3; race(rho, qs + lc 1.4) ruint 5–10, Montgomery 5–7; race(ECM, N51-0917's qs) ruint 2–9, Montgomery 1–6. Every pass is a lead cell; no tie cell passes.
+- **Addendum 9 (unequal slices),** change in log₂(race / better side), unequal minus equal, median over cells:
+  - At 2^8, "little change": **miss.** ruint −0.26 / −0.71 / −0.50 for the three races; official +0.40 / −0.08 / +0.41.
+  - At 2^10 and 2^14, calibrated cost moves toward the better side: **holds under ruint** (−0.14 to −0.62) and for race(rho, qs) under Montgomery (−0.38, −0.17); **misses under Montgomery for the two ECM races** (−0.02 to +0.09).
+  - Official gets slightly worse: worse, but **not slightly** for the ECM races (+0.50 to +1.29, i.e. 1.4–2.4×); about unchanged for race(rho, qs) (−0.07, +0.09).
+
+**Verdict: the fixed-slice race is RULED OUT** for ECM or rho against qs (tuned qs + lc 1.4, or N51-0917's qs), on the Stage 8 populations (balanced 54–84 bits; unbalanced 72/78/84 × 24/28/32), with equal slices 2^8 / 2^10 / 2^14 or addendum 9's π-scaled slices, under all three pricings. The combinator itself stays (accepted, with parity), since later work runs schedules through it. Conditions not tested, any of which would reopen the question: qs's sieve charged in smaller chunks per polynomial (smaller overshoot), adaptive or budget-split slices, a race between two non-qs lamps, and a mixed population (the partition study).
+
