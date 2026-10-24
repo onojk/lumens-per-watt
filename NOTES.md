@@ -530,6 +530,10 @@ The price table and the calibrated re-score are reported under both references. 
 - **Identity:** sb = 0 equals A alone, and sa = 0 equals B alone, op for op: ops, factor, tests, hits, stage, k, and every phase. This covers every pair of lamp types (including qs with lc 1.4, CFRAC, and ECM), on numbers at 40–84 bits.
 - **Interleaving check:** in a race, each side's own charge sequence (phase, size, in order) equals the prefix of that lamp's charge sequence when run alone. That proves nothing is redone or skipped. Each slice's length is at least its size, and below its size plus the side's largest single charge, except the final slice of the race.
 - **The race bound (a provable property, checked on every run).** With slices s_a = s_b = s, if A alone needs T_A ops and B alone T_B, the race uses at most 2·min(T_A, T_B) + s + c ops, where c is the larger side's largest single charge. A single-side end and the cap are handled as above.
+  - **Correction (Oct 24, to the math only; flagged).** The bound above is wrong when a side charges in large chunks: the other side overshoots its slice on every slice, not once, so a single c does not cover it. Found while writing the acceptance test, confirmed by a smoke test before any comparison (60 bits, s = 256: ECM alone 3,945 ops, race(ECM, qs) 14,998). The corrected forms, with equal slices s:
+    - **A priori:** if side A finishes first at T_A ops, race ≤ T_A + (⌈T_A/s⌉ + 1)·(s + c_B), where c_B is the other side's largest single charge. For c_B ≈ 1–2 (ECM, rho, td) this is about 2×. For B = qs at s = 2^8 or 2^10, the factor is about 1 + (s + c_qs)/s.
+    - **Measured check (must hold on every run):** race ≤ 2·min(T_A, T_B) + s + O_other, where O_other is the other side's total overshoot (the sum over its slices of length − s). Each slice's overshoot is below that side's largest charge. The maximum single charge c per side is reported beside it.
+  - **The prediction is not restated** ("at most about twice the cheaper side" stays as written). If races against qs at 2^8 or 2^10 exceed 2×, that is recorded as a **prediction miss**, with the cumulative overshoot as the measured cause.
 - **Caps that stop mid-slice** on either side, and in the middle of a large chunk, asserted.
 - **Parity** after the Rust port, on all of the above, plus random races.
 
@@ -669,7 +673,39 @@ Recommended: (c) as evolution's fitness + (e) in reports. Decision (Oct 23, user
 **Caveats.** One laptop, one build. The i128 and U256 paths are lampcore's, not the fastest possible. The confirm, lp and cf_step mappings are upper bounds, as planned. One unexplained oddity, not used in any price: the loop-overhead baseline is 0.31 ns on the E-core against 1.25 ns on the P-core.
 7. **race(ECM, N51-0917) is race(ECM, N51-0917's qs stage)**: `{"t": "qs", "kc": 32, "bc": 1.13, "mc": 1.00, "tc": 1.38}` (exact values from `run6/accept.json`), with no lc. A race side is a single stage, and N51-0917's two sq stages never run: the Run 6 ablation (240/240 finished by the first qs), and on the Stage 8 populations `calibrate.py`'s trace assert (each run's ops equal its qs trace's). This race and race(ECM, qs + lc 1.4) differ in the qs genes and also in large primes (lc 1.0 against 1.4).
 8. **Per-type counts in Stage 9 come from Python traces**, per side, which is fine at this scale. Lampcore per-type counters are a Run 8 prerequisite (PLAN.md, Run 8) and do not block Stage 9.
+9. **A fourth slice setting: unequal slices that equalize calibrated spend** (written Oct 24, before race_compare runs).
+   - For each race and each s in {2^8, 2^10, 2^14}: sa = s for the non-qs side, and sb = round(s · π_other / π_qs) for the qs side.
+   - π is the card's mean ruint-calibrated price per official op on that population: its total calibrated cost divided by its total official ops, over the solved numbers of the cell, from `calibrate_counts.json` (the Stage 8 traces) and the median P-core ruint prices in `calibrate.json`. Computed now, never from race results. For race(rho, qs), rho's π the same way.
+   - The ratios π_other / π_qs, per cell:
+
+     | Cell | ECM / qs + lc 1.4 | rho / qs + lc 1.4 | ECM / N51-0917's qs |
+     |---|---|---|---|
+     | 54 | 3.18 | 3.28 | 5.23 |
+     | 60 | 4.25 | 4.39 | 6.97 |
+     | 66 | 5.54 | 5.70 | 8.93 |
+     | 72 | 6.33 | 6.52 | 11.93 |
+     | 78 | 5.85 | 6.03 | 14.38 |
+     | 84 | 5.45 | 5.62 | 16.75 |
+     | 72/24 | 6.88 | 7.11 | 12.01 |
+     | 72/28 | 6.89 | 7.11 | 11.87 |
+     | 72/32 | 6.92 | 7.13 | 12.10 |
+     | 78/24 | 4.94 | 5.11 | 14.45 |
+     | 78/28 | 5.88 | 6.06 | 14.44 |
+     | 78/32 | 5.10 | 5.26 | 14.31 |
+     | 84/24 | 5.26 | 5.44 | 16.81 |
+     | 84/28 | 5.71 | 5.89 | 16.52 |
+     | 84/32 | 5.05 | 5.20 | 16.86 |
+
+     (π_ECM ≈ 1.000, π_rho ≈ 1.03; π for qs + lc 1.4 is 0.15–0.31, and for N51-0917's qs 0.06–0.19.)
+   - **Prediction (stated before measurement):**
+     - At 2^8: little change against equal slices. qs's turn is already about one polynomial (the overshoot), so the ratio barely moves its share.
+     - At 2^10 and 2^14: calibrated cost moves toward the better side. Under ruint and Montgomery the race gets closer to the calibrated leader than with equal slices. Under the official count it gets slightly worse (more qs spend at official prices).
+   - Reported like the other settings: three pricings, the (e) call, overshoot, and the maximum single charge per side.
 
 ## 2026-10-24 — Meter safety: the outside case
 
 Digital-evolution anecdotes of evolved agents exploiting simulator bugs (Lehman et al. 2018, arXiv 1803.03453) are the outside case for the sealed meter, the mutation tests and robust pricing: an evolved genome that finds an under-charge in our meter would "win" in exactly that way.
+
+## 2026-10-24 — Phase 1 pricing rule: oversized multiplies (before the batch smoothness move is built)
+
+Oversized multiplies (product/remainder trees) are charged per actual operand sizes: ⌈L1/b_N⌉ · ⌈L2/b_N⌉ N-sized multiplies per product, minimum 1, where b_N = bit length of N and L1, L2 are the operands' bit lengths. Each remainder-tree reduction is charged as a multiply of the same operand sizes. This is overcharge-safe against Karatsuba/FFT; a faster implementation is an unclaimed improvement, not a meter defect.
