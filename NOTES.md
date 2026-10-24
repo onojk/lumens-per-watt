@@ -535,7 +535,7 @@ The price table and the calibrated re-score are reported under both references. 
 
 **PLAN's budget-split gene** (the share of the remaining budget either side may spend) is deferred. The first implementation has sa and sb only. The split comes as an addendum with its own identity case: a split of 1.0 equals no split.
 
-**First comparison.** race(ECM, qs + lc 1.4) and race(rho, qs + lc 1.4), each against its two sides alone, on both Stage 8 populations (balanced 54–84 bits; unbalanced 72/78/84 × 24/28/32), cap 2^28. Slice sizes are genes. For this comparison, three settings fixed before measurement, sa = sb ∈ {2^8, 2^10, 2^14}, are all reported, so the sensitivity to slice size is visible. Tuning them on seeds comes with Run 8. Means and worst cases with intervals, under the official count and under the calibrated prices (both references, calibrate.py).
+**First comparison.** race(ECM, qs + lc 1.4) and race(rho, qs + lc 1.4) (and race(ECM, N51-0917): addendum 6), each against its two sides alone, on both Stage 8 populations (balanced 54–84 bits; unbalanced 72/78/84 × 24/28/32), cap 2^28. Slice sizes are genes. For this comparison, three settings fixed before measurement, sa = sb ∈ {2^8, 2^10, 2^14}, are all reported, so the sensitivity to slice size is visible. Tuning them on seeds comes with Run 8. Means and worst cases with intervals, under the official count and under the calibrated prices (both references, calibrate.py).
 
 **Prediction (stated before measurement).**
 - **Per number:** a race costs at most about twice the cheaper side, by the race bound. So it can never beat the better side alone on a given number by more than one slice, and it loses to it by up to 2× where one side dominates.
@@ -582,6 +582,9 @@ The price table and the calibrated re-score are reported under both references. 
   - **ECM, rho and td** charge 1–2 ops at a time, so they interleave at any slice size.
 
   At sa = sb = 2^8 and 2^10 in the first comparison, qs's slices will mostly be a single polynomial: an effective qs slice of a few thousand ops at 84 bits. The race bound's c term carries that, and the overshoot report shows its size.
+
+5. **Slices are measured on the official meter.** sa and sb count official ops, so the schedule (which side runs when, and every switch point) is deterministic and identical under every pricing. Calibrated scores are computed afterwards from per-type counts, never used to schedule. The race records per-type counts (the types `calibrate.py` reprices) separately for each side, so each pricing can reprice both sides; the per-type counts of the two sides sum to the race's totals, checked on every acceptance run.
+6. **The comparison adds race(ECM, N51-0917)**, because N51-0917 leads balanced 60–84 bits under both calibrated pricings (calibration result entry). race(ECM, qs + lc 1.4) and race(rho, qs + lc 1.4) stay. Every race result is reported under all three pricings (official, ruint-calibrated, Montgomery-calibrated, with median P-core prices), plus the (e) call per cell: the leader where all three pricings agree, "undecided" elsewhere.
 
 ## 2026-10-23 — Op-price calibration: result (measurement only)
 
@@ -644,6 +647,6 @@ Under ruint, qs's lead at 60–84 bits is settled: the margin is far beyond any 
 - (d) **Lexicographic:** rank by the worst-case pricing first, with ties broken by the official count.
 - (e) **Reporting rule:** a cell is called only where all three pricings agree, and is "undecided" elsewhere.
 
-Recommended: (c) as evolution's fitness + (e) in reports. Decision: OPEN (user).
+Recommended: (c) as evolution's fitness + (e) in reports. Decision (Oct 23, user): (c) as fitness, (e) in reports.
 
 **Caveats.** One laptop, one build. The i128 and U256 paths are lampcore's, not the fastest possible. The confirm, lp and cf_step mappings are upper bounds, as planned. One unexplained oddity, not used in any price: the loop-overhead baseline is 0.31 ns on the E-core against 1.25 ns on the P-core.

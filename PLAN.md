@@ -355,6 +355,27 @@ any scored run, and parity gates the Rust port.
     Run 7).
   - Prerequisites: the relation-economy refactor, and Stages 8 and 9, accepted with
     parity.
+  - **Scoring, decided (Oct 23, user): (c) as fitness, (e) in reports** (NOTES.md,
+    calibration result).
+    - Fitness = the worst result across official, ruint-calibrated and
+      Montgomery-calibrated, using median P-core prices.
+    - Reports call a cell only where all three pricings agree; otherwise the cell is
+      "undecided".
+  - **Consequence: every run scored for Run 8 must record per-type op counts** (the
+    types `calibrate.py` reprices), not just total ops. **Not met today:**
+    - Run 8's evaluation path (Run 6's harness: `evolve_scale.measure_fast` ->
+      `fastlamps.run_many`) records total ops, factor, tests and hits only, without
+      even the phase columns.
+    - Phase columns are not enough: the repricing needs splits within phases (sieve
+      updates vs scans; setup, confirm and lp full vs small; sqrt multiplies vs gcd
+      steps; ECM setup Euclid steps), which today come only from Python traces, far too
+      slow for evolution.
+    - `calibrate.py` prices only ecm, qs and rho. td, sq, ps, pm1 and cfrac (and the race,
+      by its sides) have no mapping.
+    - Needed before Run 8, planning only for now: lampcore emits per-type counters for
+      every card (with parity against Python and an identity check that they sum to
+      each phase and to total ops), a price mapping for every card written in NOTES
+      before use, and the robust fitness computed from those counters in the harness.
 
 ## Illumination maps (planning; visualization only)
 
