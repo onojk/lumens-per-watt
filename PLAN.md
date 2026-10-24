@@ -444,7 +444,9 @@ any scored run, and parity gates the Rust port.
       only kc, bc, mc, tc and lc, with the same evaluation counting, seeds and fitness.
     - **Convergence, pre-registered:** T1 = evaluations to enter A's paired interval; T2 =
       evaluations to reach A's point estimate or better. A's values are computed on each
-      seed's own tuning set, not the partition map's.
+      seed's own tuning set, not the partition map's. Computed per seed, aggregated as the
+      median and IQR across the 8 seeds (not pooled), with the number of seeds that reached
+      T1 and T2 at all, per method.
     - **Winning genomes reported split** into budgets / order and qs genes, side by side
       across methods.
     - **Card order, pre-registered:** evolution changes it by swap mutation (transpositions);
