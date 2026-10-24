@@ -1,0 +1,346 @@
+{
+ "cap_log2": 29,
+ "seed": "770000 + bits",
+ "count": 40,
+ "genomes": {
+  "default": {
+   "t": "qs",
+   "kc": 16,
+   "bc": 1.5,
+   "mc": 4.0,
+   "tc": 2.0
+  },
+  "tuned": {
+   "t": "qs",
+   "kc": 32,
+   "bc": 1.1,
+   "mc": 0.25,
+   "tc": 1.38
+  },
+  "tuned lc 1.4": {
+   "t": "qs",
+   "kc": 32,
+   "bc": 1.1,
+   "mc": 0.25,
+   "tc": 1.38,
+   "lc": 1.4
+  }
+ },
+ "injected": {
+  "check on": {
+   "valid": {
+    "kept": true,
+    "ops": 12,
+    "formula": 12,
+    "verdict": "ok"
+   },
+   "invalid": {
+    "kept": false,
+    "ops": 11,
+    "formula": 11,
+    "verdict": "invalid"
+   },
+   "trivial all-even": {
+    "kept": false,
+    "ops": 14,
+    "formula": 14,
+    "verdict": "trivial"
+   },
+   "nontrivial all-even": {
+    "kept": true,
+    "ops": 14,
+    "formula": 14,
+    "verdict": "ok",
+    "splits": true
+   }
+  },
+  "check off": {
+   "valid": {
+    "kept": true,
+    "ops": 0,
+    "formula": 0,
+    "verdict": "ok"
+   },
+   "invalid": {
+    "kept": true,
+    "ops": 0,
+    "formula": 0,
+    "verdict": "invalid"
+   },
+   "trivial all-even": {
+    "kept": true,
+    "ops": 0,
+    "formula": 0,
+    "verdict": "trivial"
+   },
+   "nontrivial all-even": {
+    "kept": true,
+    "ops": 0,
+    "formula": 0,
+    "verdict": "ok"
+   }
+  }
+ },
+ "injected_pass": true,
+ "results": {
+  "default": {
+   "40": {
+    "n": 40,
+    "solved": 40,
+    "exact": 40,
+    "rejects_agree": 40,
+    "identity_runs": 40,
+    "runs_with_rejections": 0,
+    "rejected": 0,
+    "invalid": 0,
+    "trivial": 0,
+    "submitted": 1421,
+    "check_ops": 29672,
+    "pass_": true
+   },
+   "44": {
+    "n": 40,
+    "solved": 40,
+    "exact": 40,
+    "rejects_agree": 40,
+    "identity_runs": 40,
+    "runs_with_rejections": 0,
+    "rejected": 0,
+    "invalid": 0,
+    "trivial": 0,
+    "submitted": 1573,
+    "check_ops": 33932,
+    "pass_": true
+   },
+   "48": {
+    "n": 40,
+    "solved": 40,
+    "exact": 40,
+    "rejects_agree": 40,
+    "identity_runs": 40,
+    "runs_with_rejections": 0,
+    "rejected": 0,
+    "invalid": 0,
+    "trivial": 0,
+    "submitted": 1814,
+    "check_ops": 40558,
+    "pass_": true
+   },
+   "52": {
+    "n": 40,
+    "solved": 40,
+    "exact": 40,
+    "rejects_agree": 40,
+    "identity_runs": 40,
+    "runs_with_rejections": 0,
+    "rejected": 0,
+    "invalid": 0,
+    "trivial": 0,
+    "submitted": 2155,
+    "check_ops": 49031,
+    "pass_": true
+   },
+   "56": {
+    "n": 40,
+    "solved": 40,
+    "exact": 40,
+    "rejects_agree": 40,
+    "identity_runs": 40,
+    "runs_with_rejections": 0,
+    "rejected": 0,
+    "invalid": 0,
+    "trivial": 0,
+    "submitted": 2541,
+    "check_ops": 60159,
+    "pass_": true
+   },
+   "60": {
+    "n": 40,
+    "solved": 40,
+    "exact": 40,
+    "rejects_agree": 40,
+    "identity_runs": 40,
+    "runs_with_rejections": 0,
+    "rejected": 0,
+    "invalid": 0,
+    "trivial": 0,
+    "submitted": 3067,
+    "check_ops": 77568,
+    "pass_": true
+   }
+  },
+  "tuned": {
+   "40": {
+    "n": 40,
+    "solved": 40,
+    "exact": 40,
+    "rejects_agree": 40,
+    "identity_runs": 40,
+    "runs_with_rejections": 0,
+    "rejected": 0,
+    "invalid": 0,
+    "trivial": 0,
+    "submitted": 2043,
+    "check_ops": 44442,
+    "pass_": true
+   },
+   "44": {
+    "n": 40,
+    "solved": 40,
+    "exact": 40,
+    "rejects_agree": 40,
+    "identity_runs": 40,
+    "runs_with_rejections": 0,
+    "rejected": 0,
+    "invalid": 0,
+    "trivial": 0,
+    "submitted": 1682,
+    "check_ops": 38522,
+    "pass_": true
+   },
+   "48": {
+    "n": 40,
+    "solved": 40,
+    "exact": 40,
+    "rejects_agree": 40,
+    "identity_runs": 40,
+    "runs_with_rejections": 0,
+    "rejected": 0,
+    "invalid": 0,
+    "trivial": 0,
+    "submitted": 1689,
+    "check_ops": 39974,
+    "pass_": true
+   },
+   "52": {
+    "n": 40,
+    "solved": 40,
+    "exact": 40,
+    "rejects_agree": 40,
+    "identity_runs": 40,
+    "runs_with_rejections": 0,
+    "rejected": 0,
+    "invalid": 0,
+    "trivial": 0,
+    "submitted": 1875,
+    "check_ops": 44698,
+    "pass_": true
+   },
+   "56": {
+    "n": 40,
+    "solved": 40,
+    "exact": 40,
+    "rejects_agree": 40,
+    "identity_runs": 40,
+    "runs_with_rejections": 0,
+    "rejected": 0,
+    "invalid": 0,
+    "trivial": 0,
+    "submitted": 2160,
+    "check_ops": 52271,
+    "pass_": true
+   },
+   "60": {
+    "n": 40,
+    "solved": 40,
+    "exact": 40,
+    "rejects_agree": 40,
+    "identity_runs": 40,
+    "runs_with_rejections": 0,
+    "rejected": 0,
+    "invalid": 0,
+    "trivial": 0,
+    "submitted": 2543,
+    "check_ops": 63486,
+    "pass_": true
+   }
+  },
+  "tuned lc 1.4": {
+   "40": {
+    "n": 40,
+    "solved": 40,
+    "exact": 40,
+    "rejects_agree": 40,
+    "identity_runs": 28,
+    "runs_with_rejections": 12,
+    "rejected": 29,
+    "invalid": 0,
+    "trivial": 29,
+    "submitted": 1278,
+    "check_ops": 31341,
+    "pass_": true
+   },
+   "44": {
+    "n": 40,
+    "solved": 40,
+    "exact": 40,
+    "rejects_agree": 40,
+    "identity_runs": 36,
+    "runs_with_rejections": 4,
+    "rejected": 7,
+    "invalid": 0,
+    "trivial": 7,
+    "submitted": 1377,
+    "check_ops": 35391,
+    "pass_": true
+   },
+   "48": {
+    "n": 40,
+    "solved": 40,
+    "exact": 40,
+    "rejects_agree": 40,
+    "identity_runs": 32,
+    "runs_with_rejections": 8,
+    "rejected": 20,
+    "invalid": 0,
+    "trivial": 20,
+    "submitted": 1623,
+    "check_ops": 43176,
+    "pass_": true
+   },
+   "52": {
+    "n": 40,
+    "solved": 40,
+    "exact": 40,
+    "rejects_agree": 40,
+    "identity_runs": 33,
+    "runs_with_rejections": 7,
+    "rejected": 10,
+    "invalid": 0,
+    "trivial": 10,
+    "submitted": 1819,
+    "check_ops": 49443,
+    "pass_": true
+   },
+   "56": {
+    "n": 40,
+    "solved": 40,
+    "exact": 40,
+    "rejects_agree": 40,
+    "identity_runs": 37,
+    "runs_with_rejections": 3,
+    "rejected": 4,
+    "invalid": 0,
+    "trivial": 4,
+    "submitted": 2144,
+    "check_ops": 58764,
+    "pass_": true
+   },
+   "60": {
+    "n": 40,
+    "solved": 40,
+    "exact": 40,
+    "rejects_agree": 40,
+    "identity_runs": 38,
+    "runs_with_rejections": 2,
+    "rejected": 2,
+    "invalid": 0,
+    "trivial": 2,
+    "submitted": 2534,
+    "check_ops": 72109,
+    "pass_": true
+   }
+  }
+ },
+ "pass": true
+}

@@ -28,6 +28,8 @@ default 1.5),
 mc (M = mc * B), tc (threshold = log2(M sqrt(kN/2)) - (tc + lc - 1) * log2(B)),
 lc (large-prime bound L = B^lc, 1.0..2.0, default 1.0 = no large primes: today's qs op for op;
 NOTES.md, "Stage 7").
+Not a gene: "check": 1 turns the ledger's charged relation check on (phase "check"), for the
+acceptance test only; mutation never sets it, and absent it is off.
 
 Split (PLAN.md, "Relation economy") into a SOURCE, here: multiplier, polynomials, sieve,
 confirmation and large primes (phases 1, 3, 4, 5, 8), and the LEDGER it feeds (ledger.py:
@@ -116,6 +118,7 @@ def sieve_source(N, k, g, led, ch, at):
     L = B ** lc                                # <= B^2, so a cofactor below it is prime
     T = math.log2(M * math.sqrt(kN / 2)) - (g.get("tc", 2.0) + (lc - 1.0)) * math.log2(B)
     width = 2 * M + 1
+    chk = bool(g.get("check", 0))              # ledger check: qs's acceptance test only
     partials = {}                              # q -> (u, vec)
     if at is not None:
         at["lp"] = dict(cof=0, lt=0, inserts=0, combos=0, dup=0, F=F)
@@ -218,7 +221,7 @@ def sieve_source(N, k, g, led, ch, at):
                 for ql in qs_:
                     vec[idx[ql]] += 1
                 if smooth:
-                    if led.add(u, vec):
+                    if led.add(u, vec, 1, chk):
                         return None
                     continue
                 charge("lp", 1)                    # N mod q
@@ -236,6 +239,6 @@ def sieve_source(N, k, g, led, ch, at):
                 cvec = [a + b for a, b in zip(other[1], vec)]; charge("lp", F)
                 if at is not None:
                     at["lp"]["combos"] += 1
-                if led.add(cu, cvec, v):
+                if led.add(cu, cvec, v, chk):
                     return None
     return None

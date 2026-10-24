@@ -12,12 +12,17 @@ It owns qs's phases 2, 6 and 7 and the dedupe between them:
   la      ceil(rows * cols * rows / 64), dense GF(2) elimination
   sqrt    per dependency: multiplies forming X and Y, 1 op per large prime multiplied into
           Y, 1 op per Euclid step of gcd(X - Y, N)
+  check   opt-in per source, off by default (NOTES.md, "Ledger: the charged relation
+          check"): per relation submitted, u^2 and the right-hand side by square-and-
+          multiply, 1 per sign flip, 1 compare, ceil(F/64) parity scan; an all-even
+          relation also pays the test for u = +-Y. Invalid or trivial relations are rejected.
 
 A source (qs.py's sieve, later CFRAC) finds relations (u, vec, y) with
 u^2 = y^2 prod p^vec (mod N) and hands them to add(); solve() runs once the ledger is full.
-The ledger trusts its relations: the charged check (PLAN.md) is not implemented yet.
-Every charge is made at the same point and in the same chunk as before the split, so qs
-is op for op unchanged (relation_economy_identity.py).
+With the check off the ledger trusts its relations, and every charge is made at the same
+point and in the same chunk as before the split, so qs is op for op unchanged
+(relation_economy_identity.py). qs turns the check on only for its acceptance test
+(genome key "check": 1, never mutated).
 """
 import math
 
@@ -99,8 +104,46 @@ class Ledger:
     def full(self):
         return len(self.rels) >= self.need
 
-    def add(self, u, vec, y=1):
-        """Keep the relation unless it repeats one already kept. Returns True once full."""
+    def _product(self, vec, y, half):
+        """y^(1 or 2) * prod p^(e_p or e_p/2) mod N over entries p >= 2, charged to "check":
+        square-and-multiply per factor, 1 op per multiply joining it after the first."""
+        ch, N, base = self.ch, self.N, self.base
+        r = None
+        factors = [(base[j], vec[j] // 2 if half else vec[j]) for j in range(1, self.F) if vec[j]]
+        if y != 1:
+            factors.append((y, 1 if half else 2))
+        for b, e in factors:
+            v, _ = ch.cpow(b, e, N, "check")
+            if r is None:
+                r = v
+            else:
+                r = r * v % N; ch.charge("check", 1)
+        return 1 if r is None else r
+
+    def check(self, u, vec, y):
+        """Phase 9: is u^2 = y^2 prod p^e (mod N), and not a trivial all-even relation?"""
+        ch, N = self.ch, self.N
+        lhs, _ = ch.cpow(u, 2, N, "check")
+        rhs = self._product(vec, y, False)
+        if vec[0] & 1:
+            rhs = (N - rhs) % N; ch.charge("check", 1)
+        ch.charge("check", 1)                      # compare
+        if lhs != rhs:
+            return False
+        ch.charge("check", -(-self.F // 64))       # parity scan
+        if any(e & 1 for e in vec):
+            return True
+        Y = self._product(vec, y, True)            # all even: a one-row dependency
+        ch.charge("check", 2)                      # u = Y, u = N - Y
+        return u % N not in (Y, (N - Y) % N)
+
+    def add(self, u, vec, y=1, check=False):
+        """Keep the relation unless it fails the check (when on) or repeats one already kept.
+        Returns True once full."""
+        if check and not self.check(u, vec, y):
+            if self.at is not None:
+                self.at["rejected"] = self.at.get("rejected", 0) + 1
+            return False
         if y == 1:
             if abs(u) in self.seen:
                 return False

@@ -16,7 +16,10 @@ count wrapped there until it was guarded). Large primes (Stage 7, lc gene): lc =
 pairs, lc 1.2-2.0 variants at 40-84 bits, numbers that make an lc > 1 run retry (asserted),
 td then qs with lc, and random genomes with a
 random lc in every qs stage; the per-phase check includes lp. Caps chosen per number so the
-run stops on its 10th lp charge (asserted: a miss whose last charge is lp).
+run stops on its 10th lp charge (asserted: a miss whose last charge is lp). Ledger relation
+check ("check": 1, check_pairs): default, tuned and tuned + lc 1.4 qs at 40-72 bits, a number
+on which the check rejects a trivial combined relation (asserted), caps that stop inside the
+check phase (asserted), and random genomes with the check on; the per-phase check includes it.
 Edge: both cores refuse qs on N >= 2^100 with an error, never a silent wrap.
 
 Guards (guard_pairs): block flash whose two product trees can't fit in the budget, and p-1
@@ -88,6 +91,7 @@ def qs_pairs():
         for b in (34, 46, 60, 72, 84):
             yield f"random wide qs {i}", g, semiprimes_pq(b, 2, 1600000 + b), min(cap_for(b), 2 ** 24), False
     yield from lp_pairs()
+    yield from check_pairs()
 
 TUNED = dict(QS, kc=32, bc=1.1, mc=0.25, tc=1.38)
 # (genes, seed, bits, index) of numbers on which an lc > 1 run retries (searched, seed 550040)
@@ -104,14 +108,14 @@ class ChargeLog(dict):
         self.log.append((phase, self.total)); self.total += n
         super().__setitem__(phase, value)
 
-def lp_stop_caps(g, nums, nth=10):
-    """Per number, the cap at which a qs-only genome stops on its nth lp charge (the total
-    charged before that charge), so the run misses inside the lp phase."""
+def lp_stop_caps(g, nums, nth=10, phase="lp"):
+    """Per number, the cap at which a qs-only genome stops on its nth charge to `phase` (the
+    total charged before that charge), so the run misses inside that phase."""
     out = []
     for N, p, q in nums:
         qs.TRACE = {"ops": ChargeLog()}
         run(g, N, 2 ** 29)
-        lps = [before for phase, before in qs.TRACE["ops"].log if phase == "lp"]
+        lps = [before for ph, before in qs.TRACE["ops"].log if ph == phase]
         if len(lps) >= nth:
             out.append((N, p, q, lps[nth - 1]))
     qs.TRACE = None
@@ -140,6 +144,23 @@ def lp_pairs():
         g = [dict(st, lc=rng.uniform(1.0, 2.0)) if st["t"] == "qs" else st for st in g]
         for b in (34, 46, 60, 72, 84):
             yield f"random lc qs {i}", g, semiprimes_pq(b, 2, 1900000 + b), min(cap_for(b), 2 ** 24), False
+
+def check_pairs():
+    """The ledger's charged relation check (opt-in, "check": 1)."""
+    for b in (40, 48, 56, 60, 66, 72):
+        nums = semiprimes_pq(b, 6, 2000000 + b)
+        for name, g in (("default", QS), ("tuned", TUNED), ("tuned lc 1.4", dict(TUNED, lc=1.4))):
+            yield f"check on {name}", [dict(g, check=1)], nums, 2 ** 29, False
+    yield "check trivial reject", [dict(TUNED, lc=1.4, check=1)], semiprimes_pq(52, 2, 11)[1:], 2 ** 29, False
+    for b in (48, 60):
+        g = [dict(TUNED, lc=1.4, check=1)]
+        for N, p, q, cap in lp_stop_caps(g, semiprimes_pq(b, 4, 2000000 + b), 25, "check"):
+            yield "check cap inside check", g, [(N, p, q)], cap, False
+    rng = random.Random(2030)
+    for i, g in enumerate(random_qs_genomes(20, wide=True)):
+        g = [dict(st, lc=rng.uniform(1.0, 2.0), check=1) if st["t"] == "qs" else st for st in g]
+        for b in (34, 46, 60, 72):
+            yield f"random check qs {i}", g, semiprimes_pq(b, 2, 2100000 + b), min(cap_for(b), 2 ** 24), False
 
 SMALL_MC = (0.05, 0.1, 0.25, 0.5)
 
@@ -280,6 +301,10 @@ def check_qs():
                 assert len(qs.TRACE["attempts"]) > 1, ("expected a retry", N)
             if label == "lc cap inside lp":
                 assert ops is None and last_phase == "lp", ("expected a miss inside lp", N, last_phase)
+            if label == "check cap inside check":
+                assert ops is None and last_phase == "check", ("expected a miss inside check", N, last_phase)
+            if label == "check trivial reject":
+                assert sum(at.get("rejected", 0) for at in qs.TRACE["attempts"]) > 0, ("expected a rejection", N)
             if label.startswith("qs small mc"):
                 mc, ns = g[0]["mc"], non_stepping(qs.TRACE)
                 if mc <= 0.25:

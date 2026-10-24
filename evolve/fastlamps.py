@@ -16,7 +16,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 BIN = os.environ.get("LAMPCORE",
                      os.path.join(HERE, "..", "lampcore", "target", "release", "lampcore"))
 
-PHASES = ["mult", "fb", "setup", "sieve", "confirm", "la", "sqrt", "lp"]   # qs's, in lampcore's order
+PHASES = ["mult", "fb", "setup", "sieve", "confirm", "la", "sqrt", "lp", "check"]   # qs's, in lampcore's order
 
 def semiprimes_pq(bits, count, seed):
     """Same numbers as lamps.semiprimes(bits, count, seed), with their factors."""

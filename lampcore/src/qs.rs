@@ -2,7 +2,8 @@
 //! with every charge made at the same point and in the same chunk as the Python, so op
 //! counts, tests, hits, and the per-phase breakdown agree exactly (checked by parity.py).
 //! Cost model: NOTES.md. Split as the Python is (PLAN.md, "Relation economy"): a source
-//! (sieve_source: phases 1, 3, 4, 5, 8) feeding a Ledger (phases 2, 6, 7), one per k.
+//! (sieve_source: phases 1, 3, 4, 5, 8) feeding a Ledger (phases 2, 6, 7, and 9 when the
+//! source turns the relation check on), one per k.
 //!
 //! Values of size kN live in i128 (N must stay below 2^100); products mod N use U256.
 
@@ -18,6 +19,7 @@ pub const CONFIRM: usize = 4;
 pub const LA: usize = 5;
 pub const SQRT: usize = 6;
 pub const LP: usize = 7; // large primes (Stage 7), only when lc > 1
+pub const CHECK: usize = 8; // the ledger's relation check, opt-in ("check": 1)
 
 const DELTA: usize = 10; // surplus relations: rows = F + DELTA
 
@@ -260,14 +262,69 @@ impl Ledger {
         self.rels.len() >= self.need
     }
 
-    /// Keep the relation unless it repeats one already kept. True once full.
-    fn add(&mut self, u: i128, v: Vec<u32>, y: i128) -> bool {
+    /// y^(1 or 2) * prod p^(e_p or e_p/2) mod N over entries p >= 2, charged to CHECK:
+    /// square-and-multiply per factor, 1 op per multiply joining it after the first.
+    fn product(&self, v: &[u32], y: i128, half: bool, m: &mut Meter) -> Result<U256, Budget> {
+        let mut factors: Vec<(u64, u64)> = (1..self.f)
+            .filter(|&j| v[j] != 0)
+            .map(|j| (self.base[j] as u64, if half { v[j] as u64 / 2 } else { v[j] as u64 }))
+            .collect();
+        if y != 1 {
+            factors.push((y as u64, if half { 1 } else { 2 }));
+        }
+        let mut r: Option<U256> = None;
+        for (b, e) in factors {
+            let x = cpow_n(b, e, self.n, CHECK, m)?;
+            r = Some(match r {
+                None => x,
+                Some(prev) => {
+                    let z = prev.mul_mod(x, self.n);
+                    m.charge(CHECK, 1)?;
+                    z
+                }
+            });
+        }
+        Ok(r.unwrap_or(U256::from(1u64)))
+    }
+
+    /// Phase 9 (NOTES.md, "Ledger: the charged relation check"): is u^2 = y^2 prod p^e
+    /// (mod N), and not a trivial all-even relation?
+    fn check(&self, u: i128, v: &[u32], y: i128, m: &mut Meter) -> Result<bool, Budget> {
+        let n = self.n;
+        let ur = U256::from(u.rem_euclid(self.n_i) as u128);
+        m.charge(CHECK, 1)?; // u reduced mod N (cpow's first op)
+        let lhs = ur.mul_mod(ur, n);
+        m.charge(CHECK, 1)?; // the square
+        let mut rhs = self.product(v, y, false, m)?;
+        if v[0] & 1 == 1 {
+            rhs = (n - rhs) % n;
+            m.charge(CHECK, 1)?;
+        }
+        m.charge(CHECK, 1)?; // compare
+        if lhs != rhs {
+            return Ok(false);
+        }
+        m.charge(CHECK, ((self.f + 63) / 64) as u64)?; // parity scan
+        if v.iter().any(|&e| e & 1 == 1) {
+            return Ok(true);
+        }
+        let yy = self.product(v, y, true, m)?; // all even: a one-row dependency
+        m.charge(CHECK, 2)?; // u = Y, u = N - Y
+        Ok(ur != yy && ur != (n - yy) % n)
+    }
+
+    /// Keep the relation unless it fails the check (when on) or repeats one already kept.
+    /// True once full.
+    fn add(&mut self, u: i128, v: Vec<u32>, y: i128, chk: bool, m: &mut Meter) -> Result<bool, Budget> {
+        if chk && !self.check(u, &v, y, m)? {
+            return Ok(false);
+        }
         let fresh = if y == 1 { self.seen.insert(u.abs()) } else { self.seen_c.insert(u.min(self.n_i - u)) };
         if !fresh {
-            return false;
+            return Ok(false);
         }
         self.rels.push((u, v, y));
-        self.full()
+        Ok(self.full())
     }
 
     /// Phases 6 and 7 on a full ledger: a factor, or None if no dependency splits N.
@@ -425,6 +482,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
     let thr = (mm_ as f64 * (kn_u.to::<u128>() as f64 / 2.0).sqrt()).log2()
         - (gene(g, "tc", 2.0) + (lc - 1.0)) * (bnd as f64).log2();
     let width = (2 * mm_ + 1) as usize;
+    let chk = gene(g, "check", 0.0) != 0.0; // ledger check: qs's acceptance test only
     let mut partials: std::collections::HashMap<i128, (i128, Vec<u32>)> =
         std::collections::HashMap::new();
     let mut arr = vec![0i32; width];
@@ -553,7 +611,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                     vec_[pos(ql)] += 1;
                 }
                 if smooth {
-                    if led.add(u, vec_, 1) {
+                    if led.add(u, vec_, 1, chk, m)? {
                         return Ok(None);
                     }
                     continue;
@@ -574,7 +632,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 m.charge(LP, 1)?;
                 let cvec: Vec<u32> = v1.iter().zip(&vec_).map(|(a, b)| a + b).collect();
                 m.charge(LP, f as u64)?;
-                if led.add(cu, cvec, v) {
+                if led.add(cu, cvec, v, chk, m)? {
                     return Ok(None);
                 }
             }

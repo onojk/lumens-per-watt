@@ -3,9 +3,10 @@ into a SOURCE (qs.py) and a LEDGER (ledger.py) must equal today's qs op for op.
 
 Reference: qs.py as of commit 78b2dae (before the split), loaded from git, and a lampcore
 binary built from the same commit (path given as the first argument).
-Pairs: every qs pair parity.py checks (parity.qs_pairs: lc 1.0 and lc 1.2-2.0, retries,
-caps that stop mid-phase and inside lp, qs after another stage, random genomes with random
-lc), plus tuned qs at lc 1.0 and lc 1.4 on the Run 6 ACCEPT numbers (cap 2^28).
+Pairs: every qs pair parity.py checks with the ledger check off (parity.qs_pairs: lc 1.0
+and lc 1.2-2.0, retries, caps that stop mid-phase and inside lp, qs after another stage,
+random genomes with random lc), plus tuned qs at lc 1.0 and lc 1.4 on the Run 6 ACCEPT
+numbers (cap 2^28). Pairs with the check on are skipped: the reference has no check.
 
 Python: the refactored and reference cards must agree on ops (or both miss), factor, tests,
 hits, winning stage, the whole trace (every realized count the accounting tests read), and
@@ -68,7 +69,8 @@ def job(args):
 
 def pairs():
     for label, g, nums, cap, must_retry in qs_pairs():
-        yield label, g, nums, cap
+        if not any(st.get("check") for st in g):
+            yield label, g, nums, cap
     for lc in (1.0, 1.4):
         for b, (c, s) in SETS.items():
             yield f"ACCEPT lc {lc}", [dict(TUNED, lc=lc)], semiprimes_pq(b, c, s), CAP
@@ -90,13 +92,16 @@ if __name__ == "__main__":
     if REF_BIN:
         for label, g, nums, cap in groups:
             new = run_many(g, nums, cap, inst=True, phases=True)
-            fastlamps.BIN, keep = REF_BIN, fastlamps.BIN
+            # the reference binary predates the check phase: it prints eight phase columns
+            fastlamps.BIN, keep, keep_ph = REF_BIN, fastlamps.BIN, fastlamps.PHASES
+            fastlamps.PHASES = keep_ph[:8]
             try:
                 old = run_many(g, nums, cap, inst=True, phases=True)
             finally:
-                fastlamps.BIN = keep
+                fastlamps.BIN, fastlamps.PHASES = keep, keep_ph
             rust_n += len(nums)
             for (N, p, q), x, y in zip(nums, new, old):
+                x = x[:-1] + ({k: v for k, v in x[-1].items() if k != "check"},) if x[-1]["check"] == 0 else x
                 if x != y:
                     rust_bad += 1
                     if rust_bad <= 10:

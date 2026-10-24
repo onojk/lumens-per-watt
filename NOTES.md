@@ -173,6 +173,11 @@ Part of the relation-economy refactor (PLAN.md, "Relation economy"; `ledger.py`,
 - a one-op mutation of each check charge is caught;
 - parity after the Rust port, with lampcore printing a 9th phase column, "check" (0 when off), appended after lp.
 
+**Clarifications made while implementing (`ledger.py`, `qs.rs`; the charges are unchanged):**
+- Joining multiplies: y (or y², or y¹ in the trivial test) is one more factor of the product, joined like the primes: 1 op if a factor came before it, none if it is the only one. Square-and-multiply on u² is cpow(u, 2, N), the reduction of u mod N first, then the square.
+- Order per relation: u², right-hand side, sign, compare (stop if invalid), parity scan (stop if any odd entry), trivial test. The check runs before dedupe, so a repeat pays its check and is then dropped as before.
+- **qs does produce trivial relations**, against this entry's expectation of 0. Two partials with the same large prime and the same u mod N combine into u₁u₂ ≡ ±Y, which is the "partial combined with itself" case from Stage 7's clarifications. With the check off, that relation becomes a zero row and costs a useless square root later. With the check on, it is rejected, and qs collects one more relation instead, so on such a run the phases other than "check" differ from the check-off run. The acceptance test (`ledger_accept.py`) therefore asks for identity with the check-off run only on runs with no rejection. On every run it asks that the check phase equals the formula on the submitted relations, and that the rejections are exactly the relations the harness finds invalid or trivial.
+
 **Comparisons between sources:** the check is on for all sources in a comparison if and only if any of them needs it. qs vs CFRAC runs with it off: both are correct by construction, and the harness relation check verifies both. (Decided with this entry; PLAN.md's relation-economy section amended to match, along with the all-even rule.)
 
 ## 2026-10-23 — CFRAC as a second relation source, cost model, written before any code
