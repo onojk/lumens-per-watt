@@ -921,3 +921,21 @@ Small parts are phase total minus full parts, as in Python. The split is taken *
 - **Maintenance:** an active project by the release history pip lists (4.0.0 through 4.9.0, then 5.0.0, the current version; repository github.com/optuna/optuna). Release dates were not checked: the request for PyPI's metadata was declined in this session.
 - **Harness tests** (`evolve/run8_test.py`, before any arm ran): identical scoring through every method's path, TPE and random samples inside the shared bounds (TPE proposed all 24 orders), exact evaluation counts (340 and 1,360) for every method including the fresh-batch arm and the warm-started probe, and the qs-gene sub-experiment keeping A's budgets and order: 0 failures, exit 0.
 
+## 2026-10-24 — Primes and gaps as the reference line: does any lamp's cost depend on p's arithmetic beyond its size? (map-only test; predictions before computing; never fitness)
+
+**Data:** `partition_map.json`, the 560 tuning numbers (84-bit N, smaller factor p in seven bands, 80 each), with each lamp's ops-to-success recorded alone (td, rho, p-1, ECM to a cap of 2^21; qs + lc 1.4 to 2^28). No new runs.
+
+**Responses:** td, rho and ECM, log₂ ops-to-success on the numbers each solved within its cap (td only reaches the 16- and 20-bit bands); p-1, success or not (it is all or nothing at its full length); qs + lc 1.4, log₂ ops.
+
+**Features of p** (computed with sympy, harness only): gap before p and gap after p, each divided by ln p; twin-prime flag (p − 2 or p + 2 prime); log(largest prime factor of p − 1) / log p and the same for p + 1 (smoothness); p mod 4; p mod 3; and, as a control for td, log p within its band.
+
+**Method:** within each band, rank-transform each feature and each response; a pooled Spearman correlation over the bands' within-band ranks; a permutation test permuting responses within bands (10,000 permutations, random.Random(2026)); Holm's correction over every (lamp, feature) pair tested.
+
+**Predictions (stated before computing):**
+- **p-1 correlates with the smoothness of p − 1** (success more likely when the largest prime factor of p − 1 is small). **Positive control:** if it is not found, the test is too weak and nothing else is read.
+- **rho, ECM and qs show no correlation with the gap features** (null).
+- **td depends on p's size only:** a strong correlation with log p within its band, and none with any other feature.
+- Any gap correlation that survives Holm is a candidate pattern only, and is re-tested on the sealed partition numbers before it is believed. A null result goes into MOVES as ruled out (conditions: these sizes, these lamps).
+
+**Also (visualization, information only):** an exact picture at small sizes (N ~ 2^24-2^32): the candidate line 2..√N with every prime as a point and every gap as a span, and per lamp which stations its work rules out or finds over time: td walks every station; rho lights primes by size; p-1 lights only primes whose p − 1 is B-smooth; ECM is a probabilistic speckle; sq lights primes near √N; qs finds the answer without walking the line. With it, td's share of work spent on gap interiors (composites) against primes.
+
