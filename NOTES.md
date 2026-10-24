@@ -375,3 +375,35 @@ The split is computed per run from lamps.py's trace, never estimated:
 Re-priced qs = mult + sqrt + setup full + confirm full + lp full + r·(fb + setup small + sieve + confirm small + la + lp small).
 
 Reported: re-priced log₂(mean) at r = 1/8 and r = 1/32 for tuned qs + lc 1.4 on both populations, beside ECM's and rho's unchanged numbers, and whether ECM still leads at each size.
+
+**Result (`ecm_compare.py`, cap 2^28, no misses).** ECM with the frozen genes (b1 1.0, b2 50) against our best qs (tuned qs + lc 1.4) and rho.
+
+*Balanced* (Stage 2 numbers at 54–78 bits, `semiprimes_pq(84, 80, 1300084)`): ECM beats qs at every size from 54 to 84 bits on the official op count, by 1.9–2.6× (paired), with mean intervals separated everywhere. At 84 bits ECM is 2^17.84 [17.52, 18.13] against qs's 2^19.08 [19.03, 19.12].
+
+| Prediction (stated before measurement) | Result | Verdict |
+|---|---|---|
+| **1 (PLAN):** ECM beats qs below ~80 bits and loses above | ECM wins at 84 bits too | **Wrong** above 80 |
+| **2:** crossover in 60–78 bits | no crossover in 54–84 | **Wrong** |
+| **2:** within 2× at 72 bits | 2.0×, in ECM's favour | at the edge |
+| **2:** behind 1.5–3× at 84 bits | ahead 2.35× | **Wrong** |
+| **2:** growth 0.18–0.2 per bit | 0.134 (72→84), 0.142 (54→84); qs 0.153 / 0.140 | **Wrong**: the same class as qs |
+| **2:** worst case worse than qs at every size | observed worst worse everywhere; intervals separated at 60, 66 and 84 bits | **Held** |
+| **2:** ahead of rho from ~60 bits, level at 54 | already ahead at 54 bits (13.53 against 14.26, separated) | slightly off |
+
+The miss in prediction 2 is mostly expected curves: ECM needed about half the curves the estimate assumed (7.8 per number at 84 bits against ~15), because stage 2 at B2 = 50·B1 catches most factors. The growth result is the constants race PLAN.md describes: L_p[1/2, √2] = L_N[1/2, 1] on balanced numbers.
+
+*Unbalanced* (24/28/32-bit factor at 72/78/84 bits): the prediction was partly right.
+- **Against qs:** ECM beats qs in every cell, by 2.7× to 16×. But the prediction of at least 8× holds in only 3 of 9 cells (78/24, 84/24, 84/28).
+- **Against rho:** the direction is right (ECM pulls ahead as p grows), the crossover is not. Rho is clearly ahead at 24-bit p (by 2–3.5×), the two are level around 28 bits, and ECM leads at 32 bits.
+- **Growth per bit of p:** ECM 0.17–0.19, well below rho's 0.51, as predicted.
+- **The B1 handicap is real:** sized from √N, it makes ECM's cost grow 0.055–0.077 per bit of N even at fixed p.
+
+*Pricing sensitivity* (the classification above, stated before the run):
+- **Balanced: ECM's lead does not survive.** With qs's small-number ops at 1/8 of a multiply, qs beats ECM at 60–84 bits with separated intervals (at 84 bits: 2^16.93 against 2^17.84), and they tie at 54. At 1/32, qs leads at every size.
+- **Unbalanced: ECM's lead survives where p ≪ √N.**
+  - At 1/8: ECM still leads at 24-bit p at every N, and at 78/28, 84/28 and 84/32. 72/28 and 78/32 are ties, and qs leads at 72/32.
+  - At 1/32: ECM leads at 78/24, 84/24 and 84/28.
+
+The balanced lead comes from the overcharging rule, which bills every sieve byte-add as a full modular multiply.
+
+**Caveat:** tuned qs's genes were picked on the 72–84-bit ACCEPT numbers, which favours qs. ECM's genes came from separate tuning seeds.

@@ -73,6 +73,48 @@ python3 ancestry.py N11-0076   # family line of any named genome
 
 Outputs: `evolve.log`, `results.json`, `lineage.jsonl`, `validation.json`. Runs are seeded, so the same commands reproduce the same numbers on any machine.
 
+## Stage 8: elliptic curves (Oct 23, 2026)
+
+A new card, ECM (`evolve/ecm.py`; cost model in `NOTES.md`, written before the code): Montgomery curves, x-only, Suyama's parametrization, a stage 1 ladder and a baby-step giant-step stage 2. Every modular multiply is charged: 11 per ladder bit. It is accepted at 40–84 bits on balanced and unbalanced numbers (`evolve/ecm_accept.py`: exact accounting with an independent ladder recount, a group-order check, a mutation test), with lampcore parity. Its genes (b1 1.0, b2 50) were fixed on separate tuning seeds (`evolve/ecm_tune.py`). Comparison: `evolve/ecm_compare.py`, cap 2^28, no misses.
+
+**Under the official op count, ECM beats qs at 54–84 bits on balanced numbers. With qs's small-number work priced at 1/8 of a multiply, qs wins from 60 bits. The balanced lead comes from the overcharging rule. On unbalanced numbers, ECM's lead is real where p ≪ √N; rho wins at 24-bit p.**
+
+Balanced numbers (Stage 2 numbers at 54–78 bits, `semiprimes_pq(84, 80, 1300084)`). log₂(mean ops) [95% interval] / worst. The last two columns are qs's work re-priced (NOTES.md, "Pricing sensitivity", stated before the run); ECM and rho are unchanged there, because all their ops are N-sized:
+
+| Bits | ECM | qs + lc 1.4 | rho | qs re-priced, small ops at 1/8 | qs re-priced, at 1/32 |
+|---|---|---|---|---|---|
+| 54 | **13.53** [13.26, 13.79] / 15.81 | 14.90 [14.86, 14.94] / 15.34 | 14.26 [14.09, 14.41] / 15.58 | 13.36 (tie with ECM) | **13.03** |
+| 60 | **14.66** [14.37, 14.92] / 17.06 | 15.58 [15.54, 15.63] / 16.04 | 15.84 [15.67, 16.01] / 17.32 | **13.67** | **13.16** |
+| 66 | **15.21** [14.89, 15.50] / 17.51 | 16.31 [16.27, 16.35] / 16.65 | 17.42 [17.24, 17.58] / 19.01 | **14.08** | **13.35** |
+| 72 | **16.23** [15.95, 16.48] / 18.32 | 17.24 [17.18, 17.30] / 18.15 | 18.90 [18.73, 19.05] / 20.06 | **14.88** | **14.03** |
+| 78 | **17.03** [16.74, 17.29] / 18.93 | 18.14 [18.09, 18.20] / 18.79 | 20.29 [20.09, 20.47] / 21.56 | **15.89** | **15.14** |
+| 84 | **17.84** [17.52, 18.13] / 20.02 | 19.08 [19.03, 19.12] / 19.54 | 21.94 [21.76, 22.10] / 23.15 | **16.93** | **16.28** |
+
+Growth per bit, 54→84: ECM 0.142, qs 0.140, rho 0.253.
+
+Unbalanced numbers (`semiprimes_unbalanced`, 80 per cell; N bits / p bits), log₂(mean ops):
+
+| N / p | ECM | qs + lc 1.4 | rho | Leader at 1/8 pricing |
+|---|---|---|---|---|
+| 72/24 | 14.44 | 17.21 | **13.48** | rho; ECM over qs |
+| 72/28 | **14.71** | 17.21 | 15.47 | ECM ≈ qs |
+| 72/32 | **15.79** | 17.24 | 17.57 | qs |
+| 78/24 | 14.65 | 18.24 | **13.36** | rho; ECM over qs |
+| 78/28 | 15.44 | 18.16 | **15.37** | ECM ≈ rho, both ahead of qs |
+| 78/32 | **16.16** | 18.22 | 17.47 | ECM ≈ qs |
+| 84/24 | 15.10 | 19.10 | **13.34** | rho; ECM over qs |
+| 84/28 | 15.64 | 19.06 | **15.43** | ECM ≈ rho, both ahead of qs |
+| 84/32 | **16.63** | 19.14 | 17.42 | ECM |
+
+What it shows:
+
+- **Both balanced predictions were wrong.** No crossover in 54–84 bits, and growth of 0.134–0.142 per bit rather than 0.18–0.2. ECM needed about half the expected curves. On balanced numbers ECM and qs are the same complexity class, a constants race.
+- **The constants race depends on pricing.** The official count bills qs's byte-sized sieve work like a modular multiply. At a fairer price, qs is ahead.
+- **ECM's real niche is unbalanced numbers.** There it beats qs by 2.7–16× and survives the re-pricing where p ≪ √N. Rho is better still at 24-bit p, and ECM takes over around 28–32 bits.
+- **Worst cases.** ECM's worst case is heavier than qs's at every size (it depends on the number of curves needed).
+
+Data: `evolve/ecm_compare.json` (and `.out`), `evolve/ecm_accept.json`, `evolve/ecm_tune.json`.
+
 ## Relation economy: CFRAC (Oct 23, 2026)
 
 qs is now a relation *source* feeding a shared *ledger* (`evolve/ledger.py`: factor base, dedupe, linear algebra, square root), and is op for op unchanged (`evolve/relation_economy_identity.py`, both cores). The ledger has an opt-in charged relation check (`evolve/ledger_accept.py`). A second source, continued fractions (`evolve/cfrac.py`, cost model in `NOTES.md`), feeds the same ledger with one multiplier k and one factor base. It is accepted at 40–60 bits (`evolve/cfrac_accept.py`), with lampcore parity.

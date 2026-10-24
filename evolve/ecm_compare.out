@@ -1,0 +1,126 @@
+
+54:
+  ecm          mean 13.53 [13.26, 13.79]  worst 15.81 [15.14, 15.81]  misses 0  curves 2.1
+  qs + lc 1.4  mean 14.90 [14.86, 14.94]  worst 15.34 [15.19, 15.34]  misses 0
+  rho          mean 14.26 [14.09, 14.41]  worst 15.58 [15.21, 15.58]  misses 0
+  paired ecm/qs: -1.375 [-1.638, -1.111] (2.59x fewer ops for ecm)
+  qs re-priced at 1/8: mean 13.36 [13.34, 13.38]  ecm leads: False, qs leads: False
+  qs re-priced at 1/32: mean 13.03 [13.02, 13.04]  ecm leads: False, qs leads: True
+
+60:
+  ecm          mean 14.66 [14.37, 14.92]  worst 17.06 [16.18, 17.06]  misses 0  curves 3.3
+  qs + lc 1.4  mean 15.58 [15.54, 15.63]  worst 16.04 [15.89, 16.04]  misses 0
+  rho          mean 15.84 [15.67, 16.01]  worst 17.32 [17.03, 17.32]  misses 0
+  paired ecm/qs: -0.924 [-1.206, -0.671] (1.90x fewer ops for ecm)
+  qs re-priced at 1/8: mean 13.67 [13.64, 13.69]  ecm leads: False, qs leads: True
+  qs re-priced at 1/32: mean 13.16 [13.14, 13.17]  ecm leads: False, qs leads: True
+
+66:
+  ecm          mean 15.21 [14.89, 15.50]  worst 17.51 [16.86, 17.51]  misses 0  curves 3.4
+  qs + lc 1.4  mean 16.31 [16.27, 16.35]  worst 16.65 [16.58, 16.65]  misses 0
+  rho          mean 17.42 [17.24, 17.58]  worst 19.01 [18.21, 19.01]  misses 0
+  paired ecm/qs: -1.105 [-1.429, -0.805] (2.15x fewer ops for ecm)
+  qs re-priced at 1/8: mean 14.08 [14.05, 14.10]  ecm leads: False, qs leads: True
+  qs re-priced at 1/32: mean 13.35 [13.33, 13.37]  ecm leads: False, qs leads: True
+
+72:
+  ecm          mean 16.23 [15.95, 16.48]  worst 18.32 [17.63, 18.32]  misses 0  curves 4.9
+  qs + lc 1.4  mean 17.24 [17.18, 17.30]  worst 18.15 [17.61, 18.15]  misses 0
+  rho          mean 18.90 [18.73, 19.05]  worst 20.06 [20.02, 20.06]  misses 0
+  paired ecm/qs: -1.006 [-1.285, -0.759] (2.01x fewer ops for ecm)
+  qs re-priced at 1/8: mean 14.88 [14.68, 15.10]  ecm leads: False, qs leads: True
+  qs re-priced at 1/32: mean 14.03 [13.66, 14.41]  ecm leads: False, qs leads: True
+
+78:
+  ecm          mean 17.03 [16.74, 17.29]  worst 18.93 [18.64, 18.93]  misses 0  curves 6.1
+  qs + lc 1.4  mean 18.14 [18.09, 18.20]  worst 18.79 [18.59, 18.79]  misses 0
+  rho          mean 20.29 [20.09, 20.47]  worst 21.56 [21.27, 21.56]  misses 0
+  paired ecm/qs: -1.111 [-1.408, -0.845] (2.16x fewer ops for ecm)
+  qs re-priced at 1/8: mean 15.89 [15.68, 16.09]  ecm leads: False, qs leads: True
+  qs re-priced at 1/32: mean 15.14 [14.76, 15.46]  ecm leads: False, qs leads: True
+
+84:
+  ecm          mean 17.84 [17.52, 18.13]  worst 20.02 [19.64, 20.02]  misses 0  curves 7.8
+  qs + lc 1.4  mean 19.08 [19.03, 19.12]  worst 19.54 [19.43, 19.54]  misses 0
+  rho          mean 21.94 [21.76, 22.10]  worst 23.15 [23.12, 23.15]  misses 0
+  paired ecm/qs: -1.233 [-1.560, -0.943] (2.35x fewer ops for ecm)
+  qs re-priced at 1/8: mean 16.93 [16.80, 17.05]  ecm leads: False, qs leads: True
+  qs re-priced at 1/32: mean 16.28 [16.06, 16.47]  ecm leads: False, qs leads: True
+
+72/24:
+  ecm          mean 14.44 [14.25, 14.61]  worst 15.99 [15.58, 15.99]  misses 0  curves 1.5
+  qs + lc 1.4  mean 17.21 [17.17, 17.25]  worst 18.03 [17.43, 18.03]  misses 0
+  rho          mean 13.48 [13.29, 13.66]  worst 15.04 [14.48, 15.04]  misses 0
+  paired ecm/qs: -2.774 [-2.967, -2.592] (6.84x fewer ops for ecm)
+  qs re-priced at 1/8: mean 14.75 [14.66, 14.89]  ecm leads: True, qs leads: False
+  qs re-priced at 1/32: mean 13.80 [13.65, 14.05]  ecm leads: False, qs leads: True
+
+72/28:
+  ecm          mean 14.71 [14.50, 14.91]  worst 16.33 [15.96, 16.33]  misses 0  curves 1.8
+  qs + lc 1.4  mean 17.21 [17.17, 17.26]  worst 17.99 [17.50, 17.99]  misses 0
+  rho          mean 15.47 [15.29, 15.64]  worst 16.59 [16.43, 16.59]  misses 0
+  paired ecm/qs: -2.497 [-2.713, -2.301] (5.65x fewer ops for ecm)
+  qs re-priced at 1/8: mean 14.75 [14.66, 14.89]  ecm leads: False, qs leads: False
+  qs re-priced at 1/32: mean 13.79 [13.65, 14.04]  ecm leads: False, qs leads: True
+
+72/32:
+  ecm          mean 15.79 [15.51, 16.04]  worst 17.96 [17.09, 17.96]  misses 0  curves 3.6
+  qs + lc 1.4  mean 17.24 [17.19, 17.30]  worst 18.09 [17.62, 18.09]  misses 0
+  rho          mean 17.57 [17.41, 17.72]  worst 19.06 [18.41, 19.06]  misses 0
+  paired ecm/qs: -1.453 [-1.733, -1.203] (2.74x fewer ops for ecm)
+  qs re-priced at 1/8: mean 14.78 [14.68, 14.93]  ecm leads: False, qs leads: True
+  qs re-priced at 1/32: mean 13.83 [13.66, 14.08]  ecm leads: False, qs leads: True
+
+78/24:
+  ecm          mean 14.65 [14.46, 14.83]  worst 16.49 [15.77, 16.49]  misses 0  curves 1.3
+  qs + lc 1.4  mean 18.24 [18.17, 18.30]  worst 18.73 [18.67, 18.73]  misses 0
+  rho          mean 13.36 [13.18, 13.54]  worst 15.05 [14.28, 15.05]  misses 0
+  paired ecm/qs: -3.586 [-3.787, -3.388] (12.01x fewer ops for ecm)
+  qs re-priced at 1/8: mean 16.18 [15.97, 16.37]  ecm leads: True, qs leads: False
+  qs re-priced at 1/32: mean 15.59 [15.25, 15.86]  ecm leads: True, qs leads: False
+
+78/28:
+  ecm          mean 15.44 [15.18, 15.68]  worst 17.30 [17.02, 17.30]  misses 0  curves 2.1
+  qs + lc 1.4  mean 18.16 [18.10, 18.23]  worst 18.79 [18.66, 18.79]  misses 0
+  rho          mean 15.37 [15.19, 15.53]  worst 16.54 [16.34, 16.54]  misses 0
+  paired ecm/qs: -2.720 [-3.001, -2.461] (6.59x fewer ops for ecm)
+  qs re-priced at 1/8: mean 15.90 [15.69, 16.11]  ecm leads: True, qs leads: False
+  qs re-priced at 1/32: mean 15.15 [14.80, 15.47]  ecm leads: False, qs leads: False
+
+78/32:
+  ecm          mean 16.16 [15.89, 16.41]  worst 18.05 [17.63, 18.05]  misses 0  curves 3.4
+  qs + lc 1.4  mean 18.22 [18.15, 18.29]  worst 18.83 [18.65, 18.83]  misses 0
+  rho          mean 17.47 [17.26, 17.66]  worst 19.06 [18.48, 19.06]  misses 0
+  paired ecm/qs: -2.058 [-2.327, -1.820] (4.17x fewer ops for ecm)
+  qs re-priced at 1/8: mean 16.13 [15.91, 16.32]  ecm leads: False, qs leads: False
+  qs re-priced at 1/32: mean 15.50 [15.15, 15.79]  ecm leads: False, qs leads: True
+
+84/24:
+  ecm          mean 15.10 [14.88, 15.30]  worst 16.94 [16.49, 16.94]  misses 0  curves 1.4
+  qs + lc 1.4  mean 19.10 [19.05, 19.15]  worst 19.54 [19.46, 19.54]  misses 0
+  rho          mean 13.34 [13.17, 13.50]  worst 14.43 [14.31, 14.43]  misses 0
+  paired ecm/qs: -4.007 [-4.221, -3.798] (16.08x fewer ops for ecm)
+  qs re-priced at 1/8: mean 17.00 [16.87, 17.12]  ecm leads: True, qs leads: False
+  qs re-priced at 1/32: mean 16.37 [16.17, 16.54]  ecm leads: True, qs leads: False
+
+84/28:
+  ecm          mean 15.64 [15.38, 15.90]  worst 18.14 [17.09, 18.14]  misses 0  curves 1.8
+  qs + lc 1.4  mean 19.06 [19.01, 19.11]  worst 19.48 [19.41, 19.48]  misses 0
+  rho          mean 15.43 [15.21, 15.62]  worst 17.14 [16.55, 17.14]  misses 0
+  paired ecm/qs: -3.415 [-3.683, -3.162] (10.67x fewer ops for ecm)
+  qs re-priced at 1/8: mean 16.86 [16.72, 16.99]  ecm leads: True, qs leads: False
+  qs re-priced at 1/32: mean 16.16 [15.92, 16.36]  ecm leads: True, qs leads: False
+
+84/32:
+  ecm          mean 16.63 [16.33, 16.91]  worst 18.94 [17.85, 18.94]  misses 0  curves 3.4
+  qs + lc 1.4  mean 19.14 [19.10, 19.19]  worst 19.61 [19.42, 19.61]  misses 0
+  rho          mean 17.42 [17.22, 17.61]  worst 19.45 [18.37, 19.45]  misses 0
+  paired ecm/qs: -2.512 [-2.808, -2.236] (5.70x fewer ops for ecm)
+  qs re-priced at 1/8: mean 17.09 [16.97, 17.20]  ecm leads: True, qs leads: False
+  qs re-priced at 1/32: mean 16.50 [16.32, 16.65]  ecm leads: False, qs leads: False
+
+growth (log2-ops per bit):
+  ecm          balanced 54-84 0.142  balanced 72-84 0.134  per p bit at 72 0.169  per p bit at 78 0.189  per p bit at 84 0.192  per N bit at p24 0.055  per N bit at p28 0.077  per N bit at p32 0.070
+  qs + lc 1.4  balanced 54-84 0.140  balanced 72-84 0.153  per p bit at 72 0.004  per p bit at 78 -0.002  per p bit at 84 0.005  per N bit at p24 0.158  per N bit at p28 0.154  per N bit at p32 0.158
+  rho          balanced 54-84 0.253  balanced 72-84 0.253  per p bit at 72 0.510  per p bit at 78 0.514  per p bit at 84 0.510  per N bit at p24 -0.012  per N bit at p28 -0.004  per N bit at p32 -0.012
+exit 0
