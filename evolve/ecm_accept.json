@@ -1,0 +1,608 @@
+{
+ "genes": {
+  "t": "ecm"
+ },
+ "group_order_genes": {
+  "t": "ecm",
+  "b1": 4.0,
+  "b2": 50
+ },
+ "cap_log2": 29,
+ "balanced": {
+  "40": {
+   "n": 40,
+   "solved": 40,
+   "exact": 40,
+   "curves": 65,
+   "mean_log2": 11.82079724177943,
+   "ends": {
+    "s1 both": 3,
+    "none": 9,
+    "s2 factor": 33,
+    "s1 factor": 7,
+    "s2 both": 13
+   },
+   "measured": {
+    "ecm_setup": 1711,
+    "ecm_s1": 65070,
+    "ecm_s2": 77801,
+    "ecm_gcd": 120
+   },
+   "formula": {
+    "ecm_setup": 1711,
+    "ecm_s1": 65070,
+    "ecm_s2": 77801,
+    "ecm_gcd": 120
+   },
+   "pass_": true
+  },
+  "44": {
+   "n": 40,
+   "solved": 40,
+   "exact": 40,
+   "curves": 70,
+   "mean_log2": 12.377759572040505,
+   "ends": {
+    "none": 17,
+    "s2 factor": 34,
+    "s2 both": 13,
+    "s1 factor": 6
+   },
+   "measured": {
+    "ecm_setup": 1826,
+    "ecm_s1": 98053,
+    "ecm_s2": 112868,
+    "ecm_gcd": 134
+   },
+   "formula": {
+    "ecm_setup": 1826,
+    "ecm_s1": 98053,
+    "ecm_s2": 112868,
+    "ecm_gcd": 134
+   },
+   "pass_": true
+  },
+  "48": {
+   "n": 40,
+   "solved": 40,
+   "exact": 40,
+   "curves": 86,
+   "mean_log2": 13.00733831009813,
+   "ends": {
+    "none": 34,
+    "s1 factor": 8,
+    "s2 factor": 32,
+    "s2 both": 12
+   },
+   "measured": {
+    "ecm_setup": 2351,
+    "ecm_s1": 158599,
+    "ecm_s2": 168237,
+    "ecm_gcd": 164
+   },
+   "formula": {
+    "ecm_setup": 2351,
+    "ecm_s1": 158599,
+    "ecm_s2": 168237,
+    "ecm_gcd": 164
+   },
+   "pass_": true
+  },
+  "52": {
+   "n": 40,
+   "solved": 40,
+   "exact": 40,
+   "curves": 89,
+   "mean_log2": 13.412457379950496,
+   "ends": {
+    "none": 39,
+    "s2 factor": 36,
+    "s2 both": 8,
+    "s1 both": 2,
+    "s1 factor": 4
+   },
+   "measured": {
+    "ecm_setup": 2437,
+    "ecm_s1": 212881,
+    "ecm_s2": 220636,
+    "ecm_gcd": 172
+   },
+   "formula": {
+    "ecm_setup": 2437,
+    "ecm_s1": 212881,
+    "ecm_s2": 220636,
+    "ecm_gcd": 172
+   },
+   "pass_": true
+  },
+  "56": {
+   "n": 40,
+   "solved": 40,
+   "exact": 40,
+   "curves": 76,
+   "mean_log2": 13.538104036605015,
+   "ends": {
+    "s2 factor": 33,
+    "s1 factor": 7,
+    "none": 32,
+    "s2 both": 4
+   },
+   "measured": {
+    "ecm_setup": 2031,
+    "ecm_s1": 244592,
+    "ecm_s2": 229044,
+    "ecm_gcd": 145
+   },
+   "formula": {
+    "ecm_setup": 2031,
+    "ecm_s1": 244592,
+    "ecm_s2": 229044,
+    "ecm_gcd": 145
+   },
+   "pass_": true
+  },
+  "60": {
+   "n": 40,
+   "solved": 40,
+   "exact": 40,
+   "curves": 105,
+   "mean_log2": 14.332319827128858,
+   "ends": {
+    "none": 63,
+    "s2 factor": 32,
+    "s1 factor": 8,
+    "s2 both": 2
+   },
+   "measured": {
+    "ecm_setup": 2829,
+    "ecm_s1": 426017,
+    "ecm_s2": 396074,
+    "ecm_gcd": 202
+   },
+   "formula": {
+    "ecm_setup": 2829,
+    "ecm_s1": 426017,
+    "ecm_s2": 396074,
+    "ecm_gcd": 202
+   },
+   "pass_": true
+  },
+  "64": {
+   "n": 40,
+   "solved": 40,
+   "exact": 40,
+   "curves": 104,
+   "mean_log2": 14.654329747750124,
+   "ends": {
+    "none": 61,
+    "s1 factor": 6,
+    "s2 factor": 34,
+    "s2 both": 2,
+    "s1 both": 1
+   },
+   "measured": {
+    "ecm_setup": 2851,
+    "ecm_s1": 539932,
+    "ecm_s2": 488477,
+    "ecm_gcd": 201
+   },
+   "formula": {
+    "ecm_setup": 2851,
+    "ecm_s1": 539932,
+    "ecm_s2": 488477,
+    "ecm_gcd": 201
+   },
+   "pass_": true
+  },
+  "68": {
+   "n": 40,
+   "solved": 40,
+   "exact": 40,
+   "curves": 172,
+   "mean_log2": 15.7336072286347,
+   "ends": {
+    "s2 factor": 34,
+    "none": 129,
+    "s1 factor": 6,
+    "s2 both": 3
+   },
+   "measured": {
+    "ecm_setup": 4893,
+    "ecm_s1": 1140340,
+    "ecm_s2": 1033883,
+    "ecm_gcd": 338
+   },
+   "formula": {
+    "ecm_setup": 4893,
+    "ecm_s1": 1140340,
+    "ecm_s2": 1033883,
+    "ecm_gcd": 338
+   },
+   "pass_": true
+  },
+  "72": {
+   "n": 40,
+   "solved": 40,
+   "exact": 40,
+   "curves": 194,
+   "mean_log2": 16.211910152244265,
+   "ends": {
+    "none": 150,
+    "s2 factor": 33,
+    "s1 factor": 7,
+    "s2 both": 4
+   },
+   "measured": {
+    "ecm_setup": 5606,
+    "ecm_s1": 1611779,
+    "ecm_s2": 1418440,
+    "ecm_gcd": 381
+   },
+   "formula": {
+    "ecm_setup": 5606,
+    "ecm_s1": 1611779,
+    "ecm_s2": 1418440,
+    "ecm_gcd": 381
+   },
+   "pass_": true
+  },
+  "76": {
+   "n": 40,
+   "solved": 40,
+   "exact": 40,
+   "curves": 247,
+   "mean_log2": 16.91283438294423,
+   "ends": {
+    "none": 206,
+    "s2 factor": 36,
+    "s1 factor": 4,
+    "s2 both": 1
+   },
+   "measured": {
+    "ecm_setup": 7071,
+    "ecm_s1": 2656472,
+    "ecm_s2": 2271459,
+    "ecm_gcd": 490
+   },
+   "formula": {
+    "ecm_setup": 7071,
+    "ecm_s1": 2656472,
+    "ecm_s2": 2271459,
+    "ecm_gcd": 490
+   },
+   "pass_": true
+  },
+  "80": {
+   "n": 40,
+   "solved": 40,
+   "exact": 40,
+   "curves": 225,
+   "mean_log2": 17.06039248888728,
+   "ends": {
+    "none": 184,
+    "s2 factor": 33,
+    "s1 factor": 7,
+    "s2 both": 1
+   },
+   "measured": {
+    "ecm_setup": 6551,
+    "ecm_s1": 2973355,
+    "ecm_s2": 2486661,
+    "ecm_gcd": 443
+   },
+   "formula": {
+    "ecm_setup": 6551,
+    "ecm_s1": 2973355,
+    "ecm_s2": 2486661,
+    "ecm_gcd": 443
+   },
+   "pass_": true
+  },
+  "84": {
+   "n": 40,
+   "solved": 40,
+   "exact": 40,
+   "curves": 302,
+   "mean_log2": 17.808857680251723,
+   "ends": {
+    "none": 259,
+    "s2 factor": 34,
+    "s2 both": 3,
+    "s1 factor": 6
+   },
+   "measured": {
+    "ecm_setup": 8972,
+    "ecm_s1": 5026512,
+    "ecm_s2": 4148520,
+    "ecm_gcd": 598
+   },
+   "formula": {
+    "ecm_setup": 8972,
+    "ecm_s1": 5026512,
+    "ecm_s2": 4148520,
+    "ecm_gcd": 598
+   },
+   "pass_": true
+  }
+ },
+ "unbalanced": {
+  "72/24": {
+   "n": 40,
+   "solved": 40,
+   "exact": 40,
+   "curves": 50,
+   "mean_log2": 14.083574894402496,
+   "ends": {
+    "s2 factor": 26,
+    "s1 factor": 14,
+    "none": 10
+   },
+   "measured": {
+    "ecm_setup": 1347,
+    "ecm_s1": 418321,
+    "ecm_s2": 274692,
+    "ecm_gcd": 86
+   },
+   "formula": {
+    "ecm_setup": 1347,
+    "ecm_s1": 418321,
+    "ecm_s2": 274692,
+    "ecm_gcd": 86
+   },
+   "pass_": true
+  },
+  "72/28": {
+   "n": 40,
+   "solved": 40,
+   "exact": 40,
+   "curves": 99,
+   "mean_log2": 15.197016027494643,
+   "ends": {
+    "none": 59,
+    "s2 factor": 28,
+    "s1 factor": 12
+   },
+   "measured": {
+    "ecm_setup": 2686,
+    "ecm_s1": 830927,
+    "ecm_s2": 668712,
+    "ecm_gcd": 186
+   },
+   "formula": {
+    "ecm_setup": 2686,
+    "ecm_s1": 830927,
+    "ecm_s2": 668712,
+    "ecm_gcd": 186
+   },
+   "pass_": true
+  },
+  "72/32": {
+   "n": 40,
+   "solved": 40,
+   "exact": 40,
+   "curves": 200,
+   "mean_log2": 16.26124100308098,
+   "ends": {
+    "none": 159,
+    "s2 both": 1,
+    "s2 factor": 32,
+    "s1 factor": 8
+   },
+   "measured": {
+    "ecm_setup": 5759,
+    "ecm_s1": 1670022,
+    "ecm_s2": 1465647,
+    "ecm_gcd": 392
+   },
+   "formula": {
+    "ecm_setup": 5759,
+    "ecm_s1": 1670022,
+    "ecm_s2": 1465647,
+    "ecm_gcd": 392
+   },
+   "pass_": true
+  },
+  "78/24": {
+   "n": 40,
+   "solved": 40,
+   "exact": 40,
+   "curves": 53,
+   "mean_log2": 14.638498136791705,
+   "ends": {
+    "s2 factor": 25,
+    "s1 factor": 15,
+    "none": 13
+   },
+   "measured": {
+    "ecm_setup": 1428,
+    "ecm_s1": 628254,
+    "ecm_s2": 390431,
+    "ecm_gcd": 91
+   },
+   "formula": {
+    "ecm_setup": 1428,
+    "ecm_s1": 628254,
+    "ecm_s2": 390431,
+    "ecm_gcd": 91
+   },
+   "pass_": true
+  },
+  "78/28": {
+   "n": 40,
+   "solved": 40,
+   "exact": 40,
+   "curves": 83,
+   "mean_log2": 15.42158164007323,
+   "ends": {
+    "none": 42,
+    "s2 both": 1,
+    "s1 factor": 9,
+    "s2 factor": 31
+   },
+   "measured": {
+    "ecm_setup": 2264,
+    "ecm_s1": 988722,
+    "ecm_s2": 764429,
+    "ecm_gcd": 157
+   },
+   "formula": {
+    "ecm_setup": 2264,
+    "ecm_s1": 988722,
+    "ecm_s2": 764429,
+    "ecm_gcd": 157
+   },
+   "pass_": true
+  },
+  "78/32": {
+   "n": 40,
+   "solved": 40,
+   "exact": 40,
+   "curves": 124,
+   "mean_log2": 16.040753119227556,
+   "ends": {
+    "none": 84,
+    "s2 factor": 34,
+    "s1 factor": 6
+   },
+   "measured": {
+    "ecm_setup": 3456,
+    "ecm_s1": 1475702,
+    "ecm_s2": 1217146,
+    "ecm_gcd": 242
+   },
+   "formula": {
+    "ecm_setup": 3456,
+    "ecm_s1": 1475702,
+    "ecm_s2": 1217146,
+    "ecm_gcd": 242
+   },
+   "pass_": true
+  },
+  "84/24": {
+   "n": 40,
+   "solved": 40,
+   "exact": 40,
+   "curves": 54,
+   "mean_log2": 15.063253922853018,
+   "ends": {
+    "none": 14,
+    "s1 factor": 20,
+    "s2 factor": 20
+   },
+   "measured": {
+    "ecm_setup": 1444,
+    "ecm_s1": 893631,
+    "ecm_s2": 474303,
+    "ecm_gcd": 88
+   },
+   "formula": {
+    "ecm_setup": 1444,
+    "ecm_s1": 893631,
+    "ecm_s2": 474303,
+    "ecm_gcd": 88
+   },
+   "pass_": true
+  },
+  "84/28": {
+   "n": 40,
+   "solved": 40,
+   "exact": 40,
+   "curves": 63,
+   "mean_log2": 15.420613257574951,
+   "ends": {
+    "s2 factor": 28,
+    "s1 factor": 12,
+    "none": 23
+   },
+   "measured": {
+    "ecm_setup": 1670,
+    "ecm_s1": 1041208,
+    "ecm_s2": 711402,
+    "ecm_gcd": 114
+   },
+   "formula": {
+    "ecm_setup": 1670,
+    "ecm_s1": 1041208,
+    "ecm_s2": 711402,
+    "ecm_gcd": 114
+   },
+   "pass_": true
+  },
+  "84/32": {
+   "n": 40,
+   "solved": 40,
+   "exact": 40,
+   "curves": 93,
+   "mean_log2": 16.047768285040124,
+   "ends": {
+    "s2 factor": 31,
+    "none": 53,
+    "s1 factor": 9
+   },
+   "measured": {
+    "ecm_setup": 2539,
+    "ecm_s1": 1536275,
+    "ecm_s2": 1170699,
+    "ecm_gcd": 177
+   },
+   "formula": {
+    "ecm_setup": 2539,
+    "ecm_s1": 1536275,
+    "ecm_s2": 1170699,
+    "ecm_gcd": 177
+   },
+   "pass_": true
+  }
+ },
+ "group_order": {
+  "36": {
+   "numbers": 150,
+   "curves": 279,
+   "agree": 266,
+   "skipped": 0,
+   "x_only_degenerate": 13,
+   "mismatches": [],
+   "ends": {
+    "s1 both": 52,
+    "s2 both": 76,
+    "s1 factor": 129,
+    "s2 factor": 21,
+    "none": 1
+   },
+   "pass_": true
+  },
+  "38": {
+   "numbers": 150,
+   "curves": 244,
+   "agree": 223,
+   "skipped": 0,
+   "x_only_degenerate": 21,
+   "mismatches": [],
+   "ends": {
+    "s1 factor": 124,
+    "s2 both": 69,
+    "s1 both": 24,
+    "s2 factor": 26,
+    "none": 1
+   },
+   "pass_": true
+  },
+  "40": {
+   "numbers": 150,
+   "curves": 261,
+   "agree": 249,
+   "skipped": 0,
+   "x_only_degenerate": 12,
+   "mismatches": [],
+   "ends": {
+    "s1 factor": 112,
+    "s2 both": 81,
+    "none": 2,
+    "s1 both": 28,
+    "s2 factor": 38
+   },
+   "pass_": true
+  }
+ },
+ "pass": true
+}

@@ -29,6 +29,17 @@ def semiprimes_pq(bits, count, seed):
             out.append((p * q, min(p, q), max(p, q)))
     return out
 
+def semiprimes_unbalanced(bits, pbits, count, seed):
+    """Semiprimes N = p q with p a random pbits-bit prime and q a random (bits - pbits)-bit
+    prime (Stage 8's unbalanced population), as (N, smaller, larger)."""
+    rng = random.Random(seed)
+    out = []
+    while len(out) < count:
+        p, q = rand_prime(pbits, rng), rand_prime(bits - pbits, rng)
+        if p != q:
+            out.append((p * q, min(p, q), max(p, q)))
+    return out
+
 def run_many(genome, nums, cap, inst=False, phases=False):
     text = json.dumps(genome) + "\n" + str(int(cap)) + "\n" + \
         "".join(f"{N} {p} {q}\n" for N, p, q in nums)

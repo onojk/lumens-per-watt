@@ -334,3 +334,13 @@ All of this is uncertain by about 2× either way: the estimate of expected curve
 - **Against rho:** rho also follows p (about √p steps). The two are roughly level at 24-bit p, and ECM pulls ahead as p grows toward 32 bits.
 - **The B1 handicap:** it is sized for balanced numbers, so it is too large here. That costs ECM a constant, but not the ordering.
 - **Growth:** at fixed N, growth per bit of p should be well below rho's 0.5 per bit of p.
+
+**Clarifications made while implementing (`ecm.py`; the charges are unchanged):**
+- **Stage 2's giant steps start at j₀ = max(1, ⌊B1/w⌋).** With j ≥ 1 and b < w/2, stage 2 never covers primes below w/2 = 105. When B1 < 105 (about 40–44 bits at default b1), primes in (B1, 105) are simply not covered. The accounting and the group-order check use the same rule.
+- **The ladder serves every multiply by k ≥ 1.** For k = 1 it is one xDBL (5 ops), giving (W, 2W) when j₀ = 1. The formula 5 + 11·(bit_length(k) − 1) covers it.
+- **Giant steps:** S_(j+1) = S_j + W with difference S_(j−1), one xADD per step from j₀ to jmax − 1 = ⌈B2/w⌉ − 1. The step after the last j used is not computed.
+- **x-only degeneracy.** A differential addition is only valid when its difference point has X·Z ≢ 0. Mod N that holds, but mod a factor p it can fail:
+  - a stage-1 base can land on the 2-torsion point (0, 0);
+  - a baby/giant-step difference can be O when the stage-1 point's order is small.
+
+  Then the card's point mod p leaves the group law, and it may "find" p where group theory says it cannot, or miss it. Any gcd it takes is still a true divisor, so its answers stay correct; only the ideal prediction fails. That is ordinary x-only ECM behavior and the card is not changed. The group-order check detects these curves and counts them separately. They are common only when B1 is small, because Suyama orders are divisible by 12 and leftover factors of 2 and 3 beyond the stage-1 prime powers then make giant-step differences O. So the check runs at b1 = 4 (B1 ≈ 220) on its small numbers, with both factors below 2^20 (not 2^24: brute-force point counting stays cheap).
