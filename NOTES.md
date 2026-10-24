@@ -742,7 +742,8 @@ Prerequisite for the partition study's sequential budgets (PLAN.md, Partition st
 
 **The gene.** `"ob": n`, a non-negative integer, on any lamp stage (td, sq, ps, rho, pm1, ecm, cfrac; allowed on qs, where a final qs doesn't need it). The stage may spend up to n official ops of its own. The charge that takes its spending past n is applied whole (a charge is never split, as in Stage 9), and then the stage ends **without a factor** and the next stage runs. The ops spent count; nothing carries over (sunk cost). Not allowed on a race element or on a race's sides (rejected when the genome is built, both cores): the race has its own slices, and combining the two is out of scope.
 
-**Why "past n", not "reaching n".** A stage whose natural total is exactly n would otherwise end on its last charge, before returning its factor, and the identity "ob at the natural end = today's behaviour" would fail in the "at" case. With "past", the stage spends at most n plus the overshoot of one charge, and the overshoot is between 1 and that charge's size minus 1: always below the stage's largest single charge. It is recorded per stage.
+**Why "past n", not "reaching n".** A stage whose natural total is exactly n would otherwise end on its last charge, before returning its factor, and the identity "ob at the natural end = today's behaviour" would fail in the "at" case. With "past", the stage spends at most n plus the overshoot of one charge. It is recorded per stage.
+- **Correction (Oct 24, before the Python commit; flagged).** The overshoot is between 1 and the passing charge's size, not that size minus 1: spending can sit at exactly n before the next charge, which then passes n by its whole size. So the overshoot is **at most** the stage's largest single charge, not strictly below it (for a lamp that charges 1 op at a time it is always exactly 1). Found by the acceptance test (td, sq and rho). A strict bound would need "reaching n", which breaks the identity at the natural end, so "past n" stays.
 
 **Charging: zero extra ops.** The check reads the stage's own spending, counted as charges are applied; it does no arithmetic. Prechecks that read the meter (ps, pm1) still read the shared meter and cap, not the stage budget (no lamp code changes).
 
@@ -752,7 +753,7 @@ Prerequisite for the partition study's sequential budgets (PLAN.md, Partition st
 - ob at or past the stage's natural end (its total ops when run alone, whether it ends with a factor or without) = today's behaviour.
 - Below the natural end: the stage's charge sequence is today's prefix up to and including the first charge that takes it past ob, and the rest of the genome runs after it exactly as it would alone.
 
-**Acceptance:** the identities for every lamp; overshoot below the stage's largest single charge; a mutation test in which an ob that fails to end the stage, and one that ends it one charge early, must each be caught. Parity: budget pairs in parity.py.
+**Acceptance:** the identities for every lamp; overshoot between 1 and the passing charge (so at most the stage's largest single charge); a mutation test in which an ob that fails to end the stage, and one that ends it one charge early, must each be caught. Parity: budget pairs in parity.py.
 
 **Prediction (stated before measurement):** on its own the gene changes nothing measurable on the Stage 8 single-kind populations unless it is set below a stage's natural length. It exists for the partition study.
 
