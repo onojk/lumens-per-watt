@@ -158,8 +158,10 @@ def test_one_switch(name, stage, bits, mutate=False):
         for where, sa in one_switch_points(name, stage, N, a, ach, atr).items():
             try:
                 r, rch, rtr = raced({"t": "race", "a": stage, "b": E, "sa": sa, "sb": 1 << 20}, N)
-            except AssertionError:
-                if mutate:
+            except AssertionError as ex:
+                # only the per-type sum check counts as catching the mutation; any other
+                # assertion is a real failure and is raised
+                if mutate and ex.args and isinstance(ex.args[0], tuple) and ex.args[0][0] == "per-type split does not add up":
                     return "caught (per-type sum)"
                 raise
             # X's charge sequence with E's inserted at the switch: the slice ends at the
