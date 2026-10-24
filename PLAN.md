@@ -565,7 +565,7 @@ a model propose code changes to one card, under a harness it cannot touch.
   3. Batch smoothness test (product / remainder tree in place of per-candidate trial
      division), checked on qs's confirmation as well as on CFRAC's residues.
      Prerequisite: the oversized-multiply pricing rule (rounded up to N-sized multiplies)
-     in NOTES first.
+     in NOTES first. MET: rule written in NOTES, Oct 24.
   4. p + 1 card (Lucas sequences).
   5. ECM torsion gene (family suyama12 | z2z8, both in Montgomery form, the same x-only
      ladder).

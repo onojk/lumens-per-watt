@@ -701,6 +701,7 @@ Recommended: (c) as evolution's fitness + (e) in reports. Decision (Oct 23, user
      - At 2^8: little change against equal slices. qs's turn is already about one polynomial (the overshoot), so the ratio barely moves its share.
      - At 2^10 and 2^14: calibrated cost moves toward the better side. Under ruint and Montgomery the race gets closer to the calibrated leader than with equal slices. Under the official count it gets slightly worse (more qs spend at official prices).
    - Reported like the other settings: three pricings, the (e) call, overshoot, and the maximum single charge per side.
+   - Seen before this addendum was written: one equal-slice smoke test at 60 bits (three numbers; race(ECM, qs + lc 1.4) and race(rho, qs + lc 1.4) at s = 256, 1024 and 16384), e.g. s = 256: ECM alone 3,945 ops, race(ECM, qs) 14,998. No unequal-slice result had been seen.
 
 ## 2026-10-24 — Meter safety: the outside case
 
