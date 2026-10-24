@@ -1,0 +1,45 @@
+
+qs + lc 1.4 | mixed: budgets {'td': 0, 'rho': 5793, 'pm1': 0, 'ecm': 32768}  fitness 0.641  offi x2.22  ruin x1.56  mont x1.90  (speed-up over qs alone)
+  official   predicted log2 mean 17.94 [17.84, 18.04]  qs alone 19.09  worst band 42 (ratio 0.90)
+     bands: 16: 9.65 [9.48,9.81] r0.00  20: 13.36 [11.49,14.59] r0.02  24: 16.48 [15.72,17.03] r0.16  28: 17.89 [17.48,18.21] r0.44  32: 18.70 [18.47,18.89] r0.75  36: 18.92 [18.75,19.05] r0.87  42: 18.92 [18.77,19.06] r0.90
+     best single per band (hindsight): 16: rho x1.00  20: rho x3.64  24: rho x7.83  28: rho x6.41  32: ecm x4.57  36: ecm x2.90  42: ecm x2.46
+  ruint      predicted log2 mean 16.02 [15.92, 16.11]  qs alone 16.66  worst band 36 (ratio 1.21)
+     bands: 16: 9.75 [9.59,9.91] r0.01  20: 12.27 [11.54,12.91] r0.05  24: 15.26 [14.86,15.62] r0.37  28: 16.09 [15.81,16.34] r0.70  32: 16.67 [16.46,16.86] r1.02  36: 16.91 [16.74,17.06] r1.21  42: 16.89 [16.73,17.04] r1.18
+     best single per band (hindsight): 16: rho x1.00  20: rho x1.64  24: rho x3.27  28: rho x1.79  32: ecm x1.12  36: qs x1.21  42: qs x1.18
+  montgomery predicted log2 mean 16.74 [16.65, 16.83]  qs alone 17.66  worst band 42 (ratio 1.01)
+     bands: 16: 10.03 [9.89,10.17] r0.01  20: 12.71 [11.71,13.59] r0.03  24: 15.66 [15.14,16.09] r0.25  28: 16.75 [16.41,17.03] r0.54  32: 17.45 [17.24,17.63] r0.86  36: 17.67 [17.51,17.80] r1.00  42: 17.67 [17.52,17.80] r1.01
+     best single per band (hindsight): 16: rho x1.00  20: rho x1.97  24: rho x3.91  28: rho x2.58  32: ecm x1.92  36: ecm x1.22  42: ecm x1.03
+
+qs + lc 1.4 | balanced control: budgets {'td': 0, 'rho': 0, 'pm1': 0, 'ecm': 0}  fitness 1.000  offi x1.00  ruin x1.00  mont x1.00  (speed-up over qs alone)
+  official   predicted log2 mean 19.08 [19.04, 19.13]  qs alone 19.08  worst band 42 (ratio 1.00)
+     bands: 42: 19.08 [19.04,19.13] r1.00
+     best single per band (hindsight): 42: ecm x2.74
+  ruint      predicted log2 mean 16.65 [16.49, 16.79]  qs alone 16.65  worst band 42 (ratio 1.00)
+     bands: 42: 16.65 [16.49,16.79] r1.00
+     best single per band (hindsight): 42: qs x1.00
+  montgomery predicted log2 mean 17.65 [17.58, 17.73]  qs alone 17.65  worst band 42 (ratio 1.00)
+     bands: 42: 17.65 [17.58,17.73] r1.00
+     best single per band (hindsight): 42: ecm x1.02
+
+N51-0917's qs | mixed: budgets {'td': 0, 'rho': 5793, 'pm1': 0, 'ecm': 0}  fitness 0.792  offi x1.46  ruin x1.26  mont x1.39  (speed-up over qs alone)
+  official   predicted log2 mean 18.94 [18.89, 18.98]  qs alone 19.48  worst band 42 (ratio 1.01)
+     bands: 16: 9.65 [9.48,9.81] r0.00  20: 15.16 [13.31,16.14] r0.05  24: 19.02 [18.81,19.20] r0.76  28: 19.46 [19.37,19.54] r1.00  32: 19.53 [19.47,19.59] r1.01  36: 19.52 [19.46,19.57] r1.01  42: 19.45 [19.38,19.52] r1.01
+     best single per band (hindsight): 16: rho x1.00  20: rho x12.72  24: rho x45.69  28: rho x19.06  32: ecm x8.14  36: ecm x4.39  42: ecm x3.54
+  ruint      predicted log2 mean 15.07 [15.04, 15.11]  qs alone 15.41  worst band 42 (ratio 1.14)
+     bands: 16: 9.75 [9.59,9.91] r0.02  20: 12.28 [11.62,12.84] r0.11  24: 15.18 [15.00,15.33] r0.88  28: 15.57 [15.51,15.63] r1.13  32: 15.62 [15.58,15.67] r1.13  36: 15.61 [15.57,15.65] r1.14  42: 15.57 [15.53,15.62] r1.14
+     best single per band (hindsight): 16: rho x1.00  20: rho x1.66  24: rho x3.09  28: rho x1.25  32: qs x1.13  36: qs x1.14  42: qs x1.14
+  montgomery predicted log2 mean 16.61 [16.57, 16.65]  qs alone 17.09  worst band 42 (ratio 1.05)
+     bands: 16: 10.03 [9.89,10.17] r0.01  20: 13.26 [12.15,14.04] r0.07  24: 16.70 [16.50,16.87] r0.80  28: 17.13 [17.05,17.19] r1.04  32: 17.19 [17.14,17.24] r1.05  36: 17.17 [17.13,17.22] r1.05  42: 17.13 [17.07,17.18] r1.05
+     best single per band (hindsight): 16: rho x1.00  20: rho x2.90  24: rho x8.08  28: rho x3.35  32: ecm x1.60  36: qs x1.05  42: qs x1.05
+
+N51-0917's qs | balanced control: budgets {'td': 0, 'rho': 0, 'pm1': 0, 'ecm': 0}  fitness 1.000  offi x1.00  ruin x1.00  mont x1.00  (speed-up over qs alone)
+  official   predicted log2 mean 19.44 [19.37, 19.51]  qs alone 19.44  worst band 42 (ratio 1.00)
+     bands: 42: 19.44 [19.37,19.51] r1.00
+     best single per band (hindsight): 42: ecm x3.51
+  ruint      predicted log2 mean 15.39 [15.34, 15.44]  qs alone 15.39  worst band 42 (ratio 1.00)
+     bands: 42: 15.39 [15.34,15.44] r1.00
+     best single per band (hindsight): 42: qs x1.00
+  montgomery predicted log2 mean 17.06 [17.01, 17.12]  qs alone 17.06  worst band 42 (ratio 1.00)
+     bands: 42: 17.06 [17.01,17.12] r1.00
+     best single per band (hindsight): 42: qs x1.00
+11.98 s
