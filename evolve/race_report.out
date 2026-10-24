@@ -1,0 +1,63 @@
+Addendum 4 rule, passes / cells (lead cells, tie cells) per race, setting and pricing:
+
+race(ecm, qs + lc 1.4)
+  equal 256     offi  1/15 (lead 1/15, tie 0/0)  ruin  4/15 (lead 4/10, tie 0/5)  mont  0/15 (lead 0/9, tie 0/6)   bar failures: offi 14 ruin 15 mont 15  robust 15/15
+  equal 1024    offi  2/15 (lead 2/15, tie 0/0)  ruin  0/15 (lead 0/10, tie 0/5)  mont  0/15 (lead 0/9, tie 0/6)   bar failures: offi 13 ruin 15 mont 13  robust 15/15
+  equal 16384   offi  9/15 (lead 9/15, tie 0/0)  ruin  0/15 (lead 0/10, tie 0/5)  mont  3/15 (lead 3/9, tie 0/6)   bar failures: offi 6 ruin 12 mont 11  robust 15/15
+  unequal 256   offi  0/15 (lead 0/15, tie 0/0)  ruin  6/15 (lead 6/10, tie 0/5)  mont  0/15 (lead 0/9, tie 0/6)   bar failures: offi 15 ruin 9 mont 13  robust 15/15
+  unequal 1024  offi  0/15 (lead 0/15, tie 0/0)  ruin  6/15 (lead 6/10, tie 0/5)  mont  0/15 (lead 0/9, tie 0/6)   bar failures: offi 15 ruin 9 mont 14  robust 15/15
+  unequal 16384 offi  4/15 (lead 4/15, tie 0/0)  ruin  7/15 (lead 7/10, tie 0/5)  mont  1/15 (lead 1/9, tie 0/6)   bar failures: offi 11 ruin 7 mont 10  robust 12/15
+
+race(rho, qs + lc 1.4)
+  equal 256     offi  4/15 (lead 4/15, tie 0/0)  ruin  7/15 (lead 7/14, tie 0/1)  mont  6/15 (lead 6/13, tie 0/2)   bar failures: offi 11 ruin 14 mont 14  robust 15/15
+  equal 1024    offi  4/15 (lead 4/15, tie 0/0)  ruin  7/15 (lead 7/14, tie 0/1)  mont  6/15 (lead 6/13, tie 0/2)   bar failures: offi 11 ruin 14 mont 15  robust 15/15
+  equal 16384   offi  6/15 (lead 6/15, tie 0/0)  ruin  5/15 (lead 5/14, tie 0/1)  mont  5/15 (lead 5/13, tie 0/2)   bar failures: offi 9 ruin 12 mont 13  robust 14/15
+  unequal 256   offi  6/15 (lead 6/15, tie 0/0)  ruin 10/15 (lead 10/14, tie 0/1)  mont  7/15 (lead 7/13, tie 0/2)   bar failures: offi 9 ruin 5 mont 8  robust 9/15
+  unequal 1024  offi  5/15 (lead 5/15, tie 0/0)  ruin  9/15 (lead 9/14, tie 0/1)  mont  7/15 (lead 7/13, tie 0/2)   bar failures: offi 10 ruin 6 mont 8  robust 10/15
+  unequal 16384 offi  5/15 (lead 5/15, tie 0/0)  ruin  7/15 (lead 7/14, tie 0/1)  mont  7/15 (lead 7/13, tie 0/2)   bar failures: offi 10 ruin 11 mont 8  robust 15/15
+
+race(ecm, N51-0917)
+  equal 256     offi  0/15 (lead 0/15, tie 0/0)  ruin  8/15 (lead 8/12, tie 0/3)  mont  2/15 (lead 2/11, tie 0/4)   bar failures: offi 15 ruin 15 mont 12  robust 15/15
+  equal 1024    offi  0/15 (lead 0/15, tie 0/0)  ruin  4/15 (lead 4/12, tie 0/3)  mont  1/15 (lead 1/11, tie 0/4)   bar failures: offi 15 ruin 15 mont 12  robust 15/15
+  equal 16384   offi 11/15 (lead 11/15, tie 0/0)  ruin  2/15 (lead 2/12, tie 0/3)  mont  6/15 (lead 6/11, tie 0/4)   bar failures: offi 4 ruin 14 mont 7  robust 14/15
+  unequal 256   offi  0/15 (lead 0/15, tie 0/0)  ruin  9/15 (lead 9/12, tie 0/3)  mont  3/15 (lead 3/11, tie 0/4)   bar failures: offi 15 ruin 6 mont 12  robust 15/15
+  unequal 1024  offi  0/15 (lead 0/15, tie 0/0)  ruin  8/15 (lead 8/12, tie 0/3)  mont  3/15 (lead 3/11, tie 0/4)   bar failures: offi 15 ruin 7 mont 12  robust 15/15
+  unequal 16384 offi  1/15 (lead 1/15, tie 0/0)  ruin  9/15 (lead 9/12, tie 0/3)  mont  4/15 (lead 4/11, tie 0/4)   bar failures: offi 14 ruin 11 mont 8  robust 14/15
+
+Race mean below both sides alone: 0 of 810 (race, setting, cell, pricing) cases
+
+Addendum 9: change in log2(race / better side), unequal minus equal (negative = closer); median over cells [min, max]:
+  race(ecm, qs + lc 1.4)
+    s =   256: offi +0.40 [+0.05, +1.12]  ruin -0.26 [-0.76, +0.14]  mont -0.04 [-0.35, +0.48]
+    s =  1024: offi +0.50 [+0.09, +1.27]  ruin -0.17 [-0.85, +0.14]  mont -0.00 [-0.38, +0.57]
+    s = 16384: offi +0.62 [+0.04, +1.25]  ruin -0.14 [-0.86, +0.14]  mont +0.09 [-0.44, +0.52]
+  race(rho, qs + lc 1.4)
+    s =   256: offi -0.08 [-0.41, +1.62]  ruin -0.71 [-1.27, +1.12]  mont -0.38 [-0.83, +1.18]
+    s =  1024: offi -0.07 [-0.53, +1.65]  ruin -0.62 [-1.51, +1.33]  mont -0.38 [-1.05, +1.26]
+    s = 16384: offi +0.09 [-0.70, +1.42]  ruin -0.33 [-1.60, +0.33]  mont -0.17 [-1.24, +0.60]
+  race(ecm, N51-0917)
+    s =   256: offi +0.41 [+0.09, +1.70]  ruin -0.50 [-1.02, +0.17]  mont -0.12 [-0.41, +0.84]
+    s =  1024: offi +0.59 [+0.18, +1.88]  ruin -0.56 [-1.01, +0.29]  mont -0.02 [-0.46, +0.89]
+    s = 16384: offi +1.29 [+0.33, +2.67]  ruin -0.46 [-1.33, +0.46]  mont +0.04 [-0.61, +1.00]
+
+Official worst case (log2): race vs the sides alone, equal slices; cells where the race's worst is below both sides' worst:
+  race(ecm, qs + lc 1.4) s = 256: 0/15 []
+  race(ecm, qs + lc 1.4) s = 1024: 0/15 []
+  race(ecm, qs + lc 1.4) s = 16384: 0/15 []
+  race(rho, qs + lc 1.4) s = 256: 0/15 []
+  race(rho, qs + lc 1.4) s = 1024: 0/15 []
+  race(rho, qs + lc 1.4) s = 16384: 0/15 []
+  race(ecm, N51-0917) s = 256: 0/15 []
+  race(ecm, N51-0917) s = 1024: 0/15 []
+  race(ecm, N51-0917) s = 16384: 0/15 []
+
+qs-side overshoot per slice, mean over cells (equal slices), and the share of the race's official ops spent by the qs side:
+  race(ecm, qs + lc 1.4) s =   256: mean qs overshoot     398 ops (1.6 s), qs share of ops 0.71
+  race(ecm, qs + lc 1.4) s =  1024: mean qs overshoot     969 ops (0.9 s), qs share of ops 0.65
+  race(ecm, qs + lc 1.4) s = 16384: mean qs overshoot    8079 ops (0.5 s), qs share of ops 0.50
+  race(rho, qs + lc 1.4) s =   256: mean qs overshoot     406 ops (1.6 s), qs share of ops 0.71
+  race(rho, qs + lc 1.4) s =  1024: mean qs overshoot    1005 ops (1.0 s), qs share of ops 0.65
+  race(rho, qs + lc 1.4) s = 16384: mean qs overshoot    9974 ops (0.6 s), qs share of ops 0.52
+  race(ecm, N51-0917) s =   256: mean qs overshoot    1066 ops (4.2 s), qs share of ops 0.83
+  race(ecm, N51-0917) s =  1024: mean qs overshoot    2234 ops (2.2 s), qs share of ops 0.75
+  race(ecm, N51-0917) s = 16384: mean qs overshoot    2467 ops (0.2 s), qs share of ops 0.45

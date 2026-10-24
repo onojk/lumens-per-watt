@@ -1,0 +1,295 @@
+
+race(ecm, qs + lc 1.4)
+  equal 256:
+    54     sb    256  offi 14.84 (x2.49 best FAIL >bound)  ruin 14.16 (x1.90 best FAIL)  mont 14.47 (x1.90 best FAIL >bound)  (e) undecided  sw 77  ov 0/249  c 24/6552  pi_r 1.000/0.429
+    60     sb    256  offi 15.68 (x2.02 best FAIL >bound)  ruin 14.81 (x2.48 best FAIL)  mont 15.17 (x1.61 best FAIL)  (e) undecided  sw 146  ov 0/205  c 26/6552  pi_r 1.000/0.295
+    66     sb    256  offi 16.17 (x1.95 best)  ruin 15.16 (x2.50 best FAIL)  mont 15.58 (x1.45 best FAIL)  (e) undecided  sw 196  ov 0/241  c 27/11598  pi_r 1.000/0.237
+    72     sb    256  offi 17.24 (x2.01 best FAIL >bound)  ruin 16.08 (x2.83 best FAIL)  mont 16.52 (x1.60 best FAIL)  (e) undecided  sw 380  ov 0/302  c 26/107880  pi_r 1.000/0.192
+    78     sb    256  offi 18.12 (x2.12 best FAIL >bound)  ruin 16.96 (x2.57 best FAIL)  mont 17.38 (x1.56 best FAIL)  (e) undecided  sw 660  ov 0/351  c 27/107880  pi_r 1.000/0.212
+    84     sb    256  offi 19.00 (x2.23 best FAIL >bound)  ruin 17.74 (x2.16 best FAIL)  mont 18.17 (x1.44 best FAIL)  (e) undecided  sw 1002  ov 0/534  c 25/143905  pi_r 1.000/0.229
+    72/24  sb    256  offi 16.04 (x3.04 best FAIL >bound)  ruin 15.08 (x1.58 best FAIL)  mont 15.52 (x2.12 best FAIL >bound)  (e) undecided  sw 172  ov 0/270  c 22/107880  pi_r 1.000/0.278
+    72/28  sb    256  offi 16.29 (x2.98 best FAIL >bound)  ruin 15.29 (x1.82 best FAIL)  mont 15.74 (x2.02 best FAIL >bound)  (e) undecided  sw 207  ov 0/260  c 26/107880  pi_r 1.000/0.250
+    72/32  sb    256  offi 17.05 (x2.39 best FAIL >bound)  ruin 15.89 (x2.71 best FAIL)  mont 16.35 (x1.47 best FAIL >bound)  (e) undecided  sw 341  ov 0/280  c 27/107880  pi_r 1.000/0.185
+    78/24  sb    256  offi 16.72 (x4.20 best FAIL >bound)  ruin 16.09 (x2.71 best FAIL >bound)  mont 16.37 (x3.30 best FAIL >bound)  (e) ecm  sw 200  ov 0/568  c 21/107880  pi_r 1.000/0.535
+    78/28  sb    256  offi 17.17 (x3.31 best FAIL >bound)  ruin 16.23 (x1.73 best FAIL >bound)  mont 16.61 (x2.24 best FAIL >bound)  (e) undecided  sw 333  ov 0/374  c 24/107880  pi_r 1.000/0.329
+    78/32  sb    256  offi 17.79 (x3.08 best FAIL >bound)  ruin 16.78 (x1.88 best FAIL)  mont 17.15 (x1.98 best FAIL >bound)  (e) undecided  sw 500  ov 0/394  c 27/107880  pi_r 1.000/0.299
+    84/24  sb    256  offi 17.38 (x4.88 best FAIL >bound)  ruin 16.74 (x3.14 best FAIL >bound)  mont 17.02 (x3.78 best FAIL >bound)  (e) ecm  sw 273  ov 0/739  c 23/107880  pi_r 1.000/0.551
+    84/28  sb    256  offi 17.70 (x4.16 best FAIL >bound)  ruin 16.83 (x2.27 best FAIL >bound)  mont 17.17 (x2.88 best FAIL >bound)  (e) ecm  sw 386  ov 0/590  c 26/111647  pi_r 1.000/0.408
+    84/32  sb    256  offi 18.52 (x3.71 best FAIL >bound)  ruin 17.46 (x1.78 best FAIL >bound)  mont 17.83 (x2.30 best FAIL >bound)  (e) undecided  sw 675  ov 0/604  c 27/126149  pi_r 1.000/0.324
+  equal 1024:
+    54     sb   1024  offi 14.73 (x2.31 best FAIL >bound)  ruin 14.13 (x1.86 best FAIL)  mont 14.44 (x1.87 best FAIL >bound)  (e) undecided  sw 19  ov 0/727  c 24/6552  pi_r 1.000/0.443
+    60     sb   1024  offi 15.62 (x1.95 best FAIL)  ruin 14.88 (x2.61 best FAIL)  mont 15.20 (x1.64 best FAIL)  (e) undecided  sw 40  ov 0/478  c 26/6552  pi_r 1.000/0.314
+    66     sb   1024  offi 16.13 (x1.90 best)  ruin 15.30 (x2.75 best FAIL)  mont 15.65 (x1.52 best FAIL)  (e) undecided  sw 56  ov 0/488  c 27/10845  pi_r 1.000/0.258
+    72     sb   1024  offi 17.19 (x1.94 best)  ruin 16.25 (x3.19 best FAIL)  mont 16.61 (x1.69 best FAIL)  (e) undecided  sw 114  ov 0/557  c 26/107880  pi_r 1.000/0.209
+    78     sb   1024  offi 18.06 (x2.04 best FAIL >bound)  ruin 17.11 (x2.85 best FAIL)  mont 17.45 (x1.64 best FAIL)  (e) undecided  sw 196  ov 0/741  c 27/107880  pi_r 1.000/0.233
+    84     sb   1024  offi 18.92 (x2.12 best FAIL >bound)  ruin 17.93 (x2.47 best FAIL)  mont 18.26 (x1.54 best FAIL)  (e) undecided  sw 320  ov 0/1056  c 30/143905  pi_r 1.000/0.258
+    72/24  sb   1024  offi 15.78 (x2.55 best FAIL >bound)  ruin 15.04 (x1.53 best FAIL)  mont 15.41 (x1.95 best >bound)  (e) undecided  sw 42  ov 0/591  c 22/107880  pi_r 1.000/0.336
+    72/28  sb   1024  offi 16.03 (x2.50 best FAIL >bound)  ruin 15.25 (x1.77 best FAIL)  mont 15.62 (x1.87 best >bound)  (e) undecided  sw 52  ov 0/536  c 26/107880  pi_r 1.000/0.302
+    72/32  sb   1024  offi 16.90 (x2.16 best FAIL >bound)  ruin 15.98 (x2.88 best FAIL)  mont 16.35 (x1.47 best FAIL >bound)  (e) undecided  sw 96  ov 0/493  c 29/107880  pi_r 1.000/0.208
+    78/24  sb   1024  offi 16.54 (x3.72 best FAIL >bound)  ruin 16.06 (x2.67 best FAIL >bound)  mont 16.30 (x3.14 best FAIL >bound)  (e) ecm  sw 49  ov 0/1815  c 21/107880  pi_r 1.000/0.614
+    78/28  sb   1024  offi 16.95 (x2.84 best FAIL >bound)  ruin 16.22 (x1.71 best FAIL >bound)  mont 16.53 (x2.12 best FAIL >bound)  (e) undecided  sw 85  ov 0/933  c 24/107880  pi_r 1.000/0.393
+    78/32  sb   1024  offi 17.65 (x2.79 best FAIL >bound)  ruin 16.84 (x1.95 best FAIL)  mont 17.14 (x1.97 best FAIL >bound)  (e) undecided  sw 138  ov 0/928  c 27/107880  pi_r 1.000/0.344
+    84/24  sb   1024  offi 17.17 (x4.21 best FAIL >bound)  ruin 16.72 (x3.08 best FAIL >bound)  mont 16.94 (x3.57 best FAIL >bound)  (e) ecm  sw 67  ov 0/2308  c 23/107880  pi_r 1.000/0.647
+    84/28  sb   1024  offi 17.44 (x3.47 best FAIL >bound)  ruin 16.81 (x2.24 best FAIL >bound)  mont 17.07 (x2.69 best FAIL >bound)  (e) ecm  sw 99  ov 0/1544  c 26/111647  pi_r 1.000/0.501
+    84/32  sb   1024  offi 18.25 (x3.08 best FAIL >bound)  ruin 17.48 (x1.80 best FAIL >bound)  mont 17.76 (x2.18 best FAIL >bound)  (e) undecided  sw 184  ov 0/1344  c 27/126149  pi_r 1.000/0.405
+  equal 16384:
+    54     sb  16384  offi 13.87 (x1.27 best)  ruin 13.64 (x1.33 best FAIL)  mont 13.74 (x1.15 best)  (e) undecided  sw 0  ov 0/79  c 24/6552  pi_r 1.000/0.418
+    60     sb  16384  offi 15.28 (x1.54 best)  ruin 14.85 (x2.55 best FAIL)  mont 15.03 (x1.45 best FAIL)  (e) undecided  sw 2  ov 0/215  c 26/6552  pi_r 1.000/0.331
+    66     sb  16384  offi 15.88 (x1.59 best)  ruin 15.32 (x2.79 best FAIL)  mont 15.55 (x1.41 best FAIL)  (e) undecided  sw 3  ov 0/435  c 27/10845  pi_r 1.000/0.263
+    72     sb  16384  offi 17.04 (x1.76 best)  ruin 16.36 (x3.45 best FAIL)  mont 16.63 (x1.72 best FAIL)  (e) undecided  sw 7  ov 0/1534  c 29/107880  pi_r 1.000/0.208
+    78     sb  16384  offi 17.94 (x1.87 best)  ruin 17.21 (x3.06 best FAIL)  mont 17.48 (x1.68 best FAIL)  (e) undecided  sw 13  ov 0/3839  c 29/107880  pi_r 1.000/0.253
+    84     sb  16384  offi 18.79 (x1.93 best)  ruin 18.02 (x2.63 best FAIL)  mont 18.31 (x1.59 best FAIL)  (e) undecided  sw 22  ov 0/7035  c 32/143905  pi_r 1.000/0.283
+    72/24  sb  16384  offi 15.01 (x1.48 best)  ruin 14.69 (x1.20 best FAIL)  mont 14.87 (x1.34 best)  (e) undecided  sw 1  ov 0/440  c 22/6552  pi_r 1.000/0.395
+    72/28  sb  16384  offi 15.37 (x1.58 best)  ruin 14.98 (x1.47 best FAIL)  mont 15.21 (x1.41 best)  (e) undecided  sw 2  ov 0/1677  c 26/107880  pi_r 1.000/0.346
+    72/32  sb  16384  offi 16.61 (x1.77 best)  ruin 16.00 (x2.91 best FAIL)  mont 16.25 (x1.37 best FAIL)  (e) undecided  sw 5  ov 0/1159  c 29/107880  pi_r 1.000/0.247
+    78/24  sb  16384  offi 15.97 (x2.50 best FAIL >bound)  ruin 15.40 (x1.68 best >bound)  mont 15.93 (x2.42 best FAIL >bound)  (e) ecm  sw 2  ov 0/18610  c 21/107880  pi_r 1.000/0.453
+    78/28  sb  16384  offi 16.59 (x2.21 best FAIL >bound)  ruin 15.98 (x1.45 best FAIL >bound)  mont 16.36 (x1.89 best >bound)  (e) undecided  sw 4  ov 0/8051  c 24/107880  pi_r 1.000/0.371
+    78/32  sb  16384  offi 17.38 (x2.32 best FAIL >bound)  ruin 16.75 (x1.85 best FAIL)  mont 17.06 (x1.86 best FAIL >bound)  (e) undecided  sw 8  ov 0/7595  c 27/107880  pi_r 1.000/0.383
+    84/24  sb  16384  offi 16.81 (x3.29 best FAIL >bound)  ruin 16.04 (x1.93 best >bound)  mont 16.83 (x3.32 best FAIL >bound)  (e) ecm  sw 3  ov 0/37144  c 23/107880  pi_r 1.000/0.404
+    84/28  sb  16384  offi 17.09 (x2.73 best FAIL >bound)  ruin 16.42 (x1.72 best >bound)  mont 16.97 (x2.51 best FAIL >bound)  (e) ecm  sw 5  ov 0/20217  c 26/107880  pi_r 1.000/0.415
+    84/32  sb  16384  offi 18.01 (x2.59 best FAIL >bound)  ruin 17.39 (x1.70 best FAIL >bound)  mont 17.69 (x2.08 best FAIL >bound)  (e) undecided  sw 11  ov 0/13161  c 28/126149  pi_r 1.000/0.441
+  unequal 256:
+    54     sb    814  offi 15.03 (x2.83 best FAIL >bound)  ruin 13.90 (x1.59 best FAIL)  mont 14.39 (x1.80 best FAIL >bound)  (e) undecided  sw 47  ov 0/360  c 24/6552  pi_r 1.000/0.338
+    60     sb   1089  offi 15.73 (x2.10 best FAIL >bound)  ruin 14.24 (x1.68 best)  mont 14.89 (x1.32 best FAIL)  (e) undecided  sw 63  ov 0/395  c 26/6552  pi_r 1.000/0.242
+    66     sb   1418  offi 16.43 (x2.33 best FAIL >bound)  ruin 14.60 (x1.69 best)  mont 15.40 (x1.28 best FAIL)  (e) undecided  sw 81  ov 0/512  c 22/11598  pi_r 1.000/0.185
+    72     sb   1620  offi 17.35 (x2.16 best FAIL >bound)  ruin 15.31 (x1.67 best)  mont 16.19 (x1.27 best)  (e) undecided  sw 129  ov 0/709  c 23/107880  pi_r 1.000/0.161
+    78     sb   1498  offi 18.20 (x2.24 best FAIL >bound)  ruin 16.23 (x1.55 best)  mont 17.03 (x1.22 best)  (e) undecided  sw 223  ov 0/946  c 23/107880  pi_r 1.000/0.177
+    84     sb   1395  offi 19.14 (x2.45 best FAIL >bound)  ruin 17.20 (x1.48 best)  mont 17.93 (x1.22 best FAIL)  (e) undecided  sw 393  ov 0/1284  c 22/143905  pi_r 1.000/0.190
+    72/24  sb   1762  offi 17.16 (x6.62 best FAIL >bound)  ruin 15.08 (x1.58 best FAIL)  mont 16.01 (x2.97 best FAIL >bound)  (e) undecided  sw 110  ov 0/642  c 21/107880  pi_r 1.000/0.155
+    72/28  sb   1764  offi 17.19 (x5.56 best FAIL >bound)  ruin 15.10 (x1.59 best FAIL)  mont 16.03 (x2.48 best FAIL >bound)  (e) undecided  sw 112  ov 0/660  c 24/107880  pi_r 1.000/0.153
+    72/32  sb   1771  offi 17.32 (x2.89 best FAIL >bound)  ruin 15.19 (x1.67 best)  mont 16.13 (x1.26 best FAIL)  (e) undecided  sw 120  ov 0/702  c 21/107880  pi_r 1.000/0.147
+    78/24  sb   1266  offi 17.72 (x8.40 best FAIL >bound)  ruin 16.22 (x2.97 best FAIL >bound)  mont 16.82 (x4.51 best FAIL >bound)  (e) ecm  sw 175  ov 0/940  c 21/107880  pi_r 1.000/0.278
+    78/28  sb   1506  offi 17.97 (x5.75 best FAIL >bound)  ruin 16.10 (x1.58 best FAIL >bound)  mont 16.88 (x2.70 best FAIL >bound)  (e) undecided  sw 195  ov 0/872  c 24/107880  pi_r 1.000/0.196
+    78/32  sb   1307  offi 18.18 (x4.06 best FAIL >bound)  ruin 16.42 (x1.46 best FAIL)  mont 17.12 (x1.93 best FAIL >bound)  (e) undecided  sw 238  ov 0/946  c 24/107880  pi_r 1.000/0.214
+    84/24  sb   1348  offi 18.38 (x9.74 best FAIL >bound)  ruin 16.88 (x3.45 best FAIL >bound)  mont 17.47 (x5.16 best FAIL >bound)  (e) ecm  sw 245  ov 0/1177  c 23/109917  pi_r 1.000/0.288
+    84/28  sb   1462  offi 18.63 (x7.93 best FAIL >bound)  ruin 16.87 (x2.35 best FAIL >bound)  mont 17.57 (x3.80 best FAIL >bound)  (e) ecm  sw 284  ov 0/1140  c 26/129961  pi_r 1.000/0.226
+    84/32  sb   1292  offi 19.02 (x5.24 best FAIL >bound)  ruin 17.26 (x1.55 best FAIL >bound)  mont 17.91 (x2.42 best FAIL >bound)  (e) undecided  sw 381  ov 0/1247  c 24/126149  pi_r 1.000/0.224
+  unequal 1024:
+    54     sb   3256  offi 15.01 (x2.80 best FAIL >bound)  ruin 13.97 (x1.67 best FAIL)  mont 14.42 (x1.84 best FAIL >bound)  (e) undecided  sw 13  ov 0/967  c 24/6552  pi_r 1.000/0.349
+    60     sb   4356  offi 15.71 (x2.08 best FAIL >bound)  ruin 14.33 (x1.78 best)  mont 14.92 (x1.35 best FAIL)  (e) undecided  sw 18  ov 0/785  c 26/6552  pi_r 1.000/0.249
+    66     sb   5671  offi 16.39 (x2.27 best FAIL >bound)  ruin 14.68 (x1.78 best)  mont 15.42 (x1.30 best FAIL)  (e) undecided  sw 23  ov 0/906  c 24/11598  pi_r 1.000/0.189
+    72     sb   6480  offi 17.33 (x2.15 best FAIL >bound)  ruin 15.41 (x1.78 best)  mont 16.22 (x1.30 best)  (e) undecided  sw 37  ov 0/1431  c 23/107880  pi_r 1.000/0.163
+    78     sb   5992  offi 18.20 (x2.25 best FAIL >bound)  ruin 16.34 (x1.68 best)  mont 17.08 (x1.27 best FAIL)  (e) undecided  sw 68  ov 0/1930  c 23/107880  pi_r 1.000/0.179
+    84     sb   5582  offi 19.12 (x2.43 best FAIL >bound)  ruin 17.30 (x1.59 best)  mont 17.98 (x1.26 best FAIL)  (e) undecided  sw 120  ov 0/2925  c 24/143905  pi_r 1.000/0.194
+    72/24  sb   7048  offi 17.06 (x6.15 best FAIL >bound)  ruin 15.11 (x1.60 best FAIL)  mont 15.97 (x2.90 best FAIL >bound)  (e) undecided  sw 30  ov 0/1051  c 22/107880  pi_r 1.000/0.162
+    72/28  sb   7057  offi 17.10 (x5.23 best FAIL >bound)  ruin 15.13 (x1.63 best FAIL)  mont 16.01 (x2.44 best FAIL >bound)  (e) undecided  sw 31  ov 0/1197  c 24/107880  pi_r 1.000/0.159
+    72/32  sb   7083  offi 17.30 (x2.85 best FAIL >bound)  ruin 15.28 (x1.77 best)  mont 16.16 (x1.29 best FAIL)  (e) undecided  sw 35  ov 0/1283  c 21/107880  pi_r 1.000/0.150
+    78/24  sb   5063  offi 17.51 (x7.27 best FAIL >bound)  ruin 16.19 (x2.92 best FAIL >bound)  mont 16.72 (x4.21 best FAIL >bound)  (e) ecm  sw 45  ov 0/2122  c 21/107880  pi_r 1.000/0.314
+    78/28  sb   6022  offi 17.87 (x5.39 best FAIL >bound)  ruin 16.14 (x1.62 best FAIL >bound)  mont 16.85 (x2.64 best FAIL >bound)  (e) undecided  sw 55  ov 0/1763  c 24/107880  pi_r 1.000/0.206
+    78/32  sb   5226  offi 18.15 (x3.96 best FAIL >bound)  ruin 16.50 (x1.55 best FAIL)  mont 17.14 (x1.96 best FAIL >bound)  (e) undecided  sw 71  ov 0/2008  c 27/107880  pi_r 1.000/0.221
+    84/24  sb   5391  offi 18.17 (x8.45 best FAIL >bound)  ruin 16.85 (x3.39 best FAIL >bound)  mont 17.37 (x4.83 best FAIL >bound)  (e) ecm  sw 63  ov 0/2927  c 23/109917  pi_r 1.000/0.326
+    84/28  sb   5846  offi 18.48 (x7.13 best FAIL >bound)  ruin 16.87 (x2.34 best FAIL >bound)  mont 17.50 (x3.63 best FAIL >bound)  (e) ecm  sw 76  ov 0/2680  c 26/129961  pi_r 1.000/0.247
+    84/32  sb   5169  offi 18.94 (x4.96 best FAIL >bound)  ruin 17.31 (x1.61 best FAIL >bound)  mont 17.91 (x2.41 best FAIL >bound)  (e) undecided  sw 111  ov 0/2894  c 24/126149  pi_r 1.000/0.237
+  unequal 16384:
+    54     sb  52094  offi 13.93 (x1.32 best)  ruin 13.50 (x1.20 best)  mont 13.66 (x1.09 best)  (e) undecided  sw 0  ov 0/0  c 24/6552  pi_r 1.000/0.312
+    60     sb  69696  offi 15.32 (x1.58 best)  ruin 14.26 (x1.70 best)  mont 14.67 (x1.14 best FAIL)  (e) undecided  sw 1  ov 0/0  c 26/6552  pi_r 1.000/0.232
+    66     sb  90731  offi 16.02 (x1.76 best)  ruin 14.60 (x1.69 best)  mont 15.17 (x1.09 best)  (e) undecided  sw 1  ov 0/2306  c 24/11598  pi_r 1.000/0.182
+    72     sb 103675  offi 17.17 (x1.91 best)  ruin 15.51 (x1.91 best)  mont 16.20 (x1.27 best)  (e) undecided  sw 2  ov 0/1027  c 26/107880  pi_r 1.000/0.153
+    78     sb  95879  offi 18.16 (x2.18 best FAIL >bound)  ruin 16.49 (x1.85 best)  mont 17.16 (x1.33 best FAIL)  (e) undecided  sw 5  ov 0/4584  c 23/107880  pi_r 1.000/0.176
+    84     sb  89306  offi 19.07 (x2.34 best FAIL >bound)  ruin 17.44 (x1.75 best)  mont 18.06 (x1.34 best FAIL)  (e) undecided  sw 10  ov 0/11235  c 24/143905  pi_r 1.000/0.192
+    72/24  sb 112769  offi 16.26 (x3.53 best FAIL >bound)  ruin 14.80 (x1.30 best FAIL)  mont 15.38 (x1.92 best >bound)  (e) undecided  sw 1  ov 0/1865  c 22/24118  pi_r 1.000/0.147
+    72/28  sb 112910  offi 16.42 (x3.27 best FAIL >bound)  ruin 14.97 (x1.46 best FAIL)  mont 15.59 (x1.82 best >bound)  (e) undecided  sw 1  ov 0/1626  c 24/107880  pi_r 1.000/0.152
+    72/32  sb 113324  offi 17.15 (x2.57 best FAIL >bound)  ruin 15.48 (x2.04 best FAIL)  mont 16.16 (x1.29 best FAIL)  (e) undecided  sw 2  ov 0/2652  c 23/107880  pi_r 1.000/0.152
+    78/24  sb  81004  offi 16.85 (x4.59 best FAIL >bound)  ruin 15.53 (x1.84 best >bound)  mont 16.27 (x3.08 best FAIL >bound)  (e) ecm  sw 2  ov 0/7765  c 21/107880  pi_r 1.000/0.241
+    78/28  sb  96356  offi 17.52 (x4.22 best FAIL >bound)  ruin 15.94 (x1.41 best FAIL >bound)  mont 16.67 (x2.34 best FAIL >bound)  (e) undecided  sw 3  ov 0/4588  c 24/107880  pi_r 1.000/0.187
+    78/32  sb  83619  offi 18.00 (x3.57 best FAIL >bound)  ruin 16.54 (x1.59 best FAIL)  mont 17.15 (x1.98 best FAIL >bound)  (e) undecided  sw 5  ov 0/7190  c 27/107880  pi_r 1.000/0.219
+    84/24  sb  86252  offi 17.48 (x5.22 best FAIL >bound)  ruin 16.18 (x2.12 best FAIL >bound)  mont 17.07 (x3.92 best FAIL >bound)  (e) ecm  sw 3  ov 0/13959  c 23/107880  pi_r 1.000/0.267
+    84/28  sb  93538  offi 17.97 (x5.02 best FAIL >bound)  ruin 16.52 (x1.83 best >bound)  mont 17.28 (x3.11 best FAIL >bound)  (e) ecm  sw 4  ov 0/10705  c 26/129961  pi_r 1.000/0.228
+    84/32  sb  82704  offi 18.71 (x4.24 best FAIL >bound)  ruin 17.30 (x1.59 best FAIL >bound)  mont 17.86 (x2.34 best FAIL >bound)  (e) undecided  sw 8  ov 0/12216  c 27/126149  pi_r 1.000/0.245
+
+race(rho, qs + lc 1.4)
+  equal 256:
+    54     sb    256  offi 15.29 (x2.05 best FAIL >bound)  ruin 14.54 (x2.48 best FAIL)  mont 14.92 (x1.89 best FAIL)  (e) undecided  sw 112  ov 0/206  c 2/6552  pi_r 1.032/0.349
+    60     sb    256  offi 16.15 (x1.48 best FAIL)  ruin 15.23 (x3.34 best FAIL)  mont 15.66 (x2.26 best FAIL)  (e) qs + lc 1.4  sw 206  ov 0/191  c 2/6552  pi_r 1.032/0.244
+    66     sb    256  offi 16.90 (x1.50 best)  ruin 15.81 (x3.92 best FAIL)  mont 16.30 (x2.39 best FAIL)  (e) qs + lc 1.4  sw 324  ov 0/240  c 2/11598  pi_r 1.033/0.182
+    72     sb    256  offi 17.77 (x1.44 best)  ruin 16.54 (x3.91 best FAIL)  mont 17.06 (x2.31 best FAIL)  (e) qs + lc 1.4  sw 539  ov 0/316  c 2/107880  pi_r 1.030/0.158
+    78     sb    256  offi 18.63 (x1.40 best)  ruin 17.39 (x3.47 best FAIL)  mont 17.89 (x2.22 best FAIL)  (e) qs + lc 1.4  sw 927  ov 0/363  c 2/107880  pi_r 1.031/0.172
+    84     sb    256  offi 19.47 (x1.31 best)  ruin 18.10 (x2.76 best FAIL)  mont 18.61 (x1.96 best)  (e) qs + lc 1.4  sw 1354  ov 0/562  c 2/143905  pi_r 1.033/0.183
+    72/24  sb    256  offi 15.12 (x3.12 best FAIL >bound)  ruin 14.39 (x1.82 best >bound)  mont 14.87 (x2.30 best FAIL >bound)  (e) rho  sw 89  ov 0/291  c 2/107880  pi_r 1.033/0.399
+    72/28  sb    256  offi 16.99 (x2.87 best FAIL >bound)  ruin 15.88 (x2.74 best FAIL)  mont 16.39 (x1.68 best FAIL >bound)  (e) undecided  sw 331  ov 0/275  c 2/107880  pi_r 1.031/0.187
+    72/32  sb    256  offi 17.74 (x1.41 best FAIL)  ruin 16.50 (x4.14 best FAIL)  mont 17.03 (x2.32 best FAIL)  (e) qs + lc 1.4  sw 537  ov 0/304  c 2/107880  pi_r 1.031/0.147
+    78/24  sb    256  offi 15.68 (x4.99 best FAIL >bound)  ruin 15.33 (x3.78 best FAIL >bound)  mont 15.60 (x4.15 best FAIL >bound)  (e) rho  sw 81  ov 0/777  c 2/107880  pi_r 1.034/0.719
+    78/28  sb    256  offi 17.13 (x3.40 best FAIL >bound)  ruin 16.25 (x1.79 best FAIL >bound)  mont 16.68 (x2.20 best FAIL >bound)  (e) undecided  sw 329  ov 0/359  c 2/107880  pi_r 1.031/0.338
+    78/32  sb    256  offi 18.42 (x1.93 best FAIL)  ruin 17.28 (x2.66 best FAIL)  mont 17.75 (x1.82 best FAIL)  (e) undecided  sw 796  ov 0/370  c 2/107880  pi_r 1.031/0.218
+    84/24  sb    256  offi 15.57 (x4.69 best FAIL >bound)  ruin 15.24 (x3.61 best FAIL >bound)  mont 15.55 (x4.07 best FAIL >bound)  (e) rho  sw 80  ov 0/698  c 2/107880  pi_r 1.034/0.733
+    84/28  sb    256  offi 17.51 (x4.24 best FAIL >bound)  ruin 16.71 (x2.37 best FAIL >bound)  mont 17.09 (x2.81 best FAIL >bound)  (e) rho  sw 343  ov 0/575  c 2/107880  pi_r 1.031/0.436
+    84/32  sb    256  offi 19.08 (x3.17 best FAIL >bound)  ruin 17.88 (x2.11 best FAIL)  mont 18.35 (x1.69 best FAIL >bound)  (e) undecided  sw 1039  ov 0/558  c 2/116947  pi_r 1.031/0.247
+  equal 1024:
+    54     sb   1024  offi 15.28 (x2.03 best FAIL >bound)  ruin 14.65 (x2.67 best FAIL)  mont 14.99 (x1.99 best FAIL)  (e) undecided  sw 31  ov 0/501  c 2/6552  pi_r 1.033/0.371
+    60     sb   1024  offi 16.22 (x1.55 best FAIL)  ruin 15.43 (x3.83 best FAIL)  mont 15.82 (x2.52 best FAIL)  (e) qs + lc 1.4  sw 62  ov 0/405  c 2/6552  pi_r 1.031/0.250
+    66     sb   1024  offi 17.06 (x1.67 best)  ruin 16.15 (x4.94 best FAIL)  mont 16.56 (x2.86 best FAIL)  (e) qs + lc 1.4  sw 109  ov 0/449  c 2/11598  pi_r 1.031/0.182
+    72     sb   1024  offi 17.93 (x1.62 best)  ruin 16.94 (x5.15 best FAIL)  mont 17.37 (x2.88 best FAIL)  (e) qs + lc 1.4  sw 191  ov 0/564  c 2/107880  pi_r 1.033/0.160
+    78     sb   1024  offi 18.77 (x1.54 best)  ruin 17.72 (x4.38 best FAIL)  mont 18.15 (x2.66 best FAIL)  (e) qs + lc 1.4  sw 316  ov 0/778  c 2/107880  pi_r 1.032/0.173
+    84     sb   1024  offi 19.65 (x1.49 best)  ruin 18.53 (x3.74 best FAIL)  mont 18.95 (x2.48 best FAIL)  (e) qs + lc 1.4  sw 526  ov 0/1080  c 2/143905  pi_r 1.030/0.183
+    72/24  sb   1024  offi 14.90 (x2.66 best FAIL >bound)  ruin 14.31 (x1.72 best >bound)  mont 14.77 (x2.15 best FAIL >bound)  (e) rho  sw 22  ov 0/744  c 2/107880  pi_r 1.033/0.447
+    72/28  sb   1024  offi 16.75 (x2.42 best FAIL >bound)  ruin 15.90 (x2.77 best FAIL)  mont 16.33 (x1.61 best FAIL >bound)  (e) undecided  sw 88  ov 0/452  c 2/107880  pi_r 1.031/0.222
+    72/32  sb   1024  offi 17.87 (x1.55 best FAIL)  ruin 16.88 (x5.36 best FAIL)  mont 17.32 (x2.83 best FAIL)  (e) qs + lc 1.4  sw 186  ov 0/531  c 2/107880  pi_r 1.033/0.149
+    78/24  sb   1024  offi 15.58 (x4.65 best FAIL >bound)  ruin 15.24 (x3.54 best FAIL >bound)  mont 15.58 (x4.08 best FAIL >bound)  (e) rho  sw 20  ov 0/2875  c 2/107880  pi_r 1.034/0.721
+    78/28  sb   1024  offi 16.90 (x2.89 best FAIL >bound)  ruin 16.21 (x1.74 best FAIL >bound)  mont 16.58 (x2.05 best FAIL >bound)  (e) undecided  sw 82  ov 0/937  c 2/107880  pi_r 1.031/0.403
+    78/32  sb   1024  offi 18.42 (x1.93 best FAIL)  ruin 17.48 (x3.04 best FAIL)  mont 17.88 (x1.99 best FAIL)  (e) undecided  sw 245  ov 0/815  c 2/107880  pi_r 1.031/0.234
+    84/24  sb   1024  offi 15.37 (x4.06 best FAIL >bound)  ruin 14.99 (x3.04 best FAIL >bound)  mont 15.41 (x3.68 best FAIL >bound)  (e) rho  sw 19  ov 0/2262  c 2/107880  pi_r 1.034/0.687
+    84/28  sb   1024  offi 17.24 (x3.52 best FAIL >bound)  ruin 16.68 (x2.30 best FAIL >bound)  mont 16.98 (x2.61 best FAIL >bound)  (e) rho  sw 85  ov 0/1592  c 2/107880  pi_r 1.031/0.533
+    84/32  sb   1024  offi 18.89 (x2.76 best FAIL >bound)  ruin 17.99 (x2.27 best FAIL)  mont 18.36 (x1.71 best FAIL >bound)  (e) undecided  sw 309  ov 0/1087  c 2/113396  pi_r 1.030/0.298
+  equal 16384:
+    54     sb  16384  offi 15.01 (x1.68 best FAIL)  ruin 14.64 (x2.66 best FAIL)  mont 14.90 (x1.87 best FAIL)  (e) undecided  sw 2  ov 0/80  c 2/6552  pi_r 1.032/0.422
+    60     sb  16384  offi 16.33 (x1.68 best FAIL)  ruin 15.79 (x4.92 best FAIL >bound)  mont 16.10 (x3.05 best FAIL)  (e) qs + lc 1.4  sw 5  ov 0/228  c 2/6552  pi_r 1.032/0.269
+    66     sb  16384  offi 17.30 (x1.98 best)  ruin 16.63 (x6.89 best FAIL >bound)  mont 16.97 (x3.79 best FAIL >bound)  (e) qs + lc 1.4  sw 9  ov 0/611  c 2/11598  pi_r 1.033/0.185
+    72     sb  16384  offi 18.17 (x1.91 best)  ruin 17.42 (x7.20 best FAIL)  mont 17.77 (x3.79 best FAIL)  (e) qs + lc 1.4  sw 17  ov 0/1883  c 2/107880  pi_r 1.031/0.161
+    78     sb  16384  offi 19.00 (x1.80 best)  ruin 18.18 (x6.02 best FAIL)  mont 18.53 (x3.46 best FAIL)  (e) qs + lc 1.4  sw 29  ov 0/3898  c 2/107880  pi_r 1.030/0.174
+    84     sb  16384  offi 19.88 (x1.75 best)  ruin 19.01 (x5.21 best FAIL)  mont 19.36 (x3.29 best FAIL)  (e) qs + lc 1.4  sw 50  ov 1/6361  c 2/143905  pi_r 1.032/0.183
+    72/24  sb  16384  offi 14.16 (x1.60 best)  ruin 13.87 (x1.26 best)  mont 14.23 (x1.47 best)  (e) undecided  sw 1  ov 0/4000  c 2/107880  pi_r 1.033/0.450
+    72/28  sb  16384  offi 16.41 (x1.91 best)  ruin 15.81 (x2.61 best FAIL)  mont 16.18 (x1.45 best FAIL)  (e) undecided  sw 5  ov 0/747  c 2/107880  pi_r 1.031/0.258
+    72/32  sb  16384  offi 18.03 (x1.72 best FAIL)  ruin 17.28 (x7.09 best FAIL)  mont 17.63 (x3.51 best FAIL)  (e) qs + lc 1.4  sw 15  ov 0/1452  c 2/107880  pi_r 1.031/0.155
+    78/24  sb  16384  offi 14.44 (x2.11 best FAIL >bound)  ruin 13.97 (x1.47 best >bound)  mont 14.58 (x2.04 best FAIL >bound)  (e) undecided  sw 0  ov 0/30464  c 2/107880  pi_r 1.034/0.439
+    78/28  sb  16384  offi 16.55 (x2.27 best FAIL >bound)  ruin 16.05 (x1.55 best FAIL >bound)  mont 16.41 (x1.83 best >bound)  (e) undecided  sw 4  ov 0/7699  c 2/107880  pi_r 1.031/0.448
+    78/32  sb  16384  offi 18.40 (x1.91 best FAIL)  ruin 17.69 (x3.53 best FAIL)  mont 18.02 (x2.20 best FAIL)  (e) undecided  sw 18  ov 0/4783  c 2/107880  pi_r 1.031/0.262
+    84/24  sb  16384  offi 14.88 (x2.90 best FAIL >bound)  ruin 14.04 (x1.56 best >bound)  mont 15.07 (x2.90 best FAIL >bound)  (e) rho  sw 1  ov 0/58891  c 2/107880  pi_r 1.034/0.306
+    84/28  sb  16384  offi 16.98 (x2.93 best FAIL >bound)  ruin 16.52 (x2.08 best FAIL >bound)  mont 16.90 (x2.46 best FAIL >bound)  (e) rho  sw 5  ov 0/20640  c 2/107880  pi_r 1.031/0.573
+    84/32  sb  16384  offi 18.65 (x2.35 best FAIL >bound)  ruin 18.03 (x2.33 best FAIL)  mont 18.32 (x1.66 best FAIL >bound)  (e) undecided  sw 20  ov 0/7872  c 2/113396  pi_r 1.031/0.376
+  unequal 256:
+    54     sb    840  offi 15.16 (x1.86 best FAIL)  ruin 14.01 (x1.71 best)  mont 14.54 (x1.45 best FAIL)  (e) undecided  sw 51  ov 0/341  c 2/6552  pi_r 1.036/0.319
+    60     sb   1123  offi 15.80 (x1.17 best)  ruin 14.30 (x1.75 best)  mont 14.99 (x1.41 best)  (e) qs + lc 1.4  sw 65  ov 0/395  c 2/6552  pi_r 1.034/0.236
+    66     sb   1460  offi 16.49 (x1.13 best)  ruin 14.65 (x1.75 best)  mont 15.49 (x1.36 best)  (e) qs + lc 1.4  sw 82  ov 0/529  c 2/11598  pi_r 1.035/0.181
+    72     sb   1668  offi 17.39 (x1.11 best)  ruin 15.35 (x1.70 best)  mont 16.25 (x1.32 best)  (e) qs + lc 1.4  sw 129  ov 0/737  c 2/107880  pi_r 1.032/0.158
+    78     sb   1543  offi 18.28 (x1.10 best)  ruin 16.29 (x1.62 best)  mont 17.12 (x1.31 best)  (e) qs + lc 1.4  sw 230  ov 0/980  c 2/107880  pi_r 1.032/0.171
+    84     sb   1437  offi 19.21 (x1.09 best)  ruin 17.24 (x1.52 best)  mont 18.01 (x1.29 best)  (e) qs + lc 1.4  sw 402  ov 0/1321  c 2/143905  pi_r 1.033/0.183
+    72/24  sb   1821  offi 16.69 (x9.25 best FAIL >bound)  ruin 14.75 (x2.33 best FAIL >bound)  mont 15.67 (x4.00 best FAIL >bound)  (e) rho  sw 78  ov 0/646  c 2/107880  pi_r 1.033/0.179
+    72/28  sb   1819  offi 17.29 (x3.53 best FAIL >bound)  ruin 15.17 (x1.67 best)  mont 16.13 (x1.40 best FAIL >bound)  (e) undecided  sw 115  ov 0/713  c 2/107880  pi_r 1.032/0.148
+    72/32  sb   1825  offi 17.38 (x1.10 best)  ruin 15.24 (x1.72 best)  mont 16.21 (x1.31 best)  (e) qs + lc 1.4  sw 122  ov 0/733  c 2/107880  pi_r 1.032/0.145
+    78/24  sb   1309  offi 16.82 (x10.97 best FAIL >bound)  ruin 15.73 (x4.98 best FAIL >bound)  mont 16.22 (x6.35 best FAIL >bound)  (e) rho  sw 81  ov 0/1278  c 2/107880  pi_r 1.034/0.413
+    78/28  sb   1552  offi 18.08 (x6.54 best FAIL >bound)  ruin 16.16 (x1.68 best FAIL >bound)  mont 16.98 (x2.71 best FAIL >bound)  (e) undecided  sw 202  ov 0/934  c 2/107880  pi_r 1.032/0.186
+    78/32  sb   1346  offi 18.34 (x1.83 best FAIL)  ruin 16.51 (x1.56 best)  mont 17.25 (x1.29 best)  (e) undecided  sw 255  ov 0/998  c 2/107880  pi_r 1.030/0.199
+    84/24  sb   1393  offi 17.19 (x14.41 best FAIL >bound)  ruin 16.36 (x7.86 best FAIL >bound)  mont 16.74 (x9.26 best FAIL >bound)  (e) rho  sw 80  ov 0/2078  c 2/107880  pi_r 1.034/0.528
+    84/28  sb   1507  offi 18.60 (x9.02 best FAIL >bound)  ruin 16.86 (x2.62 best FAIL >bound)  mont 17.58 (x3.94 best FAIL >bound)  (e) rho  sw 271  ov 0/1164  c 2/116947  pi_r 1.032/0.229
+    84/32  sb   1332  offi 19.24 (x3.54 best FAIL >bound)  ruin 17.38 (x1.49 best)  mont 18.09 (x1.41 best FAIL >bound)  (e) undecided  sw 428  ov 0/1316  c 2/126149  pi_r 1.031/0.201
+  unequal 1024:
+    54     sb   3360  offi 15.19 (x1.91 best FAIL)  ruin 14.10 (x1.83 best)  mont 14.61 (x1.53 best FAIL)  (e) undecided  sw 14  ov 0/854  c 2/6552  pi_r 1.034/0.319
+    60     sb   4492  offi 15.85 (x1.20 best FAIL)  ruin 14.43 (x1.92 best)  mont 15.08 (x1.51 best)  (e) qs + lc 1.4  sw 19  ov 0/774  c 2/6552  pi_r 1.035/0.236
+    66     sb   5839  offi 16.53 (x1.16 best)  ruin 14.79 (x1.93 best)  mont 15.58 (x1.44 best)  (e) qs + lc 1.4  sw 25  ov 0/951  c 2/11598  pi_r 1.034/0.181
+    72     sb   6672  offi 17.42 (x1.13 best)  ruin 15.47 (x1.86 best)  mont 16.32 (x1.39 best)  (e) qs + lc 1.4  sw 39  ov 0/1538  c 2/107880  pi_r 1.033/0.158
+    78     sb   6171  offi 18.32 (x1.13 best)  ruin 16.42 (x1.78 best)  mont 17.21 (x1.38 best)  (e) qs + lc 1.4  sw 72  ov 0/1999  c 2/107880  pi_r 1.031/0.171
+    84     sb   5750  offi 19.24 (x1.12 best)  ruin 17.36 (x1.66 best)  mont 18.08 (x1.36 best)  (e) qs + lc 1.4  sw 126  ov 0/3116  c 2/143905  pi_r 1.030/0.183
+    72/24  sb   7282  offi 16.55 (x8.38 best FAIL >bound)  ruin 14.74 (x2.31 best FAIL >bound)  mont 15.61 (x3.83 best FAIL >bound)  (e) rho  sw 20  ov 0/1048  c 2/107880  pi_r 1.034/0.189
+    72/28  sb   7277  offi 17.30 (x3.56 best FAIL >bound)  ruin 15.28 (x1.81 best)  mont 16.19 (x1.46 best FAIL >bound)  (e) undecided  sw 34  ov 0/1345  c 2/107880  pi_r 1.032/0.148
+    72/32  sb   7300  offi 17.41 (x1.12 best)  ruin 15.37 (x1.88 best)  mont 16.28 (x1.38 best)  (e) qs + lc 1.4  sw 36  ov 0/1421  c 2/107880  pi_r 1.032/0.145
+    78/24  sb   5236  offi 16.58 (x9.30 best FAIL >bound)  ruin 15.65 (x4.73 best FAIL >bound)  mont 16.11 (x5.90 best FAIL >bound)  (e) rho  sw 20  ov 0/3629  c 2/107880  pi_r 1.034/0.465
+    78/28  sb   6208  offi 18.01 (x6.26 best FAIL >bound)  ruin 16.23 (x1.76 best FAIL >bound)  mont 16.99 (x2.73 best FAIL >bound)  (e) undecided  sw 59  ov 0/1828  c 2/107880  pi_r 1.031/0.194
+    78/32  sb   5385  offi 18.35 (x1.84 best FAIL)  ruin 16.63 (x1.69 best)  mont 17.33 (x1.36 best)  (e) undecided  sw 79  ov 0/2092  c 2/107880  pi_r 1.033/0.201
+    84/24  sb   5571  offi 17.01 (x12.74 best FAIL >bound)  ruin 16.32 (x7.61 best FAIL >bound)  mont 16.66 (x8.80 best FAIL >bound)  (e) rho  sw 19  ov 0/7022  c 2/107880  pi_r 1.034/0.582
+    84/28  sb   6028  offi 18.44 (x8.10 best FAIL >bound)  ruin 16.86 (x2.61 best FAIL >bound)  mont 17.51 (x3.77 best FAIL >bound)  (e) rho  sw 73  ov 0/2714  c 2/116947  pi_r 1.032/0.249
+    84/32  sb   5328  offi 19.24 (x3.54 best FAIL >bound)  ruin 17.49 (x1.60 best FAIL)  mont 18.15 (x1.47 best FAIL >bound)  (e) undecided  sw 132  ov 0/3063  c 2/126149  pi_r 1.031/0.205
+  unequal 16384:
+    54     sb  53759  offi 15.10 (x1.79 best FAIL)  ruin 14.37 (x2.20 best FAIL)  mont 14.73 (x1.66 best FAIL)  (e) undecided  sw 1  ov 0/0  c 2/6552  pi_r 1.030/0.318
+    60     sb  71868  offi 15.95 (x1.29 best FAIL)  ruin 14.75 (x2.39 best FAIL)  mont 15.29 (x1.75 best)  (e) qs + lc 1.4  sw 1  ov 0/0  c 2/6552  pi_r 1.029/0.235
+    66     sb  93418  offi 16.60 (x1.22 best)  ruin 15.03 (x2.28 best FAIL)  mont 15.73 (x1.60 best)  (e) qs + lc 1.4  sw 1  ov 0/1877  c 2/11598  pi_r 1.029/0.181
+    72     sb 106755  offi 17.52 (x1.21 best)  ruin 15.83 (x2.39 best FAIL)  mont 16.55 (x1.62 best)  (e) qs + lc 1.4  sw 3  ov 0/1335  c 2/107880  pi_r 1.028/0.158
+    78     sb  98731  offi 18.40 (x1.19 best)  ruin 16.70 (x2.16 best FAIL)  mont 17.39 (x1.57 best)  (e) qs + lc 1.4  sw 6  ov 0/5046  c 2/107880  pi_r 1.032/0.171
+    84     sb  91997  offi 19.32 (x1.18 best)  ruin 17.66 (x2.04 best FAIL)  mont 18.29 (x1.57 best)  (e) qs + lc 1.4  sw 11  ov 0/12430  c 2/143905  pi_r 1.033/0.183
+    72/24  sb 116516  offi 15.59 (x4.29 best FAIL >bound)  ruin 14.19 (x1.58 best >bound)  mont 14.83 (x2.23 best FAIL >bound)  (e) rho  sw 1  ov 0/431  c 2/107880  pi_r 1.033/0.183
+    72/28  sb 116427  offi 17.29 (x3.52 best FAIL >bound)  ruin 15.57 (x2.21 best FAIL)  mont 16.32 (x1.60 best FAIL >bound)  (e) undecided  sw 3  ov 0/2329  c 2/107880  pi_r 1.029/0.150
+    72/32  sb 116795  offi 17.52 (x1.21 best)  ruin 15.77 (x2.50 best FAIL)  mont 16.52 (x1.63 best)  (e) qs + lc 1.4  sw 3  ov 0/2838  c 2/107880  pi_r 1.028/0.145
+    78/24  sb  83769  offi 15.05 (x3.22 best FAIL >bound)  ruin 14.06 (x1.57 best >bound)  mont 14.79 (x2.37 best FAIL >bound)  (e) rho  sw 0  ov 0/9685  c 2/107880  pi_r 1.034/0.266
+    78/28  sb  99334  offi 17.81 (x5.45 best FAIL >bound)  ruin 16.18 (x1.71 best FAIL >bound)  mont 16.92 (x2.60 best FAIL >bound)  (e) undecided  sw 4  ov 0/4165  c 2/107880  pi_r 1.032/0.187
+    78/32  sb  86168  offi 18.39 (x1.89 best FAIL)  ruin 16.86 (x1.99 best)  mont 17.47 (x1.51 best)  (e) undecided  sw 6  ov 0/6471  c 2/107880  pi_r 1.031/0.201
+    84/24  sb  89141  offi 15.22 (x3.68 best FAIL >bound)  ruin 14.14 (x1.68 best >bound)  mont 15.18 (x3.13 best FAIL >bound)  (e) rho  sw 1  ov 0/16913  c 2/107880  pi_r 1.034/0.264
+    84/28  sb  96441  offi 18.06 (x6.20 best FAIL >bound)  ruin 16.68 (x2.32 best FAIL >bound)  mont 17.32 (x3.30 best FAIL >bound)  (e) rho  sw 4  ov 0/8989  c 2/116947  pi_r 1.032/0.266
+    84/32  sb  85245  offi 19.21 (x3.47 best FAIL >bound)  ruin 17.70 (x1.85 best FAIL)  mont 18.27 (x1.60 best FAIL >bound)  (e) undecided  sw 11  ov 0/12528  c 2/124271  pi_r 1.032/0.217
+
+race(ecm, N51-0917)
+  equal 256:
+    54     sb    256  offi 15.39 (x3.64 best FAIL >bound)  ruin 14.12 (x1.87 best FAIL)  mont 14.48 (x1.92 best FAIL >bound)  (e) undecided  sw 71  ov 0/690  c 24/6552  pi_r 1.000/0.255
+    60     sb    256  offi 16.18 (x2.87 best FAIL >bound)  ruin 14.60 (x2.20 best FAIL)  mont 15.04 (x1.50 best FAIL)  (e) undecided  sw 113  ov 0/807  c 26/6552  pi_r 1.000/0.170
+    66     sb    256  offi 16.69 (x2.80 best FAIL >bound)  ruin 14.93 (x2.26 best FAIL)  mont 15.44 (x1.41 best FAIL)  (e) undecided  sw 150  ov 0/903  c 24/11598  pi_r 1.000/0.137
+    72     sb    256  offi 17.72 (x2.80 best FAIL >bound)  ruin 15.65 (x2.66 best FAIL)  mont 16.25 (x1.51 best FAIL)  (e) undecided  sw 269  ov 0/1095  c 26/30942  pi_r 1.000/0.093
+    78     sb    256  offi 18.51 (x2.78 best FAIL >bound)  ruin 16.30 (x2.92 best FAIL)  mont 16.94 (x1.54 best)  (e) undecided  sw 442  ov 0/1179  c 23/63517  pi_r 1.000/0.075
+    84     sb    256  offi 19.39 (x2.93 best FAIL >bound)  ruin 16.93 (x2.92 best FAIL)  mont 17.66 (x1.51 best)  (e) undecided  sw 679  ov 0/1519  c 24/152304  pi_r 1.000/0.063
+    72/24  sb    256  offi 16.93 (x5.65 best FAIL >bound)  ruin 15.07 (x1.78 best FAIL)  mont 15.64 (x2.30 best FAIL >bound)  (e) undecided  sw 167  ov 0/991  c 22/25393  pi_r 1.000/0.125
+    72/28  sb    256  offi 17.11 (x5.25 best FAIL >bound)  ruin 15.21 (x1.98 best FAIL)  mont 15.79 (x2.10 best FAIL >bound)  (e) undecided  sw 189  ov 0/979  c 24/25393  pi_r 1.000/0.117
+    72/32  sb    256  offi 17.63 (x3.57 best FAIL >bound)  ruin 15.58 (x2.52 best FAIL)  mont 16.17 (x1.42 best FAIL)  (e) undecided  sw 254  ov 0/1087  c 27/29486  pi_r 1.000/0.096
+    78/24  sb    256  offi 17.10 (x5.46 best FAIL >bound)  ruin 15.26 (x1.53 best FAIL >bound)  mont 15.86 (x2.30 best FAIL >bound)  (e) undecided  sw 195  ov 0/927  c 21/55517  pi_r 1.000/0.123
+    78/28  sb    256  offi 17.73 (x4.88 best FAIL >bound)  ruin 15.73 (x1.92 best FAIL)  mont 16.34 (x1.86 best >bound)  (e) undecided  sw 288  ov 0/999  c 24/53361  pi_r 1.000/0.097
+    78/32  sb    256  offi 18.23 (x4.17 best FAIL >bound)  ruin 16.09 (x2.49 best FAIL)  mont 16.72 (x1.46 best FAIL >bound)  (e) undecided  sw 379  ov 0/1108  c 27/69678  pi_r 1.000/0.082
+    84/24  sb    256  offi 17.69 (x6.04 best FAIL >bound)  ruin 15.69 (x1.51 best FAIL >bound)  mont 16.35 (x2.39 best FAIL >bound)  (e) ecm  sw 269  ov 0/1059  c 23/84609  pi_r 1.000/0.103
+    84/28  sb    256  offi 18.17 (x5.75 best FAIL >bound)  ruin 16.02 (x1.54 best FAIL)  mont 16.70 (x2.07 best FAIL >bound)  (e) undecided  sw 347  ov 0/1184  c 26/139824  pi_r 1.000/0.087
+    84/32  sb    256  offi 19.02 (x5.23 best FAIL >bound)  ruin 16.61 (x2.29 best FAIL)  mont 17.33 (x1.62 best FAIL >bound)  (e) undecided  sw 536  ov 0/1469  c 27/141855  pi_r 1.000/0.068
+  equal 1024:
+    54     sb   1024  offi 14.99 (x2.76 best FAIL >bound)  ruin 14.15 (x1.91 best FAIL)  mont 14.44 (x1.87 best FAIL >bound)  (e) undecided  sw 20  ov 0/1138  c 24/6552  pi_r 1.000/0.335
+    60     sb   1024  offi 15.99 (x2.52 best FAIL >bound)  ruin 14.92 (x2.75 best FAIL)  mont 15.22 (x1.70 best FAIL)  (e) undecided  sw 42  ov 0/1067  c 29/6552  pi_r 1.000/0.210
+    66     sb   1024  offi 16.51 (x2.46 best FAIL >bound)  ruin 15.20 (x2.73 best FAIL)  mont 15.57 (x1.54 best FAIL)  (e) undecided  sw 52  ov 0/1560  c 27/11598  pi_r 1.000/0.162
+    72     sb   1024  offi 17.62 (x2.61 best FAIL >bound)  ruin 15.98 (x3.35 best FAIL)  mont 16.42 (x1.70 best FAIL)  (e) undecided  sw 95  ov 0/2170  c 26/30942  pi_r 1.000/0.102
+    78     sb   1024  offi 18.44 (x2.65 best FAIL >bound)  ruin 16.59 (x3.57 best FAIL)  mont 17.08 (x1.71 best FAIL)  (e) undecided  sw 148  ov 0/2751  c 27/63517  pi_r 1.000/0.079
+    84     sb   1024  offi 19.29 (x2.72 best FAIL >bound)  ruin 17.22 (x3.58 best FAIL)  mont 17.78 (x1.65 best)  (e) undecided  sw 232  ov 0/3475  c 25/152304  pi_r 1.000/0.065
+    72/24  sb   1024  offi 16.38 (x3.86 best FAIL >bound)  ruin 15.01 (x1.71 best FAIL)  mont 15.44 (x2.01 best FAIL >bound)  (e) undecided  sw 42  ov 0/1959  c 22/6552  pi_r 1.000/0.172
+    72/28  sb   1024  offi 16.62 (x3.75 best FAIL >bound)  ruin 15.22 (x1.99 best FAIL)  mont 15.65 (x1.90 best FAIL >bound)  (e) undecided  sw 51  ov 0/1874  c 24/20551  pi_r 1.000/0.156
+    72/32  sb   1024  offi 17.45 (x3.16 best FAIL >bound)  ruin 15.84 (x3.04 best FAIL)  mont 16.28 (x1.54 best FAIL)  (e) undecided  sw 86  ov 0/2138  c 29/27389  pi_r 1.000/0.108
+    78/24  sb   1024  offi 16.65 (x3.99 best FAIL >bound)  ruin 15.21 (x1.48 best FAIL >bound)  mont 15.70 (x2.06 best FAIL >bound)  (e) undecided  sw 49  ov 0/2105  c 21/55517  pi_r 1.000/0.160
+    78/28  sb   1024  offi 17.40 (x3.89 best FAIL >bound)  ruin 15.77 (x1.98 best FAIL)  mont 16.26 (x1.75 best >bound)  (e) undecided  sw 79  ov 0/2341  c 24/51262  pi_r 1.000/0.114
+    78/32  sb   1024  offi 18.05 (x3.68 best FAIL >bound)  ruin 16.26 (x2.80 best FAIL)  mont 16.76 (x1.50 best FAIL >bound)  (e) undecided  sw 116  ov 0/2634  c 27/69678  pi_r 1.000/0.089
+    84/24  sb   1024  offi 17.20 (x4.29 best FAIL >bound)  ruin 15.61 (x1.43 best FAIL >bound)  mont 16.15 (x2.08 best FAIL >bound)  (e) ecm  sw 67  ov 0/2397  c 23/13574  pi_r 1.000/0.131
+    84/28  sb   1024  offi 17.76 (x4.34 best FAIL >bound)  ruin 16.02 (x1.54 best FAIL)  mont 16.57 (x1.89 best >bound)  (e) undecided  sw 94  ov 0/2663  c 26/118750  pi_r 1.000/0.104
+    84/32  sb   1024  offi 18.71 (x4.23 best FAIL >bound)  ruin 16.74 (x2.51 best FAIL)  mont 17.30 (x1.59 best FAIL >bound)  (e) undecided  sw 163  ov 0/3235  c 27/141855  pi_r 1.000/0.075
+  equal 16384:
+    54     sb  16384  offi 13.95 (x1.34 best)  ruin 13.68 (x1.37 best FAIL)  mont 13.76 (x1.17 best)  (e) undecided  sw 0  ov 0/568  c 24/6552  pi_r 1.000/0.354
+    60     sb  16384  offi 15.41 (x1.69 best)  ruin 14.90 (x2.72 best FAIL)  mont 15.04 (x1.50 best FAIL)  (e) undecided  sw 2  ov 0/772  c 29/6552  pi_r 1.000/0.267
+    66     sb  16384  offi 15.98 (x1.71 best)  ruin 15.36 (x3.05 best FAIL)  mont 15.53 (x1.50 best FAIL)  (e) undecided  sw 3  ov 0/1074  c 27/11217  pi_r 1.000/0.215
+    72     sb  16384  offi 17.18 (x1.93 best)  ruin 16.39 (x4.44 best FAIL)  mont 16.59 (x1.92 best FAIL)  (e) undecided  sw 8  ov 0/2508  c 29/30942  pi_r 1.000/0.140
+    78     sb  16384  offi 18.04 (x2.01 best FAIL >bound)  ruin 17.11 (x5.14 best FAIL)  mont 17.34 (x2.04 best FAIL)  (e) undecided  sw 14  ov 0/3646  c 32/52305  pi_r 1.000/0.108
+    84     sb  16384  offi 18.75 (x1.88 best)  ruin 17.78 (x5.26 best FAIL)  mont 18.01 (x1.93 best FAIL)  (e) undecided  sw 24  ov 0/3600  c 32/152304  pi_r 1.000/0.086
+    72/24  sb  16384  offi 15.04 (x1.52 best)  ruin 14.68 (x1.36 best FAIL)  mont 14.84 (x1.32 best)  (e) undecided  sw 1  ov 0/1754  c 22/6552  pi_r 1.000/0.352
+    72/28  sb  16384  offi 15.38 (x1.59 best)  ruin 14.95 (x1.65 best FAIL)  mont 15.12 (x1.32 best)  (e) undecided  sw 2  ov 0/2015  c 26/6552  pi_r 1.000/0.303
+    72/32  sb  16384  offi 16.69 (x1.87 best)  ruin 15.97 (x3.32 best FAIL)  mont 16.18 (x1.43 best FAIL)  (e) undecided  sw 5  ov 0/2246  c 29/27389  pi_r 1.000/0.178
+    78/24  sb  16384  offi 15.59 (x1.91 best)  ruin 15.02 (x1.29 best FAIL)  mont 15.30 (x1.56 best)  (e) undecided  sw 2  ov 0/4959  c 21/9415  pi_r 1.000/0.320
+    78/28  sb  16384  offi 16.45 (x2.01 best FAIL >bound)  ruin 15.72 (x1.91 best FAIL)  mont 15.98 (x1.45 best >bound)  (e) undecided  sw 4  ov 0/3904  c 24/9288  pi_r 1.000/0.213
+    78/32  sb  16384  offi 17.23 (x2.09 best FAIL >bound)  ruin 16.39 (x3.06 best FAIL)  mont 16.63 (x1.38 best FAIL >bound)  (e) undecided  sw 8  ov 0/3423  c 27/9241  pi_r 1.000/0.152
+    84/24  sb  16384  offi 15.92 (x1.77 best)  ruin 15.35 (x1.19 best)  mont 15.76 (x1.58 best)  (e) undecided  sw 3  ov 0/1533  c 23/12751  pi_r 1.000/0.250
+    84/28  sb  16384  offi 16.55 (x1.88 best)  ruin 15.87 (x1.38 best FAIL)  mont 16.20 (x1.47 best)  (e) undecided  sw 5  ov 0/2236  c 26/13488  pi_r 1.000/0.189
+    84/32  sb  16384  offi 17.65 (x2.03 best FAIL >bound)  ruin 16.79 (x2.60 best FAIL)  mont 17.06 (x1.34 best >bound)  (e) undecided  sw 11  ov 0/2774  c 28/141855  pi_r 1.000/0.126
+  unequal 256:
+    54     sb   1340  offi 15.65 (x4.37 best FAIL >bound)  ruin 13.81 (x1.51 best FAIL)  mont 14.36 (x1.76 best FAIL >bound)  (e) undecided  sw 38  ov 0/1120  c 24/6552  pi_r 0.999/0.200
+    60     sb   1785  offi 16.34 (x3.21 best FAIL >bound)  ruin 14.09 (x1.55 best)  mont 14.80 (x1.27 best FAIL)  (e) undecided  sw 48  ov 0/1438  c 26/6552  pi_r 0.999/0.145
+    66     sb   2287  offi 16.96 (x3.37 best FAIL >bound)  ruin 14.41 (x1.57 best)  mont 15.25 (x1.24 best FAIL)  (e) undecided  sw 62  ov 0/1607  c 22/12384  pi_r 0.999/0.114
+    72     sb   3053  offi 17.87 (x3.12 best FAIL >bound)  ruin 14.90 (x1.58 best)  mont 15.93 (x1.22 best)  (e) undecided  sw 88  ov 0/2198  c 23/31688  pi_r 1.000/0.084
+    78     sb   3681  offi 18.64 (x3.04 best FAIL >bound)  ruin 15.37 (x1.53 best)  mont 16.54 (x1.18 best)  (e) undecided  sw 115  ov 0/3178  c 22/63517  pi_r 1.000/0.070
+    84     sb   4287  offi 19.48 (x3.12 best FAIL >bound)  ruin 15.91 (x1.44 best)  mont 17.25 (x1.14 best)  (e) undecided  sw 147  ov 0/5479  c 21/152304  pi_r 1.000/0.060
+    72/24  sb   3074  offi 17.82 (x10.43 best FAIL >bound)  ruin 14.86 (x1.54 best FAIL)  mont 15.89 (x2.73 best FAIL >bound)  (e) undecided  sw 86  ov 0/2095  c 21/25393  pi_r 1.000/0.085
+    72/28  sb   3038  offi 17.79 (x8.46 best FAIL >bound)  ruin 14.85 (x1.55 best FAIL)  mont 15.88 (x2.23 best FAIL >bound)  (e) undecided  sw 85  ov 0/2097  c 24/25393  pi_r 1.000/0.086
+    72/32  sb   3096  offi 17.88 (x4.26 best FAIL >bound)  ruin 14.89 (x1.57 best)  mont 15.93 (x1.21 best FAIL)  (e) undecided  sw 87  ov 0/2255  c 21/32446  pi_r 1.000/0.083
+    78/24  sb   3699  offi 18.57 (x15.16 best FAIL >bound)  ruin 15.31 (x1.58 best FAIL >bound)  mont 16.49 (x3.58 best FAIL >bound)  (e) undecided  sw 108  ov 0/3310  c 21/68416  pi_r 1.000/0.071
+    78/28  sb   3698  offi 18.62 (x9.05 best FAIL >bound)  ruin 15.37 (x1.50 best)  mont 16.55 (x2.14 best FAIL >bound)  (e) undecided  sw 116  ov 0/3064  c 24/68416  pi_r 1.000/0.071
+    78/32  sb   3664  offi 18.64 (x5.55 best FAIL >bound)  ruin 15.37 (x1.51 best)  mont 16.55 (x1.30 best FAIL >bound)  (e) undecided  sw 113  ov 0/3329  c 21/69678  pi_r 1.000/0.070
+    84/24  sb   4304  offi 19.39 (x19.66 best FAIL >bound)  ruin 15.86 (x1.70 best FAIL >bound)  mont 17.19 (x4.26 best FAIL >bound)  (e) ecm  sw 143  ov 0/5131  c 23/141855  pi_r 1.000/0.061
+    84/28  sb   4229  offi 19.42 (x13.67 best FAIL >bound)  ruin 15.88 (x1.40 best FAIL)  mont 17.21 (x2.96 best FAIL >bound)  (e) undecided  sw 143  ov 0/5370  c 26/139824  pi_r 1.000/0.061
+    84/32  sb   4317  offi 19.51 (x7.36 best FAIL >bound)  ruin 15.93 (x1.43 best)  mont 17.27 (x1.55 best FAIL >bound)  (e) undecided  sw 148  ov 0/5555  c 24/141855  pi_r 1.000/0.060
+  unequal 1024:
+    54     sb   5359  offi 15.53 (x4.02 best FAIL >bound)  ruin 13.98 (x1.69 best FAIL)  mont 14.43 (x1.85 best FAIL >bound)  (e) undecided  sw 13  ov 0/912  c 24/6552  pi_r 1.000/0.223
+    60     sb   7139  offi 16.29 (x3.09 best FAIL >bound)  ruin 14.32 (x1.81 best)  mont 14.91 (x1.37 best FAIL)  (e) undecided  sw 18  ov 0/942  c 26/6552  pi_r 1.000/0.153
+    66     sb   9148  offi 16.92 (x3.28 best FAIL >bound)  ruin 14.59 (x1.78 best)  mont 15.33 (x1.31 best FAIL)  (e) undecided  sw 21  ov 0/1747  c 24/12384  pi_r 1.000/0.118
+    72     sb  12214  offi 17.86 (x3.10 best FAIL >bound)  ruin 15.09 (x1.81 best)  mont 16.02 (x1.29 best)  (e) undecided  sw 30  ov 0/2830  c 23/31688  pi_r 1.000/0.085
+    78     sb  14723  offi 18.62 (x3.01 best FAIL >bound)  ruin 15.58 (x1.78 best)  mont 16.63 (x1.24 best)  (e) undecided  sw 42  ov 0/3686  c 23/63517  pi_r 1.000/0.071
+    84     sb  17148  offi 19.51 (x3.17 best FAIL >bound)  ruin 16.22 (x1.79 best)  mont 17.37 (x1.24 best)  (e) undecided  sw 65  ov 0/4865  c 22/152304  pi_r 1.000/0.060
+    72/24  sb  12296  offi 17.72 (x9.74 best FAIL >bound)  ruin 14.98 (x1.67 best FAIL)  mont 15.90 (x2.74 best FAIL >bound)  (e) undecided  sw 27  ov 0/2654  c 22/25393  pi_r 1.000/0.089
+    72/28  sb  12152  offi 17.72 (x8.03 best FAIL >bound)  ruin 15.00 (x1.70 best FAIL)  mont 15.91 (x2.28 best FAIL >bound)  (e) undecided  sw 28  ov 0/2552  c 24/25393  pi_r 1.000/0.089
+    72/32  sb  12386  offi 17.87 (x4.22 best FAIL >bound)  ruin 15.09 (x1.80 best)  mont 16.01 (x1.28 best FAIL)  (e) undecided  sw 30  ov 0/2728  c 21/32446  pi_r 1.000/0.084
+    78/24  sb  14795  offi 18.41 (x13.59 best FAIL >bound)  ruin 15.42 (x1.71 best FAIL >bound)  mont 16.47 (x3.52 best FAIL >bound)  (e) undecided  sw 37  ov 0/3396  c 21/68416  pi_r 1.000/0.075
+    78/28  sb  14792  offi 18.53 (x8.48 best FAIL >bound)  ruin 15.51 (x1.65 best FAIL)  mont 16.56 (x2.16 best FAIL >bound)  (e) undecided  sw 40  ov 0/3526  c 24/68416  pi_r 1.000/0.073
+    78/32  sb  14658  offi 18.63 (x5.53 best FAIL >bound)  ruin 15.60 (x1.77 best)  mont 16.64 (x1.39 best FAIL >bound)  (e) undecided  sw 43  ov 0/3609  c 24/69678  pi_r 1.000/0.071
+    84/24  sb  17216  offi 19.07 (x15.75 best FAIL >bound)  ruin 15.90 (x1.74 best FAIL >bound)  mont 17.04 (x3.84 best FAIL >bound)  (e) ecm  sw 50  ov 0/3732  c 23/141855  pi_r 1.000/0.066
+    84/28  sb  16915  offi 19.26 (x12.24 best FAIL >bound)  ruin 16.05 (x1.57 best FAIL)  mont 17.20 (x2.93 best FAIL >bound)  (e) undecided  sw 56  ov 0/4487  c 26/139824  pi_r 1.000/0.064
+    84/32  sb  17269  offi 19.45 (x7.04 best FAIL >bound)  ruin 16.19 (x1.71 best)  mont 17.33 (x1.62 best FAIL >bound)  (e) undecided  sw 64  ov 0/4264  c 24/141855  pi_r 1.000/0.061
+  unequal 16384:
+    54     sb  85737  offi 14.28 (x1.68 best)  ruin 13.50 (x1.22 best)  mont 13.68 (x1.10 best)  (e) undecided  sw 0  ov 0/0  c 24/6552  pi_r 1.000/0.180
+    60     sb 114232  offi 15.82 (x2.23 best FAIL >bound)  ruin 14.29 (x1.78 best)  mont 14.69 (x1.18 best FAIL)  (e) undecided  sw 1  ov 0/1184  c 26/6552  pi_r 1.000/0.141
+    66     sb 146366  offi 16.48 (x2.41 best FAIL >bound)  ruin 14.56 (x1.75 best)  mont 15.10 (x1.11 best)  (e) undecided  sw 1  ov 0/1807  c 24/11598  pi_r 1.000/0.115
+    72     sb 195424  offi 17.68 (x2.72 best FAIL >bound)  ruin 15.35 (x2.16 best FAIL)  mont 16.05 (x1.32 best)  (e) undecided  sw 2  ov 0/4090  c 26/31688  pi_r 1.000/0.086
+    78     sb 235573  offi 18.59 (x2.95 best FAIL >bound)  ruin 15.85 (x2.14 best FAIL)  mont 16.73 (x1.34 best)  (e) undecided  sw 3  ov 0/3729  c 23/63517  pi_r 1.000/0.071
+    84     sb 274374  offi 19.48 (x3.10 best FAIL >bound)  ruin 16.45 (x2.10 best FAIL)  mont 17.46 (x1.32 best)  (e) undecided  sw 5  ov 0/12557  c 23/152304  pi_r 1.000/0.061
+    72/24  sb 196739  offi 16.82 (x5.23 best FAIL >bound)  ruin 14.75 (x1.43 best FAIL)  mont 15.34 (x1.86 best >bound)  (e) undecided  sw 1  ov 0/2331  c 22/25393  pi_r 1.000/0.086
+    72/28  sb 194433  offi 16.97 (x4.78 best FAIL >bound)  ruin 14.89 (x1.58 best FAIL)  mont 15.49 (x1.70 best >bound)  (e) undecided  sw 1  ov 0/4118  c 24/25393  pi_r 1.000/0.088
+    72/32  sb 198173  offi 17.64 (x3.61 best FAIL >bound)  ruin 15.28 (x2.06 best FAIL)  mont 16.00 (x1.26 best FAIL)  (e) undecided  sw 2  ov 0/3553  c 22/32446  pi_r 1.000/0.086
+    78/24  sb 236717  offi 17.89 (x9.47 best FAIL >bound)  ruin 15.29 (x1.56 best FAIL >bound)  mont 16.15 (x2.82 best FAIL >bound)  (e) undecided  sw 2  ov 0/4315  c 21/60000  pi_r 1.000/0.079
+    78/28  sb 236665  offi 18.26 (x7.05 best FAIL >bound)  ruin 15.56 (x1.71 best FAIL)  mont 16.44 (x2.00 best FAIL >bound)  (e) undecided  sw 2  ov 0/5885  c 24/57730  pi_r 1.000/0.075
+    78/32  sb 234521  offi 18.52 (x5.13 best FAIL >bound)  ruin 15.78 (x2.00 best FAIL)  mont 16.67 (x1.42 best FAIL >bound)  (e) undecided  sw 3  ov 0/4774  c 24/69678  pi_r 1.000/0.073
+    84/24  sb 275457  offi 18.58 (x11.22 best FAIL >bound)  ruin 15.81 (x1.64 best FAIL >bound)  mont 16.76 (x3.16 best FAIL >bound)  (e) ecm  sw 3  ov 0/9030  c 23/124271  pi_r 1.000/0.073
+    84/28  sb 270636  offi 18.80 (x8.89 best FAIL >bound)  ruin 16.01 (x1.52 best FAIL)  mont 16.95 (x2.48 best FAIL >bound)  (e) undecided  sw 3  ov 0/9823  c 26/139824  pi_r 1.000/0.070
+    84/32  sb 276301  offi 19.31 (x6.40 best FAIL >bound)  ruin 16.33 (x1.89 best)  mont 17.32 (x1.61 best FAIL >bound)  (e) undecided  sw 4  ov 0/9859  c 24/141855  pi_r 1.000/0.062
+413.68 s
