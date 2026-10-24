@@ -407,3 +407,75 @@ The miss in prediction 2 is mostly expected curves: ECM needed about half the cu
 The balanced lead comes from the overcharging rule, which bills every sieve byte-add as a full modular multiply.
 
 **Caveat:** tuned qs's genes were picked on the 72–84-bit ACCEPT numbers, which favours qs. ECM's genes came from separate tuning seeds.
+
+## 2026-10-23 — Op-price calibration on this laptop: plan, before running (measurement only)
+
+Nothing here changes a score. The official count stays 1 op per charge. This measures what each kind of charge costs in wall time on this machine (an Intel Core Ultra 9 288V: hybrid, with cpu0–3 performance cores at up to 5.0–5.1 GHz and cpu4–7 efficiency cores at up to 3.7 GHz; governor `powersave`), so that a calibrated price table can be reported beside the official numbers, as the pricing sensitivity was. Prices are ratios to one 84-bit modular multiply, so the machine's absolute speed cancels.
+
+**What is timed.** One Rust binary, `lampcore/src/bin/opbench.rs`, built with `--release` against the same crates as lampcore (ruint 1.20.1), using the same types lampcore uses for each kind of charge:
+
+| # | Primitive | As lampcore does it | Access pattern |
+|---|---|---|---|
+| 1 | 84-bit modular multiply | `U256::mul_mod`, operands < N, N 84 bits; also N at 60 and 100 bits, for the size dependence | dependent chain (x = x·y mod N: ladders, rho, sqrt) and independent (throughput) |
+| 2 | sieve byte-add | `arr[i] += logp[j]` on the i32 array, stepping by p, over width 2M + 1 with tuned qs's M at 84 bits (≈ 600, so width ≈ 1,201: L1-resident), primes and roots from a real factor base | as the sieve loop |
+| 3 | cell scan | `(arr[i] as f64) >= thr` over the same array | as the confirm scan |
+| 4 | trial division of a ~50-bit value by a small prime | `v % p` with i128 v ≈ 2^50, p ≤ B ≈ 2,400 | independent |
+| 5 | 64-bit XOR | `mat[r][w] ^= pm[w]` over the dense GF(2) rows, F ≈ 190 at 84 bits | as the elimination loop |
+| 6 | Euclid step | small: one `div_euclid` step of extended Euclid on i128 values < 2^12 (setup's inverses mod p); N-sized: one step on 84-bit values (ECM's inverse mod N, and the gcd mod N in sqrt) | dependent within a run |
+| 7 | small modular multiply (added: fb, Tonelli–Shanks and setup's root arithmetic are this) | `u64` multiply then `% p`, p ≤ B | dependent chain |
+
+**Two references for "one modular multiply".**
+- **ruint:** `U256::mul_mod`, what lampcore uses.
+- **Montgomery:** a hand-written two-limb Montgomery multiply (u64 limbs with u128 intermediates, R = 2^128, REDC, valid for odd N < 2^100). Before timing, it is verified against `U256::mul_mod` on 10⁶ random inputs: from_mont(mont(to_mont(a), to_mont(b))) must equal a·b mod N, with any mismatch fatal.
+
+The price table and the calibrated re-score are reported under both references. **These ratios depend on implementation quality.** A generic 256-bit `mul_mod` and a tuned two-limb Montgomery multiply can differ several-fold, so neither reference is "the" price of an op, and neither is chosen after seeing the results. Both sets are reported side by side. For each reference, the timed form is the dependent chain (x = x·y mod N), the way multiplies occur in ladders, rho and sqrt.
+
+**Method.**
+- Inputs are precomputed (random operands, a real factor base and roots from an 84-bit ACCEPT-style number with seeds not used elsewhere) and passed through `std::hint::black_box`, so the compiler cannot fold the work away.
+- No RNG inside timed loops.
+- **Warm-up:** 10⁶ iterations of each primitive before timing.
+- **Timing:** batches of at least 10⁷ operations (or 50 ms, whichever is longer), each timed with `std::time::Instant`. 31 batches per primitive, reported as the median ns per op, with min and interquartile range. A loop-overhead baseline (the same loop with the operation replaced by an add of the index) is timed and reported, but not subtracted, so the overhead stays visible rather than hidden.
+- **Environment:**
+  - pinned to one performance core (`taskset -c 2`; cpu0–3 are the P-cores), and the same run repeated once on an efficiency core (cpu 5) to show how much the core type changes the ratios;
+  - the machine otherwise idle, with no tests or runs in the background;
+  - governor left at `powersave` and recorded, and the whole run repeated 3 times, to see how stable it is under frequency scaling;
+  - if the three runs disagree by more than 10% on any ratio, that is reported, not averaged away.
+
+**How the prices would map onto phases** (a calibrated re-score, computed from the per-phase counts already recorded, plus the qs small/full split from the traces, as in the pricing sensitivity; no new factoring runs):
+
+| Phase | Price |
+|---|---|
+| mult | #7 |
+| fb | #7 (Euler's criterion, Tonelli–Shanks) |
+| setup | small part: #6 small for Euclid steps, #7 for root multiplies and Gray-code updates; full part (forming A, A/q_l, B_l): #1 |
+| sieve | updates at #2, cell scans at #3 (split by the trace: width per polynomial is scans, the rest updates) |
+| confirm | F + extra divisions at #4; the 2 ops forming g(x) at #1 (an upper bound: it is an i128 multiply) |
+| la | #5 per word op (the charge already counts 64-bit words) |
+| sqrt | multiplies at #1; gcd steps at #6 N-sized |
+| lp | N mod q and the bound check at #4; lookup, insert and the F-entry vector add at #4 (flagged: a hash operation, not measured separately); u₁u₂ mod N at #1 |
+| check | #1 |
+| cf_step | #1 (the 4 per step: one mod-N multiply and three i128 operations, all priced as #1, an upper bound) |
+| cf_td | #4 |
+| ECM: setup, s1, s2 | #1 (dependent chain), and setup's Euclid steps at #6 N-sized |
+| ECM: gcd | one gcd mod N is about 50 Euclid steps, not one op. Priced at its measured cost (#6 N-sized × the steps actually taken), and reported as a finding about the model |
+| rho, pm1 | multiplies at #1 (chain). Their gcds get the same treatment as ECM's: the official model charges 1 op per gcd, which calibration would show as an under-charge |
+| td | one `N % d`, timed as #4 with an 84-bit N |
+
+**Operation counts the re-score needs, all already recorded or recomputable exactly:**
+- **rho:** its gcds equal its luck-meter tests (one test per gcd), and every other op is a multiply mod N.
+- **ECM:** its gcds are the ecm_gcd phase. Its setup Euclid steps are recomputed from each curve's σ, as `ecm_accept.py` does.
+- **qs:** the small/full split, the sieve's updates against scans (width per polynomial), the Euclid steps in setup, and the gcd steps in sqrt all come from lamps.py's trace.
+- **The cost of one gcd mod N:** the mean Euclid steps of gcd(x, N) over 1,000 random residues x for each number. The gcd operands are pseudo-random residues, so this approximates "the steps actually taken": an approximation, stated as such.
+
+**The gcd finding.** The official model charges 1 op per gcd for rho, pm1 and ECM, while a real gcd costs about 50 N-sized Euclid steps. That is reported as a finding about the model, with the calibrated re-score showing its effect. It is not corrected silently in any official number.
+
+**Reported:**
+- the ns/op table and the price ratios, under both references;
+- the calibrated log₂(mean) of ECM, qs + lc 1.4, rho and N51-0917 on the Stage 8 balanced and unbalanced numbers, beside the official numbers;
+- which leads change under calibration;
+- where the official model under-charges (gcds), as well as where it over-charges (qs's small work).
+
+**Caveats:**
+- These are one laptop's prices; a different CPU (cache sizes, divider latency) changes them.
+- The i128 and U256 code paths are lampcore's, not the fastest possible ones.
+- The results are a sanity check on the op model, not a replacement for it.
