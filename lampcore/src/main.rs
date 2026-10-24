@@ -72,6 +72,14 @@ impl Meter {
         self.phases[phase] += k;
         self.tick(k)
     }
+    /// What the ps / pm1 prechecks compare against: the cap, or the meter total at which the
+    /// running stage's op budget runs out, whichever is lower.
+    fn precheck_cap(&self) -> u64 {
+        match self.ob {
+            Some(lim) => self.cap.min(self.ops - self.ob_spent + lim),
+            None => self.cap,
+        }
+    }
     #[inline]
     fn test(&mut self, hit: bool) {
         self.tests += 1;
@@ -330,7 +338,7 @@ fn lamp_pm1(num: &Num, g: &Value, m: &mut Meter) -> R {
     // Each prime ticks at least once, so if even a lower bound on pi(B) can't fit in the
     // remaining budget the run would miss anyway; stop before sieving a huge range.
     let lower_pi = bnd as f64 / (bnd as f64).ln();
-    if bnd > (1 << 26) && (m.ops as f64 + lower_pi) > m.cap as f64 {
+    if bnd > (1 << 26) && (m.ops as f64 + lower_pi) > m.precheck_cap() as f64 {
         return Err(Budget);
     }
     // Bit-packed sieve (one bit per number): a bound near 2^31 takes 256 MB, not 2 GB.
@@ -443,7 +451,7 @@ fn lamp_ps(num: &Num, g: &Value, m: &mut Meter) -> R {
     let nblocks = (l + b - 1) / b;
     // Same guard as lamps.py: the two product trees charge at least one op per merge, so if
     // that can't fit, the run misses before any test; stop before allocating b leaves.
-    if m.ops + (b - 1) + (nblocks - 1) > m.cap {
+    if m.ops + (b - 1) + (nblocks - 1) > m.precheck_cap() {
         return Err(Budget);
     }
     let f_len = product_tree_len(b as usize, m)?.last().unwrap()[0];
@@ -530,8 +538,13 @@ fn run(genome: &[Value], num: &Num, cap: u64) -> RunOut {
         }
         m.ob = ob;
         m.ob_spent = 0;
+        let start = m.ops;
         let r = run_stage(num, s, &mut m);
-        let ended_by_ob = m.ob_hit;
+        // a precheck (no charge crossed the cap) that the stage's budget made binding ends
+        // the stage, not the run
+        let precheck_ob = matches!(r, Err(Budget)) && !m.ob_hit && m.ops <= cap
+            && ob.map_or(false, |lim| start + lim < cap);
+        let ended_by_ob = m.ob_hit || precheck_ob;
         m.ob = None;
         m.ob_hit = false;
         match r {

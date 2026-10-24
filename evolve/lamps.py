@@ -384,7 +384,9 @@ class StageMeter:
         return self._m.ops
     @property
     def cap(self):
-        return self._m.cap
+        """What the ps / pm1 prechecks compare against: the shared cap or the meter total at
+        which this stage's budget runs out, whichever is lower."""
+        return min(self._m.cap, self._m.ops - self.spent + self.ob)
     @property
     def k(self):
         return self._m.k
@@ -420,6 +422,7 @@ def run(gen, N, cap):
                 continue                          # skipped: no lamp code runs
             else:
                 sm = StageMeter(m, ob)
+                start = m.ops
                 try:
                     d = LAMPS[s["t"]](N, s, sm)
                     obs.append((i, ob, sm.spent, False))
@@ -427,8 +430,14 @@ def run(gen, N, cap):
                     obs.append((i, ob, sm.spent, True))
                     d = None
                 except Budget:
-                    obs.append((i, ob, sm.spent, False))
-                    raise
+                    # a precheck (no charge crossed the cap) that the stage's budget made
+                    # binding ends the stage, not the run
+                    if m.ops <= m.cap and start + ob < m.cap:
+                        obs.append((i, ob, sm.spent, True))
+                        d = None
+                    else:
+                        obs.append((i, ob, sm.spent, False))
+                        raise
             if d:
                 LAST.update(tests=m.tests, hits=m.hits, stage=i, k=m.k, ob=obs)
                 return m.ops, d

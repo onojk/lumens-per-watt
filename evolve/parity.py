@@ -48,7 +48,8 @@ budgets on two stages in a row; ob on a final qs; a cap inside a budgeted stage 
 miss); and random budgeted genomes. Fields: the usual ones and per-phase ops. Both cores
 refuse a negative or non-integer ob and an ob on a race or its side with an error.
 
-Guards (guard_pairs): block flash whose two product trees can't fit in the budget, and p-1
+Guards (guard_pairs): block flash whose two product trees can't fit in the budget (the cap,
+or a stage op budget far below a cap of 2^40, which ends only that stage), and p-1
 whose bound is past 2^32 at 84 bits, both stopping before allocating (asserted on the Python
 side; lampcore must finish them within a 256 MB address space), plus p-1 past 2^32 that runs to the cap through the
 u128 prime-power loop and Python's segmented sieve, and caps on either side of the block-flash
@@ -342,6 +343,10 @@ def guard_pairs():
         B = pm1_bound(g[0], N)
         assert B > 2 ** 32 and B / math.log(B) < cap
     yield "pm1 past 2^32 84", g, n84[:2], cap, "primes_segmented", True
+    # a small op budget makes the precheck binding although the cap is far above it
+    QS84 = {"t": "qs", "kc": 32, "bc": 1.1, "mc": 0.25, "tc": 1.38}
+    yield "ps ob guard 84", [dict(PS84, ob=1000), QS84], n84, 2 ** 40, "product_tree", False
+    yield "pm1 ob guard 84", [{"t": "pm1", "b": 0.39, "ob": 1000}, QS84], n84, 2 ** 40, "primes_segmented", False
 
 LIMIT_MB = 256
 
@@ -372,6 +377,8 @@ def check_guards():
             finally:
                 setattr(mod, spy, orig)
             assert bool(calls) == allocates, (label, N, cap, "python reached", spy, bool(calls))
+            if "ob guard" in label:
+                assert LAST["stage"] == 1 and LAST["ob"] == [(0, 1000, 0, True)], (label, N, LAST["ob"])
             slow = (ops, d, LAST["tests"], LAST["hits"], LAST["stage"], LAST["k"])
             checked += 1
             if slow != f:

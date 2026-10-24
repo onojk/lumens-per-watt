@@ -11,7 +11,13 @@ alone on a recording meter:
     including the first charge that takes it past b, then Y's whole sequence; ops = that
     prefix + Y alone's; overshoot 1 <= spent - b <= the passing charge (so at most X's
     largest single charge: NOTES, correction); the stage is recorded as ended by its budget.
-Plus: a cap inside a budgeted stage is a miss (the cap wins); bad genomes (negative or
+    Except where the stage's precheck reads the budget (ps: its product trees' minimum
+    charge (B - 1) + (blocks - 1) exceeds b; pm1 past 2^26): it then ends before any charge,
+    with 0 spent, and the genome equals Y alone.
+Plus: a ps stage with a large block (product trees of many GB) and ob = 1000, and a pm1
+stage with a bound past 2^32 and ob = 1000, under a cap of 2^40: the precheck reads the
+budget, so each ends before allocating (asserted with a spy), with 0 ops spent, and the
+genome equals qs alone. A cap inside a budgeted stage is a miss (the cap wins); bad genomes (negative or
 non-integer ob, ob on a race or its side) are rejected before any op; and the mutation test:
 an ob that never ends the stage (lamps.OB_MUTATE = 1) and one that ends it one charge early
 (OB_MUTATE = 2) must each be caught.
@@ -59,6 +65,18 @@ def recorded(gen, N, cap=CAP):
 def compare_key(r):
     return {k: r[k] for k in ("ops", "d", "tests", "hits", "stage", "k", "phases")}
 
+def precheck_min(X, N):
+    """The ops a stage's precheck says it must charge before any test, as the first stage
+    (0 where it has no precheck or the precheck does not apply)."""
+    if X["t"] == "ps":
+        L = int(N ** X["a"]) + 1
+        B = max(2, int(X["c"] * N ** X["s"]))
+        return (B - 1) + ((L + B - 1) // B - 1)
+    if X["t"] == "pm1":
+        B = max(10, int(N ** X["b"]))
+        return B / __import__("math").log(B) if B > (1 << 26) else 0
+    return 0
+
 def lamp_case(name, X, bits, mutate=False):
     n = 0
     Y = RHO if bits < 40 else QS
@@ -84,19 +102,42 @@ def lamp_case(name, X, bits, mutate=False):
             if not 1 <= b < T:
                 continue
             r, rch = recorded([dict(X, ob=b), Y], N)
-            c, j = 0, 0
-            while c <= b:
-                c += xch[j]; j += 1
-            want = xch[:j] + ych
-            ok = rch == want and r["ops"] == (c + y["ops"] if y["d"] else None) and r["d"] == y["d"] \
-                 and r["ob"] and r["ob"][0][3] and r["ob"][0][2] == c and 1 <= c - b <= xch[j - 1] <= max(xch)
+            if precheck_min(X, N) > b:
+                ok = rch == ych and r["ops"] == y["ops"] and r["d"] == y["d"] and r["ob"] == [(0, b, 0, True)]
+            else:
+                c, j = 0, 0
+                while c <= b:
+                    c += xch[j]; j += 1
+                want = xch[:j] + ych
+                ok = rch == want and r["ops"] == (c + y["ops"] if y["d"] else None) and r["d"] == y["d"] \
+                     and r["ob"] and r["ob"][0][3] and r["ob"][0][2] == c and 1 <= c - b <= xch[j - 1] <= max(xch)
             if mutate:
                 if not ok:
                     return "caught"
                 continue
-            check(ok, "ob below natural end", name, bits, N, b, c, r["ob"])
+            check(ok, "ob below natural end", name, bits, N, b, r["ob"])
             n += 1
     return "missed" if mutate else n
+
+def precheck_cases():
+    import blockflash
+    n = 0
+    for label, st, mod, spy in (("ps large block", {"t": "ps", "a": 0.5, "s": 0.4, "c": 4.0, "ob": 1000}, blockflash, "product_tree"),
+                                ("pm1 past 2^32", {"t": "pm1", "b": 0.39, "ob": 1000}, lamps, "primes_segmented")):
+        for N, p, q in semiprimes_pq(84, 2, 7700084):
+            calls = []
+            orig = getattr(mod, spy)
+            setattr(mod, spy, lambda *a, **k: (calls.append(1), orig(*a, **k))[1])
+            try:
+                ops, d = run([st, QS], N, 2 ** 40)
+                rec = list(LAST["ob"]); stage = LAST["stage"]
+            finally:
+                setattr(mod, spy, orig)
+            q_ops, q_d = run([QS], N, 2 ** 40)
+            check(not calls and rec == [(0, 1000, 0, True)] and stage == 1 and (ops, d) == (q_ops, q_d),
+                  "precheck reads the budget", label, N, calls, rec)
+            n += 1
+    return n
 
 def caps_and_validation():
     n = 0
@@ -122,6 +163,8 @@ if __name__ == "__main__":
     for name, (X, sizes) in LAMP_CASES.items():
         out["cases"][name] = {b: lamp_case(name, X, b) for b in sizes}
         print(name, out["cases"][name], flush=True)
+    out["precheck_cases"] = precheck_cases()
+    print("precheck cases:", out["precheck_cases"])
     out["caps_and_validation"] = caps_and_validation()
     out["mutation"] = {}
     for mode, label in ((1, "never ends"), (2, "ends one charge early")):
