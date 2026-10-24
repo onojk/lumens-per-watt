@@ -42,6 +42,12 @@ misses); and random races of random stages and slices. Fields: the usual ones, p
 summed over both sides, and per-side ops and switches. Both cores refuse a nested race and
 sa = sb = 0 with an error.
 
+Op budget (ob_pairs): [X with ob, then rho or qs] for every lamp X at 28-84 bits, with ob = 0, 1,
+7, 100, 1,000, 10^4, 10^5 and 2^40 (skipped, below and past each stage's natural length);
+budgets on two stages in a row; ob on a final qs; a cap inside a budgeted stage (asserted
+miss); and random budgeted genomes. Fields: the usual ones and per-phase ops. Both cores
+refuse a negative or non-integer ob and an ob on a race or its side with an error.
+
 Guards (guard_pairs): block flash whose two product trees can't fit in the budget, and p-1
 whose bound is past 2^32 at 84 bits, both stopping before allocating (asserted on the Python
 side; lampcore must finish them within a 256 MB address space), plus p-1 past 2^32 that runs to the cap through the
@@ -501,6 +507,72 @@ def race_pairs():
         b = rng.choice((32, 36, 40))
         yield "random race", [R_(A, B, sa, sb)], semiprimes_pq(b, 1, rng.randint(1, 10 ** 6)), 2 ** 24, None
 
+OBS = (0, 1, 7, 100, 1000, 10 ** 4, 10 ** 5, 2 ** 40)
+
+def ob_pairs():
+    """(label, genome, numbers, cap, expectation or None)."""
+    small = {"td": 28, "sq": 36, "ps": 32}
+    for x, X in RACE_STAGES.items():
+        for b in ((small[x],) if x in small else (40, 60, 84) if x in ("qs", "qs lc 1.4", "ecm") else (40, 48)):
+            ns = semiprimes_pq(b, 2, 3100000 + b)
+            Y = RACE_STAGES["rho"] if b < 40 else RACE_STAGES["qs"]
+            for ob in OBS:
+                yield f"ob {x} {ob}", [dict(X, ob=ob), Y], ns, 2 ** 28, None
+    ns = semiprimes_pq(56, 3, 3200056)
+    E, Q, RH, P = RACE_STAGES["ecm"], RACE_STAGES["qs lc 1.4"], RACE_STAGES["rho"], RACE_STAGES["pm1"]
+    for o1, o2 in ((100, 1000), (5000, 0), (0, 5000), (2 ** 40, 300)):
+        yield "ob two stages", [dict(P, ob=o1), dict(E, ob=o2), Q], ns, 2 ** 28, None
+    yield "ob on final qs", [dict(RH, ob=500), dict(Q, ob=2 ** 40)], ns, 2 ** 28, None
+    yield "ob on final qs, too small", [dict(RH, ob=500), dict(Q, ob=1000)], ns, 2 ** 28, None
+    for N, p, q in ns:
+        yield "cap inside a budgeted stage", [dict(RH, ob=10 ** 6), Q], [(N, p, q)], 300, "miss"
+    rng = random.Random(4242)
+    kinds = ["td", "sq", "rho", "pm1", "ps"]
+    for _ in range(60):
+        g = [dict(rand_stage(rng.choice(kinds), rng), ob=rng.choice(OBS)) for _ in range(rng.randint(1, 3))]
+        g.append(dict(RACE_STAGES["qs"]))
+        b = rng.choice((32, 36, 40, 44))
+        yield "random ob", g, semiprimes_pq(b, 1, rng.randint(1, 10 ** 6)), 2 ** 24, None
+
+def check_ob():
+    checked = mismatches = 0
+    phased = lambda st: st["t"] in ("qs", "cfrac", "ecm")
+    for label, g, nums, cap, expect in ob_pairs():
+        has_ph = any(phased(st) for st in g)
+        fast = run_many(g, nums, cap, inst=True, phases=has_ph)
+        for (N, p, q), f in zip(nums, fast):
+            tr = new_trace()
+            ops, d = run(g, N, cap)
+            slow = (ops, d, LAST["tests"], LAST["hits"], LAST["stage"], LAST["k"])
+            if has_ph:
+                slow += ({k: tr["ops"].get(k, 0) for k in PHASES},)
+            if expect == "miss":
+                assert ops is None and LAST["ob"] and not LAST["ob"][-1][3], (label, N, LAST["ob"])
+            checked += 1
+            if slow != f:
+                mismatches += 1
+                if mismatches <= 10:
+                    print("MISMATCH", label, N, "python", slow, "rust", f)
+    qs.TRACE = cfrac.TRACE = ecm.TRACE = None
+    return checked, mismatches
+
+def check_ob_refusals():
+    RH, Q = RACE_STAGES["rho"], RACE_STAGES["qs"]
+    race_ = R_(RH, Q, 64, 64)
+    ok = True
+    for g in ([dict(RH, ob=-1)], [dict(RH, ob=2.5)], [dict(RH, ob="5")], [dict(RH, ob=True)],
+              [dict(race_, ob=10)], [dict(race_, a=dict(RH, ob=10))], [dict(race_, b=dict(Q, ob=10))]):
+        r = subprocess.run([BIN], input=json.dumps(g) + "\n1000\n1000036000099 1000003 1000033\n",
+                           capture_output=True, text=True)
+        rust_ok = r.returncode != 0 and "ob" in r.stderr and r.stdout == ""
+        try:
+            run(g, 1000036000099, 1000)
+            py_ok = False
+        except ValueError:
+            py_ok = True
+        ok = ok and rust_ok and py_ok
+    return ok
+
 def check_race_refusals():
     S = RACE_STAGES["rho"]
     ok = True
@@ -580,4 +652,8 @@ if __name__ == "__main__":
           f"per-phase ops, per-side ops and switches), mismatches {rm}")
     refuse = check_race_refusals()
     print(f"race: both cores refuse a nested race and sa = sb = 0 with an error: {'yes' if refuse else 'NO'}")
-    sys.exit(1 if mismatches or qm or gm or not bounded or not limit or rm or not refuse else 0)
+    oc, om = check_ob()
+    print(f"ob: checked {oc} genome x number pairs (ops, factor, tests, hits, stage, k, per-phase ops), mismatches {om}")
+    obref = check_ob_refusals()
+    print(f"ob: both cores refuse bad ob values and ob on a race or its side with an error: {'yes' if obref else 'NO'}")
+    sys.exit(1 if mismatches or qm or gm or not bounded or not limit or rm or not refuse or om or not obref else 0)

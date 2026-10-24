@@ -40,6 +40,9 @@ struct Meter {
     phases: [u64; 15], // per-phase ops of qs, cfrac and ecm (see qs.rs, cfrac.rs, ecm.rs)
     hook: Option<Box<race::Hook>>, // set only on a race side's meter (race.rs)
     race: Option<(u64, u64, u64)>, // the last race's side A ops, side B ops, switches
+    ob: Option<u64>, // the running stage's op budget ("ob"; NOTES.md, "Per-stage op budget")
+    ob_spent: u64,   // that stage's own spending
+    ob_hit: bool,    // set when the budget, not the cap, ended the stage
 }
 
 impl Meter {
@@ -51,6 +54,13 @@ impl Meter {
         }
         if self.ops > self.cap {
             return Err(Budget);
+        }
+        if let Some(lim) = self.ob {
+            self.ob_spent += k;
+            if self.ob_spent > lim {
+                self.ob_hit = true; // ended after the charge that took it past ob
+                return Err(Budget);
+            }
         }
         if let Some(h) = self.hook.as_mut() {
             h.after_charge(k, &mut self.ops)?;
@@ -501,18 +511,36 @@ type RunOut = (Option<Win>, u64, u64, [u64; 15], Option<(u64, u64, u64)>);
 
 fn run(genome: &[Value], num: &Num, cap: u64) -> RunOut {
     for s in genome {
+        // rejected before any number runs, as lamps.validate_genome
+        if let Some(v) = s.get("ob") {
+            assert!(v.is_u64(), "ob must be a non-negative integer");
+        }
         if s["t"] == "race" {
-            race::validate(s); // rejected before any number runs, as race.validate_genome
+            assert!(s.get("ob").is_none() && s["a"].get("ob").is_none() && s["b"].get("ob").is_none(),
+                    "ob is not allowed on a race or its sides");
+            race::validate(s);
         }
     }
-    let mut m = Meter { ops: 0, cap, tests: 0, hits: 0, k: None, phases: [0; 15], hook: None, race: None };
+    let mut m = Meter { ops: 0, cap, tests: 0, hits: 0, k: None, phases: [0; 15], hook: None, race: None,
+                        ob: None, ob_spent: 0, ob_hit: false };
     for (i, s) in genome.iter().enumerate() {
-        match run_stage(num, s, &mut m) {
+        let ob = s.get("ob").and_then(|v| v.as_u64());
+        if ob == Some(0) {
+            continue; // skipped: no lamp code runs
+        }
+        m.ob = ob;
+        m.ob_spent = 0;
+        let r = run_stage(num, s, &mut m);
+        let ended_by_ob = m.ob_hit;
+        m.ob = None;
+        m.ob_hit = false;
+        match r {
             Ok(Some(d)) => {
                 let w = Win { ops: m.ops, d, stage: i, k: m.k };
                 return (Some(w), m.tests, m.hits, m.phases, m.race);
             }
             Ok(None) => continue,
+            Err(Budget) if ended_by_ob => continue, // the stage's budget: next stage
             Err(Budget) => return (None, m.tests, m.hits, m.phases, m.race),
         }
     }

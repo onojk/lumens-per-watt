@@ -109,7 +109,7 @@ pub fn lamp_race(num: &Num, g: &Value, m: &mut Meter) -> R {
                 let (stage, size, ops) = (stages[cur], sizes[cur], shared);
                 sc.spawn(move || {
                     let hook = Hook { size, counter: 0, side_ops: 0, solo, tx: tx.clone(), rx: crx };
-                    let mut sm = Meter { ops, cap, tests: 0, hits: 0, k: None, phases: [0; 15], hook: Some(Box::new(hook)), race: None };
+                    let mut sm = Meter { ops, cap, tests: 0, hits: 0, k: None, phases: [0; 15], hook: Some(Box::new(hook)), race: None, ob: None, ob_spent: 0, ob_hit: false };
                     let res = crate::run_stage(num, stage, &mut sm);
                     let h = sm.hook.take().unwrap();
                     let end = SideEnd { res, ops: sm.ops, side_ops: h.side_ops, tests: sm.tests, hits: sm.hits, k: sm.k, phases: sm.phases };
