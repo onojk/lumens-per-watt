@@ -428,6 +428,10 @@ any scored run, and parity gates the Rust port.
       a fixed set more aggressively, compared with the gap of an untuned reference genome
       (allocation A) on the same tuning and sealed sets. A run is marked **OVERFIT** if its gap
       exceeds A's by more than the paired bootstrap interval (not a fixed percentage).
+      Bracketed by two reference gaps per tuning/sealed set: qs + lc 1.4 alone (never
+      selected: pure sampling) and allocation A (selected on the map: sampling + selection).
+      A method above qs alone's gap has overfit at all; above A's, it has overfit more than
+      the map's own selection. A's gap stays the primary bar.
     - **Third arm** (reported separately, not in the primary comparison): evolution on fresh
       batches each generation, as Run 6 did, with the same budget and seeds. It shows
       whether the fixed tuning set changes evolution's result.
@@ -440,7 +444,12 @@ any scored run, and parity gates the Rust port.
       structural locality helps.
     - **Free exhaustive baseline, before Run 8 (map only):** with qs fixed at qs + lc 1.4,
       the best budgets for each of the 24 stage orders from partition_map, and the overall
-      best order: the exact optimum of that subspace (on the map's grid). Prediction: td ->
+      best order: the exact optimum over the map's budget grid ({0, 2^8..2^20} for td, rho
+      and ECM, pm1 {0, full}; 14 × 14 × 14 × 2 per order), not over all real-valued budgets.
+      All 24 per-order optima are reported; card order "doesn't matter" only if every order's
+      optimum is within the paired bootstrap interval of the best. The landscape (robust
+      fitness over all 131,712 order × budget combinations: the share within the best's
+      interval, plateau or isolated minimum) is reported too. Prediction: td ->
       rho -> ECM (p-1 off), or an order with ECM before rho at large budgets; within noise of
       A. The Run 8 searches should reach at least this on that subspace.
     - **Operators:** evolution's mutation and crossover come from `evolve/run8_space.py`, one
