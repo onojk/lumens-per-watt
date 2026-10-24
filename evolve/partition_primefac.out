@@ -1,0 +1,9 @@
+primefac default plan (td to 1000 -> 42,000 Floyd rounds = 168,000 ops -> qs + lc 1.4) vs allocation A, tuning map:
+  official   primefac / qs alone 0.493   A / qs alone 0.450   primefac / A = 1.10x
+     per band, primefac / A: 16: 1.62  20: 0.32  24: 0.13  28: 0.16  32: 1.02  36: 1.46  42: 1.45
+  ruint      primefac / qs alone 1.102   A / qs alone 0.641   primefac / A = 1.72x
+     per band, primefac / A: 16: 1.08  20: 0.62  24: 0.31  28: 0.56  32: 1.89  36: 2.20  42: 2.26
+  montgomery primefac / qs alone 0.764   A / qs alone 0.527   primefac / A = 1.45x
+     per band, primefac / A: 16: 1.26  20: 0.55  24: 0.26  28: 0.39  32: 1.48  36: 1.87  42: 1.89
+  robust ratio vs qs + lc 1.4 alone: primefac 1.102, A 0.641; primefac / A 1.72x
+  rho within 168,000 ops, successes per band: 16: 80/80  20: 80/80  24: 80/80  28: 80/80  32: 38/80  36: 2/80  42: 0/80
