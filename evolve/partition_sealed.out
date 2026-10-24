@@ -1,0 +1,64 @@
+
+A: qs + lc 1.4 allocation
+  official   17.96 [17.86, 18.06]  bands: 16: 9.56  20: 11.47  24: 16.67  28: 18.15  32: 18.50  36: 18.93  42: 18.98
+             worst band 36 (x0.90 its qs alone)
+  ruint      16.04 [15.95, 16.13]  bands: 16: 9.66  20: 11.53  24: 15.31  28: 16.31  32: 16.57  36: 16.87  42: 16.98
+             worst band 36 (x1.20 its qs alone)
+  montgomery 16.76 [16.67, 16.85]  bands: 16: 9.95  20: 11.71  24: 15.77  28: 16.99  32: 17.30  36: 17.67  42: 17.74
+             worst band 36 (x1.01 its qs alone)
+
+B: N51-0917's qs allocation
+  official   18.95 [18.91, 18.99]  bands: 16: 9.56  20: 11.47  24: 19.16  28: 19.46  32: 19.47  36: 19.52  42: 19.54
+             worst band 32 (x1.01 its qs alone)
+  ruint      15.08 [15.04, 15.11]  bands: 16: 9.66  20: 11.53  24: 15.30  28: 15.56  32: 15.58  36: 15.61  42: 15.62
+             worst band 32 (x1.14 its qs alone)
+  montgomery 16.62 [16.58, 16.66]  bands: 16: 9.95  20: 11.71  24: 16.84  28: 17.12  32: 17.14  36: 17.18  42: 17.19
+             worst band 32 (x1.05 its qs alone)
+
+qs + lc 1.4 alone
+  official   19.09 [19.07, 19.11]  bands: 16: 19.04  20: 19.07  24: 19.09  28: 19.12  32: 19.08  36: 19.09  42: 19.15
+  ruint      16.63 [16.57, 16.68]  bands: 16: 16.54  20: 16.61  24: 16.57  28: 16.66  32: 16.65  36: 16.61  42: 16.74
+  montgomery 17.65 [17.62, 17.68]  bands: 16: 17.59  20: 17.63  24: 17.63  28: 17.68  32: 17.65  36: 17.65  42: 17.73
+
+N51-0917's qs alone
+  official   19.48 [19.45, 19.50]  bands: 16: 19.42  20: 19.43  24: 19.50  28: 19.49  32: 19.46  36: 19.50  42: 19.53
+  ruint      15.41 [15.39, 15.43]  bands: 16: 15.37  20: 15.38  24: 15.43  28: 15.42  32: 15.40  36: 15.43  42: 15.44
+  montgomery 17.09 [17.06, 17.11]  bands: 16: 17.04  20: 17.05  24: 17.11  28: 17.10  32: 17.07  36: 17.11  42: 17.12
+
+L53-0972 (p-1 front)
+  official   19.00 [18.91, 19.09]  bands: 16: 17.12  20: 18.24  24: 18.92  28: 19.24  32: 19.25  36: 19.50  42: 19.51
+             worst band 36 (x1.33 its qs alone)
+  ruint      17.36 [17.35, 17.38]  bands: 16: 17.12  20: 17.24  24: 17.34  28: 17.42  32: 17.42  36: 17.48  42: 17.49
+             worst band 36 (x1.83 its qs alone)
+  montgomery 17.79 [17.74, 17.83]  bands: 16: 17.12  20: 17.46  24: 17.74  28: 17.92  32: 17.92  36: 18.06  42: 18.07
+             worst band 36 (x1.34 its qs alone)
+
+map landing (sealed point in the map's 95% interval):
+  A: qs + lc 1.4 allocation official   overall inside (map 17.94 [17.84, 18.04], sealed 17.96); bands inside 6/7: 16 20* 24 28 32 36 42
+  A: qs + lc 1.4 allocation ruint      overall inside (map 16.02 [15.92, 16.11], sealed 16.04); bands inside 6/7: 16 20* 24 28 32 36 42
+  A: qs + lc 1.4 allocation montgomery overall inside (map 16.74 [16.65, 16.83], sealed 16.76); bands inside 6/7: 16 20* 24 28 32 36 42
+  B: N51-0917's qs allocation official   overall inside (map 18.94 [18.89, 18.98], sealed 18.95); bands inside 5/7: 16 20* 24 28 32 36 42*
+  B: N51-0917's qs allocation ruint      overall inside (map 15.07 [15.04, 15.11], sealed 15.08); bands inside 5/7: 16 20* 24 28 32 36 42*
+  B: N51-0917's qs allocation montgomery overall inside (map 16.61 [16.57, 16.65], sealed 16.62); bands inside 5/7: 16 20* 24 28 32 36 42*
+
+(e) calls (A, B = the allocations; qsA = qs + lc 1.4 alone; qsB = N51-0917's qs alone; L53 = the p-1 front):
+  A vs qsA: A   offi A  ruin A  mont A
+  A vs L53: A   offi A  ruin A  mont A
+  B vs qsB: B   offi B  ruin B  mont B
+  B vs L53: undecided   offi B (tie)  ruin B  mont B
+  A vs B: undecided   offi A  ruin B  mont B
+  L53 vs qsA: undecided   offi L53 (tie)  ruin qsA  mont qsA
+
+cross-comparison, one reference (qs + lc 1.4 alone): robust ratio = max over pricings
+  A: qs + lc 1.4 allocation      map 0.641 (offi 0.45 ruin 0.64 mont 0.53)  sealed 0.666 (offi 0.46 ruin 0.67 mont 0.54)
+  B: N51-0917's qs allocation    map 0.896 (offi 0.90 ruin 0.33 mont 0.48)  sealed 0.907 (offi 0.91 ruin 0.34 mont 0.49)
+  qs + lc 1.4 alone              sealed 1.000 (offi 1.00 ruin 1.00 mont 1.00)
+  N51-0917's qs alone            sealed 1.305 (offi 1.30 ruin 0.43 mont 0.68)
+  L53-0972 (p-1 front)           sealed 1.667 (offi 0.94 ruin 1.67 mont 1.10)
+
+against the best single lamp per band (hindsight; genome / best):
+  official: 16 rho: A x1.00 B x1.00  20 rho: A x1.00 B x1.00  24 rho: A x9.61 B x53.93  28 rho: A x5.82 B x14.38  32 ecm: A x4.80 B x9.39  36 ecm: A x3.01 B x4.51  42 ecm: A x2.32 B x3.41
+  ruint: 16 rho: A x1.00 B x1.00  20 rho: A x1.00 B x1.00  24 rho: A x3.62 B x3.61  28 N51-0917's qs: A x1.86 B x1.10  32 N51-0917's qs: A x2.26 B x1.14  36 N51-0917's qs: A x2.71 B x1.14  42 N51-0917's qs: A x2.90 B x1.14
+  montgomery: 16 rho: A x1.00 B x1.00  20 rho: A x1.00 B x1.00  24 rho: A x4.52 B x9.51  28 ecm: A x2.50 B x2.73  32 ecm: A x2.08 B x1.86  36 N51-0917's qs: A x1.47 B x1.05  42 N51-0917's qs: A x1.53 B x1.05
+94.94 s
+exit 0
