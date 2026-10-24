@@ -1,0 +1,80 @@
+ecm 54: gcds/number 4.0  ops/number 11797  gcd share 0.034%
+ecm 60: gcds/number 6.4  ops/number 25882  gcd share 0.025%
+ecm 66: gcds/number 6.6  ops/number 37826  gcd share 0.017%
+ecm 72: gcds/number 9.6  ops/number 76983  gcd share 0.012%
+ecm 78: gcds/number 12.0  ops/number 134168  gcd share 0.009%
+ecm 84: gcds/number 15.3  ops/number 235261  gcd share 0.007%
+ecm 72/24: gcds/number 2.8  ops/number 22161  gcd share 0.012%
+ecm 72/28: gcds/number 3.4  ops/number 26887  gcd share 0.012%
+ecm 72/32: gcds/number 7.0  ops/number 56670  gcd share 0.012%
+ecm 78/24: gcds/number 2.3  ops/number 25684  gcd share 0.009%
+ecm 78/28: gcds/number 4.0  ops/number 44567  gcd share 0.009%
+ecm 78/32: gcds/number 6.6  ops/number 73443  gcd share 0.009%
+ecm 84/24: gcds/number 2.2  ops/number 35002  gcd share 0.006%
+ecm 84/28: gcds/number 3.3  ops/number 51186  gcd share 0.006%
+ecm 84/32: gcds/number 6.6  ops/number 101525  gcd share 0.006%
+rho 54: gcds/number 92.6  ops/number 19630  gcd share 0.472%
+rho 60: gcds/number 269.4  ops/number 58835  gcd share 0.458%
+rho 66: gcds/number 760.9  ops/number 175438  gcd share 0.434%
+rho 72: gcds/number 2121.0  ops/number 488107  gcd share 0.435%
+rho 78: gcds/number 5572.9  ops/number 1282693  gcd share 0.434%
+rho 84: gcds/number 17657.1  ops/number 4017100  gcd share 0.440%
+rho 72/24: gcds/number 55.7  ops/number 11456  gcd share 0.486%
+rho 72/28: gcds/number 207.1  ops/number 45404  gcd share 0.456%
+rho 72/32: gcds/number 869.6  ops/number 193972  gcd share 0.448%
+rho 78/24: gcds/number 52.5  ops/number 10525  gcd share 0.499%
+rho 78/28: gcds/number 191.1  ops/number 42284  gcd share 0.452%
+rho 78/32: gcds/number 809.2  ops/number 181597  gcd share 0.446%
+rho 84/24: gcds/number 50.8  ops/number 10387  gcd share 0.489%
+rho 84/28: gcds/number 199.7  ops/number 44042  gcd share 0.454%
+rho 84/32: gcds/number 786.6  ops/number 175374  gcd share 0.449%
+
+leaders, ruint P1: 54 N51-0917 (tie qs + lc 1.4); 60 N51-0917 (tie qs + lc 1.4); 66 N51-0917; 72 N51-0917; 78 N51-0917; 84 N51-0917; 72/24 rho; 72/28 N51-0917; 72/32 N51-0917; 78/24 rho; 78/28 N51-0917; 78/32 N51-0917; 84/24 rho; 84/28 N51-0917 (tie ecm, rho); 84/32 N51-0917
+
+leaders, ruint P2: 54 N51-0917 (tie qs + lc 1.4); 60 N51-0917 (tie qs + lc 1.4); 66 N51-0917; 72 N51-0917; 78 N51-0917; 84 N51-0917; 72/24 rho; 72/28 N51-0917; 72/32 N51-0917; 78/24 rho; 78/28 N51-0917; 78/32 N51-0917; 84/24 rho; 84/28 N51-0917 (tie ecm, rho); 84/32 N51-0917
+
+leaders, ruint P3: 54 N51-0917 (tie qs + lc 1.4); 60 N51-0917 (tie qs + lc 1.4); 66 N51-0917; 72 N51-0917; 78 N51-0917; 84 N51-0917; 72/24 rho; 72/28 N51-0917; 72/32 N51-0917; 78/24 rho; 78/28 N51-0917; 78/32 N51-0917; 84/24 rho; 84/28 N51-0917 (tie ecm, rho); 84/32 N51-0917
+
+leaders, ruint E1: 54 N51-0917 (tie qs + lc 1.4); 60 N51-0917; 66 N51-0917; 72 N51-0917; 78 N51-0917; 84 N51-0917; 72/24 rho; 72/28 N51-0917; 72/32 N51-0917; 78/24 rho; 78/28 N51-0917; 78/32 N51-0917; 84/24 rho; 84/28 N51-0917; 84/32 N51-0917
+
+leaders, montgomery P1: 54 ecm; 60 qs + lc 1.4 (tie ecm, N51-0917); 66 N51-0917 (tie ecm, qs + lc 1.4); 72 N51-0917; 78 N51-0917; 84 N51-0917; 72/24 rho; 72/28 ecm; 72/32 N51-0917 (tie ecm, qs + lc 1.4); 78/24 rho; 78/28 ecm (tie rho); 78/32 ecm (tie N51-0917); 84/24 rho; 84/28 rho (tie ecm); 84/32 ecm
+
+leaders, montgomery P2: 54 ecm; 60 N51-0917 (tie ecm, qs + lc 1.4); 66 N51-0917 (tie ecm); 72 N51-0917; 78 N51-0917; 84 N51-0917; 72/24 rho; 72/28 ecm; 72/32 N51-0917 (tie ecm); 78/24 rho; 78/28 ecm (tie rho); 78/32 ecm (tie N51-0917); 84/24 rho; 84/28 rho (tie ecm); 84/32 ecm
+
+leaders, montgomery P3: 54 ecm; 60 N51-0917 (tie ecm, qs + lc 1.4); 66 N51-0917 (tie ecm); 72 N51-0917; 78 N51-0917; 84 N51-0917; 72/24 rho; 72/28 ecm; 72/32 N51-0917 (tie ecm); 78/24 rho; 78/28 ecm (tie rho); 78/32 ecm (tie N51-0917); 84/24 rho; 84/28 rho (tie ecm); 84/32 ecm
+
+leaders, montgomery E1: 54 ecm (tie N51-0917); 60 N51-0917 (tie qs + lc 1.4); 66 N51-0917; 72 N51-0917; 78 N51-0917; 84 N51-0917; 72/24 rho; 72/28 ecm; 72/32 N51-0917; 78/24 rho; 78/28 ecm (tie rho); 78/32 N51-0917 (tie ecm); 84/24 rho; 84/28 rho (tie ecm); 84/32 ecm (tie N51-0917)
+
+break-even multiplier on small-number prices, ruint (above 1: qs leads ECM with that margin; 'none': qs's full-multiply part alone exceeds ECM):
+  54     qs + lc 1.4 x1.88  N51-0917 x1.87
+  60     qs + lc 1.4 x4.43  N51-0917 x4.54
+  66     qs + lc 1.4 x4.29  N51-0917 x4.67
+  72     qs + lc 1.4 x5.14  N51-0917 x5.88
+  78     qs + lc 1.4 x4.85  N51-0917 x6.39
+  84     qs + lc 1.4 x4.53  N51-0917 x6.58
+  72/24  qs + lc 1.4 x1.01  N51-0917 x1.24
+  72/28  qs + lc 1.4 x1.38  N51-0917 x1.66
+  72/32  qs + lc 1.4 x3.64  N51-0917 x4.13
+  78/24  qs + lc 1.4 none  N51-0917 x0.88
+  78/28  qs + lc 1.4 x0.76  N51-0917 x1.80
+  78/32  qs + lc 1.4 x1.61  N51-0917 x3.26
+  84/24  qs + lc 1.4 none  N51-0917 x0.75
+  84/28  qs + lc 1.4 none  N51-0917 x1.23
+  84/32  qs + lc 1.4 x0.66  N51-0917 x2.64
+
+break-even multiplier on small-number prices, montgomery (above 1: qs leads ECM with that margin; 'none': qs's full-multiply part alone exceeds ECM):
+  54     qs + lc 1.4 x0.52  N51-0917 x0.52
+  60     qs + lc 1.4 x1.20  N51-0917 x1.23
+  66     qs + lc 1.4 x1.16  N51-0917 x1.26
+  72     qs + lc 1.4 x1.39  N51-0917 x1.59
+  78     qs + lc 1.4 x1.31  N51-0917 x1.72
+  84     qs + lc 1.4 x1.22  N51-0917 x1.77
+  72/24  qs + lc 1.4 x0.27  N51-0917 x0.34
+  72/28  qs + lc 1.4 x0.37  N51-0917 x0.45
+  72/32  qs + lc 1.4 x0.98  N51-0917 x1.11
+  78/24  qs + lc 1.4 none  N51-0917 x0.24
+  78/28  qs + lc 1.4 x0.21  N51-0917 x0.49
+  78/32  qs + lc 1.4 x0.43  N51-0917 x0.88
+  84/24  qs + lc 1.4 none  N51-0917 x0.20
+  84/28  qs + lc 1.4 none  N51-0917 x0.33
+  84/32  qs + lc 1.4 x0.18  N51-0917 x0.71

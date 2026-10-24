@@ -1,0 +1,32 @@
+{"name": "montgomery verified", "bits": 60, "inputs": 1000000}
+{"name": "montgomery verified", "bits": 84, "inputs": 1000000}
+{"name": "montgomery verified", "bits": 100, "inputs": 1000000}
+{"name": "loop overhead", "ns_median": 1.2504, "ns_min": 1.2393, "ns_q1": 1.2449, "ns_q3": 1.2580, "iters": 40129845, "batches": 31, "secs": 1.66}
+{"name": "mulmod ruint chain", "ns_median": 16.2860, "ns_min": 16.1863, "ns_q1": 16.2306, "ns_q3": 16.3547, "iters": 3070680, "batches": 31, "secs": 1.66, "bits": 60}
+{"name": "mulmod ruint throughput", "ns_median": 14.7060, "ns_min": 14.5640, "ns_q1": 14.6758, "ns_q3": 14.8658, "iters": 3424481, "batches": 31, "secs": 1.68, "bits": 60}
+{"name": "mulmod montgomery chain", "ns_median": 7.4538, "ns_min": 7.3666, "ns_q1": 7.4135, "ns_q3": 7.5477, "iters": 6747855, "batches": 31, "secs": 1.70, "bits": 60}
+{"name": "mulmod montgomery throughput", "ns_median": 4.2476, "ns_min": 4.2212, "ns_q1": 4.2367, "ns_q3": 4.2762, "iters": 11269833, "batches": 31, "secs": 1.61, "bits": 60}
+{"name": "gcd U256::gcd per call", "ns_median": 137.5795, "ns_min": 135.6912, "ns_q1": 137.1406, "ns_q3": 138.1655, "iters": 356273, "batches": 31, "secs": 1.62, "bits": 60, "euclid_steps_mean": 36.02}
+{"name": "gcd U256 Euclid per step", "ns_median": 11.4670, "ns_min": 11.4532, "ns_q1": 11.4612, "ns_q3": 11.4849, "iters": 4350896, "batches": 31, "secs": 1.68, "bits": 60, "euclid_steps_mean": 36.02}
+{"name": "ext euclid i128 per step", "ns_median": 7.3441, "ns_min": 7.3373, "ns_q1": 7.3421, "ns_q3": 7.3521, "iters": 6696530, "batches": 31, "secs": 1.66, "bits": 60}
+{"name": "mulmod ruint chain", "ns_median": 27.1917, "ns_min": 27.1136, "ns_q1": 27.1526, "ns_q3": 27.2402, "iters": 1829318, "batches": 31, "secs": 1.67, "bits": 84}
+{"name": "mulmod ruint throughput", "ns_median": 24.8185, "ns_min": 24.7640, "ns_q1": 24.8028, "ns_q3": 24.8508, "iters": 2005031, "batches": 31, "secs": 1.66, "bits": 84}
+{"name": "mulmod montgomery chain", "ns_median": 7.3557, "ns_min": 7.3472, "ns_q1": 7.3537, "ns_q3": 7.3659, "iters": 6765551, "batches": 31, "secs": 1.68, "bits": 84}
+{"name": "mulmod montgomery throughput", "ns_median": 4.2372, "ns_min": 4.2309, "ns_q1": 4.2338, "ns_q3": 4.2391, "iters": 11810863, "batches": 31, "secs": 1.68, "bits": 84}
+{"name": "gcd U256::gcd per call", "ns_median": 213.7328, "ns_min": 208.7641, "ns_q1": 210.1884, "ns_q3": 214.2052, "iters": 229412, "batches": 31, "secs": 1.64, "bits": 84, "euclid_steps_mean": 49.62}
+{"name": "gcd U256 Euclid per step", "ns_median": 16.7858, "ns_min": 16.7555, "ns_q1": 16.7746, "ns_q3": 16.8121, "iters": 2975410, "batches": 31, "secs": 1.65, "bits": 84, "euclid_steps_mean": 49.62}
+{"name": "ext euclid i128 per step", "ns_median": 8.8086, "ns_min": 8.8011, "ns_q1": 8.8054, "ns_q3": 8.8127, "iters": 5126171, "batches": 31, "secs": 1.52, "bits": 84}
+{"name": "mulmod ruint chain", "ns_median": 29.8324, "ns_min": 29.7873, "ns_q1": 29.8234, "ns_q3": 29.8537, "iters": 1651772, "batches": 31, "secs": 1.66, "bits": 100}
+{"name": "mulmod ruint throughput", "ns_median": 27.1390, "ns_min": 27.0928, "ns_q1": 27.1143, "ns_q3": 27.1869, "iters": 1845132, "batches": 31, "secs": 1.66, "bits": 100}
+{"name": "mulmod montgomery chain", "ns_median": 7.4571, "ns_min": 7.3640, "ns_q1": 7.4155, "ns_q3": 7.4811, "iters": 6804617, "batches": 31, "secs": 1.70, "bits": 100}
+{"name": "mulmod montgomery throughput", "ns_median": 4.2997, "ns_min": 4.2548, "ns_q1": 4.2734, "ns_q3": 4.3203, "iters": 11838481, "batches": 31, "secs": 1.68, "bits": 100}
+{"name": "gcd U256::gcd per call", "ns_median": 266.9098, "ns_min": 263.7669, "ns_q1": 265.4632, "ns_q3": 271.2199, "iters": 178470, "batches": 31, "secs": 1.61, "bits": 100, "euclid_steps_mean": 59.51}
+{"name": "gcd U256 Euclid per step", "ns_median": 19.4526, "ns_min": 19.4289, "ns_q1": 19.4446, "ns_q3": 19.5162, "iters": 2580935, "batches": 31, "secs": 1.67, "bits": 100, "euclid_steps_mean": 59.51}
+{"name": "ext euclid i128 per step", "ns_median": 9.5276, "ns_min": 9.5160, "ns_q1": 9.5242, "ns_q3": 9.5386, "iters": 5191614, "batches": 31, "secs": 1.66, "bits": 100}
+{"name": "sieve update", "ns_median": 1.0545, "ns_min": 1.0529, "ns_q1": 1.0538, "ns_q3": 1.0552, "iters": 48085681, "batches": 31, "secs": 1.68, "B": 2295, "M": 573, "width": 1147, "F": 175}
+{"name": "cell scan", "ns_median": 0.3359, "ns_min": 0.3345, "ns_q1": 0.3353, "ns_q3": 0.3363, "iters": 146309236, "batches": 31, "secs": 1.63, "B": 2295, "M": 573, "width": 1147, "F": 175}
+{"name": "trial division i128 ~2^50 by p", "ns_median": 3.1034, "ns_min": 3.0947, "ns_q1": 3.0990, "ns_q3": 3.1084, "iters": 16579277, "batches": 31, "secs": 1.72, "B": 2295, "M": 573, "width": 1147, "F": 175}
+{"name": "N84 mod small d (i128)", "ns_median": 3.9787, "ns_min": 3.9639, "ns_q1": 3.9737, "ns_q3": 3.9859, "iters": 12746642, "batches": 31, "secs": 1.68, "B": 2295, "M": 573, "width": 1147, "F": 175}
+{"name": "xor word", "ns_median": 0.4549, "ns_min": 0.4542, "ns_q1": 0.4548, "ns_q3": 0.4554, "iters": 108652305, "batches": 31, "secs": 1.66, "B": 2295, "M": 573, "width": 1147, "F": 175}
+{"name": "ext euclid small per step", "ns_median": 8.6036, "ns_min": 8.5876, "ns_q1": 8.5976, "ns_q3": 8.6125, "iters": 5658315, "batches": 31, "secs": 1.64, "B": 2295, "M": 573, "width": 1147, "F": 175}
+{"name": "small mulmod u64 chain", "ns_median": 8.3338, "ns_min": 8.2957, "ns_q1": 8.3159, "ns_q3": 8.3508, "iters": 5961655, "batches": 31, "secs": 1.67, "B": 2295, "M": 573, "width": 1147, "F": 175}

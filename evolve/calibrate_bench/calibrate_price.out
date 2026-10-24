@@ -1,0 +1,113 @@
+price spread (ratio to the reference 84-bit multiply; runs P1 P2 P3 on cpu 2, E1 on cpu 5):
+  mul             ruin 1.0000 1.0000 1.0000 1.0000  mont 1.0000 1.0000 1.0000 1.0000
+  gcd             ruin 7.8602 7.9193 7.5220 5.2395  mont 29.0568 29.2338 28.5474 20.5161
+  setup_mul       ruin 1.0000 1.0000 1.0000 1.0000  mont 1.0000 1.0000 1.0000 1.0000
+  setup_euclid_N  ruin 0.3239 0.3279 0.3174 0.2507  mont 1.1975 1.2103 1.2047 0.9818
+  mult            ruin 0.3065 0.3101 0.2997 0.1944  mont 1.1330 1.1446 1.1373 0.7610
+  fb              ruin 0.3065 0.3101 0.2997 0.1944  mont 1.1330 1.1446 1.1373 0.7610
+  setup_full      ruin 1.0000 1.0000 1.0000 1.0000  mont 1.0000 1.0000 1.0000 1.0000
+  setup_euclid    ruin 0.3164 0.3243 0.3137 0.2273  mont 1.1697 1.1970 1.1905 0.8898
+  setup_small     ruin 0.3065 0.3101 0.2997 0.1944  mont 1.1330 1.1446 1.1373 0.7610
+  sieve_update    ruin 0.0388 0.0340 0.0323 0.0258  mont 0.1434 0.1254 0.1225 0.1009
+  sieve_scan      ruin 0.0124 0.0127 0.0123 0.0111  mont 0.0457 0.0470 0.0466 0.0434
+  confirm_full    ruin 1.0000 1.0000 1.0000 1.0000  mont 1.0000 1.0000 1.0000 1.0000
+  confirm_td      ruin 0.1141 0.1169 0.1122 0.1110  mont 0.4219 0.4317 0.4260 0.4345
+  la              ruin 0.0167 0.0172 0.0166 0.0221  mont 0.0618 0.0635 0.0629 0.0865
+  sqrt_mul        ruin 1.0000 1.0000 1.0000 1.0000  mont 1.0000 1.0000 1.0000 1.0000
+  sqrt_gcd        ruin 0.6173 0.6291 0.6037 0.4591  mont 2.2820 2.3222 2.2912 1.7976
+  lp_full         ruin 1.0000 1.0000 1.0000 1.0000  mont 1.0000 1.0000 1.0000 1.0000
+  lp_small        ruin 0.1141 0.1169 0.1122 0.1110  mont 0.4219 0.4317 0.4260 0.4345
+
+cell        official            ruint                     montgomery                agree
+  54      ecm                        N51-0917 (tie qs + lc 1.4) ecm                        NO
+  60      ecm                        N51-0917 (tie qs + lc 1.4) N51-0917 (tie ecm, qs + lc 1.4) NO
+  66      ecm                        N51-0917                   N51-0917 (tie ecm)         NO
+  72      ecm                        N51-0917                   N51-0917                   yes
+  78      ecm                        N51-0917                   N51-0917                   yes
+  84      ecm                        N51-0917                   N51-0917                   yes
+  72/24   rho                        rho                        rho                        yes
+  72/28   ecm                        N51-0917                   ecm                        NO
+  72/32   ecm                        N51-0917                   N51-0917 (tie ecm)         NO
+  78/24   rho                        rho                        rho                        yes
+  78/28   rho (tie ecm)              N51-0917                   ecm (tie rho)              NO
+  78/32   ecm                        N51-0917                   ecm (tie N51-0917)         NO
+  84/24   rho                        rho                        rho                        yes
+  84/28   rho (tie ecm)              N51-0917 (tie ecm, rho)    rho (tie ecm)              NO
+  84/32   ecm                        N51-0917                   ecm                        NO
+
+calibrated log2(mean cost, in reference multiplies) [95% CI]:
+  54:
+    ecm          official 13.53   ruint 13.53 [13.26, 13.79]   montgomery 13.54 [13.28, 13.80]
+    qs + lc 1.4  official 14.90   ruint 13.23 [13.22, 13.25]   montgomery 14.00 [13.97, 14.03]
+    rho          official 14.26   ruint 14.31 [14.14, 14.46]   montgomery 14.44 [14.28, 14.59]
+    N51-0917     official 15.61   ruint 13.22 [13.20, 13.24]   montgomery 14.02 [13.98, 14.06]
+  60:
+    ecm          official 14.66   ruint 14.66 [14.37, 14.92]   montgomery 14.67 [14.38, 14.93]
+    qs + lc 1.4  official 15.58   ruint 13.50 [13.48, 13.51]   montgomery 14.49 [14.46, 14.51]
+    rho          official 15.84   ruint 15.89 [15.71, 16.05]   montgomery 16.02 [15.84, 16.18]
+    N51-0917     official 16.26   ruint 13.46 [13.43, 13.49]   montgomery 14.46 [14.41, 14.50]
+  66:
+    ecm          official 15.21   ruint 15.21 [14.89, 15.50]   montgomery 15.21 [14.90, 15.50]
+    qs + lc 1.4  official 16.31   ruint 13.84 [13.82, 13.87]   montgomery 15.05 [15.01, 15.08]
+    rho          official 17.42   ruint 17.46 [17.28, 17.63]   montgomery 17.59 [17.40, 17.75]
+    N51-0917     official 16.91   ruint 13.75 [13.72, 13.78]   montgomery 14.95 [14.90, 14.99]
+  72:
+    ecm          official 16.23   ruint 16.23 [15.95, 16.48]   montgomery 16.24 [15.96, 16.48]
+    qs + lc 1.4  official 17.24   ruint 14.58 [14.34, 14.85]   montgomery 15.85 [15.75, 15.97]
+    rho          official 18.90   ruint 18.94 [18.77, 19.10]   montgomery 19.06 [18.89, 19.22]
+    N51-0917     official 17.81   ruint 14.24 [14.20, 14.27]   montgomery 15.65 [15.60, 15.70]
+  78:
+    ecm          official 17.03   ruint 17.03 [16.74, 17.29]   montgomery 17.04 [16.75, 17.29]
+    qs + lc 1.4  official 18.14   ruint 15.60 [15.34, 15.83]   montgomery 16.74 [16.63, 16.85]
+    rho          official 20.29   ruint 20.33 [20.13, 20.51]   montgomery 20.46 [20.25, 20.63]
+    N51-0917     official 18.60   ruint 14.75 [14.70, 14.80]   montgomery 16.31 [16.25, 16.37]
+  84:
+    ecm          official 17.84   ruint 17.84 [17.52, 18.13]   montgomery 17.85 [17.52, 18.13]
+    qs + lc 1.4  official 19.08   ruint 16.63 [16.47, 16.77]   montgomery 17.64 [17.57, 17.71]
+    rho          official 21.94   ruint 21.98 [21.80, 22.15]   montgomery 22.11 [21.92, 22.27]
+    N51-0917     official 19.45   ruint 15.38 [15.33, 15.43]   montgomery 17.06 [17.00, 17.12]
+  72/24:
+    ecm          official 14.44   ruint 14.44 [14.25, 14.61]   montgomery 14.44 [14.25, 14.62]
+    qs + lc 1.4  official 17.21   ruint 14.43 [14.32, 14.59]   montgomery 15.79 [15.73, 15.86]
+    rho          official 13.48   ruint 13.53 [13.34, 13.71]   montgomery 13.67 [13.48, 13.84]
+    N51-0917     official 17.82   ruint 14.24 [14.21, 14.27]   montgomery 15.65 [15.61, 15.69]
+  72/28:
+    ecm          official 14.71   ruint 14.71 [14.50, 14.91]   montgomery 14.72 [14.51, 14.92]
+    qs + lc 1.4  official 17.21   ruint 14.43 [14.32, 14.60]   montgomery 15.79 [15.74, 15.87]
+    rho          official 15.47   ruint 15.51 [15.33, 15.68]   montgomery 15.64 [15.46, 15.81]
+    N51-0917     official 17.79   ruint 14.23 [14.19, 14.26]   montgomery 15.64 [15.59, 15.68]
+  72/32:
+    ecm          official 15.79   ruint 15.79 [15.51, 16.04]   montgomery 15.80 [15.52, 16.04]
+    qs + lc 1.4  official 17.24   ruint 14.45 [14.34, 14.64]   montgomery 15.82 [15.75, 15.90]
+    rho          official 17.57   ruint 17.61 [17.45, 17.76]   montgomery 17.74 [17.58, 17.89]
+    N51-0917     official 17.84   ruint 14.24 [14.20, 14.28]   montgomery 15.66 [15.61, 15.71]
+  78/24:
+    ecm          official 14.65   ruint 14.65 [14.46, 14.83]   montgomery 14.65 [14.47, 14.83]
+    qs + lc 1.4  official 18.24   ruint 15.93 [15.68, 16.15]   montgomery 16.90 [16.79, 17.02]
+    rho          official 13.36   ruint 13.41 [13.23, 13.59]   montgomery 13.55 [13.37, 13.72]
+    N51-0917     official 18.63   ruint 14.77 [14.73, 14.82]   montgomery 16.34 [16.28, 16.39]
+  78/28:
+    ecm          official 15.44   ruint 15.44 [15.18, 15.68]   montgomery 15.45 [15.18, 15.68]
+    qs + lc 1.4  official 18.16   ruint 15.61 [15.36, 15.84]   montgomery 16.76 [16.65, 16.87]
+    rho          official 15.37   ruint 15.41 [15.23, 15.57]   montgomery 15.54 [15.36, 15.70]
+    N51-0917     official 18.64   ruint 14.79 [14.74, 14.83]   montgomery 16.35 [16.30, 16.41]
+  78/32:
+    ecm          official 16.16   ruint 16.16 [15.89, 16.41]   montgomery 16.17 [15.89, 16.41]
+    qs + lc 1.4  official 18.22   ruint 15.87 [15.61, 16.09]   montgomery 16.88 [16.76, 17.00]
+    rho          official 17.47   ruint 17.51 [17.30, 17.70]   montgomery 17.64 [17.43, 17.83]
+    N51-0917     official 18.61   ruint 14.77 [14.73, 14.82]   montgomery 16.33 [16.28, 16.39]
+  84/24:
+    ecm          official 15.10   ruint 15.10 [14.88, 15.30]   montgomery 15.10 [14.89, 15.30]
+    qs + lc 1.4  official 19.10   ruint 16.71 [16.55, 16.84]   montgomery 17.68 [17.61, 17.75]
+    rho          official 13.34   ruint 13.39 [13.21, 13.55]   montgomery 13.53 [13.35, 13.68]
+    N51-0917     official 19.49   ruint 15.42 [15.36, 15.47]   montgomery 17.10 [17.04, 17.16]
+  84/28:
+    ecm          official 15.64   ruint 15.64 [15.38, 15.90]   montgomery 15.65 [15.38, 15.90]
+    qs + lc 1.4  official 19.06   ruint 16.55 [16.37, 16.70]   montgomery 17.61 [17.53, 17.68]
+    rho          official 15.43   ruint 15.47 [15.26, 15.67]   montgomery 15.60 [15.39, 15.79]
+    N51-0917     official 19.44   ruint 15.40 [15.34, 15.45]   montgomery 17.07 [17.01, 17.14]
+  84/32:
+    ecm          official 16.63   ruint 16.63 [16.33, 16.91]   montgomery 16.63 [16.33, 16.92]
+    qs + lc 1.4  official 19.14   ruint 16.81 [16.67, 16.93]   montgomery 17.74 [17.67, 17.81]
+    rho          official 17.42   ruint 17.46 [17.26, 17.66]   montgomery 17.59 [17.39, 17.78]
+    N51-0917     official 19.49   ruint 15.41 [15.36, 15.46]   montgomery 17.09 [17.03, 17.15]

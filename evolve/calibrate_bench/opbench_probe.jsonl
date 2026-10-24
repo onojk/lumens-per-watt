@@ -1,0 +1,32 @@
+{"name": "montgomery verified", "bits": 60, "inputs": 1000000}
+{"name": "montgomery verified", "bits": 84, "inputs": 1000000}
+{"name": "montgomery verified", "bits": 100, "inputs": 1000000}
+{"name": "loop overhead", "ns_probe": 1.2319, "iters": 40586886, "batches": 31}
+{"name": "mulmod ruint chain", "ns_probe": 16.4137, "iters": 3046235, "batches": 31, "bits": 60}
+{"name": "mulmod ruint throughput", "ns_probe": 15.6100, "iters": 3203067, "batches": 31, "bits": 60}
+{"name": "mulmod montgomery chain", "ns_probe": 7.3250, "iters": 6825973, "batches": 31, "bits": 60}
+{"name": "mulmod montgomery throughput", "ns_probe": 4.2421, "iters": 11786742, "batches": 31, "bits": 60}
+{"name": "gcd U256::gcd per call", "ns_probe": 141.9449, "iters": 352249, "batches": 31, "bits": 60, "euclid_steps_mean": 36.02}
+{"name": "gcd U256 Euclid per step", "ns_probe": 11.5339, "iters": 4335063, "batches": 31, "bits": 60, "euclid_steps_mean": 36.02}
+{"name": "ext euclid i128 per step", "ns_probe": 8.0460, "iters": 6214269, "batches": 31, "bits": 60}
+{"name": "mulmod ruint chain", "ns_probe": 27.9402, "iters": 1789539, "batches": 31, "bits": 84}
+{"name": "mulmod ruint throughput", "ns_probe": 25.2344, "iters": 1981424, "batches": 31, "bits": 84}
+{"name": "mulmod montgomery chain", "ns_probe": 7.4995, "iters": 6667105, "batches": 31, "bits": 84}
+{"name": "mulmod montgomery throughput", "ns_probe": 4.3739, "iters": 11431332, "batches": 31, "bits": 84}
+{"name": "gcd U256::gcd per call", "ns_probe": 216.2035, "iters": 231263, "batches": 31, "bits": 84, "euclid_steps_mean": 49.62}
+{"name": "gcd U256 Euclid per step", "ns_probe": 16.8705, "iters": 2963754, "batches": 31, "bits": 84, "euclid_steps_mean": 49.62}
+{"name": "ext euclid i128 per step", "ns_probe": 8.8745, "iters": 5634108, "batches": 31, "bits": 84}
+{"name": "mulmod ruint chain", "ns_probe": 31.3854, "iters": 1593097, "batches": 31, "bits": 100}
+{"name": "mulmod ruint throughput", "ns_probe": 27.1555, "iters": 1841247, "batches": 31, "bits": 100}
+{"name": "mulmod montgomery chain", "ns_probe": 7.4325, "iters": 6727238, "batches": 31, "bits": 100}
+{"name": "mulmod montgomery throughput", "ns_probe": 4.2332, "iters": 11811379, "batches": 31, "bits": 100}
+{"name": "gcd U256::gcd per call", "ns_probe": 277.2944, "iters": 180313, "batches": 31, "bits": 100, "euclid_steps_mean": 59.51}
+{"name": "gcd U256 Euclid per step", "ns_probe": 19.4559, "iters": 2569908, "batches": 31, "bits": 100, "euclid_steps_mean": 59.51}
+{"name": "ext euclid i128 per step", "ns_probe": 9.5515, "iters": 5234774, "batches": 31, "bits": 100}
+{"name": "sieve update", "ns_probe": 0.8579, "iters": 58282914, "batches": 31, "B": 2295, "M": 573, "width": 1147, "F": 175}
+{"name": "cell scan", "ns_probe": 0.3209, "iters": 155834806, "batches": 31, "B": 2295, "M": 573, "width": 1147, "F": 175}
+{"name": "trial division i128 ~2^50 by p", "ns_probe": 2.9242, "iters": 17098414, "batches": 31, "B": 2295, "M": 573, "width": 1147, "F": 175}
+{"name": "N84 mod small d (i128)", "ns_probe": 3.8592, "iters": 12956041, "batches": 31, "B": 2295, "M": 573, "width": 1147, "F": 175}
+{"name": "xor word", "ns_probe": 0.4461, "iters": 112081589, "batches": 31, "B": 2295, "M": 573, "width": 1147, "F": 175}
+{"name": "ext euclid small per step", "ns_probe": 8.5843, "iters": 5824565, "batches": 31, "B": 2295, "M": 573, "width": 1147, "F": 175}
+{"name": "small mulmod u64 chain", "ns_probe": 8.3980, "iters": 5953791, "batches": 31, "B": 2295, "M": 573, "width": 1147, "F": 175}

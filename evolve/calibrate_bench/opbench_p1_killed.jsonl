@@ -1,0 +1,25 @@
+{"name": "montgomery verified", "bits": 60, "inputs": 1000000}
+{"name": "montgomery verified", "bits": 84, "inputs": 1000000}
+{"name": "montgomery verified", "bits": 100, "inputs": 1000000}
+{"name": "loop overhead", "ns_median": 1.2932, "ns_min": 1.2324, "ns_q1": 1.2597, "ns_q3": 1.3819, "iters": 67108864}
+{"name": "mulmod ruint chain", "ns_median": 16.8648, "ns_min": 16.7590, "ns_q1": 16.8201, "ns_q3": 16.9456, "iters": 4194304, "bits": 60}
+{"name": "mulmod ruint throughput", "ns_median": 15.2822, "ns_min": 15.1192, "ns_q1": 15.2181, "ns_q3": 15.3599, "iters": 4194304, "bits": 60}
+{"name": "mulmod montgomery chain", "ns_median": 7.4733, "ns_min": 7.1240, "ns_q1": 7.2953, "ns_q3": 7.5745, "iters": 8388608, "bits": 60}
+{"name": "mulmod montgomery throughput", "ns_median": 4.3687, "ns_min": 4.2903, "ns_q1": 4.3242, "ns_q3": 4.4210, "iters": 16777216, "bits": 60}
+{"name": "gcd U256::gcd per call", "ns_median": 141.5252, "ns_min": 135.7673, "ns_q1": 137.7047, "ns_q3": 143.3419, "iters": 524288, "bits": 60, "euclid_steps_mean": 36.02}
+{"name": "gcd U256 Euclid per step", "ns_median": 12.2842, "ns_min": 11.8223, "ns_q1": 12.1850, "ns_q3": 12.3387, "iters": 4194304, "bits": 60, "euclid_steps_mean": 36.02}
+{"name": "ext euclid i128 per step", "ns_median": 7.8393, "ns_min": 7.5733, "ns_q1": 7.7393, "ns_q3": 7.9329, "iters": 8388608, "bits": 60}
+{"name": "mulmod ruint chain", "ns_median": 28.0157, "ns_min": 27.5379, "ns_q1": 27.8227, "ns_q3": 28.2472, "iters": 2097152, "bits": 84}
+{"name": "mulmod ruint throughput", "ns_median": 26.8960, "ns_min": 26.1788, "ns_q1": 26.3869, "ns_q3": 27.4609, "iters": 2097152, "bits": 84}
+{"name": "mulmod montgomery chain", "ns_median": 7.2171, "ns_min": 7.1103, "ns_q1": 7.1796, "ns_q3": 7.2701, "iters": 8388608, "bits": 84}
+{"name": "mulmod montgomery throughput", "ns_median": 4.4039, "ns_min": 4.3605, "ns_q1": 4.3832, "ns_q3": 4.4159, "iters": 16777216, "bits": 84}
+{"name": "gcd U256::gcd per call", "ns_median": 215.3421, "ns_min": 211.7860, "ns_q1": 213.2888, "ns_q3": 218.9952, "iters": 262144, "bits": 84, "euclid_steps_mean": 49.62}
+{"name": "gcd U256 Euclid per step", "ns_median": 17.0757, "ns_min": 16.8588, "ns_q1": 16.9609, "ns_q3": 17.1732, "iters": 4194304, "bits": 84, "euclid_steps_mean": 49.62}
+{"name": "ext euclid i128 per step", "ns_median": 8.9917, "ns_min": 8.8771, "ns_q1": 8.9428, "ns_q3": 9.0422, "iters": 8388608, "bits": 84}
+{"name": "mulmod ruint chain", "ns_median": 30.9359, "ns_min": 30.6668, "ns_q1": 30.8262, "ns_q3": 30.9970, "iters": 2097152, "bits": 100}
+{"name": "mulmod ruint throughput", "ns_median": 28.8814, "ns_min": 28.7043, "ns_q1": 28.7822, "ns_q3": 29.0821, "iters": 2097152, "bits": 100}
+{"name": "mulmod montgomery chain", "ns_median": 7.1932, "ns_min": 7.0909, "ns_q1": 7.1362, "ns_q3": 7.2457, "iters": 8388608, "bits": 100}
+{"name": "mulmod montgomery throughput", "ns_median": 4.3631, "ns_min": 4.3437, "ns_q1": 4.3528, "ns_q3": 4.3762, "iters": 16777216, "bits": 100}
+{"name": "gcd U256::gcd per call", "ns_median": 271.2353, "ns_min": 269.0744, "ns_q1": 270.2008, "ns_q3": 272.1716, "iters": 262144, "bits": 100, "euclid_steps_mean": 59.51}
+{"name": "gcd U256 Euclid per step", "ns_median": 19.8505, "ns_min": 19.6542, "ns_q1": 19.7380, "ns_q3": 20.0380, "iters": 4194304, "bits": 100, "euclid_steps_mean": 59.51}
+{"name": "ext euclid i128 per step", "ns_median": 9.6561, "ns_min": 9.5672, "ns_q1": 9.6112, "ns_q3": 9.7250, "iters": 8388608, "bits": 100}
