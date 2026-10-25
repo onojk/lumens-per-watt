@@ -2436,3 +2436,7 @@ The design is the queued test (PLAN, "Queued: size-scaling test for the qs genes
 - (S7) Every frozen genome passes the gate against the corrected reference at its own size.
 
 **Outside prediction (DeepSeek, queued with the test):** the optimum shifts monotonically with size, with mc and lc up and kc down. It is scored by the trend rule in the design above.
+
+**Size-scaling test: paused (Oct 25).** The user asked that it not start until the scoring rule is decided (PLAN, "PENDING DECISION: which pricing decides").
+- The tuning run had already started. It was stopped before any result was written: its output file was empty and was deleted, and no `sizescale_tune.json` exists. No tuning result has been seen.
+- The design, the 54-bit design input and predictions S1–S7 stand as written, under the current robust rule. If the rule changes, the user's caveat (2) applies: new predictions are written after the change, before the test runs.

@@ -427,6 +427,28 @@ any scored run, and parity gates the Rust port.
       The first wording (the worst raw cost) collapsed to the official count.
     - Reports call a cell only where all three pricings agree; otherwise the cell is
       "undecided".
+    - **PENDING DECISION (user's; recorded Oct 25, nothing changed yet): which pricing decides.**
+      - *The fact behind it:* under the robust score, ruint binds at every size for every
+        pipeline, under both qs cards. Its 27 ns generic 256-bit multiply (Montgomery: 7.4 ns)
+        decides every pipeline verdict so far. "ECM off" under the corrected card is a
+        ruint-only result: official and Montgomery keep ECM on at every size (NOTES.md,
+        per-pricing optima).
+      - *Proposal (outside review, DeepSeek):*
+        - decide under Montgomery, the real-software multiply;
+        - keep worst-of-three as a gate: a winner under all three pricings wins regardless of
+          pricing, and a Montgomery-only winner is reported as "conditional on a fast multiply";
+        - always report all three.
+      - *Caveats recorded with it:*
+        - (1) Montgomery is realistic for the multiply side only. qs's small-op prices come
+          from our own sieve, and production sieves are more optimized, so Montgomery may still
+          overcharge qs relative to real software.
+        - (2) Changing the rule after seeing results is a forking-paths risk. Any change applies
+          only to tests whose predictions are written after the change. Earlier verdicts stay as
+          recorded, and are reported under both rules.
+      - *Status:* the decision waits on the user. The per-pricing optima it waited for are done.
+        The qs-gene size-scaling test does not start until the rule is decided: its tuning
+        run was stopped before any result was read, and its predictions (S1-S7) were written
+        under the current robust rule.
     - **ACCEPT gate (written Oct 24, before Run 8):** a champion must not be worse than 1.5×
       the reference genome on any band, under any pricing. A gate, not fitness: a
       champion that fails it is not accepted, whatever its score.
