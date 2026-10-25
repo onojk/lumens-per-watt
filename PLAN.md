@@ -689,7 +689,15 @@ is not known in advance?
 - **Multi-objective search:** Optuna's NSGA-II sampler.
 - **MAP-Elites:** pyribs (reuse rule), not the island code.
 - **Fixed tuning sets in future runs:** 24 numbers per band (doubled from 12 after Run 8's
-  seed 73 misled four of five methods). The sealed ACCEPT gate stays. Each report names the
+  seed 73 misled four of five methods). The sealed ACCEPT gate stays.
+  **Gate with per-band intervals (Oct 24, user):** per band and pricing, the 95% interval of
+  mean cost / mean reference cost (numbers resampled within the band, 10,000,
+  random.Random(2026)). PASS: every upper bound <= 1.5 and no misses; FAIL: any lower bound
+  > 1.5 or a miss; BORDERLINE otherwise. Point values reported beside. First used in
+  `evolve/stopping.py`.
+- **Budgets come from maps, search tunes only the qs genes** (Oct 24, from the freedom
+  comparison; confound: 560 vs 84 tuning numbers). Per size: the robust grid optimum on that
+  size's map, or on maps transferred from neighbouring sizes. Each report names the
   seeds whose tuning sets misled methods: OVERFIT, or a gate failure on sealed numbers. No
   fixed-cost or hand-picked "hard" numbers: scores are always measured.
 - **MISLEADING tuning set (pre-registered Oct 24, before the next run):** a seed's tuning set
