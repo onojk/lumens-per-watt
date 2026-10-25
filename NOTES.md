@@ -2440,3 +2440,16 @@ The design is the queued test (PLAN, "Queued: size-scaling test for the qs genes
 **Size-scaling test: paused (Oct 25).** The user asked that it not start until the scoring rule is decided (PLAN, "PENDING DECISION: which pricing decides").
 - The tuning run had already started. It was stopped before any result was written: its output file was empty and was deleted, and no `sizescale_tune.json` exists. No tuning result has been seen.
 - The design, the 54-bit design input and predictions S1–S7 stand as written, under the current robust rule. If the rule changes, the user's caveat (2) applies: new predictions are written after the change, before the test runs.
+
+## 2026-10-25 — Decision (user): two tracks; the size-scaling test on both
+
+**The rule, from now on** (for tests whose predictions are written after this decision; PLAN, scoring):
+- **Track R (ruint decides):** today's robust rule (ruint binds everywhere). Gate: per-band 1.5x under all three pricings.
+- **Track M (Montgomery decides):** fitness = Montgomery cost / the reference's Montgomery cost. Gate: per-band 1.5x under Montgomery. ruint and official are reported for every result, and a ruint per-band gate is reported as information only. A Track M winner that fails that gate is labelled "conditional on a fast multiply".
+- **Every report** gives both tracks' winners, each priced under the other track's pricing. That cross-pricing is the headline: how much the answer depends on the multiply.
+- **Earlier verdicts stay as recorded;** they are Track R by construction.
+
+**The size-scaling test under the rule.**
+- *Track R:* predictions S1–S7 were written before this decision, under the robust rule, which is Track R. They stand as written, and the Track R design is the one above (rho-only pipeline per size; qs alone at 54).
+- *Track M:* new predictions are written below, before the Montgomery re-solve and before any tuning.
+- The tuning budget is the same per track: tpe-tuned settings, seeds 0–3, 200 trials per size, kc 1–32.

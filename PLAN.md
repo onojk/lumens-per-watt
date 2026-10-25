@@ -427,7 +427,20 @@ any scored run, and parity gates the Rust port.
       The first wording (the worst raw cost) collapsed to the official count.
     - Reports call a cell only where all three pricings agree; otherwise the cell is
       "undecided".
+    - **DECIDED (user, Oct 25): TWO TRACKS** (it was a pending decision, recorded below as it stood).
+      Applies to tests whose predictions are written after this decision.
+      - *Track R (ruint decides):* today's robust rule. ruint binds everywhere, so this is the
+        ruint-decided track. Gate: per-band 1.5x under all three pricings, as now.
+      - *Track M (Montgomery decides):* fitness = Montgomery cost / the reference's Montgomery
+        cost. Gate: per-band 1.5x under Montgomery. ruint and official are reported for every
+        result, with a ruint per-band gate as information only. A Track M winner that fails
+        that gate is labelled "conditional on a fast multiply".
+      - Every report gives both tracks' winners and prices each winner under the other track's
+        pricing. **That cross-pricing is the headline:** how much the answer depends on the
+        multiply.
+      - Earlier verdicts stay as recorded; they are Track R by construction.
     - **PENDING DECISION (user's; recorded Oct 25, nothing changed yet): which pricing decides.**
+      [Decided Oct 25: two tracks, above.]
       - *The fact behind it:* under the robust score, ruint binds at every size for every
         pipeline, under both qs cards. Its 27 ns generic 256-bit multiply (Montgomery: 7.4 ns)
         decides every pipeline verdict so far. "ECM off" under the corrected card is a
