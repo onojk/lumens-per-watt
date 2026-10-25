@@ -2514,7 +2514,7 @@ Corrected card; sealed numbers 80 per band (320 / 480 / 560 / 640 at 54 / 72 / 8
 
 **Every Track M winner fails the ruint per-band gate: each is "conditional on a fast multiply".**
 
-**Headline: cross-pricing.** PD_M is the Montgomery cost of the Track R winner over the Track M winner's; PD_R is the ruint cost of the Track M winner over the Track R winner's.
+**Headline: cross-pricing (round 1).** *Label added Oct 25:* these budgets were solved with qs + lc 1.4's genes, and the genes were then tuned inside those fixed budgets. Under Montgomery the tuned Track R genes gained the most (−0.11 to −0.53 log₂), so the Montgomery budgets may move once they are re-solved with tuned genes (round 2). PD_M is the Montgomery cost of the Track R winner over the Track M winner's; PD_R is the ruint cost of the Track M winner over the Track R winner's.
 
 | bits | PD_M [95%] | PD_R [95%] | official, M winner / R winner |
 |---|---|---|---|
@@ -2531,7 +2531,7 @@ Corrected card; sealed numbers 80 per band (320 / 480 / 560 / 640 at 54 / 72 / 8
 **Tuned genes against qs + lc 1.4's genes in the same pipeline** (track metric, log₂ [95%]):
 - *Track R:* −0.054 [−0.073, −0.036] (3.7%), −0.196 (12.7%), −0.377 (23%) and −0.480 (28%) at 54 / 72 / 84 / 96. All three pricings agree at every size, and the Montgomery gain is the largest (−0.11 to −0.53).
 - *Track M:* −0.073 (4.9%), −0.009 (0.6%), −0.039 (2.7%) and −0.170 (11%). The official cost rises at 54–84 (+0.02 to +0.32).
-- Against the frozen reference (enumerate), the Track R winners are 0.81 / 0.35 / 0.66 (54), 0.74 / 0.53 / 0.65 (72), 0.55 / 0.26 / 0.39 (84) and 0.50 / 0.29 / 0.39 (96).
+- Against the frozen reference (enumerate), the Track R winners are 0.81 / 0.35 / 0.66 (54), 0.74 / 0.53 / 0.65 (72), 0.55 / 0.26 / 0.39 (84) and 0.50 / 0.29 / 0.39 (96). These ratios mostly come from the corrected qs card (on-demand A, sorts charged), not from tuning; the tuning gain is the line above.
 
 **Cross-size** (track fitness of each size's tuned genome, scored at every size):
 - *Track R:* each size's own genome is best at its size. The 54-tuned genome is 32% worse than the 96-tuned at 96 (0.699 against 0.530); the 96-tuned is 75% worse at 54 (1.688 against 0.963). The genes matter by size.
