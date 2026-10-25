@@ -2218,3 +2218,15 @@ With the card's other costs, on_demand + sort_charge adds about 1,000–3,600 sm
 - G1 and G2 can both hold.
 
 **Reported per size:** the binding pricing of each genome (per-size optimum, A's budgets, transfer, theory), each pipeline against qs alone and against A with both cards side by side, and whether BI under the binding pricing equals the exhaustive robust optimum.
+
+**More outside predictions for the re-solve (DeepSeek via the user, checked; recorded before running).**
+- (D4) After the re-solve, ECM switches off at 84 bits, shrinks but stays on at 96, and stays off below 84; rho shrinks modestly. DeepSeek flags 96 as the case most likely to invert. *Scored on the corrected per-size robust optima:*
+  - ECM off at 72, 78 and 84;
+  - ECM on at 96 with a budget below the enumerate optimum's (60,097);
+  - rho below the enumerate optimum at every size, by 1–4 grid steps.
+
+  Held only if all of these hold; each clause is reported. 90 bits has no clause.
+- (D5) Allocation A's calibrated gains over qs alone shrink substantially. The user's correction: the official 2.19x should largely survive, since official qs cost moved only 0.90–0.95x. *Scored on the 84-bit map* (A's budgets, map speed-ups, enumerate against corrected; the sealed figures 2.19 / 1.51 / 1.85x are not rerun):
+  - D5 holds if A's ruint and Montgomery speed-ups over qs alone each fall by ≥ 20% (relative).
+  - The user's correction holds if the official speed-up falls by ≤ 10%.
+- No README wording on A's gains until these are scored.
