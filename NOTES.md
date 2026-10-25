@@ -1234,3 +1234,38 @@ Otherwise, qs + lc 1.4 stays the reference, and the new genes are a mixed-popula
 - (b), the user's, verbatim: "the wider mc (0.43-0.93) loses on balanced (population-specific genes)."
   - **Evidence already on record, against it:** on the Run 8 sealed band 42 (80 balanced 84-bit numbers, A's budgets), the mixed-qs winners' ratios to qs + lc 1.4 alone are 0.91–0.94 official, 0.70–0.76 ruint and 0.73–0.80 Montgomery. That is better, not worse.
   - Those 80 numbers were scored in Run 8's report, so (b) on fresh numbers is the test. The prediction is scored as written.
+
+### (1) Results: partition map with the new qs (`evolve/partition_newqs.py`, `partition_newqs.out`/`.json`; 67 s)
+
+**Checks.**
+- **Parity:** lampcore `--types` matches the map's Python per-type counts for qs + lc 1.4 on 560/560 numbers.
+- **The new qs alone:** 0 misses on the 560 tuning numbers.
+
+**Fitness (c) against qs + lc 1.4 alone, map (560 tuning numbers).**
+
+| plan | robust | official | ruint | Montgomery |
+|---|---|---|---|---|
+| A with qs + lc 1.4 (partition study) | 0.641 | 0.450 | 0.641 | 0.527 |
+| new qs alone | 0.963 | 0.963 | 0.405 | 0.630 |
+| A's budgets + new qs | 0.438 | 0.438 | 0.408 | 0.380 |
+| re-optimized + new qs (td 0, rho 11585, pm1 0, ECM 32768; best of all 24 orders and the fixed order) | 0.431 | 0.431 | 0.424 | 0.385 |
+
+- **Re-optimized against A's budgets, both with the new qs:** log2 −0.0235 [−0.0510, +0.0334]. Unresolved: the point is a 1.6% gain and the interval includes 0. Only rho moved, from 5793 to 11585; ECM stayed at 32768.
+- **Card order matters**, in the same pattern as with qs + lc 1.4. The 12 orders that put ECM before rho are +0.066 [+0.035, +0.100] worse. The other 12 share the optimum.
+- **Mechanism (found while checking the numbers).**
+  - The new qs alone is uniformly cheaper than qs + lc 1.4 in every band: about 0.41 ruint, 0.61–0.64 Montgomery and 0.94–0.98 official.
+  - The gain is almost entirely in what the calibrated pricings charge. The official count hardly moves, so after the change official is the binding pricing of the robust max.
+  - Against the new qs alone, the re-optimized allocation is 0.45 official, 0.61 Montgomery and 1.05 ruint. Under ruint, the pre-stages no longer pay once qs is this cheap; under official and Montgomery they still do. Per (e), "pre-stages pay over the new qs alone" is undecided.
+  - So the budgets are held where they are by the official count. ECM stays at 32768 because official still prices ECM's multiplies at 1 op.
+- **Per-band ratios** of the re-optimized plan to qs + lc 1.4 alone:
+  - official: 16: 0.001, 20: 0.005, 24: 0.106, 28: 0.419, 32: 0.743, 36: 0.871, 42: 0.866;
+  - ruint: 0.008, 0.027, 0.210, 0.537, 0.703, 0.769, 0.760;
+  - Montgomery: 0.005, 0.016, 0.143, 0.427, 0.647, 0.734, 0.733.
+
+**Predictions scored as written:** 4 scored; 2 held, 1 missed, 1 unresolved.
+- (1a) **Missed.** ECM stayed at 32768, against the prediction of ≤ 2^14 or 0. rho 11585 (in [2^11, 2^14]), td 0 and pm1 off all held, but the clause is compound. The reasoning behind it, that a cheaper qs makes ECM worth less, holds under ruint only. The binding official count did not change.
+- (1b) **Unresolved.** The point estimate (−0.0235 log2, 1.6%) is in the predicted 1–5% range, but the interval includes 0.
+- (1c) **Held.** 0.438, in 0.43–0.50.
+- (1d) **Held.** rho before ECM in every order at the optimum; 12 orders' intervals lie above 0.
+
+**Consequence for (2a), recorded before (2) runs.** (2a)'s ruint and Montgomery ranges (0.65–0.80) were taken from Run 8's band-42 cells, which include A's pre-stage spending. The new qs alone is about 0.41 ruint and 0.63 Montgomery on this map's balanced band. (2a) stays as written and is expected to miss on ruint.

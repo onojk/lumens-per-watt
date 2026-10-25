@@ -1,0 +1,47 @@
+parity (lampcore --types vs map's Python counts, qs + lc 1.4): 560/560 identical
+new qs alone: 0 misses of 560
+
+fitness (c) against qs + lc 1.4 alone, map (560 tuning numbers):
+  A with qs + lc 1.4 (partition study): 0.6408
+  new qs alone: 0.9628 (official 0.963, ruint 0.405, montgomery 0.630)
+  A's budgets with the new qs: 0.4380 (official 0.438, ruint 0.408, montgomery 0.380)
+
+all 24 orders, new qs final: grid optimum | refined | refined vs best, log2 [paired 95%]
+  td -> rho -> pm1 -> ecm      grid 0.4389 (td       0  rho    8192  pm1    0  ecm   32768) | refined 0.4309 (td       0  rho   11585  pm1    0  ecm   32768) | +0.0000 [+0.0000, +0.0000]
+  td -> rho -> ecm -> pm1      grid 0.4389 (td       0  rho    8192  pm1    0  ecm   32768) | refined 0.4309 (td       0  rho   11585  pm1    0  ecm   32768) | +0.0000 [+0.0000, +0.0000]
+  td -> pm1 -> rho -> ecm      grid 0.4389 (td       0  rho    8192  pm1    0  ecm   32768) | refined 0.4309 (td       0  rho   11585  pm1    0  ecm   32768) | +0.0000 [+0.0000, +0.0000]
+  rho -> td -> pm1 -> ecm      grid 0.4389 (td       0  rho    8192  pm1    0  ecm   32768) | refined 0.4309 (td       0  rho   11585  pm1    0  ecm   32768) | +0.0000 [+0.0000, +0.0000]
+  rho -> td -> ecm -> pm1      grid 0.4389 (td       0  rho    8192  pm1    0  ecm   32768) | refined 0.4309 (td       0  rho   11585  pm1    0  ecm   32768) | +0.0000 [+0.0000, +0.0000]
+  rho -> pm1 -> td -> ecm      grid 0.4389 (td       0  rho    8192  pm1    0  ecm   32768) | refined 0.4309 (td       0  rho   11585  pm1    0  ecm   32768) | +0.0000 [+0.0000, +0.0000]
+  rho -> pm1 -> ecm -> td      grid 0.4389 (td       0  rho    8192  pm1    0  ecm   32768) | refined 0.4309 (td       0  rho   11585  pm1    0  ecm   32768) | +0.0000 [+0.0000, +0.0000]
+  rho -> ecm -> td -> pm1      grid 0.4389 (td       0  rho    8192  pm1    0  ecm   32768) | refined 0.4309 (td       0  rho   11585  pm1    0  ecm   32768) | +0.0000 [+0.0000, +0.0000]
+  rho -> ecm -> pm1 -> td      grid 0.4389 (td       0  rho    8192  pm1    0  ecm   32768) | refined 0.4309 (td       0  rho   11585  pm1    0  ecm   32768) | +0.0000 [+0.0000, +0.0000]
+  pm1 -> td -> rho -> ecm      grid 0.4389 (td       0  rho    8192  pm1    0  ecm   32768) | refined 0.4309 (td       0  rho   11585  pm1    0  ecm   32768) | +0.0000 [+0.0000, +0.0000]
+  pm1 -> rho -> td -> ecm      grid 0.4389 (td       0  rho    8192  pm1    0  ecm   32768) | refined 0.4309 (td       0  rho   11585  pm1    0  ecm   32768) | +0.0000 [+0.0000, +0.0000]
+  pm1 -> rho -> ecm -> td      grid 0.4389 (td       0  rho    8192  pm1    0  ecm   32768) | refined 0.4309 (td       0  rho   11585  pm1    0  ecm   32768) | +0.0000 [+0.0000, +0.0000]
+  td -> pm1 -> ecm -> rho      grid 0.4517 (td       0  rho    4096  pm1    0  ecm   32768) | refined 0.4510 (td       0  rho    3158  pm1    0  ecm   32768) | +0.0657 [+0.0351, +0.1001]
+  td -> ecm -> rho -> pm1      grid 0.4517 (td       0  rho    4096  pm1    0  ecm   32768) | refined 0.4510 (td       0  rho    3158  pm1    0  ecm   32768) | +0.0657 [+0.0351, +0.1001]
+  td -> ecm -> pm1 -> rho      grid 0.4517 (td       0  rho    4096  pm1    0  ecm   32768) | refined 0.4510 (td       0  rho    3158  pm1    0  ecm   32768) | +0.0657 [+0.0351, +0.1001]
+  pm1 -> td -> ecm -> rho      grid 0.4517 (td       0  rho    4096  pm1    0  ecm   32768) | refined 0.4510 (td       0  rho    3158  pm1    0  ecm   32768) | +0.0657 [+0.0351, +0.1001]
+  pm1 -> ecm -> td -> rho      grid 0.4517 (td       0  rho    4096  pm1    0  ecm   32768) | refined 0.4510 (td       0  rho    3158  pm1    0  ecm   32768) | +0.0657 [+0.0351, +0.1001]
+  pm1 -> ecm -> rho -> td      grid 0.4517 (td       0  rho    4096  pm1    0  ecm   32768) | refined 0.4510 (td       0  rho    3158  pm1    0  ecm   32768) | +0.0657 [+0.0351, +0.1001]
+  ecm -> td -> rho -> pm1      grid 0.4517 (td       0  rho    4096  pm1    0  ecm   32768) | refined 0.4510 (td       0  rho    3158  pm1    0  ecm   32768) | +0.0657 [+0.0351, +0.1001]
+  ecm -> td -> pm1 -> rho      grid 0.4517 (td       0  rho    4096  pm1    0  ecm   32768) | refined 0.4510 (td       0  rho    3158  pm1    0  ecm   32768) | +0.0657 [+0.0351, +0.1001]
+  ecm -> rho -> td -> pm1      grid 0.4517 (td       0  rho    4096  pm1    0  ecm   32768) | refined 0.4510 (td       0  rho    3158  pm1    0  ecm   32768) | +0.0657 [+0.0351, +0.1001]
+  ecm -> rho -> pm1 -> td      grid 0.4517 (td       0  rho    4096  pm1    0  ecm   32768) | refined 0.4510 (td       0  rho    3158  pm1    0  ecm   32768) | +0.0657 [+0.0351, +0.1001]
+  ecm -> pm1 -> td -> rho      grid 0.4517 (td       0  rho    4096  pm1    0  ecm   32768) | refined 0.4510 (td       0  rho    3158  pm1    0  ecm   32768) | +0.0657 [+0.0351, +0.1001]
+  ecm -> pm1 -> rho -> td      grid 0.4517 (td       0  rho    4096  pm1    0  ecm   32768) | refined 0.4510 (td       0  rho    3158  pm1    0  ecm   32768) | +0.0657 [+0.0351, +0.1001]
+
+card order: MATTERS (12 of 24 orders have an interval above 0)
+
+fixed order td -> rho -> pm1 -> ecm: td       0  rho   11585  pm1    0  ecm   32768  fitness 0.4309 (official 0.431, ruint 0.424, montgomery 0.385); against the new qs alone 1.0471
+  vs A's budgets with the new qs: log2 -0.0235 [-0.0510, +0.0334]
+  per band, official: 16: 0.001  20: 0.005  24: 0.106  28: 0.419  32: 0.743  36: 0.871  42: 0.866
+  per band, ruint: 16: 0.008  20: 0.027  24: 0.210  28: 0.537  32: 0.703  36: 0.769  42: 0.760
+  per band, montgomery: 16: 0.005  20: 0.016  24: 0.143  28: 0.427  32: 0.647  36: 0.734  42: 0.733
+
+best order td -> rho -> pm1 -> ecm: td       0  rho   11585  pm1    0  ecm   32768  fitness 0.4309 (official 0.431, ruint 0.424, montgomery 0.385); against the new qs alone 1.0471
+  vs A's budgets with the new qs: log2 -0.0235 [-0.0510, +0.0334]
+  per band, official: 16: 0.001  20: 0.005  24: 0.106  28: 0.419  32: 0.743  36: 0.871  42: 0.866
+  per band, ruint: 16: 0.008  20: 0.027  24: 0.210  28: 0.537  32: 0.703  36: 0.769  42: 0.760
+  per band, montgomery: 16: 0.005  20: 0.016  24: 0.143  28: 0.427  32: 0.647  36: 0.734  42: 0.733
