@@ -1552,3 +1552,48 @@ Paired, log2 [95%]: PRIMARY / A −0.108 [−0.177, −0.039] (all three pricing
 - (S2, the user's) The stopping-rule budgets pass the gate at 78 and 90 and beat both alternatives on the robust score. Scored as gate PASS under the rule above, and robust-ratio intervals below 0 against both A and theory at both sizes.
 - (S3, mine) S1 misses on the 1/8-octave grid. The rho budget lands at or below the hindsight value (success undervalued), and at least one ECM budget is more than one grid step away (late single events). The half-octave SENSITIVITY lands closer to the hindsight values than the primary in at least 4 of the 6 (size, stage) cells.
 - (S4, mine) At 78 the rule beats A (robust interval below 0); against theory, a tie at both sizes. At 90 the rule beats A.
+
+### Stopping-rule derivation: result of the pre-registered (Q-valued) rule (`evolve/stopping_derive.out`/`.json`)
+
+| size | hindsight (rho / ECM) | rule, 1/8-octave windows | rule, half-octave (SENSITIVITY) | map fitness: hindsight / rule / half |
+|---|---|---|---|---|
+| 72 | 3,158 / off | 17,867 / 50,535 | 5,793 / 16,384 | 0.817 / 1.385 / 1.042 |
+| 84 | 5,793 / 32,768 | 35,734 / 1,048,576 | 46,341 / 65,536 | 0.641 / 0.882 / 0.755 |
+| 96 | 12,634 / 60,097 | 142,935 / 240,387 | 46,341 / 65,536 | 0.627 / 0.901 / 0.661 |
+
+- The rule's budgets are 16–40 grid steps above the hindsight optima, and ECM is on at 72 bits. Ruint gives the smallest per-pricing budget almost everywhere; official runs to the cap.
+- **Why (two flaws, both visible in the design):**
+  - Valuing a rho success at Q ignores that ECM, the next stage, would find most of the same factors far more cheaply. A rho success is worth the remaining pipeline's cost, not Q. (The user's addendum, from Grok's review, says the same.)
+  - "The last window with h · Q ≥ c" ignores loss-making stretches before that window. With a non-monotone hazard, the right stopping point maximizes cumulative net gain, not the last crossing. 1/8-octave windows add noise from single late events.
+- S1 and S3 are scored after the test, with the rest.
+
+### Per-stage budgets: addendum (user, from Grok's review; written before the test ran)
+
+**Data status, stated explicitly.** The 78- and 90-bit populations (seeds 9200000 + 100 pb + bits) are fresh and untouched by any derivation. Their maps were built before this addendum. The only output seen from them is each pre-stage's solve count per band and qs's mean cost per band (`stopping_map.out`); no genome has been costed on them. They carry the final claim.
+
+**Answer per size (72, 84, 96): the robust grid optimum on that size's map.**
+- Joint over (rho, ECM) with td and pm1 off (the structure this line of work has used), exhaustive over the 1/8-octave grid (`FINE`, 98 × 98 vectors). Fitness (c): min over budgets of max over pricings. Exhaustive here, where the earlier hindsight values came from grid-plus-coordinate search; any difference is reported.
+- Information: the 4-stage robust optimum (`partition.optimize`, td and pm1 free), to show whether td or pm1 would switch on at some size.
+
+**Explanation beside it: backward induction with remaining-pipeline values, exact per-number composition.**
+- Per pricing P: ECM last, e_P(r) = argmin over the grid of the exact composed cost of (ECM at e, then qs) on the numbers still alive after rho at r; then r_P = argmin over r of the composed cost of (rho at r, ECM at e_P(r), qs).
+- So a rho success is valued at what the rest of the pipeline would have cost on that number. With exact composition and an exhaustive grid this equals P's joint grid optimum (the nested argmin over a 2-D grid is exact). It differs from the robust optimum only through the max over pricings.
+- Conservative combination: rho_c = min_P r_P, ECM_c = min_P e_P(rho_c).
+- Reported per pricing, combined, and whether each matches the robust optimum within one grid step.
+
+**Test at 78 and 90 (no data from the test size):**
+- Transferred maps: the two neighbouring derivation maps (78: 72 and 84; 90: 84 and 96) pooled number by number. Pre-stage records are used as recorded (pre-stage ops do not depend on N's size). Each number's qs cost under P is rescaled to the target size by [Q(t) · r_P(t)] / [Q(s) · r_P(s)] (Q = the frozen dedicated curve; r_P interpolated linearly in bits between the neighbours).
+- Genomes, each run directly in lampcore `--types` on the fresh numbers:
+  - **TRANSFER (primary):** the robust grid optimum on the transferred maps.
+  - BI-conservative on the transferred maps (the explanation, also costed).
+  - Q-RULE: the pre-registered stopping rule (neighbour-averaged hazards, 1/8 octave), as registered.
+  - A's absolute budgets; theory scaling.
+- Paired bootstrap, all three pricings, gate with per-band intervals (PASS / BORDERLINE / FAIL as defined above).
+- **Two references:** qs + lc 1.4 alone (primary, for comparability), and the new qs genes alone (secondary column: fitness, scores and gate against it). Every genome keeps qs + lc 1.4 as its final stage.
+
+**Predictions** (scored as written):
+- (S5, the user's) The backward-induction budgets match the robust grid optimum within one grid step at 72, 84 and 96.
+- (S6, mine) S5 holds in at least 5 of the 6 (size, stage) cells. Where it fails, the BI-conservative budget is below the robust one (min over pricings undershoots when no single pricing binds).
+- (S7, mine) At 78 and 90, TRANSFER beats A (robust interval below 0) and ties or beats theory (interval includes 0 or lies below it). Gate: PASS at 90; PASS or BORDERLINE at 78.
+- (S8, mine) Q-RULE is worse than A at both sizes (robust interval above 0); it overspends, as on the derivation maps.
+- S2 (the user's, registered earlier) is scored on Q-RULE, the "stopping-rule budgets" it was written for.
