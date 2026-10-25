@@ -1843,3 +1843,75 @@ At 78, 84 and 90 these are the figures already reported: stopping test 1.01 / 0.
   - at 96, 0.688 against 0.744.
 - Per pricing (log₂): at 72, official +0.111, ruint −0.066, Montgomery −0.107; at 96, −0.003, −0.114 and −0.200.
 - So they are pipeline-level robust ratios on different numbers, with pre-stage costs in both numerator and denominator. They are not the qs-alone ratios above. Both sizes sit outside the 78–84 step, which is consistent with the gain being small there.
+
+## 2026-10-25 — On-demand A selection for the qs card: cost model (before any code)
+
+**Why.** The type mix (entry above) showed that the qs card forms every candidate A up front: all C(P, s) combinations of a pool of P = 16 + 4s primes (P = 40 when s = 1), at (s − 1) full multiplies each. It then sorts them (uncharged) and uses them best-first. A run uses 5–21 A's (traced: 2–3 numbers per size at 72–96 bits, both genomes) out of 3,276 (s = 3) or 35,960 (s = 4) formed. The enumeration costs 6,552 ops at s = 3 and 107,880 at s = 4, all priced as full multiplies. Under ruint that is 38–61% of qs + lc 1.4's cost at 72–96 bits. The decision (user, Oct 25): fix this before the size-scaling test.
+
+**Option, not a replacement.** A new qs gene, `a_mode`, set by hand and never mutated:
+- `enumerate` (default; absent means enumerate) is today's card, op for op. Every earlier result stays valid under it.
+- `on_demand` is defined below.
+
+**Reference policy (user).** qs + lc 1.4 with a_mode = enumerate stays the frozen reference for comparability with every earlier result. It carries the setup overcharge: up to ~60% of its ruint cost at 78–96 bits (56% at 78, 61% at 84 and 90, 47% at 96; 38% at 72). Results under on_demand are reported beside it. Changing the reference is a separate decision after the numbers, and is decided by the pre-registered replacement rule (below), not by a post hoc reading.
+
+**on_demand rule** (for s ≥ 2; s, P, the pool and the target are unchanged). A selection rule, ported from the description the user gave (choose s − 1 primes near the target, solve for the last). It was not taken from any code.
+1. `by_q` is the pool sorted by |ln(p/q)|, ties to the smaller p, where q = target^(1/s): the closest primes to q come first.
+2. Prefixes are the (s − 1)-combinations of `by_q`, in itertools order. The first prefixes therefore use the primes closest to q.
+3. For each prefix: A′ = product of the prefix, t′ = target / A′, and `last` = the pool prime not in the prefix that minimizes |ln(p/t′)|, ties to the smaller p. Then A = A′·last.
+4. **Target check:** accept only if |log₂(A/target)| ≤ 0.25. This is a guard against a prefix that drives t′ outside the pool. It keeps A within ±19% of the target.
+5. **Dedupe:** the sorted tuple must not have been used already (different prefixes can complete to the same set).
+6. Accepted A's go to the unchanged per-A code (B_l, roots, Gray-code polynomials, sieve, confirm, large primes) in the order they are found. A new candidate is formed only when the previous A's polynomials are used up and the ledger still needs relations.
+7. **Exhaustion:** when the prefixes run out, the polynomials have run out, exactly as when enumerate's list runs out. The card returns None for this k and the next multiplier is tried, paying again for everything.
+8. **s = 1:** there is only one prefix (the empty one), so on_demand falls back to enumerate's single-prime list. That list costs 0 multiplies under either mode. s = 1 does not occur at 72–96 bits.
+
+**Charges for on_demand** (only these are new; every other charge is unchanged):
+
+| per candidate formed | ops | type |
+|---|---|---|
+| A′ = product of s − 1 primes | s − 2 multiplies | setup_full |
+| t′ = target / A′ | 1 (a division of a number of A's size) | setup_full |
+| choosing `last`: one comparison per pool prime not in the prefix | P − (s − 1) | setup_small |
+| A = A′ · last | 1 multiply | setup_full |
+| target check | 1 | setup_full |
+| dedupe lookup (only if the check passes) | 1 | setup_small |
+
+So each candidate costs s + 1 full ops (the brief's s − 1 multiplies plus the target check, plus the division, which a description that "solves for the last prime" needs). Each also costs P − s + 1 (+1) small ops. The division and the full-price check are deliberate overcharges.
+
+**Per-A setup stays charged per A used, in both modes** (outside review, item 1; confirmed in `qs.py` and `qs.rs`):
+- B_l: per q_l, 1 op for A/q_l, the Euclid steps of its inverse, 1 op for γ and 1 op for A/q_l·γ. Of these, 2s full ops per A are setup_full (`optypes.qs_counts`: + 2s·a_count) and the Euclid steps are setup_euclid.
+- Per sieved prime: the Euclid steps of A⁻¹ mod p (setup_euclid), 2 root multiplies and s multiplies for 2·B_l·A⁻¹ mod p (setup_small: small-number operands).
+- Per Gray-code switch: 1 op per root updated (setup_small).
+
+on_demand removes only the up-front enumeration of all C(P, s) candidates.
+
+**Type split** (`optypes.qs_counts`, lampcore `--types`):
+- setup_full = (s − 1)·combos [enumerate only] + (s + 1)·od_cands [on_demand only] + 2s·a_count.
+- The selection's small ops go to setup_small, which remains setup minus setup_full minus setup_euclid.
+- Trace fields: `od_cands` (candidates formed) and `a_seq` (the A's used, in order).
+- lampcore records the same counts as events (EV_SETUP_FULL).
+
+**Expected setup_full per run.** From the traces: about 1.3 candidates are formed per A used (offline simulation of the rule above on the traced runs; range 1.0–1.5). a_count is about 6–21 (mean ~10). So:
+- s = 3: ≈ 4·13 + 6·10 ≈ 110, against enumerate's 6,552 + 60 ≈ 6,600.
+- s = 4: ≈ 5·13 + 8·10 ≈ 145, against 107,880 + 80 ≈ 107,960.
+
+| bits | enumerate, observed mean (old / new genes) | on_demand, expected (old / new) |
+|---|---|---|
+| 72 | 8,506 / 6,596 | ~115 / ~110 |
+| 78 | 31,224 / 6,603 | ~120 / ~110 |
+| 84 | 62,714 / 6,974 | ~130 / ~110 |
+| 90 | 107,952 / 100,841 | ~145 / ~145 |
+| 96 | 107,969 / 107,944 | ~145 / ~145 |
+
+**A quality.**
+- *Distance from the target.* In the offline simulation of the rule on the traced runs, on_demand's first a_count A's are 0.004–0.03 log₂ from the target on average (max 0.05). Enumerate's are 0.0001–0.006. The exception is the top-of-base case (the new genes at 90 bits with s = 3, where q is above the pool), with 0.08–0.15 against enumerate's 0.05–0.09. Candidates passing the 0.25 check number 158–4,556 per run, against at most 31 needed, so exhaustion is not a practical risk.
+- *Effect on yield.* For A = ρ·target, the polynomial values on [−M, M] scale as M·sqrt(kN/2)·|2ρt² − 1/ρ|, t ∈ [−1, 1]. The mean log₂ size changes by at most 0.009 bits at |log₂ ρ| ≤ 0.03, 0.037 bits at 0.1 and 0.066 at 0.15 (numerical integration). With about 20% fewer smooth values per extra bit near u ≈ 4.5, the expected yield loss is under 0.2% typically, and about 1% in the top-of-base case.
+- *Order.* on_demand's A's come in prefix order, not sorted by closeness. A different A sequence means different relations, so every downstream count differs per number; only its distribution should match enumerate's.
+
+**Identity and parity tests** (before any measurement):
+1. *enumerate is unchanged:* lampcore reproduces every map's qs + lc 1.4 per-type counts exactly (as `typemix.py` asserts), and the existing parity suite passes.
+2. *Downstream depends only on the A sequence:* a test-only gene `a_given` (a list of A's as prime tuples, Python only, never mutated, like `check`) feeds the card a fixed A sequence with no selection charge. On sample numbers at 72–96 bits, both genomes:
+   - for enumerate, every phase's ops equal those of `a_given` = enumerate's own used A's, except setup, which differs by exactly (s − 1)·C(P, s);
+   - for on_demand, every phase equals `a_given` = on_demand's own a_seq, except setup, which differs by exactly the selection charges: (s + 1)·od_cands full, plus the logged small ops.
+
+   This shows the sieve, confirm, LA, sqrt and large-prime phases are unchanged given the same A sequence.
+3. *Python = Rust count for count:* on_demand runs on sample numbers from every map (2 per band per size, both genomes), with Python's `qs_counts` equal to lampcore `--types` on every type, and the same factor. The parity suite also gets on_demand qs pairs.
