@@ -44,6 +44,15 @@ Staged plan from the Oct 23 review.
   - Each stage's write-up counts the predictions scored (held / missed), so chance holds and
     misses stay visible.
   - The median is reported beside the mean (fitness stays the mean).
+  - **Method comparisons (from Run 8's wrap-up, Oct 24):** per-seed paired comparisons on
+    the SEALED numbers (each seed: method X's best against method Y's best from the same
+    seed), summarized by a sign test over seeds plus the paired bootstrap. Never best-of-N
+    by tuning fitness: it compares different tuning sets and selects the easiest one (Run 8,
+    seed 77).
+- **Pre-launch consistency check (from Run 8's wrap-up, Oct 24):** after any design change,
+  grep PLAN and NOTES for numbers and wording that depend on it (seed counts, budgets, set
+  sizes, "best-of-N", time estimates) and update them before launch. Run 8's clause (a)
+  still said best-of-4 after the move to 8 seeds.
 - One Claude session owns the repo at a time; others read only. Unfinished work is parked
   in scratch while long tests run (after the Oct 23 stray-revert incident).
 

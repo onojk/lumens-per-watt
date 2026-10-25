@@ -1098,3 +1098,18 @@ Predictions scored in this entry: 6. (a) holds or fails depending on the reading
 2. **The qs-gene winners on the balanced population** (sanity arm's sealed set) under all three pricings. This checks whether the new qs genes should replace qs + lc 1.4 as the reference. Minutes.
 3. **A paired comparison of the mixed winners against the mixed-qs winners** on sealed numbers. This measures what budget and order freedom adds beyond A (point estimates: 0.455 against 0.472, about 3.5%). Minutes, with a power estimate first.
 4. **The illumination picture** (primes and gaps brief), already queued.
+
+## 2026-10-24 — Run 8 wrap-up: clause (a) verdict, lessons, recorded misses
+
+- **Clause (a): INCONCLUSIVE.** The two readings scored in the results entry disagree, and neither is valid:
+  - (i) PLAN's wording said "best-of-4". It was stale after the move to 8 seeds, so the best-of-4 reading scores a sentence the design no longer meant.
+  - (ii) Best-of-N by tuning fitness compares different tuning sets and selects the easiest one. Seed 77 gives the best-of-8 for all four mixed-qs methods and two of five mixed ones, with gaps of +0.25 to +0.35 log2. The best-of-8 reading measures the set as much as the method.
+  - The results entry's scoring stands as written; this verdict is added beside it.
+- **Lesson (now a PLAN reporting rule):** method comparisons use per-seed paired comparisons on SEALED numbers (each seed: method X's best against method Y's best, same seed), summarized by a sign test over seeds plus the paired bootstrap.
+- **Lesson (now a PLAN working rule):** a pre-launch consistency check. After any design change, grep PLAN and NOTES for numbers that depend on it and update them before launch.
+- **Missed reporting rules, recorded as misses** (not fixed retroactively):
+  - (1) No power estimate was written before the clause (b) comparison.
+  - (2) No separate per-method intervals were reported beside the paired ones.
+- **MOVES rows added:**
+  - "Island evolution vs TPE for gene tuning": RULED OUT as superior.
+  - "qs genes retuned for the mixed population": PAYS ~1.40x over A, under the stated conditions.
