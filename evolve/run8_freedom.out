@@ -1,0 +1,49 @@
+budget/order freedom: d = log2(fit mixed X / fit mixed-qs Y), same seed, sealed 560 numbers; < 0 = freedom pays
+
+mixed evolution vs mixed-qs evolution: mixed better on 1/8 seeds (sign p = 0.0703); interval below 0 on 1, above 0 on 6
+  mean d over 7 seeds +0.203 (median +0.100); (i) [+0.141, +0.270]; (ii) [+0.052, +0.444]
+    seed 71: d +0.083 [+0.020, +0.186]  sealed 0.501 / 0.472
+    seed 72: d +0.146 [+0.066, +0.223]  sealed 0.508 / 0.459
+    seed 73: d +0.823 [+0.678, +0.965]  sealed 0.837 / 0.473
+    seed 74: d -inf (sealed miss: {'mixed': False, 'mixed-qs': True})
+    seed 75: d +0.166 [+0.086, +0.245]  sealed 0.519 / 0.463
+    seed 76: d +0.088 [+0.027, +0.174]  sealed 0.497 / 0.467
+    seed 77: d +0.013 [-0.031, +0.054]  sealed 0.484 / 0.480
+    seed 78: d +0.100 [+0.020, +0.177]  sealed 0.495 / 0.462
+
+mixed tpe vs mixed-qs tpe: mixed better on 1/8 seeds (sign p = 0.0703); interval below 0 on 0, above 0 on 5
+  mean d over 8 seeds +0.268 (median +0.110); (i) [+0.212, +0.322]; (ii) [+0.047, +0.539]
+    seed 71: d -0.038 [-0.078, +0.003]  sealed 0.455 / 0.467
+    seed 72: d +0.850 [+0.709, +0.979]  sealed 0.841 / 0.467
+    seed 73: d +0.058 [-0.004, +0.142]  sealed 0.497 / 0.478
+    seed 74: d +0.038 [+0.002, +0.078]  sealed 0.499 / 0.486
+    seed 75: d +0.876 [+0.723, +1.028]  sealed 0.843 / 0.459
+    seed 76: d +0.180 [+0.078, +0.286]  sealed 0.519 / 0.458
+    seed 77: d +0.163 [+0.076, +0.253]  sealed 0.528 / 0.472
+    seed 78: d +0.017 [-0.047, +0.077]  sealed 0.499 / 0.493
+
+mixed random vs mixed-qs random: mixed better on 0/8 seeds (sign p = 0.0078); interval below 0 on 0, above 0 on 8
+  mean d over 8 seeds +0.434 (median +0.385); (i) [+0.373, +0.501]; (ii) [+0.229, +0.746]
+    seed 71: d +0.151 [+0.114, +0.203]  sealed 0.532 / 0.479
+    seed 72: d +0.171 [+0.088, +0.253]  sealed 0.561 / 0.498
+    seed 73: d +1.341 [+1.056, +1.713]  sealed 1.268 / 0.501
+    seed 74: d +0.399 [+0.357, +0.441]  sealed 0.605 / 0.459
+    seed 75: d +0.188 [+0.092, +0.289]  sealed 0.563 / 0.494
+    seed 76: d +0.401 [+0.327, +0.477]  sealed 0.674 / 0.511
+    seed 77: d +0.446 [+0.376, +0.517]  sealed 0.643 / 0.472
+    seed 78: d +0.370 [+0.284, +0.458]  sealed 0.652 / 0.505
+
+mixed tpe-tuned vs mixed-qs tpe-warm: mixed better on 1/8 seeds (sign p = 0.0703); interval below 0 on 0, above 0 on 6
+  mean d over 8 seeds +0.186 (median +0.122); (i) [+0.135, +0.240]; (ii) [+0.052, +0.393]
+    seed 71: d +0.084 [+0.021, +0.176]  sealed 0.495 / 0.467
+    seed 72: d +0.170 [+0.087, +0.249]  sealed 0.518 / 0.460
+    seed 73: d +0.795 [+0.649, +0.944]  sealed 0.816 / 0.470
+    seed 74: d +0.067 [-0.026, +0.162]  sealed 0.482 / 0.460
+    seed 75: d +0.159 [+0.118, +0.203]  sealed 0.518 / 0.464
+    seed 76: d -0.025 [-0.074, +0.052]  sealed 0.459 / 0.468
+    seed 77: d +0.063 [+0.017, +0.106]  sealed 0.504 / 0.482
+    seed 78: d +0.171 [+0.092, +0.221]  sealed 0.518 / 0.460
+
+real	2m47.597s
+user	2m33.930s
+sys	0m0.381s

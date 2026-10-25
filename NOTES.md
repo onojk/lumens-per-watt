@@ -1419,3 +1419,25 @@ Fresh balanced numbers, 240 per size (54–84 bits, seeds 8700000 + bits), each 
 - (F2) TPE: mean d above 0, driven by mixed seeds 72 and 75 (d > +0.5 on both); (ii) includes 0.
 - (F3) random: mixed worse. Mean d in [+0.10, +0.25], (ii) above 0 (four more dimensions for a method with no model).
 - (F4) Overall: the freedom does not pay at 84 bits with 1,360 evaluations: no pair has (ii) below 0.
+
+### Budget/order freedom beyond A: results (`evolve/run8_freedom.py`, `run8_freedom.out`/`.json`; 168 s)
+
+d = log2(fit mixed X / fit mixed-qs Y), same seed, sealed (560 numbers); below 0 means the freedom pays.
+
+| pair | mixed better (sign p) | intervals below / above 0 | mean d (median) | (i) numbers resampled | (ii) seeds + numbers |
+|---|---|---|---|---|---|
+| evolution vs evolution | 1/8 (0.070) | 1 / 6 | +0.203 (+0.100), 7 seeds | [+0.141, +0.270] | [+0.052, +0.444] |
+| TPE vs TPE | 1/8 (0.070) | 0 / 5 | +0.268 (+0.110) | [+0.212, +0.322] | [+0.047, +0.539] |
+| random vs random | 0/8 (0.008) | 0 / 8 | +0.434 (+0.385) | [+0.373, +0.501] | [+0.229, +0.746] |
+| tpe-tuned vs tpe-warm | 1/8 (0.070) | 0 / 6 | +0.186 (+0.122) | [+0.135, +0.240] | [+0.052, +0.393] |
+
+- **The freedom costs, for every method.** Every pair's interval over seeds and numbers lies above 0: searching budgets and order as well as the qs genes gave worse sealed genomes than holding budgets and order at A and tuning only the qs genes.
+- **The typical loss is about 7–8% (median d +0.10 to +0.12),** plus large losses where a mixed run followed a misleading tuning set: seed 73 (evolution +0.82, tpe-tuned +0.80, random +1.34) and TPE's two stalls (seeds 72 and 75, +0.85 and +0.88).
+- **The mixed-qs arm's sealed fitness is tight:** 0.458–0.511 over all 32 runs (one miss: evolution seed 74, which is the only "mixed better" entry in the evolution row).
+- **Confound, stated:** A's budgets were chosen on the partition map (560 tuning numbers, 80 per band). Each Run 8 run tuned on its own 12-per-band set (84 numbers). Holding budgets at A therefore imports a budget choice made on about 7x more data. The result says "with Run 8's tuning sets and 1,360 evaluations, searching budgets loses to A's map-chosen budgets", not that A's budgets are optimal on every set.
+
+**Predictions scored as written:** 4 scored, 1 held, 3 missed.
+- (F1) evolution tie, mean d in [−0.05, +0.05], (ii) includes 0: **missed** (+0.203, (ii) above 0).
+- (F2) TPE: mean above 0, d > +0.5 on seeds 72 and 75, (ii) includes 0: **missed.** The first two clauses held (+0.268; +0.850 and +0.876); the third failed ((ii) [+0.047, +0.539]).
+- (F3) random: mean d in [+0.10, +0.25], (ii) above 0: **missed.** (ii) is above 0, but the mean (+0.434) is outside the range.
+- (F4) no pair has (ii) below 0: **held** (every pair's (ii) is above 0).
