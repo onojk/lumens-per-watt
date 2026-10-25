@@ -667,7 +667,11 @@ is not known in advance?
 ## Search structure after Run 8 (planning only)
 
 **Search policy after Run 8 (Oct 24, user, Run 8 wrap-up addendum):**
-- **TPE (Optuna) is the default search for fixed-shape gene tuning.**
+- **Default search for fixed-shape gene tuning: tpe-tuned** (Optuna TPE, n_startup_trials =
+  10% of the budget, multivariate=True). Revised Oct 24 by the user's rule, applied to the post hoc
+  per-seed check (NOTES): it has no stalled seeds and ties island evolution per seed (mean
+  log2 -0.011, seeds-and-numbers [-0.063, +0.033]). Default TPE (Optuna defaults) also ties
+  evolution over seeds but stalled on 2/8 mixed seeds. That risk is why it is not the default.
 - **Island evolution is kept only pending one structural test**, a variable-length genome:
   - up to 5 stages, each empty or one card, with its genes;
   - evolution (insert / delete / swap) vs TPE (one categorical per slot, plus conditional

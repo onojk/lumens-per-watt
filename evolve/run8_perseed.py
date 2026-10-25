@@ -8,6 +8,8 @@ Per-seed interval: numbers resampled within bands. Aggregate: mean of d_s over s
 loss in the sign test and are left out of the means.
 
   .venv/bin/python run8_perseed.py ARM  -> run8_ARM_perseed.json, stdout
+  .venv/bin/python run8_perseed.py ARM X:Y [X:Y ...]  -> other pairs (d = log2(fit X / fit Y)),
+      run8_ARM_perseed_posthoc.json
 """
 import sys
 ARGS, sys.argv[1:] = sys.argv[1:], []
@@ -54,19 +56,20 @@ by = {}
 for r in data["results"]:
     by.setdefault(r["method"], {})[r["seed"]] = r
 seeds = sorted(by["tpe"])
-C = {(m, s): costs(by[m][s]["point"]) for m in ("tpe", "evolution", "random") for s in seeds}
+PAIRS = [tuple(a.split(":")) for a in ARGS[1:]] or [("tpe", "evolution"), ("tpe", "random")]
+C = {(m, s): costs(by[m][s]["point"]) for m in {x for p in PAIRS for x in p} for s in seeds}
 rng = random.Random(2026)
 idxs = [np.concatenate([g[[rng.randrange(len(g)) for _ in range(len(g))]] for g in groups]) for _ in range(B)]
 allx = np.arange(len(sealed))
 out = {"arm": arm, "pairs": {}}
-print(f"{arm}: per-seed paired comparison, sealed {len(sealed)} numbers; d = log2(fit TPE / fit other), < 0 = TPE better")
-for other in ("evolution", "random"):
+print(f"{arm}: per-seed paired comparison, sealed {len(sealed)} numbers; d = log2(fit X / fit Y), < 0 = X better")
+for X, other in PAIRS:
     rows, boot = [], {}
     for s in seeds:
-        (mt, ct), (mo, co) = C[("tpe", s)], C[(other, s)]
+        (mt, ct), (mo, co) = C[(X, s)], C[(other, s)]
         if mt or mo:
             d = math.inf if mt and not mo else (-math.inf if mo and not mt else float("nan"))
-            rows.append({"seed": s, "d": d, "ci": None, "miss": {"tpe": mt, other: mo}})
+            rows.append({"seed": s, "d": d, "ci": None, "miss": {X: mt, other: mo}})
             continue
         vals = [math.log2(fit(ct, i) / fit(co, i)) for i in idxs]
         boot[s] = vals
@@ -81,13 +84,13 @@ for other in ("evolution", "random"):
     agg_i = q([statistics.mean(boot[s][b] for s in fin) for b in range(B)])
     r2 = random.Random(2027)
     agg_ii = q([statistics.mean(boot[s][b] for s in (r2.choice(fin) for _ in fin)) for b in range(B)])
-    out["pairs"][f"tpe_vs_{other}"] = {"rows": rows, "tpe_better_seeds": k, "of": n, "sign_p": sign_p(k, n),
+    out["pairs"][f"{X}_vs_{other}"] = {"rows": rows, "tpe_better_seeds": k, "of": n, "sign_p": sign_p(k, n),
                                        "clearly_better": clear, "clearly_worse": clear_lose, "seeds_in_means": fin,
                                        "mean_d": mean_d, "median_d": med_d, "ci_numbers": agg_i, "ci_seeds_and_numbers": agg_ii}
-    print(f"\nTPE vs {other}: TPE better on {k}/{n} seeds (sign test p = {sign_p(k, n):.4f}); interval below 0 on {clear}, above 0 on {clear_lose}")
+    print(f"\n{X} vs {other}: {X} better on {k}/{n} seeds (sign test p = {sign_p(k, n):.4f}); interval below 0 on {clear}, above 0 on {clear_lose}")
     print(f"  mean d over {len(fin)} seeds {mean_d:+.3f} (median {med_d:+.3f}); (i) numbers resampled [{agg_i[0]:+.3f}, {agg_i[1]:+.3f}]; "
           f"(ii) seeds and numbers [{agg_ii[0]:+.3f}, {agg_ii[1]:+.3f}]")
     for r in rows:
         ci = f"[{r['ci'][0]:+.3f}, {r['ci'][1]:+.3f}]" if r["ci"] else f"(sealed miss: {r['miss']})"
         print(f"    seed {r['seed']}: d {r['d']:+.3f} {ci}")
-json.dump(out, open(f"run8_{arm}_perseed.json", "w"), indent=1)
+json.dump(out, open(f"run8_{arm}_perseed" + ("_posthoc" if ARGS[1:] else "") + ".json", "w"), indent=1)

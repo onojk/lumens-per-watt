@@ -1309,3 +1309,38 @@ Fresh balanced numbers, 240 per size (54–84 bits, seeds 8700000 + bits), each 
 - (2d) **Held.** The rule fails at 54–72 bits on official.
 
 **For the generalization test (b)** (the user's prediction: the wider mc loses on balanced 84-bit numbers; budgets held at A; not yet run): with qs alone on fresh balanced 84-bit numbers, the new genes win under all three pricings (0.953 / 0.408 / 0.627). Test (b) adds A's pre-stages, which cost both genomes the same ops on balanced numbers, so the qs-alone result points against the prediction. It is scored only when (b) runs.
+
+## 2026-10-24 — Decisions after (1)/(2) (user), and a post hoc check of tpe-tuned
+
+- **Reference: KEEP qs + lc 1.4** (the pre-registered replacement rule failed).
+  - The new qs genes (the region's representative: kc 4, bc 0.90, mc 0.73, tc 1.10, lc 1.66) are the calibrated-pricing leader on balanced 54–84 bits, replacing N51-0917's qs in that role.
+  - They are best under all three pricings only at 84 bits.
+- **MISLEADING rule:** the operational reading in PLAN (OVERFIT = gap above A's gap) is confirmed.
+- **Search default: revisited.** The per-seed comparison makes default TPE vs evolution a TIE over seeds, with TPE's stalls as a risk.
+
+### Post hoc check (labelled post hoc: chosen after seeing the per-seed result; existing genomes, mixed arm, sealed)
+
+**Design.**
+- tpe-tuned vs evolution, and tpe-tuned vs default TPE, with the same per-seed paired comparison as before (`run8_perseed.py`, pairs given on the command line).
+- **Stalled seed:** a seed whose run never reaches T2 (A's point estimate on its own tuning set). From the run: TPE stalled on seeds 72 and 75; tpe-tuned reached T2 on 8/8 (seed 72 late, at 875); evolution reached it on 8/8.
+- **Wall time per run** (mixed arm, median [2nd–7th of 8]): evolution 705 s [673–741], TPE 661 s [626–744], tpe-tuned 773 s [725–800], random 2,238 s.
+- **PLAN rule, decided by the user before computing:**
+  - if tpe-tuned has no stalled seeds and ties or beats evolution per seed, the default is tpe-tuned;
+  - otherwise there is no default winner; the tie is recorded and the method is picked by cost.
+- **Power:** as in the per-seed entry. The sign test detects only 8/8 or 0/8. The per-seed paired half-width is about 0.02–0.1 log2.
+
+**Expectation (post hoc, not a pre-registered prediction):**
+- tpe-tuned vs evolution: tie over seeds and numbers.
+- tpe-tuned vs TPE: tpe-tuned better on seeds 72 and 75 by more than 0.5 log2; mixed signs elsewhere.
+
+**Results (post hoc; `evolve/run8_mixed_perseed_posthoc.out`/`.json`).** d = log2(fit X / fit Y), same seed, sealed; below 0 means X is better.
+
+| pair | X better (sign p) | intervals below / above 0 | mean d (median) | (i) numbers resampled | (ii) seeds + numbers |
+|---|---|---|---|---|---|
+| tpe-tuned vs evolution | 5/8 (0.727) | 3 / 3 | −0.011 (−0.010) | [−0.031, +0.006] | [−0.063, +0.033] |
+| tpe-tuned vs TPE | 5/8 (0.727) | 3 / 3 | −0.101 (−0.060) | [−0.120, −0.078] | [−0.402, +0.197] |
+
+- **tpe-tuned vs evolution:** a tie under both bootstraps. No per-seed difference exceeds 0.12 log2. Its largest loss is seed 78 (+0.066); its largest win is seed 76 (−0.112).
+- **tpe-tuned vs TPE:** tpe-tuned removes TPE's two stalls (seeds 72 and 75: −0.70 each). It loses heavily on seed 73 (+0.714), where its run followed seed 73's misleading tuning set to an ECM budget of 711k and failed the sealed gate.
+- **Expectation (post hoc) vs result:** tie with evolution, as expected; better than TPE on 72 and 75 by more than 0.5 log2, as expected.
+- **Rule applied:** tpe-tuned has no stalled seeds (T2 on 8/8) and ties evolution per seed, so **the default for fixed-shape gene tuning is tpe-tuned** (n_startup_trials = 10% of the budget, multivariate). It costs about 10% more wall time per run than evolution (773 s vs 705 s median), well below random search (2,238 s).
