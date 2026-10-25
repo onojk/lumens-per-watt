@@ -1364,7 +1364,7 @@ Fresh balanced numbers, 240 per size (54–84 bits, seeds 8700000 + bits), each 
 - **The new genes generalize in the same pattern as (2)'s qs-alone test.** They are better under the calibrated pricings at every size. Under official they are worse at 72 bits (+8%), tied at 96 and better at 84 balanced (−3.5%). The robust ratio is below 1 everywhere because ruint binds for the old genes.
 - **A's budgets do not transfer to 72 bits; this is independent of the qs genes.**
   - Both genomes are worse than qs + lc 1.4 alone under ruint (robust 1.10 and 1.15), and both fail the ACCEPT gate (band 36: 2.16x and 2.28x under ruint; band 32: 1.91x and 2.03x).
-  - At 72 bits qs costs about 2.5–3x fewer official ops than at 84 bits (about 190–230k vs about 560k on balanced numbers), more under ruint, so A's fixed absolute budgets (rho 5793, ECM 32768 ops) overspend on every number they don't finish.
+  - At 72 bits qs costs about 2.5–3x fewer official ops than at 84 bits (about 190–230k vs about 560k on balanced numbers), so A's fixed absolute budgets (rho 5793, ECM 32768 ops) overspend on every number they don't finish.
   - At 96 bits the same budgets are relatively small: they pass, with band ratios near 1.
   - Op budgets fixed in absolute ops are size-specific. A size-relative budget (a share of the expected qs cost at that size) is a candidate structural move; it is not added to MOVES until it has a cost model.
 - **At 96 bits, A's pre-stages pay only below the balanced bands.** The 42 and 48 bands are 1.02–1.08 under official and ruint with either genes.
