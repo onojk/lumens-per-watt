@@ -1,0 +1,30 @@
+1. robust grid optimum (rho, ECM; td, pm1 off), fitness against the same card's qs alone
+  72 enumerate: rho    3158, ecm       0  fitness 0.8172; BI ruint rho 3158, ecm 0; BI conservative rho 1448, ecm 0 (0.8424); A's budgets 1.1261; optimum / A 0.7257; binding: optimum ruint, A ruint; BI under the binding pricing = robust optimum: True
+  72 corrected: rho    1579, ecm       0  fitness 0.8693; BI ruint rho 1579, ecm 0; BI conservative rho 1448, ecm 0 (0.8703); A's budgets 1.5686; optimum / A 0.5542; binding: optimum ruint, A ruint; BI under the binding pricing = robust optimum: True
+     steps corrected vs enumerate: {'rho': 8, 'ecm': 0}; qs corrected / enumerate: 0.961 / 0.668 / 0.912
+  78 enumerate: rho    5793, ecm       0  fitness 0.7445; BI ruint rho 5793, ecm 0; BI conservative rho 1579, ecm 23170 (0.7576); A's budgets 0.8249; optimum / A 0.9025; binding: optimum ruint, A ruint; BI under the binding pricing = robust optimum: True
+  78 corrected: rho    5312, ecm       0  fitness 0.8654; BI ruint rho 5312, ecm 0; BI conservative rho 1579, ecm 0 (0.8843); A's budgets 1.3327; optimum / A 0.6494; binding: optimum ruint, A ruint; BI under the binding pricing = robust optimum: True
+     steps corrected vs enumerate: {'rho': 1, 'ecm': 0}; qs corrected / enumerate: 0.917 / 0.469 / 0.783
+  84 enumerate: rho    5793, ecm   32768  fitness 0.6408; BI ruint rho 5793, ecm 32768; BI conservative rho 3158, ecm 32768 (0.6411); A's budgets 0.6408; optimum / A 1.0000; binding: optimum ruint, A ruint; BI under the binding pricing = robust optimum: True
+  84 corrected: rho    5793, ecm       0  fitness 0.7933; BI ruint rho 5793, ecm 0; BI conservative rho 3158, ecm 0 (0.8013); A's budgets 0.9887; optimum / A 0.8023; binding: optimum ruint, A ruint; BI under the binding pricing = robust optimum: True
+     steps corrected vs enumerate: {'rho': 0, 'ecm': None}; qs corrected / enumerate: 0.901 / 0.415 / 0.733
+  90 enumerate: rho    9742, ecm   46341  fitness 0.6331; BI ruint rho 9742, ecm 46341; BI conservative rho 5793, ecm 46341 (0.6371); A's budgets 0.7891; optimum / A 0.8023; binding: optimum ruint, A ruint; BI under the binding pricing = robust optimum: True
+  90 corrected: rho   10624, ecm       0  fitness 0.7805; BI ruint rho 10624, ecm 0; BI conservative rho 5793, ecm 0 (0.7856); A's budgets 1.0214; optimum / A 0.7641; binding: optimum ruint, A ruint; BI under the binding pricing = robust optimum: True
+     steps corrected vs enumerate: {'rho': 1, 'ecm': None}; qs corrected / enumerate: 0.904 / 0.402 / 0.716
+  96 enumerate: rho   12634, ecm   60097  fitness 0.6269; BI ruint rho 12634, ecm 60097; BI conservative rho 4871, ecm 60097 (0.6354); A's budgets 0.7404; optimum / A 0.8467; binding: optimum ruint, A ruint; BI under the binding pricing = robust optimum: True
+  96 corrected: rho   12634, ecm       0  fitness 0.7288; BI ruint rho 12634, ecm 0; BI conservative rho 4871, ecm 0 (0.7673); A's budgets 0.8463; optimum / A 0.8612; binding: optimum ruint, A ruint; BI under the binding pricing = robust optimum: True
+     steps corrected vs enumerate: {'rho': 0, 'ecm': None}; qs corrected / enumerate: 0.945 / 0.544 / 0.821
+
+2. allocations at 84 bits (four-stage optimizer td, rho, pm1, ECM; mixed tuning numbers)
+  enumerate: A {'td': 0, 'rho': 5793, 'pm1': 0, 'ecm': 32768} fitness 0.6408 (binds ruint);  B {'td': 0, 'rho': 5793, 'pm1': 0, 'ecm': 0} fitness 0.7916 (binds ruint)
+             cross (single reference qs + lc 1.4 alone, same card): A 0.6408 (0.450 / 0.641 / 0.527), B 0.8964 (0.896 / 0.333 / 0.482); B / A 1.399
+  corrected: A {'td': 0, 'rho': 5793, 'pm1': 0, 'ecm': 0} fitness 0.7933 (binds ruint);  B {'td': 0, 'rho': 5793, 'pm1': 0, 'ecm': 0} fitness 0.8064 (binds ruint)
+             cross (single reference qs + lc 1.4 alone, same card): A 0.7933 (0.691 / 0.793 / 0.717), B 0.9846 (0.985 / 0.713 / 0.643); B / A 1.241
+
+3. transfer (neighbouring maps, Q-curve rescaled), scored on the 78 / 90 maps
+  78 enumerate: TRANSFER rho 5793, ecm 0 (steps from local {'rho': 0, 'ecm': 0}); TRANSFER (5793, 0) 0.7445 (/A 0.903, binds ruin); A (5793, 32768) 0.8249 (/A 1.000, binds ruin); theory (2896, 16384) 0.9391 (/A 1.139, binds ruin); local optimum (5793, 0) 0.7445 (/A 0.903, binds ruin)
+  78 corrected: TRANSFER rho 3158, ecm 0 (steps from local {'rho': 6, 'ecm': 0}); TRANSFER (3158, 0) 0.8692 (/A 0.652, binds ruin); A (5793, 32768) 1.3327 (/A 1.000, binds ruin); theory (2896, 16384) 1.2516 (/A 0.939, binds ruin); local optimum (5312, 0) 0.8654 (/A 0.649, binds ruin)
+  90 enumerate: TRANSFER rho 9742, ecm 65536 (steps from local {'rho': 0, 'ecm': 4}); TRANSFER (9742, 65536) 0.6652 (/A 0.843, binds ruin); A (5793, 32768) 0.7891 (/A 1.000, binds ruin); theory (11585, 65536) 0.6667 (/A 0.845, binds ruin); local optimum (9742, 46341) 0.6331 (/A 0.802, binds ruin)
+  90 corrected: TRANSFER rho 12634, ecm 0 (steps from local {'rho': 2, 'ecm': 0}); TRANSFER (12634, 0) 0.7851 (/A 0.769, binds ruin); A (5793, 32768) 1.0214 (/A 1.000, binds ruin); theory (11585, 65536) 1.0457 (/A 1.024, binds ruin); local optimum (10624, 0) 0.7805 (/A 0.764, binds ruin)
+
+sealed rerun needed (an optimum moved > 1 grid step): True {72: {'rho': 8, 'ecm': 0}, 84: {'rho': 0, 'ecm': None}, 90: {'rho': 1, 'ecm': None}, 96: {'rho': 0, 'ecm': None}}
