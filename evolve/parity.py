@@ -14,7 +14,7 @@ random genomes drawn from the wide qs ranges for runs after Run 6
 interval can start past its end and must not step (asserted for mc <= 0.25: lampcore's sieve
 count wrapped there until it was guarded). On-demand A selection (a_mode = on_demand): the
 reference, new, N51-0917 and default genes at 48-90 bits, a low cap, the retry numbers and
-random wide genomes. Large primes (Stage 7, lc gene): lc = 1.0 identity
+random wide genomes. sort_charge = 1: both a_modes, a retry, a low cap, random wide genomes. Large primes (Stage 7, lc gene): lc = 1.0 identity
 pairs, lc 1.2-2.0 variants at 40-84 bits, numbers that make an lc > 1 run retry (asserted),
 td then qs with lc, and random genomes with a
 random lc in every qs stage; the per-phase check includes lp. Caps chosen per number so the
@@ -139,6 +139,20 @@ def qs_pairs():
         g = [dict(st, a_mode="on_demand") if st["t"] == "qs" else st for st in g]
         for b in (46, 60, 72, 84):
             yield f"random wide qs on_demand {i}", g, semiprimes_pq(b, 2, 2200000 + b), min(cap_for(b), 2 ** 24), False
+    # sort_charge = 1 (NOTES.md, "The sort_charge option"): both a_modes, reference and new genes,
+    # a retry (the multiplier sort once, the pool sorts per attempt), a low cap, random wide genomes
+    for b in (48, 60, 72, 84):
+        nums = semiprimes_pq(b, 4, 2300000 + b)
+        for mode in ("enumerate", "on_demand"):
+            yield f"qs sort_charge {mode}", [dict(TUNED, lc=1.4, a_mode=mode, sort_charge=1)], nums, 2 ** 29, False
+            yield f"qs sort_charge {mode} new genes", [dict(new_genes, a_mode=mode, sort_charge=1)], nums, 2 ** 29, False
+        yield "qs sort_charge low cap", [dict(TUNED, lc=1.4, a_mode="on_demand", sort_charge=1)], nums, 2 ** 13, False
+    for seed, b, i in RETRY[:4]:
+        yield "qs sort_charge retry", [dict(QS, a_mode="on_demand", sort_charge=1)], semiprimes_pq(b, i + 1, seed)[i:], 2 ** 29, False
+    for i, g in enumerate(random_qs_genomes(10, wide=True)):
+        g = [dict(st, a_mode="on_demand", sort_charge=1) if st["t"] == "qs" else st for st in g]
+        for b in (46, 60, 72):
+            yield f"random wide qs sort_charge {i}", g, semiprimes_pq(b, 2, 2400000 + b), min(cap_for(b), 2 ** 24), False
     yield from lp_pairs()
     yield from check_pairs()
     yield from cfrac_pairs()

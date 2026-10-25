@@ -32,7 +32,8 @@ Not a gene: "check": 1 turns the ledger's charged relation check on (phase "chec
 acceptance test only; mutation never sets it, and absent it is off.
 Not a gene: "a_mode": "enumerate" (default: every candidate A formed and charged up front, as
 always) or "on_demand" (A's formed one at a time, charged as formed; NOTES.md, "On-demand A
-selection"). Set by hand, never mutated. "a_given": a list of A's (prime tuples) used in order
+selection"). Set by hand, never mutated. "sort_charge": 1 charges every sort in the card (NOTES.md,
+"The sort_charge option"); 0 or absent: today's counts. "a_given": a list of A's (prime tuples) used in order
 with no selection charge, for the identity test only.
 
 Split (PLAN.md, "Relation economy") into a SOURCE, here: multiplier, polynomials, sieve,
@@ -70,6 +71,9 @@ def lamp_qs(N, g, m):
     # the polynomials run out) is retried with the next k, paying again for everything:
     # a fresh ledger (2. factor base) for each k.
     ranked = sorted(range(1, kc + 1), key=lambda kk: (-ks_score(kk, N), kk))
+    SC = bool(g.get("sort_charge", 0))
+    if SC:                                     # sort_charge: the multiplier ranking (keys already charged)
+        ch.charge("mult", sort_cost(kc))
     lnN = math.log(N)
     B = max(30, int(g.get("bc", 1.5) * math.exp(0.5 * math.sqrt(lnN * math.log(lnN)))))
     for k in ranked:
@@ -89,7 +93,11 @@ def lamp_qs(N, g, m):
                 return d
     return None
 
-def a_on_demand(pool, s, q, target, charge, at):
+def sort_cost(n):
+    """sort_charge (NOTES.md, "The sort_charge option"): n ceil(log2 n) comparisons for n >= 2."""
+    return n * (n - 1).bit_length() if n >= 2 else 0
+
+def a_on_demand(pool, s, q, target, charge, at, sc=False):
     """a_mode = on_demand (NOTES.md, "On-demand A selection", second amendment): A's formed one at
     a time, each charged when formed. Prefixes are the (s - 1)-combinations of the pool ordered
     by closeness to q. A prefix lying within a used A is skipped ((s - 1) small ops per used A).
@@ -105,9 +113,9 @@ def a_on_demand(pool, s, q, target, charge, at):
     for limit in (s - 2, s - 1):
         if limit == s - 1 and at is not None:
             at["od_pass2"] = 1
-        yield from _a_pass(by_q, pool, s, target, charge, at, used, limit)
+        yield from _a_pass(by_q, pool, s, target, charge, at, used, limit, sc)
 
-def _a_pass(by_q, pool, s, target, charge, at, used, limit):
+def _a_pass(by_q, pool, s, target, charge, at, used, limit, sc):
     for pre in combinations(by_q, s - 1):
         if limit == s - 2:
             charge("setup", (s - 1) * len(used))
@@ -132,6 +140,10 @@ def _a_pass(by_q, pool, s, target, charge, at, used, limit):
             if abs(math.log2(A / target)) > 0.25:
                 break
             key = tuple(sorted(pre + (last,)))
+            if sc:                             # sort_charge: the key's s primes
+                charge("setup", sort_cost(s))
+            if at is not None:
+                at["od_keys"] = at.get("od_keys", 0) + 1
             charge("setup", s * len(used))
             if at is not None:
                 at["od_small"] += s * len(used)
@@ -164,6 +176,11 @@ def sieve_source(N, k, g, led, ch, at):
     q = target ** (1 / s)
     P = min(len(pool_all), 40 if s == 1 else 16 + 4 * s)
     pool = sorted(sorted(pool_all, key=lambda p: (abs(math.log(p / q)), p))[:P])
+    sc = bool(g.get("sort_charge", 0))
+    if sc:                                     # sort_charge: pool selection (n keys + comparisons), then ascending
+        charge("setup", len(pool_all) + sort_cost(len(pool_all)) + sort_cost(P))
+    if at is not None:
+        at["n_pool_all"], at["P"] = len(pool_all), P
     given = g.get("a_given")                   # test hook (acceptance only): a fixed A sequence, no selection charge
     if given is not None:
         combos = [tuple(c) for c in given]
@@ -171,13 +188,15 @@ def sieve_source(N, k, g, led, ch, at):
         if at is not None:
             at["combos"], at["s"] = 0, s
     elif g.get("a_mode", "enumerate") == "on_demand" and s >= 2:
-        combos = a_on_demand(pool, s, q, target, charge, at)
+        combos = a_on_demand(pool, s, q, target, charge, at, sc)
         if at is not None:
             at["combos"], at["s"] = 0, s
     else:
         combos = list(combinations(pool, s))
         charge("setup", (s - 1) * len(combos))     # multiplies forming each A
         combos.sort(key=lambda c: (abs(math.log(math.prod(c) / target)), c))
+        if sc:                                 # sort_charge: the candidate sort (C keys + comparisons)
+            charge("setup", len(combos) + sort_cost(len(combos)))
         if at is not None:
             at["combos"], at["s"] = len(combos), s
     lc = min(2.0, max(1.0, g.get("lc", 1.0)))

@@ -1,0 +1,549 @@
+{
+ "off_unchanged": 17280,
+ "identity": [
+  {
+   "N": 2441112111176786889109,
+   "genome": "old",
+   "mode": "enumerate",
+   "attempts": 1,
+   "mult_extra": 160,
+   "setup_extra": 43528,
+   "ok": true
+  },
+  {
+   "N": 2441112111176786889109,
+   "genome": "old",
+   "mode": "on_demand",
+   "attempts": 1,
+   "mult_extra": 160,
+   "setup_extra": 1084,
+   "ok": true
+  },
+  {
+   "N": 2441112111176786889109,
+   "genome": "new",
+   "mode": "enumerate",
+   "attempts": 1,
+   "mult_extra": 8,
+   "setup_extra": 43376,
+   "ok": true
+  },
+  {
+   "N": 2441112111176786889109,
+   "genome": "new",
+   "mode": "on_demand",
+   "attempts": 1,
+   "mult_extra": 8,
+   "setup_extra": 836,
+   "ok": true
+  },
+  {
+   "N": 1991753601048049846433,
+   "genome": "old",
+   "mode": "enumerate",
+   "attempts": 1,
+   "mult_extra": 160,
+   "setup_extra": 43400,
+   "ok": true
+  },
+  {
+   "N": 1991753601048049846433,
+   "genome": "old",
+   "mode": "on_demand",
+   "attempts": 1,
+   "mult_extra": 160,
+   "setup_extra": 1412,
+   "ok": true
+  },
+  {
+   "N": 1991753601048049846433,
+   "genome": "new",
+   "mode": "enumerate",
+   "attempts": 1,
+   "mult_extra": 8,
+   "setup_extra": 43360,
+   "ok": true
+  },
+  {
+   "N": 1991753601048049846433,
+   "genome": "new",
+   "mode": "on_demand",
+   "attempts": 1,
+   "mult_extra": 8,
+   "setup_extra": 874,
+   "ok": true
+  },
+  {
+   "N": 4209316944528281345477,
+   "genome": "old",
+   "mode": "enumerate",
+   "attempts": 1,
+   "mult_extra": 160,
+   "setup_extra": 43488,
+   "ok": true
+  },
+  {
+   "N": 4209316944528281345477,
+   "genome": "old",
+   "mode": "on_demand",
+   "attempts": 1,
+   "mult_extra": 160,
+   "setup_extra": 1296,
+   "ok": true
+  },
+  {
+   "N": 4209316944528281345477,
+   "genome": "new",
+   "mode": "enumerate",
+   "attempts": 1,
+   "mult_extra": 8,
+   "setup_extra": 43400,
+   "ok": true
+  },
+  {
+   "N": 4209316944528281345477,
+   "genome": "new",
+   "mode": "on_demand",
+   "attempts": 1,
+   "mult_extra": 8,
+   "setup_extra": 890,
+   "ok": true
+  },
+  {
+   "N": 132947325221468683825699,
+   "genome": "old",
+   "mode": "enumerate",
+   "attempts": 1,
+   "mult_extra": 160,
+   "setup_extra": 43688,
+   "ok": true
+  },
+  {
+   "N": 132947325221468683825699,
+   "genome": "old",
+   "mode": "on_demand",
+   "attempts": 1,
+   "mult_extra": 160,
+   "setup_extra": 1328,
+   "ok": true
+  },
+  {
+   "N": 132947325221468683825699,
+   "genome": "new",
+   "mode": "enumerate",
+   "attempts": 1,
+   "mult_extra": 8,
+   "setup_extra": 43536,
+   "ok": true
+  },
+  {
+   "N": 132947325221468683825699,
+   "genome": "new",
+   "mode": "on_demand",
+   "attempts": 1,
+   "mult_extra": 8,
+   "setup_extra": 1146,
+   "ok": true
+  },
+  {
+   "N": 108550584369298638535739,
+   "genome": "old",
+   "mode": "enumerate",
+   "attempts": 1,
+   "mult_extra": 160,
+   "setup_extra": 43688,
+   "ok": true
+  },
+  {
+   "N": 108550584369298638535739,
+   "genome": "old",
+   "mode": "on_demand",
+   "attempts": 1,
+   "mult_extra": 160,
+   "setup_extra": 1220,
+   "ok": true
+  },
+  {
+   "N": 108550584369298638535739,
+   "genome": "new",
+   "mode": "enumerate",
+   "attempts": 1,
+   "mult_extra": 8,
+   "setup_extra": 43544,
+   "ok": true
+  },
+  {
+   "N": 108550584369298638535739,
+   "genome": "new",
+   "mode": "on_demand",
+   "attempts": 1,
+   "mult_extra": 8,
+   "setup_extra": 1124,
+   "ok": true
+  },
+  {
+   "N": 121115915416443456270583,
+   "genome": "old",
+   "mode": "enumerate",
+   "attempts": 1,
+   "mult_extra": 160,
+   "setup_extra": 43961,
+   "ok": true
+  },
+  {
+   "N": 121115915416443456270583,
+   "genome": "old",
+   "mode": "on_demand",
+   "attempts": 1,
+   "mult_extra": 160,
+   "setup_extra": 1619,
+   "ok": true
+  },
+  {
+   "N": 121115915416443456270583,
+   "genome": "new",
+   "mode": "enumerate",
+   "attempts": 1,
+   "mult_extra": 8,
+   "setup_extra": 43608,
+   "ok": true
+  },
+  {
+   "N": 121115915416443456270583,
+   "genome": "new",
+   "mode": "on_demand",
+   "attempts": 1,
+   "mult_extra": 8,
+   "setup_extra": 1122,
+   "ok": true
+  },
+  {
+   "N": 8743417519307795068439951,
+   "genome": "old",
+   "mode": "enumerate",
+   "attempts": 1,
+   "mult_extra": 160,
+   "setup_extra": 613001,
+   "ok": true
+  },
+  {
+   "N": 8743417519307795068439951,
+   "genome": "old",
+   "mode": "on_demand",
+   "attempts": 1,
+   "mult_extra": 160,
+   "setup_extra": 1897,
+   "ok": true
+  },
+  {
+   "N": 8743417519307795068439951,
+   "genome": "new",
+   "mode": "enumerate",
+   "attempts": 1,
+   "mult_extra": 8,
+   "setup_extra": 44033,
+   "ok": true
+  },
+  {
+   "N": 8743417519307795068439951,
+   "genome": "new",
+   "mode": "on_demand",
+   "attempts": 1,
+   "mult_extra": 8,
+   "setup_extra": 1523,
+   "ok": true
+  },
+  {
+   "N": 14310228007347154922922479,
+   "genome": "old",
+   "mode": "enumerate",
+   "attempts": 1,
+   "mult_extra": 160,
+   "setup_extra": 44348,
+   "ok": true
+  },
+  {
+   "N": 14310228007347154922922479,
+   "genome": "old",
+   "mode": "on_demand",
+   "attempts": 1,
+   "mult_extra": 160,
+   "setup_extra": 2042,
+   "ok": true
+  },
+  {
+   "N": 14310228007347154922922479,
+   "genome": "new",
+   "mode": "enumerate",
+   "attempts": 1,
+   "mult_extra": 8,
+   "setup_extra": 44015,
+   "ok": true
+  },
+  {
+   "N": 14310228007347154922922479,
+   "genome": "new",
+   "mode": "on_demand",
+   "attempts": 1,
+   "mult_extra": 8,
+   "setup_extra": 1775,
+   "ok": true
+  },
+  {
+   "N": 6101011842690006698496217,
+   "genome": "old",
+   "mode": "enumerate",
+   "attempts": 1,
+   "mult_extra": 160,
+   "setup_extra": 44249,
+   "ok": true
+  },
+  {
+   "N": 6101011842690006698496217,
+   "genome": "old",
+   "mode": "on_demand",
+   "attempts": 1,
+   "mult_extra": 160,
+   "setup_extra": 1823,
+   "ok": true
+  },
+  {
+   "N": 6101011842690006698496217,
+   "genome": "new",
+   "mode": "enumerate",
+   "attempts": 1,
+   "mult_extra": 8,
+   "setup_extra": 44015,
+   "ok": true
+  },
+  {
+   "N": 6101011842690006698496217,
+   "genome": "new",
+   "mode": "on_demand",
+   "attempts": 1,
+   "mult_extra": 8,
+   "setup_extra": 1517,
+   "ok": true
+  },
+  {
+   "N": 805237853853329804838773047,
+   "genome": "old",
+   "mode": "enumerate",
+   "attempts": 1,
+   "mult_extra": 160,
+   "setup_extra": 613523,
+   "ok": true
+  },
+  {
+   "N": 805237853853329804838773047,
+   "genome": "old",
+   "mode": "on_demand",
+   "attempts": 1,
+   "mult_extra": 160,
+   "setup_extra": 3099,
+   "ok": true
+  },
+  {
+   "N": 805237853853329804838773047,
+   "genome": "new",
+   "mode": "enumerate",
+   "attempts": 1,
+   "mult_extra": 8,
+   "setup_extra": 613298,
+   "ok": true
+  },
+  {
+   "N": 805237853853329804838773047,
+   "genome": "new",
+   "mode": "on_demand",
+   "attempts": 1,
+   "mult_extra": 8,
+   "setup_extra": 2066,
+   "ok": true
+  },
+  {
+   "N": 625373969122783053935452601,
+   "genome": "old",
+   "mode": "enumerate",
+   "attempts": 1,
+   "mult_extra": 160,
+   "setup_extra": 613388,
+   "ok": true
+  },
+  {
+   "N": 625373969122783053935452601,
+   "genome": "old",
+   "mode": "on_demand",
+   "attempts": 1,
+   "mult_extra": 160,
+   "setup_extra": 2444,
+   "ok": true
+  },
+  {
+   "N": 625373969122783053935452601,
+   "genome": "new",
+   "mode": "enumerate",
+   "attempts": 1,
+   "mult_extra": 8,
+   "setup_extra": 613091,
+   "ok": true
+  },
+  {
+   "N": 625373969122783053935452601,
+   "genome": "new",
+   "mode": "on_demand",
+   "attempts": 1,
+   "mult_extra": 8,
+   "setup_extra": 1939,
+   "ok": true
+  },
+  {
+   "N": 489670323137200118703647887,
+   "genome": "old",
+   "mode": "enumerate",
+   "attempts": 1,
+   "mult_extra": 160,
+   "setup_extra": 613370,
+   "ok": true
+  },
+  {
+   "N": 489670323137200118703647887,
+   "genome": "old",
+   "mode": "on_demand",
+   "attempts": 1,
+   "mult_extra": 160,
+   "setup_extra": 2290,
+   "ok": true
+  },
+  {
+   "N": 489670323137200118703647887,
+   "genome": "new",
+   "mode": "enumerate",
+   "attempts": 1,
+   "mult_extra": 8,
+   "setup_extra": 44420,
+   "ok": true
+  },
+  {
+   "N": 489670323137200118703647887,
+   "genome": "new",
+   "mode": "on_demand",
+   "attempts": 1,
+   "mult_extra": 8,
+   "setup_extra": 2990,
+   "ok": true
+  },
+  {
+   "N": 60576219220793783696843037929,
+   "genome": "old",
+   "mode": "enumerate",
+   "attempts": 1,
+   "mult_extra": 160,
+   "setup_extra": 614390,
+   "ok": true
+  },
+  {
+   "N": 60576219220793783696843037929,
+   "genome": "old",
+   "mode": "on_demand",
+   "attempts": 1,
+   "mult_extra": 160,
+   "setup_extra": 4046,
+   "ok": true
+  },
+  {
+   "N": 60576219220793783696843037929,
+   "genome": "new",
+   "mode": "enumerate",
+   "attempts": 1,
+   "mult_extra": 8,
+   "setup_extra": 613784,
+   "ok": true
+  },
+  {
+   "N": 60576219220793783696843037929,
+   "genome": "new",
+   "mode": "on_demand",
+   "attempts": 1,
+   "mult_extra": 8,
+   "setup_extra": 2800,
+   "ok": true
+  },
+  {
+   "N": 50660195716144306943725718183,
+   "genome": "old",
+   "mode": "enumerate",
+   "attempts": 1,
+   "mult_extra": 160,
+   "setup_extra": 614520,
+   "ok": true
+  },
+  {
+   "N": 50660195716144306943725718183,
+   "genome": "old",
+   "mode": "on_demand",
+   "attempts": 1,
+   "mult_extra": 160,
+   "setup_extra": 3664,
+   "ok": true
+  },
+  {
+   "N": 50660195716144306943725718183,
+   "genome": "new",
+   "mode": "enumerate",
+   "attempts": 1,
+   "mult_extra": 8,
+   "setup_extra": 614050,
+   "ok": true
+  },
+  {
+   "N": 50660195716144306943725718183,
+   "genome": "new",
+   "mode": "on_demand",
+   "attempts": 1,
+   "mult_extra": 8,
+   "setup_extra": 2898,
+   "ok": true
+  },
+  {
+   "N": 73598204043753349862696349619,
+   "genome": "old",
+   "mode": "enumerate",
+   "attempts": 1,
+   "mult_extra": 160,
+   "setup_extra": 614720,
+   "ok": true
+  },
+  {
+   "N": 73598204043753349862696349619,
+   "genome": "old",
+   "mode": "on_demand",
+   "attempts": 1,
+   "mult_extra": 160,
+   "setup_extra": 3672,
+   "ok": true
+  },
+  {
+   "N": 73598204043753349862696349619,
+   "genome": "new",
+   "mode": "enumerate",
+   "attempts": 1,
+   "mult_extra": 8,
+   "setup_extra": 614170,
+   "ok": true
+  },
+  {
+   "N": 73598204043753349862696349619,
+   "genome": "new",
+   "mode": "on_demand",
+   "attempts": 1,
+   "mult_extra": 8,
+   "setup_extra": 2994,
+   "ok": true
+  }
+ ],
+ "parity": {
+  "runs": 216,
+  "mismatches": 0
+ }
+}

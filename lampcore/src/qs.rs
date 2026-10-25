@@ -144,6 +144,11 @@ fn tonelli(n: u64, p: u64, m: &mut Meter) -> Result<u64, Budget> {
     Ok(r)
 }
 
+/// sort_charge (NOTES.md, "The sort_charge option"): n ceil(log2 n) comparisons for n >= 2.
+fn sort_cost(n: u64) -> u64 {
+    if n >= 2 { n * (64 - (n - 1).leading_zeros()) as u64 } else { 0 }
+}
+
 /// All s-element combinations of `pool`, in itertools.combinations order.
 fn combinations(pool: &[u64], s: usize) -> Vec<Vec<u64>> {
     let n = pool.len();
@@ -183,6 +188,9 @@ pub fn lamp_qs(num: &Num, g: &Value, m: &mut Meter) -> R {
     m.charge(MULT, kc * KS_PRIMES.len() as u64)?;
     let mut ranked: Vec<(u64, f64)> = (1..=kc).map(|k| (k, -ks_score(k, num))).collect();
     ranked.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap().then(a.0.cmp(&b.0)));
+    if gene(g, "sort_charge", 0.0) != 0.0 {
+        m.charge(MULT, sort_cost(kc))?; // sort_charge: the multiplier ranking (keys already charged)
+    }
     let ln_n = num.f.ln();
     let bnd = ((gene(g, "bc", 1.5) * (0.5 * (ln_n * ln_n.ln()).sqrt()).exp()) as u64).max(30);
     // a failed attempt is retried with the next k: a fresh ledger (2. factor base) for each
@@ -456,16 +464,17 @@ struct OnDemand {
     s: usize,
     used: Vec<Vec<u64>>,
     limit: usize,
+    sc: bool,
 }
 
 impl OnDemand {
-    fn new(pool: &[u64], s: usize, q: f64, target: f64) -> Self {
+    fn new(pool: &[u64], s: usize, q: f64, target: f64, sc: bool) -> Self {
         let mut by_q = pool.to_vec();
         by_q.sort_by(|a, b| {
             ((*a as f64 / q).ln().abs(), *a).partial_cmp(&((*b as f64 / q).ln().abs(), *b)).unwrap()
         });
         OnDemand { pool: pool.to_vec(), prefixes: combinations(&by_q, s - 1), at: 0, target, s,
-                   used: Vec::new(), limit: s - 2 }
+                   used: Vec::new(), limit: s - 2, sc }
     }
 
     fn next(&mut self, m: &mut Meter) -> Result<Option<Vec<u64>>, Budget> {
@@ -513,6 +522,9 @@ impl OnDemand {
                 let mut key = pre.clone();
                 key.push(last);
                 key.sort();
+                if self.sc {
+                    m.charge(SETUP, sort_cost(s as u64))?; // sort_charge: the key's s primes
+                }
                 m.charge(SETUP, (s * self.used.len()) as u64)?;
                 if self.used.iter().any(|u| u.iter().filter(|x| key.contains(x)).count() > self.limit) {
                     continue;
@@ -559,19 +571,29 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
     });
     let mut pool: Vec<u64> = by_q[..pn].to_vec();
     pool.sort();
+    let sc = gene(g, "sort_charge", 0.0) != 0.0;
+    if sc {
+        // sort_charge: pool selection (n keys + comparisons), then ascending
+        let na = pool_all.len() as u64;
+        m.charge(SETUP, na + sort_cost(na) + sort_cost(pn as u64))?;
+    }
     // a_mode (NOTES.md, "On-demand A selection"): "enumerate" (default) forms and charges every
     // candidate up front; "on_demand" forms them one at a time (OnDemand::next), s >= 2 only.
     let on_demand = g.get("a_mode").and_then(|v| v.as_str()) == Some("on_demand") && s >= 2;
     let mut combos: Vec<Vec<u64>> = Vec::new();
     let mut od: Option<OnDemand> = None;
     if on_demand {
-        od = Some(OnDemand::new(&pool, s, q, target));
+        od = Some(OnDemand::new(&pool, s, q, target, sc));
     } else {
         combos = combinations(&pool, s);
         m.charge(SETUP, (s as u64 - 1) * combos.len() as u64)?;
         m.ev(crate::EV_SETUP_FULL, (s as u64 - 1) * combos.len() as u64); // at["combos"], at["s"]
         let key = |c: &Vec<u64>| ((c.iter().product::<u64>() as f64 / target).ln()).abs();
         combos.sort_by(|a, b| key(a).partial_cmp(&key(b)).unwrap().then_with(|| a.cmp(b)));
+        if sc {
+            let c = combos.len() as u64;
+            m.charge(SETUP, c + sort_cost(c))?; // sort_charge: the candidate sort (C keys + comparisons)
+        }
     }
     let lc = gene(g, "lc", 1.0).max(1.0).min(2.0);
     let lp_on = lc > 1.0; // lc = 1.0: no large-prime work at all

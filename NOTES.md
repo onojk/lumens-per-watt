@@ -2189,3 +2189,24 @@ With the card's other costs, on_demand + sort_charge adds about 1,000–3,600 sm
 1. sort_charge = 0 reproduces every existing count (the maps, and the acceptance and parity suites unchanged).
 2. *Identity:* with sort_charge = 1 against 0, on sample numbers in both modes, every phase is equal except mult and setup. Each differs by exactly the formula, computed from the trace: kc, len(pool_all), P, C and the tries passing the target check.
 3. Python = Rust count for count with sort_charge = 1 (parity pairs added).
+
+## 2026-10-25 — Re-solve on the existing maps with the corrected card: plan and predictions (before computing)
+
+**Card.** The final qs is qs + lc 1.4's genes with a_mode = on_demand and sort_charge = 1 (the corrected card; sort_charge accepted: `sortcharge_accept.out`; full parity running). The pre-stage records of every map are unchanged. Every robust ratio uses the same card in numerator and denominator ("corrected" column). The enumerate figures already recorded stay as they are, and are recomputed here only as a check ("enumerate" column).
+
+**What is computed** (map-only; exact per-number composition as in `stopping.py derive2`):
+1. Per size, 72 / 78 / 84 / 90 / 96: the robust grid optimum over rho and ECM budgets (td and pm1 off; 1/8-octave grid), its fitness, backward induction under each pricing, the conservative combination, and grid steps from the enumerate optimum.
+2. At 84 bits: the four-stage partition optimizer (td, rho, pm1, ECM) for allocation A (final qs + lc 1.4) and allocation B (final N51-0917's qs), both corrected. Each is scored against its own final qs alone, and in the **cross-comparison** against the single reference, qs + lc 1.4 corrected alone. A's original budgets are also scored under the corrected card.
+3. The 78/90 transfer test, map-only: the robust optimum of the transferred maps (neighbours 72/84 and 84/96; qs costs rescaled by the frozen Q curve × r_P, with r_P taken from the corrected maps), scored on the 78 and 90 maps against A's budgets, the theory budgets and the local corrected optimum.
+   - **A sealed rerun follows only if an optimum moves more than one grid step** (corrected against enumerate, at any size). It would be the genome runs of `stopping.py test` on the 78/90 populations with the corrected final qs.
+
+**Predictions (mine, before computing).**
+- (C1) The corrected robust optima shrink against the enumerate optima by ≥ 2 grid steps in at least one stage at each of 78 / 84 / 90 / 96 bits. The ECM budget shrinks or switches off at 84–96. At 72 the change is at most 1 step.
+- (C2) Backward induction under ruint equals the corrected robust optimum at all five sizes (as under enumerate at 72/84/96).
+- (C3) The robust map fitness of the corrected optimum (against corrected qs alone) is 0.80–0.95 at 84–96 bits (enumerate: about 0.64 at 84), and above 0.95 at 72–78.
+- (C4) A's original budgets scored under the corrected card: robust ratio 0.85–1.05 at 84 bits.
+- (C5) Cross-comparison at 84: the corrected A is ahead of the corrected B against the single reference by more than under enumerate (B / A larger than before).
+- (C6) The transfer at 78 and 90 lands within one grid step of the local corrected optimum in both stages.
+- **Scoring rules, fixed now.**
+  - *O9* (allocation A's robust ratio against qs alone rises at 78–96; the robust-optimal pre-stage budgets shrink) is scored by C3/C4's quantities: A's budgets at 84, and the per-size optima at 78–96.
+  - *D3* (ECM budgets shrink when qs gets cheaper) is scored per size at 78–96, corrected optimum against enumerate optimum: it holds if ECM's budget is smaller or off at every size where the enumerate optimum had ECM on.
