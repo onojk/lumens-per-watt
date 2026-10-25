@@ -9,7 +9,8 @@ per official op on the map). Primary windows: 1/8 octave (partition.FINE); SENSI
 
   python3 stopping.py derive     -> stopping_derive.json   (the rule on the 72/84/96 maps vs hindsight)
   python3 stopping.py map [w]    -> stopping_map.json      (fresh 78/90-bit maps, seeds 9200000 + 100 pb + bits)
-  python3 stopping.py test       -> stopping_test.json     (rule vs A vs theory at 78/90; per-band gate intervals)
+  python3 stopping.py derive2    -> stopping_derive2.json  (addendum: exhaustive robust optimum + backward induction, 72/84/96)
+  python3 stopping.py test       -> stopping_test.json     (addendum genomes at 78/90; per-band gate intervals; two references)
 """
 import sys
 ARGS, sys.argv[1:] = sys.argv[1:], []
@@ -114,6 +115,60 @@ def q(v):
     v = sorted(v)
     return v[int(0.025 * len(v))], v[int(0.975 * len(v)) - 1]
 
+
+# ---- addendum: exhaustive robust optimum and backward induction (exact composition) ----
+NEW_QS = {"t": "qs", "kc": 4, "bc": 0.8993889783377338, "mc": 0.7340990893362095,
+          "tc": 1.1044621542694246, "lc": 1.6612269841697611}
+GRID = P.FINE
+
+def mats(objs):
+    """objs: [(Map, {P: per-number qs scale})]. Returns S[P][r, e] = summed composed cost of
+    (rho at GRID[r], ECM at GRID[e], qs) over all numbers, and the summed qs cost per pricing."""
+    S, qsum = {}, {}
+    for Pn in PR3:
+        tot, qt = 0.0, 0.0
+        for M, scale in objs:
+            qsv = M.qs[Pn] * scale[Pn]
+            qt += qsv.sum()
+            rc, al, ec, un = [], [], [], []
+            for b in GRID:
+                t = M.stage_terms("rho", b, Pn)
+                rc.append(0.0 if t is None else float(t[1].sum()))
+                al.append(np.ones(M.n) if t is None else (~t[0]).astype(float))
+                t = M.stage_terms("ecm", b, Pn)
+                ec.append(np.zeros(M.n) if t is None else t[1])
+                un.append(qsv if t is None else np.where(t[0], 0.0, qsv))
+            A, E, U = np.array(al), np.array(ec), np.array(un)
+            tot = tot + np.array(rc)[:, None] + A @ E.T + A @ U.T
+        S[Pn], qsum[Pn] = tot, qt
+    return S, qsum
+
+def robust_opt(S, qsum):
+    F = np.max([S[Pn] / qsum[Pn] for Pn in PR3], axis=0)
+    r, e = np.unravel_index(np.argmin(F), F.shape)
+    return {"rho": GRID[r], "ecm": GRID[e]}, float(F[r, e]), F
+
+def backward(S, qsum, F):
+    per = {}
+    for Pn in PR3:
+        eP = np.argmin(S[Pn], axis=1)                      # e_P(r), last stage first
+        rP = int(np.argmin(S[Pn][np.arange(len(GRID)), eP]))
+        per[Pn] = {"rho": GRID[rP], "ecm": GRID[eP[rP]]}
+    rc = min(GRID.index(v["rho"]) for v in per.values())
+    ec = min(int(np.argmin(S[Pn][rc])) for Pn in PR3)
+    cons = {"rho": GRID[rc], "ecm": GRID[ec]}
+    return per, cons, float(F[rc, ec])
+
+def transferred(maps, bits):
+    b0, b1 = NEIGH[bits]
+    w = (bits - b0) / (b1 - b0)
+    r0, r1 = r_P(maps[b0]), r_P(maps[b1])
+    rt = {Pn: (1 - w) * r0[Pn] + w * r1[Pn] for Pn in PR3}
+    objs = []
+    for src, rs in ((b0, r0), (b1, r1)):
+        objs.append((maps[src], {Pn: Q(bits) * rt[Pn] / (Q(src) * rs[Pn]) for Pn in PR3}))
+    return objs
+
 if __name__ == "__main__":
     mode = ARGS[0]
     if mode == "derive":
@@ -134,6 +189,27 @@ if __name__ == "__main__":
                       f"steps from hindsight {x['steps_from_hindsight']}; per pricing " +
                       "; ".join(f"{s}: " + ", ".join(f"{Pn[:4]} {v}" for Pn, v in x['detail']['per_pricing'][s].items()) for s in ("rho", "ecm")))
         json.dump(out, open("stopping_derive.json", "w"), indent=1, default=float)
+        sys.exit(0)
+
+    if mode == "derive2":
+        maps = load_maps()
+        out = {}
+        one = lambda M: {Pn: 1.0 for Pn in PR3}
+        for bits in (72, 84, 96):
+            M = maps[bits]
+            S, qsum = mats([(M, one(M))])
+            ro, rf, F = robust_opt(S, qsum)
+            per, cons, cf = backward(S, qsum, F)
+            v4 = P.optimize(M, np.ones(M.n, dtype=bool))
+            f4 = M.fitness(v4)[0]
+            out[bits] = {"robust": ro, "robust_fitness": rf, "bi_per_pricing": per, "bi_conservative": cons, "bi_fitness": cf,
+                         "steps": {st: steps(cons[st], ro[st]) for st in ro},
+                         "four_stage": {"vec": v4, "fitness": f4}}
+            print(f"{bits} bits: robust grid optimum rho {ro['rho']}, ecm {ro['ecm']} (fitness {rf:.4f}); "
+                  f"BI conservative rho {cons['rho']}, ecm {cons['ecm']} (fitness {cf:.4f}); steps {out[bits]['steps']}")
+            print("   BI per pricing: " + "; ".join(f"{Pn}: rho {v['rho']}, ecm {v['ecm']}" for Pn, v in per.items()))
+            print(f"   (info) 4-stage robust optimum (td, rho, pm1, ecm) {v4}, fitness {f4:.4f}")
+        json.dump(out, open("stopping_derive2.json", "w"), indent=1, default=float)
         sys.exit(0)
 
     if mode == "map":
@@ -174,9 +250,13 @@ if __name__ == "__main__":
         rule, det = derive([maps[b0], maps[b1]], bits, EDGES["eighth"])
         rule_half, _ = derive([maps[b0], maps[b1]], bits, EDGES["half"])
         lr = math.exp(Lf(bits) - Lf(84))
-        G = {"rule": (rule["rho"], rule["ecm"]), "A": (A_B["rho"], A_B["ecm"]),
+        St, qt = mats(transferred(maps, bits))
+        tro, trf, Ft = robust_opt(St, qt)
+        tper, tcons, tcf = backward(St, qt, Ft)
+        G = {"TRANSFER": (tro["rho"], tro["ecm"]), "BI-conservative": (tcons["rho"], tcons["ecm"]),
+             "Q-RULE": (rule["rho"], rule["ecm"]), "A": (A_B["rho"], A_B["ecm"]),
              "theory": (SB.snap(A_B["rho"] * lr), SB.snap(A_B["ecm"] * lr)),
-             "rule (half-octave, info)": (rule_half["rho"], rule_half["ecm"])}
+             "Q-RULE half-octave (info)": (rule_half["rho"], rule_half["ecm"])}
         bp = pop(bits)
         nums = [t for v in bp.values() for t in v]
         oracle.check(nums)
@@ -184,7 +264,11 @@ if __name__ == "__main__":
         assert [r_["N"] for r_ in rows] == [str(t[0]) for t in nums]
         M = P.Map(rows, "qs + lc 1.4", PRc)
         groups = [np.flatnonzero(M.band == pb) for pb in bp]
-        ref = {Pn: np.array([optypes.cost(x[4], Pn, pr) for x in run_many([QS], nums, P.QS_CAP, types=True)]) for Pn in PR3}
+        REFS = {}
+        for rname, rg in (("qs + lc 1.4", QS), ("new qs", NEW_QS)):
+            rr_ = run_many([rg], nums, P.QS_CAP, types=True)
+            assert all(x[1] is not None and 1 < int(x[1]) < N for x, (N, _, _) in zip(rr_, nums)), rname
+            REFS[rname] = {Pn: np.array([optypes.cost(x[4], Pn, pr) for x in rr_]) for Pn in PR3}
         rng = random.Random(2026)
         idxs = [np.concatenate([g[[rng.randrange(len(g)) for _ in range(len(g))]] for g in groups]) for _ in range(B)]
         C, xcheck = {}, {}
@@ -195,39 +279,48 @@ if __name__ == "__main__":
             xcheck[g] = int(sum(1 for x, cpd in zip(rs, composed) if x[0] is not None and abs(x[0] - cpd) < 0.5))
             C[g] = (miss, {Pn: np.array([optypes.cost(x[4], Pn, pr) for x in rs]) for Pn in PR3})
         allx = np.arange(len(nums))
-        sc = lambda c, i, Pn: c[Pn][i].mean() / ref[Pn][i].mean()
-        fit = lambda c, i: max(sc(c, i, Pn) for Pn in PR3)
-        row = {"budgets": G, "rule_detail": det, "theory_ratio": lr, "xcheck": xcheck, "genomes": {}, "pairs": {}}
-        for g in G:
-            miss, c = C[g]
-            bands = {}
-            for Pn in PR3:
-                bands[Pn] = {}
-                for pb, gi in zip(bp, groups):
-                    r2 = random.Random(2026)
-                    vals = []
-                    for _ in range(B):
-                        i = gi[[r2.randrange(len(gi)) for _ in range(len(gi))]]
-                        vals.append(c[Pn][i].mean() / ref[Pn][i].mean())
-                    bands[Pn][pb] = {"point": float(sc(c, gi, Pn)), "ci": q(vals)}
-            cells = [(v["point"], v["ci"], Pn, pb) for Pn in PR3 for pb, v in bands[Pn].items()]
-            if miss or any(ci[0] > GATE for _, ci, _, _ in cells):
-                gate = "FAIL"
-            elif all(ci[1] <= GATE for _, ci, _, _ in cells):
-                gate = "PASS"
-            else:
-                gate = "BORDERLINE"
-            worst = max(cells, key=lambda x: x[0])
-            row["genomes"][g] = {"fitness": fit(c, allx), "scores": {Pn: sc(c, allx, Pn) for Pn in PR3}, "misses": miss,
-                                 "bands": bands, "gate": gate, "worst": worst,
-                                 "worst_upper": max(cells, key=lambda x: x[1][1])}
-        for a, b in (("rule", "A"), ("rule", "theory"), ("theory", "A")):
-            ca, cb = C[a][1], C[b][1]
-            row["pairs"][f"{a} / {b}"] = {
-                "ratio": fit(ca, allx) / fit(cb, allx), "log2": math.log2(fit(ca, allx) / fit(cb, allx)),
-                "ci": q([math.log2(fit(ca, i) / fit(cb, i)) for i in idxs]),
-                "by_pricing": {Pn: {"log2": math.log2(sc(ca, allx, Pn) / sc(cb, allx, Pn)),
-                                    "ci": q([math.log2(sc(ca, i, Pn) / sc(cb, i, Pn)) for i in idxs])} for Pn in PR3}}
+        row = {"budgets": G, "rule_detail": det, "theory_ratio": lr, "xcheck": xcheck, "genomes": {}, "pairs": {},
+               "transfer": {"robust": tro, "robust_fitness_transferred": trf, "bi_per_pricing": tper, "bi_conservative": tcons,
+                            "steps": {st: steps(tcons[st], tro[st]) for st in tro}},
+               "secondary": {}}
+        def evaluate(ref):
+            sc = lambda c, i, Pn: c[Pn][i].mean() / ref[Pn][i].mean()
+            fit = lambda c, i: max(sc(c, i, Pn) for Pn in PR3)
+            gs = {}
+            for g in G:
+                miss, c = C[g]
+                bands = {}
+                for Pn in PR3:
+                    bands[Pn] = {}
+                    for pb, gi in zip(bp, groups):
+                        r2 = random.Random(2026)
+                        vals = []
+                        for _ in range(B):
+                            i = gi[[r2.randrange(len(gi)) for _ in range(len(gi))]]
+                            vals.append(c[Pn][i].mean() / ref[Pn][i].mean())
+                        bands[Pn][pb] = {"point": float(sc(c, gi, Pn)), "ci": q(vals)}
+                cells = [(v["point"], v["ci"], Pn, pb) for Pn in PR3 for pb, v in bands[Pn].items()]
+                if miss or any(ci[0] > GATE for _, ci, _, _ in cells):
+                    gate = "FAIL"
+                elif all(ci[1] <= GATE for _, ci, _, _ in cells):
+                    gate = "PASS"
+                else:
+                    gate = "BORDERLINE"
+                gs[g] = {"fitness": fit(c, allx), "scores": {Pn: sc(c, allx, Pn) for Pn in PR3}, "misses": miss,
+                         "bands": bands, "gate": gate, "worst": max(cells, key=lambda x: x[0]),
+                         "worst_upper": max(cells, key=lambda x: x[1][1])}
+            pairs = {}
+            for a_, b_ in (("TRANSFER", "A"), ("TRANSFER", "theory"), ("TRANSFER", "BI-conservative"),
+                           ("Q-RULE", "A"), ("Q-RULE", "theory"), ("theory", "A")):
+                ca, cb = C[a_][1], C[b_][1]
+                pairs[f"{a_} / {b_}"] = {
+                    "ratio": fit(ca, allx) / fit(cb, allx), "log2": math.log2(fit(ca, allx) / fit(cb, allx)),
+                    "ci": q([math.log2(fit(ca, i) / fit(cb, i)) for i in idxs]),
+                    "by_pricing": {Pn: {"log2": math.log2(sc(ca, allx, Pn) / sc(cb, allx, Pn)),
+                                        "ci": q([math.log2(sc(ca, i, Pn) / sc(cb, i, Pn)) for i in idxs])} for Pn in PR3}}
+            return gs, pairs
+        row["genomes"], row["pairs"] = evaluate(REFS["qs + lc 1.4"])
+        row["secondary"], row["pairs_secondary"] = evaluate(REFS["new qs"])
         hb, hf = hindsight(M)
         row["hindsight"] = {"budgets": hb, "map_fitness": hf, "map_fitness_by_genome": {g: M.fitness((0, G[g][0], 0, G[g][1]))[0] for g in G}}
         res[bits] = row
@@ -235,17 +328,22 @@ if __name__ == "__main__":
         print("  budgets (rho, ecm): " + "  ".join(f"{g} {v}" for g, v in G.items()))
         print("  rule per pricing: " + "; ".join(f"{s}: " + ", ".join(f"{Pn[:4]} {v}" for Pn, v in det['per_pricing'][s].items()) for s in ("rho", "ecm")))
         print("  map cross-check (composed official = direct): " + "  ".join(f"{g} {v}/{len(nums)}" for g, v in xcheck.items()))
+        print(f"  transferred maps: robust optimum rho {tro['rho']}, ecm {tro['ecm']} (fitness {trf:.4f}); BI conservative {tcons}; steps {row['transfer']['steps']}; "
+              "BI per pricing " + "; ".join(f"{Pn[:4]} {v['rho']}/{v['ecm']}" for Pn, v in tper.items()))
         for g in G:
-            x = row["genomes"][g]
+            x, y = row["genomes"][g], row["secondary"][g]
             w, wu = x["worst"], x["worst_upper"]
-            print(f"  {g:24s}: fitness {x['fitness']:.3f} (" + ", ".join(f"{Pn} {v:.3f}" for Pn, v in x["scores"].items())
+            print(f"  {g:26s}: fitness {x['fitness']:.3f} (" + ", ".join(f"{Pn[:4]} {v:.3f}" for Pn, v in x["scores"].items())
                   + f"); misses {x['misses']}; gate {x['gate']} (worst point {w[0]:.3f} [{w[1][0]:.3f}, {w[1][1]:.3f}] band {w[3]} {w[2]}; "
-                  f"highest upper {wu[1][1]:.3f} band {wu[3]} {wu[2]})")
+                  f"highest upper {wu[1][1]:.3f} band {wu[3]} {wu[2]}) | vs new qs: fitness {y['fitness']:.3f} ("
+                  + ", ".join(f"{Pn[:4]} {v:.3f}" for Pn, v in y["scores"].items()) + f"), gate {y['gate']}")
             for Pn in PR3:
                 print(f"     {Pn:10s} " + "  ".join(f"{pb}: {v['point']:.3f}" for pb, v in x["bands"][Pn].items()))
         for k, o in row["pairs"].items():
-            print(f"  {k:16s} robust x{o['ratio']:.3f}, log2 {o['log2']:+.3f} [{o['ci'][0]:+.3f}, {o['ci'][1]:+.3f}];  "
-                  + "  ".join(f"{Pn[:4]} {v['log2']:+.3f} [{v['ci'][0]:+.3f}, {v['ci'][1]:+.3f}]" for Pn, v in o["by_pricing"].items()))
+            o2 = row["pairs_secondary"][k]
+            print(f"  {k:26s} robust x{o['ratio']:.3f}, log2 {o['log2']:+.3f} [{o['ci'][0]:+.3f}, {o['ci'][1]:+.3f}];  "
+                  + "  ".join(f"{Pn[:4]} {v['log2']:+.3f} [{v['ci'][0]:+.3f}, {v['ci'][1]:+.3f}]" for Pn, v in o["by_pricing"].items())
+                  + f" | vs new qs: log2 {o2['log2']:+.3f} [{o2['ci'][0]:+.3f}, {o2['ci'][1]:+.3f}]")
         h = row["hindsight"]
         print(f"  (info) hindsight on own map: rho {hb['rho']}, ecm {hb['ecm']}, map fitness {hf:.3f}; map fitness: "
               + "  ".join(f"{g} {v:.3f}" for g, v in h["map_fitness_by_genome"].items()))
