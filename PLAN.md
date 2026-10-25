@@ -323,7 +323,16 @@ combined and evolved against one shared, fixed ledger.
     that produces relations, and pays for everything it does.
   - The ledger, its check and the factor base are fixed, never evolved.
 
-## Stages 8-10 and Run 8 (Stage 8, Stage 9 and Run 8 done; Stage 10 not started)
+## Stages 8-10 and Run 8 (planning; no code yet)
+
+**Status:** Stage 8 done (Oct 23); results in NOTES § "Stage 8: elliptic-curve card" (results
+within that entry). Stage 9 done (Oct 24), RULED OUT; results in NOTES § "Stage 9 result: the
+fixed-slice race fails its robustness bar". Run 8 done (Oct 24); results in NOTES § "Run 8 mixed
+and mixed-qs arms: results" and § "Run 8 wrap-up". Stage 10 not started. Deviations from this
+plan: Run 8 ran before Stage 10 and the theory checks; 8 seeds (71-78), not 4 (71-74); a
+fixed-shape genome space (budgets, order, qs genes) instead of the decks listed below; no race
+card, so race slices were never tuned; clause (a)'s "best-of-4" wording was stale after the move
+to 8 seeds (NOTES § Run 8 wrap-up).
 
 Same rules as Stages 3-4 and 7: each card's cost model goes into NOTES.md before any code;
 every op is counted, never estimated; when in doubt, overcharge. Acceptance comes before
@@ -395,8 +404,7 @@ any scored run, and parity gates the Rust port.
   in the decks.**
   - Wide ranges on: `use_wide_qs_ranges()`, plus the lc range from Stage 7 if Stage 7
     has passed.
-  - Decks, proposed (superseded: Run 8 ran on the fixed-shape genome space of the Run 8 design
-    below, not these decks):
+  - Decks, proposed:
     - no-luck: td, sq, ps, qs, race (racing no-luck stages only);
     - luck: td, sq, ps, rho, pm1, qs, ecm, race. ECM is randomized like rho and pm1, so
       it goes in the luck deck.
@@ -404,8 +412,8 @@ any scored run, and parity gates the Rust port.
     re-checked by a one-generation dry run before launch.
   - ACCEPT adds tuned qs, the best ECM genome from Stage 8, and N51-0917 to Run 6's
     references. `run8_accept.py` is written before the run.
-  - Seeds: Run 8 used 71-78 (71-74 proposed here; raised to 8 seeds before launch). Run 5
-    used 41-44, Run 6 51-54; 61-64 stay reserved for Run 7, which has not run.
+  - Seeds: 71-74, proposed (Run 5 used 41-44, Run 6 51-54; 61-64 stay reserved for
+    Run 7). [Status: Run 8 used 71-78; Run 7 has not run, so 61-64 remain reserved.]
   - Prerequisites: the relation-economy refactor, and Stages 8 and 9, accepted with
     parity.
   - **Scoring, decided (Oct 23, user): (c) as fitness, (e) in reports** (NOTES.md,
@@ -433,7 +441,7 @@ any scored run, and parity gates the Rust port.
         and evolution must show value on structure.
       - Evolution beats TPE: check TPE's convergence before crediting evolution.
       - Random search matches both: the fitness surface is flat at that genome.
-  - **Run 8 design (Oct 24; predictions written before the run; Run 8 done, NOTES).** Where it differs from the
+  - **Run 8 design (Oct 24, planning; predictions written now).** Where it differs from the
     deck and size outline above, this design governs the evolution-vs-control comparison.
     - **Shared genome space, identical bounds for evolution, TPE (Optuna, pinned) and random
       search:** pre-stage budgets td, rho, ecm in {0} ∪ [2^8, 2^20] (log scale), pm1 in
@@ -515,7 +523,9 @@ any scored run, and parity gates the Rust port.
       mixed arm, Oct 24): TPE with n_startup_trials = 10% of the budget (136 of 1,360) and
       multivariate=True; same seeds, budget and fitness. Reported separately and never
       substituted for the primary TPE, which stays at Optuna's defaults (n_startup_trials 10,
-      multivariate off) and is the arm the two-clause prediction applies to.
+      multivariate off) and is the arm the two-clause prediction applies to. [This was Run 8's
+      verdict rule. Making tpe-tuned the default afterwards ("Search structure after Run 8") is
+      a separate, later decision.]
     - **Time estimate, measured on the sanity arm (Oct 24), supersedes the one below:** per
       evaluation at 18 numbers, evolution 0.314 s, TPE 0.227 s (Optuna's own overhead 7.4 ms
       per trial over 340 trials, 26.9 ms over 1,360), random 0.716 s, fresh batches 0.415 s.
@@ -536,7 +546,9 @@ any scored run, and parity gates the Rust port.
     types `calibrate.py` reprices), not just total ops. **MET Oct 24:** lampcore --types,
     with parity against Python on every parity pair and existing results recomputed exactly
     (NOTES.md, lampcore per-type op counters). Remaining: Run 8's harness must call
-    run_many(types=True) and optypes.robust; sq, ps and cfrac stay unpriced. As it stood:
+    run_many(types=True) and optypes.robust; sq, ps and cfrac stay unpriced. [Status: DONE;
+    `evolve/run8.py` scores every genome with run_many(types=True) and optypes.robust (NOTES §
+    "Run 8 mixed and mixed-qs arms: results"). sq, ps and cfrac are still unpriced.] As it stood:
     - Run 8's evaluation path (Run 6's harness: `evolve_scale.measure_fast` ->
       `fastlamps.run_many`) records total ops, factor, tests and hits only, without
       even the phase columns.
@@ -546,8 +558,9 @@ any scored run, and parity gates the Rust port.
       slow for evolution.
     - `calibrate.py` prices only ecm, qs and rho. td, sq, ps, pm1 and cfrac (and the race,
       by its sides) have no mapping.
-    - DONE before Run 8 (lampcore `--types`, `evolve/calibrate.py`, `evolve/optypes.py`;
-      NOTES, "lampcore per-type op counters"). The requirement as written: lampcore emits per-type counters for
+    - [Status: DONE before Run 8: lampcore `--types`, `evolve/calibrate.py`, `evolve/optypes.py`;
+      NOTES § "lampcore per-type op counters".]
+    - Needed before Run 8, planning only for now: lampcore emits per-type counters for
       every card (with parity against Python and an identity check that they sum to
       each phase and to total ops), a price mapping for every card written in NOTES
       before use, and the robust fitness computed from those counters in the harness.
@@ -599,11 +612,12 @@ card: every op count stays exactly as it is.
   merged: (1) size-posterior bits removed per op, for all lamps; (2) location-window facts
   per op, only for td, sq and ps.
 
-## Stage 9.5: across-numbers selector (planning only; not built)
+## Stage 9.5: across-numbers selector (planning only)
 
-**Status (Oct 24):** the size-only case (bit length, the one free feature) is done as
-per-stage budgets by size from maps (NOTES, "Per-stage budgets by size"). A selector using
-charged features is not built.
+**Status:** Partly done (Oct 24). The size-only case (bit length, the one free feature) is
+done as per-stage budgets by size from maps; results in NOTES § "Per-stage budgets: results".
+A selector on charged features is not built. Deviations from this plan: it ran after the
+partition study and Run 8, not before the partition study.
 
 After Stage 9, before the partition study. The portfolio move (MOVES.md, "Learned selector
 across numbers"): instead of racing stages on every number, choose the stage or race for each
@@ -629,7 +643,10 @@ number from what is known about it before any work is done.
   M 10000; 80 bits: FB 110, M 14000), as a reference only. Any large gap is explained;
   his values are not copied.
 
-## Partition study (done; results in NOTES)
+## Partition study (planning; no code yet)
+
+**Status:** Done (Oct 24); results in NOTES § "Partition study result: sequential budgets pay on
+the mixed population" (sealed run once). Deviations from this plan: none recorded in NOTES.
 
 How should a fixed op budget be split across lamps when the size of the smaller factor
 is not known in advance?
@@ -648,7 +665,8 @@ is not known in advance?
     qs runs to the cap. The budgets are the genes: the deferred budget-split idea, without
     interleaving. The allocation minimizes expected ops under the prior, given the cost
     map; it is computed from the map, then measured by running it, not trusted as computed.
-  - **Prerequisite: a per-stage op-budget gene.** Checked Oct 24: no stage has one. Stages
+  - **Prerequisite: a per-stage op-budget gene.** [Status: DONE, the ob gene; NOTES §
+    "Per-stage op budget (ob)".] Checked Oct 24: no stage has one. Stages
     end only by their own bounds (td's a, pm1's b, ECM's curves) or the shared cap, which
     ends the whole run as a miss. The gene is added so that reaching a stage's budget ends
     that stage without a factor and the next stage runs. Cost model and prediction in NOTES
@@ -673,6 +691,10 @@ is not known in advance?
     small share of the budget before qs takes the rest.
 
 ## Partition study part 2 (map only, no new runs)
+
+**Status:** Superseded (Oct 24) by the exhaustive 24-order baseline (`evolve/partition_orders.py`;
+NOTES § "Partition study result", exhaustive baseline). The index rule itself was never
+computed; with four stages, trying every order makes it moot.
 
 - Index-rule stage order (Weitzman 1979): order the pre-stages by success chance per unit
   cost from the existing partition map, and compare with td -> rho -> pm1 -> ecm.
@@ -715,7 +737,7 @@ is not known in advance?
   mean cost / mean reference cost (numbers resampled within the band, 10,000,
   random.Random(2026)). PASS: every upper bound <= 1.5 and no misses; FAIL: any lower bound
   > 1.5 or a miss; BORDERLINE otherwise. Point values reported beside. First used in
-  `evolve/stopping.py`.
+  `evolve/stopping.py` (test mode; outputs `stopping_test.out`/`.json`).
 - **Budgets come from maps, search tunes only the qs genes** (Oct 24, from the freedom
   comparison; confound: 560 vs 84 tuning numbers). Per size: the robust grid optimum on that
   size's map, or on maps transferred from neighbouring sizes. Each report names the
