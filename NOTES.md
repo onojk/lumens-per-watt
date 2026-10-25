@@ -1207,3 +1207,30 @@ Otherwise, qs + lc 1.4 stays the reference, and the new genes are a mixed-popula
 - (2b) The gain shrinks at smaller sizes. The robust ratio is below 1 at 72–84 bits and at least 0.95 at 54 bits.
 - (2c) At most 1 miss in 1,440 per genome.
 - (2d) The replacement rule fails, because at 54 or 60 bits at least one pricing's interval lies above 0, so qs + lc 1.4 stays the reference.
+
+## 2026-10-24 — Run 8 wrap-up addendum (user): plateau, scope, search policy, generalization tests
+
+- **The qs-gene axis is a PLATEAU.**
+  - Random search ties TPE on the qs genes alone (mixed-qs best-of-8 sealed 0.472 vs 0.472; per-seed, TPE is better by about 3.5% on 7/8 seeds, sign p 0.07).
+  - Winning genes spread widely: kc 2–11 and mc 0.43–0.93 across the TPE and evolution winners of both arms.
+  - The retuned genes are reported as a region, not point values. Further qs-gene-only search is expected to add little.
+- **Scope of "partition study under-explored by 1.40x":** the partition study held the qs genes fixed at qs + lc 1.4 by design. The 1.40x is along an axis it did not search. Its conclusions are unaffected: A vs B, the robust-fitness results, and coverage, not selection, as the mechanism.
+- **Search policy:** recorded in PLAN ("Search policy after Run 8"):
+  - TPE is the default for fixed-shape gene tuning.
+  - Island evolution is kept only pending the variable-length structural test, whose prediction is written there.
+  - NSGA-II (Optuna) for multi-objective search; pyribs for MAP-Elites.
+  - 24 numbers per band in future fixed tuning sets; the sealed ACCEPT gate stays; reports name the seeds whose tuning sets misled methods; no hand-picked "hard" numbers.
+
+### Generalization tests (predictions before computing; not yet run)
+
+**Design.**
+- new qs genes (the region's representative: kc 4, bc 0.8994, mc 0.7341, tc 1.1045, lc 1.6612) against qs + lc 1.4's genes, both with budgets and order held at A (td 0, rho 5793, pm1 0, ECM 32768).
+- Paired on fresh sealed numbers; fitness (c) against qs + lc 1.4 alone; all three pricings; per-seed paired bootstrap within bands; the ACCEPT gate.
+- (a) Mixed populations at 72 and 96 bits: the smaller factor in bands from 16 bits up to the balanced band (72: 16–36; 96: 16–48), 80 per band, fresh seeds. The exact bands and seeds are fixed in the script's header before it runs.
+- (b) Balanced 84-bit numbers.
+
+**Predictions.**
+- (a), mine: the new genes beat qs + lc 1.4's genes at both sizes; robust ratio new/old 0.70–0.90 at 72 bits and 0.60–0.85 at 96 bits (Run 8, 84 bits: 0.472/0.675 = 0.70).
+- (b), the user's, verbatim: "the wider mc (0.43-0.93) loses on balanced (population-specific genes)."
+  - **Evidence already on record, against it:** on the Run 8 sealed band 42 (80 balanced 84-bit numbers, A's budgets), the mixed-qs winners' ratios to qs + lc 1.4 alone are 0.91–0.94 official, 0.70–0.76 ruint and 0.73–0.80 Montgomery. That is better, not worse.
+  - Those 80 numbers were scored in Run 8's report, so (b) on fresh numbers is the test. The prediction is scored as written.

@@ -666,6 +666,25 @@ is not known in advance?
 
 ## Search structure after Run 8 (planning only)
 
+**Search policy after Run 8 (Oct 24, user, Run 8 wrap-up addendum):**
+- **TPE (Optuna) is the default search for fixed-shape gene tuning.**
+- **Island evolution is kept only pending one structural test**, a variable-length genome:
+  - up to 5 stages, each empty or one card, with its genes;
+  - evolution (insert / delete / swap) vs TPE (one categorical per slot, plus conditional
+    genes) vs random search, at the same budget and fitness;
+  - verdict by the per-seed paired comparison on sealed numbers (PLAN reporting rule);
+  - if TPE ties, island evolution is retired.
+  - **Prediction (written before any code; uncertain):** TPE ties or beats evolution. The
+    per-seed comparison's interval over seeds and numbers includes 0 or lies below 0
+    (TPE better). Random search is worst on at least 6/8 seeds. A cost model and a harness
+    test plan come before the run, as for Run 8.
+- **Multi-objective search:** Optuna's NSGA-II sampler.
+- **MAP-Elites:** pyribs (reuse rule), not the island code.
+- **Fixed tuning sets in future runs:** 24 numbers per band (doubled from 12 after Run 8's
+  seed 73 misled four of five methods). The sealed ACCEPT gate stays. Each report names the
+  seeds whose tuning sets misled methods: OVERFIT, or a gate failure on sealed numbers. No
+  fixed-cost or hand-picked "hard" numbers: scores are always measured.
+
 Ideas from evolving bodies over terrain, for after Run 8. Each gets a cost model and a
 prediction in NOTES before code, as usual. Fitness is (c) robust throughout (Run 8 scoring).
 
