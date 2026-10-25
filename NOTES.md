@@ -2498,3 +2498,70 @@ Per-pricing grid optima (rho, ECM; td and pm1 off), fitness against corrected qs
 **M1, scored:** **missed as written.**
 - Held: the three known optima reproduced; the 54-bit Montgomery optimum has rho on (3,158 ≥ 724) and ECM at most 2^15 (6,317); no Montgomery optimum is at the edge; official is at the edge at 84 / 90 / 96.
 - Missed: with the grid widened, official moves above 2^20 at 90 and 96 but not at 84.
+
+### qs-gene size-scaling test, both tracks: results (`sizescale.py tune` / `sealed`; `sizescale_tune.out`, `sizescale_sealed.out`, `.json`)
+
+Corrected card; sealed numbers 80 per band (320 / 480 / 560 / 640 at 54 / 72 / 84 / 96), run once. The reference is qs + lc 1.4 corrected alone; ratios are official / ruint / Montgomery.
+
+**Winners per size** (each is that size's own tuned genome; at 72 the Track M genomes tuned at 54 and 72 tie):
+
+| bits | Track R winner (pipeline): ratios; track fitness [95%]; gate | Track M winner (pipeline): ratios; Montgomery fitness [95%]; Montgomery gate; ruint gate (info) |
+|---|---|---|
+| 54 | R-tuned@54 (qs alone): 0.963 / 0.948 / 0.928; 0.963 [0.951, 0.976] (official binds); PASS | M-tuned@54 (rho 3,158, ECM 6,317): 0.598 / 1.796 / 0.742; 0.742 [0.694, 0.792]; PASS; FAIL |
+| 72 | R-tuned@72 (rho 1,579): 0.762 / 0.772 / 0.699; 0.772 [0.747, 0.799]; PASS | M-tuned@72 (rho 1,448, ECM 185,364): 0.255 / 2.237 / 0.668; 0.668 [0.610, 0.728]; BORDERLINE; FAIL |
+| 84 | R-tuned@84 (rho 5,793): 0.618 / 0.618 / 0.539; 0.618 [0.604, 0.635] (official binds by 0.0001); PASS | M-tuned@84 (rho 3,158, ECM 311,744): 0.194 / 1.719 / 0.513; 0.513 [0.472, 0.556]; PASS; FAIL |
+| 96 | R-tuned@96 (rho 12,634): 0.525 / 0.530 / 0.475; 0.530 [0.519, 0.541]; PASS | M-tuned@96 (rho 4,871, ECM 404,281): 0.204 / 1.103 / 0.372; 0.372 [0.346, 0.399]; PASS; FAIL |
+
+**Every Track M winner fails the ruint per-band gate: each is "conditional on a fast multiply".**
+
+**Headline: cross-pricing.** PD_M is the Montgomery cost of the Track R winner over the Track M winner's; PD_R is the ruint cost of the Track M winner over the Track R winner's.
+
+| bits | PD_M [95%] | PD_R [95%] | official, M winner / R winner |
+|---|---|---|---|
+| 54 | 1.250 [1.171, 1.336] | 1.894 [1.805, 1.986] | 0.621 |
+| 72 | 1.045 [0.956, 1.151] | 2.899 [2.647, 3.160] | 0.335 |
+| 84 | 1.050 [0.967, 1.143] | 2.783 [2.579, 2.998] | 0.313 |
+| 96 | 1.277 [1.188, 1.380] | 2.082 [1.956, 2.209] | 0.389 |
+
+- **The dependence on the multiply is lopsided.** The ruint answer (rho, then a tuned qs) costs only 0–28% more than the Montgomery answer under Montgomery prices; at 72 and 84 the difference is within noise.
+- The Montgomery answer (rho, a large ECM budget, then qs) costs 1.9–2.9x more than the ruint answer under ruint prices.
+- Under the official count the Montgomery answer is 2.6–3.2x cheaper at 72–96.
+- So the Track R winner is the safe choice across multiplies. The Track M winner is much better under official counting, slightly better under Montgomery, and much worse under ruint.
+
+**Tuned genes against qs + lc 1.4's genes in the same pipeline** (track metric, log₂ [95%]):
+- *Track R:* −0.054 [−0.073, −0.036] (3.7%), −0.196 (12.7%), −0.377 (23%) and −0.480 (28%) at 54 / 72 / 84 / 96. All three pricings agree at every size, and the Montgomery gain is the largest (−0.11 to −0.53).
+- *Track M:* −0.073 (4.9%), −0.009 (0.6%), −0.039 (2.7%) and −0.170 (11%). The official cost rises at 54–84 (+0.02 to +0.32).
+- Against the frozen reference (enumerate), the Track R winners are 0.81 / 0.35 / 0.66 (54), 0.74 / 0.53 / 0.65 (72), 0.55 / 0.26 / 0.39 (84) and 0.50 / 0.29 / 0.39 (96).
+
+**Cross-size** (track fitness of each size's tuned genome, scored at every size):
+- *Track R:* each size's own genome is best at its size. The 54-tuned genome is 32% worse than the 96-tuned at 96 (0.699 against 0.530); the 96-tuned is 75% worse at 54 (1.688 against 0.963). The genes matter by size.
+- *Track M:* the four genomes are within 1% of each other at 72 and 84, and within 6% at 96. The large ECM budget dominates, and the qs genes matter little.
+
+**Genes** (the four seeds' best per size; frozen = best seed):
+- *Track R:*
+  - mc rises monotonically (median 0.23 → 0.40 → 0.42 → 0.47), with the 54/96 ranges separated;
+  - bc falls to the search's lower bound (0.87 → 0.80 → 0.71 → 0.71);
+  - lc falls (1.69 → 1.45–1.52); kc stays 9–32 with no trend.
+- *Track M:* mc 0.8–1.3 (2–3x Track R's), bc at the bound (0.70–0.89), lc falls 1.76 → 1.45 (not separated), kc 9–30.
+- **Condition: bc sits at the search's lower bound (0.70) in most Track R genomes at 84–96 and most Track M genomes.** These winners are bound-limited. A lower bc bound might do better; that would be a new test with its own predictions.
+
+**Predictions, scored as written.**
+- *Track R* (S1–S7, written before the decision):
+  - (S1) tuned beats old genes, robust interval below 0, by 5–15% at 72–96 and 0–10% at 54: **missed.** The direction held everywhere, and 54 (3.7%) and 72 (12.7%) were in range. 84 (23%) and 96 (28%) gained more than predicted.
+  - (S2) kc ≥ 8 at 72–96: **held** (32 / 23 / 31).
+  - (S3) bc ≤ 1.0 at 84–96: **held** (0.704 / 0.711; at the bound).
+  - (S4) at most one of mc, lc and kc meets the monotone rule in DeepSeek's direction: **held** (only mc).
+  - (S5) own genome within 3% of the best tuned genome at each size, and the 54- and 96-tuned genomes each lose ≥ 5% at the other end: **held.**
+  - (S6) ruint binds for every tuned pipeline at 72–96, official at 54: **missed.** At 84 official binds by 0.0001 (0.6180 against 0.6179). The other sizes held.
+  - (S7) every frozen genome passes the gate at its own size: **held.**
+- *Track M* (M1–M6, written after the decision):
+  - (M1) missed (scored above).
+  - (M2) kc ≥ 8 (held), mc smaller than Track R's (**missed**: 2–3x larger), no monotone gene (held): **missed.**
+  - (M3) tuned beats old genes by 5–15% under Montgomery at 72–96: **missed.** Only 96 (11%) was in range; 72 (0.6%) and 84 (2.7%) were below.
+  - (M4) Montgomery gate PASS everywhere, ruint gate FAIL at 72–96: **missed** (72 is BORDERLINE under Montgomery). The ruint clause held; the 54 winner also fails the ruint gate, consistent with its ECM being on.
+  - (M5) PD_M 1.3–1.6 and PD_R 1.6–2.4 at 72–96, both ≤ 1.2 at 54: **missed.** PD_M was 1.05 / 1.05 / 1.28 and PD_R 2.90 / 2.78 / 2.08; at 54, 1.25 and 1.89.
+  - (M6) the two tracks' seed ranges overlap for every gene and size: **missed** (mc never overlaps at 72–96).
+- *Outside:*
+  - (DeepSeek) the optimum shifts monotonically with size, mc and lc up, kc down: **missed.** In Track R mc rises, but lc falls and kc has no trend. In Track M no gene meets the rule.
+
+Mine: Track R 5 held, 2 missed. Track M 0 held, 6 missed.

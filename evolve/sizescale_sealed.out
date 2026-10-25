@@ -1,0 +1,47 @@
+
+54 bits (320 sealed numbers; final qs corrected; reference qs + lc 1.4 corrected alone)
+  Track R winner: R-tuned@54 in rho 0, ECM 0: track fitness 0.9629 [0.9509, 0.9757] (0.963 / 0.948 / 0.928; binds offi); gate PASS; vs frozen ref 0.811 / 0.354 / 0.660
+  Track M winner: M-tuned@54 in rho 3158, ECM 6317: track fitness 0.7422 [0.6942, 0.7924] (0.598 / 1.796 / 0.742; binds ruin); gate PASS; ruint gate (info) FAIL; vs frozen ref 0.504 / 0.671 / 0.528
+  cross-pricing: PD_M (Montgomery: R winner / M winner) 1.250 [1.171, 1.336]; PD_R (ruint: M winner / R winner) 1.894 [1.805, 1.986]; official M / R 0.621
+  Track R: tuned@54 vs old genes, track metric -0.054 [-0.073, -0.036]  offi -0.054 [-0.073,-0.036]  ruin -0.076 [-0.102,-0.049]  mont -0.109 [-0.131,-0.084]
+     cross-size (track fitness of each size's tuned genome here): R-tuned@54: 0.9629, R-tuned@72: 1.1831, R-tuned@84: 1.3151, R-tuned@96: 1.6876
+  Track M: tuned@54 vs old genes, track metric -0.073 [-0.107, -0.031]  offi +0.320 [+0.239,+0.413]  ruin -0.023 [-0.038,-0.004]  mont -0.073 [-0.107,-0.031]
+     cross-size (track fitness of each size's tuned genome here): M-tuned@54: 0.7422, M-tuned@72: 0.7747, M-tuned@84: 0.8063, M-tuned@96: 0.8568
+
+72 bits (480 sealed numbers; final qs corrected; reference qs + lc 1.4 corrected alone)
+  Track R winner: R-tuned@72 in rho 1579, ECM 0: track fitness 0.7716 [0.7469, 0.7992] (0.762 / 0.772 / 0.699; binds ruin); gate PASS; vs frozen ref 0.744 / 0.534 / 0.653
+  Track M winner: M-tuned@72 in rho 1448, ECM 185364: track fitness 0.6682 [0.6104, 0.7282] (0.255 / 2.237 / 0.668; binds ruin); gate BORDERLINE; ruint gate (info) FAIL; vs frozen ref 0.249 / 1.547 / 0.625
+  cross-pricing: PD_M (Montgomery: R winner / M winner) 1.045 [0.956, 1.151]; PD_R (ruint: M winner / R winner) 2.899 [2.647, 3.160]; official M / R 0.335
+  Track R: tuned@72 vs old genes, track metric -0.196 [-0.229, -0.157]  offi -0.064 [-0.090,-0.036]  ruin -0.196 [-0.231,-0.157]  mont -0.231 [-0.266,-0.190]
+     cross-size (track fitness of each size's tuned genome here): R-tuned@54: 0.8332, R-tuned@72: 0.7716, R-tuned@84: 0.8051, R-tuned@96: 0.8776
+  Track M: tuned@72 vs old genes, track metric -0.009 [-0.015, -0.003]  offi +0.023 [+0.006,+0.043]  ruin -0.002 [-0.004,-0.001]  mont -0.009 [-0.015,-0.003]
+     cross-size (track fitness of each size's tuned genome here): M-tuned@54: 0.6682, M-tuned@72: 0.6682, M-tuned@84: 0.6687, M-tuned@96: 0.6694
+
+84 bits (560 sealed numbers; final qs corrected; reference qs + lc 1.4 corrected alone)
+  Track R winner: R-tuned@84 in rho 5793, ECM 0: track fitness 0.6179 [0.6036, 0.6347] (0.618 / 0.618 / 0.539; binds offi); gate PASS; vs frozen ref 0.554 / 0.255 / 0.393
+  Track M winner: M-tuned@84 in rho 3158, ECM 311744: track fitness 0.5131 [0.4724, 0.5559] (0.194 / 1.719 / 0.513; binds ruin); gate PASS; ruint gate (info) FAIL; vs frozen ref 0.174 / 0.710 / 0.374
+  cross-pricing: PD_M (Montgomery: R winner / M winner) 1.050 [0.967, 1.143]; PD_R (ruint: M winner / R winner) 2.783 [2.579, 2.998]; official M / R 0.313
+  Track R: tuned@84 vs old genes, track metric -0.377 [-0.391, -0.356]  offi -0.179 [-0.197,-0.160]  ruin -0.377 [-0.393,-0.362]  mont -0.430 [-0.447,-0.413]
+     cross-size (track fitness of each size's tuned genome here): R-tuned@54: 0.7409, R-tuned@72: 0.6338, R-tuned@84: 0.6179, R-tuned@96: 0.6425
+  Track M: tuned@84 vs old genes, track metric -0.039 [-0.051, -0.026]  offi +0.019 [+0.003,+0.035]  ruin -0.012 [-0.016,-0.008]  mont -0.039 [-0.051,-0.026]
+     cross-size (track fitness of each size's tuned genome here): M-tuned@54: 0.5178, M-tuned@72: 0.5137, M-tuned@84: 0.5131, M-tuned@96: 0.5137
+
+96 bits (640 sealed numbers; final qs corrected; reference qs + lc 1.4 corrected alone)
+  Track R winner: R-tuned@96 in rho 12634, ECM 0: track fitness 0.5299 [0.5192, 0.5410] (0.525 / 0.530 / 0.475; binds ruin); gate PASS; vs frozen ref 0.499 / 0.288 / 0.391
+  Track M winner: M-tuned@96 in rho 4871, ECM 404281: track fitness 0.3723 [0.3456, 0.3991] (0.204 / 1.103 / 0.372; binds ruin); gate PASS; ruint gate (info) FAIL; vs frozen ref 0.194 / 0.600 / 0.306
+  cross-pricing: PD_M (Montgomery: R winner / M winner) 1.277 [1.188, 1.380]; PD_R (ruint: M winner / R winner) 2.082 [1.956, 2.209]; official M / R 0.389
+  Track R: tuned@96 vs old genes, track metric -0.480 [-0.491, -0.468]  offi -0.346 [-0.361,-0.331]  ruin -0.480 [-0.491,-0.468]  mont -0.527 [-0.540,-0.515]
+     cross-size (track fitness of each size's tuned genome here): R-tuned@54: 0.6988, R-tuned@72: 0.5657, R-tuned@84: 0.5448, R-tuned@96: 0.5299
+  Track M: tuned@96 vs old genes, track metric -0.170 [-0.187, -0.151]  offi -0.038 [-0.070,-0.006]  ruin -0.059 [-0.067,-0.052]  mont -0.170 [-0.187,-0.151]
+     cross-size (track fitness of each size's tuned genome here): M-tuned@54: 0.3952, M-tuned@72: 0.3752, M-tuned@84: 0.3727, M-tuned@96: 0.3723
+Track R trend kc: medians 54: 19.000, 72: 25.000, 84: 20.500, 96: 26.000; monotone no; 54 vs 96 separated False; Spearman +0.23
+Track R trend bc: medians 54: 0.872, 72: 0.803, 84: 0.707, 96: 0.708; monotone no; 54 vs 96 separated True; Spearman -0.84
+Track R trend mc: medians 54: 0.233, 72: 0.403, 84: 0.417, 96: 0.474; monotone up; 54 vs 96 separated True; Spearman +0.80
+Track R trend tc: medians 54: 1.361, 72: 1.373, 84: 1.392, 96: 1.228; monotone no; 54 vs 96 separated True; Spearman -0.44
+Track R trend lc: medians 54: 1.686, 72: 1.598, 84: 1.453, 96: 1.524; monotone no; 54 vs 96 separated True; Spearman -0.62
+Track M trend kc: medians 54: 13.500, 72: 22.500, 84: 20.000, 96: 14.500; monotone no; 54 vs 96 separated False; Spearman -0.13
+Track M trend bc: medians 54: 0.721, 72: 0.759, 84: 0.717, 96: 0.715; monotone no; 54 vs 96 separated False; Spearman -0.40
+Track M trend mc: medians 54: 1.180, 72: 1.163, 84: 0.825, 96: 0.896; monotone no; 54 vs 96 separated False; Spearman -0.53
+Track M trend tc: medians 54: 1.397, 72: 1.250, 84: 1.253, 96: 1.203; monotone no; 54 vs 96 separated False; Spearman -0.27
+Track M trend lc: medians 54: 1.756, 72: 1.545, 84: 1.495, 96: 1.446; monotone down; 54 vs 96 separated False; Spearman -0.56
+exit 0
