@@ -1516,3 +1516,39 @@ Paired, log2 [95%]: PRIMARY / A −0.108 [−0.177, −0.039] (all three pricing
 - (P5, the user's) the theory rule shrinks less than the measured rule at 72: **missed** (decided by arithmetic before the run: 0.243 vs 0.29).
 - (P6, mine) theory passes the gate at 72; theory / PRIMARY at 72 within ±0.03 with the interval including 0; at 96 all three tie with A: **missed.** The gate clause held (1.444); theory / PRIMARY at 72 is +0.061 [+0.015, +0.117]; at 96 all three beat A.
 - (P7, mine) SENSITIVITY / PRIMARY at 96 ≥ −0.02: **held** (−0.015).
+
+## 2026-10-24 — Decisions after the size-relative budgets test (user)
+
+- **PRIMARY curve stays the dedicated one** (fresh 60–100-bit balanced tuning seeds 9100000 + bits, frozen in `2b22d08` before any evaluation number existed). The earlier-run curve (calibration run, 54–84 bits) is SENSITIVITY.
+- **A wrong estimate, recorded:** the user estimated "qs ~8x cheaper at 72 bits (ratio 0.125)". The measured ratio 72/84 is 0.27–0.29. P5 was settled by arithmetic before the run, as recorded.
+- **Design principle from the freedom result:** budgets are chosen from maps (exact per-number composition, many numbers); search tunes only the qs genes. Confound: A's budgets came from a 560-number map, while each Run 8 run tuned on 84 numbers, so the freedom comparison also compares tuning-set sizes.
+- **Gate verdicts at 72 bits were point values:** no per-band interval was pre-registered. From now on gate rules carry per-band intervals (defined in the next entry and used from then on).
+
+## 2026-10-24 — Per-stage budgets by size from a stopping rule: cost model and predictions (before code)
+
+**Rule (derived from maps only; no search).**
+- For each pre-stage s, in order (rho, then ECM; td and pm1 stay off as in A), on the numbers still unsolved when s starts:
+  - hazard h_s(t) on the map's 1/8-octave grid (`partition.FINE`): for the window (t_k, t_{k+1}], h = (numbers whose T_s falls in the window) / (numbers alive at t_k, i.e. T_s > t_k) / (t_{k+1} − t_k). The first window is (0, 256].
+  - Under pricing P: marginal value of an op = h(t) · Q_P(bits); marginal cost = c_{s,P}, the stage's price per official op averaged over the numbers alive at t_k (the map's per-band price per op, `Map.pib`; 1 under official).
+  - Budget_P = the upper edge t_{k+1} of the LAST window with h · Q_P ≥ c_{s,P}; 0 (stage off) if no window qualifies.
+  - Budget = min over the three pricings (the most conservative). The next stage's alive set is computed after this stage at this budget.
+- Q_P(bits) = Q(bits) · r_P(bits). Q is the frozen dedicated curve (official ops). r_P is qs's price per official op (mean qs cost under P / mean qs official ops) measured on the map at that size: 1 under official.
+- **Simplification, stated:** a success is valued at Q only, not at Q plus the later stage's spending it also avoids. For rho (before ECM) the rule therefore undervalues success, and its rho budget leans low.
+- **Noise, stated:** on the 1/8-octave grid, late windows hold few events, and "the last window" is decided by whether one more success happens late. As SENSITIVITY (pre-registered here, reported beside the primary, not used for the verdict) the same rule on half-octave windows (every 4th grid point).
+
+**Derivation check.** Apply the rule to the 72-, 84- and 96-bit maps (each map's own hazard and r_P). Compare with the hindsight optima found by search on the same maps: 72 rho 3,158, ECM off; 84 rho 5,793, ECM 32,768 (A); 96 rho 12,634, ECM 60,097. "One grid step" = one 1/8-octave step.
+
+**Test at 78 and 90 bits.**
+- Fresh mixed populations, seeds 9200000 + 100 pb + bits, 80 per band, `oracle.check`. 78: smaller factor 16, 20, 24, 28, 32, 36 (unbalanced) and 39 (balanced). 90: 16, 20, 24, 28, 32, 36, 42 (unbalanced) and 45 (balanced). Maps built as for 72/96 (`size_budgets.py` machinery, parity sample, map-vs-direct cross-check).
+- The rule's budgets at a test size use no data from that size: h = the arithmetic mean, window by window, of the two neighbouring derivation maps' hazards (78: 72 and 84; 90: 84 and 96), computed stage by stage with each neighbour's own alive sets; c_{s,P} likewise averaged; r_P interpolated linearly in bits between the neighbours; Q from the frozen curve.
+- Compared, paired, against (i) A's absolute budgets and (ii) the theory scaling rule (A × L(N)/L(N_84), snapped). Each is run directly in lampcore `--types`. Fitness (c) against qs + lc 1.4 alone; paired bootstrap over numbers within bands (10,000, random.Random(2026)); all three pricings; (e) calls.
+- **ACCEPT gate with per-band intervals (new rule):** per band and pricing, the 95% interval of mean cost / mean reference cost (numbers resampled within the band, 10,000, random.Random(2026)).
+  - PASS: every band's upper bound ≤ 1.5 under every pricing, and no misses.
+  - FAIL: some band's lower bound > 1.5 under some pricing, or a miss.
+  - BORDERLINE: otherwise. The point values are reported beside.
+
+**Predictions** (scored as written):
+- (S1, the user's) The rule reproduces the hindsight optima within one grid step at 72, 84 and 96, including ECM off at 72.
+- (S2, the user's) The stopping-rule budgets pass the gate at 78 and 90 and beat both alternatives on the robust score. Scored as gate PASS under the rule above, and robust-ratio intervals below 0 against both A and theory at both sizes.
+- (S3, mine) S1 misses on the 1/8-octave grid. The rho budget lands at or below the hindsight value (success undervalued), and at least one ECM budget is more than one grid step away (late single events). The half-octave SENSITIVITY lands closer to the hindsight values than the primary in at least 4 of the 6 (size, stage) cells.
+- (S4, mine) At 78 the rule beats A (robust interval below 0); against theory, a tie at both sizes. At 90 the rule beats A.
