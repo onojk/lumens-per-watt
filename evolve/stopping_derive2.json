@@ -1,0 +1,119 @@
+{
+ "72": {
+  "robust": {
+   "rho": 3158,
+   "ecm": 0
+  },
+  "robust_fitness": 0.8172028442835739,
+  "bi_per_pricing": {
+   "official": {
+    "rho": 1448,
+    "ecm": 285870
+   },
+   "ruint": {
+    "rho": 3158,
+    "ecm": 0
+   },
+   "montgomery": {
+    "rho": 1448,
+    "ecm": 285870
+   }
+  },
+  "bi_conservative": {
+   "rho": 1448,
+   "ecm": 0
+  },
+  "bi_fitness": 0.8423615031350483,
+  "steps": {
+   "rho": 9,
+   "ecm": 0
+  },
+  "four_stage": {
+   "vec": [
+    0,
+    3158,
+    0,
+    0
+   ],
+   "fitness": 0.8172028442835743
+  }
+ },
+ "84": {
+  "robust": {
+   "rho": 5793,
+   "ecm": 32768
+  },
+  "robust_fitness": 0.6407733232371452,
+  "bi_per_pricing": {
+   "official": {
+    "rho": 3158,
+    "ecm": 1048576
+   },
+   "ruint": {
+    "rho": 5793,
+    "ecm": 32768
+   },
+   "montgomery": {
+    "rho": 3158,
+    "ecm": 808563
+   }
+  },
+  "bi_conservative": {
+   "rho": 3158,
+   "ecm": 32768
+  },
+  "bi_fitness": 0.6410623005503647,
+  "steps": {
+   "rho": 7,
+   "ecm": 0
+  },
+  "four_stage": {
+   "vec": [
+    0,
+    5793,
+    0,
+    32768
+   ],
+   "fitness": 0.6407733232371452
+  }
+ },
+ "96": {
+  "robust": {
+   "rho": 12634,
+   "ecm": 60097
+  },
+  "robust_fitness": 0.6268957167842006,
+  "bi_per_pricing": {
+   "official": {
+    "rho": 5793,
+    "ecm": 1048576
+   },
+   "ruint": {
+    "rho": 12634,
+    "ecm": 60097
+   },
+   "montgomery": {
+    "rho": 4871,
+    "ecm": 480774
+   }
+  },
+  "bi_conservative": {
+   "rho": 4871,
+   "ecm": 60097
+  },
+  "bi_fitness": 0.6353678508353775,
+  "steps": {
+   "rho": 11,
+   "ecm": 0
+  },
+  "four_stage": {
+   "vec": [
+    0,
+    12634,
+    0,
+    60097
+   ],
+   "fitness": 0.626895716784201
+  }
+ }
+}

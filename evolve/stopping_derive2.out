@@ -1,0 +1,13 @@
+72 bits: robust grid optimum rho 3158, ecm 0 (fitness 0.8172); BI conservative rho 1448, ecm 0 (fitness 0.8424); steps {'rho': 9, 'ecm': 0}
+   BI per pricing: official: rho 1448, ecm 285870; ruint: rho 3158, ecm 0; montgomery: rho 1448, ecm 285870
+   (info) 4-stage robust optimum (td, rho, pm1, ecm) (0, 3158, 0, 0), fitness 0.8172
+84 bits: robust grid optimum rho 5793, ecm 32768 (fitness 0.6408); BI conservative rho 3158, ecm 32768 (fitness 0.6411); steps {'rho': 7, 'ecm': 0}
+   BI per pricing: official: rho 3158, ecm 1048576; ruint: rho 5793, ecm 32768; montgomery: rho 3158, ecm 808563
+   (info) 4-stage robust optimum (td, rho, pm1, ecm) (0, 5793, 0, 32768), fitness 0.6408
+96 bits: robust grid optimum rho 12634, ecm 60097 (fitness 0.6269); BI conservative rho 4871, ecm 60097 (fitness 0.6354); steps {'rho': 11, 'ecm': 0}
+   BI per pricing: official: rho 5793, ecm 1048576; ruint: rho 12634, ecm 60097; montgomery: rho 4871, ecm 480774
+   (info) 4-stage robust optimum (td, rho, pm1, ecm) (0, 12634, 0, 60097), fitness 0.6269
+
+real	0m1.320s
+user	0m3.385s
+sys	0m0.047s
