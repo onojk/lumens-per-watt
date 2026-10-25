@@ -1,0 +1,49 @@
+Track R, 54 bits (rho 0, ECM 0; 96 tuning numbers): old genes 1.0000, new genes 1.3643
+   seed 0: 0.9805  kc 13, bc 0.878, mc 0.054, tc 1.349, lc 1.623
+   seed 1: 0.9272  kc 23, bc 0.877, mc 0.318, tc 1.374, lc 1.642
+   seed 2: 0.9778  kc 15, bc 0.868, mc 0.149, tc 1.417, lc 1.731
+   seed 3: 0.9371  kc 30, bc 0.834, mc 0.340, tc 1.314, lc 1.749
+   frozen: seed 1
+Track R, 72 bits (rho 1579, ECM 0; 144 tuning numbers): old genes 0.8711, new genes 0.9103
+   seed 0: 0.7801  kc 9, bc 0.860, mc 0.455, tc 1.223, lc 1.694
+   seed 1: 0.7460  kc 32, bc 0.735, mc 0.387, tc 1.319, lc 1.584
+   seed 2: 0.7825  kc 19, bc 0.871, mc 0.375, tc 1.427, lc 1.399
+   seed 3: 0.7502  kc 31, bc 0.746, mc 0.420, tc 1.433, lc 1.611
+   frozen: seed 1
+Track R, 84 bits (rho 5793, ECM 0; 168 tuning numbers): old genes 0.7823, new genes 0.7338
+   seed 0: 0.6220  kc 15, bc 0.714, mc 0.387, tc 1.447, lc 1.365
+   seed 1: 0.6078  kc 18, bc 0.708, mc 0.482, tc 1.221, lc 1.672
+   seed 2: 0.6017  kc 23, bc 0.704, mc 0.444, tc 1.354, lc 1.517
+   seed 3: 0.6118  kc 29, bc 0.706, mc 0.391, tc 1.430, lc 1.388
+   frozen: seed 2
+Track R, 96 bits (rho 12634, ECM 0; 192 tuning numbers): old genes 0.7122, new genes 0.6263
+   seed 0: 0.5172  kc 18, bc 0.719, mc 0.479, tc 1.205, lc 1.523
+   seed 1: 0.5131  kc 21, bc 0.705, mc 0.525, tc 1.286, lc 1.524
+   seed 2: 0.5138  kc 32, bc 0.703, mc 0.469, tc 1.251, lc 1.447
+   seed 3: 0.5130  kc 31, bc 0.711, mc 0.414, tc 1.159, lc 1.537
+   frozen: seed 3
+Track M, 54 bits (rho 3158, ECM 6317; 96 tuning numbers): old genes 0.8249, new genes 0.8158
+   seed 0: 0.7646  kc 14, bc 0.721, mc 0.936, tc 1.571, lc 1.623
+   seed 1: 0.7653  kc 30, bc 0.729, mc 1.318, tc 1.133, lc 1.960
+   seed 2: 0.7666  kc 11, bc 0.722, mc 1.111, tc 1.664, lc 1.474
+   seed 3: 0.7558  kc 13, bc 0.715, mc 1.249, tc 1.222, lc 1.890
+   frozen: seed 3
+Track M, 72 bits (rho 1448, ECM 185364; 144 tuning numbers): old genes 0.5965, new genes 0.5958
+   seed 0: 0.5930  kc 15, bc 0.890, mc 1.069, tc 1.289, lc 1.329
+   seed 1: 0.5927  kc 26, bc 0.753, mc 1.280, tc 1.012, lc 1.731
+   seed 2: 0.5925  kc 26, bc 0.704, mc 0.812, tc 1.296, lc 1.607
+   seed 3: 0.5928  kc 19, bc 0.766, mc 1.258, tc 1.211, lc 1.484
+   frozen: seed 2
+Track M, 84 bits (rho 3158, ECM 311744; 168 tuning numbers): old genes 0.5258, new genes 0.5195
+   seed 0: 0.5096  kc 14, bc 0.708, mc 0.916, tc 1.300, lc 1.492
+   seed 1: 0.5095  kc 24, bc 0.711, mc 0.786, tc 1.395, lc 1.378
+   seed 2: 0.5092  kc 17, bc 0.724, mc 0.814, tc 1.205, lc 1.531
+   seed 3: 0.5092  kc 23, bc 0.723, mc 0.836, tc 1.192, lc 1.499
+   frozen: seed 2
+Track M, 96 bits (rho 4871, ECM 404281; 192 tuning numbers): old genes 0.4293, new genes 0.4032
+   seed 0: 0.3864  kc 9, bc 0.721, mc 1.102, tc 1.231, lc 1.351
+   seed 1: 0.3841  kc 21, bc 0.719, mc 0.889, tc 1.187, lc 1.433
+   seed 2: 0.3843  kc 20, bc 0.710, mc 0.878, tc 1.178, lc 1.459
+   seed 3: 0.3862  kc 9, bc 0.705, mc 0.904, tc 1.220, lc 1.495
+   frozen: seed 1
+exit 0
