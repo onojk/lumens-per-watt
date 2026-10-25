@@ -674,6 +674,10 @@ is not known in advance?
     genes) vs random search, at the same budget and fitness;
   - verdict by the per-seed paired comparison on sealed numbers (PLAN reporting rule);
   - if TPE ties, island evolution is retired.
+  - **Island evolution's only remaining claim is variable-length structure search (Oct 24,
+    user): pass that test or retire it outright.** Pass = evolution better than TPE by the
+    per-seed rule (the interval over seeds and numbers lies on evolution's side). A tie or a
+    loss retires it; no further fixed-shape tests are run for it.
   - **Prediction (written before any code; uncertain):** TPE ties or beats evolution. The
     per-seed comparison's interval over seeds and numbers includes 0 or lies below 0
     (TPE better). Random search is worst on at least 6/8 seeds. A cost model and a harness
@@ -684,6 +688,13 @@ is not known in advance?
   seed 73 misled four of five methods). The sealed ACCEPT gate stays. Each report names the
   seeds whose tuning sets misled methods: OVERFIT, or a gate failure on sealed numbers. No
   fixed-cost or hand-picked "hard" numbers: scores are always measured.
+- **MISLEADING tuning set (pre-registered Oct 24, before the next run):** a seed's tuning set
+  is MISLEADING if at least 3 methods' tuning-best genomes fail the sealed ACCEPT gate, or at
+  least 3 methods' tuning-vs-sealed gaps exceed the paired interval. Operational reading of
+  the second condition: the run is marked OVERFIT, meaning its gap exceeds allocation A's gap
+  by more than the paired bootstrap interval (Run 8's definition). Reports list MISLEADING
+  seeds per arm. For reference only (Run 8 predates the rule), mixed seed 73 meets the first
+  condition (4 gate failures) and also has 4 OVERFIT runs.
 
 Ideas from evolving bodies over terrain, for after Run 8. Each gets a cost model and a
 prediction in NOTES before code, as usual. Fitness is (c) robust throughout (Run 8 scoring).
