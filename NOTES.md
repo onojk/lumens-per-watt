@@ -2155,3 +2155,37 @@ Mine: **5 held (O2, O4, O5, O6, O7), 3 missed (O1, O3, O8), 1 not run (O9).** De
 - Their robust optima will move toward smaller pre-stage budgets. The binding pricing was ruint, and ruint's qs cost fell most. Where it fell most (78–90 bits, 0.40–0.46x), ECM's and rho's budgets should shrink most.
 - Allocation B's calibrated lead over A should mostly disappear (N51-0917's qs is only 0.86–0.90 of qs + lc 1.4 under ruint once both use on_demand).
 - None of this was computed. It needs a re-solve on the maps with the final qs's costs under on_demand, which is the next decision.
+
+## 2026-10-25 — Sort decision (user) and the `sort_charge` option: cost model (before any code)
+
+**Decision (user, Oct 25).**
+- The frozen enumerate card stays unchanged, and is recorded as **undercharged**: its sorts were never charged (finding above).
+- A new qs option, `sort_charge` (0 or 1; absent means 0), charges every sort in the card. With it off, every count is unchanged.
+- **The corrected card is a_mode = on_demand with sort_charge = 1.** Results under it are labelled "corrected card". The frozen reference (qs + lc 1.4, enumerate, sort_charge 0) stays the reference for comparability.
+
+**What is charged when sort_charge = 1.** Sorts are charged by a formula, not by the comparisons a particular sort performs. Python's timsort and Rust's sort_by are different algorithms, and a formula keeps the two cores count for count. A sort of n ≥ 2 items costs **n·⌈log₂ n⌉ comparisons**, the merge-sort upper bound, plus **1 op per key computed** where the key is not already charged. All of these are small-number operations (comparisons of floats or small integers, one log of a small ratio).
+
+| sort (both cores) | n | key ops | phase / type |
+|---|---|---|---|
+| multipliers ranked by ks score | kc | 0 (each score is already charged: 14 ops per candidate) | mult / mult |
+| pool selection: odd factor-base primes not dividing k, by closeness to q | len(pool_all) | n (one log each) | setup / setup_small |
+| the P chosen primes, ascending | P | 0 | setup / setup_small |
+| enumerate only: all C(P, s) candidates by closeness to target | C | C (one log each; the product is already charged as the (s − 1) multiplies) | setup / setup_small |
+| on_demand only: a candidate's s primes, sorted into its key | s, per try passing the target check | 0 | setup / setup_small |
+
+- **Not charged: on_demand's prefix-order sort (`by_q`).** It reproduces the first P entries of the pool-selection sort, which is charged above (reason in the entry above).
+- The multiplier sort is charged once per run. The pool sorts are charged once per attempt, so a retry with the next multiplier pays again.
+- No new op type is needed: mult and setup_small are already priced (ruint 0.306, Montgomery 1.137), and setup_small remains setup minus setup_full minus setup_euclid.
+
+**Expected size per attempt, from the counted sample** (len(pool_all) 79–299; P = 28 or 32):
+- the pool-selection sort costs 80 + 80·7 ≈ 640 up to 300 + 300·9 ≈ 3,000;
+- the ascending sort 140 (s = 3) or 160 (s = 4);
+- the multiplier sort 160 (kc 32) or 8 (kc 4);
+- on_demand key sorts about 6–8 per try, ~100–300 per run.
+
+With the card's other costs, on_demand + sort_charge adds about 1,000–3,600 small ops per run. That is about 2.5% of qs + lc 1.4 on_demand's ruint cost at 72 bits (~0.9% at 96), about 2.7% of its Montgomery cost at 72, and under 1% official at every size. Under enumerate, sort_charge would add ~43,000 (s = 3) or ~611,000 (s = 4) for the candidate sort alone.
+
+**Tests:**
+1. sort_charge = 0 reproduces every existing count (the maps, and the acceptance and parity suites unchanged).
+2. *Identity:* with sort_charge = 1 against 0, on sample numbers in both modes, every phase is equal except mult and setup. Each differs by exactly the formula, computed from the trace: kc, len(pool_all), P, C and the tries passing the target check.
+3. Python = Rust count for count with sort_charge = 1 (parity pairs added).
