@@ -2378,3 +2378,23 @@ The script was written and first run by the user in their own workspace, and is 
 **Note on the binding pricing (the user's; recorded now).** Under the robust score ruint binds at every size, for every pipeline, under both cards. Its 27 ns generic 256-bit multiply (against Montgomery's 7.4 ns) therefore decides every pipeline verdict so far. Whether ruint should stay a binding pricing is the user's decision; nothing is changed here.
 
 **Recorded for the queued p-1 map check.** P-1M's direction was stated for official pricing. Under the robust score, with ruint binding, expect p-1 to stay off: ruint already priced the forced-on p-1 card at 2.12x in the partition study.
+
+### Per-pricing optima: results (`evolve/per_pricing.py`, `per_pricing.out`/`.json`)
+
+Each pricing's own grid optimum under the corrected card, with its cost against corrected qs alone (official / ruint / Montgomery):
+
+| bits | official alone | Montgomery alone | ruint alone (= robust) |
+|---|---|---|---|
+| 72 | rho 1,448, ECM 285,870: 0.211 / 2.040 / 0.596 | rho 1,448, ECM 185,364: 0.214 / 2.024 / 0.596 | rho 1,579, ECM off: 0.783 / 0.869 / 0.804 |
+| 78 | rho 3,158, ECM 881,744: 0.208 / 2.215 / 0.638 | rho 1,579, ECM 92,682: 0.303 / 1.685 / 0.598 | rho 5,312, ECM off: 0.709 / 0.865 / 0.748 |
+| 84 | rho 3,158, ECM 1,048,576: 0.160 / 1.886 / 0.535 | rho 3,158, ECM 311,744: 0.189 / 1.733 / 0.525 | rho 5,793, ECM off: 0.691 / 0.793 / 0.717 |
+| 90 | rho 5,793, ECM 1,048,576: 0.159 / 1.917 / 0.547 | rho 5,793, ECM 220,436: 0.271 / 1.401 / 0.521 | rho 10,624, ECM off: 0.673 / 0.780 / 0.699 |
+| 96 | rho 5,793, ECM 1,048,576: 0.156 / 1.551 / 0.466 | rho 4,871, ECM 404,281: 0.217 / 1.209 / 0.437 | rho 12,634, ECM off: 0.657 / 0.729 / 0.675 |
+
+- **"ECM off" is a ruint-only result.** Under official alone the optimum puts a large ECM budget (up to the 2^20 grid edge) at every size, at 0.16–0.21 of qs alone. Under Montgomery alone ECM stays on at every size (93k–404k, below the enumerate-card Montgomery optima of 185k–809k), at 0.44–0.60.
+- Each of those optima costs 1.2–2.2x qs alone under ruint, which is why the robust score rejects them.
+- Under the enumerate card the pattern was the same, except that ruint itself kept ECM on at 84–96.
+- **Scored:**
+  - the user's prediction (ECM on at 84–96 under official, probably on under Montgomery at 90–96, off under ruint): **held**;
+  - mine (Q1: official on everywhere; Montgomery on at 84–96 with smaller budgets than under enumerate; ruint off everywhere): **held.**
+- So the robust verdict "rho then qs" is the ruint verdict. With a Montgomery-class multiply, ECM belongs in the pipeline; under the official count, a much larger ECM budget does.
