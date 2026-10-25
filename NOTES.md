@@ -1103,7 +1103,7 @@ Predictions scored in this entry: 6. (a) holds or fails depending on the reading
 
 ## 2026-10-24 — Run 8 wrap-up: clause (a) verdict, lessons, recorded misses
 
-- **Clause (a): INCONCLUSIVE.** The two readings scored in the results entry disagree, and neither is valid:
+- **Clause (a): pre-registered scoring: fails in mixed, holds in mixed-qs (the best-of-8 reading the pre-launch report implemented; PLAN's literal best-of-4 wording gives the reverse); wrap-up verdict: INCONCLUSIVE.** The change of method is on the record here. The two readings scored in the results entry disagree, and neither is valid:
   - (i) PLAN's wording said "best-of-4". It was stale after the move to 8 seeds, so the best-of-4 reading scores a sentence the design no longer meant.
   - (ii) Best-of-N by tuning fitness compares different tuning sets and selects the easiest one. Seed 77 gives the best-of-8 for all four mixed-qs methods and two of five mixed ones, with gaps of +0.25 to +0.35 log2. The best-of-8 reading measures the set as much as the method.
   - The results entry's scoring stands as written; this verdict is added beside it.

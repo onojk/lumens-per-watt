@@ -16,16 +16,16 @@ Growing factoring algorithms by evolution, and measuring them by **lumens per wa
 **What we've learned so far.**
 
 - **The meter can pick the winner.** Under the official count, elliptic curves led on balanced numbers; under real prices, a quadratic-sieve genome led from 60 bits up. Run 6's luck champion (p − 1 first) turned out 1.67× slower than plain tuned qs under real prices.
-- **Racing two methods lost; taking turns in order won.** Interleaving two methods in fixed slices never beat the better method alone (0 of 810 cases): the sieve's large steps hog the turns. Running cheap methods first, each for a fixed budget, then the sieve, was 1.5–2.2× faster on numbers whose smaller factor ranges from 16 to 42 bits.
+- **Racing two methods lost; taking turns in order won.** Interleaving two methods in fixed slices never beat the better method alone (0 of 810 cases): the sieve's large steps hog the turns. Running cheap methods first, each for a fixed budget, then the sieve, was 1.5–2.2× faster on numbers whose smaller factor ranges from 16 to 42 bits. Scope: 84-bit numbers in that mixed population, with allocation A's absolute budgets; no gain on balanced numbers; A's absolute budgets fail the gate at 72 bits. Budgets scaled by one factor per size pay at 96 bits but not at 72; per-stage budgets chosen from maps per size (ECM off below 84 bits) beat A on fresh 78- and 90-bit numbers (NOTES.md).
 - **Covering, not knowing.** That gain comes from covering every factor size cheaply, not from picking the right method per number. At a fixed size, nothing free reveals how big the hidden factor is.
 
 - **The scoring has to be cheat-proof.** Early on, algorithms "won" by memorizing the test numbers or by being slow on small numbers so their growth looked flatter. The scoring now uses fresh numbers every round, and every winner is rechecked on numbers it has never seen.
-- **Evolution rediscovers real tricks.** Starting from a plain search, it worked out on its own the multiplier trick that Hart published.
+- **Evolution tunes known tricks well.** The multiplier k was a gene, and evolution tuned it from a plain k = 1, 2, 3… search to Hart-like values (k = 720i, 60i, 12i); it did not invent the trick. Likewise the stage order was a gene, and it put p − 1 before rho.
 - **How you keep score decides who wins.** Judged by the worst case, rho (the "lucky" method) won. Judged by total work across many numbers, a luck-free square search won. We chose the running total as the scoreboard and wrote that down in `NOTES.md`.
 - **"Luck by design" only pays when guessing is cheaper than trying.** Making each test luckier cost more than it saved, so evolution mostly ignored those parts.
-- **Size changes everything.** To test bigger numbers, the core was rebuilt in Rust and proven to give identical answers to the Python version, case for case. On bigger numbers the winner flipped: the square searches that led at small sizes lose clearly to rho from about 60 bits up. At small sizes fixed overhead decides the race; at large sizes the growth rate does. Every growth rate we measured matched what the mathematics predicts.
+- **Size changes everything.** To test bigger numbers, the core was rebuilt in Rust and proven to give identical answers to the Python version, case for case. On bigger numbers the winner flipped: the square searches that led at small sizes lose clearly to rho from about 60 bits up. At small sizes fixed overhead decides the race; at large sizes the growth rate does. The measured exponents match theory's ordering (rho about N^1/4, qs subexponential), but measured qs growth is slower than L(N) over 72–96 bits: 0.148 log₂ per bit, against L's 0.170 at 72–84 and 0.160 at 84–96 (NOTES.md, size-relative budgets).
 
-**Where it's heading.** Next: per-operation counters in the fast core, so every score can be priced three ways (now built); then a big evolution run (Run 8) with control arms, a standard optimizer and random search given the same budget, to test whether evolution adds anything; then imported moves (SQUFOF, p + 1, smarter elliptic-curve arithmetic) and a carefully fenced experiment letting an AI model propose code changes under a meter it can't touch. Existing tools (Python, Java, Rust and C factoring libraries) are used as references and correctness checks, never inside the meter. The plan is in [PLAN.md](PLAN.md), and the reasoning and every result in [NOTES.md](NOTES.md).
+**Where it's heading.** Done: per-operation counters in the fast core (every score priced three ways); Run 8, with a standard optimizer and random search as control arms (the tuned optimizer is now the default for gene tuning); per-stage budgets by size. Next, in order: a size-scaling test of the qs genes (tuned at 54, 72, 84 and 96 bits, each scored at all four); an illumination picture of primes and gaps; a variable-length structure test, the one remaining claim for island evolution; then imported moves (SQUFOF, p + 1, smarter elliptic-curve arithmetic) and a carefully fenced experiment letting an AI model propose code changes under a meter it can't touch. Existing tools (Python, Java, Rust and C factoring libraries) are used as references and correctness checks, never inside the meter. The plan is in [PLAN.md](PLAN.md), and the reasoning and every result in [NOTES.md](NOTES.md).
 
 **The honest bottom line.** Evolution has become good at fine-tuning known algorithms. Scored on big numbers, it found a combination (p − 1 before rho) that beats plain rho by 1.3–1.6×, but nothing it has grown beats the known speed limits of its parts. That's a clean, reproducible measurement of where those limits sit, and the tools are now strong enough to keep pushing.
 
@@ -200,7 +200,7 @@ What it shows:
 - **Rho stays at 0.248 per bit.**
 - **A seam:** 72–84 are the ACCEPT numbers and 90/96 are new seeds, so slopes across 84→90 mix two sets of numbers. Tuned qs's 0.143 dip from 84 to 96 is likely that seam, not a real change.
 
-The run used a scratch script, not committed; the data are as above.
+The run used a scratch script that was never committed, so this table cannot be regenerated from the repo; the data are as above.
 
 ## Stage 7: large primes (Oct 23, 2026)
 
@@ -281,7 +281,7 @@ Champions rechecked on 80 fresh numbers per size (mean / worst ops, log₂):
 What it shows:
 
 - **The first evolved bulb to beat plain rho at scale.** L44-0272 runs p − 1 (bound N^0.21) before rho and needs 1.3–1.6× fewer operations on average at 64–78 bits. The cheap p − 1 stage catches secrets whose p − 1 is made of small factors; at 64 bits the median drops from 2^16.4 to 2^14.9.
-- **A better constant, not a better exponent.** Its growth from 64 to 78 bits is about N^0.256, the same as rho's, and its worst case is unchanged. Running p − 1 before rho is also established practice: evolution rediscovered it.
+- **A better constant, not a better exponent.** Its growth from 64 to 78 bits is about N^0.256, the same as rho's, and its worst case is unchanged. Running p − 1 before rho is also established practice. Stage order was a gene, so evolution selected this order; it did not invent it.
 - **The first time luck by design paid.** The p − 1 stage is a cheap bet that wins often enough to save watts overall, which is the rule from Run 4: guessing has to cost less than trying.
 - **The scale lesson holds.** Scored at 52–64 bits, the no-luck champions still sit on the N^(1/3) line.
 - **Two baseline notes.** The block-flash baseline logs "misses 1" here only because it is over budget: it needs about 2^27 operations at 64 bits, far above this run's 2^23 cap, so it isn't a correctness miss. Lehman is clean at 52–64 bits, but that doesn't cover its known 66-bit miss, which is a window-rounding issue fixed in Stage 1 (see `PLAN.md`).
@@ -532,7 +532,7 @@ What it shows:
 What it shows:
 
 - **The overfitting is gone.** Run 1's no-luck winners lost about 0.18 in the exponent between training and validation. Run 2's champions score within 0.015 of their gate scores (the gate is 48 bits only; validation adds 54).
-- **Evolution rediscovered Hart's multiplier trick.** Champion N11-0140 descends from a plain k = 1, 2, 3… square search. Its line went: seed (N^0.321) → added a trial-division tail → tuned the multiplier to k = 720i (N^0.275) → k = 60i. The other no-luck run found k = 12i independently. Both match hand-built Hart ×480.
+- **Evolution tuned the multiplier to Hart-like values.** The multiplier k was a gene, so evolution tuned it rather than inventing the trick. Champion N11-0140 descends from a plain k = 1, 2, 3… square search. Its line went: seed (N^0.321) → added a trial-division tail → tuned the multiplier to k = 720i (N^0.275) → k = 60i. The other no-luck run found k = 12i independently. Both match hand-built Hart ×480.
 - **The luck deck regrew rho** and matches it to the third decimal.
 - **The block flash was dropped by every run.** It's the better bulb asymptotically (trend falling toward 1/4), but its tree overhead is heavy ballast: at 54 bits it costs 2^24.8, barely under trial division. A fit to its cost model (N^(1/4)·log² N) projects it overtaking trial division at about 54 bits and Lehman only at about **179 bits**.
 - **Luck buys the block flash's exponent without the ballast.** Rho and the block flash share the N^(1/4) exponent; rho gets there with almost no memory or overhead, which is why it wins at every size tested here.

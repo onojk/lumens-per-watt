@@ -205,9 +205,21 @@ numbers, the parity count, and the old-vs-new table.
 
 ## Order of work (after Run 6)
 
-Stage 7 (large primes, done) -> relation-economy refactor (done), with the illumination
-tracer as a side task -> Stage 8 (ECM) -> Stage 9 (race) -> Stage 9.5 (across-numbers selector,
-planning only) -> partition study (done) -> per-type counters (done) -> partition study part 2
+**Status (Oct 24).** Done: Stage 7 (large primes); the relation-economy refactor; Stage 8
+(ECM); Stage 9 (race; RULED OUT); the partition study; per-type counters; partition study
+part 2 (superseded by the exhaustive 24-order baseline, `partition_orders.py`); Run 8 with
+control arms (run before Stage 10); after Run 8: the generalization tests, size-relative
+budgets, and per-stage budgets by size. The size-only case of Stage 9.5 is done as per-stage
+budgets by size; a selector on charged features is not built.
+
+**Next, in order:** the qs-gene size-scaling test (54/72/84/96) with per-stage budgets ->
+the illumination picture (primes and gaps) -> the variable-length structure test -> Stage 10
+(qs refinements) -> theory checks -> Phase 1 of learning from all algorithms (imported
+moves) -> the code-level pilot (fenced AI proposals).
+
+Original order, kept for the record: Stage 7 -> relation-economy refactor, with the
+illumination tracer as a side task -> Stage 8 (ECM) -> Stage 9 (race) -> Stage 9.5
+(across-numbers selector) -> partition study -> per-type counters -> partition study part 2
 (map only) -> Stage 10 (qs refinements) -> theory checks -> Run 8 with control arms.
 Learning from all algorithms: the move catalogue is done (MOVES.md); its Phase 1 follows
 Stage 9, with the math-survey items appended; the code-level pilot follows Run 8. Nothing
@@ -311,7 +323,7 @@ combined and evolved against one shared, fixed ledger.
     that produces relations, and pays for everything it does.
   - The ledger, its check and the factor base are fixed, never evolved.
 
-## Stages 8-10 and Run 8 (planning; no code yet)
+## Stages 8-10 and Run 8 (Stage 8, Stage 9 and Run 8 done; Stage 10 not started)
 
 Same rules as Stages 3-4 and 7: each card's cost model goes into NOTES.md before any code;
 every op is counted, never estimated; when in doubt, overcharge. Acceptance comes before
@@ -383,7 +395,8 @@ any scored run, and parity gates the Rust port.
   in the decks.**
   - Wide ranges on: `use_wide_qs_ranges()`, plus the lc range from Stage 7 if Stage 7
     has passed.
-  - Decks, proposed:
+  - Decks, proposed (superseded: Run 8 ran on the fixed-shape genome space of the Run 8 design
+    below, not these decks):
     - no-luck: td, sq, ps, qs, race (racing no-luck stages only);
     - luck: td, sq, ps, rho, pm1, qs, ecm, race. ECM is randomized like rho and pm1, so
       it goes in the luck deck.
@@ -391,8 +404,8 @@ any scored run, and parity gates the Rust port.
     re-checked by a one-generation dry run before launch.
   - ACCEPT adds tuned qs, the best ECM genome from Stage 8, and N51-0917 to Run 6's
     references. `run8_accept.py` is written before the run.
-  - Seeds: 71-74, proposed (Run 5 used 41-44, Run 6 51-54; 61-64 stay reserved for
-    Run 7).
+  - Seeds: Run 8 used 71-78 (71-74 proposed here; raised to 8 seeds before launch). Run 5
+    used 41-44, Run 6 51-54; 61-64 stay reserved for Run 7, which has not run.
   - Prerequisites: the relation-economy refactor, and Stages 8 and 9, accepted with
     parity.
   - **Scoring, decided (Oct 23, user): (c) as fitness, (e) in reports** (NOTES.md,
@@ -412,12 +425,15 @@ any scored run, and parity gates the Rust port.
   - **Control arms** (same evaluation budget, seeds and fitness as evolution):
     - TPE (Optuna) as the primary baseline; its license and maintenance checked and its
       version pinned (reuse rule). Random search as the null. CMA-ES (pycma) optional.
+    - **Outcome (Run 8, Oct 24):** tpe-tuned is the default for fixed-shape gene tuning (ties
+      island evolution per seed with no stalled seeds); island evolution must win the
+      variable-length structure test or be retired ("Search structure after Run 8").
     - Pre-registered meanings, stated neutrally:
       - TPE matches evolution on gene tuning: gene tuning needs no evolution machinery,
         and evolution must show value on structure.
       - Evolution beats TPE: check TPE's convergence before crediting evolution.
       - Random search matches both: the fitness surface is flat at that genome.
-  - **Run 8 design (Oct 24, planning; predictions written now).** Where it differs from the
+  - **Run 8 design (Oct 24; predictions written before the run; Run 8 done, NOTES).** Where it differs from the
     deck and size outline above, this design governs the evolution-vs-control comparison.
     - **Shared genome space, identical bounds for evolution, TPE (Optuna, pinned) and random
       search:** pre-stage budgets td, rho, ecm in {0} ∪ [2^8, 2^20] (log scale), pm1 in
@@ -530,7 +546,8 @@ any scored run, and parity gates the Rust port.
       slow for evolution.
     - `calibrate.py` prices only ecm, qs and rho. td, sq, ps, pm1 and cfrac (and the race,
       by its sides) have no mapping.
-    - Needed before Run 8, planning only for now: lampcore emits per-type counters for
+    - DONE before Run 8 (lampcore `--types`, `evolve/calibrate.py`, `evolve/optypes.py`;
+      NOTES, "lampcore per-type op counters"). The requirement as written: lampcore emits per-type counters for
       every card (with parity against Python and an identity check that they sum to
       each phase and to total ops), a price mapping for every card written in NOTES
       before use, and the robust fitness computed from those counters in the harness.
@@ -582,7 +599,11 @@ card: every op count stays exactly as it is.
   merged: (1) size-posterior bits removed per op, for all lamps; (2) location-window facts
   per op, only for td, sq and ps.
 
-## Stage 9.5: across-numbers selector (planning only)
+## Stage 9.5: across-numbers selector (planning only; not built)
+
+**Status (Oct 24):** the size-only case (bit length, the one free feature) is done as
+per-stage budgets by size from maps (NOTES, "Per-stage budgets by size"). A selector using
+charged features is not built.
 
 After Stage 9, before the partition study. The portfolio move (MOVES.md, "Learned selector
 across numbers"): instead of racing stages on every number, choose the stage or race for each
@@ -608,7 +629,7 @@ number from what is known about it before any work is done.
   M 10000; 80 bits: FB 110, M 14000), as a reference only. Any large gap is explained;
   his values are not copied.
 
-## Partition study (planning; no code yet)
+## Partition study (done; results in NOTES)
 
 How should a fixed op budget be split across lamps when the size of the smaller factor
 is not known in advance?
