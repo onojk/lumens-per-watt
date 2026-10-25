@@ -441,6 +441,73 @@ impl Ledger {
 
 /// SIQS relation source on kN: phases 3, 4, 5 and 8 until the ledger is full or the
 /// polynomials run out. Some(d) if a factor turns up on the way (a large prime dividing N).
+/// a_mode = on_demand: candidate A's formed one at a time, each charged when formed (twin of
+/// qs.py's a_on_demand). Prefixes: the (s - 1)-combinations of the pool ordered by closeness to
+/// q; the last prime is the pool prime closest to target / A'. Per candidate: s - 2 multiplies
+/// for A', 1 division, 1 multiply for A, 1 target check (full: s + 1 events), one comparison per
+/// pool prime considered for the last, and 1 dedupe lookup if the check passes (small).
+struct OnDemand {
+    pool: Vec<u64>,
+    prefixes: Vec<Vec<u64>>,
+    at: usize,
+    target: f64,
+    s: usize,
+    seen: std::collections::HashSet<Vec<u64>>,
+}
+
+impl OnDemand {
+    fn new(pool: &[u64], s: usize, q: f64, target: f64) -> Self {
+        let mut by_q = pool.to_vec();
+        by_q.sort_by(|a, b| {
+            ((*a as f64 / q).ln().abs(), *a).partial_cmp(&((*b as f64 / q).ln().abs(), *b)).unwrap()
+        });
+        OnDemand { pool: pool.to_vec(), prefixes: combinations(&by_q, s - 1), at: 0, target, s,
+                   seen: std::collections::HashSet::new() }
+    }
+
+    fn next(&mut self, m: &mut Meter) -> Result<Option<Vec<u64>>, Budget> {
+        let s = self.s;
+        while self.at < self.prefixes.len() {
+            let pre = self.prefixes[self.at].clone();
+            self.at += 1;
+            let ap: u64 = pre.iter().product();
+            m.charge(SETUP, s as u64 - 2)?;
+            let tp = self.target / ap as f64;
+            m.charge(SETUP, 1)?;
+            let mut best: Option<(f64, u64)> = None;
+            let mut n_rest = 0u64;
+            for &p in &self.pool {
+                if pre.contains(&p) {
+                    continue;
+                }
+                n_rest += 1;
+                let k = (p as f64 / tp).ln().abs();
+                if best.map_or(true, |(bk, bp)| (k, p) < (bk, bp)) {
+                    best = Some((k, p));
+                }
+            }
+            m.charge(SETUP, n_rest)?;
+            let last = best.unwrap().1;
+            let a = ap * last;
+            m.charge(SETUP, 1)?;
+            m.charge(SETUP, 1)?; // target check
+            m.ev(crate::EV_SETUP_FULL, s as u64 + 1);
+            if (a as f64 / self.target).log2().abs() > 0.25 {
+                continue;
+            }
+            let mut key = pre.clone();
+            key.push(last);
+            key.sort();
+            m.charge(SETUP, 1)?;
+            if !self.seen.insert(key.clone()) {
+                continue;
+            }
+            return Ok(Some(key));
+        }
+        Ok(None)
+    }
+}
+
 fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -> R {
     let n = num.n;
     let n_i = led.n_i;
@@ -476,11 +543,20 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
     });
     let mut pool: Vec<u64> = by_q[..pn].to_vec();
     pool.sort();
-    let mut combos = combinations(&pool, s);
-    m.charge(SETUP, (s as u64 - 1) * combos.len() as u64)?;
-    m.ev(crate::EV_SETUP_FULL, (s as u64 - 1) * combos.len() as u64); // at["combos"], at["s"]
-    let key = |c: &Vec<u64>| ((c.iter().product::<u64>() as f64 / target).ln()).abs();
-    combos.sort_by(|a, b| key(a).partial_cmp(&key(b)).unwrap().then_with(|| a.cmp(b)));
+    // a_mode (NOTES.md, "On-demand A selection"): "enumerate" (default) forms and charges every
+    // candidate up front; "on_demand" forms them one at a time (OnDemand::next), s >= 2 only.
+    let on_demand = g.get("a_mode").and_then(|v| v.as_str()) == Some("on_demand") && s >= 2;
+    let mut combos: Vec<Vec<u64>> = Vec::new();
+    let mut od: Option<OnDemand> = None;
+    if on_demand {
+        od = Some(OnDemand::new(&pool, s, q, target));
+    } else {
+        combos = combinations(&pool, s);
+        m.charge(SETUP, (s as u64 - 1) * combos.len() as u64)?;
+        m.ev(crate::EV_SETUP_FULL, (s as u64 - 1) * combos.len() as u64); // at["combos"], at["s"]
+        let key = |c: &Vec<u64>| ((c.iter().product::<u64>() as f64 / target).ln()).abs();
+        combos.sort_by(|a, b| key(a).partial_cmp(&key(b)).unwrap().then_with(|| a.cmp(b)));
+    }
     let lc = gene(g, "lc", 1.0).max(1.0).min(2.0);
     let lp_on = lc > 1.0; // lc = 1.0: no large-prime work at all
     let l_bound = (bnd as f64).powf(lc); // <= B^2, so a cofactor below it is prime
@@ -492,7 +568,22 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
         std::collections::HashMap::new();
     let mut arr = vec![0i32; width];
 
-    for qs_ in &combos {
+    let mut next_i = 0usize;
+    loop {
+        let cur: Vec<u64> = match od.as_mut() {
+            Some(o) => match o.next(m)? {
+                Some(c) => c,
+                None => break,
+            },
+            None => {
+                if next_i >= combos.len() {
+                    break;
+                }
+                next_i += 1;
+                combos[next_i - 1].clone()
+            }
+        };
+        let qs_ = &cur;
         m.ev(crate::EV_SETUP_FULL, 2 * s as u64); // at["a_count"] += 1, before the A's charges
         let a: i128 = qs_.iter().map(|&x| x as i128).product();
         let mut bl: Vec<i128> = Vec::with_capacity(s);

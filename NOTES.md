@@ -1967,3 +1967,28 @@ on_demand removes only the up-front enumeration of all C(P, s) candidates.
 - (D2) On-demand A loses at most 5% yield against enumerate at the same A size. *Scoring:* held if, per size and genome, mean polynomials per run under on_demand are at most 1.05x enumerate's. Relations needed per run are the same, so more polynomials means less yield.
 - (D3) ECM budgets shrink when qs gets cheaper. Scored when the pipeline is re-solved with an on_demand reference (not in this brief).
 - DeepSeek's A-pool constraints (primes > 2000, s > 3) are **not** adopted. They come from much larger factorizations and do not fit 72–96 bits, where the pool sits at 130–2,600 and s is 3 or 4.
+
+### On-demand A: amendment after acceptance (before any measurement), cost model first
+
+**Failure found by the acceptance run** (`evolve/ondemand_accept.py`, first version). The identity test held on 58/58 runs. But on_demand with the new genes missed one 89-bit map number (547073454933842939659158479) where enumerate succeeds on its first multiplier:
+- All four multipliers (kc = 4) filled the ledger, yet none of 14–32 dependencies split N. Python and lampcore agree on the miss and its 5,554,055 ops.
+- A second run (96 bits, new genes) needed 3 multipliers under on_demand.
+- **Mechanism, measured on the miss:**
+  - all 180 relations are valid modulo N, and there are no duplicate relations;
+  - but the dependencies are single relations whose exponent vector is already all even, so X ≡ ±Y by construction.
+- **Why.** on_demand's early A's share s − 1 primes. For example (331, 359, 373, 379), (331, 359, 373, 383) and (331, 359, 373, 389): the prefix order holds the closest primes fixed. Every polynomial samples u = Ax + B over about the same range, ±sqrt(2kN). A u with u² ≡ kN modulo the lcm of two A's that differ in one prime is therefore found by both families, about once per 2/e candidates for the differing prime e.
+- The ledger dedupes full relations by |u|, but a repeated *partial* (large-prime) relation is combined with its own twin. That gives u² with a doubled vector: a trivial relation. Enough of them use up the ledger's surplus rows.
+- Enumerate's best-first order spreads its A's over the pool, which makes this rare (no misses on the 2,880 map numbers). The ledger's self-combination weakness is left as it is, because changing it would change enumerate's counts, and so the frozen reference.
+
+**Amended on_demand rule** (it replaces step 5, the dedupe, of the rule above). A candidate that passes the target check is accepted only if it **shares at most s − 2 primes with every A already used** in this attempt. The usual SIQS precaution, as commonly described, is that A's should not differ in a single prime.
+- A duplicate shares s primes, so the old dedupe is subsumed.
+- Two A's sharing at most s − 2 primes produce the same u only if u satisfies the roots modulo at least two further primes, about 1/40,000 per pair at these sizes.
+- Steps 1–4 and 6–8 are unchanged.
+
+**Amended charges** (replacing the dedupe row): for a candidate that passes the target check, **s small ops per A already used** (comparing two s-tuples of small primes), as setup_small. Every other charge is as before: s + 1 full ops and P − (s − 1) small ops per candidate.
+- *Expected setup_full:* unchanged per candidate. Candidates per A used rise somewhat, because more are rejected for overlap.
+- *Expected extra setup_small:* about s·a_count²/2 ≈ 200–600 small ops per run, priced 0.31 ruint and 1.14 Montgomery. That is under 1% of qs's calibrated cost at 72 bits and less above.
+
+**Predictions O1–O9 and D1–D3 stand as written.** They were written for on_demand before any measurement. No measurement had run; the failure was found by the acceptance tests. The trace field `od_small` now counts the overlap comparisons in place of the dedupe lookups. The identity test's selection charge for on_demand is (s + 1)·od_cands + od_small, as before.
+
+**Added to acceptance:** (4) under on_demand on all 2,880 map numbers (lampcore), report misses and multiplier retries, beside enumerate's. A run that needs more multipliers than under enumerate is reported, not hidden.

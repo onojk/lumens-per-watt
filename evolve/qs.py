@@ -30,6 +30,10 @@ lc (large-prime bound L = B^lc, 1.0..2.0, default 1.0 = no large primes: today's
 NOTES.md, "Stage 7").
 Not a gene: "check": 1 turns the ledger's charged relation check on (phase "check"), for the
 acceptance test only; mutation never sets it, and absent it is off.
+Not a gene: "a_mode": "enumerate" (default: every candidate A formed and charged up front, as
+always) or "on_demand" (A's formed one at a time, charged as formed; NOTES.md, "On-demand A
+selection"). Set by hand, never mutated. "a_given": a list of A's (prime tuples) used in order
+with no selection charge, for the identity test only.
 
 Split (PLAN.md, "Relation economy") into a SOURCE, here: multiplier, polynomials, sieve,
 confirmation and large primes (phases 1, 3, 4, 5, 8), and the LEDGER it feeds (ledger.py:
@@ -71,7 +75,7 @@ def lamp_qs(N, g, m):
     for k in ranked:
         at = None
         if tr is not None:
-            at = dict(k=k, euler_e=[], ts=[], combos=0, s=0, a_count=0, inv=[],
+            at = dict(k=k, euler_e=[], ts=[], combos=0, s=0, a_count=0, inv=[], od_cands=0, od_small=0, a_seq=[],
                       n_sieved_setup=0, switches_roots=[], polys=[], cands=[],
                       extra_div=0, F=0, rows=0, deps=[])
             tr["attempts"].append(at)
@@ -84,6 +88,34 @@ def lamp_qs(N, g, m):
             if d:
                 return d
     return None
+
+def a_on_demand(pool, s, q, target, charge, at):
+    """a_mode = on_demand (NOTES.md, "On-demand A selection"): A's formed one at a time, each
+    charged when formed. Prefixes are the (s - 1)-combinations of the pool ordered by closeness
+    to q; the last prime is the pool prime closest to target / A'. Per candidate: s - 2
+    multiplies for A', 1 division, 1 multiply for A, 1 target check (full), one comparison per
+    pool prime considered for the last, and 1 dedupe lookup if the check passes (small)."""
+    by_q = sorted(pool, key=lambda p: (abs(math.log(p / q)), p))
+    seen = set()
+    for pre in combinations(by_q, s - 1):
+        Ap = math.prod(pre); charge("setup", s - 2)
+        tp = target / Ap; charge("setup", 1)
+        rest = [p for p in pool if p not in pre]
+        last = min(rest, key=lambda p: (abs(math.log(p / tp)), p)); charge("setup", len(rest))
+        A = Ap * last; charge("setup", 1)
+        charge("setup", 1)                     # target check
+        if at is not None:
+            at["od_cands"] += 1
+            at["od_small"] += len(rest)
+        if abs(math.log2(A / target)) > 0.25:
+            continue
+        key = tuple(sorted(pre + (last,))); charge("setup", 1)
+        if at is not None:
+            at["od_small"] += 1
+        if key in seen:
+            continue
+        seen.add(key)
+        yield key
 
 def sieve_source(N, k, g, led, ch, at):
     """SIQS relation source on kN: phases 3, 4, 5 and 8 until `led` is full or the polynomials
@@ -108,11 +140,22 @@ def sieve_source(N, k, g, led, ch, at):
     q = target ** (1 / s)
     P = min(len(pool_all), 40 if s == 1 else 16 + 4 * s)
     pool = sorted(sorted(pool_all, key=lambda p: (abs(math.log(p / q)), p))[:P])
-    combos = list(combinations(pool, s))
-    charge("setup", (s - 1) * len(combos))     # multiplies forming each A
-    combos.sort(key=lambda c: (abs(math.log(math.prod(c) / target)), c))
-    if at is not None:
-        at["combos"], at["s"] = len(combos), s
+    given = g.get("a_given")                   # test hook (acceptance only): a fixed A sequence, no selection charge
+    if given is not None:
+        combos = [tuple(c) for c in given]
+        assert all(len(c) == s for c in combos)
+        if at is not None:
+            at["combos"], at["s"] = 0, s
+    elif g.get("a_mode", "enumerate") == "on_demand" and s >= 2:
+        combos = a_on_demand(pool, s, q, target, charge, at)
+        if at is not None:
+            at["combos"], at["s"] = 0, s
+    else:
+        combos = list(combinations(pool, s))
+        charge("setup", (s - 1) * len(combos))     # multiplies forming each A
+        combos.sort(key=lambda c: (abs(math.log(math.prod(c) / target)), c))
+        if at is not None:
+            at["combos"], at["s"] = len(combos), s
     lc = min(2.0, max(1.0, g.get("lc", 1.0)))
     LP = lc > 1.0                              # lc = 1.0: no large-prime work at all
     L = B ** lc                                # <= B^2, so a cofactor below it is prime
@@ -127,6 +170,7 @@ def sieve_source(N, k, g, led, ch, at):
         A = math.prod(qs_)
         if at is not None:
             at["a_count"] += 1
+            at["a_seq"].append(qs_)
         Bl = []
         for ql in qs_:
             Aq = A // ql; charge("setup", 1)

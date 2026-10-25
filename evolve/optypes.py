@@ -20,7 +20,7 @@ the stop but not yet tested counts as a multiply (1 op). The sum is still exact.
 def qs_counts(tr):
     o = tr["ops"]
     ats = tr["attempts"]
-    setup_full = sum((a["s"] - 1) * a["combos"] + 2 * a["s"] * a["a_count"] for a in ats)
+    setup_full = sum((a["s"] - 1) * a["combos"] + (a["s"] + 1) * a.get("od_cands", 0) + 2 * a["s"] * a["a_count"] for a in ats)
     setup_euc = sum(st for a in ats for _, _, st in a["inv"])
     scans = sum(2 * p["M"] + 1 for a in ats for p in a["polys"])
     confirm_full = sum(2 * len(a["cands"]) for a in ats)

@@ -12,7 +12,9 @@ random genomes drawn from the wide qs ranges for runs after Run 6
 (lamps.use_wide_qs_ranges: mc 0.05-12 log scale, bc 0.7-3.0), small sieve intervals
 (mc 0.05-0.5 at 48-84 bits), where a factor-base prime wider than the
 interval can start past its end and must not step (asserted for mc <= 0.25: lampcore's sieve
-count wrapped there until it was guarded). Large primes (Stage 7, lc gene): lc = 1.0 identity
+count wrapped there until it was guarded). On-demand A selection (a_mode = on_demand): the
+reference, new, N51-0917 and default genes at 48-90 bits, a low cap, the retry numbers and
+random wide genomes. Large primes (Stage 7, lc gene): lc = 1.0 identity
 pairs, lc 1.2-2.0 variants at 40-84 bits, numbers that make an lc > 1 run retry (asserted),
 td then qs with lc, and random genomes with a
 random lc in every qs stage; the per-phase check includes lp. Caps chosen per number so the
@@ -122,6 +124,21 @@ def qs_pairs():
     for i, g in enumerate(random_qs_genomes(30, wide=True)):
         for b in (34, 46, 60, 72, 84):
             yield f"random wide qs {i}", g, semiprimes_pq(b, 2, 1600000 + b), min(cap_for(b), 2 ** 24), False
+    # a_mode = on_demand (NOTES.md, "On-demand A selection"): the reference genes, the new genes,
+    # N51-0917's qs and the default genes at 48-90 bits, a low cap, the retry numbers, and random
+    # wide genomes with on_demand in every qs stage
+    new_genes = dict(QS, kc=4, bc=0.8993889783377338, mc=0.7340990893362095, tc=1.1044621542694246, lc=1.6612269841697611)
+    for b in (48, 60, 66, 72, 78, 84, 90):
+        nums = semiprimes_pq(b, 6, 2100000 + b)
+        for name, g0 in (("tuned lc 1.4", dict(TUNED, lc=1.4)), ("new genes", new_genes), ("N51", N51_QS), ("default", QS)):
+            yield f"qs on_demand {name}", [dict(g0, a_mode="on_demand")], nums, 2 ** 29, False
+        yield "qs on_demand low cap", [dict(TUNED, lc=1.4, a_mode="on_demand")], nums, 2 ** 14, False
+    for seed, b, i in RETRY:
+        yield "qs on_demand retry", [dict(QS, a_mode="on_demand")], semiprimes_pq(b, i + 1, seed)[i:], 2 ** 29, False
+    for i, g in enumerate(random_qs_genomes(15, wide=True)):
+        g = [dict(st, a_mode="on_demand") if st["t"] == "qs" else st for st in g]
+        for b in (46, 60, 72, 84):
+            yield f"random wide qs on_demand {i}", g, semiprimes_pq(b, 2, 2200000 + b), min(cap_for(b), 2 ** 24), False
     yield from lp_pairs()
     yield from check_pairs()
     yield from cfrac_pairs()
