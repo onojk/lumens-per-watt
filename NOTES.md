@@ -2362,3 +2362,19 @@ The script was written and first run by the user in their own workspace, and is 
 **Lesson (user):** textbook catch-rate models give direction; maps from the real cards give magnitudes.
 
 **Queued p-1 map check, amended.** Search B = 2^8 … 2^15 (not only 2^8–2^10), with rho and ECM re-optimized jointly, on the corrected card, on the 72–96 maps. The re-solve above adds a condition: under the corrected card ECM is already off at every size, so the check is p-1 between rho and qs, with ECM still searched. Predictions go in NOTES before the map is extended. The earlier P1/P2 (mine) and the user's revised prediction stand as written; they were stated for the enumerate-era pipeline.
+
+## 2026-10-25 — Per-pricing optima under the corrected card: is "ECM off" a ruint-only result? (predictions before reading)
+
+**Disclosure.** Each pricing's own grid optimum equals backward induction under that pricing (exact composition), and `resolve.json` already stores those as `bi_per_pricing` for both cards. They were written by the re-solve and have not been read; these predictions are written before reading them. A short script, `evolve/per_pricing.py`, prints them beside the robust optimum, with each pricing's fitness, from the same maps.
+
+**Predictions.**
+- *The user's:* ECM stays on at 84–96 under official, probably on under Montgomery at 90–96, and off under ruint.
+- *Mine (Q1):*
+  - under official, ECM is on at every size, 72–96 (under enumerate the official optimum had ECM at 285,870–1,048,576 everywhere, and official qs cost moved only 0.90–0.96x);
+  - under Montgomery, ECM is on at 84–96 with a smaller budget than under enumerate (808,563 at 84; 480,774 at 96), and on or off at 72–78;
+  - under ruint, ECM is off at every size.
+  - So "ECM off" is a ruint-only result.
+
+**Note on the binding pricing (the user's; recorded now).** Under the robust score ruint binds at every size, for every pipeline, under both cards. Its 27 ns generic 256-bit multiply (against Montgomery's 7.4 ns) therefore decides every pipeline verdict so far. Whether ruint should stay a binding pricing is the user's decision; nothing is changed here.
+
+**Recorded for the queued p-1 map check.** P-1M's direction was stated for official pricing. Under the robust score, with ruint binding, expect p-1 to stay off: ruint already priced the forced-on p-1 card at 2.12x in the partition study.
