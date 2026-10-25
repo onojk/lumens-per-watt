@@ -1403,3 +1403,19 @@ Fresh balanced numbers, 240 per size (54–84 bits, seeds 8700000 + bits), each 
   - At 84 "within noise" is guaranteed by the identity; the content of P1 is the 72-bit gate and the 96-bit tie.
 - (P2, mine) Robust ratio share / A at 72 bits: 0.80–0.92 (interval below 0). Reasoning: at 72 the balanced band's ruint overspend is about 1.16x qs under A; scaling budgets down by Q(84)/Q(72) ≈ 2.7 leaves about 0.43, so band 36 lands near 1.4–1.5 under ruint (a borderline gate pass), and the overall ruint score drops from about 1.15 to about 0.95–1.0.
 - (P3, mine) At 96 bits budgets grow by about 3–4x (ECM about 100–130k). Share / A robust ratio 0.92–1.02 with the interval including 0 (a tie, P1's reading); the share genome's worst band stays below 1.5.
+
+## 2026-10-24 — Budget/order freedom beyond A: design and predictions (before computing; existing genomes)
+
+**Question.** Does searching budgets and order (mixed arm) beat holding them at A and tuning only the qs genes (mixed-qs arm), method for method and seed for seed?
+
+**Design.**
+- Both arms used the same tuning set per seed and the same sealed set (`run8.sealed_set`: the mixed population, seeds 8500000 + 100 pb + 84, 80 per band), so a seed's two runs are paired.
+- Pairs: mixed X vs mixed-qs X, same seed, for X in {evolution, TPE, random} (the methods run in both arms). Extra pair: mixed tpe-tuned vs mixed-qs tpe-warm (each arm's TPE variant with the better start).
+- d_s = log2(fit mixed / fit mixed-qs) on the sealed numbers; below 0 means the freedom pays. Same machinery as `run8_perseed.py`: per-seed interval (numbers resampled within bands), sign test, mean and median d with (i) numbers resampled, seeds fixed, and (ii) seeds and numbers resampled; sealed misses count in the sign test and are left out of the means.
+- Seen before writing this: the best-of-8 sealed numbers (mixed TPE 0.455, evolution 0.484, random 0.561; mixed-qs about 0.47 for every method), TPE's stalls on mixed seeds 72 and 75, the mixed-qs evolution miss on seed 74. Not seen: any per-seed sealed value for mixed-qs.
+
+**Predictions** (scored as written):
+- (F1) evolution: tie. Mean d in [−0.05, +0.05], (ii) includes 0.
+- (F2) TPE: mean d above 0, driven by mixed seeds 72 and 75 (d > +0.5 on both); (ii) includes 0.
+- (F3) random: mixed worse. Mean d in [+0.10, +0.25], (ii) above 0 (four more dimensions for a method with no model).
+- (F4) Overall: the freedom does not pay at 84 bits with 1,360 evaluations: no pair has (ii) below 0.
