@@ -1,0 +1,9 @@
+54 Track R: rho 0, ECM 0 (fitness 0.9371; 0.937 / 0.933 / 0.905; ECM grid to 2^20); previous (0, 0); steps {'rho': 0, 'ecm': 0}
+54 Track M: rho 3158, ECM 0 (fitness 0.6698; 0.735 / 1.133 / 0.670; ECM grid to 2^20); previous (3158, 0); steps {'rho': 0, 'ecm': 0}
+72 Track R: rho 1448, ECM 0 (fitness 0.7349; 0.717 / 0.735 / 0.657; ECM grid to 2^20); previous (1448, 0); steps {'rho': 0, 'ecm': 0}
+72 Track M: rho 1448, ECM 35734 (fitness 0.5584; 0.437 / 1.492 / 0.558; ECM grid to 2^20); previous (1448, 65536); steps {'rho': 0, 'ecm': 7}  MOVED > 1 STEP
+84 Track R: rho 5793, ECM 0 (fitness 0.5899; 0.588 / 0.590 / 0.507; ECM grid to 2^20); previous (5793, 0); steps {'rho': 0, 'ecm': 0}
+84 Track M: rho 3158, ECM 32768 (fitness 0.4377; 0.430 / 0.847 / 0.438; ECM grid to 2^20); previous (3158, 32768); steps {'rho': 0, 'ecm': 0}
+96 Track R: rho 12634, ECM 0 (fitness 0.5004; 0.500 / 0.497 / 0.441; ECM grid to 2^20); previous (12634, 0); steps {'rho': 0, 'ecm': 0}
+96 Track M: rho 4871, ECM 120194 (fitness 0.3660; 0.353 / 0.764 / 0.366; ECM grid to 2^20); previous (4871, 120194); steps {'rho': 0, 'ecm': 0}
+any budget moved more than one step (or off <-> on): True

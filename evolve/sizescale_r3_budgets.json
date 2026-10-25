@@ -1,0 +1,249 @@
+{
+ "pipelines": {
+  "54": {
+   "R": {
+    "rho": 0,
+    "ecm": 0
+   },
+   "M": {
+    "rho": 3158,
+    "ecm": 0
+   }
+  },
+  "72": {
+   "R": {
+    "rho": 1448,
+    "ecm": 0
+   },
+   "M": {
+    "rho": 1448,
+    "ecm": 35734
+   }
+  },
+  "84": {
+   "R": {
+    "rho": 5793,
+    "ecm": 0
+   },
+   "M": {
+    "rho": 3158,
+    "ecm": 32768
+   }
+  },
+  "96": {
+   "R": {
+    "rho": 12634,
+    "ecm": 0
+   },
+   "M": {
+    "rho": 4871,
+    "ecm": 120194
+   }
+  }
+ },
+ "detail": {
+  "54": {
+   "R": {
+    "rho": 0,
+    "ecm": 0,
+    "fitness": 0.9371121966598447,
+    "scores": {
+     "official": 0.9371121966598447,
+     "ruint": 0.9327183921162933,
+     "montgomery": 0.9051698690175692
+    },
+    "grid_top": 1048576,
+    "at_edge": false
+   },
+   "M": {
+    "rho": 3158,
+    "ecm": 0,
+    "fitness": 0.6697914813242635,
+    "scores": {
+     "official": 0.73499252443268,
+     "ruint": 1.1326490441431865,
+     "montgomery": 0.6697914813242635
+    },
+    "grid_top": 1048576,
+    "at_edge": false
+   }
+  },
+  "72": {
+   "R": {
+    "rho": 1448,
+    "ecm": 0,
+    "fitness": 0.7348627900878358,
+    "scores": {
+     "official": 0.7173879605757004,
+     "ruint": 0.7348627900878358,
+     "montgomery": 0.6569839288118579
+    },
+    "grid_top": 1048576,
+    "at_edge": false
+   },
+   "M": {
+    "rho": 1448,
+    "ecm": 35734,
+    "fitness": 0.5583691714014485,
+    "scores": {
+     "official": 0.43652881832847074,
+     "ruint": 1.4917633303806042,
+     "montgomery": 0.5583691714014485
+    },
+    "grid_top": 1048576,
+    "at_edge": false
+   }
+  },
+  "84": {
+   "R": {
+    "rho": 5793,
+    "ecm": 0,
+    "fitness": 0.5898954660238297,
+    "scores": {
+     "official": 0.5876123563672749,
+     "ruint": 0.5898954660238297,
+     "montgomery": 0.5066703687089198
+    },
+    "grid_top": 1048576,
+    "at_edge": false
+   },
+   "M": {
+    "rho": 3158,
+    "ecm": 32768,
+    "fitness": 0.4376531046100791,
+    "scores": {
+     "official": 0.42967774392544916,
+     "ruint": 0.8471308407009036,
+     "montgomery": 0.4376531046100791
+    },
+    "grid_top": 1048576,
+    "at_edge": false
+   }
+  },
+  "96": {
+   "R": {
+    "rho": 12634,
+    "ecm": 0,
+    "fitness": 0.5004229131146901,
+    "scores": {
+     "official": 0.5004229131146901,
+     "ruint": 0.4972036406409795,
+     "montgomery": 0.4407943209275044
+    },
+    "grid_top": 1048576,
+    "at_edge": false
+   },
+   "M": {
+    "rho": 4871,
+    "ecm": 120194,
+    "fitness": 0.3660019388753997,
+    "scores": {
+     "official": 0.3529111613745153,
+     "ruint": 0.7637082424897247,
+     "montgomery": 0.3660019388753997
+    },
+    "grid_top": 1048576,
+    "at_edge": false
+   }
+  }
+ },
+ "steps_from_previous": {
+  "54": {
+   "R": {
+    "steps": {
+     "rho": 0,
+     "ecm": 0
+    },
+    "moved_more_than_one": false,
+    "previous": [
+     0,
+     0
+    ]
+   },
+   "M": {
+    "steps": {
+     "rho": 0,
+     "ecm": 0
+    },
+    "moved_more_than_one": false,
+    "previous": [
+     3158,
+     0
+    ]
+   }
+  },
+  "72": {
+   "R": {
+    "steps": {
+     "rho": 0,
+     "ecm": 0
+    },
+    "moved_more_than_one": false,
+    "previous": [
+     1448,
+     0
+    ]
+   },
+   "M": {
+    "steps": {
+     "rho": 0,
+     "ecm": 7
+    },
+    "moved_more_than_one": true,
+    "previous": [
+     1448,
+     65536
+    ]
+   }
+  },
+  "84": {
+   "R": {
+    "steps": {
+     "rho": 0,
+     "ecm": 0
+    },
+    "moved_more_than_one": false,
+    "previous": [
+     5793,
+     0
+    ]
+   },
+   "M": {
+    "steps": {
+     "rho": 0,
+     "ecm": 0
+    },
+    "moved_more_than_one": false,
+    "previous": [
+     3158,
+     32768
+    ]
+   }
+  },
+  "96": {
+   "R": {
+    "steps": {
+     "rho": 0,
+     "ecm": 0
+    },
+    "moved_more_than_one": false,
+    "previous": [
+     12634,
+     0
+    ]
+   },
+   "M": {
+    "steps": {
+     "rho": 0,
+     "ecm": 0
+    },
+    "moved_more_than_one": false,
+    "previous": [
+     4871,
+     120194
+    ]
+   }
+  }
+ },
+ "moved_more_than_one_step": true
+}
