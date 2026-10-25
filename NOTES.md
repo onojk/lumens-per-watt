@@ -2453,3 +2453,22 @@ The design is the queued test (PLAN, "Queued: size-scaling test for the qs genes
 - *Track R:* predictions S1–S7 were written before this decision, under the robust rule, which is Track R. They stand as written, and the Track R design is the one above (rho-only pipeline per size; qs alone at 54).
 - *Track M:* new predictions are written below, before the Montgomery re-solve and before any tuning.
 - The tuning budget is the same per track: tpe-tuned settings, seeds 0–3, 200 trials per size, kc 1–32.
+
+**Track M predictions (mine; written after the decision, before the Montgomery re-solve and any tuning).**
+- *Known inputs:* the Montgomery-alone optima at 72 / 84 / 96 were already computed by the per-pricing run (1,448 / 185,364; 3,158 / 311,744; 4,871 / 404,281). 54 bits has not been solved under Montgomery.
+- (M1) **Budgets.**
+  - The Montgomery re-solve reproduces those three optima.
+  - At 54 the Montgomery optimum has rho on (≥ 724) and ECM off or at most 2^15.
+  - No Montgomery optimum sits at the grid's top edge (2^20).
+  - Official sits at the edge at 84, 90 and 96. With the ECM grid widened to 2^22, the official optimum's ECM moves above 2^20 at those sizes.
+- (M2) **Genes.** The Track M frozen genomes have kc ≥ 8 at 72–96, and a smaller mc than the Track R frozen genome at the same size. Under Montgomery, small ops cost nearly as much as a full multiply (1.137), so a wide sieve is dearer. No gene meets the monotone rule in Track M either (at most one of mc, lc, kc does).
+- (M3) **Gain.** The Track M tuned genome beats qs + lc 1.4's genes in the Track M pipeline by 5–15% under Montgomery at 72–96 (interval below 0).
+- (M4) **Gates.** Track M winners pass the Montgomery gate at every size. They fail the ruint per-band gate at 72–96 (every ECM-on pipeline failed it at 78 and 90), so they are labelled "conditional on a fast multiply". The 54-bit winner passes the ruint gate if its ECM is off.
+- (M5) **Headline cross-pricing.**
+  - PD_M = Montgomery cost of the Track R winner / Montgomery cost of the Track M winner: 1.3–1.6 at 72–96.
+  - PD_R = ruint cost of the Track M winner / ruint cost of the Track R winner: 1.6–2.4 at 72–96.
+  - Both are at most 1.2 at 54.
+  - (From the per-pricing optima with qs + lc 1.4's genes: PD_M 1.35 / 1.37 / 1.54 and PD_R 2.33 / 2.19 / 1.66 at 72 / 84 / 96. The tuned genes should move these little.)
+- (M6) **The pipeline decides, not the genes.** For each gene and size, the Track R and Track M seed ranges overlap.
+
+**Definitions, fixed now.** The *winner* of a track at a size is the best, by the track's fitness on the sealed numbers in the track's pipeline at that size, of that track's four tuned genomes plus qs + lc 1.4's genes and the new genes. PD_M and PD_R are computed from the two winners' sealed mean costs.
