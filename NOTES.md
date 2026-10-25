@@ -1597,3 +1597,59 @@ Paired, log2 [95%]: PRIMARY / A −0.108 [−0.177, −0.039] (all three pricing
 - (S7, mine) At 78 and 90, TRANSFER beats A (robust interval below 0) and ties or beats theory (interval includes 0 or lies below it). Gate: PASS at 90; PASS or BORDERLINE at 78.
 - (S8, mine) Q-RULE is worse than A at both sizes (robust interval above 0); it overspends, as on the derivation maps.
 - S2 (the user's, registered earlier) is scored on Q-RULE, the "stopping-rule budgets" it was written for.
+
+### Per-stage budgets: results (`evolve/stopping_derive2.out`/`.json`, `stopping_test.out`/`.json`)
+
+**Derivation (72, 84, 96): the robust grid optimum is the answer; backward induction explains it.**
+
+| size | robust grid optimum (rho / ECM), fitness | BI under ruint | BI under official | BI under Montgomery | BI conservative (min over pricings), fitness | steps (rho, ECM) |
+|---|---|---|---|---|---|---|
+| 72 | 3,158 / off, 0.8172 | 3,158 / off | 1,448 / 285,870 | 1,448 / 285,870 | 1,448 / off, 0.8424 | 9, 0 |
+| 84 | 5,793 / 32,768 (A), 0.6408 | 5,793 / 32,768 | 3,158 / 1,048,576 | 3,158 / 808,563 | 3,158 / 32,768, 0.6411 | 7, 0 |
+| 96 | 12,634 / 60,097, 0.6269 | 12,634 / 60,097 | 5,793 / 1,048,576 | 4,871 / 480,774 | 4,871 / 60,097, 0.6354 | 11, 0 |
+
+- The exhaustive optimum equals the earlier coordinate-search hindsight values at all three sizes. The 4-stage optimum keeps td and pm1 off at every size.
+- **Ruint binds everywhere, and backward induction under ruint alone is the robust optimum, exactly.** Under official and Montgomery, ECM is cheap per op relative to qs, so they want ECM near the cap and less rho.
+- **The conservative combination mixes incompatible vectors.** Componentwise min takes rho from official/Montgomery (which have ECM running long behind it) and ECM from ruint. Its rho is 7–11 steps low, but its fitness is close (+0.000 to +0.025): the robust surface is flat along rho near the optimum.
+- The rule for "which budget" is therefore: backward induction under the binding pricing, not the min over pricings.
+
+**Test (78 and 90; fresh numbers untouched by the derivation; they carry the claim).** Fitness (c) against qs + lc 1.4 alone (primary); against the new qs genes alone in brackets.
+
+| 78 bits (560) | rho / ECM | robust [vs new qs] | official / ruint / Mont | gate, per-band intervals (worst band) |
+|---|---|---|---|---|
+| TRANSFER | 5,793 / off | 0.745 [1.523] | 0.694 / 0.745 / 0.719 | PASS (1.127 [1.107, 1.152], band 32) [vs new qs: FAIL] |
+| BI-conservative | 3,158 / off | 0.810 [1.655] | 0.769 / 0.810 / 0.787 | PASS (1.070) [FAIL] |
+| Q-RULE | 35,734 / 285,870 | 1.226 [2.506] | 0.243 / 1.226 / 0.615 | FAIL (2.821 [2.301, 3.507], band 39) [FAIL] |
+| A | 5,793 / 32,768 | 0.826 [1.688] | 0.494 / 0.826 / 0.620 | BORDERLINE (1.534 [1.360, 1.723], band 36) [FAIL] |
+| theory | 2,896 / 16,384 | 0.940 [1.921] | 0.728 / 0.940 / 0.808 | PASS (1.381 [1.323, 1.457], band 36) [FAIL] |
+| hindsight on its own map (info) | 5,793 / off | 0.744 (map) | | |
+
+| 90 bits (640) | rho / ECM | robust [vs new qs] | official / ruint / Mont | gate (worst band) |
+|---|---|---|---|---|
+| TRANSFER | 9,742 / 65,536 | 0.665 [0.737] | 0.457 / 0.665 / 0.542 | PASS (1.270 [1.181, 1.354], band 45) [BORDERLINE] |
+| BI-conservative | 4,871 / 65,536 | 0.670 [0.743] | 0.467 / 0.670 / 0.548 | PASS (1.242) [PASS] |
+| Q-RULE | 71,468 / 311,744 | 0.848 [0.940] | 0.253 / 0.848 / 0.499 | FAIL (2.113 [1.884, 2.344], band 45) [FAIL] |
+| A | 5,793 / 32,768 | 0.789 [0.875] | 0.662 / 0.789 / 0.714 | PASS (1.220 [1.217, 1.222], band 45) [PASS] |
+| theory | 11,585 / 65,536 | 0.667 [0.739] | 0.456 / 0.667 / 0.542 | PASS (1.281) [BORDERLINE] |
+| hindsight on its own map (info) | 9,742 / 46,341 | 0.633 (map) | | |
+
+Paired, robust log2 [95%] (the robust ratio between two genomes is the same against either reference here, because ruint binds for both):
+- 78: TRANSFER / A −0.148 [−0.235, −0.056] (official +0.491, Montgomery +0.214: **(e) undecided**); TRANSFER / theory −0.334 [−0.407, −0.262] (all three pricings below 0: **TRANSFER**); TRANSFER / BI-conservative −0.120 [−0.182, −0.064]; Q-RULE / A +0.570 [+0.454, +0.682].
+- 90: TRANSFER / A −0.247 [−0.312, −0.186] (all three below 0: **TRANSFER**); TRANSFER / theory −0.004 [−0.011, +0.008] (tie); TRANSFER / BI-conservative −0.010 [−0.033, +0.010] (tie); Q-RULE / A +0.103 [+0.010, +0.192].
+
+**Reading.**
+- **Budgets transferred from the neighbouring sizes' maps work.** At 78 bits the transferred optimum (rho 5,793, ECM off) is exactly the hindsight optimum on the 78-bit map. At 90 bits it is 4 grid steps above the hindsight ECM (65,536 vs 46,341; map fitness 0.665 vs 0.633). It passes the gate with per-band intervals at both sizes and beats A on the robust score at both.
+- **ECM switches off between 84 and 72 bits.** It is off at 72 and 78, and on at 84 and above. The theory rule, a single scale factor, cannot express this, and at 78 it is 0.79x worse than TRANSFER under all three pricings.
+- **The robust optimum gives up official cost to buy ruint cost.** At 78 TRANSFER loses to A under official (+0.49 log2) and Montgomery (+0.21) while winning under ruint (−0.15). By the (e) rule it is not "better than A" at 78; it is better on the robust score only.
+- **Against the new qs genes alone (secondary reference):** at 78 bits every genome here, all with qs + lc 1.4 as the final stage, is worse than the new qs alone under ruint (robust 1.52–2.51), and fails the gate against it. At 90 the best is 0.737. The final-stage genes matter as much as the budgets at these sizes; the size-scaling test (next) combines the two.
+- **The Q-valued stopping rule is ruled out:** it overspends at both sizes (1.07x and 1.49x A), as on the derivation maps.
+
+**Predictions scored as written:** 8 scored, 2 held, 6 missed.
+- (S1, the user's) the Q-valued rule reproduces the hindsight optima within one grid step, incl. ECM off at 72: **missed** (16–40 steps over; ECM on at 72).
+- (S2, the user's; scored on Q-RULE) passes the gate at 78 and 90 and beats both alternatives: **missed** (gate FAIL at both; worse than A and theory at both).
+- (S3, mine) S1 misses; rho at or below hindsight; at least one ECM > 1 step away; half-octave closer in ≥ 4 of 6 cells: **missed.** The rho clause failed (far above, not below). The other three held (half-octave closer in 4 of 6: 72 rho, 84 ECM, 96 rho, 96 ECM).
+- (S4, mine) the rule beats A at 78 and ties theory at both: **missed** (Q-RULE worse than A and theory at both).
+- (S5, the user's) backward-induction budgets match the robust optimum within one grid step at 72, 84 and 96: **missed** for the conservative combination as registered (rho 7–11 steps low; ECM exact at all three). BI under the binding pricing (ruint) matches exactly at all three; that was not the registered reading.
+- (S6, mine) S5 holds in ≥ 5 of 6 cells; where it fails, BI-conservative is below the robust value: **missed** (3 of 6). The second clause held.
+- (S7, mine) TRANSFER beats A at 78 and 90, ties or beats theory, gate PASS at 90 and PASS or BORDERLINE at 78: **held** (robust intervals; gate PASS at both).
+- (S8, mine) Q-RULE worse than A at both sizes: **held** (+0.570, +0.103).

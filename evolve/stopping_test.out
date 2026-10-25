@@ -1,0 +1,78 @@
+
+78 bits: 560 numbers, bands [16, 20, 24, 28, 32, 36, 39]; Q 295960; L ratio 0.4989
+  budgets (rho, ecm): TRANSFER (5793, 0)  BI-conservative (3158, 0)  Q-RULE (35734, 285870)  A (5793, 32768)  theory (2896, 16384)  Q-RULE half-octave (info) (11585, 32768)
+  rule per pricing: rho: offi 679917, ruin 35734, mont 46341; ecm: offi 1048576, ruin 285870, mont 285870
+  map cross-check (composed official = direct): TRANSFER 560/560  BI-conservative 560/560  Q-RULE 560/560  A 560/560  theory 560/560  Q-RULE half-octave (info) 560/560
+  transferred maps: robust optimum rho 5793, ecm 0 (fitness 0.7539); BI conservative {'rho': 3158, 'ecm': 0}; steps {'rho': 7, 'ecm': 0}; BI per pricing offi 3158/808563; ruin 5793/0; mont 3158/131072
+  TRANSFER                  : fitness 0.745 (offi 0.694, ruin 0.745, mont 0.719); misses 0; gate PASS (worst point 1.127 [1.107, 1.152] band 32 ruint; highest upper 1.152 band 32 ruint) | vs new qs: fitness 1.523 (offi 0.687, ruin 1.523, mont 1.069), gate FAIL
+     official   16: 0.003  20: 0.048  24: 0.771  28: 1.005  32: 1.020  36: 1.020  39: 1.019
+     ruint      16: 0.015  20: 0.093  24: 0.856  28: 1.084  32: 1.127  36: 1.121  39: 1.100
+     montgomery 16: 0.009  20: 0.068  24: 0.809  28: 1.040  32: 1.062  36: 1.061  39: 1.056
+  BI-conservative           : fitness 0.810 (offi 0.769, ruin 0.810, mont 0.787); misses 0; gate PASS (worst point 1.070 [1.059, 1.083] band 32 ruint; highest upper 1.083 band 32 ruint) | vs new qs: fitness 1.655 (offi 0.761, ruin 1.655, mont 1.170), gate FAIL
+     official   16: 0.003  20: 0.403  24: 0.952  28: 1.011  32: 1.011  36: 1.011  39: 1.010
+     ruint      16: 0.015  20: 0.500  24: 1.019  28: 1.063  32: 1.070  36: 1.066  39: 1.055
+     montgomery 16: 0.009  20: 0.441  24: 0.980  28: 1.033  32: 1.035  36: 1.034  39: 1.031
+  Q-RULE                    : fitness 1.226 (offi 0.243, ruin 1.226, mont 0.615); misses 0; gate FAIL (worst point 2.821 [2.301, 3.507] band 39 ruint; highest upper 3.509 band 36 ruint) | vs new qs: fitness 2.506 (offi 0.240, ruin 2.506, mont 0.915), gate FAIL
+     official   16: 0.003  20: 0.010  24: 0.039  28: 0.198  32: 0.306  36: 0.542  39: 0.609
+     ruint      16: 0.015  20: 0.054  24: 0.209  28: 1.145  32: 1.903  36: 2.795  39: 2.821
+     montgomery 16: 0.009  20: 0.031  24: 0.113  28: 0.555  32: 0.864  36: 1.335  39: 1.466
+  A                         : fitness 0.826 (offi 0.494, ruin 0.826, mont 0.620); misses 0; gate BORDERLINE (worst point 1.534 [1.360, 1.723] band 36 ruint; highest upper 1.723 band 36 ruint) | vs new qs: fitness 1.688 (offi 0.489, ruin 1.688, mont 0.921), gate FAIL
+     official   16: 0.003  20: 0.013  24: 0.235  28: 0.617  32: 0.758  36: 0.928  39: 0.929
+     ruint      16: 0.015  20: 0.067  24: 0.512  28: 1.123  32: 1.355  36: 1.534  39: 1.426
+     montgomery 16: 0.009  20: 0.037  24: 0.344  28: 0.799  32: 0.962  36: 1.139  39: 1.122
+  theory                    : fitness 0.940 (offi 0.728, ruin 0.940, mont 0.808); misses 0; gate PASS (worst point 1.381 [1.323, 1.457] band 36 ruint; highest upper 1.457 band 36 ruint) | vs new qs: fitness 1.921 (offi 0.721, ruin 1.921, mont 1.201), gate FAIL
+     official   16: 0.003  20: 0.337  24: 0.779  28: 0.924  32: 0.988  36: 1.056  39: 1.033
+     ruint      16: 0.015  20: 0.505  24: 1.035  28: 1.205  32: 1.326  36: 1.381  39: 1.286
+     montgomery 16: 0.009  20: 0.402  24: 0.877  28: 1.026  32: 1.103  36: 1.170  39: 1.132
+  Q-RULE half-octave (info) : fitness 0.864 (offi 0.492, ruin 0.864, mont 0.636); misses 0; gate BORDERLINE (worst point 1.654 [1.471, 1.862] band 36 ruint; highest upper 1.862 band 36 ruint) | vs new qs: fitness 1.767 (offi 0.487, ruin 1.767, mont 0.945), gate FAIL
+     official   16: 0.003  20: 0.010  24: 0.161  28: 0.621  32: 0.778  36: 0.947  39: 0.948
+     ruint      16: 0.015  20: 0.054  24: 0.394  28: 1.213  32: 1.481  36: 1.654  39: 1.526
+     montgomery 16: 0.009  20: 0.031  24: 0.258  28: 0.838  32: 1.023  36: 1.199  39: 1.177
+  TRANSFER / A               robust x0.903, log2 -0.148 [-0.235, -0.056];  offi +0.491 [+0.398, +0.589]  ruin -0.148 [-0.235, -0.056]  mont +0.214 [+0.133, +0.300] | vs new qs: log2 -0.148 [-0.235, -0.056]
+  TRANSFER / theory          robust x0.793, log2 -0.334 [-0.407, -0.262];  offi -0.069 [-0.128, -0.009]  ruin -0.334 [-0.407, -0.262]  mont -0.168 [-0.228, -0.106] | vs new qs: log2 -0.334 [-0.407, -0.262]
+  TRANSFER / BI-conservative robust x0.920, log2 -0.120 [-0.182, -0.064];  offi -0.146 [-0.189, -0.106]  ruin -0.120 [-0.182, -0.064]  mont -0.131 [-0.178, -0.087] | vs new qs: log2 -0.120 [-0.182, -0.064]
+  Q-RULE / A                 robust x1.485, log2 +0.570 [+0.454, +0.682];  offi -1.025 [-1.166, -0.884]  ruin +0.570 [+0.454, +0.682]  mont -0.010 [-0.120, +0.097] | vs new qs: log2 +0.570 [+0.454, +0.682]
+  Q-RULE / theory            robust x1.305, log2 +0.384 [+0.251, +0.513];  offi -1.584 [-1.730, -1.438]  ruin +0.384 [+0.251, +0.513]  mont -0.392 [-0.512, -0.274] | vs new qs: log2 +0.384 [+0.251, +0.513]
+  theory / A                 robust x1.138, log2 +0.187 [+0.101, +0.276];  offi +0.560 [+0.467, +0.658]  ruin +0.187 [+0.101, +0.276]  mont +0.383 [+0.299, +0.471] | vs new qs: log2 +0.187 [+0.101, +0.276]
+  (info) hindsight on own map: rho 5793, ecm 0, map fitness 0.744; map fitness: TRANSFER 0.744  BI-conservative 0.809  Q-RULE 1.226  A 0.825  theory 0.939  Q-RULE half-octave (info) 0.863
+
+90 bits: 640 numbers, bands [16, 20, 24, 28, 32, 36, 42, 45]; Q 1018602; L ratio 1.9631
+  budgets (rho, ecm): TRANSFER (9742, 65536)  BI-conservative (4871, 65536)  Q-RULE (71468, 311744)  A (5793, 32768)  theory (11585, 65536)  Q-RULE half-octave (info) (46341, 65536)
+  rule per pricing: rho: offi 623487, ruin 71468, mont 142935; ecm: offi 1048576, ruin 311744, mont 1048576
+  map cross-check (composed official = direct): TRANSFER 640/640  BI-conservative 640/640  Q-RULE 640/640  A 640/640  theory 640/640  Q-RULE half-octave (info) 640/640
+  transferred maps: robust optimum rho 9742, ecm 65536 (fitness 0.6381); BI conservative {'rho': 4871, 'ecm': 65536}; steps {'rho': 8, 'ecm': 0}; BI per pricing offi 5793/1048576; ruin 9742/65536; mont 4871/311744
+  TRANSFER                  : fitness 0.665 (offi 0.457, ruin 0.665, mont 0.542); misses 0; gate PASS (worst point 1.270 [1.181, 1.354] band 45 ruint; highest upper 1.354 band 45 ruint) | vs new qs: fitness 0.737 (offi 0.438, ruin 0.737, mont 0.619), gate BORDERLINE
+     official   16: 0.001  20: 0.003  24: 0.062  28: 0.358  32: 0.470  36: 0.882  42: 0.934  45: 0.928
+     ruint      16: 0.004  20: 0.017  24: 0.187  28: 0.610  32: 0.753  36: 1.209  42: 1.265  45: 1.270
+     montgomery 16: 0.003  20: 0.009  24: 0.114  28: 0.461  32: 0.587  36: 1.014  42: 1.066  45: 1.067
+  BI-conservative           : fitness 0.670 (offi 0.467, ruin 0.670, mont 0.548); misses 0; gate PASS (worst point 1.242 [1.153, 1.325] band 45 ruint; highest upper 1.325 band 45 ruint) | vs new qs: fitness 0.743 (offi 0.446, ruin 0.743, mont 0.626), gate PASS
+     official   16: 0.001  20: 0.007  24: 0.139  28: 0.354  32: 0.479  36: 0.878  42: 0.929  45: 0.924
+     ruint      16: 0.004  20: 0.041  24: 0.318  28: 0.589  32: 0.742  36: 1.180  42: 1.237  45: 1.242
+     montgomery 16: 0.003  20: 0.021  24: 0.211  28: 0.449  32: 0.587  36: 0.999  42: 1.051  45: 1.051
+  Q-RULE                    : fitness 0.848 (offi 0.253, ruin 0.848, mont 0.499); misses 0; gate FAIL (worst point 2.113 [1.884, 2.344] band 45 ruint; highest upper 2.344 band 45 ruint) | vs new qs: fitness 0.940 (offi 0.242, ruin 0.940, mont 0.570), gate FAIL
+     official   16: 0.001  20: 0.003  24: 0.011  28: 0.053  32: 0.146  36: 0.383  42: 0.676  45: 0.739
+     ruint      16: 0.004  20: 0.017  24: 0.066  28: 0.318  32: 0.797  36: 1.472  42: 1.981  45: 2.113
+     montgomery 16: 0.003  20: 0.009  24: 0.037  28: 0.169  32: 0.421  36: 0.830  42: 1.205  45: 1.300
+  A                         : fitness 0.789 (offi 0.662, ruin 0.789, mont 0.714); misses 0; gate PASS (worst point 1.220 [1.217, 1.222] band 45 ruint; highest upper 1.222 band 45 ruint) | vs new qs: fitness 0.875 (offi 0.634, ruin 0.875, mont 0.815), gate PASS
+     official   16: 0.001  20: 0.003  24: 0.561  28: 0.771  32: 0.921  36: 0.976  42: 1.015  45: 1.038
+     ruint      16: 0.004  20: 0.020  24: 0.690  28: 0.935  32: 1.099  36: 1.153  42: 1.192  45: 1.220
+     montgomery 16: 0.003  20: 0.011  24: 0.615  28: 0.838  32: 0.993  36: 1.048  42: 1.086  45: 1.111
+  theory                    : fitness 0.667 (offi 0.456, ruin 0.667, mont 0.542); misses 0; gate PASS (worst point 1.281 [1.192, 1.365] band 45 ruint; highest upper 1.365 band 45 ruint) | vs new qs: fitness 0.739 (offi 0.437, ruin 0.739, mont 0.620), gate BORDERLINE
+     official   16: 0.001  20: 0.003  24: 0.045  28: 0.360  32: 0.472  36: 0.884  42: 0.935  45: 0.930
+     ruint      16: 0.004  20: 0.017  24: 0.147  28: 0.620  32: 0.764  36: 1.219  42: 1.276  45: 1.281
+     montgomery 16: 0.003  20: 0.009  24: 0.088  28: 0.467  32: 0.593  36: 1.021  42: 1.072  45: 1.073
+  Q-RULE half-octave (info) : fitness 0.714 (offi 0.431, ruin 0.714, mont 0.551); misses 0; gate BORDERLINE (worst point 1.485 [1.394, 1.567] band 45 ruint; highest upper 1.567 band 45 ruint) | vs new qs: fitness 0.791 (offi 0.412, ruin 0.791, mont 0.630), gate FAIL
+     official   16: 0.001  20: 0.003  24: 0.011  28: 0.146  32: 0.409  36: 0.917  42: 0.968  45: 0.964
+     ruint      16: 0.004  20: 0.017  24: 0.066  28: 0.390  32: 0.838  36: 1.421  42: 1.476  45: 1.485
+     montgomery 16: 0.003  20: 0.009  24: 0.037  28: 0.253  32: 0.594  36: 1.131  42: 1.181  45: 1.185
+  TRANSFER / A               robust x0.843, log2 -0.247 [-0.312, -0.186];  offi -0.534 [-0.619, -0.454]  ruin -0.247 [-0.312, -0.186]  mont -0.398 [-0.472, -0.327] | vs new qs: log2 -0.247 [-0.312, -0.186]
+  TRANSFER / theory          robust x0.997, log2 -0.004 [-0.011, +0.008];  offi +0.003 [-0.003, +0.014]  ruin -0.004 [-0.011, +0.008]  mont -0.002 [-0.009, +0.010] | vs new qs: log2 -0.004 [-0.011, +0.008]
+  TRANSFER / BI-conservative robust x0.993, log2 -0.010 [-0.033, +0.010];  offi -0.028 [-0.055, -0.006]  ruin -0.010 [-0.033, +0.010]  mont -0.017 [-0.041, +0.004] | vs new qs: log2 -0.010 [-0.033, +0.010]
+  Q-RULE / A                 robust x1.074, log2 +0.103 [+0.010, +0.192];  offi -1.387 [-1.550, -1.237]  ruin +0.103 [+0.010, +0.192]  mont -0.516 [-0.628, -0.410] | vs new qs: log2 +0.103 [+0.010, +0.192]
+  Q-RULE / theory            robust x1.271, log2 +0.346 [+0.264, +0.427];  offi -0.849 [-1.003, -0.706]  ruin +0.346 [+0.264, +0.427]  mont -0.120 [-0.223, -0.021] | vs new qs: log2 +0.346 [+0.264, +0.427]
+  theory / A                 robust x0.845, log2 -0.243 [-0.308, -0.182];  offi -0.537 [-0.621, -0.457]  ruin -0.243 [-0.308, -0.182]  mont -0.396 [-0.470, -0.325] | vs new qs: log2 -0.243 [-0.308, -0.182]
+  (info) hindsight on own map: rho 9742, ecm 46341, map fitness 0.633; map fitness: TRANSFER 0.665  BI-conservative 0.670  Q-RULE 0.848  A 0.789  theory 0.667  Q-RULE half-octave (info) 0.713
+
+real	3m44.505s
+user	3m45.809s
+sys	0m0.162s
