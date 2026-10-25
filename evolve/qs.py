@@ -94,9 +94,11 @@ def a_on_demand(pool, s, q, target, charge, at):
     charged when formed. Prefixes are the (s - 1)-combinations of the pool ordered by closeness
     to q; the last prime is the pool prime closest to target / A'. Per candidate: s - 2
     multiplies for A', 1 division, 1 multiply for A, 1 target check (full), one comparison per
-    pool prime considered for the last, and 1 dedupe lookup if the check passes (small)."""
+    pool prime considered for the last, and, if the check passes, s comparisons per A already
+    used (small): a candidate sharing more than s - 2 primes with any used A is rejected (a
+    duplicate shares s), since A's that differ in one prime find the same u (NOTES.md, amendment)."""
     by_q = sorted(pool, key=lambda p: (abs(math.log(p / q)), p))
-    seen = set()
+    used = []
     for pre in combinations(by_q, s - 1):
         Ap = math.prod(pre); charge("setup", s - 2)
         tp = target / Ap; charge("setup", 1)
@@ -109,12 +111,13 @@ def a_on_demand(pool, s, q, target, charge, at):
             at["od_small"] += len(rest)
         if abs(math.log2(A / target)) > 0.25:
             continue
-        key = tuple(sorted(pre + (last,))); charge("setup", 1)
+        key = tuple(sorted(pre + (last,)))
+        charge("setup", s * len(used))
         if at is not None:
-            at["od_small"] += 1
-        if key in seen:
+            at["od_small"] += s * len(used)
+        if any(len(set(key) & set(u)) > s - 2 for u in used):
             continue
-        seen.add(key)
+        used.append(key)
         yield key
 
 def sieve_source(N, k, g, led, ch, at):

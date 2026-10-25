@@ -60,7 +60,7 @@ def parity_job(args):
     N, gname = args
     g = dict({"old": OLD, "new": NEW, "n51": N51}[gname], a_mode="on_demand")
     d, ops, tr = py_run(N, g)
-    return N, gname, d, ops, {k: v for k, v in optypes.qs_counts(tr).items() if v}
+    return N, gname, d, ops, {k: v for k, v in optypes.qs_counts(tr).items() if v}, len(tr["attempts"])
 
 if __name__ == "__main__":
     workers = int(ARGS[0]) if ARGS else 8
@@ -105,13 +105,31 @@ if __name__ == "__main__":
         rows = [x for x in py if x[1] == gname]
         nums = [next(t for b in samples for t in samples[b] if t[0] == x[0]) for x in rows]
         rs = run_many([g], nums, P.QS_CAP, types=True)
-        for (N, _, d, ops, pt), r in zip(rows, rs):
+        for (N, _, d, ops, pt, _), r in zip(rows, rs):
             rt = {k: v for k, v in r[4].items() if v}
-            if not (r[0] == ops and int(r[1]) == d and rt == pt):
+            same_factor = (r[1] is None and d is None) or (r[1] is not None and d is not None and int(r[1]) == d)
+            if not (same_factor and (r[0] == ops or (r[0] is None and d is None)) and rt == pt):
                 mism += 1
                 if mism <= 5:
                     print("   MISMATCH", gname, N, ops, r[0], {k: (pt.get(k), rt.get(k)) for k in set(pt) | set(rt) if pt.get(k) != rt.get(k)})
     print(f"3. Python = Rust, on_demand, per-type counts and factor: {len(py) - mism}/{len(py)} runs agree")
-    out["parity"] = {"runs": len(py), "mismatches": mism}
+    out["parity"] = {"runs": len(py), "mismatches": mism, "python_misses": sum(1 for x in py if x[2] is None)}
+    out["parity"]["python_retries"] = sum(1 for x in py if x[5] > 1)
+    print(f"   Python misses among them: {out['parity']['python_misses']}; runs needing more than one multiplier: {out['parity']['python_retries']}")
+    # 4. misses and multiplier retries on all map numbers, both modes, three genomes (lampcore)
+    out["retries"] = {}
+    print("4. misses on the 2,880 map numbers (lampcore), both modes, three genomes")
+    for gname in ("old", "new", "n51"):
+        for mode in ("enumerate", "on_demand"):
+            g = dict({"old": OLD, "new": NEW, "n51": N51}[gname], a_mode=mode)
+            miss = tot = 0
+            ks = {}
+            for bits in samples:
+                rs = run_many([g], samples[bits], P.QS_CAP)
+                for r, (N, _, _) in zip(rs, samples[bits]):
+                    tot += 1
+                    miss += not (r[1] is not None and 1 < int(r[1]) < N)
+            out["retries"][f"{gname} {mode}"] = {"runs": tot, "misses": miss}
+            print(f"   {gname:3s} {mode:9s}: misses {miss}/{tot}")
     json.dump(out, open("ondemand_accept.json", "w"), indent=1)
     assert not bad and not mism

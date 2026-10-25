@@ -1992,3 +1992,39 @@ on_demand removes only the up-front enumeration of all C(P, s) candidates.
 **Predictions O1–O9 and D1–D3 stand as written.** They were written for on_demand before any measurement. No measurement had run; the failure was found by the acceptance tests. The trace field `od_small` now counts the overlap comparisons in place of the dedupe lookups. The identity test's selection charge for on_demand is (s + 1)·od_cands + od_small, as before.
 
 **Added to acceptance:** (4) under on_demand on all 2,880 map numbers (lampcore), report misses and multiplier retries, beside enumerate's. A run that needs more multipliers than under enumerate is reported, not hidden.
+
+### On-demand A: second amendment after acceptance (before any measurement), cost model first
+
+**Failure found by the second acceptance run** (the overlap rule above):
+- No misses on the 2,880 map numbers, but 8 of 180 sampled on_demand runs needed a second multiplier (under enumerate: 0 of 180). They are at 83–96 bits, across all three genomes.
+- **Mechanism, measured:** in each, the first attempt used all 378 prefixes (s = 3) after accepting only 6–9 A's. The ledger was still short (32–154 of ~165 relations), so the polynomials "ran out" and the next multiplier was tried, paying again.
+- Each prefix offered only its single nearest last prime. Once an A {a, b, c} is used, any prefix containing two of its primes, and any completion landing on such a pair, is rejected, so the supply collapses at s = 3.
+- The trivial-relation count in those first attempts was 0, so the overlap rule did its job. This is a separate failure.
+
+**Amended rule, version 2** (it replaces steps 3–5). For each prefix, in the same order:
+- (a) **Prefix check.** If the prefix already lies within a used A (it shares s − 1 primes with it), skip the prefix: no completion can pass.
+- (b) A′ = product of the prefix and t′ = target / A′, as before.
+- (c) **Try last primes in order of closeness to t′.** Each try takes the closest remaining pool prime not in the prefix and forms A = A′·last.
+  - If it fails the target check (|log₂(A/target)| > 0.25), stop this prefix: every later prime is farther, and |ln(last/t′)| = |ln(A/target)| exactly.
+  - If it passes, compare with every used A. If it shares at most s − 2 primes with each, accept it, yield it, and move to the next prefix (the prefix now lies within a used A).
+  - Otherwise try the next prime.
+- Exhaustion and s = 1 are as before.
+
+**Charges, version 2:**
+
+| | ops | type |
+|---|---|---|
+| prefix check | (s − 1) per used A | setup_small |
+| A′ (prefixes passing the check) | s − 2 multiplies | setup_full |
+| t′ = target / A′ | 1 | setup_full |
+| each try: finding the closest remaining prime | 1 per remaining pool prime scanned | setup_small |
+| each try: A = A′·last | 1 multiply | setup_full |
+| each try: target check | 1 | setup_full |
+| each try passing the target check: overlap comparison | s per used A | setup_small |
+
+- *Type split:* setup_full = (s − 1)·combos [enumerate] + (s − 1)·od_prefixes + 2·od_cands [on_demand] + 2s·a_count.
+- *Trace fields:* `od_prefixes` (prefixes past the check), `od_cands` (tries) and `od_small` (all small selection ops).
+- With one try per prefix this reduces to version 1's s + 1 full ops per candidate.
+- *Expected setup_full:* still of order 100–300 per run against 6,600 / 107,960, since each accepted A takes a few prefixes and tries.
+
+The predictions stand as written; the acceptance tests and their checks are unchanged. The identity test's on_demand selection charge is (s − 1)·od_prefixes + 2·od_cands + od_small.

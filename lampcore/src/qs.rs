@@ -445,14 +445,15 @@ impl Ledger {
 /// qs.py's a_on_demand). Prefixes: the (s - 1)-combinations of the pool ordered by closeness to
 /// q; the last prime is the pool prime closest to target / A'. Per candidate: s - 2 multiplies
 /// for A', 1 division, 1 multiply for A, 1 target check (full: s + 1 events), one comparison per
-/// pool prime considered for the last, and 1 dedupe lookup if the check passes (small).
+/// pool prime considered for the last, and, if the check passes, s comparisons per A already used
+/// (small): a candidate sharing more than s - 2 primes with any used A is rejected.
 struct OnDemand {
     pool: Vec<u64>,
     prefixes: Vec<Vec<u64>>,
     at: usize,
     target: f64,
     s: usize,
-    seen: std::collections::HashSet<Vec<u64>>,
+    used: Vec<Vec<u64>>,
 }
 
 impl OnDemand {
@@ -462,7 +463,7 @@ impl OnDemand {
             ((*a as f64 / q).ln().abs(), *a).partial_cmp(&((*b as f64 / q).ln().abs(), *b)).unwrap()
         });
         OnDemand { pool: pool.to_vec(), prefixes: combinations(&by_q, s - 1), at: 0, target, s,
-                   seen: std::collections::HashSet::new() }
+                   used: Vec::new() }
     }
 
     fn next(&mut self, m: &mut Meter) -> Result<Option<Vec<u64>>, Budget> {
@@ -498,10 +499,11 @@ impl OnDemand {
             let mut key = pre.clone();
             key.push(last);
             key.sort();
-            m.charge(SETUP, 1)?;
-            if !self.seen.insert(key.clone()) {
+            m.charge(SETUP, (s * self.used.len()) as u64)?;
+            if self.used.iter().any(|u| u.iter().filter(|x| key.contains(x)).count() > s - 2) {
                 continue;
             }
+            self.used.push(key.clone());
             return Ok(Some(key));
         }
         Ok(None)
