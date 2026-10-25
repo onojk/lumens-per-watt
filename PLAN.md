@@ -212,9 +212,11 @@ control arms (run before Stage 10); after Run 8: the generalization tests, size-
 budgets, and per-stage budgets by size. The size-only case of Stage 9.5 is done as per-stage
 budgets by size; a selector on charged features is not built.
 
-**Next, in order:** the qs-gene size-scaling test (54/72/84/96) with per-stage budgets ->
-a p-1 map check (B = 2^8 ... 2^15 on the existing 72/78/84/90/96 maps, rho and ECM
-re-optimized jointly, corrected card; no new run; prediction in NOTES first) ->
+**Next, in order:** [done Oct 25: the qs-gene size-scaling test, two tracks, rounds 1-3] ->
+a p-1 map check per track (B = 2^8 ... 2^15 on the 54/72/84/96 maps, inserted into each
+track's final size-scaling pipeline, with rho and ECM re-optimized jointly and each track's
+final genes as the final qs; corrected card; no new run; predictions in NOTES first;
+expectation recorded: p-1 stays off under Track R) ->
 the illumination picture (primes and gaps) -> the variable-length structure test -> Stage 10
 (qs refinements) -> theory checks -> Phase 1 of learning from all algorithms (imported
 moves) -> the code-level pilot (fenced AI proposals).

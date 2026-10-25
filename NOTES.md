@@ -2600,3 +2600,87 @@ Mine: Track R 5 held, 2 missed. Track M 0 held, 6 missed.
 - (V6) PD_M final: 1.00–1.20 at 72–96. PD_R final: 1.8–3.0 at 72–96.
 - (V7) Bound hits: one or more final frozen genomes still have kc ≥ 29; no mc lower-bound hit (≤ 0.011) at 72–96.
 - (V8) Gates: Track R final winners PASS at every size. Track M final winners pass the Montgomery gate at 84–96 and fail the ruint gate (information) at every size.
+
+### Size-scaling test, rounds 2–3: results (`sizescale2.py`; `sizescale_r2_tune.out`, `sizescale_r2_resolve.out`, `sizescale_r3_tune.out`, `sizescale_r3_resolve.out`, `sizescale_r2_sealed.out`, `.json`)
+
+**Round 2 tuning** (bc 0.3–3.0, mc 0.01–12; round-1 budgets):
+- With the bound widened, bc moved below 0.7: Track R 0.57 / 0.53 / 0.48 at 72 / 84 / 96 (frozen), and Track M 0.49–0.66.
+- At 54, Track R's round-2 best (0.936 on the tuning numbers) is worse than round 1's frozen genome (0.927). By protocol the round-2 best was frozen.
+
+**Round 2 re-solve** (each track's round-2 frozen genome as the final qs):
+- Track M's ECM fell by 12–26 grid steps: 54 off (was 6,317), 72 65,536 (was 185,364), 84 32,768 (was 311,744), 96 120,194 (was 404,281).
+- Track R moved at most one step (72: rho 1,579 → 1,448).
+- **Round 3 was triggered.**
+
+**Round 3** (the cap; both tracks retuned in the re-solved budgets):
+- Track R's frozen genomes are identical to round 2's at 54 / 84 / 96: unchanged budgets and a deterministic search.
+- At 96, Track M's round-3 best (0.3848) is marginally worse in the new budgets than round 2's frozen genome (0.3839). By protocol the round-3 best was frozen.
+
+**Final re-solve:** every budget is settled (≤ 1 step) **except Track M at 72**, where ECM moved another 7 steps (65,536 → 35,734). The final budgets were used without further tuning, so **the budgets had not fully settled at 72 under Track M** when the cap was reached.
+
+**Final pipelines:**
+- Track R: qs alone at 54; rho 1,448 / 5,793 / 12,634 with ECM off at 72 / 84 / 96.
+- Track M: rho 3,158 with ECM off at 54; (1,448, 35,734) at 72; (3,158, 32,768) at 84; (4,871, 120,194) at 96.
+
+**Remaining bound hits (final frozen genomes):** kc 32 at R@72, R@84 and M@84; lc 1.81–1.87 at R@72, M@54 and M@84. No bc or mc hits remain. kc's upper bound (32) and lc's (2.0) now limit several winners.
+
+**Sealed, fresh numbers** (9410000 + 100 pb + bits, 80 per band, run once). Track metric [95%] against qs + lc 1.4 corrected alone, with official / ruint / Montgomery:
+
+| bits | track | (a) round-1 winner, round-1 budgets | (b) final genes, round-1 budgets | (c) final genes, final budgets | gate (c) |
+|---|---|---|---|---|---|
+| 54 | R | 0.940 (0.939 / 0.932 / 0.906) | 0.945 | 0.945 (0.944 / 0.945 / 0.917) | PASS |
+| 54 | M | 0.740 (0.606 / 1.779 / 0.740) | 0.737 | 0.676 (0.748 / 1.131 / 0.676) | PASS; ruint FAIL |
+| 72 | R | 0.776 (0.771 / 0.776 / 0.703) | 0.741 | 0.740 (0.724 / 0.740 / 0.665) | PASS |
+| 72 | M | 0.642 (0.245 / 2.150 / 0.642), BORDERLINE | 0.641 | 0.598 (0.494 / 1.544 / 0.598) | PASS; ruint FAIL |
+| 84 | R | 0.607 (0.607 / 0.607 / 0.528) | 0.584 | 0.584 (0.584 / 0.583 / 0.502) | PASS |
+| 84 | M | 0.500 (0.184 / 1.690 / 0.500) | 0.499 | 0.461 (0.463 / 0.878 / 0.461) | PASS; **ruint PASS** |
+| 96 | R | 0.537 (0.531 / 0.537 / 0.480) | 0.504 | 0.504 (0.503 / 0.504 / 0.445) | PASS |
+| 96 | M | 0.403 (0.226 / 1.186 / 0.403) | 0.395 | 0.362 (0.336 / 0.776 / 0.362) | PASS; ruint BORDERLINE |
+
+**Headline: cross-pricing, round 1 against the final round.** PD_M = Montgomery cost of the R winner / the M winner; PD_R = ruint cost of the M winner / the R winner.
+
+| bits | round 1 as recorded (9400000) | round 1 on fresh numbers ((a) rows) | **final ((c) rows)** | official M / R, final |
+|---|---|---|---|---|
+| 54 | 1.250 / 1.894 | 1.225 / 1.909 | **1.355 [1.290, 1.425] / 1.197 [1.149, 1.245]** | 0.793 |
+| 72 | 1.045 / 2.899 | 1.096 / 2.772 | **1.112 [1.035, 1.200] / 2.087 [1.972, 2.203]** | 0.682 |
+| 84 | 1.050 / 2.783 | 1.055 / 2.786 | **1.088 [1.033, 1.148] / 1.505 [1.450, 1.559]** | 0.792 |
+| 96 | 1.277 / 2.082 | 1.191 / 2.210 | **1.232 [1.160, 1.310] / 1.541 [1.473, 1.612]** | 0.668 |
+
+- **The lopsidedness shrinks once the budgets are re-solved with tuned genes.** Using Track M's answer under ruint now costs 1.5–2.1x (was 2.2–2.9x at 72–96, 1.9x at 54). Using Track R's answer under Montgomery still costs 1.09–1.36x.
+- **Track M's final answer is no longer conditional at 84:** it passes the ruint per-band gate. At 96 it is BORDERLINE, and at 54 and 72 it still fails ("conditional on a fast multiply").
+- Its final 84-bit pipeline (rho 3,158, ECM 32,768) has the same ECM budget as allocation A.
+- Under the official count, Track M's answer is 1.3–1.5x cheaper than Track R's (it was 2.3–3.3x in round 1, when its ECM budgets were 3–10x larger).
+
+**Ablation: genes against budgets** (track metric, log₂ [95%]):
+- *Track R:*
+  - genes ((b) against (a)): +0.008 (54, not significant), −0.066, −0.055 and −0.091 at 72 / 84 / 96 (4–6%; all three pricings agree at 72–96);
+  - budgets ((c) against (b)): 0.000 at 54 / 84 / 96 and −0.002 at 72.
+  - All of Track R's change is genes.
+- *Track M:*
+  - genes: −0.005, −0.002, −0.003 and −0.029 (0.1–2%);
+  - budgets: −0.124, −0.100, −0.114 and −0.128 (7–8% under Montgomery).
+  - The budget change also cuts ruint cost by −0.48 to −0.94 log₂ and raises official cost by +0.43 to +1.36: smaller ECM budgets trade official ops for real multiply time.
+  - **Track M's change is almost all budgets.**
+
+**Predictions, scored as written.**
+- *The user's:*
+  - (U1) bc 0.45–0.65 at 84–96, both tracks, and gain (b) against (a) at most 5%: **missed.** bc held at R@84 (0.526), R@96 (0.479) and M@84 (0.494), but M@96 is 0.421. The gain held at R@84 (3.7%), M@84 and M@96, but R@96 is 6.1%.
+  - (U2) Track M ECM falls ≥ 1 step at 2 or more of 72–96, and Track R rho moves ≤ 1 step: **held** (12 / 26 / 14 steps; Track R 1 / 0 / 0).
+  - (U3) PD_M 1.00–1.15 at 72–96: **missed** (1.112, 1.088, 1.232: 96 is outside).
+  - (U4) PD_R 1.8–3.0 at 72–96: **missed** (2.087, 1.505, 1.541). The lopsidedness survives in direction but shrinks below the predicted range at 84 and 96.
+- *Mine:*
+  - (V1) bc ranges and gain limits: **missed** (M@84 0.494 and M@96 0.421 are below 0.5; R@96 gained 6.1% against ≤ 5%).
+  - (V2) Track R ECM off with rho within one step; Track M ECM falls at 2 or more sizes with rho within 2 steps: **held.**
+  - (V3) round 3 triggered by Track M, not Track R: **held.**
+  - (V4) the final re-solve settled everywhere: **missed** (Track M at 72 moved 7 steps).
+  - (V5) Track R's change is mostly genes; Track M's budget part ≥ gene part at 84–96: **held.**
+  - (V6) PD_M 1.00–1.20 and PD_R 1.8–3.0 at 72–96: **missed** (PD_M 1.232 at 96; PD_R 1.505 and 1.541).
+  - (V7) a final frozen genome still has kc ≥ 29, and no mc lower-bound hit at 72–96: **held.**
+  - (V8) Track R PASS everywhere; Track M passes the Montgomery gate at 84–96 and fails the ruint gate everywhere: **missed** (Track M passes the ruint gate at 84 and is BORDERLINE at 96).
+- The user's: 1 held, 3 missed. Mine: 4 held, 4 missed.
+
+**Conditions:**
+- The final winners were selected on the sealed numbers among their track's candidates (as in round 1).
+- The Track M budget at 72 had not settled when the cap was reached.
+- kc and lc sit at their upper bounds in several final genomes.
+- 54 bits' Track R round-2 genome is slightly worse than round 1's (row (b) against (a): +0.008, not significant).
