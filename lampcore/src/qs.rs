@@ -455,6 +455,7 @@ struct OnDemand {
     target: f64,
     s: usize,
     used: Vec<Vec<u64>>,
+    limit: usize,
 }
 
 impl OnDemand {
@@ -464,17 +465,27 @@ impl OnDemand {
             ((*a as f64 / q).ln().abs(), *a).partial_cmp(&((*b as f64 / q).ln().abs(), *b)).unwrap()
         });
         OnDemand { pool: pool.to_vec(), prefixes: combinations(&by_q, s - 1), at: 0, target, s,
-                   used: Vec::new() }
+                   used: Vec::new(), limit: s - 2 }
     }
 
     fn next(&mut self, m: &mut Meter) -> Result<Option<Vec<u64>>, Budget> {
         let s = self.s;
-        while self.at < self.prefixes.len() {
+        loop {
+            if self.at >= self.prefixes.len() {
+                if self.limit == s - 2 {
+                    self.limit = s - 1; // pass 2 (third amendment): any A not already used
+                    self.at = 0;
+                } else {
+                    return Ok(None);
+                }
+            }
             let pre = self.prefixes[self.at].clone();
             self.at += 1;
-            m.charge(SETUP, ((s - 1) * self.used.len()) as u64)?;
-            if self.used.iter().any(|u| pre.iter().all(|p| u.contains(p))) {
-                continue;
+            if self.limit == s - 2 {
+                m.charge(SETUP, ((s - 1) * self.used.len()) as u64)?;
+                if self.used.iter().any(|u| pre.iter().all(|p| u.contains(p))) {
+                    continue;
+                }
             }
             let ap: u64 = pre.iter().product();
             m.charge(SETUP, s as u64 - 2)?;
@@ -503,14 +514,13 @@ impl OnDemand {
                 key.push(last);
                 key.sort();
                 m.charge(SETUP, (s * self.used.len()) as u64)?;
-                if self.used.iter().any(|u| u.iter().filter(|x| key.contains(x)).count() > s - 2) {
+                if self.used.iter().any(|u| u.iter().filter(|x| key.contains(x)).count() > self.limit) {
                     continue;
                 }
                 self.used.push(key.clone());
                 return Ok(Some(key));
             }
         }
-        Ok(None)
     }
 }
 

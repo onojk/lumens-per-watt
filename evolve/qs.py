@@ -97,15 +97,24 @@ def a_on_demand(pool, s, q, target, charge, at):
     order of closeness to t' (a scan of the remaining pool primes, small; 1 multiply and 1 target
     check, full): the first try failing the target check ends the prefix; a try passing it is
     compared with every used A (s small ops each) and accepted if it shares at most s - 2 primes
-    with each (A's differing in one prime find the same u)."""
+    with each (A's differing in one prime find the same u). If that pass runs out of prefixes,
+    pass 2 walks them again (third amendment), paying again, with no prefix check, and accepts
+    any A not already used."""
     by_q = sorted(pool, key=lambda p: (abs(math.log(p / q)), p))
     used = []
+    for limit in (s - 2, s - 1):
+        if limit == s - 1 and at is not None:
+            at["od_pass2"] = 1
+        yield from _a_pass(by_q, pool, s, target, charge, at, used, limit)
+
+def _a_pass(by_q, pool, s, target, charge, at, used, limit):
     for pre in combinations(by_q, s - 1):
-        charge("setup", (s - 1) * len(used))
-        if at is not None:
-            at["od_small"] += (s - 1) * len(used)
-        if any(all(p in u for p in pre) for u in used):
-            continue
+        if limit == s - 2:
+            charge("setup", (s - 1) * len(used))
+            if at is not None:
+                at["od_small"] += (s - 1) * len(used)
+            if any(all(p in u for p in pre) for u in used):
+                continue
         Ap = math.prod(pre); charge("setup", s - 2)
         tp = target / Ap; charge("setup", 1)
         if at is not None:
@@ -126,7 +135,7 @@ def a_on_demand(pool, s, q, target, charge, at):
             charge("setup", s * len(used))
             if at is not None:
                 at["od_small"] += s * len(used)
-            if any(len(set(key) & set(u)) > s - 2 for u in used):
+            if any(len(set(key) & set(u)) > limit for u in used):
                 continue
             used.append(key)
             yield key

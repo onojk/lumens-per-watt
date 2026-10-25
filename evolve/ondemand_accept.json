@@ -1,0 +1,637 @@
+{
+ "enumerate_unchanged": 2880,
+ "identity": [
+  {
+   "N": 2441112111176786889109,
+   "genome": "old",
+   "mode": "enumerate",
+   "s": 3,
+   "a_count": 7,
+   "od_cands": 0,
+   "selection": 6552,
+   "ok": true
+  },
+  {
+   "N": 2441112111176786889109,
+   "genome": "old",
+   "mode": "on_demand",
+   "s": 3,
+   "a_count": 7,
+   "od_cands": 24,
+   "selection": 990,
+   "ok": true
+  },
+  {
+   "N": 2441112111176786889109,
+   "genome": "new",
+   "mode": "enumerate",
+   "s": 3,
+   "a_count": 4,
+   "od_cands": 0,
+   "selection": 6552,
+   "ok": true
+  },
+  {
+   "N": 2441112111176786889109,
+   "genome": "new",
+   "mode": "on_demand",
+   "s": 3,
+   "a_count": 4,
+   "od_cands": 8,
+   "selection": 289,
+   "ok": true
+  },
+  {
+   "N": 1991753601048049846433,
+   "genome": "old",
+   "mode": "enumerate",
+   "s": 3,
+   "a_count": 10,
+   "od_cands": 0,
+   "selection": 6552,
+   "ok": true
+  },
+  {
+   "N": 1991753601048049846433,
+   "genome": "old",
+   "mode": "on_demand",
+   "s": 3,
+   "a_count": 10,
+   "od_cands": 113,
+   "selection": 5207,
+   "ok": true
+  },
+  {
+   "N": 1991753601048049846433,
+   "genome": "new",
+   "mode": "enumerate",
+   "s": 3,
+   "a_count": 9,
+   "od_cands": 0,
+   "selection": 6552,
+   "ok": true
+  },
+  {
+   "N": 1991753601048049846433,
+   "genome": "new",
+   "mode": "on_demand",
+   "s": 3,
+   "a_count": 8,
+   "od_cands": 17,
+   "selection": 787,
+   "ok": true
+  },
+  {
+   "N": 4209316944528281345477,
+   "genome": "old",
+   "mode": "enumerate",
+   "s": 3,
+   "a_count": 12,
+   "od_cands": 0,
+   "selection": 6552,
+   "ok": true
+  },
+  {
+   "N": 4209316944528281345477,
+   "genome": "old",
+   "mode": "on_demand",
+   "s": 3,
+   "a_count": 13,
+   "od_cands": 69,
+   "selection": 4057,
+   "ok": true
+  },
+  {
+   "N": 4209316944528281345477,
+   "genome": "new",
+   "mode": "enumerate",
+   "s": 3,
+   "a_count": 8,
+   "od_cands": 0,
+   "selection": 6552,
+   "ok": true
+  },
+  {
+   "N": 4209316944528281345477,
+   "genome": "new",
+   "mode": "on_demand",
+   "s": 3,
+   "a_count": 7,
+   "od_cands": 13,
+   "selection": 593,
+   "ok": true
+  },
+  {
+   "N": 132947325221468683825699,
+   "genome": "old",
+   "mode": "enumerate",
+   "s": 3,
+   "a_count": 12,
+   "od_cands": 0,
+   "selection": 6552,
+   "ok": true
+  },
+  {
+   "N": 132947325221468683825699,
+   "genome": "old",
+   "mode": "on_demand",
+   "s": 3,
+   "a_count": 13,
+   "od_cands": 38,
+   "selection": 2060,
+   "ok": true
+  },
+  {
+   "N": 132947325221468683825699,
+   "genome": "new",
+   "mode": "enumerate",
+   "s": 3,
+   "a_count": 8,
+   "od_cands": 0,
+   "selection": 6552,
+   "ok": true
+  },
+  {
+   "N": 132947325221468683825699,
+   "genome": "new",
+   "mode": "on_demand",
+   "s": 3,
+   "a_count": 9,
+   "od_cands": 33,
+   "selection": 1487,
+   "ok": true
+  },
+  {
+   "N": 108550584369298638535739,
+   "genome": "old",
+   "mode": "enumerate",
+   "s": 3,
+   "a_count": 9,
+   "od_cands": 0,
+   "selection": 6552,
+   "ok": true
+  },
+  {
+   "N": 108550584369298638535739,
+   "genome": "old",
+   "mode": "on_demand",
+   "s": 3,
+   "a_count": 9,
+   "od_cands": 20,
+   "selection": 956,
+   "ok": true
+  },
+  {
+   "N": 108550584369298638535739,
+   "genome": "new",
+   "mode": "enumerate",
+   "s": 3,
+   "a_count": 6,
+   "od_cands": 0,
+   "selection": 6552,
+   "ok": true
+  },
+  {
+   "N": 108550584369298638535739,
+   "genome": "new",
+   "mode": "on_demand",
+   "s": 3,
+   "a_count": 7,
+   "od_cands": 28,
+   "selection": 1140,
+   "ok": true
+  },
+  {
+   "N": 121115915416443456270583,
+   "genome": "old",
+   "mode": "enumerate",
+   "s": 3,
+   "a_count": 9,
+   "od_cands": 0,
+   "selection": 6552,
+   "ok": true
+  },
+  {
+   "N": 121115915416443456270583,
+   "genome": "old",
+   "mode": "on_demand",
+   "s": 3,
+   "a_count": 8,
+   "od_cands": 41,
+   "selection": 1739,
+   "ok": true
+  },
+  {
+   "N": 121115915416443456270583,
+   "genome": "new",
+   "mode": "enumerate",
+   "s": 3,
+   "a_count": 8,
+   "od_cands": 0,
+   "selection": 6552,
+   "ok": true
+  },
+  {
+   "N": 121115915416443456270583,
+   "genome": "new",
+   "mode": "on_demand",
+   "s": 3,
+   "a_count": 7,
+   "od_cands": 17,
+   "selection": 699,
+   "ok": true
+  },
+  {
+   "N": 8743417519307795068439951,
+   "genome": "old",
+   "mode": "enumerate",
+   "s": 4,
+   "a_count": 7,
+   "od_cands": 0,
+   "selection": 107880,
+   "ok": true
+  },
+  {
+   "N": 8743417519307795068439951,
+   "genome": "old",
+   "mode": "on_demand",
+   "s": 4,
+   "a_count": 7,
+   "od_cands": 27,
+   "selection": 1358,
+   "ok": true
+  },
+  {
+   "N": 8743417519307795068439951,
+   "genome": "new",
+   "mode": "enumerate",
+   "s": 3,
+   "a_count": 6,
+   "od_cands": 0,
+   "selection": 6552,
+   "ok": true
+  },
+  {
+   "N": 8743417519307795068439951,
+   "genome": "new",
+   "mode": "on_demand",
+   "s": 3,
+   "a_count": 6,
+   "od_cands": 13,
+   "selection": 529,
+   "ok": true
+  },
+  {
+   "N": 14310228007347154922922479,
+   "genome": "old",
+   "mode": "enumerate",
+   "s": 3,
+   "a_count": 14,
+   "od_cands": 0,
+   "selection": 6552,
+   "ok": true
+  },
+  {
+   "N": 14310228007347154922922479,
+   "genome": "old",
+   "mode": "on_demand",
+   "s": 3,
+   "a_count": 12,
+   "od_cands": 47,
+   "selection": 2465,
+   "ok": true
+  },
+  {
+   "N": 14310228007347154922922479,
+   "genome": "new",
+   "mode": "enumerate",
+   "s": 3,
+   "a_count": 9,
+   "od_cands": 0,
+   "selection": 6552,
+   "ok": true
+  },
+  {
+   "N": 14310228007347154922922479,
+   "genome": "new",
+   "mode": "on_demand",
+   "s": 3,
+   "a_count": 9,
+   "od_cands": 58,
+   "selection": 2458,
+   "ok": true
+  },
+  {
+   "N": 6101011842690006698496217,
+   "genome": "old",
+   "mode": "enumerate",
+   "s": 3,
+   "a_count": 8,
+   "od_cands": 0,
+   "selection": 6552,
+   "ok": true
+  },
+  {
+   "N": 6101011842690006698496217,
+   "genome": "old",
+   "mode": "on_demand",
+   "s": 3,
+   "a_count": 9,
+   "od_cands": 27,
+   "selection": 1263,
+   "ok": true
+  },
+  {
+   "N": 6101011842690006698496217,
+   "genome": "new",
+   "mode": "enumerate",
+   "s": 3,
+   "a_count": 5,
+   "od_cands": 0,
+   "selection": 6552,
+   "ok": true
+  },
+  {
+   "N": 6101011842690006698496217,
+   "genome": "new",
+   "mode": "on_demand",
+   "s": 3,
+   "a_count": 5,
+   "od_cands": 15,
+   "selection": 552,
+   "ok": true
+  },
+  {
+   "N": 805237853853329804838773047,
+   "genome": "old",
+   "mode": "enumerate",
+   "s": 4,
+   "a_count": 11,
+   "od_cands": 0,
+   "selection": 107880,
+   "ok": true
+  },
+  {
+   "N": 805237853853329804838773047,
+   "genome": "old",
+   "mode": "on_demand",
+   "s": 4,
+   "a_count": 12,
+   "od_cands": 120,
+   "selection": 8218,
+   "ok": true
+  },
+  {
+   "N": 805237853853329804838773047,
+   "genome": "new",
+   "mode": "enumerate",
+   "s": 4,
+   "a_count": 6,
+   "od_cands": 0,
+   "selection": 107880,
+   "ok": true
+  },
+  {
+   "N": 805237853853329804838773047,
+   "genome": "new",
+   "mode": "on_demand",
+   "s": 4,
+   "a_count": 7,
+   "od_cands": 11,
+   "selection": 611,
+   "ok": true
+  },
+  {
+   "N": 625373969122783053935452601,
+   "genome": "old",
+   "mode": "enumerate",
+   "s": 4,
+   "a_count": 12,
+   "od_cands": 0,
+   "selection": 107880,
+   "ok": true
+  },
+  {
+   "N": 625373969122783053935452601,
+   "genome": "old",
+   "mode": "on_demand",
+   "s": 4,
+   "a_count": 12,
+   "od_cands": 47,
+   "selection": 3077,
+   "ok": true
+  },
+  {
+   "N": 625373969122783053935452601,
+   "genome": "new",
+   "mode": "enumerate",
+   "s": 4,
+   "a_count": 8,
+   "od_cands": 0,
+   "selection": 107880,
+   "ok": true
+  },
+  {
+   "N": 625373969122783053935452601,
+   "genome": "new",
+   "mode": "on_demand",
+   "s": 4,
+   "a_count": 8,
+   "od_cands": 21,
+   "selection": 1128,
+   "ok": true
+  },
+  {
+   "N": 489670323137200118703647887,
+   "genome": "old",
+   "mode": "enumerate",
+   "s": 4,
+   "a_count": 11,
+   "od_cands": 0,
+   "selection": 107880,
+   "ok": true
+  },
+  {
+   "N": 489670323137200118703647887,
+   "genome": "old",
+   "mode": "on_demand",
+   "s": 4,
+   "a_count": 11,
+   "od_cands": 30,
+   "selection": 2048,
+   "ok": true
+  },
+  {
+   "N": 489670323137200118703647887,
+   "genome": "new",
+   "mode": "enumerate",
+   "s": 3,
+   "a_count": 13,
+   "od_cands": 0,
+   "selection": 6552,
+   "ok": true
+  },
+  {
+   "N": 489670323137200118703647887,
+   "genome": "new",
+   "mode": "on_demand",
+   "s": 3,
+   "a_count": 13,
+   "od_cands": 204,
+   "selection": 9532,
+   "ok": true
+  },
+  {
+   "N": 60576219220793783696843037929,
+   "genome": "old",
+   "mode": "enumerate",
+   "s": 4,
+   "a_count": 17,
+   "od_cands": 0,
+   "selection": 107880,
+   "ok": true
+  },
+  {
+   "N": 60576219220793783696843037929,
+   "genome": "old",
+   "mode": "on_demand",
+   "s": 4,
+   "a_count": 17,
+   "od_cands": 126,
+   "selection": 9498,
+   "ok": true
+  },
+  {
+   "N": 60576219220793783696843037929,
+   "genome": "new",
+   "mode": "enumerate",
+   "s": 4,
+   "a_count": 15,
+   "od_cands": 0,
+   "selection": 107880,
+   "ok": true
+  },
+  {
+   "N": 60576219220793783696843037929,
+   "genome": "new",
+   "mode": "on_demand",
+   "s": 4,
+   "a_count": 16,
+   "od_cands": 44,
+   "selection": 3918,
+   "ok": true
+  },
+  {
+   "N": 50660195716144306943725718183,
+   "genome": "old",
+   "mode": "enumerate",
+   "s": 4,
+   "a_count": 10,
+   "od_cands": 0,
+   "selection": 107880,
+   "ok": true
+  },
+  {
+   "N": 50660195716144306943725718183,
+   "genome": "old",
+   "mode": "on_demand",
+   "s": 4,
+   "a_count": 11,
+   "od_cands": 58,
+   "selection": 3337,
+   "ok": true
+  },
+  {
+   "N": 50660195716144306943725718183,
+   "genome": "new",
+   "mode": "enumerate",
+   "s": 4,
+   "a_count": 8,
+   "od_cands": 0,
+   "selection": 107880,
+   "ok": true
+  },
+  {
+   "N": 50660195716144306943725718183,
+   "genome": "new",
+   "mode": "on_demand",
+   "s": 4,
+   "a_count": 7,
+   "od_cands": 21,
+   "selection": 1117,
+   "ok": true
+  },
+  {
+   "N": 73598204043753349862696349619,
+   "genome": "old",
+   "mode": "enumerate",
+   "s": 4,
+   "a_count": 9,
+   "od_cands": 0,
+   "selection": 107880,
+   "ok": true
+  },
+  {
+   "N": 73598204043753349862696349619,
+   "genome": "old",
+   "mode": "on_demand",
+   "s": 4,
+   "a_count": 9,
+   "od_cands": 34,
+   "selection": 1876,
+   "ok": true
+  },
+  {
+   "N": 73598204043753349862696349619,
+   "genome": "new",
+   "mode": "enumerate",
+   "s": 4,
+   "a_count": 5,
+   "od_cands": 0,
+   "selection": 107880,
+   "ok": true
+  },
+  {
+   "N": 73598204043753349862696349619,
+   "genome": "new",
+   "mode": "on_demand",
+   "s": 4,
+   "a_count": 5,
+   "od_cands": 18,
+   "selection": 778,
+   "ok": true
+  }
+ ],
+ "parity": {
+  "runs": 180,
+  "mismatches": 0,
+  "python_misses": 0,
+  "python_retries": 0
+ },
+ "retries": {
+  "old enumerate": {
+   "runs": 2880,
+   "misses": 0
+  },
+  "old on_demand": {
+   "runs": 2880,
+   "misses": 0
+  },
+  "new enumerate": {
+   "runs": 2880,
+   "misses": 0
+  },
+  "new on_demand": {
+   "runs": 2880,
+   "misses": 0
+  },
+  "n51 enumerate": {
+   "runs": 2880,
+   "misses": 0
+  },
+  "n51 on_demand": {
+   "runs": 2880,
+   "misses": 0
+  }
+ }
+}

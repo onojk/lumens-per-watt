@@ -1,0 +1,72 @@
+1. enumerate unchanged: lampcore reproduces qs + lc 1.4's per-type counts in all five maps (2,880 numbers)
+   retries skipped: []
+2. identity (a_given = the run's own A sequence): 60/60 runs identical outside setup, setup differing by exactly the selection charge
+   72 bits old enumerate s 3 A's 7 candidates 0 selection charge 6552
+   72 bits old on_demand s 3 A's 7 candidates 24 selection charge 990
+   72 bits new enumerate s 3 A's 4 candidates 0 selection charge 6552
+   72 bits new on_demand s 3 A's 4 candidates 8 selection charge 289
+   71 bits old enumerate s 3 A's 10 candidates 0 selection charge 6552
+   71 bits old on_demand s 3 A's 10 candidates 113 selection charge 5207
+   71 bits new enumerate s 3 A's 9 candidates 0 selection charge 6552
+   71 bits new on_demand s 3 A's 8 candidates 17 selection charge 787
+   72 bits old enumerate s 3 A's 12 candidates 0 selection charge 6552
+   72 bits old on_demand s 3 A's 13 candidates 69 selection charge 4057
+   72 bits new enumerate s 3 A's 8 candidates 0 selection charge 6552
+   72 bits new on_demand s 3 A's 7 candidates 13 selection charge 593
+   77 bits old enumerate s 3 A's 12 candidates 0 selection charge 6552
+   77 bits old on_demand s 3 A's 13 candidates 38 selection charge 2060
+   77 bits new enumerate s 3 A's 8 candidates 0 selection charge 6552
+   77 bits new on_demand s 3 A's 9 candidates 33 selection charge 1487
+   77 bits old enumerate s 3 A's 9 candidates 0 selection charge 6552
+   77 bits old on_demand s 3 A's 9 candidates 20 selection charge 956
+   77 bits new enumerate s 3 A's 6 candidates 0 selection charge 6552
+   77 bits new on_demand s 3 A's 7 candidates 28 selection charge 1140
+   77 bits old enumerate s 3 A's 9 candidates 0 selection charge 6552
+   77 bits old on_demand s 3 A's 8 candidates 41 selection charge 1739
+   77 bits new enumerate s 3 A's 8 candidates 0 selection charge 6552
+   77 bits new on_demand s 3 A's 7 candidates 17 selection charge 699
+   83 bits old enumerate s 4 A's 7 candidates 0 selection charge 107880
+   83 bits old on_demand s 4 A's 7 candidates 27 selection charge 1358
+   83 bits new enumerate s 3 A's 6 candidates 0 selection charge 6552
+   83 bits new on_demand s 3 A's 6 candidates 13 selection charge 529
+   84 bits old enumerate s 3 A's 14 candidates 0 selection charge 6552
+   84 bits old on_demand s 3 A's 12 candidates 47 selection charge 2465
+   84 bits new enumerate s 3 A's 9 candidates 0 selection charge 6552
+   84 bits new on_demand s 3 A's 9 candidates 58 selection charge 2458
+   83 bits old enumerate s 3 A's 8 candidates 0 selection charge 6552
+   83 bits old on_demand s 3 A's 9 candidates 27 selection charge 1263
+   83 bits new enumerate s 3 A's 5 candidates 0 selection charge 6552
+   83 bits new on_demand s 3 A's 5 candidates 15 selection charge 552
+   90 bits old enumerate s 4 A's 11 candidates 0 selection charge 107880
+   90 bits old on_demand s 4 A's 12 candidates 120 selection charge 8218
+   90 bits new enumerate s 4 A's 6 candidates 0 selection charge 107880
+   90 bits new on_demand s 4 A's 7 candidates 11 selection charge 611
+   90 bits old enumerate s 4 A's 12 candidates 0 selection charge 107880
+   90 bits old on_demand s 4 A's 12 candidates 47 selection charge 3077
+   90 bits new enumerate s 4 A's 8 candidates 0 selection charge 107880
+   90 bits new on_demand s 4 A's 8 candidates 21 selection charge 1128
+   89 bits old enumerate s 4 A's 11 candidates 0 selection charge 107880
+   89 bits old on_demand s 4 A's 11 candidates 30 selection charge 2048
+   89 bits new enumerate s 3 A's 13 candidates 0 selection charge 6552
+   89 bits new on_demand s 3 A's 13 candidates 204 selection charge 9532
+   96 bits old enumerate s 4 A's 17 candidates 0 selection charge 107880
+   96 bits old on_demand s 4 A's 17 candidates 126 selection charge 9498
+   96 bits new enumerate s 4 A's 15 candidates 0 selection charge 107880
+   96 bits new on_demand s 4 A's 16 candidates 44 selection charge 3918
+   96 bits old enumerate s 4 A's 10 candidates 0 selection charge 107880
+   96 bits old on_demand s 4 A's 11 candidates 58 selection charge 3337
+   96 bits new enumerate s 4 A's 8 candidates 0 selection charge 107880
+   96 bits new on_demand s 4 A's 7 candidates 21 selection charge 1117
+   96 bits old enumerate s 4 A's 9 candidates 0 selection charge 107880
+   96 bits old on_demand s 4 A's 9 candidates 34 selection charge 1876
+   96 bits new enumerate s 4 A's 5 candidates 0 selection charge 107880
+   96 bits new on_demand s 4 A's 5 candidates 18 selection charge 778
+3. Python = Rust, on_demand, per-type counts and factor: 180/180 runs agree
+   Python misses among them: 0; runs needing more than one multiplier: 0
+4. misses on the 2,880 map numbers (lampcore), both modes, three genomes
+   old enumerate: misses 0/2880
+   old on_demand: misses 0/2880
+   new enumerate: misses 0/2880
+   new on_demand: misses 0/2880
+   n51 enumerate: misses 0/2880
+   n51 on_demand: misses 0/2880
