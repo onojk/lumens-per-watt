@@ -6,7 +6,7 @@ tests, written before the code). Run before any measurement.
   2. Identity (Python): on sample numbers per size, for both genomes and both modes, the run with
      "a_given" = the run's own A sequence charges every phase identically, except setup, which
      differs by exactly the selection charge: (s - 1) C(P, s) for enumerate; (s + 1) od_cands
-     full + od_small small for on_demand.
+     (s - 1) od_prefixes + 2 od_cands full + od_small small for on_demand.
   3. Python = Rust: on_demand on map samples (2 per band per size for qs + lc 1.4's genes and
      the new genes, 1 per band for N51-0917's qs), Python's qs_counts against lampcore --types on
      every type, and the same factor.
@@ -47,7 +47,7 @@ def identity_job(args):
     ph1 = {k: tr["ops"].get(k, 0) for k in PHASES}
     ph2 = {k: tr2["ops"].get(k, 0) for k in PHASES}
     s = at["s"]
-    sel = (s - 1) * at["combos"] if mode == "enumerate" else (s + 1) * at["od_cands"] + at["od_small"]
+    sel = (s - 1) * at["combos"] if mode == "enumerate" else (s - 1) * at["od_prefixes"] + 2 * at["od_cands"] + at["od_small"]
     if mode == "enumerate":
         P_ = 40 if s == 1 else 16 + 4 * s
         assert at["combos"] == comb(P_, s)

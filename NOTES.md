@@ -2028,3 +2028,20 @@ on_demand removes only the up-front enumeration of all C(P, s) candidates.
 - *Expected setup_full:* still of order 100–300 per run against 6,600 / 107,960, since each accepted A takes a few prefixes and tries.
 
 The predictions stand as written; the acceptance tests and their checks are unchanged. The identity test's on_demand selection charge is (s − 1)·od_prefixes + 2·od_cands + od_small.
+
+### On-demand A: third amendment after acceptance (before any measurement), cost model first
+
+**Failure found by the third acceptance run** (version 2):
+- 2 of 180 sampled on_demand runs still needed a second multiplier (enumerate: 0): the new genes at s = 3, at 84 and 89 bits. Both first attempts used every prefix after accepting only 9 and 14 A's (ledger 101/160 and 152/178 relations).
+- **Mechanism, measured on the 84-bit case:** it is the top-of-base case. q = 1,866 lies just under the largest factor-base prime (1,877), so the whole pool (1,493–1,877) lies below q. Only 229 of the 3,276 triples are within the 0.25 target check, and nearly all of those use the same few largest primes. Under "share at most one prime", greedy selection finds only 9.
+- Enumerate copes by letting its A's share primes.
+
+**Amended rule, version 3:** two passes over the prefixes.
+- *Pass 1* is version 2 exactly: share at most s − 2 primes with every used A, with the prefix check.
+- *Pass 2* runs only if pass 1 exhausts its prefixes. It walks them again in the same order, with no prefix check, and accepts any try that passes the target check and is not an A already used (it shares at most s − 1 primes with each).
+- Pass 2 can bring back the trivial-relation risk of version 1, but only where pass 1 has run out, and it never comes first.
+- Exhaustion of pass 2 ends the attempt, as before.
+
+**Charges, version 3:** identical per operation in both passes. Pass 2 re-forms A′, t′ and every try, and pays again: (s − 2) + 1 full per prefix, the scans, 2 full per try, and s small per used A per try passing the check (the duplicate comparison). It has no prefix-check charge, because it has no prefix check. The type split and trace fields are unchanged; `od_pass2` records that pass 2 ran.
+
+**Design data, disclosed.** The three amendments were shaped on the acceptance sample: 180 runs (2 per band per size for two genomes, 1 for N51-0917) and 60 identity runs. The measurement uses all 2,880 map numbers for three genomes, and the replacement-rule populations (1,440 balanced numbers), which the amendments never saw. Retries and pass-2 use are reported there for both modes.

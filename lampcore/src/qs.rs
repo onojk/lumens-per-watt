@@ -442,11 +442,12 @@ impl Ledger {
 /// SIQS relation source on kN: phases 3, 4, 5 and 8 until the ledger is full or the
 /// polynomials run out. Some(d) if a factor turns up on the way (a large prime dividing N).
 /// a_mode = on_demand: candidate A's formed one at a time, each charged when formed (twin of
-/// qs.py's a_on_demand). Prefixes: the (s - 1)-combinations of the pool ordered by closeness to
-/// q; the last prime is the pool prime closest to target / A'. Per candidate: s - 2 multiplies
-/// for A', 1 division, 1 multiply for A, 1 target check (full: s + 1 events), one comparison per
-/// pool prime considered for the last, and, if the check passes, s comparisons per A already used
-/// (small): a candidate sharing more than s - 2 primes with any used A is rejected.
+/// qs.py's a_on_demand; NOTES.md, second amendment). Prefixes: the (s - 1)-combinations of the
+/// pool ordered by closeness to q; a prefix within a used A is skipped ((s - 1) small per used A);
+/// otherwise A' (s - 2) and t' (1), then last primes in order of closeness to t': per try a scan
+/// of the remaining primes (small), 1 multiply and 1 target check (full: 2 events); a failed
+/// check ends the prefix; a passing try costs s small per used A and is accepted if it shares at
+/// most s - 2 primes with each.
 struct OnDemand {
     pool: Vec<u64>,
     prefixes: Vec<Vec<u64>>,
@@ -471,40 +472,43 @@ impl OnDemand {
         while self.at < self.prefixes.len() {
             let pre = self.prefixes[self.at].clone();
             self.at += 1;
+            m.charge(SETUP, ((s - 1) * self.used.len()) as u64)?;
+            if self.used.iter().any(|u| pre.iter().all(|p| u.contains(p))) {
+                continue;
+            }
             let ap: u64 = pre.iter().product();
             m.charge(SETUP, s as u64 - 2)?;
             let tp = self.target / ap as f64;
             m.charge(SETUP, 1)?;
-            let mut best: Option<(f64, u64)> = None;
-            let mut n_rest = 0u64;
-            for &p in &self.pool {
-                if pre.contains(&p) {
+            m.ev(crate::EV_SETUP_FULL, s as u64 - 1);
+            let mut rest: Vec<u64> = self.pool.iter().copied().filter(|p| !pre.contains(p)).collect();
+            while !rest.is_empty() {
+                let mut bi = 0usize;
+                for i in 1..rest.len() {
+                    let (ki, kb) = ((rest[i] as f64 / tp).ln().abs(), (rest[bi] as f64 / tp).ln().abs());
+                    if (ki, rest[i]) < (kb, rest[bi]) {
+                        bi = i;
+                    }
+                }
+                m.charge(SETUP, rest.len() as u64)?;
+                let last = rest.remove(bi);
+                let a = ap * last;
+                m.charge(SETUP, 1)?;
+                m.charge(SETUP, 1)?; // target check
+                m.ev(crate::EV_SETUP_FULL, 2);
+                if (a as f64 / self.target).log2().abs() > 0.25 {
+                    break;
+                }
+                let mut key = pre.clone();
+                key.push(last);
+                key.sort();
+                m.charge(SETUP, (s * self.used.len()) as u64)?;
+                if self.used.iter().any(|u| u.iter().filter(|x| key.contains(x)).count() > s - 2) {
                     continue;
                 }
-                n_rest += 1;
-                let k = (p as f64 / tp).ln().abs();
-                if best.map_or(true, |(bk, bp)| (k, p) < (bk, bp)) {
-                    best = Some((k, p));
-                }
+                self.used.push(key.clone());
+                return Ok(Some(key));
             }
-            m.charge(SETUP, n_rest)?;
-            let last = best.unwrap().1;
-            let a = ap * last;
-            m.charge(SETUP, 1)?;
-            m.charge(SETUP, 1)?; // target check
-            m.ev(crate::EV_SETUP_FULL, s as u64 + 1);
-            if (a as f64 / self.target).log2().abs() > 0.25 {
-                continue;
-            }
-            let mut key = pre.clone();
-            key.push(last);
-            key.sort();
-            m.charge(SETUP, (s * self.used.len()) as u64)?;
-            if self.used.iter().any(|u| u.iter().filter(|x| key.contains(x)).count() > s - 2) {
-                continue;
-            }
-            self.used.push(key.clone());
-            return Ok(Some(key));
         }
         Ok(None)
     }

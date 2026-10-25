@@ -75,7 +75,7 @@ def lamp_qs(N, g, m):
     for k in ranked:
         at = None
         if tr is not None:
-            at = dict(k=k, euler_e=[], ts=[], combos=0, s=0, a_count=0, inv=[], od_cands=0, od_small=0, a_seq=[],
+            at = dict(k=k, euler_e=[], ts=[], combos=0, s=0, a_count=0, inv=[], od_prefixes=0, od_cands=0, od_small=0, a_seq=[],
                       n_sieved_setup=0, switches_roots=[], polys=[], cands=[],
                       extra_div=0, F=0, rows=0, deps=[])
             tr["attempts"].append(at)
@@ -90,35 +90,47 @@ def lamp_qs(N, g, m):
     return None
 
 def a_on_demand(pool, s, q, target, charge, at):
-    """a_mode = on_demand (NOTES.md, "On-demand A selection"): A's formed one at a time, each
-    charged when formed. Prefixes are the (s - 1)-combinations of the pool ordered by closeness
-    to q; the last prime is the pool prime closest to target / A'. Per candidate: s - 2
-    multiplies for A', 1 division, 1 multiply for A, 1 target check (full), one comparison per
-    pool prime considered for the last, and, if the check passes, s comparisons per A already
-    used (small): a candidate sharing more than s - 2 primes with any used A is rejected (a
-    duplicate shares s), since A's that differ in one prime find the same u (NOTES.md, amendment)."""
+    """a_mode = on_demand (NOTES.md, "On-demand A selection", second amendment): A's formed one at
+    a time, each charged when formed. Prefixes are the (s - 1)-combinations of the pool ordered
+    by closeness to q. A prefix lying within a used A is skipped ((s - 1) small ops per used A).
+    Otherwise A' (s - 2 multiplies) and t' = target / A' (1 op), then last primes are tried in
+    order of closeness to t' (a scan of the remaining pool primes, small; 1 multiply and 1 target
+    check, full): the first try failing the target check ends the prefix; a try passing it is
+    compared with every used A (s small ops each) and accepted if it shares at most s - 2 primes
+    with each (A's differing in one prime find the same u)."""
     by_q = sorted(pool, key=lambda p: (abs(math.log(p / q)), p))
     used = []
     for pre in combinations(by_q, s - 1):
+        charge("setup", (s - 1) * len(used))
+        if at is not None:
+            at["od_small"] += (s - 1) * len(used)
+        if any(all(p in u for p in pre) for u in used):
+            continue
         Ap = math.prod(pre); charge("setup", s - 2)
         tp = target / Ap; charge("setup", 1)
+        if at is not None:
+            at["od_prefixes"] += 1
         rest = [p for p in pool if p not in pre]
-        last = min(rest, key=lambda p: (abs(math.log(p / tp)), p)); charge("setup", len(rest))
-        A = Ap * last; charge("setup", 1)
-        charge("setup", 1)                     # target check
-        if at is not None:
-            at["od_cands"] += 1
-            at["od_small"] += len(rest)
-        if abs(math.log2(A / target)) > 0.25:
-            continue
-        key = tuple(sorted(pre + (last,)))
-        charge("setup", s * len(used))
-        if at is not None:
-            at["od_small"] += s * len(used)
-        if any(len(set(key) & set(u)) > s - 2 for u in used):
-            continue
-        used.append(key)
-        yield key
+        while rest:
+            last = min(rest, key=lambda p: (abs(math.log(p / tp)), p)); charge("setup", len(rest))
+            if at is not None:
+                at["od_small"] += len(rest)
+            rest.remove(last)
+            A = Ap * last; charge("setup", 1)
+            charge("setup", 1)                 # target check
+            if at is not None:
+                at["od_cands"] += 1
+            if abs(math.log2(A / target)) > 0.25:
+                break
+            key = tuple(sorted(pre + (last,)))
+            charge("setup", s * len(used))
+            if at is not None:
+                at["od_small"] += s * len(used)
+            if any(len(set(key) & set(u)) > s - 2 for u in used):
+                continue
+            used.append(key)
+            yield key
+            break
 
 def sieve_source(N, k, g, led, ch, at):
     """SIQS relation source on kN: phases 3, 4, 5 and 8 until `led` is full or the polynomials
