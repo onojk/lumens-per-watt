@@ -1765,3 +1765,81 @@ Checked in the repo with `evolve/outside_checks.py` (`outside_checks.out`/`.json
 - *Inputs:* empirical powersmooth rates at B = 2^10 of 0.38 / 0.18 / 0.096 / 0.046 at 20 / 24 / 28 / 32 bits, for ~1,480 multiplies. That makes the cost per factor found ~3,900 / ~8,400 / ~15,400 / ~32,500, against rho's average ~3,100 / ~12,400 / ~50,000 / ~200,000.
 - *Prediction:* a small-B p-1 stage switches on after rho at 84–96 bits and pays a few percent in robust fitness. It is off at 72–78 if ruint's multiply price for p-1 outweighs it.
 - My P1–P2 above stand as written; P1 predicts the opposite at 84 bits.
+
+## 2026-10-25 — Type mix of the two qs references by size (information only; before the size-scaling test)
+
+**Status.** This check had not run before; no earlier entry records it. It ran now. Code: `evolve/typemix.py`, outputs `typemix.out`/`.json` (37 s).
+
+**Data.** The existing map numbers: 72 and 96 bits (`size_map.json`, 480 and 640 numbers), 78 and 90 bits (`stopping_map.json`, 560 and 640), and 84 bits (`partition_map.json`, 560).
+- qs + lc 1.4's per-type counts are taken from the maps. The new qs genes were run in `stopping.py test` and `partition_newqs.py`, but their per-type counts were not saved, so the new qs alone was rerun here: lampcore `--types`, cap 2^28, the same numbers.
+- The maps' qs + lc 1.4 counts reproduce exactly when rerun, at every size. The 84-bit map stores zero-valued types, which are dropped before comparing.
+
+**new qs alone / qs + lc 1.4 alone** (mean cost ratio):
+
+| bits | official | ruint | Montgomery | numbers at s = 4: old / new |
+|---|---|---|---|---|
+| 72 | 1.149 | 0.826 | 0.841 | 0.019 / 0.000 |
+| 78 | 1.010 | 0.489 | 0.673 | 0.243 / 0.000 |
+| 84 | 0.963 | 0.405 | 0.630 | 0.554 / 0.004 |
+| 90 | 1.045 | 0.902 | 0.875 | 1.000 / 0.930 |
+| 96 | 1.003 | 0.908 | 0.859 | 1.000 / 1.000 |
+
+At 78, 84 and 90 these are the figures already reported: stopping test 1.01 / 0.49 / 0.67 and 1.04 / 0.90 / 0.88, and `partition_newqs` 0.963 / 0.405 / 0.630.
+
+**Mean ops per type** (old = qs + lc 1.4's genes, kc 32, bc 1.1, mc 0.25, tc 1.38, lc 1.4; new = kc 4, bc 0.899, mc 0.734, tc 1.104, lc 1.661). Full tables, including fb, mult, sqrt and lp, are in `typemix.out`. The types that matter:
+
+| bits | setup_full old / new | setup_small old / new | sieve_update old / new | sieve_scan old / new | confirm_td old / new | la old / new |
+|---|---|---|---|---|---|---|
+| 72 | 8,506 / 6,596 | 8,799 / 5,843 | 43,475 / 73,046 | 19,549 / 37,963 | 38,508 / 28,589 | 17,681 / 10,530 |
+| 78 | 31,224 / 6,603 | 14,985 / 9,403 | 80,450 / 126,064 | 35,998 / 63,328 | 73,829 / 54,785 | 40,646 / 24,560 |
+| 84 | 62,714 / 6,974 | 24,280 / 15,073 | 146,587 / 222,273 | 63,400 / 107,003 | 135,580 / 102,191 | 91,642 / 55,336 |
+| 90 | 107,952 / 100,841 | 38,936 / 23,879 | 258,942 / 400,000 | 110,846 / 193,231 | 254,891 / 193,201 | 210,462 / 127,724 |
+| 96 | 107,969 / 107,944 | 64,610 / 38,312 | 460,027 / 695,450 | 191,231 / 325,218 | 483,247 / 358,196 | 480,677 / 287,415 |
+
+**Each type's share of cost, old / new.**
+- *ruint:*
+  - setup_full 0.377 / 0.353 (72), 0.563 / 0.243 (78), 0.606 / 0.166 (84), 0.609 / 0.630 (90), 0.466 / 0.513 (96);
+  - confirm_td 0.15–0.24 / 0.14–0.28;
+  - setup_small 0.07–0.12 / 0.05–0.11;
+  - sieve_update 0.05–0.07 / 0.09–0.18.
+- *Montgomery:*
+  - setup_full 0.149 / 0.137 (72), 0.268 / 0.084 (78), 0.302 / 0.053 (84), 0.302 / 0.323 (90), 0.194 / 0.226 (96);
+  - confirm_td 0.27–0.37 / 0.25–0.33;
+  - setup_small 0.12–0.18 / 0.09–0.14;
+  - sieve_update 0.09–0.10 / 0.16–0.21.
+- Every other type is under 0.10 at every size, under both pricings.
+
+**What drives the 78-bit gap: setup_full, through s.**
+- *How the charge works.* qs forms every candidate A up front: all C(P, s) combinations of a pool of P = 16 + 4s primes, at (s − 1) full-price multiplies each (`qs.py`, phase 3). That is 2·C(28, 3) = 6,552 ops at s = 3, and 3·C(32, 4) = 107,880 at s = 4: a 16.5x step. s is set by the target A ≈ sqrt(2kN)/M, with M = mc·B.
+- *Under ruint.* setup_full is the only type whose contribution to new − old (as a share of old's total cost) is large:
+  - 72: −0.085; 78: −0.444; 84: −0.539; 90: −0.040; 96: 0.000.
+  - The new genes' extra sieve work adds +0.03 to +0.04; confirm_td and setup_small give back −0.03 to −0.06 each.
+  - Under Montgomery setup_full gives −0.212 at 78 and −0.268 at 84.
+  - Under official every contribution is small, and sieve_update/scan (+0.24 at 78) cancel confirm_td and la.
+- *Where the step falls.* The old genes cross s = 3 → 4 between 72 and 90 bits (1.9%, 24.3%, 55.4% and 100% of numbers at 72, 78, 84 and 90). The new genes cross between 84 and 90 (0.4% at 84, 93% at 90). The ruint gap is wide only where the two genomes sit on opposite sides of the step (78–84), and it closes once both are at s = 4 (0.90 at 90 and 96).
+- **The old-gene parameter: mc** (sieve half-width M = mc·B; 0.25 against 0.734). One-gene swaps on the same numbers (new / old cost ratio, official / ruint / Montgomery):
+  - At 78:
+    - old genes with mc → 0.734: 1.059 / 0.525 / 0.733, which closes most of the 0.489 ruint gap;
+    - new genes with mc → 0.25: 1.015 / 1.363 / 1.137;
+    - next comes kc (old with kc → 4: 0.963 / 0.594 / 0.851). A smaller multiplier set keeps kN, and so the target A, lower.
+  - Making bc smaller alone *raises* the old genes' ruint cost (1.647), since a smaller B pushes the target A up.
+  - Swapping tc or lc alone moves ruint by 4–8% or less.
+  - The same pattern holds at 84: mc gives 0.531 ruint against the full gap of 0.405.
+- So **the ruint/Montgomery gain of the new genes at 78–84 bits is mostly qs + lc 1.4's short sieve interval (mc 0.25) pushing it to s = 4**, where the up-front A enumeration costs about 108,000 full multiplies. It is not a better sieve.
+
+**Do any optypes prices depend on operand size?**
+- **In the price table, no.** `optypes.prices()` is one table per pricing, calibrated once against an 84-bit multiply (the P-core median), and no price takes N's size.
+- **The underlying timings** (opbench, median of P1–P3):
+  - Montgomery mulmod is flat: chain 7.44 / 7.36 / 7.46 ns at 60 / 84 / 100 bits. It uses two limbs throughout.
+  - ruint `U256::mul_mod` is 16.81 / 27.35 / 30.26 ns. The big step is at 64 bits (one limb to two), below this range. From 84 to 100 bits it rises 11%.
+  - No timing exists at 72 or 90 bits. Interpolating within two limbs, full-price ops would move by about ±4% between 72 and 90 against the 84-bit basis, with small-number prices moving by the inverse.
+  - gcd Euclid steps grow with N (49.6 at 84 bits, 59.5 at 100), but qs's gcd work is charged per step (sqrt_gcd) and is under 0.2% of cost.
+- None of this approaches the 0.49 → 0.90 swing between 78 and 90 bits, which is a count effect (s), not a price effect.
+
+**What MOVES' 0.955x (72) and 0.924x (96) compare.**
+- They come from generalization test (a) (`newqs_general.py`; seeds 8800000 + 100 pb + bits, mixed 72 and 96 bits, 480 and 640 numbers). Two full pipelines with A's budgets (rho 5,793, ECM 32,768; td and pm1 off) are compared, differing only in the final qs's genes (new against qs + lc 1.4's). Each is scored as robust fitness against qs + lc 1.4 alone, and the ratio is fitness(new) / fitness(old).
+- In both cases the binding pricing is ruint:
+  - at 72, 1.100 against 1.152;
+  - at 96, 0.688 against 0.744.
+- Per pricing (log₂): at 72, official +0.111, ruint −0.066, Montgomery −0.107; at 96, −0.003, −0.114 and −0.200.
+- So they are pipeline-level robust ratios on different numbers, with pre-stage costs in both numerator and denominator. They are not the qs-alone ratios above. Both sizes sit outside the 78–84 step, which is consistent with the gain being small there.
