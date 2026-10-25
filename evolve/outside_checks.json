@@ -1,0 +1,115 @@
+{
+ "rho_band16": {
+  "ops": 801.9625,
+  "f": 552.0,
+  "prod": 241.2,
+  "gcd": 8.7625,
+  "brent_f_b1": 515.0125,
+  "mu_lambda": 279.45,
+  "sqrt_pi_p_over_2": 272.7452835117681
+ },
+ "pm1": {
+  "16": {
+   "map": 0.9875,
+   "exact_pred": 0.9875,
+   "p_minus_1_powersmooth": 1.0,
+   "user": 1.0,
+   "two_se": 0.0,
+   "hits": {
+    "small only": 79,
+    "large only": 0,
+    "both (gcd N)": 1
+   }
+  },
+  "20": {
+   "map": 0.8,
+   "exact_pred": 0.8,
+   "p_minus_1_powersmooth": 0.825,
+   "user": 0.886,
+   "two_se": 0.0724721187768096,
+   "hits": {
+    "small only": 64,
+    "large only": 0,
+    "both (gcd N)": 2
+   }
+  },
+  "24": {
+   "map": 0.7,
+   "exact_pred": 0.7,
+   "p_minus_1_powersmooth": 0.7125,
+   "user": 0.7,
+   "two_se": 0.10449880382090505,
+   "hits": {
+    "small only": 55,
+    "large only": 1,
+    "both (gcd N)": 2
+   }
+  },
+  "28": {
+   "map": 0.525,
+   "exact_pred": 0.525,
+   "p_minus_1_powersmooth": 0.525,
+   "user": 0.531,
+   "two_se": 0.11379818979228097,
+   "hits": {
+    "small only": 41,
+    "large only": 1,
+    "both (gcd N)": 1
+   }
+  },
+  "32": {
+   "map": 0.4125,
+   "exact_pred": 0.4125,
+   "p_minus_1_powersmooth": 0.4125,
+   "user": 0.404,
+   "two_se": 0.11189623764899337,
+   "hits": {
+    "small only": 30,
+    "large only": 3,
+    "both (gcd N)": 3
+   }
+  },
+  "36": {
+   "map": 0.2875,
+   "exact_pred": 0.2875,
+   "p_minus_1_powersmooth": 0.2625,
+   "user": 0.276,
+   "two_se": 0.10193550902408836,
+   "hits": {
+    "small only": 19,
+    "large only": 4,
+    "both (gcd N)": 2
+   }
+  },
+  "42": {
+   "map": 0.275,
+   "exact_pred": 0.275,
+   "p_minus_1_powersmooth": 0.0875,
+   "user": 0.143,
+   "two_se": 0.07982889201285459,
+   "hits": {
+    "small only": 6,
+    "large only": 16,
+    "both (gcd N)": 1
+   }
+  }
+ },
+ "random_primes": {
+  "2^16.7": {
+   "16": 1.0,
+   "20": 0.879,
+   "24": 0.711,
+   "28": 0.5365,
+   "32": 0.393,
+   "36": 0.2735,
+   "39": 0.2235,
+   "42": 0.138
+  },
+  "2^10": {
+   "20": 0.392,
+   "24": 0.205,
+   "28": 0.0925,
+   "32": 0.0345
+  }
+ }
+}

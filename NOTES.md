@@ -942,7 +942,7 @@ Small parts are phase total minus full parts, as in Python. The split is taken *
 **Result (`evolve/primes_gaps.py`/`.out`/`.json`; 40 tests).**
 - **Positive control holds:** p-1's success against log LPF(p − 1) / log p, rank correlation −0.528, Holm-adjusted p 0.004. The test can see a real arithmetic dependence.
 - **td depends on p's size only: holds** (+1.000 with log p within its band; nothing else survives).
-- **rho, ECM and qs show no correlation with the gap features: holds.** No gap, twin, smoothness or residue feature survives Holm for any of them (the largest raw effect, ECM against the gap after p, +0.094, raw p 0.026, Holm 0.90). With 560 numbers and Holm over 40 tests, this rules out within-band rank correlations above about 0.15.
+- **rho, ECM and qs show no correlation with the gap features: holds.** No gap, twin, smoothness or residue feature survives Holm for any of them (the largest raw effect, ECM against the gap after p, +0.094, raw p 0.026, Holm 0.90). With 560 numbers and Holm over 40 tests, correlations above ~0.17 pooled within bands would likely have been detected (80% power, strictest Holm step); single-band effects below ~0.43 are not ruled out. [Reworded Oct 24 after an outside power check (NOTES, "Outside checks, second round"); was "this rules out within-band rank correlations above about 0.15".]
 - **Size effects:** qs + lc 1.4 against log p within its band, +0.164 (Holm 0.004), and rho, +0.145 (Holm 0.056). For qs this is N's size, not p's: within a band log N tracks log p (+0.71 to +0.88), and qs's cost tracks log N at least as strongly (+0.19 to +0.29 against +0.13 to +0.30). For rho it is the expected sqrt(p) scaling.
 - No gap correlation survived, so there is no candidate pattern to re-test on the sealed numbers. Recorded in MOVES as ruled out.
 
@@ -1664,7 +1664,7 @@ Figures computed outside the repo, each checked here against the repo's own reco
 - **Dedicated-curve ratios:** 0.2906 and 3.442, as in that table (0.2906 / 3.4420).
 - **log₂(lcm(1..B)) / B:** 1.417, 1.444, 1.446 and 1.441 at B = 2^8, 2^10, 2^12 and 2^16. Recomputed here: the same values. This matches the ECM stage-1 rough check (≈ 16·B1 ≈ 11·log₂ lcm) and the MOVES row's "~1.44 B multiplies".
 - **Doubling race:** 19 complete doubling turns under 2^28, from 2^9(2^m − 1) ≤ 2^28. This matches the MOVES row's "~19 turns".
-- **rho on 16-bit p:** sqrt(πp/2) = 321 iterations at p = 2^16, so the measured 2^9.6 means about 2.4 ops per iteration. The partition map's band-16 rho mean is 802 ops (2^9.65; 793 multiplies on average), about 2.5 ops per iteration.
+- **rho on 16-bit p:** sqrt(πp/2) = 321 iterations at p = 2^16, so the measured 2^9.6 means about 2.4 ops per iteration. The partition map's band-16 rho mean is 802 ops (2^9.65; 793 multiplies on average), about 2.5 ops per iteration. [Corrected Oct 24, second outside check: both per-iteration figures use p = 2^16. Band-16 primes lie in [2^15, 2^16), and their mean sqrt(πp/2) is 272.7, so the map's 802 ops are 2.94 ops per sqrt(πp/2). The breakdown is below, under the second round.]
 - **td on 16-bit p:** mean p/2 over 16-bit primes is 24,461, against rho's 776, a ratio of 31x. The partition map's band-16 means are td 23,912 and rho 802, a ratio of 29.8x. Neither the 24,461 nor the 776 appears in NOTES; the map values are given beside them here. The map's figures are within 3% of the outside figures.
 
 No number in NOTES changes.
@@ -1683,7 +1683,7 @@ No number in NOTES changes.
 - Report the result per size and per pricing, with the gate (per-band intervals), and how much the card costs where it fails.
 - If the maps cannot be extended (for example, the numbers are not recoverable from them), stop and report rather than build a new population.
 
-**Prediction (user's, from Dickman ρ; written before the map is extended).**
+**Prediction (user's, from Dickman ρ; written before the map is extended).** [Superseded, Oct 24, by the user's revised prediction under the second round below. That revision was also written before the map was extended. This text is kept.]
 - ρ underestimates the smoothness chance, because p − 1 is even.
 - At B = 2^10 (~1,480 multiplies), the chance that p − 1 is smooth is 0.31, 0.16, 0.074 and 0.032 at p of 20, 24, 28 and 32 bits.
 - Expected cost per factor found is therefore ~4,800, ~9,500 and ~20,000 at 20, 24 and 28 bits, against rho's average ~3,100, ~12,400 and ~50,000.
@@ -1700,3 +1700,68 @@ Recomputed here as a check (not part of the user's prediction):
 - (P2) Under ruint, the card costs at least as much relative to qs as it does under official, so if any pricing turns it on, official does.
 
 Reason: every number that reaches pm1 pays ~1,560 ops. That includes the balanced band, where pm1 almost never hits, and the 16–20-bit bands, which rho has mostly already solved. On 24–32-bit p, ECM at A's 2^15 budget already finds most factors, so pm1 saves only part of ECM's cost on its 3–16% of hits.
+
+### Outside checks, second round (user, Wolfram Language 15 cloud, Oct 24; SeedRandom[2026]; code in the user's reply)
+
+Checked in the repo with `evolve/outside_checks.py` (`outside_checks.out`/`.json`; 2 s). That script is information only and has no charged path. It reruns the rho card on the partition map's 80 band-16 numbers, and its ops are asserted equal to the map's on every number. It recomputes pm1's outcome on all 560 map numbers, and draws random primes with random.Random(2026).
+
+**Confirmed again (user).** The figures of the first round, plus the sign test: 3/8 and 5/8 give p = 0.727, as in the Run 8 per-seed table.
+
+**rho.**
+- *User:* tail + cycle = 1.02–1.03 × sqrt(πp/2), from 500 primes each at 16, 20 and 24 bits. Brent detection takes about 1.57x that (445 steps at p = 2^16). So 2^9.6 = 776 ops implies about 1.74 ops per Brent step.
+- *Repo, on the band-16 map numbers:*
+  - mean ops 802.0 = 552.0 f evaluations + 241.2 product accumulations + 8.8 gcds;
+  - mean sqrt(πp/2) is 272.7, and mean μ + λ is 279.4 (1.025x, which agrees with the user);
+  - Brent with b = 1 takes 515.0 f evaluations to detection (1.888x);
+  - the card itself takes 552.0 f evaluations, 7.2% more, because its gcd is batched every 64 products and it overshoots.
+- **The charging is as described**, and is confirmed exactly: 1 op per squaring and 1 per product accumulation. Products are skipped on Brent's power-of-two advance steps (44% of f evaluations carry a product). Add 1 op per gcd, about 1 per 64 products, plus the backtrack.
+- **Ops per Brent step depends on what counts as a step.** It is 1.56 per f evaluation to detection (b = 1). With the user's 1.57 × sqrt(πp/2) applied to these primes (428 steps), it is 1.87. The user's 1.74 uses p = 2^16 for a band whose primes start at 2^15.
+
+**Primes-and-gaps power (user; correction).**
+- 80% power at the strictest Holm step (α = 0.05/40, Fisher z) needs r = 0.171 pooled (n = 560) and r = 0.433 within one band (n = 80). Rank correlations need slightly more.
+- Recomputed here: z₀.₉₉₉₃₈ + z₀.₈ = 3.227 + 0.842 = 4.068; tanh(4.068/√557) = 0.171; tanh(4.068/√77) = 0.433.
+- The primes-and-gaps result and its MOVES row are reworded to match, each with a bracketed record of the old wording.
+
+**pm1 on the partition map against random-prime powersmooth rates** (B = int(N^0.1991) ≈ 2^16.7). Columns: the map's solve fraction; the exact prediction (ord(2) divides the stage-1 exponent for exactly one of p, q); p − 1 B-powersmooth for the smaller factor; the user's random-prime rate (2000 primes per size); and hits by factor (small only / large only / both, where gcd = N and the run fails).
+
+| band | map | exact prediction | p − 1 powersmooth | user | map − user | 2 SE | hits small / large / both |
+|---|---|---|---|---|---|---|---|
+| 16 | 0.988 | 0.988 | 1.000 | 1.000 | −0.012 | 0 | 79 / 0 / 1 |
+| 20 | 0.800 | 0.800 | 0.825 | 0.886 | −0.086 | 0.072 | 64 / 0 / 2 |
+| 24 | 0.700 | 0.700 | 0.713 | 0.700 | +0.000 | 0.104 | 55 / 1 / 2 |
+| 28 | 0.525 | 0.525 | 0.525 | 0.531 | −0.006 | 0.114 | 41 / 1 / 1 |
+| 32 | 0.412 | 0.412 | 0.412 | 0.404 | +0.008 | 0.112 | 30 / 3 / 3 |
+| 36 | 0.287 | 0.287 | 0.263 | 0.276 | +0.011 | 0.102 | 19 / 4 / 2 |
+| 42 | 0.275 | 0.275 | 0.087 | 0.143 | +0.132 | 0.080 | 6 / 16 / 1 |
+
+(The user's 39-bit rate, 0.195, has no map band.)
+
+- **The meter's pm1 matches the exact prediction on all 560 numbers.**
+- **Three bands are off by more than 2 SE, each for a reason in the table:**
+  - *Band 16:* one number has both p − 1 and q − 1 within the bound, so the gcd is N and the run fails. The user's rate has no sampling error at 1.00, so any failure counts as "off".
+  - *Band 20:* the same failure on 2 numbers (0.025), plus a low draw: 66/80 = 0.825 smooth against 0.879–0.886 random, 1.5 binomial SE.
+  - *Band 42:* the balanced band, where either factor can be the smooth one. Single hits are 22/80, against 2r(1 − r) ≈ 0.24 at r = 0.14.
+- No band disagrees beyond these.
+
+**Random-prime rates recomputed** (random.Random(2026), 2000 primes per size; the user's figures in brackets):
+- **B = 2^16.7 (106,463):**
+  - 16 bits: 1.000 [1.00]
+  - 20 bits: 0.879 [0.886]
+  - 24 bits: 0.711 [0.700]
+  - 28 bits: 0.536 [0.531]
+  - 32 bits: 0.393 [0.404]
+  - 36 bits: 0.274 [0.276]
+  - 39 bits: 0.224 [0.195]
+  - 42 bits: 0.138 [0.143]
+- **B = 2^10:**
+  - 20 bits: 0.392 [0.38]
+  - 24 bits: 0.205 [0.18]
+  - 28 bits: 0.092 [0.096]
+  - 32 bits: 0.035 [0.046]
+- The largest gaps between the two samples are about 2 SE of a difference of two samples of 2000: 39 bits at 2^16.7 (+0.029, 2.3 SE), 24 bits at 2^10 (+0.025, 2.0 SE) and 32 bits at 2^10 (−0.011, 1.8 SE). Two independent samples, 12 comparisons; not chased further.
+- At the meter's 1,558 ops for B = 2^10, the cost per factor found from these rates is 3,974 / 7,600 / 16,843 / 45,159 at 20 / 24 / 28 / 32 bits. The user's figures are ~3,900 / ~8,400 / ~15,400 / ~32,500.
+
+**Queued small-bound p-1 check: the user's revised prediction** (Oct 24, written before the map is extended; this supersedes the user's Dickman-based prediction above).
+- *Inputs:* empirical powersmooth rates at B = 2^10 of 0.38 / 0.18 / 0.096 / 0.046 at 20 / 24 / 28 / 32 bits, for ~1,480 multiplies. That makes the cost per factor found ~3,900 / ~8,400 / ~15,400 / ~32,500, against rho's average ~3,100 / ~12,400 / ~50,000 / ~200,000.
+- *Prediction:* a small-B p-1 stage switches on after rho at 84–96 bits and pays a few percent in robust fitness. It is off at 72–78 if ruint's multiply price for p-1 outweighs it.
+- My P1–P2 above stand as written; P1 predicts the opposite at 84 bits.

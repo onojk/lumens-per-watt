@@ -1,0 +1,18 @@
+1. rho, band 16 (80 numbers, ops asserted equal to the map): mean ops 802.0 = f evals 552.0 + products 241.2 + gcds 8.8
+   sqrt(pi p/2) 272.7; mu + lambda 279.4 (1.025x); Brent f evals to detection (b = 1) 515.0 (1.888x)
+   ops per Brent detection step 1.557; per sqrt(pi p/2) 2.940; card f evals / detection steps 1.072
+
+2. pm1 on the partition map (B = int(N^b), b 0.1991): solve fraction per band
+   band  map    exact-pred  p-1 smooth  user rate  map - user  2 SE (n 80 + n 2000)
+     16  0.988  0.988       1.000       1.000      -0.012      0.000  OFF   {'small only': 79, 'large only': 0, 'both (gcd N)': 1}
+     20  0.800  0.800       0.825       0.886      -0.086      0.072  OFF   {'small only': 64, 'large only': 0, 'both (gcd N)': 2}
+     24  0.700  0.700       0.713       0.700      +0.000      0.104   {'small only': 55, 'large only': 1, 'both (gcd N)': 2}
+     28  0.525  0.525       0.525       0.531      -0.006      0.114   {'small only': 41, 'large only': 1, 'both (gcd N)': 1}
+     32  0.412  0.412       0.412       0.404      +0.008      0.112   {'small only': 30, 'large only': 3, 'both (gcd N)': 3}
+     36  0.287  0.287       0.263       0.276      +0.011      0.102   {'small only': 19, 'large only': 4, 'both (gcd N)': 2}
+     42  0.275  0.275       0.087       0.143      +0.132      0.080  OFF   {'small only': 6, 'large only': 16, 'both (gcd N)': 1}
+
+3. random primes, B = 2^16.7 (106463), 2000 per size: 16: 1.000  20: 0.879  24: 0.711  28: 0.536  32: 0.393  36: 0.274  39: 0.224  42: 0.138
+
+3. random primes, B = 2^10 (1024), 2000 per size: 20: 0.392  24: 0.205  28: 0.092  32: 0.035
+   B = 2^10 meter charge 1,558 ops / rate: 20: 3,974  24: 7,600  28: 16,843  32: 45,159
