@@ -1,0 +1,27 @@
+
+78 bits (560 numbers), final qs corrected
+  TRANSFER corrected | ref corrected   fitness 0.8705 [0.8522, 0.8888] (0.771 / 0.870 / 0.797)  misses 0  gate PASS (upper 1.132, lower 1.125)
+  TRANSFER enumerate | ref corrected   fitness 0.8704 [0.8523, 0.8878] (0.700 / 0.870 / 0.745)  misses 0  gate PASS (upper 1.242, lower 1.228)
+  A | ref corrected                    fitness 1.3340 [1.2839, 1.3836] (0.505 / 1.334 / 0.689)  misses 0  gate FAIL (upper 2.365, lower 2.087)
+  theory | ref corrected               fitness 1.2527 [1.2177, 1.2880] (0.735 / 1.253 / 0.849)  misses 0  gate FAIL (upper 1.770, lower 1.691)
+  TRANSFER corrected | ref frozen      fitness 0.7068 [0.6892, 0.7248] (0.707 / 0.408 / 0.624)  misses 0  gate PASS (upper 0.988, lower 0.921)
+  TRANSFER enumerate | ref frozen      fitness 0.6423 [0.6248, 0.6593] (0.642 / 0.408 / 0.583)  misses 0  gate PASS (upper 0.997, lower 0.930)
+  A | ref frozen                       fitness 0.6255 [0.5802, 0.6733] (0.463 / 0.625 / 0.539)  misses 0  gate PASS (upper 1.399, lower 0.968)
+  theory | ref frozen                  fitness 0.6737 [0.6486, 0.7002] (0.674 / 0.587 / 0.665)  misses 0  gate PASS (upper 1.108, lower 0.958)
+  TRANSFER corrected vs A  robust -0.616 [-0.673, -0.557]  offi +0.611 [+0.518,+0.712]  ruin -0.616 [-0.673,-0.557]  mont +0.211 [+0.134,+0.291]  call undecided
+  TRANSFER enumerate vs A  robust -0.616 [-0.666, -0.565]  offi +0.473 [+0.383,+0.570]  ruin -0.616 [-0.666,-0.565]  mont +0.113 [+0.040,+0.189]  call undecided
+  theory vs A              robust -0.091 [-0.143, -0.036]  offi +0.542 [+0.452,+0.637]  ruin -0.091 [-0.143,-0.036]  mont +0.302 [+0.229,+0.379]  call undecided
+
+90 bits (640 numbers), final qs corrected
+  TRANSFER corrected | ref corrected   fitness 0.7861 [0.7693, 0.8026] (0.661 / 0.786 / 0.692)  misses 0  gate PASS (upper 1.192, lower 1.181)
+  TRANSFER enumerate | ref corrected   fitness 1.0400 [1.0016, 1.0771] (0.462 / 1.040 / 0.592)  misses 0  gate FAIL (upper 1.985, lower 1.765)
+  A | ref corrected                    fitness 1.0220 [0.9945, 1.0488] (0.666 / 1.022 / 0.746)  misses 0  gate FAIL (upper 1.568, lower 1.535)
+  theory | ref corrected               fitness 1.0466 [1.0084, 1.0838] (0.461 / 1.047 / 0.594)  misses 0  gate FAIL (upper 2.012, lower 1.792)
+  TRANSFER corrected | ref frozen      fitness 0.5971 [0.5825, 0.6111] (0.597 / 0.316 / 0.495)  misses 0  gate PASS (upper 0.937, lower 0.919)
+  TRANSFER enumerate | ref frozen      fitness 0.4243 [0.4042, 0.4445] (0.417 / 0.418 / 0.424)  misses 0  gate PASS (upper 0.915, lower 0.780)
+  A | ref frozen                       fitness 0.6017 [0.5812, 0.6217] (0.602 / 0.411 / 0.534)  misses 0  gate PASS (upper 0.946, lower 0.928)
+  theory | ref frozen                  fitness 0.4253 [0.4064, 0.4455] (0.416 / 0.421 / 0.425)  misses 0  gate PASS (upper 0.917, lower 0.782)
+  TRANSFER corrected vs A  robust -0.379 [-0.419, -0.337]  offi -0.011 [-0.063,+0.043]  ruin -0.379 [-0.419,-0.337]  mont -0.109 [-0.157,-0.059]  call undecided
+  TRANSFER enumerate vs A  robust +0.025 [-0.026, +0.073]  offi -0.528 [-0.612,-0.448]  ruin +0.025 [-0.026,+0.073]  mont -0.333 [-0.403,-0.266]  call undecided
+  theory vs A              robust +0.034 [-0.016, +0.083]  offi -0.531 [-0.615,-0.451]  ruin +0.034 [-0.016,+0.083]  mont -0.329 [-0.399,-0.262]  call undecided
+exit 0

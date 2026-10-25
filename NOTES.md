@@ -2262,3 +2262,103 @@ setup_full is now under 1% of cost for both genomes.
 - Under the corrected card the official-for-calibrated trade is mc's, partly offset by bc.
 - qs + lc 1.4's genes with bc 0.899 alone are cheaper than qs + lc 1.4 under all three pricings at every size on these numbers (0.83–0.97; 0.83–0.90 at 78–96), and the new genes with kc 32 are cheaper than the new genes everywhere.
 - These are post hoc observations on the map numbers. A replacement claim needs its own pre-registered test on fresh numbers, and the next search over the qs genes (the size-scaling test) should run on the corrected card. It should not inherit the enumerate-era winners' kc.
+
+### Re-solve with the corrected card: results (`evolve/resolve.py map` / `sealed`; `resolve.out`, `resolve_sealed.out`, `.json`)
+
+**Per-size robust grid optimum** (rho, ECM; td and pm1 off). Fitness is against the same card's qs + lc 1.4 alone; "A" is A's fixed budgets (rho 5,793, ECM 32,768) on the same map.
+
+| bits | enumerate: optimum (fitness) | corrected: optimum (fitness) | grid steps moved | A's budgets: enum / corr | optimum / A: enum / corr | binding (all) |
+|---|---|---|---|---|---|---|
+| 72 | rho 3,158, ECM off (0.817) | rho 1,579, ECM off (0.869) | rho 8 | 1.126 / 1.569 | 0.726 / 0.554 | ruint |
+| 78 | rho 5,793, ECM off (0.745) | rho 5,312, ECM off (0.865) | rho 1 | 0.825 / 1.333 | 0.903 / 0.649 | ruint |
+| 84 | rho 5,793, ECM 32,768 (0.641) | rho 5,793, ECM off (0.793) | ECM on → off | 0.641 / 0.989 | 1.000 / 0.802 | ruint |
+| 90 | rho 9,742, ECM 46,341 (0.633) | rho 10,624, ECM off (0.781) | rho +1, ECM on → off | 0.789 / 1.021 | 0.802 / 0.764 | ruint |
+| 96 | rho 12,634, ECM 60,097 (0.627) | rho 12,634, ECM off (0.729) | ECM on → off | 0.740 / 0.846 | 0.847 / 0.861 | ruint |
+
+- **ECM switches off at every size under the corrected card.** The enumerate card's ECM budgets at 84–96 bits were bought by qs's enumeration overcharge under ruint.
+- ruint binds for the optimum and for A's budgets at every size under both cards.
+- **Backward induction under the binding pricing (ruint) equals the exhaustive robust optimum at all five sizes, under both cards.** The conservative combination still undershoots rho by up to 8 steps.
+- **A's fixed budgets are now no better than qs alone** at 84 (0.989), and worse at 72, 78 and 90 (1.57, 1.33, 1.02). The corrected per-size optimum beats A by 14–45%.
+
+**A's speed-up over qs alone at its own budgets** (map; enumerate → corrected):
+- official: 2.66 → 2.60, 2.02 → 1.98, 2.22 → 2.21, 1.51 → 1.50, 1.58 → 1.57 at 72 / 78 / 84 / 90 / 96;
+- ruint: 0.89 → 0.64, 1.21 → 0.75, 1.56 → 1.01, 1.27 → 0.98, 1.35 → 1.18;
+- Montgomery: 1.66 → 1.56, 1.62 → 1.46, 1.90 → 1.75, 1.40 → 1.34, 1.49 → 1.46.
+
+The official gains survive almost intact. The ruint gains largely vanish.
+
+**Allocations at 84 bits** (four-stage optimizer; tuning numbers):
+- *Enumerate:* A = (td 0, rho 5,793, pm1 0, ECM 32,768), fitness 0.641; B = (rho 5,793, ECM off), 0.792. Against the single reference: A 0.641, B 0.896; B / A 1.399.
+- *Corrected:* A = (rho 5,793, ECM off), 0.793; B = (rho 5,793, ECM off), 0.806. **The two allocations now have the same budgets** and differ only in the final qs. Against the single reference: A 0.793 (0.691 / 0.793 / 0.717), B 0.985 (0.985 / 0.713 / 0.643); B / A 1.241.
+- B still loses on the robust score: N51-0917's qs costs 1.4x official.
+
+**Transfer test at 78 / 90.**
+- *Map-only:*
+  - 78: TRANSFER (3,158, off), 0.869, against the local optimum (5,312, off), 0.865 (6 rho steps apart; the landscape is flat).
+  - 90: TRANSFER (12,634, off), 0.785, against the local (10,624, off), 0.781 (2 steps).
+  - Optima moved more than one grid step (72 rho; ECM at 84 / 90 / 96), so the sealed rerun ran.
+- *Sealed rerun* (genome runs on the 78/90 populations, final qs corrected; 560 / 640 numbers; robust fitness [95%]; gate with per-band intervals):
+
+| | 78, vs corrected qs alone | 78, vs frozen reference | 90, vs corrected qs alone | 90, vs frozen reference |
+|---|---|---|---|---|
+| TRANSFER (corrected maps) | 0.871 [0.852, 0.889] PASS | 0.707 PASS | 0.786 [0.769, 0.803] PASS | 0.597 PASS |
+| TRANSFER (enumerate maps) | 0.870 PASS (budgets (5,793, off)) | 0.642 PASS | 1.040 FAIL (ECM 65,536) | 0.424 PASS |
+| A | 1.334 FAIL (worst band upper 2.37) | 0.626 PASS | 1.022 FAIL (upper 1.57) | 0.602 PASS |
+| theory | 1.253 FAIL | 0.674 PASS | 1.047 FAIL | 0.425 PASS |
+
+- **TRANSFER (corrected) against A, against corrected qs alone:**
+  - at 78: robust −0.616 [−0.673, −0.557] log₂, but official +0.611 and Montgomery +0.211 favour A, so (e) is undecided;
+  - at 90: robust −0.379 [−0.419, −0.337]; ruint −0.379 and Montgomery −0.109 favour TRANSFER; official −0.011 [−0.063, +0.043]. (e) is undecided (official ties).
+- **Every pipeline with ECM on fails the gate against corrected qs alone at 78 and 90.** Only the rho-only pipelines pass.
+- Against the frozen reference everything passes: that comparison credits the pipeline with the enumeration overcharge.
+
+**Predictions, scored as written.**
+- (C1) Optima shrink by ≥ 2 steps in one or more stages at each of 78–96; at 72 at most 1 step: **missed.** At 78 rho moved 1 step and ECM stayed off. At 72 rho moved 8 steps. 84–96 held (ECM off).
+- (C2) BI under ruint = corrected robust optimum at all five sizes: **held.**
+- (C3) Corrected optimum fitness 0.80–0.95 at 84–96 and above 0.95 at 72–78: **missed** (0.793 / 0.781 / 0.729; 0.869 / 0.865). Pre-stages still pay more than I predicted.
+- (C4) A's budgets 0.85–1.05 at 84 under the corrected card: **held** (0.989).
+- (C5) B / A cross larger than under enumerate: **missed** (1.241 against 1.399). B's calibrated edge disappeared, but so did A's ECM spending.
+- (C6) Transfer within one grid step of the local corrected optimum at 78 and 90: **missed** (6 and 2 rho steps; robust fitness within 0.004 of the local optimum at both).
+- (O9) A's robust ratio against qs alone rises at 78–96, and the robust-optimal pre-stage budgets shrink: **held** for A's ratio (0.825 → 1.333, 0.641 → 0.989, 0.789 → 1.021, 0.740 → 0.846). The optimal total pre-stage budget shrinks at every size because ECM switches off, though rho itself is 1 step larger at 90.
+- (D3) ECM budgets shrink or switch off wherever the enumerate optimum had ECM on (84, 90, 96): **held** (off at all three).
+- (G1) The pre-stages' gain over qs alone shrinks at every size: **held** (optimum fitness higher at all five sizes).
+- (G2) The optimum's gain over A does not shrink at 84–96: **missed as written.** It held at 84 (0.802 against 1.000) and 90 (0.764 against 0.802), but not at 96 (0.861 against 0.847).
+- (G3) Official becomes binding somewhere: **not triggered.** ruint binds at every size for every genome, and BI equals the optimum everywhere.
+- (D4) ECM off at 72 / 78 / 84, on but smaller at 96, rho below enumerate by 1–4 steps everywhere: **missed.** The ECM-off clauses held at 72–84, but ECM is also off at 96 (DeepSeek's flagged case inverted). rho is lower by 8 at 72 and 1 at 78, equal at 84 and 96, and 1 step higher at 90.
+- (D5) A's ruint and Montgomery speed-ups fall by ≥ 20% at 84: **missed.** ruint fell 35%, Montgomery only 7.9%. *The user's correction* (official falls by ≤ 10%): **held** (−0.6%).
+
+Mine: 2 held (C2, C4), 4 missed (C1, C3, C5, C6); O9 held. Outside: D3 and G1 held; G2, D4 and D5 missed; G3 not triggered; the user's correction held.
+
+**What this changes.**
+- Under the corrected card the sequential pipeline at 72–96 bits is rho-only, with a rho budget growing with size (1.6k → 12.6k ops), at 0.73–0.87 of qs alone (ruint binding).
+- ECM's role in every earlier allocation came from the enumerate card's overcharge.
+- Allocation A, the per-stage budgets "PASS at 78/90" and allocation B's calibrated lead all stand as recorded under the frozen card and labelled so. Under the corrected card, A and every ECM-on genome fail the gate at 78 and 90.
+
+## 2026-10-25 — Outside check: P-1M, a textbook pipeline model for a p-1 stage (user; information only, not the meter)
+
+The script was written and first run by the user in their own workspace, and is saved verbatim as `evolve/outside_pm1_model.py`. It was rerun here (`outside_pm1_model.out`, ~1 min, sympy + numpy).
+- **The model:** official pricing only, 84-bit N, p in bands 16–42, equally likely. The pipeline is rho (Rayleigh catch law; Brent 1.57x; 1.56 ops per step), then p-1 stage 1 (cost ⌈log₂ lcm(1..B)⌉), then ECM (stage-1 model: group order 12m, m B1-powersmooth, 11 ops per bit of lcm(1..B1)), then qs at a fixed cost Q.
+
+**Reproduction** (the user's figures in brackets):
+- *Part 1* (rho 5,793 and ECM 32,768 fixed; cost with p-1 / without):
+  - Q = 300k: best 0.876 at 2^14 [0.877], 2^16 1.034 [1.040];
+  - Q = 550k: best 0.840 at 2^14 [0.841];
+  - Q = 1M: best 0.800 at 2^15 [0.803].
+- *Part 2* (rho, B, ECM and B1 jointly optimized; cost / qs alone):
+  - Q = 100k: 0.708 → 0.669 with p-1, B 4,096 [same];
+  - 300k: 0.597 → 0.546, B 16,384 [0.547];
+  - 550k: 0.500 → 0.458, B 16,384 [same];
+  - 1M: 0.401 → 0.363, B 32,768 [0.364].
+- **Reproduced within 0.006.** Sympy's randprime has its own random source, so rates differ by about 1% between runs. Wolfram Language reproduced Part 2 independently (user): 0.708 / 0.676, 0.597 / 0.546 and 0.515 / 0.460 on a coarser grid.
+
+**Known failure, recorded.** The joint optimum never lands near allocation A. It picks rho 11k–33k, with ECM either off or at 131k–262k (with B1 800–1,600). Likely causes: ECM is modelled as stage 1 only at 11 ops per bit, and pricing is official only. The model also takes qs's cost as a constant per number.
+
+**Amended prediction, P-1M (the user's; direction only).**
+- A moderate-bound p-1 stage (B ~ 2^12–2^15, searched) between rho and ECM switches on at 84–96 bits under official pricing.
+- Size unknown: the model says 5–11% once rho and ECM are re-optimized, and 12–20% with them fixed.
+- It may stay off under ruint.
+- Mechanism: p-1 costs about 1 op per exponent bit against ECM's 11 in this model, so a more efficient real ECM card shrinks the case.
+
+**Lesson (user):** textbook catch-rate models give direction; maps from the real cards give magnitudes.
+
+**Queued p-1 map check, amended.** Search B = 2^8 … 2^15 (not only 2^8–2^10), with rho and ECM re-optimized jointly, on the corrected card, on the 72–96 maps. The re-solve above adds a condition: under the corrected card ECM is already off at every size, so the check is p-1 between rho and qs, with ECM still searched. Predictions go in NOTES before the map is extended. The earlier P1/P2 (mine) and the user's revised prediction stand as written; they were stated for the enumerate-era pipeline.

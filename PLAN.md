@@ -213,8 +213,8 @@ budgets, and per-stage budgets by size. The size-only case of Stage 9.5 is done 
 budgets by size; a selector on charged features is not built.
 
 **Next, in order:** the qs-gene size-scaling test (54/72/84/96) with per-stage budgets ->
-a small-bound p-1 map check (B = 2^8/2^9/2^10 on the existing 72/78/84/90/96 maps,
-robust optimum re-solved with that card; no new run; prediction in NOTES first) ->
+a p-1 map check (B = 2^8 ... 2^15 on the existing 72/78/84/90/96 maps, rho and ECM
+re-optimized jointly, corrected card; no new run; prediction in NOTES first) ->
 the illumination picture (primes and gaps) -> the variable-length structure test -> Stage 10
 (qs refinements) -> theory checks -> Phase 1 of learning from all algorithms (imported
 moves) -> the code-level pilot (fenced AI proposals).
@@ -571,6 +571,17 @@ any scored run, and parity gates the Rust port.
 
 Pictures of what each lamp touches, op by op. Nothing here changes a score, a cap or a
 card: every op count stays exactly as it is.
+
+- **Queued with it (outside observation, Wolfram Language, Oct 25; information only):**
+  - *Observation:* the prime gap containing an odd composite n (10,000-20,000) grows with n's
+    smallest factor. Mean 15.1 for smallest factor 3, 16.8 for 5-31, and 18.9 for rough n
+    (smallest factor >= 37), against 19.4 for the gaps around primes.
+  - *Two mechanisms:* odd multiples of 3 are always flanked by prime candidates (n +- 2 are
+    1 and 5 mod 6); and a rough composite occupies a prime-candidate position that failed,
+    so it sits in the gap like a prime.
+  - *Not related* to the primes-and-gaps null result, which asked about gaps around the
+    hidden factor p, not around N.
+  - Reproduce in Python when the illumination picture is built; not started.
 
 - **Opt-in tracer.**
   - Start from `~/lpwvideo/tracer_draft.patch`: a module-level `lamps.EVENTS`, None by
