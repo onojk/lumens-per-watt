@@ -1,0 +1,30 @@
+
+new qs / qs + lc 1.4: log2 mean-cost ratio [paired 95%]; ratio; median per-number log2
+  54: offi +0.352 [+0.298,+0.412] x1.276 (med +0.240)  ruin -0.084 [-0.102,-0.064] x0.944 (med -0.082)  mont -0.112 [-0.137,-0.082] x0.925 (med -0.137)  | robust 1.276  call: undecided
+  60: offi +0.320 [+0.285,+0.356] x1.249 (med +0.259)  ruin -0.070 [-0.082,-0.058] x0.952 (med -0.078)  mont -0.123 [-0.143,-0.102] x0.919 (med -0.151)  | robust 1.249  call: undecided
+  66: offi +0.270 [+0.235,+0.306] x1.206 (med +0.197)  ruin -0.103 [-0.119,-0.088] x0.931 (med -0.120)  mont -0.160 [-0.182,-0.137] x0.895 (med -0.197)  | robust 1.206  call: undecided
+  72: offi +0.175 [+0.137,+0.213] x1.129 (med +0.115)  ruin -0.321 [-0.448,-0.208] x0.800 (med -0.190)  mont -0.279 [-0.334,-0.230] x0.824 (med -0.269)  | robust 1.129  call: undecided
+  78: offi +0.026 [-0.010,+0.063] x1.018 (med +0.024)  ruin -0.951 [-1.084,-0.811] x0.517 (med -0.289)  mont -0.534 [-0.593,-0.474] x0.691 (med -0.359)  | robust 1.018  call: undecided
+  84: offi -0.069 [-0.099,-0.040] x0.953 (med -0.060)  ruin -1.292 [-1.374,-1.204] x0.408 (med -1.519)  mont -0.675 [-0.713,-0.635] x0.627 (med -0.572)  | robust 0.953  call: new qs
+  pooled (mean of per-size log2): offi +0.179 [+0.163,+0.195] x1.132  ruin -0.470 [-0.503,-0.437] x0.722  mont -0.314 [-0.330,-0.298] x0.805
+
+N51-0917's qs / qs + lc 1.4: log2 mean-cost ratio [paired 95%]; ratio; median per-number log2
+  54: offi +0.761 [+0.712,+0.812] x1.694 (med +0.685)  ruin +0.016 [-0.002,+0.040] x1.011 (med -0.003)  mont +0.050 [+0.024,+0.082] x1.035 (med +0.016)  | robust 1.694  call: undecided
+  60: offi +0.704 [+0.668,+0.740] x1.629 (med +0.626)  ruin -0.024 [-0.036,-0.012] x0.983 (med -0.037)  mont -0.010 [-0.029,+0.010] x0.993 (med -0.041)  | robust 1.629  call: undecided
+  66: offi +0.683 [+0.649,+0.717] x1.605 (med +0.628)  ruin -0.058 [-0.072,-0.044] x0.961 (med -0.065)  mont -0.051 [-0.071,-0.029] x0.965 (med -0.062)  | robust 1.605  call: undecided
+  72: offi +0.586 [+0.550,+0.620] x1.501 (med +0.557)  ruin -0.264 [-0.392,-0.151] x0.833 (med -0.125)  mont -0.173 [-0.228,-0.126] x0.887 (med -0.152)  | robust 1.501  call: undecided
+  78: offi +0.445 [+0.410,+0.480] x1.361 (med +0.481)  ruin -0.905 [-1.045,-0.758] x0.534 (med -0.211)  mont -0.450 [-0.516,-0.385] x0.732 (med -0.216)  | robust 1.361  call: undecided
+  84: offi +0.382 [+0.353,+0.410] x1.303 (med +0.372)  ruin -1.236 [-1.323,-1.141] x0.425 (med -1.523)  mont -0.574 [-0.619,-0.527] x0.672 (med -0.613)  | robust 1.303  call: undecided
+  pooled (mean of per-size log2): offi +0.593 [+0.578,+0.608] x1.509  ruin -0.412 [-0.446,-0.377] x0.752  mont -0.201 [-0.218,-0.185] x0.870
+
+new qs / N51-0917's qs: log2 mean-cost ratio [paired 95%]; ratio; median per-number log2
+  54: offi -0.409 [-0.481,-0.334] x0.753 (med -0.409)  ruin -0.100 [-0.127,-0.074] x0.933 (med -0.071)  mont -0.162 [-0.199,-0.124] x0.894 (med -0.149)  | robust 0.933  call: new qs
+  60: offi -0.383 [-0.434,-0.332] x0.767 (med -0.374)  ruin -0.046 [-0.062,-0.030] x0.969 (med -0.051)  mont -0.113 [-0.140,-0.085] x0.925 (med -0.119)  | robust 0.969  call: new qs
+  66: offi -0.413 [-0.454,-0.371] x0.751 (med -0.424)  ruin -0.045 [-0.063,-0.028] x0.969 (med -0.055)  mont -0.109 [-0.135,-0.083] x0.927 (med -0.113)  | robust 0.969  call: new qs
+  72: offi -0.411 [-0.450,-0.370] x0.752 (med -0.417)  ruin -0.057 [-0.079,-0.035] x0.961 (med -0.063)  mont -0.106 [-0.135,-0.077] x0.929 (med -0.111)  | robust 0.961  call: new qs
+  78: offi -0.419 [-0.458,-0.379] x0.748 (med -0.442)  ruin -0.046 [-0.071,-0.020] x0.969 (med -0.067)  mont -0.084 [-0.114,-0.053] x0.944 (med -0.116)  | robust 0.969  call: new qs
+  84: offi -0.451 [-0.487,-0.414] x0.732 (med -0.493)  ruin -0.056 [-0.091,-0.016] x0.962 (med -0.094)  mont -0.100 [-0.132,-0.068] x0.933 (med -0.129)  | robust 0.962  call: new qs
+  pooled (mean of per-size log2): offi -0.414 [-0.433,-0.394] x0.750  ruin -0.058 [-0.069,-0.048] x0.960  mont -0.112 [-0.125,-0.100] x0.925
+
+misses: none
+replacement rule: {'never_clearly_worse': False, 'no_misses': True, 'pooled_all_below_0': False, 'replace': False}

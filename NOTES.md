@@ -1269,3 +1269,43 @@ Otherwise, qs + lc 1.4 stays the reference, and the new genes are a mixed-popula
 - (1d) **Held.** rho before ECM in every order at the optimum; 12 orders' intervals lie above 0.
 
 **Consequence for (2a), recorded before (2) runs.** (2a)'s ruint and Montgomery ranges (0.65–0.80) were taken from Run 8's band-42 cells, which include A's pre-stage spending. The new qs alone is about 0.41 ruint and 0.63 Montgomery on this map's balanced band. (2a) stays as written and is expected to miss on ruint.
+
+### (2) Results: the new qs on balanced numbers (`evolve/newqs_balanced.py`, `newqs_balanced.out`/`.json`; 123 s)
+
+Fresh balanced numbers, 240 per size (54–84 bits, seeds 8700000 + bits), each genome alone, cap 2^28. **No misses** for any genome (0/1,440 each). Each cell is the mean-cost ratio with its paired 95% interval in log2.
+
+**new qs / qs + lc 1.4**
+
+| bits | official | ruint | Montgomery | robust (c) | (e) call |
+|---|---|---|---|---|---|
+| 54 | 1.276 [+0.298, +0.412] | 0.944 [−0.102, −0.064] | 0.925 [−0.137, −0.082] | 1.276 | undecided |
+| 60 | 1.249 [+0.285, +0.356] | 0.952 [−0.082, −0.058] | 0.919 [−0.143, −0.102] | 1.249 | undecided |
+| 66 | 1.206 [+0.235, +0.306] | 0.931 [−0.119, −0.088] | 0.895 [−0.182, −0.137] | 1.206 | undecided |
+| 72 | 1.129 [+0.137, +0.213] | 0.800 [−0.448, −0.208] | 0.824 [−0.334, −0.230] | 1.129 | undecided |
+| 78 | 1.018 [−0.010, +0.063] | 0.517 [−1.084, −0.811] | 0.691 [−0.593, −0.474] | 1.018 | undecided |
+| 84 | 0.953 [−0.099, −0.040] | 0.408 [−1.374, −1.204] | 0.627 [−0.713, −0.635] | 0.953 | new qs |
+| pooled (mean of per-size log2) | 1.132 [+0.163, +0.195] | 0.722 [−0.503, −0.437] | 0.805 [−0.330, −0.298] | | |
+
+- **The new qs's gain over qs + lc 1.4 is size-dependent and pricing-dependent.**
+  - Under official it is worse by 13–28% at 54–72 bits, about even at 78 and 5% better at 84.
+  - Under both calibrated pricings it is better at every size, and the gain grows with size: ruint 0.94 → 0.41, Montgomery 0.93 → 0.63.
+  - The genes were tuned at 84 bits and carry fewer, cheaper-priced operations; below 78 bits the official count prefers qs + lc 1.4's genes.
+
+**new qs / N51-0917's qs** (information; N51-0917 was the calibrated leader at 60–84 bits).
+- The new qs is better under all three pricings at every size: an (e) call of "new qs" in 6/6 sizes. Robust 0.93–0.97; official 0.73–0.77, ruint 0.93–0.97, Montgomery 0.89–0.94.
+- Pooled: official 0.750 [−0.433, −0.394], ruint 0.960 [−0.069, −0.048], Montgomery 0.925 [−0.125, −0.100].
+- N51-0917's qs against qs + lc 1.4: worse under official at every size (1.30–1.69); better under the calibrated pricings from 60–66 bits up.
+
+**Replacement rule: fails. qs + lc 1.4 stays the reference.**
+- Never clearly worse: no (official, 54–72 bits).
+- No misses: yes.
+- Pooled all three below 1: no (official 1.132).
+- **The new genes are a mixed-population and 84-bit qs**, and on balanced numbers they replace N51-0917's qs as the best calibrated-pricing qs at 54–84 bits. Whether the reference itself should change is the user's decision; the pre-registered rule says no.
+
+**Predictions scored as written:** 4 scored; 2 held, 2 missed.
+- (2a) **Missed.** At 84 bits: ruint 0.408 and Montgomery 0.627, both below the predicted 0.65–0.80 (the band-42 anchoring recorded under (1)). Official 0.953 is in 0.85–1.0, but its interval excludes 0, against the prediction.
+- (2b) **Missed.** The gain does shrink toward small sizes, and the robust ratio at 54 is 1.276 (≥ 0.95). But the robust ratio is below 1 only at 84, not at 72–84 (72: 1.129, 78: 1.018).
+- (2c) **Held.** 0 misses.
+- (2d) **Held.** The rule fails at 54–72 bits on official.
+
+**For the generalization test (b)** (the user's prediction: the wider mc loses on balanced 84-bit numbers; budgets held at A; not yet run): with qs alone on fresh balanced 84-bit numbers, the new genes win under all three pricings (0.953 / 0.408 / 0.627). Test (b) adds A's pre-stages, which cost both genomes the same ops on balanced numbers, so the qs-alone result points against the prediction. It is scored only when (b) runs.
