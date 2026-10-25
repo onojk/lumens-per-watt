@@ -2565,3 +2565,38 @@ Corrected card; sealed numbers 80 per band (320 / 480 / 560 / 640 at 54 / 72 / 8
   - (DeepSeek) the optimum shifts monotonically with size, mc and lc up, kc down: **missed.** In Track R mc rises, but lc falls and kc has no trend. In Track M no gene meets the rule.
 
 Mine: Track R 5 held, 2 missed. Track M 0 held, 6 missed.
+
+## 2026-10-25 — Size-scaling test, round 2 (two tracks): protocol and predictions (before any run)
+
+**Protocol (user's, with the rules made exact here).**
+- **Round 2 tuning.** Gene bounds widened: bc 0.3–3.0 (was 0.7–3.0) and mc 0.01–12 log (was 0.05–12). kc stays 1–32, tc 1.0–3.5 and lc 1.0–2.0. Settings as round 1 (tpe-tuned, seeds 0–3, 200 trials per size, 24 per band tuning numbers, seeds 9300000+), in each track's round-1 budgets. The frozen genome per size is the best seed.
+- **Bound hits.** A gene value is reported as a bound hit if it lies within 10% of a bound's value: bc ≤ 0.33 or ≥ 2.7; mc ≤ 0.011 or ≥ 10.8; kc ≤ 1 or ≥ 29; tc ≤ 1.1 or ≥ 3.15; lc ≤ 1.1 or ≥ 1.8.
+- **Re-solve.** Per track and size, the two-stage grid optimum (rho, ECM; td and pm1 off) is solved on the corrected maps with that track's round-2 frozen genome as the final qs.
+  - Track R minimizes max over pricings of cost / cost of qs + lc 1.4 corrected alone; Track M minimizes Montgomery cost.
+  - The ECM grid runs to 2^22 wherever an optimum sits at 2^20, and is widened again if it sits at 2^22.
+  - The 54-bit map is `sizescale_map54.json`'s numbers.
+- **Round 3** runs only if any budget (either track, any size) moves by more than one 1/8-octave grid step, or switches between off and on. It retunes both tracks once in the re-solved budgets, with the same settings. **It is the cap.**
+  - The *final budgets* are then one more re-solve with the final genes, used without further tuning; its movement is reported as "settled" (≤ 1 step everywhere) or not.
+  - If round 3 is not triggered, the final genes are round 2's and the final budgets are round 2's re-solve.
+- **Sealed scoring on fresh numbers:** seeds 9410000 + 100 pb + bits (checked unused), 80 per band, run once.
+  - Per track and size, three rows: (a) the round-1 winner in round-1 budgets; (b) the final winner's genes in round-1 budgets; (c) the final winner's genes in the final budgets.
+  - The *final winner* uses round 1's definition: the best by the track's fitness in the track's final pipeline, among that track's final-round tuned genomes (four sizes) plus qs + lc 1.4's and the new genes.
+  - Both references; all three pricings; gates as in the two-track rule.
+  - **The headline is PD_M and PD_R from row (c), with round 1 beside it** (round 1's PD values were measured on the 9400000 numbers; the (a) rows give them again on the fresh numbers).
+
+**Predictions (the user's, labelled as the user's).**
+- (U1) With bc widened, the frozen genomes choose bc 0.45–0.65 at 84–96. The gain over the round-1 genes in the same pipeline is at most 5% under the track's metric.
+- (U2) Re-solved with round-2 genes, Track M's ECM budget falls at 72–96, by at least one grid step at two or more of the three sizes. Track R's rho budget moves at most one grid step.
+- (U3) Round-2 PD_M is between 1.00 and 1.15 at 72–96.
+- (U4) Round-2 PD_R stays between 1.8 and 3.0: the lopsidedness survives.
+- *Scoring:* U1's bc clause uses the round-2 frozen genomes of both tracks at 84 and 96. Its gain clause is row (b) against row (a) under the track's metric (sealed), at 84–96. U2 uses the round-2 re-solve. U3 and U4 use row (c) at 72–96, whichever round is final.
+
+**Predictions (mine).**
+- (V1) Round-2 Track R frozen genomes have bc 0.45–0.70 at 84–96; Track M's at 0.5–0.75. Row (b) against (a) gains at most 5% in Track R and at most 3% in Track M at 84–96.
+- (V2) The Track R re-solve keeps ECM off at 72–96, with rho within one step of round 1. In Track M, ECM falls by ≥ 1 step at two or more of 72 / 84 / 96, and rho stays within 2 steps.
+- (V3) Round 3 is triggered by Track M (an ECM move above one step), not by Track R.
+- (V4) The final re-solve after round 3, if any, moves every budget by at most one step (settled).
+- (V5) Ablation: in Track R most of the change from (a) to (c) comes from genes ((b) against (a)), since its budgets barely move. In Track M at 84–96, the budget part ((c) against (b)) is at least as large as the gene part.
+- (V6) PD_M final: 1.00–1.20 at 72–96. PD_R final: 1.8–3.0 at 72–96.
+- (V7) Bound hits: one or more final frozen genomes still have kc ≥ 29; no mc lower-bound hit (≤ 0.011) at 72–96.
+- (V8) Gates: Track R final winners PASS at every size. Track M final winners pass the Montgomery gate at 84–96 and fail the ruint gate (information) at every size.
