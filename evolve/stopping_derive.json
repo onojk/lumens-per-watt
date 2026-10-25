@@ -1,0 +1,233 @@
+{
+ "72": {
+  "hindsight": {
+   "rho": 3158,
+   "ecm": 0
+  },
+  "hindsight_map_fitness": 0.8172028442835743,
+  "eighth": {
+   "budgets": {
+    "rho": 17867,
+    "ecm": 50535
+   },
+   "detail": {
+    "per_pricing": {
+     "rho": {
+      "official": 679917,
+      "ruint": 17867,
+      "montgomery": 35734
+     },
+     "ecm": {
+      "official": 285870,
+      "ruint": 50535,
+      "montgomery": 285870
+     }
+    },
+    "Q_P": {
+     "official": 159541.27831999326,
+     "ruint": 23726.91550964195,
+     "montgomery": 59989.56806748415
+    },
+    "r_P": {
+     "official": 1.0,
+     "ruint": 0.14871960259747122,
+     "montgomery": 0.3760128331626037
+    }
+   },
+   "map_fitness": 1.3851615544310247,
+   "steps_from_hindsight": {
+    "rho": 20,
+    "ecm": null
+   }
+  },
+  "half": {
+   "budgets": {
+    "rho": 5793,
+    "ecm": 16384
+   },
+   "detail": {
+    "per_pricing": {
+     "rho": {
+      "official": 46341,
+      "ruint": 5793,
+      "montgomery": 23170
+     },
+     "ecm": {
+      "official": 370728,
+      "ruint": 16384,
+      "montgomery": 131072
+     }
+    },
+    "Q_P": {
+     "official": 159541.27831999326,
+     "ruint": 23726.91550964195,
+     "montgomery": 59989.56806748415
+    },
+    "r_P": {
+     "official": 1.0,
+     "ruint": 0.14871960259747122,
+     "montgomery": 0.3760128331626037
+    }
+   },
+   "map_fitness": 1.0421970631480388,
+   "steps_from_hindsight": {
+    "rho": 7,
+    "ecm": null
+   }
+  }
+ },
+ "84": {
+  "hindsight": {
+   "rho": 5793,
+   "ecm": 32768
+  },
+  "hindsight_map_fitness": 0.6407733232371452,
+  "eighth": {
+   "budgets": {
+    "rho": 35734,
+    "ecm": 1048576
+   },
+   "detail": {
+    "per_pricing": {
+     "rho": {
+      "official": 571740,
+      "ruint": 35734,
+      "montgomery": 77936
+     },
+     "ecm": {
+      "official": 1048576,
+      "ruint": 1048576,
+      "montgomery": 1048576
+     }
+    },
+    "Q_P": {
+     "official": 549048.2393135844,
+     "ruint": 101497.1269239509,
+     "montgomery": 203589.2799185453
+    },
+    "r_P": {
+     "official": 1.0,
+     "ruint": 0.18486012640864083,
+     "montgomery": 0.37080399378581186
+    }
+   },
+   "map_fitness": 0.8817679378630802,
+   "steps_from_hindsight": {
+    "rho": 21,
+    "ecm": 40
+   }
+  },
+  "half": {
+   "budgets": {
+    "rho": 46341,
+    "ecm": 65536
+   },
+   "detail": {
+    "per_pricing": {
+     "rho": {
+      "official": 370728,
+      "ruint": 46341,
+      "montgomery": 46341
+     },
+     "ecm": {
+      "official": 1048576,
+      "ruint": 65536,
+      "montgomery": 262144
+     }
+    },
+    "Q_P": {
+     "official": 549048.2393135844,
+     "ruint": 101497.1269239509,
+     "montgomery": 203589.2799185453
+    },
+    "r_P": {
+     "official": 1.0,
+     "ruint": 0.18486012640864083,
+     "montgomery": 0.37080399378581186
+    }
+   },
+   "map_fitness": 0.7547869842503623,
+   "steps_from_hindsight": {
+    "rho": 24,
+    "ecm": 8
+   }
+  }
+ },
+ "96": {
+  "hindsight": {
+   "rho": 12634,
+   "ecm": 60097
+  },
+  "hindsight_map_fitness": 0.626895716784201,
+  "eighth": {
+   "budgets": {
+    "rho": 142935,
+    "ecm": 240387
+   },
+   "detail": {
+    "per_pricing": {
+     "rho": {
+      "official": 679917,
+      "ruint": 142935,
+      "montgomery": 185364
+     },
+     "ecm": {
+      "official": 1048576,
+      "ruint": 240387,
+      "montgomery": 881744
+     }
+    },
+    "Q_P": {
+     "official": 1889799.5253584513,
+     "ruint": 233739.56310743233,
+     "montgomery": 560615.5838819767
+    },
+    "r_P": {
+     "official": 1.0,
+     "ruint": 0.1236848459167103,
+     "montgomery": 0.2966534684548832
+    }
+   },
+   "map_fitness": 0.9006409104261258,
+   "steps_from_hindsight": {
+    "rho": 28,
+    "ecm": 16
+   }
+  },
+  "half": {
+   "budgets": {
+    "rho": 46341,
+    "ecm": 65536
+   },
+   "detail": {
+    "per_pricing": {
+     "rho": {
+      "official": 741455,
+      "ruint": 46341,
+      "montgomery": 185364
+     },
+     "ecm": {
+      "official": 1048576,
+      "ruint": 65536,
+      "montgomery": 524288
+     }
+    },
+    "Q_P": {
+     "official": 1889799.5253584513,
+     "ruint": 233739.56310743233,
+     "montgomery": 560615.5838819767
+    },
+    "r_P": {
+     "official": 1.0,
+     "ruint": 0.1236848459167103,
+     "montgomery": 0.2966534684548832
+    }
+   },
+   "map_fitness": 0.6611318674567729,
+   "steps_from_hindsight": {
+    "rho": 15,
+    "ecm": 1
+   }
+  }
+ }
+}

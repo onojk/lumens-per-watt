@@ -1,0 +1,13 @@
+72 bits: Q 159541; hindsight rho 3158, ecm 0 (map fitness 0.8172)
+  eighth windows: rho 17867, ecm 50535 (map fitness 1.3852); steps from hindsight {'rho': 20, 'ecm': None}; per pricing rho: offi 679917, ruin 17867, mont 35734; ecm: offi 285870, ruin 50535, mont 285870
+  half   windows: rho 5793, ecm 16384 (map fitness 1.0422); steps from hindsight {'rho': 7, 'ecm': None}; per pricing rho: offi 46341, ruin 5793, mont 23170; ecm: offi 370728, ruin 16384, mont 131072
+84 bits: Q 549048; hindsight rho 5793, ecm 32768 (map fitness 0.6408)
+  eighth windows: rho 35734, ecm 1048576 (map fitness 0.8818); steps from hindsight {'rho': 21, 'ecm': 40}; per pricing rho: offi 571740, ruin 35734, mont 77936; ecm: offi 1048576, ruin 1048576, mont 1048576
+  half   windows: rho 46341, ecm 65536 (map fitness 0.7548); steps from hindsight {'rho': 24, 'ecm': 8}; per pricing rho: offi 370728, ruin 46341, mont 46341; ecm: offi 1048576, ruin 65536, mont 262144
+96 bits: Q 1889800; hindsight rho 12634, ecm 60097 (map fitness 0.6269)
+  eighth windows: rho 142935, ecm 240387 (map fitness 0.9006); steps from hindsight {'rho': 28, 'ecm': 16}; per pricing rho: offi 679917, ruin 142935, mont 185364; ecm: offi 1048576, ruin 240387, mont 881744
+  half   windows: rho 46341, ecm 65536 (map fitness 0.6611); steps from hindsight {'rho': 15, 'ecm': 1}; per pricing rho: offi 741455, ruin 46341, mont 185364; ecm: offi 1048576, ruin 65536, mont 524288
+
+real	0m0.480s
+user	0m0.974s
+sys	0m0.045s
