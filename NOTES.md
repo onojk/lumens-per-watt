@@ -2417,3 +2417,22 @@ The design is the queued test (PLAN, "Queued: size-scaling test for the qs genes
   - misses.
 - **Trend test** (DeepSeek's prediction: mc and lc up, kc down with size). Per gene, the four seeds' best values per size. A trend counts as monotone only if the per-size medians move monotonically **and** the 54-bit and 96-bit seed ranges do not overlap. Spearman over the 16 points is reported beside it. The landscape is a plateau, so the seed spread is the interval.
 - **Seeds checked unused:** 9300000+, 9400000+ and 9500000+ appear nowhere else in the repo.
+
+**54-bit design input** (`sizescale.py map54`, `sizescale_map54.json`; 320 numbers, bands 16/20/24/27):
+- The rho-only robust optimum is **rho 0: qs alone.** The two-stage optimum is also (0, 0).
+- qs + lc 1.4 corrected alone averages 25,930 official, 3,641 ruint and 11,805 Montgomery.
+- A rho budget of 362–5,793 lowers official and Montgomery cost (official 0.99 → 0.57) but raises ruint (1.06–1.49), so ruint rejects it.
+- The 54-bit pipeline in this test is therefore qs alone.
+
+**Predictions (mine, before tuning).**
+- (S1) At every size, the frozen tuned genome beats qs + lc 1.4's genes in the same pipeline on the sealed numbers: robust log₂ interval below 0, by 5–15% at 72–96 and 0–10% at 54.
+- (S2) The frozen genomes have kc ≥ 8 at 72–96.
+- (S3) The frozen genomes have bc ≤ 1.0 at 84–96.
+- (S4) DeepSeek's trend (mc and lc up, kc down with size) is not borne out: at most one of mc, lc and kc meets the monotone rule (medians monotone in the predicted direction and the 54/96 seed ranges separated).
+- (S5) Cross-size:
+  - in each sealed size, the genome tuned at that size is within 3% (robust) of the best of the four tuned genomes there;
+  - the 54-tuned genome loses ≥ 5% at 96, and the 96-tuned genome loses ≥ 5% at 54.
+- (S6) ruint binds for every tuned pipeline at 72–96. At 54 (qs alone against qs + lc 1.4's genes alone) official binds.
+- (S7) Every frozen genome passes the gate against the corrected reference at its own size.
+
+**Outside prediction (DeepSeek, queued with the test):** the optimum shifts monotonically with size, with mc and lc up and kc down. It is scored by the trend rule in the design above.
