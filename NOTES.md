@@ -1372,3 +1372,34 @@ Fresh balanced numbers, 240 per size (54–84 bits, seeds 8700000 + bits), each 
 **Predictions scored as written:** 2 scored, 0 held, 2 missed.
 - (a), mine, "the new genes beat qs + lc 1.4's genes at both sizes; robust ratio new/old 0.70–0.90 at 72 bits and 0.60–0.85 at 96 bits": **missed.** The direction held at both sizes (intervals below 0), but the magnitudes are outside both ranges: 0.955 at 72 and 0.924 at 96. The ranges were extrapolated from Run 8's 84-bit 0.70, which is the size the genes were tuned at.
 - (b), the user's, "the wider mc (0.43-0.93) loses on balanced (population-specific genes)": **missed.** The new genes win on balanced 84-bit numbers under all three pricings (robust 0.740 [−0.478, −0.393]), as the qs-alone evidence recorded beforehand indicated.
+
+## 2026-10-24 — Size-relative op budgets: cost model and predictions (written before any code)
+
+**Why.** At 72 bits A's absolute budgets (rho 5793, ECM 32768 ops) fail the ACCEPT gate with either qs genes (generalization test (a)). qs is about 2.5–3x cheaper there, so the same absolute pre-stage spend is a larger share of the qs cost it is meant to save.
+
+**The move.** Each pre-stage budget becomes a share of the expected qs cost at N's size:
+- ob_s(N) = snap(s_s · Q(bits(N))), for s in {rho, ECM}; td and pm1 stay at A's 0.
+- Q(bits) = fitted mean official ops of qs + lc 1.4 alone at that bit length (the curve below). Official ops, because ob counts meter ops.
+- snap(x) = the value of the map's 1/8-octave grid 2^(k/8) (`partition.FINE`) nearest to x in log2. Budgets are quantized so that the map records their spending exactly; the quantization error is at most 2^(1/16), about 4.4%.
+- Genes: s_rho and s_ECM (shares, dimensionless) instead of absolute ops.
+
+**Meter.** No change to charging, op counts or pricing.
+- bits(N) is N's bit length: free, as reading N is free today.
+- Q is a fixed table indexed by bit length, computed offline from tuning numbers: a genome constant, like any gene value. Looking it up is free.
+- Each stage still runs with an absolute ob and charges exactly as today; the move changes only which ob a stage gets. lampcore and Python are untouched; the test passes ob per size.
+
+**Identity.** At 84 bits, shares s_s = A_s / Q(84) give ob_s = snap(A_s) = A_s (5793 and 32768 are grid points), so the genome is A op for op. Checked by running both on fresh 84-bit numbers and asserting identical per-number counts.
+
+**The curve Q(bits).** Fresh balanced tuning numbers, semiprimes_pq(bits, 60, 9100000 + bits) for bits 60, 64, ..., 100, through `oracle.check`; qs + lc 1.4 alone, lampcore, cap 2^28. Fit log2(mean official ops) = a + b·bits + c·bits² by least squares. Only the curve's shape matters: ob_s(bits) = snap(A_s · Q(bits)/Q(84)).
+
+**Test.**
+1. Tuning: on the existing 84-bit partition map (tuning seeds 4000000 + 100 pb + 84), the best (s_rho, s_ECM) with td 0, pm1 0 and the fixed order, by the partition study's grid plus 1/8-octave coordinate refinement under fitness (c). Expected: A's budgets (A was the unrestricted optimum on this map with td 0 and pm1 0), i.e. s = A / Q(84).
+2. Maps at 72 and 96 bits on fresh numbers (seeds 9000000 + 100 pb + bits; 72: bands 16, 20, 24, 28, 32 unbalanced and 36 balanced; 96: 16, 20, 24, 28, 32, 36, 42 unbalanced and 48 balanced; 80 per band; `oracle.check`). Pre-stages alone in Python with spending records (`partition.run_alone`, cap 2^21); qs + lc 1.4 alone through lampcore `--types` (parity: on 4 numbers per band, Python's per-type counts must equal lampcore's; a mismatch is a blocker).
+3. Verdict, on those fresh numbers (seen by nothing before this test): the share genome (ob = snap(s · Q(bits))) vs A's absolute budgets, each run directly in lampcore `--types` (the map's composed official cost must equal the direct run's on every number: a cross-check). Fitness (c) against qs + lc 1.4 alone; paired bootstrap resampling numbers within bands (10,000, random.Random(2026)); per pricing; per band; ACCEPT gate (no band > 1.5x under any pricing, no misses).
+4. Information only: the hindsight best absolute budgets on each size's own map, and where the share budgets land against them.
+
+**Predictions** (scored as written):
+- (P1, the user's) The share genome passes the ACCEPT gate at 72 bits where A's absolute budgets fail, and matches A within noise at 84 and 96.
+  - At 84 "within noise" is guaranteed by the identity; the content of P1 is the 72-bit gate and the 96-bit tie.
+- (P2, mine) Robust ratio share / A at 72 bits: 0.80–0.92 (interval below 0). Reasoning: at 72 the balanced band's ruint overspend is about 1.16x qs under A; scaling budgets down by Q(84)/Q(72) ≈ 2.7 leaves about 0.43, so band 36 lands near 1.4–1.5 under ruint (a borderline gate pass), and the overall ruint score drops from about 1.15 to about 0.95–1.0.
+- (P3, mine) At 96 bits budgets grow by about 3–4x (ECM about 100–130k). Share / A robust ratio 0.92–1.02 with the interval including 0 (a tie, P1's reading); the share genome's worst band stays below 1.5.
