@@ -2230,3 +2230,35 @@ With the card's other costs, on_demand + sort_charge adds about 1,000–3,600 sm
   - D5 holds if A's ruint and Montgomery speed-ups over qs alone each fall by ≥ 20% (relative).
   - The user's correction holds if the official speed-up falls by ≤ 10%.
 - No README wording on A's gains until these are scored.
+
+## 2026-10-25 — Type mix under the corrected card (information only; `evolve/typemix.py corrected`, `typemix_corrected.out`/`.json`)
+
+Both genomes and all ten one-gene swaps were run with a_mode = on_demand and sort_charge = 1 (the corrected card) on the same 2,880 map numbers. **new / old:**
+- official 1.164 / 1.085 / 1.064 / 1.054 / 1.002 at 72 / 78 / 84 / 90 / 96;
+- ruint 0.848 / 0.825 / 0.859 / 0.850 / 0.825;
+- Montgomery 0.843 / 0.821 / 0.856 / 0.846 / 0.822.
+
+**Contributions to new − old** (share of old's total cost; official / ruint / Montgomery; range over 72–96):
+
+| type | official | ruint | Montgomery | gene behind it |
+|---|---|---|---|---|
+| sieve_update | +0.13 to +0.20 | +0.06 to +0.07 | +0.06 to +0.07 | mc (wider interval) |
+| sieve_scan | +0.08 to +0.13 | +0.01 | +0.01 to +0.02 | mc |
+| confirm_td | −0.07 | −0.07 to −0.11 | −0.08 to −0.12 | bc (smaller base: fewer primes tried per candidate) |
+| la | −0.05 to −0.11 | −0.01 to −0.03 | −0.01 to −0.03 | bc |
+| setup_small | −0.02 to −0.03 | −0.07 to −0.09 | −0.07 to −0.09 | bc, mc (fewer sieved primes per A, fewer A's) |
+| fb | −0.00 to −0.01 | −0.01 to −0.02 | −0.01 to −0.02 | bc |
+
+setup_full is now under 1% of cost for both genomes.
+
+**One-gene swaps** (ratio to old's total; official / ruint / Montgomery):
+- **mc trades official for calibrated cost, as expected.** Old genes with mc 0.734: 1.13–1.17 official, 0.89–0.96 calibrated, at every size.
+- **bc does not trade; it wins under all three pricings.** Old genes with bc 0.899: 0.946 / 0.971 / 0.965 (72), 0.903 / 0.902 / 0.901 (78), 0.875 / 0.851 / 0.851 (84), 0.850 / 0.863 / 0.862 (90) and 0.827 / 0.848 / 0.847 (96). Putting bc back to 1.1 in the new genes raises official by 16–23%. DeepSeek's account (mc and lc, no bc) misses the largest gene.
+- **kc: the new genes' kc 4 loses under all three pricings under the corrected card.** The new genes with kc 32: 1.084 / 0.794 / 0.788 (72), 1.024 / 0.787 / 0.784 (84) and 0.959 / 0.776 / 0.773 (96), each below the new genes' own ratios. Old genes with kc 4 are worse under all three. Under enumerate, kc 4 helped by keeping kN, and so s, low; that reason is gone.
+- **lc trades the other way at 90–96.** The new genes' lc 1.661 against 1.4: lc 1.4 raises official (1.06–1.34) but lowers calibrated cost at 84–96 (0.75–0.85). Old genes with lc 1.661 are worse under all three at every size (1.08–1.13 official, 1.13–1.26 calibrated).
+- **tc:** old genes with tc 1.104 are neutral on official (0.97–1.02) and lower calibrated cost from 78 up (0.87–0.95).
+
+**Reading, information only (not a verdict, and not a new idea; this is parameter tuning).**
+- Under the corrected card the official-for-calibrated trade is mc's, partly offset by bc.
+- qs + lc 1.4's genes with bc 0.899 alone are cheaper than qs + lc 1.4 under all three pricings at 78–96 bits on these numbers (0.83–0.90), and the new genes with kc 32 are cheaper than the new genes everywhere.
+- These are post hoc observations on the map numbers. A replacement claim needs its own pre-registered test on fresh numbers, and the next search over the qs genes (the size-scaling test) should run on the corrected card. It should not inherit the enumerate-era winners' kc.

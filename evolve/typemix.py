@@ -11,10 +11,12 @@ information only, no fitness). On the existing map numbers at 72/96 (size_map, s
   3. Operand-size dependence of the prices: optypes.prices() is one table; the opbench 60/84/100-bit
      mulmod timings (P-core repeats) beside it.
 
-  python3 typemix.py  -> typemix.json, stdout
+  python3 typemix.py            -> typemix.json, stdout (the frozen enumerate card)
+  python3 typemix.py corrected  -> typemix_corrected.json (every run with a_mode = on_demand,
+                                   sort_charge = 1: the corrected card; same numbers and swaps)
 """
 import sys
-sys.argv[1:] = []
+ARGS, sys.argv[1:] = sys.argv[1:], []
 import json, statistics
 import numpy as np
 import optypes
@@ -53,12 +55,15 @@ def price(t, Pn):
     return 1.0 if Pn == "official" else pr[Pn][t]
 
 if __name__ == "__main__":
-    out = {"sizes": {}}
+    CARD = {"a_mode": "on_demand", "sort_charge": 1} if ARGS[:1] == ["corrected"] else {}
+    out = {"sizes": {}, "card": CARD or "enumerate"}
     for bits in (72, 78, 84, 90, 96):
         nums, old = load(bits)
-        chk = run(OLD, nums)
-        assert chk == old, "map counts for qs + lc 1.4 do not reproduce"
-        new = run(NEW, nums)
+        chk = run(dict(OLD, **CARD), nums)
+        if not CARD:
+            assert chk == old, "map counts for qs + lc 1.4 do not reproduce"
+        old = chk
+        new = run(dict(NEW, **CARD), nums)
         types = [t for t in optypes.TYPE_ORDER if any(t in c for c in old + new)]
         mt = {g: {t: float(np.mean([c.get(t, 0) for c in pts])) for t in types} for g, pts in (("old", old), ("new", new))}
         tot = {g: {Pn: sum(price(t, Pn) * mt[g][t] for t in types) for Pn in PR3} for g in mt}
@@ -72,7 +77,7 @@ if __name__ == "__main__":
         for gname in GENES:
             o1 = dict(OLD, **{gname: NEW[gname]})
             n1 = dict(NEW, **{gname: OLD[gname]})
-            a, b = run(o1, nums), run(n1, nums)
+            a, b = run(dict(o1, **CARD), nums), run(dict(n1, **CARD), nums)
             swaps[gname] = {"old_with_new": {Pn: mean_cost(a, Pn) / tot["old"][Pn] for Pn in PR3},
                             "new_with_old": {Pn: mean_cost(b, Pn) / tot["old"][Pn] for Pn in PR3}}
         out["sizes"][bits] = {"n": len(nums), "mean_per_type": mt, "totals": tot, "shares": share, "new_over_old": ratio,
@@ -101,4 +106,4 @@ if __name__ == "__main__":
     print("\nprices: optypes.prices() is one table per pricing (no size argument). opbench mulmod, median of P1-P3 (ns):")
     for k, v in med.items():
         print(f"  {k}: {v:.2f}")
-    json.dump(out, open("typemix.json", "w"), indent=1)
+    json.dump(out, open("typemix_corrected.json" if CARD else "typemix.json", "w"), indent=1)
