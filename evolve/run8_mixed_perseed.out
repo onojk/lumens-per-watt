@@ -1,0 +1,23 @@
+mixed: per-seed paired comparison, sealed 560 numbers; d = log2(fit TPE / fit other), < 0 = TPE better
+
+TPE vs evolution: TPE better on 3/8 seeds (sign test p = 0.7266); interval below 0 on 2, above 0 on 3
+  mean d over 8 seeds +0.090 (median +0.037); (i) numbers resampled [+0.064, +0.110]; (ii) seeds and numbers [-0.218, +0.395]
+    seed 71: d -0.139 [-0.238, -0.077]
+    seed 72: d +0.728 [+0.602, +0.853]
+    seed 73: d -0.751 [-0.868, -0.614]
+    seed 74: d -0.016 [-0.114, +0.072]
+    seed 75: d +0.699 [+0.563, +0.830]
+    seed 76: d +0.064 [-0.063, +0.151]
+    seed 77: d +0.127 [+0.054, +0.204]
+    seed 78: d +0.011 [-0.012, +0.032]
+
+TPE vs random: TPE better on 6/8 seeds (sign test p = 0.2891); interval below 0 on 6, above 0 on 2
+  mean d over 8 seeds -0.217 (median -0.280); (i) numbers resampled [-0.248, -0.189]; (ii) seeds and numbers [-0.634, +0.172]
+    seed 71: d -0.226 [-0.284, -0.177]
+    seed 72: d +0.584 [+0.459, +0.709]
+    seed 73: d -1.351 [-1.705, -1.064]
+    seed 74: d -0.277 [-0.292, -0.255]
+    seed 75: d +0.583 [+0.421, +0.738]
+    seed 76: d -0.377 [-0.476, -0.275]
+    seed 77: d -0.284 [-0.344, -0.222]
+    seed 78: d -0.387 [-0.440, -0.333]

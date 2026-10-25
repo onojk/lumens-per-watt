@@ -1137,3 +1137,24 @@ Predictions scored in this entry: 6. (a) holds or fails depending on the reading
 - **TPE vs random:**
   - mixed: TPE better on at least 6/8 seeds, and (i) excludes 0.
   - mixed-qs: TPE better on at least 5/8, and (i) excludes 0 by at most 0.05 log2.
+
+### Results (added after the run; `evolve/run8_perseed.py`, `run8_mixed_perseed.out`/`.json`, `run8_mixed-qs_perseed.out`/`.json`)
+
+d = log2(fit TPE / fit other), same seed, sealed numbers; below 0 means TPE is better.
+
+| arm | pair | TPE better (sign p) | intervals below / above 0 | mean d (median) | (i) numbers resampled | (ii) seeds + numbers |
+|---|---|---|---|---|---|---|
+| mixed | TPE vs evolution | 3/8 (0.727) | 2 / 3 | +0.090 (+0.037) | [+0.064, +0.110] | [−0.218, +0.395] |
+| mixed | TPE vs random | 6/8 (0.289) | 6 / 2 | −0.217 (−0.280) | [−0.248, −0.189] | [−0.634, +0.172] |
+| mixed-qs | TPE vs evolution | 5/8 (0.727) | 2 / 1 (+ seed 74: evolution's sealed miss) | +0.008 (−0.011), 7 seeds | [−0.012, +0.034] | [−0.023, +0.058] |
+| mixed-qs | TPE vs random | 7/8 (0.070) | 4 / 1 | −0.051 (−0.052) | [−0.072, −0.024] | [−0.103, +0.006] |
+
+- **Mixed, TPE vs evolution:** TPE's stalled seeds lose heavily (72: +0.728, 75: +0.699). Seed 73 is where evolution's run overfit, and there TPE wins (−0.751). Conditional on these 8 runs, the mean favours evolution by about 6–8% ((i) excludes 0). Over runs, (ii) is wide and includes 0.
+- **This disagrees in direction with the best-of-8 comparison** (TPE better, −0.090 [−0.107, −0.063]). That comparison is the evidence behind the MOVES row "Island evolution vs TPE for gene tuning". Under the per-seed rule, neither method is shown superior over runs. On these runs, evolution's average is better because TPE at Optuna defaults stalled on 2/8 seeds. The per-seed result has been added to that row's conditions; its status is left as decided, pending review.
+- **Mixed-qs:** TPE and evolution tie. TPE is better than random on 7/8 seeds, with an effect of about 3.5% ((i)). The sign test misses p < 0.05, as the power estimate said it would unless the result was unanimous.
+
+**Predictions scored as written:** 4 scored, 4 held, 0 missed.
+- TPE vs evolution, mixed: no consistent sign (held: 3/8, p 0.73). Stalled seeds lose by more than 0.5 log2 (held: +0.73, +0.70). (ii) includes 0 (held).
+- TPE vs evolution, mixed-qs: no consistent sign (held: 5/8). (ii) includes 0 (held).
+- TPE vs random, mixed: at least 6/8 and (i) excludes 0 (held: 6/8, [−0.248, −0.189]).
+- TPE vs random, mixed-qs: at least 5/8, and (i) excludes 0 by at most 0.05 log2 (held: 7/8, upper end −0.024).
