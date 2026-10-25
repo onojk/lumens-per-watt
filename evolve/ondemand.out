@@ -1,0 +1,165 @@
+R1: map numbers; ratios official / ruint / Montgomery
+
+72 bits, all (480 numbers)
+  old enumerate  vs frozen ref 1.000 / 1.000 / 1.000  setup_full      8506 (ruint share 0.377, mont 0.149)  polys   34.7  official ex setup_full    143361  misses 0  gate PASS (worst band upper 1.000, lower 1.000)
+  old on_demand  vs frozen ref 0.952 / 0.650 / 0.886  setup_full       162 (ruint share 0.011, mont 0.003)  polys   34.5  official ex setup_full    144437  misses 0  gate PASS (worst band upper 0.984, lower 0.944)
+  new enumerate  vs frozen ref 1.149 / 0.826 / 0.841  setup_full      6596 (ruint share 0.353, mont 0.137)  polys   28.1  official ex setup_full    167951  misses 0  gate PASS (worst band upper 1.252, lower 1.133)
+  new on_demand  vs frozen ref 1.112 / 0.554 / 0.750  setup_full       113 (ruint share 0.009, mont 0.003)  polys   28.0  official ex setup_full    168804  misses 0  gate PASS (worst band upper 1.235, lower 1.102)
+  n51 enumerate  vs frozen ref 1.503 / 0.850 / 0.894  setup_full      6588 (ruint share 0.343, mont 0.129)  polys   22.4  official ex setup_full    221698  misses 0  gate BORDERLINE (worst band upper 1.618, lower 1.484)
+  n51 on_demand  vs frozen ref 1.485 / 0.580 / 0.803  setup_full        84 (ruint share 0.006, mont 0.002)  polys   22.8  official ex setup_full    225418  misses 0  gate BORDERLINE (worst band upper 1.637, lower 1.481)
+  old od / old enum      offi x0.952 [-0.086,-0.056]  ruin x0.650 [-0.702,-0.544]  mont x0.886 [-0.209,-0.144]  robust x0.952 [0.942,0.962]  call first
+  new od / new enum      offi x0.968 [-0.063,-0.032]  ruin x0.671 [-0.593,-0.561]  mont x0.892 [-0.179,-0.151]  robust x0.968 [0.957,0.978]  call first
+  n51 od / n51 enum      offi x0.988 [-0.033,-0.003]  ruin x0.682 [-0.569,-0.537]  mont x0.899 [-0.167,-0.140]  robust x0.988 [0.978,0.998]  call first
+  new / old, both enum   offi x1.149 [+0.173,+0.229]  ruin x0.826 [-0.353,-0.202]  mont x0.841 [-0.283,-0.218]  robust x1.149 [1.127,1.172]  call undecided
+  new / old, both od     offi x1.168 [+0.197,+0.253]  ruin x0.852 [-0.256,-0.206]  mont x0.847 [-0.265,-0.215]  robust x1.168 [1.146,1.191]  call undecided
+  n51 / old, both enum   offi x1.503 [+0.564,+0.612]  ruin x0.850 [-0.313,-0.159]  mont x0.894 [-0.196,-0.130]  robust x1.503 [1.479,1.528]  call undecided
+  n51 / old, both od     offi x1.560 [+0.620,+0.662]  ruin x0.891 [-0.184,-0.149]  mont x0.907 [-0.158,-0.124]  robust x1.560 [1.536,1.583]  call undecided
+
+72 bits, unseen (468 numbers)
+  old enumerate  vs frozen ref 1.000 / 1.000 / 1.000  setup_full      8554 (ruint share 0.378, mont 0.150)  polys   34.6  official ex setup_full    143358  misses 0  gate PASS (worst band upper 1.000, lower 1.000)
+  old on_demand  vs frozen ref 0.950 / 0.648 / 0.883  setup_full       161 (ruint share 0.011, mont 0.003)  polys   34.4  official ex setup_full    144171  misses 0  gate PASS (worst band upper 0.984, lower 0.944)
+  new enumerate  vs frozen ref 1.150 / 0.825 / 0.840  setup_full      6596 (ruint share 0.353, mont 0.137)  polys   28.1  official ex setup_full    168092  misses 0  gate PASS (worst band upper 1.263, lower 1.143)
+  new on_demand  vs frozen ref 1.112 / 0.553 / 0.749  setup_full       113 (ruint share 0.009, mont 0.003)  polys   28.0  official ex setup_full    168875  misses 0  gate PASS (worst band upper 1.248, lower 1.109)
+  n51 enumerate  vs frozen ref 1.499 / 0.848 / 0.892  setup_full      6588 (ruint share 0.343, mont 0.129)  polys   22.3  official ex setup_full    221205  misses 0  gate BORDERLINE (worst band upper 1.599, lower 1.476)
+  n51 on_demand  vs frozen ref 1.480 / 0.577 / 0.801  setup_full        84 (ruint share 0.006, mont 0.002)  polys   22.7  official ex setup_full    224762  misses 0  gate BORDERLINE (worst band upper 1.624, lower 1.469)
+  old od / old enum      offi x0.950 [-0.090,-0.059]  ruin x0.648 [-0.712,-0.549]  mont x0.883 [-0.215,-0.147]  robust x0.950 [0.940,0.960]  call first
+  new od / new enum      offi x0.967 [-0.064,-0.033]  ruin x0.670 [-0.593,-0.561]  mont x0.892 [-0.180,-0.151]  robust x0.967 [0.957,0.978]  call first
+  n51 od / n51 enum      offi x0.987 [-0.034,-0.003]  ruin x0.681 [-0.571,-0.538]  mont x0.898 [-0.169,-0.140]  robust x0.987 [0.977,0.998]  call first
+  new / old, both enum   offi x1.150 [+0.172,+0.230]  ruin x0.825 [-0.359,-0.204]  mont x0.840 [-0.285,-0.219]  robust x1.150 [1.127,1.173]  call undecided
+  new / old, both od     offi x1.171 [+0.199,+0.256]  ruin x0.853 [-0.254,-0.203]  mont x0.848 [-0.262,-0.211]  robust x1.171 [1.148,1.194]  call undecided
+  n51 / old, both enum   offi x1.499 [+0.561,+0.608]  ruin x0.848 [-0.321,-0.163]  mont x0.892 [-0.200,-0.133]  robust x1.499 [1.475,1.524]  call undecided
+  n51 / old, both od     offi x1.558 [+0.618,+0.662]  ruin x0.891 [-0.184,-0.148]  mont x0.907 [-0.159,-0.123]  robust x1.558 [1.535,1.583]  call undecided
+
+78 bits, all (560 numbers)
+  old enumerate  vs frozen ref 1.000 / 1.000 / 1.000  setup_full     31224 (ruint share 0.563, mont 0.268)  polys   44.6  official ex setup_full    269668  misses 0  gate PASS (worst band upper 1.000, lower 1.000)
+  old on_demand  vs frozen ref 0.911 / 0.459 / 0.766  setup_full       208 (ruint share 0.008, mont 0.002)  polys   44.9  official ex setup_full    274027  misses 0  gate PASS (worst band upper 0.971, lower 0.905)
+  new enumerate  vs frozen ref 1.010 / 0.489 / 0.673  setup_full      6603 (ruint share 0.243, mont 0.084)  polys   32.7  official ex setup_full    297299  misses 0  gate PASS (worst band upper 1.108, lower 1.017)
+  new on_demand  vs frozen ref 0.991 / 0.380 / 0.631  setup_full       138 (ruint share 0.007, mont 0.002)  polys   32.6  official ex setup_full    298067  misses 0  gate PASS (worst band upper 1.092, lower 0.996)
+  n51 enumerate  vs frozen ref 1.351 / 0.506 / 0.715  setup_full      6595 (ruint share 0.235, mont 0.079)  polys   27.4  official ex setup_full    399991  misses 0  gate PASS (worst band upper 1.467, lower 1.345)
+  n51 on_demand  vs frozen ref 1.337 / 0.397 / 0.671  setup_full       105 (ruint share 0.005, mont 0.001)  polys   27.5  official ex setup_full    402308  misses 0  gate PASS (worst band upper 1.448, lower 1.328)
+  old od / old enum      offi x0.911 [-0.153,-0.115]  ruin x0.459 [-1.220,-1.025]  mont x0.766 [-0.434,-0.338]  robust x0.911 [0.899,0.923]  call first
+  new od / new enum      offi x0.981 [-0.038,-0.016]  ruin x0.778 [-0.376,-0.350]  mont x0.938 [-0.104,-0.081]  robust x0.981 [0.974,0.989]  call first
+  n51 od / n51 enum      offi x0.990 [-0.025,-0.004]  ruin x0.785 [-0.361,-0.339]  mont x0.940 [-0.099,-0.080]  robust x0.990 [0.983,0.997]  call first
+  new / old, both enum   offi x1.010 [-0.011,+0.039]  ruin x0.489 [-1.120,-0.944]  mont x0.673 [-0.612,-0.532]  robust x1.010 [0.993,1.028]  call undecided
+  new / old, both od     offi x1.087 [+0.098,+0.145]  ruin x0.828 [-0.295,-0.248]  mont x0.824 [-0.302,-0.255]  robust x1.087 [1.070,1.105]  call undecided
+  n51 / old, both enum   offi x1.351 [+0.410,+0.458]  ruin x0.506 [-1.075,-0.891]  mont x0.715 [-0.530,-0.442]  robust x1.351 [1.329,1.374]  call undecided
+  n51 / old, both od     offi x1.467 [+0.537,+0.570]  ruin x0.864 [-0.225,-0.196]  mont x0.877 [-0.204,-0.175]  robust x1.467 [1.451,1.484]  call undecided
+
+78 bits, unseen (546 numbers)
+  old enumerate  vs frozen ref 1.000 / 1.000 / 1.000  setup_full     31112 (ruint share 0.562, mont 0.268)  polys   44.4  official ex setup_full    269314  misses 0  gate PASS (worst band upper 1.000, lower 1.000)
+  old on_demand  vs frozen ref 0.912 / 0.460 / 0.767  setup_full       208 (ruint share 0.008, mont 0.002)  polys   44.7  official ex setup_full    273732  misses 0  gate PASS (worst band upper 0.967, lower 0.903)
+  new enumerate  vs frozen ref 1.009 / 0.490 / 0.673  setup_full      6603 (ruint share 0.244, mont 0.085)  polys   32.5  official ex setup_full    296596  misses 0  gate PASS (worst band upper 1.114, lower 1.019)
+  new on_demand  vs frozen ref 0.990 / 0.381 / 0.631  setup_full       137 (ruint share 0.006, mont 0.002)  polys   32.5  official ex setup_full    297350  misses 0  gate PASS (worst band upper 1.097, lower 0.998)
+  n51 enumerate  vs frozen ref 1.350 / 0.507 / 0.715  setup_full      6595 (ruint share 0.235, mont 0.079)  polys   27.3  official ex setup_full    398973  misses 0  gate PASS (worst band upper 1.462, lower 1.340)
+  n51 on_demand  vs frozen ref 1.336 / 0.397 / 0.671  setup_full       104 (ruint share 0.005, mont 0.001)  polys   27.4  official ex setup_full    401205  misses 0  gate PASS (worst band upper 1.461, lower 1.325)
+  old od / old enum      offi x0.912 [-0.153,-0.114]  ruin x0.460 [-1.215,-1.021]  mont x0.767 [-0.432,-0.336]  robust x0.912 [0.900,0.924]  call first
+  new od / new enum      offi x0.981 [-0.039,-0.016]  ruin x0.777 [-0.376,-0.351]  mont x0.938 [-0.104,-0.082]  robust x0.981 [0.973,0.989]  call first
+  n51 od / n51 enum      offi x0.989 [-0.026,-0.004]  ruin x0.784 [-0.362,-0.340]  mont x0.939 [-0.100,-0.081]  robust x0.989 [0.982,0.997]  call first
+  new / old, both enum   offi x1.009 [-0.011,+0.038]  ruin x0.490 [-1.117,-0.939]  mont x0.673 [-0.611,-0.530]  robust x1.009 [0.992,1.027]  call undecided
+  new / old, both od     offi x1.086 [+0.095,+0.142]  ruin x0.827 [-0.297,-0.250]  mont x0.823 [-0.304,-0.257]  robust x1.086 [1.068,1.104]  call undecided
+  n51 / old, both enum   offi x1.350 [+0.408,+0.457]  ruin x0.507 [-1.072,-0.886]  mont x0.715 [-0.529,-0.440]  robust x1.350 [1.327,1.373]  call undecided
+  n51 / old, both od     offi x1.465 [+0.534,+0.567]  ruin x0.863 [-0.227,-0.197]  mont x0.876 [-0.206,-0.177]  robust x1.465 [1.448,1.482]  call undecided
+
+84 bits, all (560 numbers)
+  old enumerate  vs frozen ref 1.000 / 1.000 / 1.000  setup_full     62714 (ruint share 0.606, mont 0.302)  polys   55.3  official ex setup_full    497150  misses 0  gate PASS (worst band upper 1.000, lower 1.000)
+  old on_demand  vs frozen ref 0.897 / 0.408 / 0.720  setup_full       249 (ruint share 0.006, mont 0.002)  polys   55.5  official ex setup_full    501790  misses 0  gate PASS (worst band upper 0.940, lower 0.889)
+  new enumerate  vs frozen ref 0.963 / 0.405 / 0.630  setup_full      6974 (ruint share 0.166, mont 0.053)  polys   38.9  official ex setup_full    532066  misses 0  gate PASS (worst band upper 1.013, lower 0.951)
+  new on_demand  vs frozen ref 0.955 / 0.351 / 0.617  setup_full       260 (ruint share 0.007, mont 0.002)  polys   38.9  official ex setup_full    534647  misses 0  gate PASS (worst band upper 1.010, lower 0.945)
+  n51 enumerate  vs frozen ref 1.305 / 0.420 / 0.670  setup_full      6604 (ruint share 0.152, mont 0.047)  polys   33.0  official ex setup_full    723769  misses 0  gate PASS (worst band upper 1.401, lower 1.290)
+  n51 on_demand  vs frozen ref 1.288 / 0.360 / 0.644  setup_full       139 (ruint share 0.004, mont 0.001)  polys   32.7  official ex setup_full    721186  misses 0  gate PASS (worst band upper 1.378, lower 1.270)
+  old od / old enum      offi x0.897 [-0.171,-0.144]  ruin x0.408 [-1.359,-1.229]  mont x0.720 [-0.508,-0.439]  robust x0.897 [0.888,0.905]  call first
+  new od / new enum      offi x0.992 [-0.022,-0.001]  ruin x0.866 [-0.231,-0.189]  mont x0.980 [-0.043,-0.017]  robust x0.992 [0.985,1.000]  call first
+  n51 od / n51 enum      offi x0.988 [-0.028,-0.008]  ruin x0.857 [-0.231,-0.212]  mont x0.961 [-0.067,-0.049]  robust x0.988 [0.981,0.994]  call first
+  new / old, both enum   offi x0.963 [-0.072,-0.037]  ruin x0.405 [-1.357,-1.250]  mont x0.630 [-0.691,-0.644]  robust x0.963 [0.951,0.975]  call first
+  new / old, both od     offi x1.065 [+0.070,+0.113]  ruin x0.860 [-0.243,-0.192]  mont x0.856 [-0.249,-0.198]  robust x1.065 [1.050,1.081]  call undecided
+  n51 / old, both enum   offi x1.305 [+0.364,+0.402]  ruin x0.420 [-1.310,-1.191]  mont x0.670 [-0.608,-0.547]  robust x1.305 [1.287,1.322]  call undecided
+  n51 / old, both od     offi x1.437 [+0.509,+0.537]  ruin x0.883 [-0.193,-0.166]  mont x0.894 [-0.175,-0.148]  robust x1.437 [1.423,1.451]  call undecided
+
+84 bits, unseen (546 numbers)
+  old enumerate  vs frozen ref 1.000 / 1.000 / 1.000  setup_full     63039 (ruint share 0.607, mont 0.303)  polys   55.4  official ex setup_full    497623  misses 0  gate PASS (worst band upper 1.000, lower 1.000)
+  old on_demand  vs frozen ref 0.896 / 0.407 / 0.719  setup_full       247 (ruint share 0.006, mont 0.002)  polys   55.6  official ex setup_full    502261  misses 0  gate PASS (worst band upper 0.940, lower 0.888)
+  new enumerate  vs frozen ref 0.962 / 0.403 / 0.628  setup_full      6798 (ruint share 0.163, mont 0.052)  polys   39.0  official ex setup_full    532833  misses 0  gate PASS (worst band upper 1.015, lower 0.951)
+  new on_demand  vs frozen ref 0.955 / 0.350 / 0.617  setup_full       258 (ruint share 0.007, mont 0.002)  polys   38.9  official ex setup_full    535438  misses 0  gate PASS (worst band upper 1.013, lower 0.946)
+  n51 enumerate  vs frozen ref 1.303 / 0.419 / 0.669  setup_full      6604 (ruint share 0.152, mont 0.047)  polys   33.0  official ex setup_full    723831  misses 0  gate PASS (worst band upper 1.404, lower 1.288)
+  n51 on_demand  vs frozen ref 1.288 / 0.359 / 0.643  setup_full       140 (ruint share 0.004, mont 0.001)  polys   32.8  official ex setup_full    721732  misses 0  gate PASS (worst band upper 1.383, lower 1.270)
+  old od / old enum      offi x0.896 [-0.171,-0.144]  ruin x0.407 [-1.360,-1.231]  mont x0.719 [-0.509,-0.441]  robust x0.896 [0.888,0.905]  call first
+  new od / new enum      offi x0.993 [-0.022,+0.000]  ruin x0.869 [-0.220,-0.186]  mont x0.981 [-0.040,-0.015]  robust x0.993 [0.985,1.000]  call undecided
+  n51 od / n51 enum      offi x0.988 [-0.027,-0.007]  ruin x0.858 [-0.231,-0.211]  mont x0.961 [-0.066,-0.048]  robust x0.988 [0.982,0.995]  call first
+  new / old, both enum   offi x0.962 [-0.073,-0.037]  ruin x0.403 [-1.364,-1.259]  mont x0.628 [-0.694,-0.646]  robust x0.962 [0.950,0.975]  call first
+  new / old, both od     offi x1.066 [+0.071,+0.113]  ruin x0.860 [-0.242,-0.192]  mont x0.857 [-0.247,-0.198]  robust x1.066 [1.050,1.081]  call undecided
+  n51 / old, both enum   offi x1.303 [+0.362,+0.401]  ruin x0.419 [-1.314,-1.194]  mont x0.669 [-0.609,-0.549]  robust x1.303 [1.286,1.321]  call undecided
+  n51 / old, both od     offi x1.437 [+0.508,+0.537]  ruin x0.883 [-0.193,-0.165]  mont x0.894 [-0.175,-0.147]  robust x1.437 [1.422,1.451]  call undecided
+
+90 bits, all (640 numbers)
+  old enumerate  vs frozen ref 1.000 / 1.000 / 1.000  setup_full    107952 (ruint share 0.609, mont 0.302)  polys   68.9  official ex setup_full    926546  misses 0  gate PASS (worst band upper 1.000, lower 1.000)
+  old on_demand  vs frozen ref 0.901 / 0.398 / 0.708  setup_full       174 (ruint share 0.002, mont 0.001)  polys   69.3  official ex setup_full    932210  misses 0  gate PASS (worst band upper 0.933, lower 0.904)
+  new enumerate  vs frozen ref 1.045 / 0.902 / 0.875  setup_full    100841 (ruint share 0.630, mont 0.323)  polys   50.1  official ex setup_full    980348  misses 0  gate PASS (worst band upper 1.106, lower 1.033)
+  new on_demand  vs frozen ref 0.950 / 0.338 / 0.599  setup_full       160 (ruint share 0.003, mont 0.001)  polys   50.2  official ex setup_full    983047  misses 0  gate PASS (worst band upper 1.016, lower 0.942)
+  n51 enumerate  vs frozen ref 1.297 / 0.508 / 0.715  setup_full     27193 (ruint share 0.302, mont 0.107)  polys   40.6  official ex setup_full   1314277  misses 0  gate PASS (worst band upper 1.359, lower 1.291)
+  n51 on_demand  vs frozen ref 1.270 / 0.359 / 0.645  setup_full       166 (ruint share 0.003, mont 0.001)  polys   40.6  official ex setup_full   1313937  misses 0  gate PASS (worst band upper 1.338, lower 1.270)
+  old od / old enum      offi x0.901 [-0.158,-0.142]  ruin x0.398 [-1.341,-1.320]  mont x0.708 [-0.506,-0.490]  robust x0.901 [0.896,0.906]  call first
+  new od / new enum      offi x0.909 [-0.151,-0.125]  ruin x0.375 [-1.438,-1.394]  mont x0.685 [-0.561,-0.531]  robust x0.909 [0.901,0.917]  call first
+  n51 od / n51 enum      offi x0.980 [-0.038,-0.021]  ruin x0.706 [-0.554,-0.450]  mont x0.902 [-0.169,-0.129]  robust x0.980 [0.974,0.985]  call first
+  new / old, both enum   offi x1.045 [+0.045,+0.084]  ruin x0.902 [-0.169,-0.129]  mont x0.875 [-0.210,-0.175]  robust x1.045 [1.031,1.060]  call undecided
+  new / old, both od     offi x1.055 [+0.059,+0.094]  ruin x0.850 [-0.252,-0.217]  mont x0.847 [-0.258,-0.222]  robust x1.055 [1.042,1.068]  call undecided
+  n51 / old, both enum   offi x1.297 [+0.361,+0.390]  ruin x0.508 [-1.028,-0.926]  mont x0.715 [-0.505,-0.463]  robust x1.297 [1.284,1.310]  call undecided
+  n51 / old, both od     offi x1.409 [+0.482,+0.508]  ruin x0.902 [-0.161,-0.137]  mont x0.911 [-0.147,-0.123]  robust x1.409 [1.397,1.422]  call undecided
+
+90 bits, unseen (624 numbers)
+  old enumerate  vs frozen ref 1.000 / 1.000 / 1.000  setup_full    107952 (ruint share 0.609, mont 0.303)  polys   68.7  official ex setup_full    926200  misses 0  gate PASS (worst band upper 1.000, lower 1.000)
+  old on_demand  vs frozen ref 0.901 / 0.398 / 0.708  setup_full       174 (ruint share 0.002, mont 0.001)  polys   69.0  official ex setup_full    931391  misses 0  gate PASS (worst band upper 0.936, lower 0.903)
+  new enumerate  vs frozen ref 1.045 / 0.903 / 0.876  setup_full    100984 (ruint share 0.631, mont 0.323)  polys   50.0  official ex setup_full    979864  misses 0  gate PASS (worst band upper 1.107, lower 1.034)
+  new on_demand  vs frozen ref 0.950 / 0.338 / 0.599  setup_full       157 (ruint share 0.003, mont 0.001)  polys   50.1  official ex setup_full    982273  misses 0  gate PASS (worst band upper 1.018, lower 0.942)
+  n51 enumerate  vs frozen ref 1.296 / 0.509 / 0.715  setup_full     27396 (ruint share 0.304, mont 0.107)  polys   40.5  official ex setup_full   1312387  misses 0  gate PASS (worst band upper 1.368, lower 1.285)
+  n51 on_demand  vs frozen ref 1.269 / 0.358 / 0.644  setup_full       165 (ruint share 0.003, mont 0.001)  polys   40.4  official ex setup_full   1311937  misses 0  gate PASS (worst band upper 1.336, lower 1.262)
+  old od / old enum      offi x0.901 [-0.159,-0.143]  ruin x0.398 [-1.342,-1.320]  mont x0.708 [-0.507,-0.491]  robust x0.901 [0.896,0.906]  call first
+  new od / new enum      offi x0.909 [-0.152,-0.125]  ruin x0.374 [-1.440,-1.396]  mont x0.684 [-0.563,-0.533]  robust x0.909 [0.900,0.917]  call first
+  n51 od / n51 enum      offi x0.979 [-0.039,-0.021]  ruin x0.704 [-0.560,-0.452]  mont x0.901 [-0.172,-0.130]  robust x0.979 [0.973,0.985]  call first
+  new / old, both enum   offi x1.045 [+0.044,+0.084]  ruin x0.903 [-0.167,-0.127]  mont x0.876 [-0.209,-0.174]  robust x1.045 [1.031,1.060]  call undecided
+  new / old, both od     offi x1.055 [+0.059,+0.095]  ruin x0.850 [-0.252,-0.217]  mont x0.847 [-0.258,-0.222]  robust x1.055 [1.042,1.068]  call undecided
+  n51 / old, both enum   offi x1.296 [+0.359,+0.388]  ruin x0.509 [-1.028,-0.923]  mont x0.715 [-0.505,-0.463]  robust x1.296 [1.282,1.309]  call undecided
+  n51 / old, both od     offi x1.408 [+0.481,+0.508]  ruin x0.901 [-0.162,-0.138]  mont x0.910 [-0.147,-0.124]  robust x1.408 [1.396,1.422]  call undecided
+
+96 bits, all (640 numbers)
+  old enumerate  vs frozen ref 1.000 / 1.000 / 1.000  setup_full    107969 (ruint share 0.466, mont 0.194)  polys   85.7  official ex setup_full   1765214  misses 0  gate PASS (worst band upper 1.000, lower 1.000)
+  old on_demand  vs frozen ref 0.943 / 0.539 / 0.813  setup_full       236 (ruint share 0.002, mont 0.001)  polys   85.8  official ex setup_full   1767032  misses 0  gate PASS (worst band upper 0.961, lower 0.945)
+  new enumerate  vs frozen ref 1.003 / 0.908 / 0.859  setup_full    107944 (ruint share 0.513, mont 0.226)  polys   60.7  official ex setup_full   1770991  misses 0  gate PASS (worst band upper 1.073, lower 1.010)
+  new on_demand  vs frozen ref 0.946 / 0.445 / 0.669  setup_full       147 (ruint share 0.001, mont 0.000)  polys   60.6  official ex setup_full   1771851  misses 0  gate PASS (worst band upper 1.016, lower 0.950)
+  n51 enumerate  vs frozen ref 1.336 / 0.737 / 0.827  setup_full     61714 (ruint share 0.361, mont 0.134)  polys   51.1  official ex setup_full   2440506  misses 0  gate PASS (worst band upper 1.403, lower 1.324)
+  n51 on_demand  vs frozen ref 1.307 / 0.476 / 0.723  setup_full       187 (ruint share 0.002, mont 0.000)  polys   51.2  official ex setup_full   2448188  misses 0  gate PASS (worst band upper 1.364, lower 1.288)
+  old od / old enum      offi x0.943 [-0.095,-0.074]  ruin x0.539 [-0.902,-0.880]  mont x0.813 [-0.310,-0.289]  robust x0.943 [0.936,0.950]  call first
+  new od / new enum      offi x0.943 [-0.092,-0.078]  ruin x0.490 [-1.039,-1.018]  mont x0.778 [-0.369,-0.354]  robust x0.943 [0.938,0.948]  call first
+  n51 od / n51 enum      offi x0.978 [-0.038,-0.025]  ruin x0.646 [-0.665,-0.595]  mont x0.875 [-0.207,-0.179]  robust x0.978 [0.974,0.983]  call first
+  new / old, both enum   offi x1.003 [-0.012,+0.021]  ruin x0.908 [-0.147,-0.130]  mont x0.859 [-0.231,-0.205]  robust x1.003 [0.992,1.015]  call undecided
+  new / old, both od     offi x1.003 [-0.014,+0.023]  ruin x0.826 [-0.294,-0.258]  mont x0.823 [-0.299,-0.262]  robust x1.003 [0.990,1.016]  call undecided
+  n51 / old, both enum   offi x1.336 [+0.405,+0.431]  ruin x0.737 [-0.474,-0.408]  mont x0.827 [-0.289,-0.259]  robust x1.336 [1.324,1.348]  call undecided
+  n51 / old, both od     offi x1.385 [+0.456,+0.485]  ruin x0.883 [-0.193,-0.166]  mont x0.890 [-0.182,-0.155]  robust x1.385 [1.372,1.400]  call undecided
+
+96 bits, unseen (624 numbers)
+  old enumerate  vs frozen ref 1.000 / 1.000 / 1.000  setup_full    107969 (ruint share 0.466, mont 0.194)  polys   85.5  official ex setup_full   1765500  misses 0  gate PASS (worst band upper 1.000, lower 1.000)
+  old on_demand  vs frozen ref 0.943 / 0.539 / 0.813  setup_full       236 (ruint share 0.002, mont 0.001)  polys   85.6  official ex setup_full   1766885  misses 0  gate PASS (worst band upper 0.961, lower 0.946)
+  new enumerate  vs frozen ref 1.002 / 0.908 / 0.859  setup_full    107944 (ruint share 0.513, mont 0.226)  polys   60.5  official ex setup_full   1769818  misses 0  gate PASS (worst band upper 1.076, lower 1.010)
+  new on_demand  vs frozen ref 0.945 / 0.445 / 0.669  setup_full       147 (ruint share 0.001, mont 0.000)  polys   60.5  official ex setup_full   1770981  misses 0  gate PASS (worst band upper 1.022, lower 0.951)
+  n51 enumerate  vs frozen ref 1.335 / 0.737 / 0.826  setup_full     61666 (ruint share 0.361, mont 0.134)  polys   51.0  official ex setup_full   2439254  misses 0  gate PASS (worst band upper 1.408, lower 1.326)
+  n51 on_demand  vs frozen ref 1.306 / 0.476 / 0.723  setup_full       186 (ruint share 0.002, mont 0.000)  polys   51.1  official ex setup_full   2446742  misses 0  gate PASS (worst band upper 1.370, lower 1.293)
+  old od / old enum      offi x0.943 [-0.096,-0.074]  ruin x0.539 [-0.902,-0.880]  mont x0.813 [-0.310,-0.289]  robust x0.943 [0.936,0.950]  call first
+  new od / new enum      offi x0.943 [-0.092,-0.077]  ruin x0.490 [-1.039,-1.017]  mont x0.778 [-0.369,-0.354]  robust x0.943 [0.938,0.948]  call first
+  n51 od / n51 enum      offi x0.978 [-0.038,-0.025]  ruin x0.646 [-0.666,-0.596]  mont x0.875 [-0.208,-0.179]  robust x0.978 [0.974,0.983]  call first
+  new / old, both enum   offi x1.002 [-0.013,+0.020]  ruin x0.908 [-0.147,-0.130]  mont x0.859 [-0.232,-0.205]  robust x1.002 [0.991,1.014]  call undecided
+  new / old, both od     offi x1.002 [-0.015,+0.023]  ruin x0.826 [-0.294,-0.257]  mont x0.823 [-0.299,-0.262]  robust x1.002 [0.989,1.016]  call undecided
+  n51 / old, both enum   offi x1.335 [+0.404,+0.430]  ruin x0.737 [-0.474,-0.408]  mont x0.826 [-0.290,-0.260]  robust x1.335 [1.323,1.347]  call undecided
+  n51 / old, both od     offi x1.385 [+0.455,+0.485]  ruin x0.882 [-0.194,-0.166]  mont x0.889 [-0.182,-0.155]  robust x1.385 [1.371,1.399]  call undecided
+
+R2: replacement rule (new / old, both on_demand; balanced 54-84, 240 per size)
+  54: offi +0.458 [+0.394,+0.522]  ruin -0.102 [-0.162,-0.042]  mont -0.104 [-0.164,-0.044]
+  60: offi +0.365 [+0.318,+0.412]  ruin -0.145 [-0.188,-0.100]  mont -0.159 [-0.202,-0.114]
+  66: offi +0.277 [+0.235,+0.318]  ruin -0.203 [-0.240,-0.165]  mont -0.213 [-0.250,-0.175]
+  72: offi +0.198 [+0.163,+0.234]  ruin -0.277 [-0.310,-0.243]  mont -0.280 [-0.314,-0.246]
+  78: offi +0.122 [+0.088,+0.158]  ruin -0.271 [-0.305,-0.237]  mont -0.279 [-0.313,-0.244]
+  84: offi +0.089 [+0.055,+0.125]  ruin -0.225 [-0.263,-0.186]  mont -0.232 [-0.270,-0.194]
+  pooled: offi +0.252 [+0.234,+0.269]  ruin -0.204 [-0.221,-0.187]  mont -0.211 [-0.228,-0.194]
+  misses: {'new 54': 0, 'old 54': 0, 'new 60': 0, 'old 60': 0, 'new 66': 0, 'old 66': 0, 'new 72': 0, 'old 72': 0, 'new 78': 0, 'old 78': 0, 'new 84': 0, 'old 84': 0}
+  rule: {'never_clearly_worse': False, 'no_misses': True, 'pooled_all_below_0': False, 'replace': False}
+R3: qs + lc 1.4 | balanced control: budgets {'td': 0, 'rho': 0, 'pm1': 0, 'ecm': 0}  fitness 1.000
+R3: qs + lc 1.4 on_demand | balanced control: budgets {'td': 0, 'rho': 0, 'pm1': 0, 'ecm': 0}  fitness 1.000
+exit 0

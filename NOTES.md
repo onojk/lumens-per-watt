@@ -2045,3 +2045,113 @@ The predictions stand as written; the acceptance tests and their checks are unch
 **Charges, version 3:** identical per operation in both passes. Pass 2 re-forms A′, t′ and every try, and pays again: (s − 2) + 1 full per prefix, the scans, 2 full per try, and s small per used A per try passing the check (the duplicate comparison). It has no prefix-check charge, because it has no prefix check. The type split and trace fields are unchanged; `od_pass2` records that pass 2 ran.
 
 **Design data, disclosed.** The three amendments were shaped on the acceptance sample: 180 runs (2 per band per size for two genomes, 1 for N51-0917) and 60 identity runs. The measurement uses all 2,880 map numbers for three genomes, and the replacement-rule populations (1,440 balanced numbers), which the amendments never saw. Retries and pass-2 use are reported there for both modes.
+
+### On-demand A: uncharged sorts (item 3 of the user's follow-up), and a meter finding in the frozen card
+
+**on_demand's prefix-order sort is excluded, for this reason.** `by_q`, the pool sorted by closeness to q (73–109 comparisons per attempt, counted on sample numbers), is exactly the first P entries of the pool-selection sort that both modes already perform. In both cores, `pool` is built by sorting the odd factor-base primes by |ln(p/q)| and keeping the first P. Re-sorting those P primes by the same key recovers that order: no new information is computed. It is a reimplementation convenience, so charging it would charge on_demand twice for an order enumerate also has.
+
+**Meter finding (pre-existing, frozen card; not corrected, for comparability, like the gcd finding).** The qs card's cost model (Stage 6) charges no sorting. Three sorts in phase 3 are uncharged in both cores. Comparisons were counted with a counting comparator on 2 numbers per size per genome at 72–96 bits:
+
+| sort | modes | comparisons per attempt |
+|---|---|---|
+| pool selection: odd factor-base primes by closeness to q | both | 146–557 (grows with F) |
+| the P chosen primes, ascending | both | 27–31 |
+| all C(P, s) candidate A's by closeness to target (plus a product and a log per candidate) | enumerate only | ~31,000 (s = 3); 455,000–471,000 (s = 4) |
+
+- **Enumerate is undercharged.** Its up-front cost is larger than its (s − 1)·C(P, s) multiplies, so every on_demand/enumerate ratio measured here understates on_demand's gain.
+- The two sorts both modes share would add, if charged as small ops (ruint 0.306, Montgomery 1.137 per comparison), about 55–180 ruint and 200–670 Montgomery units per attempt. That is under ~1.5% of qs's on_demand cost at 72 bits under either pricing, and less at larger sizes.
+- Charging sorts would be a meter change: it needs a cost model first, and would change the frozen reference. **For the user to decide;** nothing is changed here.
+
+### On-demand A: results (`evolve/ondemand.py`, `ondemand.out`/`.json`; rule version 3; after acceptance and the full parity suite)
+
+**Acceptance and parity:**
+- *Acceptance* (`ondemand_accept.out`): enumerate is unchanged on all 2,880 map numbers; identity 60/60; Python = Rust 180/180; no multiplier retries in the sample; 0 misses on 2,880 numbers for three genomes, both modes.
+- *Full parity suite* (`parity_ondemand.out`): qs 3,778 pairs (on_demand pairs included), 0 mismatches; per-type 6,102 pairs, 0 mismatches; mutations 46/46.
+
+**R1, map numbers: ratio to the frozen reference** (qs + lc 1.4, enumerate), official / ruint / Montgomery.
+
+| bits | old on_demand | new enumerate | new on_demand | N51-0917 enumerate | N51-0917 on_demand |
+|---|---|---|---|---|---|
+| 72 | 0.952 / 0.650 / 0.886 | 1.149 / 0.826 / 0.841 | 1.112 / 0.554 / 0.750 | 1.503 / 0.850 / 0.894 | 1.485 / 0.580 / 0.803 |
+| 78 | 0.911 / 0.459 / 0.766 | 1.010 / 0.489 / 0.673 | 0.991 / 0.380 / 0.631 | 1.351 / 0.506 / 0.715 | 1.337 / 0.397 / 0.671 |
+| 84 | 0.897 / 0.408 / 0.720 | 0.963 / 0.405 / 0.630 | 0.955 / 0.351 / 0.617 | 1.305 / 0.420 / 0.670 | 1.288 / 0.360 / 0.644 |
+| 90 | 0.901 / 0.398 / 0.708 | 1.045 / 0.902 / 0.875 | 0.950 / 0.338 / 0.599 | 1.297 / 0.508 / 0.715 | 1.270 / 0.359 / 0.645 |
+| 96 | 0.943 / 0.539 / 0.813 | 1.003 / 0.908 / 0.859 | 0.946 / 0.445 / 0.669 | 1.336 / 0.737 / 0.827 | 1.307 / 0.476 / 0.723 |
+
+**The card itself: on_demand / enumerate, same genes** (robust ratio [paired 95%]; (e) call).
+- *qs + lc 1.4:*
+  - robust: 0.952 [0.942, 0.962], 0.911, 0.897, 0.901, 0.943 at 72 / 78 / 84 / 90 / 96;
+  - ruint: 0.650, 0.459, 0.408, 0.398, 0.539;
+  - Montgomery: 0.886, 0.766, 0.720, 0.708, 0.813.
+  - Called "on_demand cheaper" under all three pricings at every size.
+- *New genes:* robust 0.968, 0.981, 0.992, 0.909, 0.943. Called at every size except 84 on the unseen subset, where official's interval reaches 0.000.
+- *N51-0917:* robust 0.988, 0.990, 0.988, 0.980, 0.978; called at every size.
+- **On-demand A pays under all three pricings at 72–96 bits** for all three genomes. The size of the gain follows how much each genome spent on enumeration.
+
+**setup_full and its ruint share, on_demand** (enumerate in brackets):
+- qs + lc 1.4: 162 / 208 / 249 / 174 / 236 ops [8,506 / 31,224 / 62,714 / 107,952 / 107,969], ruint share 0.2–1.1% [38–61%];
+- new genes: 113 / 138 / 260 / 160 / 147;
+- N51-0917: 84 / 105 / 139 / 166 / 187.
+
+**Downstream work** (polynomials per run; official ops excluding setup_full):
+- On_demand is within −0.9% to +1.8% of enumerate in polynomials for every genome and size.
+- It is within −0.4% to +1.7% in non-setup official ops.
+- Yield is unchanged within the measured noise.
+
+**The new genes against qs + lc 1.4's genes, both on_demand** (log₂ [paired 95%] as ratios):
+
+| bits | official | ruint | Montgomery | robust | (e) |
+|---|---|---|---|---|---|
+| 72 | 1.168 | 0.852 | 0.847 | 1.168 [1.146, 1.191] | undecided |
+| 78 | 1.087 | 0.828 | 0.824 | 1.087 [1.070, 1.105] | undecided |
+| 84 | 1.065 | 0.860 | 0.856 | 1.065 [1.050, 1.081] | undecided |
+| 90 | 1.055 | 0.850 | 0.847 | 1.055 [1.042, 1.068] | undecided |
+| 96 | 1.003 | 0.826 | 0.823 | 1.003 [0.990, 1.016] | undecided |
+
+- Under enumerate the same comparison was robust 1.149 / 1.010 / 0.963 / 1.045 / 1.003, with ruint 0.826 / 0.489 / 0.405 / 0.902 / 0.908.
+- **The new genes' advantage survives only under the calibrated pricings, at a steady ~14–18% at every size.** The 78–84-bit spike (ruint 0.40–0.49) was the enumeration step.
+- On the robust score the new genes are now worse than qs + lc 1.4's genes at 72–90 bits (official binds), and tie at 96.
+
+**N51-0917 against qs + lc 1.4's genes, both on_demand:**
+- ruint 0.891 / 0.864 / 0.883 / 0.902 / 0.883, against 0.850 / 0.506 / 0.420 / 0.508 / 0.737 under enumerate;
+- official 1.56 / 1.47 / 1.44 / 1.41 / 1.39.
+- **Allocation B's calibrated lead is mostly the enumeration artifact.** At 84 bits N51-0917's qs went from 0.42 to 0.88 of qs + lc 1.4 under ruint once both stop enumerating. (B's own pipeline was not rerun.)
+
+**Gate against the frozen reference** (per-band intervals):
+- PASS for qs + lc 1.4 on_demand and the new genes on_demand at every size.
+- N51-0917 on_demand is BORDERLINE at 72 (worst band upper 1.637, lower 1.481, official) and PASS at 78–96, as under enumerate (BORDERLINE at 72).
+- No misses anywhere.
+
+**Unseen subset** (the 72 acceptance-sample numbers excluded; 2,808 numbers): every ratio above moves by at most 0.003, the calls are the same, and the gates are the same (`ondemand.out`, "unseen"). The 1,440 balanced numbers of R2 were not seen by any amendment.
+
+**R2, replacement rule (as pre-registered):** new / old, both on_demand, balanced 54–84.
+- official: +0.458, +0.365, +0.277, +0.198, +0.122, +0.089 log₂ (all intervals above 0);
+- ruint: −0.102 to −0.277; Montgomery: −0.104 to −0.280;
+- pooled: official +0.252 [+0.234, +0.269], ruint −0.204, Montgomery −0.211;
+- no misses.
+- "Never clearly worse": no. "Pooled all three below 0": no. **The rule fails, so qs + lc 1.4 (enumerate) stays the reference.** Changing the reference is the user's separate decision.
+
+**R3, balanced control** (band 42, partition optimizer): budgets td 0, rho 0, pm1 0, ECM 0 with the final qs under enumerate, and **the same under on_demand.** The card change does not move the control.
+
+**Predictions, scored as written.**
+- (O1) setup_full within 2x of the cost model's table at every size, both genomes: **missed.** The new genes at 84 bits average 260 against ~110 expected (2.4x). Everything else is within 2x (1.0–1.9x).
+- (O2) polynomials and non-setup official ops within ±5%: **held** (within 2%).
+- (O3) qs + lc 1.4 on_demand / enumerate within ±0.04 of the projection, official 0.89–0.95, ruint 0.39–0.63, Montgomery 0.70–0.85: **missed as written.** The ±0.04 clause held at every size and pricing (largest deviation +0.033, Montgomery at 72 and 78). The stated ranges fail at 72 bits: official 0.952, ruint 0.650 and Montgomery 0.886 are above their upper ends.
+- (O4) new/old both on_demand: ruint and Montgomery 0.80–0.90 at every size, official 1.00–1.20, robust above 1 at 72–90, the new genes losing on robust there: **held.**
+- (O5) N51-0917's ruint ratio 0.85–0.95 at 78–84, both on_demand: **held** (0.864, 0.883).
+- (O6) the replacement rule fails, with official intervals at 54–72 above 0: **held.**
+- (O7) balanced-control budgets stay 0: **held.**
+- (O8) every on_demand genome passes the gate at every size, except N51-0917 failing on official at 72–84: **missed.** N51-0917 is BORDERLINE at 72 and PASS at 78–84; the other two clauses held.
+- (O9) not run.
+- (D1, DeepSeek) the new-gene gain at 84 bits falls to 1.10–1.20x, scored as old/new under the robust pricing, both on_demand: **missed.** The robust ratio is 1.065, so the "gain" is 0.94x: a loss, with official binding. Under ruint and Montgomery alone the gain is 1.16x and 1.17x, inside the range.
+- (D2, DeepSeek) on-demand loses at most 5% yield (polynomials per run at most 1.05x enumerate): **held** (at most 1.018x).
+- (D3) not scored; the pipeline was not re-solved.
+
+Mine: **5 held (O2, O4, O5, O6, O7), 3 missed (O1, O3, O8), 1 not run (O9).** DeepSeek: 1 held (D2), 1 missed (D1), 1 not scored.
+
+**How the pipeline results that depend on qs's cost would move (not rerun).**
+- Under an on_demand reference, qs alone costs 35–60% less under ruint, 11–29% less under Montgomery and 5–10% less official, at 72–96 bits.
+- Every pipeline result so far is a ratio to qs + lc 1.4 enumerate. Allocation A, the per-stage budgets by size and allocation B all spend pre-stage ops that are unchanged, against a qs that is now much cheaper under the calibrated pricings, so their robust ratios against an on_demand reference will rise (get worse).
+- Their robust optima will move toward smaller pre-stage budgets. The binding pricing was ruint, and ruint's qs cost fell most. Where it fell most (78–90 bits, 0.40–0.46x), ECM's and rho's budgets should shrink most.
+- Allocation B's calibrated lead over A should mostly disappear (N51-0917's qs is only 0.86–0.90 of qs + lc 1.4 under ruint once both use on_demand).
+- None of this was computed. It needs a re-solve on the maps with the final qs's costs under on_demand, which is the next decision.
