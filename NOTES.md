@@ -2260,5 +2260,5 @@ setup_full is now under 1% of cost for both genomes.
 
 **Reading, information only (not a verdict, and not a new idea; this is parameter tuning).**
 - Under the corrected card the official-for-calibrated trade is mc's, partly offset by bc.
-- qs + lc 1.4's genes with bc 0.899 alone are cheaper than qs + lc 1.4 under all three pricings at 78–96 bits on these numbers (0.83–0.90), and the new genes with kc 32 are cheaper than the new genes everywhere.
+- qs + lc 1.4's genes with bc 0.899 alone are cheaper than qs + lc 1.4 under all three pricings at every size on these numbers (0.83–0.97; 0.83–0.90 at 78–96), and the new genes with kc 32 are cheaper than the new genes everywhere.
 - These are post hoc observations on the map numbers. A replacement claim needs its own pre-registered test on fresh numbers, and the next search over the qs genes (the size-scaling test) should run on the corrected card. It should not inherit the enumerate-era winners' kc.
