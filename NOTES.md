@@ -1653,3 +1653,50 @@ Paired, robust log2 [95%] (the robust ratio between two genomes is the same agai
 - (S6, mine) S5 holds in ≥ 5 of 6 cells; where it fails, BI-conservative is below the robust value: **missed** (3 of 6). The second clause held.
 - (S7, mine) TRANSFER beats A at 78 and 90, ties or beats theory, gate PASS at 90 and PASS or BORDERLINE at 78: **held** (robust intervals; gate PASS at both).
 - (S8, mine) Q-RULE worse than A at both sizes: **held** (+0.570, +0.103).
+
+## 2026-10-24 — Outside check (Wolfram Language 15), and a queued small-bound p-1 map check (prediction before the map is extended)
+
+### Outside check (user, Wolfram Language 15, Oct 24): agrees
+
+Figures computed outside the repo, each checked here against the repo's own record:
+
+- **L(N) growth per bit:** 0.1700 (72→84) and 0.1599 (84→96). These are log₂ of the theory ratios 0.2432 and 3.781 divided by 12, as in the size-relative budgets table (0.2432 / 3.7814).
+- **Dedicated-curve ratios:** 0.2906 and 3.442, as in that table (0.2906 / 3.4420).
+- **log₂(lcm(1..B)) / B:** 1.417, 1.444, 1.446 and 1.441 at B = 2^8, 2^10, 2^12 and 2^16. Recomputed here: the same values. This matches the ECM stage-1 rough check (≈ 16·B1 ≈ 11·log₂ lcm) and the MOVES row's "~1.44 B multiplies".
+- **Doubling race:** 19 complete doubling turns under 2^28, from 2^9(2^m − 1) ≤ 2^28. This matches the MOVES row's "~19 turns".
+- **rho on 16-bit p:** sqrt(πp/2) = 321 iterations at p = 2^16, so the measured 2^9.6 means about 2.4 ops per iteration. The partition map's band-16 rho mean is 802 ops (2^9.65; 793 multiplies on average), about 2.5 ops per iteration.
+- **td on 16-bit p:** mean p/2 over 16-bit primes is 24,461, against rho's 776, a ratio of 31x. The partition map's band-16 means are td 23,912 and rho 802, a ratio of 29.8x. Neither the 24,461 nor the 776 appears in NOTES; the map values are given beside them here. The map's figures are within 3% of the outside figures.
+
+No number in NOTES changes.
+
+### Queued: p-1 with a small bound, as a map check (after the qs-gene size-scaling test)
+
+**What changes from the ruled-out test.** The MOVES row "td and p-1 as pre-stages before qs" was ruled out with pm1 b = 0.1991 (B ≈ 2^16.7 at 84 bits). The changed condition is the bound: B = 2^8, 2^9 and 2^10 (b ≈ 0.10–0.12 at 84 bits). That row already names this as a reopening condition.
+
+**Meter.** No change to charging, op counts or pricing. `lamp_pm1` and its lampcore twin are already charged and in parity. Only the bound gene takes new values. The bound is fixed in absolute terms (B), so b = log₂ B / bits varies with size; the card is given as B.
+
+**Exact stage-1 charge on the meter** (`lamp_pm1` charges bit_length(p^k) per prime power, plus 1 gcd): 388, 787 and 1,558 ops at B = 2^8, 2^9 and 2^10. This is about 5% above log₂ lcm(1..B) (363, 743, 1,479), because bit lengths round up. pm1 has one gcd, at the end, so it is all or nothing: every number that reaches it pays the full charge.
+
+**Plan.**
+- Run the three small-bound cards alone on the numbers of the existing maps: the 84-bit partition map, the 72/96-bit size maps and the 78/90-bit stopping maps. That is one cheap pass per card, with success or failure recorded per number. No other lamp is rerun, and no new population.
+- Then re-solve the robust grid optimum with the card available, as in `stopping.py derive2`. The card goes in the pm1 slot with ob ∈ {0, full}, alone or with rho and ECM in A's order.
+- Report the result per size and per pricing, with the gate (per-band intervals), and how much the card costs where it fails.
+- If the maps cannot be extended (for example, the numbers are not recoverable from them), stop and report rather than build a new population.
+
+**Prediction (user's, from Dickman ρ; written before the map is extended).**
+- ρ underestimates the smoothness chance, because p − 1 is even.
+- At B = 2^10 (~1,480 multiplies), the chance that p − 1 is smooth is 0.31, 0.16, 0.074 and 0.032 at p of 20, 24, 28 and 32 bits.
+- Expected cost per factor found is therefore ~4,800, ~9,500 and ~20,000 at 20, 24 and 28 bits, against rho's average ~3,100, ~12,400 and ~50,000.
+- Worth switching on only if it pays at 24–32 bits after rho's budget.
+
+Recomputed here as a check (not part of the user's prediction):
+- ρ(2.0, 2.4, 2.8, 3.2) = 0.307, 0.156, 0.073 and 0.032.
+- 1,480 / ρ = 4,823, 9,488, 20,166 and 46,683.
+- rho at 2.4 ops per iteration costs 3,080, 12,321, 49,282 and 197,129, so at 32 bits the user's comparison extends to ~47,000 against ~197,000.
+- At the meter's 1,558 ops, the p-1 figures are 5% higher.
+
+**Prediction (mine, written before the map is extended).**
+- (P1) The re-solved robust optimum leaves the small-bound card off at 84 bits. If it turns on anywhere among 72/78/84/90/96, its robust gain over the same optimum without it is under 2% (log₂ > −0.03).
+- (P2) Under ruint, the card costs at least as much relative to qs as it does under official, so if any pricing turns it on, official does.
+
+Reason: every number that reaches pm1 pays ~1,560 ops. That includes the balanced band, where pm1 almost never hits, and the 16–20-bit bands, which rho has mostly already solved. On 24–32-bit p, ECM at A's 2^15 budget already finds most factors, so pm1 saves only part of ECM's cost on its 3–16% of hits.

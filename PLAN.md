@@ -213,6 +213,8 @@ budgets, and per-stage budgets by size. The size-only case of Stage 9.5 is done 
 budgets by size; a selector on charged features is not built.
 
 **Next, in order:** the qs-gene size-scaling test (54/72/84/96) with per-stage budgets ->
+a small-bound p-1 map check (B = 2^8/2^9/2^10 on the existing 72/78/84/90/96 maps,
+robust optimum re-solved with that card; no new run; prediction in NOTES first) ->
 the illumination picture (primes and gaps) -> the variable-length structure test -> Stage 10
 (qs refinements) -> theory checks -> Phase 1 of learning from all algorithms (imported
 moves) -> the code-level pilot (fenced AI proposals).
