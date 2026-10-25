@@ -1915,3 +1915,55 @@ on_demand removes only the up-front enumeration of all C(P, s) candidates.
 
    This shows the sieve, confirm, LA, sqrt and large-prime phases are unchanged given the same A sequence.
 3. *Python = Rust count for count:* on_demand runs on sample numbers from every map (2 per band per size, both genomes), with Python's `qs_counts` equal to lampcore `--types` on every type, and the same factor. The parity suite also gets on_demand qs pairs.
+
+### On-demand A: measurement plan and predictions (written before any on_demand code or run)
+
+**Facts under enumerate, recorded before the fix.** N51-0917's qs (kc 32, bc 1.128, mc 1.003, tc 1.379, no lc) on the same map numbers (outside review, item 3):
+- It is at s = 4 on 0 / 0 / 0 / 20.3 / 54.4% of numbers at 72 / 78 / 84 / 90 / 96 bits, against qs + lc 1.4's 1.9 / 24.3 / 55.4 / 100 / 100%.
+- Its cost against qs + lc 1.4 (official / ruint / Montgomery):
+  - 72: 1.503 / 0.850 / 0.894
+  - 78: 1.351 / 0.506 / 0.715
+  - 84: 1.305 / 0.420 / 0.670
+  - 90: 1.297 / 0.508 / 0.715
+  - 96: 1.336 / 0.737 / 0.827
+- Its wide interval (mc 1.0) keeps it at s = 3 through 84 bits. **So allocation B's calibrated lead (B = A's budgets with N51-0917's qs final) is, at least in part, the same setup artifact.** The ruint gap at 78–84 bits matches the s = 4 step, as for the new genes. How large a part is measured below.
+
+**Runs** (lampcore `--types`, cap 2^28; information plus the gate):
+- (R1) Map numbers at 72 / 78 / 84 / 90 / 96 bits (480 / 560 / 560 / 640 / 640; those of `typemix.py`). Each of qs + lc 1.4's genes, the new genes and N51-0917's qs is run alone with a_mode = on_demand. They are reported beside the enumerate figures and against the frozen reference (qs + lc 1.4, enumerate), per pricing and per size:
+  - new/old with both on_demand;
+  - setup_full share;
+  - polynomials per run (sieve_scan / (2M + 1));
+  - per-band intervals and the gate against the frozen reference;
+  - misses.
+- (R2) **Replacement rule, as pre-registered** (generalization test (2), "Replacement rule (decided now)"), on its own populations: balanced semiprimes_pq(bits, 240, 8700000 + bits), 54–84 bits step 6. It compares the new genes with qs + lc 1.4's genes, both with a_mode = on_demand. The rule decides; there is no post hoc reading.
+- (R3) **Balanced control:** the partition optimizer on band 42 of `partition_map.json` (the control as run in the partition study), with the final qs's costs replaced by qs + lc 1.4 on_demand. The pre-stage records are unchanged.
+- **Not rerun now** (stated only): allocation A's fitness, the per-stage budgets by size and allocation B under an on_demand reference.
+
+**Data status.** These are not sealed numbers. The map numbers were used to derive budgets, but no qs on_demand run has seen them. The R2 populations were used once before, for the enumerate replacement verdict. A fresh sealed set is not part of this brief.
+
+**Projection used for the predictions.** Each run's enumeration charge is replaced by the expected on_demand selection (~110 at s = 3, ~145 at s = 4); every other count is held fixed. Applied to `typemix.json`, this gives the following ratios (official / ruint / Montgomery):
+
+| bits | qs + lc 1.4, on_demand / enumerate | new, on_demand / enumerate | new / old, both on_demand | N51-0917 / old, both on_demand |
+|---|---|---|---|---|
+| 72 | 0.945 / 0.628 / 0.853 | 0.963 / 0.653 / 0.865 | 1.171 / 0.858 / 0.853 | 1.546 / 0.897 / 0.915 |
+| 78 | 0.897 / 0.439 / 0.733 | 0.979 / 0.761 / 0.917 | 1.102 / 0.847 / 0.842 | 1.483 / 0.886 / 0.899 |
+| 84 | 0.888 / 0.395 / 0.699 | 0.987 / 0.836 / 0.947 | 1.070 / 0.857 / 0.854 | 1.456 / 0.904 / 0.915 |
+| 90 | 0.896 / 0.392 / 0.698 | 0.907 / 0.371 / 0.678 | 1.058 / 0.853 / 0.850 | 1.418 / 0.907 / 0.916 |
+| 96 | 0.942 / 0.535 / 0.806 | 0.943 / 0.488 / 0.774 | 1.003 / 0.829 / 0.826 | 1.383 / 0.882 / 0.888 |
+
+**Predictions (mine).**
+- (O1) on_demand's mean setup_full per run is within a factor of 2 of the cost model's table at every size, for both genomes.
+- (O2) Downstream work is unchanged in distribution. Per size and genome, mean polynomials per run under on_demand are within ±5% of enumerate's, and mean official ops excluding setup_full are within ±5%.
+- (O3) qs + lc 1.4 on_demand / enumerate matches the projection column within ±0.04 under each pricing at each size. Official barely moves (0.89–0.95); ruint falls to 0.39–0.63, Montgomery to 0.70–0.85.
+- (O4) **The new genes' advantage survives only under the calibrated pricings, and shrinks to ~15%.** With both on_demand, new/old is 0.80–0.90 under ruint and Montgomery at every size, and official is 1.00–1.20. So the robust ratio new/old is above 1 at 72–90 bits (official binds), and the new genes lose on the robust score at 72–90.
+- (O5) N51-0917's calibrated lead over qs + lc 1.4 mostly disappears. Both on_demand, its ruint ratio is 0.85–0.95 at 78–84 bits, against 0.42–0.51 under enumerate.
+- (O6) The replacement rule (R2) fails again. The official intervals at 54–72 bits stay above 0, because official barely moves.
+- (O7) The balanced control's budgets stay 0 under on_demand.
+- (O8) Gate against the frozen reference (R1): every on_demand genome passes at every size, because each is cheaper than or close to qs + lc 1.4 enumerate per band under the calibrated pricings, and within 1.2x official. The exception is N51-0917, which fails on official (above 1.5x per band at 72–84 bits, as already under enumerate).
+- (O9, stated only, not run) Under an on_demand reference, qs costs 40–60% less under ruint at 78–96 bits. Pre-stage spending is then relatively dearer: allocation A's robust ratio against qs alone rises (gets worse) at 78–96, and the robust-optimal pre-stage budgets shrink.
+
+**Outside predictions (DeepSeek, via the user; recorded as given).**
+- (D1) The new-gene gain over qs + lc 1.4 falls from ~1.40x to 1.10–1.20x at 84 bits after the fix. *Scoring, fixed now:* the 1.40x was a pipeline gain at 84-bit mixed (A's budgets). The pipeline is not rerun here, so D1 is scored on R1's 84-bit qs-alone result: held if old/new with both on_demand lies in 1.10–1.20 under the binding (robust) pricing. It is also reported per pricing.
+- (D2) On-demand A loses at most 5% yield against enumerate at the same A size. *Scoring:* held if, per size and genome, mean polynomials per run under on_demand are at most 1.05x enumerate's. Relations needed per run are the same, so more polynomials means less yield.
+- (D3) ECM budgets shrink when qs gets cheaper. Scored when the pipeline is re-solved with an on_demand reference (not in this brief).
+- DeepSeek's A-pool constraints (primes > 2000, s > 3) are **not** adopted. They come from much larger factorizations and do not fit 72–96 bits, where the pool sits at 130–2,600 and s is 3 or 4.
