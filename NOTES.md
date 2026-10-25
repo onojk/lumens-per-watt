@@ -2398,3 +2398,22 @@ Each pricing's own grid optimum under the corrected card, with its cost against 
   - the user's prediction (ECM on at 84–96 under official, probably on under Montgomery at 90–96, off under ruint): **held**;
   - mine (Q1: official on everywhere; Montgomery on at 84–96 with smaller budgets than under enumerate; ruint off everywhere): **held.**
 - So the robust verdict "rho then qs" is the ruint verdict. With a Montgomery-class multiply, ECM belongs in the pipeline; under the official count, a much larger ECM budget does.
+
+## 2026-10-25 — qs-gene size-scaling test on the corrected card: design (before any run)
+
+The design is the queued test (PLAN, "Queued: size-scaling test for the qs genes"), moved to the corrected card with the user's two cautions: range over kc (the old winners' kc 4 now loses), and tune under the per-size rho-only pipeline. No meter change: the card is the accepted corrected card. Code: `evolve/sizescale.py`.
+
+- **Card:** the final qs with a_mode = on_demand and sort_charge = 1.
+- **Pipeline per size:** rho at that size's rho-only robust budget, then qs; td, pm1 and ECM off. The budgets are 72: 1,579; 84: 5,793; 96: 12,634 (corrected re-solve). The 54-bit budget comes from a new 54-bit map (seeds 9500000 + 100 pb + 54, 80 per band, bands 16/20/24/27), solved the same way. It is a design input, computed before the predictions.
+- **Fitness (c):** the robust ratio against qs + lc 1.4's genes alone under the corrected card, on the same numbers; a miss scores 1e9.
+- **Search:** qs genes only, over Run 8's bounds: kc 1–32 (integer), bc 0.7–3.0, mc 0.05–12 (log), tc 1.0–3.5, lc 1.0–2.0. TPE with the tpe-tuned settings (10% random start-up, multivariate), seeds 0–3, 200 trials each, per size.
+- **Tuning numbers:** 24 per band (PLAN's fixed-tuning-set rule), seeds 9300000 + 100 pb + bits. Bands: 54: 16/20/24/27; 72: 16–36; 84: 16–42; 96: 16–48 (balanced band = bits/2).
+- **Frozen genome per size:** the best of its four seeds on the tuning numbers.
+- **Sealed:** 80 per band, seeds 9400000 + 100 pb + bits, run once. Four frozen genomes plus qs + lc 1.4's genes and the new genes (both on the corrected card), each run in every size's pipeline, so 4 × 6 cells. Each cell reports:
+  - per-pricing ratios and the robust ratio [paired 95%], with the binding pricing;
+  - two references: qs + lc 1.4 corrected alone (primary) and the frozen reference (qs + lc 1.4, enumerate);
+  - the gate with per-band intervals;
+  - paired comparisons against qs + lc 1.4's genes in the same pipeline;
+  - misses.
+- **Trend test** (DeepSeek's prediction: mc and lc up, kc down with size). Per gene, the four seeds' best values per size. A trend counts as monotone only if the per-size medians move monotonically **and** the 54-bit and 96-bit seed ranges do not overlap. Spearman over the 16 points is reported beside it. The landscape is a plateau, so the seed spread is the interval.
+- **Seeds checked unused:** 9300000+, 9400000+ and 9500000+ appear nowhere else in the repo.
