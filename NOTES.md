@@ -2210,3 +2210,11 @@ With the card's other costs, on_demand + sort_charge adds about 1,000–3,600 sm
 - **Scoring rules, fixed now.**
   - *O9* (allocation A's robust ratio against qs alone rises at 78–96; the robust-optimal pre-stage budgets shrink) is scored by C3/C4's quantities: A's budgets at 84, and the per-size optima at 78–96.
   - *D3* (ECM budgets shrink when qs gets cheaper) is scored per size at 78–96, corrected optimum against enumerate optimum: it holds if ECM's budget is smaller or off at every size where the enumerate optimum had ECM on.
+
+**Outside predictions for the re-solve (user, from outside reviews; recorded before running).**
+- (G1, Grok) The pre-stages' gain over qs alone shrinks at every size under the corrected card (a lower remaining-pipeline value per success). *Scored:* holds if the corrected robust optimum's fitness against corrected qs alone is higher (worse) than the enumerate optimum's against enumerate qs alone, at each of 72–96 bits.
+- (G2, the user's, also DeepSeek's earlier point) The per-size budgets' gain over allocation A does not shrink, and may grow, at 84–96 bits, because A's fixed budgets (rho 5,793 / ECM 32,768) overspend more once the optimal budgets shrink. *Scored:* holds if fitness(per-size optimum) / fitness(A's budgets) under the corrected card is ≤ the same ratio under enumerate, at each of 84, 90 and 96.
+- (G3, Grok) Official may become the binding pricing at some sizes once ruint's qs cost falls 35–60%. If so, backward induction under a single pricing no longer equals the robust grid optimum there. *Scored:* the binding pricing of each corrected optimum is reported. G3 holds if official binds at one or more sizes and, at every such size, BI under the binding pricing differs from the robust optimum. It is reported as "not triggered" if official binds nowhere.
+- G1 and G2 can both hold.
+
+**Reported per size:** the binding pricing of each genome (per-size optimum, A's budgets, transfer, theory), each pipeline against qs alone and against A with both cards side by side, and whether BI under the binding pricing equals the exhaustive robust optimum.
