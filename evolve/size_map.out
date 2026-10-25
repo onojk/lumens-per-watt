@@ -1,0 +1,20 @@
+72: parity (Python qs per-type vs lampcore --types) 24/24
+  16 {'td': '80/80', 'rho': '80/80', 'pm1': '76/80', 'ecm': '80/80'} qs log2 mean 17.22
+  20 {'td': '80/80', 'rho': '80/80', 'pm1': '61/80', 'ecm': '80/80'} qs log2 mean 17.22
+  24 {'td': '0/80', 'rho': '80/80', 'pm1': '34/80', 'ecm': '80/80'} qs log2 mean 17.19
+  28 {'td': '0/80', 'rho': '80/80', 'pm1': '37/80', 'ecm': '80/80'} qs log2 mean 17.19
+  32 {'td': '0/80', 'rho': '80/80', 'pm1': '27/80', 'ecm': '80/80'} qs log2 mean 17.26
+  36 {'td': '0/80', 'rho': '80/80', 'pm1': '13/80', 'ecm': '80/80'} qs log2 mean 17.20
+96: parity (Python qs per-type vs lampcore --types) 32/32
+  16 {'td': '80/80', 'rho': '80/80', 'pm1': '80/80', 'ecm': '80/80'} qs log2 mean 20.82
+  20 {'td': '80/80', 'rho': '80/80', 'pm1': '79/80', 'ecm': '80/80'} qs log2 mean 20.86
+  24 {'td': '0/80', 'rho': '80/80', 'pm1': '69/80', 'ecm': '80/80'} qs log2 mean 20.82
+  28 {'td': '0/80', 'rho': '80/80', 'pm1': '46/80', 'ecm': '80/80'} qs log2 mean 20.84
+  32 {'td': '0/80', 'rho': '80/80', 'pm1': '40/80', 'ecm': '80/80'} qs log2 mean 20.84
+  36 {'td': '0/80', 'rho': '79/80', 'pm1': '30/80', 'ecm': '80/80'} qs log2 mean 20.84
+  42 {'td': '0/80', 'rho': '1/80', 'pm1': '19/80', 'ecm': '80/80'} qs log2 mean 20.84
+  48 {'td': '0/80', 'rho': '0/80', 'pm1': '17/80', 'ecm': '76/80'} qs log2 mean 20.83
+
+real	2m56.680s
+user	12m11.521s
+sys	0m1.250s

@@ -1,0 +1,59 @@
+ratios: primary 72/84 0.2906 96/84 3.4420  sensitivity 72/84 0.2689 96/84 4.5152  theory 72/84 0.2432 96/84 3.7814
+(1) best on the 84-bit map: rho 5793, ecm 32768, fitness 0.6408 (A 0.6408)
+(3) identity at 84 bits, primary: budgets {'rho': 5793, 'ecm': 32768}; per-number counts identical to A on 560/560
+(3) identity at 84 bits, sensitivity: budgets {'rho': 5793, 'ecm': 32768}; per-number counts identical to A on 560/560
+(3) identity at 84 bits, theory: budgets {'rho': 5793, 'ecm': 32768}; per-number counts identical to A on 560/560
+
+72 bits: 480 numbers, bands [16, 20, 24, 28, 32, 36]; budgets (rho, ecm): A (5793, 32768)  primary (1722, 9742)  sensitivity (1579, 8933)  theory (1448, 8192)
+  map cross-check (composed official = direct lampcore): A 480/480  primary 480/480  sensitivity 480/480  theory 480/480; map qs = lampcore qs: True
+  A          : fitness 1.127 (official 0.376, ruint 1.127, montgomery 0.606); misses 0; gate FAIL (worst 2.171, band 36, ruint)
+     official   per band: 16: 0.005  20: 0.017  24: 0.211  28: 0.519  32: 0.687  36: 0.815
+     ruint      per band: 16: 0.034  20: 0.120  24: 1.060  28: 1.604  32: 1.733  36: 2.171
+     montgomery per band: 16: 0.017  20: 0.053  24: 0.459  28: 0.845  32: 1.029  36: 1.217
+  primary    : fitness 1.067 (official 0.735, ruint 1.067, montgomery 0.837); misses 0; gate FAIL (worst 1.515, band 36, ruint)
+     official   per band: 16: 0.028  20: 0.512  24: 0.865  28: 0.907  32: 1.039  36: 1.063
+     ruint      per band: 16: 0.069  20: 0.777  24: 1.333  28: 1.352  32: 1.376  36: 1.515
+     montgomery per band: 16: 0.044  20: 0.592  24: 1.001  28: 1.040  32: 1.150  36: 1.198
+  sensitivity: fitness 1.038 (official 0.731, ruint 1.038, montgomery 0.826); misses 0; gate PASS (worst 1.472, band 36, ruint)
+     official   per band: 16: 0.028  20: 0.509  24: 0.860  28: 0.902  32: 1.033  36: 1.057
+     ruint      per band: 16: 0.068  20: 0.755  24: 1.295  28: 1.315  32: 1.340  36: 1.472
+     montgomery per band: 16: 0.044  20: 0.584  24: 0.987  28: 1.025  32: 1.134  36: 1.181
+  theory     : fitness 1.113 (official 0.817, ruint 1.113, montgomery 0.908); misses 0; gate PASS (worst 1.444, band 36, ruint)
+     official   per band: 16: 0.054  20: 0.680  24: 1.016  28: 1.029  32: 1.062  36: 1.064
+     ruint      per band: 16: 0.093  20: 0.966  24: 1.422  28: 1.407  32: 1.375  36: 1.444
+     montgomery per band: 16: 0.069  20: 0.768  24: 1.134  28: 1.143  32: 1.164  36: 1.177
+  primary / A            robust x0.946, log2 -0.079 [-0.163, +0.010];  offi +0.968 [+0.835, +1.114]  ruin -0.079 [-0.163, +0.010]  mont +0.466 [+0.367, +0.573]
+  theory / A             robust x0.987, log2 -0.019 [-0.110, +0.079];  offi +1.119 [+0.986, +1.267]  ruin -0.019 [-0.110, +0.079]  mont +0.583 [+0.482, +0.694]
+  sensitivity / A        robust x0.921, log2 -0.119 [-0.204, -0.029];  offi +0.959 [+0.826, +1.105]  ruin -0.119 [-0.204, -0.029]  mont +0.446 [+0.346, +0.553]
+  theory / primary       robust x1.043, log2 +0.061 [+0.015, +0.117];  offi +0.151 [+0.105, +0.202]  ruin +0.061 [+0.015, +0.117]  mont +0.117 [+0.072, +0.167]
+  sensitivity / primary  robust x0.973, log2 -0.040 [-0.041, -0.038];  offi -0.009 [-0.009, -0.008]  ruin -0.040 [-0.041, -0.038]  mont -0.020 [-0.020, -0.020]
+  (info) hindsight best on own map: rho 3158, ecm 0, map fitness 0.817; map fitness by genome: A 1.126  primary 1.066  sensitivity 1.037  theory 1.112
+
+96 bits: 640 numbers, bands [16, 20, 24, 28, 32, 36, 42, 48]; budgets (rho, ecm): A (5793, 32768)  primary (19484, 110218)  sensitivity (25268, 142935)  theory (21247, 120194)
+  map cross-check (composed official = direct lampcore): A 640/640  primary 640/640  sensitivity 640/640  theory 640/640; map qs = lampcore qs: True
+  A          : fitness 0.741 (official 0.634, ruint 0.741, montgomery 0.670); misses 0; gate PASS (worst 1.155, band 42, ruint)
+     official   per band: 16: 0.000  20: 0.012  24: 0.420  28: 0.782  32: 0.897  36: 0.959  42: 1.009  48: 0.994
+     ruint      per band: 16: 0.004  20: 0.026  24: 0.526  28: 0.927  32: 1.042  36: 1.105  42: 1.155  48: 1.141
+     montgomery per band: 16: 0.002  20: 0.018  24: 0.455  28: 0.832  32: 0.947  36: 1.009  42: 1.059  48: 1.044
+  primary    : fitness 0.687 (official 0.422, ruint 0.687, montgomery 0.513); misses 0; gate PASS (worst 1.452, band 48, ruint)
+     official   per band: 16: 0.000  20: 0.002  24: 0.022  28: 0.278  32: 0.486  36: 0.657  42: 0.952  48: 0.977
+     ruint      per band: 16: 0.004  20: 0.013  24: 0.087  28: 0.579  32: 0.865  36: 1.070  42: 1.427  48: 1.452
+     montgomery per band: 16: 0.002  20: 0.006  24: 0.046  28: 0.381  32: 0.616  36: 0.799  42: 1.115  48: 1.138
+  sensitivity: fitness 0.680 (official 0.367, ruint 0.680, montgomery 0.475); misses 0; gate FAIL (worst 1.537, band 48, ruint)
+     official   per band: 16: 0.000  20: 0.002  24: 0.007  28: 0.132  32: 0.373  36: 0.553  42: 0.933  48: 0.932
+     ruint      per band: 16: 0.004  20: 0.013  24: 0.055  28: 0.427  32: 0.815  36: 1.055  42: 1.536  48: 1.537
+     montgomery per band: 16: 0.002  20: 0.006  24: 0.025  28: 0.235  32: 0.526  36: 0.726  42: 1.141  48: 1.139
+  theory     : fitness 0.654 (official 0.373, ruint 0.654, montgomery 0.470); misses 0; gate PASS (worst 1.435, band 48, ruint)
+     official   per band: 16: 0.000  20: 0.002  24: 0.008  28: 0.170  32: 0.379  36: 0.581  42: 0.921  48: 0.920
+     ruint      per band: 16: 0.004  20: 0.013  24: 0.069  28: 0.475  32: 0.777  36: 1.023  42: 1.435  48: 1.435
+     montgomery per band: 16: 0.002  20: 0.006  24: 0.031  28: 0.276  32: 0.516  36: 0.732  42: 1.097  48: 1.095
+  primary / A            robust x0.928, log2 -0.108 [-0.177, -0.039];  offi -0.587 [-0.681, -0.497]  ruin -0.108 [-0.177, -0.039]  mont -0.385 [-0.468, -0.305]
+  theory / A             robust x0.883, log2 -0.179 [-0.253, -0.107];  offi -0.766 [-0.873, -0.664]  ruin -0.179 [-0.253, -0.107]  mont -0.514 [-0.604, -0.426]
+  sensitivity / A        robust x0.919, log2 -0.122 [-0.196, -0.049];  offi -0.789 [-0.896, -0.688]  ruin -0.122 [-0.196, -0.049]  mont -0.497 [-0.587, -0.409]
+  theory / primary       robust x0.951, log2 -0.072 [-0.111, -0.036];  offi -0.179 [-0.245, -0.119]  ruin -0.072 [-0.111, -0.036]  mont -0.128 [-0.181, -0.079]
+  sensitivity / primary  robust x0.990, log2 -0.015 [-0.060, +0.027];  offi -0.203 [-0.274, -0.137]  ruin -0.015 [-0.060, +0.027]  mont -0.111 [-0.170, -0.058]
+  (info) hindsight best on own map: rho 12634, ecm 60097, map fitness 0.627; map fitness by genome: A 0.740  primary 0.687  sensitivity 0.680  theory 0.654
+
+real	2m32.741s
+user	2m32.954s
+sys	0m0.161s

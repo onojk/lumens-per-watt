@@ -13,7 +13,8 @@ map: seeds 9000000 + 100 pb + bits; 72: bands 16-32 unbalanced, 36 balanced; 96:
 48 balanced; 80 per band. Pre-stages alone in Python with spending records (partition.run_alone,
 cap 2^21); qs + lc 1.4 alone in lampcore --types; parity: Python qs per-type counts = lampcore's on
 4 numbers per band.
-eval: (1) best (s_rho, s_ECM) on the 84-bit partition map (grid + 1/8-octave refinement, fitness
+eval: three rules (NOTES addendum): primary (dedicated curve), sensitivity (calibration-run curve, 54-84
+quadratic), theory (L(N) ratio); (1) best (s_rho, s_ECM) on the 84-bit partition map (grid + 1/8-octave refinement, fitness
 (c)); (2) at 72 and 96: share genome vs A's absolute budgets, both run directly in lampcore
 --types on the map's numbers; the map's composed official cost must equal the direct run's on
 every number; paired bootstrap (numbers within bands, 10,000, random.Random(2026)); ACCEPT gate;
@@ -120,8 +121,15 @@ if __name__ == "__main__":
     pr = optypes.prices()
     cur = json.load(open("size_curve.json"))
     c0, c1, c2 = cur["coef"]
-    Q = lambda bits: 2 ** (c0 + c1 * bits + c2 * bits * bits)
-    res = {"curve": cur["coef"], "Q": {b: Q(b) for b in (72, 84, 96)}}
+    cal = json.load(open("calibrate_counts.json"))["qs + lc 1.4"]
+    xs = [54, 60, 66, 72, 78, 84]
+    e2, e1, e0 = np.polyfit(xs, [math.log2(np.mean([r["ops"] for r in cal[str(b)]])) for b in xs], 2)
+    Lf = lambda b: math.sqrt(b * math.log(2) * math.log(b * math.log(2)))
+    RULES = {"primary": lambda b: 2 ** (c1 * (b - 84) + c2 * (b * b - 84 * 84)),
+             "sensitivity": lambda b: 2 ** (e1 * (b - 84) + e2 * (b * b - 84 * 84)),
+             "theory": lambda b: math.exp(Lf(b) - Lf(84))}
+    res = {"curve_primary": [c0, c1, c2], "curve_sensitivity": [e0, e1, e2],
+           "ratios": {k: {b: f(b) for b in (72, 96)} for k, f in RULES.items()}}
 
     # (1) tuning on the 84-bit partition map: td 0, pm1 0, fixed order
     M84 = P.Map(json.load(open("partition_map.json"))["rows"], "qs + lc 1.4", PRc)
@@ -138,12 +146,10 @@ if __name__ == "__main__":
         if not moved:
             break
     tuned = {"rho": r, "ecm": e}
-    shares = {s: tuned[s] / Q(84) for s in tuned}
-    res["tuned_84"] = {"budgets": tuned, "fitness": f84(r, e), "fitness_A": f84(A_B["rho"], A_B["ecm"]), "shares": shares}
-    print(f"Q(72) {Q(72):.0f}  Q(84) {Q(84):.0f}  Q(96) {Q(96):.0f}  (Q(84)/Q(72) {Q(84) / Q(72):.3f}, Q(96)/Q(84) {Q(96) / Q(84):.3f})")
-    print(f"(1) best on the 84-bit map: rho {r}, ecm {e}, fitness {f84(r, e):.4f} (A {f84(A_B['rho'], A_B['ecm']):.4f}); "
-          f"shares s_rho {shares['rho']:.5f}, s_ecm {shares['ecm']:.5f}")
-    ob = lambda bits: {s: (0 if shares[s] == 0 else snap(shares[s] * Q(bits))) for s in shares}
+    res["tuned_84"] = {"budgets": tuned, "fitness": f84(r, e), "fitness_A": f84(A_B["rho"], A_B["ecm"])}
+    print("ratios: " + "  ".join(f"{k} 72/84 {f(72):.4f} 96/84 {f(96):.4f}" for k, f in RULES.items()))
+    print(f"(1) best on the 84-bit map: rho {r}, ecm {e}, fitness {f84(r, e):.4f} (A {f84(A_B['rho'], A_B['ecm']):.4f})")
+    ob = lambda rule, bits: {s_: (0 if tuned[s_] == 0 else snap(tuned[s_] * RULES[rule](bits))) for s_ in tuned}
 
     def run_costs(gen, nums):
         rs = run_many(gen, nums, P.QS_CAP, types=True)
@@ -154,12 +160,14 @@ if __name__ == "__main__":
     bp84 = pop(84)
     n84 = [t for v in bp84.values() for t in v]
     oracle.check(n84)
-    s84 = ob(84)
     rsA = run_many(genome(A_B["rho"], A_B["ecm"]), n84, P.QS_CAP, types=True)
-    rsS = run_many(genome(s84["rho"], s84["ecm"]), n84, P.QS_CAP, types=True)
-    same = sum(1 for a, b in zip(rsA, rsS) if a[0] == b[0] and a[4] == b[4])
-    res["identity_84"] = {"budgets": s84, "identical": same, "of": len(n84)}
-    print(f"(3) identity at 84 bits: share budgets {s84}; per-number counts identical to A on {same}/{len(n84)}")
+    res["identity_84"] = {}
+    for rule in RULES:
+        s84 = ob(rule, 84)
+        rsS = run_many(genome(s84["rho"], s84["ecm"]), n84, P.QS_CAP, types=True)
+        same = sum(1 for a, b in zip(rsA, rsS) if a[0] == b[0] and a[4] == b[4])
+        res["identity_84"][rule] = {"budgets": s84, "identical": same, "of": len(n84)}
+        print(f"(3) identity at 84 bits, {rule}: budgets {s84}; per-number counts identical to A on {same}/{len(n84)}")
 
     # (2) verdict at 72 and 96
     maps = json.load(open("size_map.json"))["maps"]
@@ -169,19 +177,16 @@ if __name__ == "__main__":
         nums = [t for v in bp.values() for t in v]
         oracle.check(nums)
         rows = maps[str(bits)]["rows"]
-        assert [r["N"] for r in rows] == [str(t[0]) for t in nums]
+        assert [r_["N"] for r_ in rows] == [str(t[0]) for t in nums]
         M = P.Map(rows, "qs + lc 1.4", PRc)
-        band = np.array([t for t in M.band])
-        groups = [np.flatnonzero(band == pb) for pb in bp]
-        ref = {Pn: np.array(M.qs[Pn]) for Pn in PR3}
+        groups = [np.flatnonzero(M.band == pb) for pb in bp]
         ref_l = {Pn: np.array([optypes.cost(x[4], Pn, pr) for x in run_many([QS], nums, P.QS_CAP, types=True)]) for Pn in PR3}
-        sb = ob(bits)
-        G = {"share": genome(sb["rho"], sb["ecm"]), "A": genome(A_B["rho"], A_B["ecm"])}
+        G = {"A": (A_B["rho"], A_B["ecm"])}
+        G.update({rule: (ob(rule, bits)["rho"], ob(rule, bits)["ecm"]) for rule in RULES})
         C, xcheck = {}, {}
-        for g, gen in G.items():
-            miss, ops, c = run_costs(gen, nums)
-            vec = (0, gen[1]["ob"], 0, gen[3]["ob"])
-            composed = M.costs(vec, "official")
+        for g, (rb, eb) in G.items():
+            miss, ops, c = run_costs(genome(rb, eb), nums)
+            composed = M.costs((0, rb, 0, eb), "official")
             xcheck[g] = int(sum(1 for a, b in zip(ops, composed) if a is not None and abs(a - b) < 0.5))
             C[g] = (miss, c)
         allx = np.arange(len(nums))
@@ -189,19 +194,21 @@ if __name__ == "__main__":
         fit = lambda c, i: max(sc(c, i, Pn) for Pn in PR3)
         rng = random.Random(2026)
         idxs = [np.concatenate([g[[rng.randrange(len(g)) for _ in range(len(g))]] for g in groups]) for _ in range(B)]
-        cs, ca = C["share"][1], C["A"][1]
-        row = {"budgets_share": sb, "map_xcheck_official_identical": xcheck, "n": len(nums),
-               "qs_map_vs_lampcore_ref_identical": bool(all(np.allclose(ref[Pn], ref_l[Pn]) for Pn in PR3)), "genomes": {}}
+        row = {"budgets": G, "map_xcheck_official_identical": xcheck, "n": len(nums),
+               "qs_map_vs_lampcore_ref_identical": bool(all(np.allclose(M.qs[Pn], ref_l[Pn]) for Pn in PR3)), "genomes": {}, "pairs": {}}
         for g in G:
             miss, c = C[g]
             per_band = {Pn: {pb: float(sc(c, gi, Pn)) for pb, gi in zip(bp, groups)} for Pn in PR3}
             worst = max((v, Pn, pb) for Pn in PR3 for pb, v in per_band[Pn].items())
             row["genomes"][g] = {"fitness": fit(c, allx), "scores": {Pn: sc(c, allx, Pn) for Pn in PR3}, "per_band": per_band,
                                  "misses": miss, "gate_worst": worst, "gate_pass": worst[0] <= GATE and not miss}
-        row["share_over_A"] = {"ratio": fit(cs, allx) / fit(ca, allx), "log2": math.log2(fit(cs, allx) / fit(ca, allx)),
-                               "ci": q([math.log2(fit(cs, i) / fit(ca, i)) for i in idxs])}
-        row["by_pricing"] = {Pn: {"log2": math.log2(sc(cs, allx, Pn) / sc(ca, allx, Pn)),
-                                  "ci": q([math.log2(sc(cs, i, Pn) / sc(ca, i, Pn)) for i in idxs])} for Pn in PR3}
+        for a, b in (("primary", "A"), ("theory", "A"), ("sensitivity", "A"), ("theory", "primary"), ("sensitivity", "primary")):
+            ca, cb = C[a][1], C[b][1]
+            row["pairs"][f"{a} / {b}"] = {
+                "ratio": fit(ca, allx) / fit(cb, allx), "log2": math.log2(fit(ca, allx) / fit(cb, allx)),
+                "ci": q([math.log2(fit(ca, i) / fit(cb, i)) for i in idxs]),
+                "by_pricing": {Pn: {"log2": math.log2(sc(ca, allx, Pn) / sc(cb, allx, Pn)),
+                                    "ci": q([math.log2(sc(ca, i, Pn) / sc(cb, i, Pn)) for i in idxs])} for Pn in PR3}}
         # (4) hindsight: best budgets on this size's own map (information only)
         fM = lambda r_, e_: M.fitness((0, r_, 0, e_))[0]
         hb = min(((fM(r_, e_), r_, e_) for r_ in P.COARSE for e_ in P.COARSE))
@@ -216,20 +223,21 @@ if __name__ == "__main__":
             if not moved:
                 break
         row["hindsight"] = {"budgets": {"rho": hr, "ecm": he}, "map_fitness": fM(hr, he),
-                            "map_fitness_share": fM(sb["rho"], sb["ecm"]), "map_fitness_A": fM(A_B["rho"], A_B["ecm"])}
+                            "map_fitness_by_genome": {g: fM(*G[g]) for g in G}}
         res["sizes"][bits] = row
-        print(f"\n{bits} bits: {len(nums)} numbers, bands {list(bp)}; share budgets rho {sb['rho']}, ecm {sb['ecm']}")
-        print(f"  map cross-check (composed official = direct lampcore): share {xcheck['share']}/{len(nums)}, A {xcheck['A']}/{len(nums)}; "
-              f"map qs = lampcore qs: {row['qs_map_vs_lampcore_ref_identical']}")
+        print(f"\n{bits} bits: {len(nums)} numbers, bands {list(bp)}; budgets (rho, ecm): " + "  ".join(f"{g} {v}" for g, v in G.items()))
+        print("  map cross-check (composed official = direct lampcore): " + "  ".join(f"{g} {v}/{len(nums)}" for g, v in xcheck.items())
+              + f"; map qs = lampcore qs: {row['qs_map_vs_lampcore_ref_identical']}")
         for g in G:
             x = row["genomes"][g]
-            print(f"  {g:5s}: fitness {x['fitness']:.3f} (" + ", ".join(f"{Pn} {v:.3f}" for Pn, v in x["scores"].items())
+            print(f"  {g:11s}: fitness {x['fitness']:.3f} (" + ", ".join(f"{Pn} {v:.3f}" for Pn, v in x["scores"].items())
                   + f"); misses {x['misses']}; gate {'PASS' if x['gate_pass'] else 'FAIL'} (worst {x['gate_worst'][0]:.3f}, band {x['gate_worst'][2]}, {x['gate_worst'][1]})")
             for Pn in PR3:
                 print(f"     {Pn:10s} per band: " + "  ".join(f"{pb}: {v:.3f}" for pb, v in x["per_band"][Pn].items()))
-        o = row["share_over_A"]
-        print(f"  share / A robust: x{o['ratio']:.3f}, log2 {o['log2']:+.3f} [{o['ci'][0]:+.3f}, {o['ci'][1]:+.3f}]")
-        print("  by pricing: " + "  ".join(f"{Pn} {v['log2']:+.3f} [{v['ci'][0]:+.3f}, {v['ci'][1]:+.3f}]" for Pn, v in row["by_pricing"].items()))
+        for k, o in row["pairs"].items():
+            print(f"  {k:22s} robust x{o['ratio']:.3f}, log2 {o['log2']:+.3f} [{o['ci'][0]:+.3f}, {o['ci'][1]:+.3f}];  "
+                  + "  ".join(f"{Pn[:4]} {v['log2']:+.3f} [{v['ci'][0]:+.3f}, {v['ci'][1]:+.3f}]" for Pn, v in o["by_pricing"].items()))
         h = row["hindsight"]
-        print(f"  (info) hindsight best on own map: rho {hr}, ecm {he}, map fitness {h['map_fitness']:.3f} (share {h['map_fitness_share']:.3f}, A {h['map_fitness_A']:.3f})")
+        print(f"  (info) hindsight best on own map: rho {hr}, ecm {he}, map fitness {h['map_fitness']:.3f}; map fitness by genome: "
+              + "  ".join(f"{g} {v:.3f}" for g, v in h["map_fitness_by_genome"].items()))
     json.dump(res, open("size_budgets.json", "w"), indent=1, default=float)

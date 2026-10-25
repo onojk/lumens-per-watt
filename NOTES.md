@@ -1468,3 +1468,51 @@ d = log2(fit mixed X / fit mixed-qs Y), same seed, sealed (560 numbers); below 0
   - **Already decided by arithmetic, before the run: missed.** 0.243 is below every measured ratio (0.27–0.29), so the theory rule shrinks the 72-bit budgets more than the measured rule (rho 1,448 vs 1,722; ECM 8,192 vs 9,742), not less.
 - (P6, mine, from that gap) The theory rule passes the gate at 72 bits: it spends about 16% less than the PRIMARY rule on numbers it does not finish, so its worst band is at or below the PRIMARY rule's. Theory / PRIMARY robust ratio at 72 bits within ±0.03 log2 (interval includes 0). At 96 bits the theory rule (3.78x) lies between PRIMARY (3.44x) and SENSITIVITY (4.52x); all three tie with A there (intervals include 0).
 - (P7, mine) SENSITIVITY at 96 bits (ECM 142,935) is no better than PRIMARY: SENSITIVITY / PRIMARY log2 ≥ −0.02.
+
+### Size-relative budgets: results (`evolve/size_budgets.py eval`, `size_budgets.out`/`.json`; maps `size_map.out`/`.json`; curve `size_curve.out`/`.json`)
+
+**Checks.**
+- Tuning on the 84-bit map returned A's budgets (rho 5,793, ECM 32,768; fitness 0.6408).
+- Identity: at 84 bits all three rules give A's budgets. Per-number counts are identical to A's on 560/560 fresh numbers.
+- Map parity: Python qs per-type counts matched lampcore's on 24/24 (72 bits) and 32/32 (96 bits). The map's composed official cost equals the direct lampcore run on every number for every genome (480/480, 640/640).
+- No misses anywhere.
+
+**72 bits** (480 numbers; fitness (c) against qs + lc 1.4 alone):
+
+| genome (rho / ECM) | robust | official | ruint | Montgomery | gate (worst band) |
+|---|---|---|---|---|---|
+| A (5,793 / 32,768) | 1.127 | 0.376 | 1.127 | 0.606 | FAIL (2.171, band 36, ruint) |
+| PRIMARY (1,722 / 9,742) | 1.067 | 0.735 | 1.067 | 0.837 | FAIL (1.515, band 36, ruint) |
+| SENSITIVITY (1,579 / 8,933) | 1.038 | 0.731 | 1.038 | 0.826 | PASS (1.472, band 36, ruint) |
+| theory (1,448 / 8,192) | 1.113 | 0.817 | 1.113 | 0.908 | PASS (1.444, band 36, ruint) |
+| hindsight, own map (3,158 / 0) | 0.817 (map) | | | | information only |
+
+Paired, log2 [95%]: PRIMARY / A −0.079 [−0.163, +0.010] robust; official +0.968 [+0.835, +1.114], ruint −0.079, Montgomery +0.466 [+0.367, +0.573]. Theory / A −0.019 [−0.110, +0.079]. SENSITIVITY / A −0.119 [−0.204, −0.029]. Theory / PRIMARY +0.061 [+0.015, +0.117]. SENSITIVITY / PRIMARY −0.040 [−0.041, −0.038].
+
+**96 bits** (640 numbers):
+
+| genome (rho / ECM) | robust | official | ruint | Montgomery | gate (worst band) |
+|---|---|---|---|---|---|
+| A (5,793 / 32,768) | 0.741 | 0.634 | 0.741 | 0.670 | PASS (1.155, band 42, ruint) |
+| PRIMARY (19,484 / 110,218) | 0.687 | 0.422 | 0.687 | 0.513 | PASS (1.452, band 48, ruint) |
+| SENSITIVITY (25,268 / 142,935) | 0.680 | 0.367 | 0.680 | 0.475 | FAIL (1.537, band 48, ruint) |
+| theory (21,247 / 120,194) | 0.654 | 0.373 | 0.654 | 0.470 | PASS (1.435, band 48, ruint) |
+| hindsight, own map (12,634 / 60,097) | 0.627 (map) | | | | information only |
+
+Paired, log2 [95%]: PRIMARY / A −0.108 [−0.177, −0.039] (all three pricings below 0); theory / A −0.179 [−0.253, −0.107]; SENSITIVITY / A −0.122 [−0.196, −0.049]; theory / PRIMARY −0.072 [−0.111, −0.036] (all three below 0); SENSITIVITY / PRIMARY −0.015 [−0.060, +0.027].
+
+**Reading.**
+- **At 96 bits size-relative budgets pay** against A under all three pricings ((e) call: each rule beats A). Theory is the best of the three: 0.883x A, and better than PRIMARY under all three pricings. The hindsight optimum on the 96-bit map (rho 12,634, ECM 60,097) scales A by about 2x, less than any rule (3.4–4.5x). The rules overshoot it, and their worst band (48, balanced) rises to 1.44–1.54 under ruint.
+- **At 72 bits no proportional rule fixes A.** Every rule's robust ratio is above 1, i.e. worse than qs + lc 1.4 alone. Shrinking budgets lowers ruint waste on the balanced band (2.17 → 1.44–1.52), but it costs heavily under official (0.38 → 0.73–0.82): the shrunk rho and ECM stop finishing the 20–24-bit factors (band 20 official 0.017 under A, 0.51–0.68 under the rules). (e) call PRIMARY vs A at 72: undecided (official favours A, ruint favours the rule within noise, Montgomery favours A).
+- **Mechanism, read from the per-band numbers:** a pre-stage's cost to find a factor depends on the factor's size, not on N. Scaling the budget with qs cost at N's size helps when qs gets dearer (96: more of the 24–36-bit bands are covered) but hurts when qs gets cheaper (72: the small-factor bands are lost). The hindsight 72-bit optimum is a different shape: ECM off, rho 3,158. At 72 bits under the robust objective (ruint binding), ECM's spending no longer pays. One scale factor per size cannot express a stage switching off.
+- **The gate at 72 is borderline for every rule** (1.44–1.52 under ruint, band 36). PRIMARY fails by 0.015 and the other two pass by 0.03–0.06; no per-band interval was pre-registered, so the gate is scored as the point value.
+- **L asymptotics vs measured:** measured qs cost grows by 0.27–0.29x (72/84) and 3.35–3.44x (96/84); L(N) gives 0.243x and 3.78x. At 96 bits the theory ratio did better than the measured one, but neither is near the hindsight scaling (about 2x). The best budget scaling is not the qs-cost scaling.
+
+**Predictions scored as written:** 7 scored, 1 held, 6 missed.
+- (P1, the user's) share genome passes the gate at 72 and matches A within noise at 84 and 96: **missed.** PRIMARY fails at 72 (1.515), and at 96 it beats A ([−0.177, −0.039]) instead of tying. (The 84-bit clause held by identity.)
+- (P2, mine) PRIMARY / A at 72 in 0.80–0.92 with the interval below 0: **missed** (0.946, [−0.163, +0.010]).
+- (P3, mine) at 96, PRIMARY / A in 0.92–1.02 with the interval including 0, worst band below 1.5: **missed.** 0.928 is in range and the worst band is 1.452, but the interval lies below 0.
+- (P4, the user's) = P1 for the PRIMARY rule: **missed**, as P1.
+- (P5, the user's) the theory rule shrinks less than the measured rule at 72: **missed** (decided by arithmetic before the run: 0.243 vs 0.29).
+- (P6, mine) theory passes the gate at 72; theory / PRIMARY at 72 within ±0.03 with the interval including 0; at 96 all three tie with A: **missed.** The gate clause held (1.444); theory / PRIMARY at 72 is +0.061 [+0.015, +0.117]; at 96 all three beat A.
+- (P7, mine) SENSITIVITY / PRIMARY at 96 ≥ −0.02: **held** (−0.015).
