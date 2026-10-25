@@ -1344,3 +1344,31 @@ Fresh balanced numbers, 240 per size (54–84 bits, seeds 8700000 + bits), each 
 - **tpe-tuned vs TPE:** tpe-tuned removes TPE's two stalls (seeds 72 and 75: −0.70 each). It loses heavily on seed 73 (+0.714), where its run followed seed 73's misleading tuning set to an ECM budget of 711k and failed the sealed gate.
 - **Expectation (post hoc) vs result:** tie with evolution, as expected; better than TPE on 72 and 75 by more than 0.5 log2, as expected.
 - **Rule applied:** tpe-tuned has no stalled seeds (T2 on 8/8) and ties evolution per seed, so **the default for fixed-shape gene tuning is tpe-tuned** (n_startup_trials = 10% of the budget, multivariate). It costs about 10% more wall time per run than evolution (773 s vs 705 s median), well below random search (2,238 s).
+
+## 2026-10-24 — Generalization tests (a) and (b): results (`evolve/newqs_general.py`, `newqs_general.out`/`.json`; 144 s)
+
+**Design.** The populations and seeds were fixed in the script header before the run:
+- (a) mixed 72-bit (bands 16–32 unbalanced, 36 balanced) and mixed 96-bit (16–42 unbalanced, 48 balanced), 80 per band;
+- (b) balanced 84-bit, 240 numbers;
+- seeds 8800000 + 100·pb + bits, all through `oracle.check`;
+- budgets and order at A; new qs genes vs qs + lc 1.4's genes; fitness (c) against qs + lc 1.4 alone; lampcore `--types`, cap 2^28.
+
+**No misses** in any population.
+
+| population | new genes: robust (off / ruint / Mont) | old genes: robust (off / ruint / Mont) | new / old robust, log2 [paired 95%] | by pricing, log2: official / ruint / Montgomery | (e) | ACCEPT gate (new / old) |
+|---|---|---|---|---|---|---|
+| (a) mixed 72 | 1.100 (0.410 / 1.100 / 0.570) | 1.152 (0.379 / 1.152 / 0.613) | 0.955, −0.066 [−0.111, −0.031] | +0.111 [+0.076, +0.144] / −0.066 [−0.111, −0.031] / −0.107 [−0.140, −0.080] | undecided | FAIL (2.161) / FAIL (2.279), band 36, ruint |
+| (a) mixed 96 | 0.688 (0.638 / 0.688 / 0.588) | 0.744 (0.640 / 0.744 / 0.675) | 0.924, −0.114 [−0.122, −0.106] | −0.003 [−0.022, +0.015] / −0.114 [−0.122, −0.106] / −0.200 [−0.215, −0.185] | undecided (official tie) | PASS (1.081) / PASS (1.169) |
+| (b) balanced 84 | 0.902 (0.902 / 0.699 / 0.726) | 1.219 (0.935 / 1.219 / 1.051) | 0.740, −0.435 [−0.478, −0.393] | −0.052 [−0.086, −0.017] / −0.802 [−0.863, −0.739] / −0.533 [−0.568, −0.499] | new genes | PASS (0.902) / PASS (1.219) |
+
+- **The new genes generalize in the same pattern as (2)'s qs-alone test.** They are better under the calibrated pricings at every size. Under official they are worse at 72 bits (+8%), tied at 96 and better at 84 balanced (−3.5%). The robust ratio is below 1 everywhere because ruint binds for the old genes.
+- **A's budgets do not transfer to 72 bits; this is independent of the qs genes.**
+  - Both genomes are worse than qs + lc 1.4 alone under ruint (robust 1.10 and 1.15), and both fail the ACCEPT gate (band 36: 2.16x and 2.28x under ruint; band 32: 1.91x and 2.03x).
+  - At 72 bits qs is about 8x cheaper than at 84 bits, so A's fixed absolute budgets (rho 5793, ECM 32768 ops) overspend on every number they don't finish.
+  - At 96 bits the same budgets are relatively small: they pass, with band ratios near 1.
+  - Op budgets fixed in absolute ops are size-specific. A size-relative budget (a share of the expected qs cost at that size) is a candidate structural move; it is not added to MOVES until it has a cost model.
+- **At 96 bits, A's pre-stages pay only below the balanced bands.** The 42 and 48 bands are 1.02–1.08 under official and ruint with either genes.
+
+**Predictions scored as written:** 2 scored, 0 held, 2 missed.
+- (a), mine, "the new genes beat qs + lc 1.4's genes at both sizes; robust ratio new/old 0.70–0.90 at 72 bits and 0.60–0.85 at 96 bits": **missed.** The direction held at both sizes (intervals below 0), but the magnitudes are outside both ranges: 0.955 at 72 and 0.924 at 96. The ranges were extrapolated from Run 8's 84-bit 0.70, which is the size the genes were tuned at.
+- (b), the user's, "the wider mc (0.43-0.93) loses on balanced (population-specific genes)": **missed.** The new genes win on balanced 84-bit numbers under all three pricings (robust 0.740 [−0.478, −0.393]), as the qs-alone evidence recorded beforehand indicated.

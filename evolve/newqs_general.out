@@ -1,0 +1,36 @@
+
+(a) mixed 72: 480 numbers, bands [16, 20, 24, 28, 32, 36]
+  new qs genes (A's budgets): fitness 1.100 (official 0.410, ruint 1.100, montgomery 0.570); misses 0; gate FAIL (worst 2.161, band 36, ruint)
+     official   per band: 16: 0.005  20: 0.022  24: 0.196  28: 0.485  32: 0.780  36: 0.965
+     ruint      per band: 16: 0.038  20: 0.156  24: 0.953  28: 1.341  32: 1.914  36: 2.161
+     montgomery per band: 16: 0.018  20: 0.067  24: 0.414  28: 0.702  32: 1.017  36: 1.186
+  old qs genes (A's budgets): fitness 1.152 (official 0.379, ruint 1.152, montgomery 0.613); misses 0; gate FAIL (worst 2.279, band 36, ruint)
+     official   per band: 16: 0.005  20: 0.022  24: 0.190  28: 0.437  32: 0.735  36: 0.882
+     ruint      per band: 16: 0.038  20: 0.156  24: 0.961  28: 1.408  32: 2.030  36: 2.279
+     montgomery per band: 16: 0.018  20: 0.067  24: 0.424  28: 0.746  32: 1.119  36: 1.293
+  new / old robust: x0.955, log2 -0.066 [-0.111, -0.031]
+  by pricing: official +0.111 [+0.076, +0.144]  ruint -0.066 [-0.111, -0.031]  montgomery -0.107 [-0.140, -0.080]
+
+(a) mixed 96: 640 numbers, bands [16, 20, 24, 28, 32, 36, 42, 48]
+  new qs genes (A's budgets): fitness 0.688 (official 0.638, ruint 0.688, montgomery 0.588); misses 0; gate PASS (worst 1.081, band 42, ruint)
+     official   per band: 16: 0.000  20: 0.012  24: 0.442  28: 0.751  32: 0.874  36: 0.952  42: 1.026  48: 1.017
+     ruint      per band: 16: 0.003  20: 0.025  24: 0.510  28: 0.831  32: 0.946  36: 1.014  42: 1.081  48: 1.079
+     montgomery per band: 16: 0.002  20: 0.016  24: 0.420  28: 0.700  32: 0.805  36: 0.871  42: 0.937  48: 0.934
+  old qs genes (A's budgets): fitness 0.744 (official 0.640, ruint 0.744, montgomery 0.675); misses 0; gate PASS (worst 1.169, band 42, ruint)
+     official   per band: 16: 0.000  20: 0.013  24: 0.436  28: 0.752  32: 0.885  36: 0.958  42: 1.021  48: 1.021
+     ruint      per band: 16: 0.003  20: 0.026  24: 0.544  28: 0.897  32: 1.029  36: 1.103  42: 1.169  48: 1.168
+     montgomery per band: 16: 0.002  20: 0.018  24: 0.473  28: 0.802  32: 0.933  36: 1.008  42: 1.072  48: 1.072
+  new / old robust: x0.924, log2 -0.114 [-0.122, -0.106]
+  by pricing: official -0.003 [-0.022, +0.015]  ruint -0.114 [-0.122, -0.106]  montgomery -0.200 [-0.215, -0.185]
+
+(b) balanced 84: 240 numbers, bands [42]
+  new qs genes (A's budgets): fitness 0.902 (official 0.902, ruint 0.699, montgomery 0.726); misses 0; gate PASS (worst 0.902, band 42, official)
+     official   per band: 42: 0.902
+     ruint      per band: 42: 0.699
+     montgomery per band: 42: 0.726
+  old qs genes (A's budgets): fitness 1.219 (official 0.935, ruint 1.219, montgomery 1.051); misses 0; gate PASS (worst 1.219, band 42, ruint)
+     official   per band: 42: 0.935
+     ruint      per band: 42: 1.219
+     montgomery per band: 42: 1.051
+  new / old robust: x0.740, log2 -0.435 [-0.478, -0.393]
+  by pricing: official -0.052 [-0.086, -0.017]  ruint -0.802 [-0.863, -0.739]  montgomery -0.533 [-0.568, -0.499]
