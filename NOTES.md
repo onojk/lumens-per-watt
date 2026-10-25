@@ -1113,3 +1113,27 @@ Predictions scored in this entry: 6. (a) holds or fails depending on the reading
 - **MOVES rows added:**
   - "Island evolution vs TPE for gene tuning": RULED OUT as superior.
   - "qs genes retuned for the mixed population": PAYS ~1.40x over A, under the stated conditions.
+
+## 2026-10-24 — Run 8 per-seed paired comparison (added after the run; written before computing)
+
+**Design (the new PLAN reporting rule).**
+- Pairs: TPE vs evolution and TPE vs random, both arms, existing genomes, sealed numbers (560, 80 per band). No new runs.
+- Per seed: d_s = log2(fitness of TPE's best / fitness of the other method's best, same seed), with a paired bootstrap interval resampling the sealed numbers within bands (10,000, random.Random(2026)).
+- **Sign test:** the number of seeds with d_s < 0, two-sided exact binomial. A sealed miss counts as a loss for the method that missed and is left out of the bootstrap means.
+- **Aggregate:** the mean of d_s over seeds, with two bootstraps:
+  - (i) numbers resampled, seeds fixed (conditional on these 8 runs);
+  - (ii) seeds and numbers both resampled (generalizes over runs).
+- Labeled as added after the run, beside the pre-registered clauses, which stand as scored.
+
+**Power estimate.**
+- **Sign test:** with 8 seeds, only 8/8 or 0/8 reaches p < 0.05 (p = 0.0078). 7/8 gives p = 0.070. The test detects only a unanimous effect.
+- **Per seed:** the paired half-width on sealed numbers is about 0.02–0.03 log2 (Run 8 results), so a per-seed difference of about 2% is resolvable.
+- **Aggregate (ii):** its width is set by the spread of sealed fitness between seeds. From the results entry, sealed fitness spans 0.455–0.843 (mixed TPE) and 0.459–0.493 (mixed-qs TPE), so (ii) will be wide on the mixed arm, where TPE has two stalled seeds.
+
+**Predictions.**
+- **TPE vs evolution:**
+  - mixed: no consistent sign (sign test p > 0.05). TPE's two stalled seeds (72, 75) lose by more than 0.5 log2, and (ii) includes 0.
+  - mixed-qs: no consistent sign; (ii) includes 0.
+- **TPE vs random:**
+  - mixed: TPE better on at least 6/8 seeds, and (i) excludes 0.
+  - mixed-qs: TPE better on at least 5/8, and (i) excludes 0 by at most 0.05 log2.
