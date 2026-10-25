@@ -2472,3 +2472,29 @@ The design is the queued test (PLAN, "Queued: size-scaling test for the qs genes
 - (M6) **The pipeline decides, not the genes.** For each gene and size, the Track R and Track M seed ranges overlap.
 
 **Definitions, fixed now.** The *winner* of a track at a size is the best, by the track's fitness on the sealed numbers in the track's pipeline at that size, of that track's four tuned genomes plus qs + lc 1.4's genes and the new genes. PD_M and PD_R are computed from the two winners' sealed mean costs.
+
+### Two tracks: per-size pipelines (`sizescale.py msolve`, `sizescale_msolve.out`, `sizescale_tracks.json`; corrected maps)
+
+Per-pricing grid optima (rho, ECM; td and pm1 off), fitness against corrected qs + lc 1.4 alone:
+
+| bits | official | ruint (= robust = Track R) | Montgomery (= Track M) |
+|---|---|---|---|
+| 54 | rho 1,218, ECM 60,097 (0.343) | qs alone (1.000) | rho 3,158, ECM 6,317 (0.759) |
+| 72 | rho 1,448, ECM 285,870 (0.211) | rho 1,579, ECM off (0.869) | rho 1,448, ECM 185,364 (0.596) |
+| 78 | rho 3,158, ECM 881,744 (0.208) | rho 5,312, ECM off (0.865) | rho 1,579, ECM 92,682 (0.598) |
+| 84 | rho 3,158, ECM 1,048,576 [edge] (0.160) | rho 5,793, ECM off (0.793) | rho 3,158, ECM 311,744 (0.525) |
+| 90 | rho 5,793, ECM 1,048,576 [edge] (0.159) | rho 10,624, ECM off (0.780) | rho 5,793, ECM 220,436 (0.521) |
+| 96 | rho 5,793, ECM 1,048,576 [edge] (0.156) | rho 12,634, ECM off (0.729) | rho 4,871, ECM 404,281 (0.437) |
+
+**The ECM grid widened to 2^22 where an optimum sat at the 2^20 edge** (official at 84, 90 and 96; ECM rerun alone to 2^22 on every number it had not solved by 2^20; same deterministic curves):
+- at 84 the optimum stays at ECM 1,048,576 (0.160): 2^20 is interior once the grid extends;
+- at 90 and 96 it moves to ECM 2,719,670 (2^21.4): 0.150 at 90 and 0.122 at 96.
+- Neither is at the new edge. No Montgomery or ruint optimum is near an edge.
+
+**Track pipelines for the test:**
+- Track R: qs alone at 54; rho 1,579 / 5,793 / 12,634 with ECM off at 72 / 84 / 96.
+- Track M: (3,158, 6,317), (1,448, 185,364), (3,158, 311,744) and (4,871, 404,281) at 54 / 72 / 84 / 96.
+
+**M1, scored:** **missed as written.**
+- Held: the three known optima reproduced; the 54-bit Montgomery optimum has rho on (3,158 ≥ 724) and ECM at most 2^15 (6,317); no Montgomery optimum is at the edge; official is at the edge at 84 / 90 / 96.
+- Missed: with the grid widened, official moves above 2^20 at 90 and 96 but not at 84.
