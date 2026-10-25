@@ -1158,3 +1158,52 @@ d = log2(fit TPE / fit other), same seed, sealed numbers; below 0 means TPE is b
 - TPE vs evolution, mixed-qs: no consistent sign (held: 5/8). (ii) includes 0 (held).
 - TPE vs random, mixed: at least 6/8 and (i) excludes 0 (held: 6/8, [−0.248, −0.189]).
 - TPE vs random, mixed-qs: at least 5/8, and (i) excludes 0 by at most 0.05 log2 (held: 7/8, upper end −0.024).
+
+## 2026-10-24 — After Run 8: (1) partition map with the new qs genes, (2) the new qs genes on balanced numbers (predictions before computing)
+
+**The new qs genes** are mixed-qs TPE's best-of-8 genome (seed 77), the one named in the Run 8 results entry's next experiments: kc 4, bc 0.8994, mc 0.7341, tc 1.1045, lc 1.6612. On the Run 8 sealed numbers it scores 0.472, with A's budgets. The other mixed-qs winners are within 0.459–0.493 sealed, so the choice among them is not expected to matter. The name "new qs" below means these genes.
+
+### (1) Partition map re-run with the new qs (map only, tuning numbers; `evolve/partition_newqs.py`)
+
+**Design.**
+- The map's pre-stage records do not depend on the final qs, so they are reused unchanged (`partition_map.json`, 560 tuning numbers, seeds 4000000 + 100·pb + 84).
+- New: the new qs alone on those 560 numbers, cap 2^28, per-type counts from lampcore `--types`.
+- **Parity check first:** lampcore's per-type counts for qs + lc 1.4 must equal the map's stored Python per-type counts on all 560 numbers. A mismatch is a blocker.
+- **Re-optimization:**
+  - the fixed order td → rho → pm1 → ECM by `partition.optimize` (coarse grid, then 1/8-octave refinement);
+  - all 24 orders as in `partition_orders.py` (exact grid optimum per order, then refinement), with the paired bootstrap against the best order.
+- **Fitness (c)** is reported against qs + lc 1.4 alone (the Run 8 reference) and against the new qs alone.
+- **The comparison point** is A's budgets with the new qs. The re-optimized budgets are compared with it by the paired stratified bootstrap (10,000, within bands).
+
+**Power.** The orders baseline resolved a +0.071 log2 difference with interval [+0.006, +0.131], a half-width of about 0.06 for a large budget change. Budget changes near the optimum share most per-number costs, so their intervals are expected to be narrower. An effect at the low end of the prediction (0.015 log2) may not be resolved; if so, it is reported as unresolved, not as a tie.
+
+**Predictions.**
+- (1a) The re-optimized budgets (fixed order) put less into ECM than A: ECM ≤ 2^14, possibly 0, as the map chose with N51-0917's qs. rho in [2^11, 2^14], td 0, pm1 off.
+- (1b) The re-optimized robust fitness (against qs + lc 1.4 alone) is 1–5% better than A's budgets with the new qs (log2 between −0.015 and −0.075).
+- (1c) A's budgets with the new qs score 0.43–0.50 on the map against qs + lc 1.4 alone (Run 8 sealed: 0.472).
+- (1d) The best order still runs rho before ECM wherever both are on. Card order still matters: at least one order's interval lies above 0.
+
+### (2) The new qs on balanced numbers: should it replace qs + lc 1.4 as the reference? (`evolve/newqs_balanced.py`)
+
+**Design.**
+- Fresh balanced numbers: `semiprimes_pq(bits, 240, 8700000 + bits)` at 54, 60, 66, 72, 78 and 84 bits. These seeds are unused, and every number goes through `oracle.check`.
+- Genomes, each alone, lampcore `--types`, cap 2^28: the new qs, qs + lc 1.4, and N51-0917's qs (information only: the calibrated leader at 60–84 bits, NOTES calibration entry).
+- **Per size and pooled:** log2 of the mean-cost ratio new / qs + lc 1.4 under each pricing, paired bootstrap (10,000, random.Random(2026)), the robust ratio (c), the (e) call, and misses. The median per-number log2 ratio is reported beside it.
+
+**Power** (from the Run 8 sealed band 42, 80 balanced 84-bit numbers, new qs against qs + lc 1.4, paired bootstrap of the mean-cost ratio):
+- official −0.089 log2 (se 0.078); ruint −0.470 (se 0.074); Montgomery −0.413 (se 0.064).
+- At 240 per size the se is about 0.045. The calibrated effects are resolved per size; an official effect is resolved per size only if it is ≥ about 0.13 log2.
+- Pooled over 1,440 numbers (se about 0.02), effects of about 0.05 log2 are resolved. An official 84-bit effect of −0.089 needs about 480 numbers: about two sizes' worth, so it is judged pooled.
+
+**Replacement rule (decided now).** Recommend replacing the reference only if all of these hold:
+- at every size, no pricing's paired interval lies above 0 (the new qs is never clearly worse);
+- no misses;
+- pooled, all three pricings are below 1 with intervals excluding 0.
+
+Otherwise, qs + lc 1.4 stays the reference, and the new genes are a mixed-population qs.
+
+**Predictions.**
+- (2a) At 84 bits, ruint and Montgomery ratios are 0.65–0.80. The official ratio is 0.85–1.0, and its per-size interval includes 0.
+- (2b) The gain shrinks at smaller sizes. The robust ratio is below 1 at 72–84 bits and at least 0.95 at 54 bits.
+- (2c) At most 1 miss in 1,440 per genome.
+- (2d) The replacement rule fails, because at 54 or 60 bits at least one pricing's interval lies above 0, so qs + lc 1.4 stays the reference.
