@@ -1,0 +1,6 @@
+54: official: rho 1218, ecm 60097 (0.343); ruint: rho 0, ecm 0 (1.000); montgomery: rho 3158, ecm 6317 (0.759); robust: rho 0, ecm 0 (1.000)
+72: official: rho 1448, ecm 285870 (0.211); ruint: rho 1579, ecm 0 (0.869); montgomery: rho 1448, ecm 185364 (0.596); robust: rho 1579, ecm 0 (0.869)
+78: official: rho 3158, ecm 881744 (0.208); ruint: rho 5312, ecm 0 (0.865); montgomery: rho 1579, ecm 92682 (0.598); robust: rho 5312, ecm 0 (0.865)
+84: official: rho 3158, ecm 1048576 (0.160) [edge] -> widened to 2^22: rho 3158, ecm 1048576 (0.160); ruint: rho 5793, ecm 0 (0.793); montgomery: rho 3158, ecm 311744 (0.525); robust: rho 5793, ecm 0 (0.793)
+90: official: rho 5793, ecm 1048576 (0.159) [edge] -> widened to 2^22: rho 5793, ecm 2719670 (0.150); ruint: rho 10624, ecm 0 (0.780); montgomery: rho 5793, ecm 220436 (0.521); robust: rho 10624, ecm 0 (0.780)
+96: official: rho 5793, ecm 1048576 (0.156) [edge] -> widened to 2^22: rho 5793, ecm 2719670 (0.122); ruint: rho 12634, ecm 0 (0.729); montgomery: rho 4871, ecm 404281 (0.437); robust: rho 12634, ecm 0 (0.729)
