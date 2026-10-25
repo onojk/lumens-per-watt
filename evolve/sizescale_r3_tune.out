@@ -1,0 +1,49 @@
+Round 3, Track R, 54 bits (rho 0, ECM 0): old genes 1.0000, round 2 frozen 0.9363
+   seed 0: 0.9801  kc 14, bc 0.881, mc 0.0272, tc 1.445, lc 1.617
+   seed 1: 0.9406  kc 14, bc 0.984, mc 0.2805, tc 1.455, lc 1.540
+   seed 2: 0.9462  kc 14, bc 0.840, mc 0.3551, tc 1.513, lc 1.633
+   seed 3: 0.9363  kc 16, bc 0.943, mc 0.2893, tc 1.393, lc 1.673
+   frozen: seed 3
+Round 3, Track R, 72 bits (rho 1448, ECM 0): old genes 0.8890, round 2 frozen 0.7217
+   seed 0: 0.9251  kc 32, bc 0.502, mc 0.0204, tc 1.452, lc 1.863  BOUND: kc 32 (bounds 1-32); lc 1.863 (bounds 1.0-2.0)
+   seed 1: 0.7189  kc 32, bc 0.572, mc 0.3496, tc 1.338, lc 1.850  BOUND: kc 32 (bounds 1-32); lc 1.85 (bounds 1.0-2.0)
+   seed 2: 0.7450  kc 19, bc 0.610, mc 0.3146, tc 1.562, lc 1.528
+   seed 3: 0.7278  kc 31, bc 0.566, mc 0.3246, tc 1.464, lc 1.678  BOUND: kc 31 (bounds 1-32)
+   frozen: seed 1
+Round 3, Track R, 84 bits (rho 5793, ECM 0): old genes 0.7823, round 2 frozen 0.5794
+   seed 0: 0.5952  kc 20, bc 0.537, mc 0.5586, tc 1.539, lc 1.602
+   seed 1: 0.5800  kc 31, bc 0.555, mc 0.4684, tc 1.318, lc 1.671  BOUND: kc 31 (bounds 1-32)
+   seed 2: 0.5794  kc 32, bc 0.526, mc 0.5119, tc 1.457, lc 1.641  BOUND: kc 32 (bounds 1-32)
+   seed 3: 0.5860  kc 27, bc 0.597, mc 0.4521, tc 1.184, lc 1.744
+   frozen: seed 2
+Round 3, Track R, 96 bits (rho 12634, ECM 0): old genes 0.7122, round 2 frozen 0.4779
+   seed 0: 0.4873  kc 17, bc 0.449, mc 0.5298, tc 1.500, lc 1.516
+   seed 1: 0.4797  kc 31, bc 0.430, mc 0.5110, tc 1.143, lc 1.856  BOUND: kc 31 (bounds 1-32); lc 1.856 (bounds 1.0-2.0)
+   seed 2: 0.4846  kc 18, bc 0.503, mc 0.5936, tc 1.451, lc 1.584
+   seed 3: 0.4779  kc 25, bc 0.479, mc 0.5185, tc 1.291, lc 1.660
+   frozen: seed 3
+Round 3, Track M, 54 bits (rho 3158, ECM 0): old genes 0.8195, round 2 frozen 0.7204
+   seed 0: 0.6932  kc 16, bc 0.728, mc 0.9436, tc 1.361, lc 1.805  BOUND: lc 1.805 (bounds 1.0-2.0)
+   seed 1: 0.7013  kc 14, bc 0.732, mc 0.8168, tc 1.458, lc 1.651
+   seed 2: 0.7065  kc 13, bc 0.700, mc 1.5365, tc 1.586, lc 1.677
+   seed 3: 0.7073  kc 22, bc 0.719, mc 1.1148, tc 1.626, lc 1.610
+   frozen: seed 0
+Round 3, Track M, 72 bits (rho 1448, ECM 65536): old genes 0.6076, round 2 frozen 0.5792
+   seed 0: 0.5673  kc 14, bc 0.736, mc 1.3813, tc 1.163, lc 1.586
+   seed 1: 0.5660  kc 27, bc 0.757, mc 1.3444, tc 1.087, lc 1.675  BOUND: tc 1.087 (bounds 1.0-3.5)
+   seed 2: 0.5662  kc 11, bc 0.640, mc 1.5966, tc 1.081, lc 1.921  BOUND: tc 1.081 (bounds 1.0-3.5); lc 1.921 (bounds 1.0-2.0)
+   seed 3: 0.5643  kc 16, bc 0.659, mc 1.6033, tc 1.172, lc 1.758
+   frozen: seed 3
+Round 3, Track M, 84 bits (rho 3158, ECM 32768): old genes 0.6182, round 2 frozen 0.4776
+   seed 0: 0.4846  kc 15, bc 0.551, mc 0.7837, tc 1.388, lc 1.551
+   seed 1: 0.4697  kc 32, bc 0.513, mc 0.6723, tc 1.127, lc 1.869  BOUND: kc 32 (bounds 1-32); lc 1.869 (bounds 1.0-2.0)
+   seed 2: 0.4699  kc 27, bc 0.448, mc 0.8376, tc 1.225, lc 1.903  BOUND: lc 1.903 (bounds 1.0-2.0)
+   seed 3: 0.4756  kc 32, bc 0.495, mc 0.6193, tc 1.568, lc 1.469  BOUND: kc 32 (bounds 1-32)
+   frozen: seed 1
+Round 3, Track M, 96 bits (rho 4871, ECM 120194): old genes 0.5282, round 2 frozen 0.3839
+   seed 0: 0.3967  kc 10, bc 0.463, mc 0.6754, tc 1.422, lc 1.565
+   seed 1: 0.3848  kc 25, bc 0.433, mc 0.9844, tc 1.214, lc 1.736
+   seed 2: 0.3857  kc 32, bc 0.504, mc 1.1372, tc 1.346, lc 1.580  BOUND: kc 32 (bounds 1-32)
+   seed 3: 0.3862  kc 19, bc 0.538, mc 1.0643, tc 1.354, lc 1.567
+   frozen: seed 1
+exit 0
