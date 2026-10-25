@@ -700,6 +700,15 @@ is not known in advance?
   seeds per arm. For reference only (Run 8 predates the rule), mixed seed 73 meets the first
   condition (4 gate failures) and also has 4 OVERFIT runs.
 
+**Queued: size-scaling test for the qs genes (user, Oct 24; after the size-relative budgets and the freedom comparison):**
+- Tune the qs genes at 54, 72, 84 and 96 bits: tpe-tuned, about 200 evaluations each; pre-stage
+  budgets per the winning size-relative rule, or none.
+- Freeze each, then evaluate all four genomes at all four sizes on sealed numbers (16 cells).
+- Prediction (DeepSeek's): the optimum shifts monotonically with size (mc and lc up, kc down).
+- Judge the trend with intervals, not single best points: the qs-gene landscape is a plateau.
+- A cost model, the populations and the trend test (what counts as monotonic, given intervals)
+  go in NOTES before the run.
+
 Ideas from evolving bodies over terrain, for after Run 8. Each gets a cost model and a
 prediction in NOTES before code, as usual. Fitness is (c) robust throughout (Run 8 scoring).
 

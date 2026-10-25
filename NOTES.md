@@ -798,6 +798,8 @@ How should a fixed op budget be split across cheap lamps before qs, when the sma
 
 ## 2026-10-24 — Partition study result: sequential budgets pay on the mixed population
 
+**Scope (added Oct 24, after the generalization tests):** Allocation A is the 84-bit allocation: its absolute budgets fail the gate at 72 bits.
+
 Code: `evolve/partition.py` (map, optimize and sealed modes, each committed before it ran); outputs `partition_map.json`/`.out` (tuning seeds), `partition_alloc.json`/`.out` (allocations and the map's predictions), `partition_sealed.json`/`.out` (the sealed run, once). Prerequisites: the ob gene with the precheck fix, td/pm1 price mappings (`price_accept.py`), per-stage tests in the ob record. On the sealed run, lampcore agreed on every official count, and every run's per-stage split summed exactly to its ops.
 
 **Chosen allocations** (tuning map, fitness (c) as per-pricing ratios to the variant's qs alone):
@@ -1313,6 +1315,7 @@ Fresh balanced numbers, 240 per size (54–84 bits, seeds 8700000 + bits), each 
 ## 2026-10-24 — Decisions after (1)/(2) (user), and a post hoc check of tpe-tuned
 
 - **Reference: KEEP qs + lc 1.4** (the pre-registered replacement rule failed).
+  - **Scope:** the reference (qs + lc 1.4) is kept fixed for comparability with every earlier result, not because the new genes are worse; they are the calibrated-pricing leader.
   - The new qs genes (the region's representative: kc 4, bc 0.90, mc 0.73, tc 1.10, lc 1.66) are the calibrated-pricing leader on balanced 54–84 bits, replacing N51-0917's qs in that role.
   - They are best under all three pricings only at 84 bits.
 - **MISLEADING rule:** the operational reading in PLAN (OVERFIT = gap above A's gap) is confirmed.
@@ -1441,3 +1444,27 @@ d = log2(fit mixed X / fit mixed-qs Y), same seed, sealed (560 numbers); below 0
 - (F2) TPE: mean above 0, d > +0.5 on seeds 72 and 75, (ii) includes 0: **missed.** The first two clauses held (+0.268; +0.850 and +0.876); the third failed ((ii) [+0.047, +0.539]).
 - (F3) random: mean d in [+0.10, +0.25], (ii) above 0: **missed.** (ii) is above 0, but the mean (+0.434) is outside the range.
 - (F4) no pair has (ii) below 0: **held** (every pair's (ii) is above 0).
+
+### Size-relative budgets: addendum (user, Oct 24; written before the eval ran; the 72/96 maps were built, nothing evaluated)
+
+**Three budget rules, all evaluated.** ob = snap(A's budget × ratio(bits)); identical to A at 84 bits by construction.
+
+| rule | ratio 72/84 | ratio 96/84 | ob at 72: rho / ECM | ob at 96: rho / ECM |
+|---|---|---|---|---|
+| PRIMARY, measured share (dedicated curve) | 0.2906 | 3.4420 | 1,722 / 9,742 | 19,484 / 110,218 |
+| SENSITIVITY, measured share (earlier-run curve) | 0.2689 | 4.5152 | 1,579 / 8,933 | 25,268 / 142,935 |
+| SECONDARY, theory L(N) = exp(sqrt(ln N ln ln N)) | 0.2432 | 3.7814 | 1,448 / 8,192 | 21,247 / 120,194 |
+
+- **Curve source, and a deviation from the addendum as written.** The addendum asks for a curve fitted on earlier runs' data and frozen.
+  - Earlier data: `calibrate_counts.json` (the calibration run): qs + lc 1.4 alone on balanced 54, 60, ..., 84 bits, 80 numbers each. Fit (the form fixed above): log2 mean ops = 11.7096 + 0.006365·bits + 0.0009715·bits². It stops at 84, so 96 is a 12-bit extrapolation; the quadratic fitted over 54–84 gives 4.52x there. (A linear fit to the same data gives 3.22x.)
+  - Dedicated curve: fresh balanced tuning numbers (seeds 9100000 + bits, 60–100 bits, 60 each; disjoint from every evaluation set). Fitted and committed (`2b22d08`) before the 72/96 maps existed: log2 mean ops = 6.5903 + 0.14846·bits + 0.0000008·bits².
+  - I kept the dedicated curve as PRIMARY because it covers 96 without extrapolation and was frozen before any evaluation number existed, which is the addendum's purpose. The earlier-run curve is evaluated beside it as SENSITIVITY, so the literal rule is not lost. The user may re-designate.
+- **L ratio:** computed at the bit length (ln N = bits · ln 2), as both measured rules are.
+- **Measured qs-cost ratios** (reported beside the L ratio; information, not inputs): dedicated curve 0.291 (72/84) and 3.44 (96/84); calibration run raw means 72/84 = 0.270; the evaluation maps themselves (fresh mixed numbers, qs alone) 0.271 and 3.35. L asymptotics give 0.243 and 3.78: the measured cost grows more slowly than L(N) going from 72 to 84 bits and from 84 to 96 bits (log2 slope 0.148 per bit vs L's 0.170 at 72–84 and 0.160 at 84–96).
+
+**Predictions** (scored as written):
+- (P4, the user's) "The measured-share rule passes the ACCEPT gate (< 1.5x) at 72 bits and matches A within noise at 84 and 96." (The same as P1, applied to the PRIMARY rule.)
+- (P5, the user's) "The theory rule shrinks budgets less than the measured-share rule at 72 (0.24 vs the measured ratio)."
+  - **Already decided by arithmetic, before the run: missed.** 0.243 is below every measured ratio (0.27–0.29), so the theory rule shrinks the 72-bit budgets more than the measured rule (rho 1,448 vs 1,722; ECM 8,192 vs 9,742), not less.
+- (P6, mine, from that gap) The theory rule passes the gate at 72 bits: it spends about 16% less than the PRIMARY rule on numbers it does not finish, so its worst band is at or below the PRIMARY rule's. Theory / PRIMARY robust ratio at 72 bits within ±0.03 log2 (interval includes 0). At 96 bits the theory rule (3.78x) lies between PRIMARY (3.44x) and SENSITIVITY (4.52x); all three tie with A there (intervals include 0).
+- (P7, mine) SENSITIVITY at 96 bits (ECM 142,935) is no better than PRIMARY: SENSITIVITY / PRIMARY log2 ≥ −0.02.
