@@ -1,0 +1,13 @@
+54 bits: ECM alone new/old mean cost offi 2.335 / ruin 1.045 / mont 1.166; same success/failure on 320/320
+   Track R: no p-1 (0, 0) vs final (0, 0), steps {'rho': 0, 'ecm': 0}; with p-1 (0, 256, 0) vs (d) (0, 256, 0), steps {'rho': 0, 'pm1_B': 0, 'ecm': 0}
+   Track M: no p-1 (3158, 0) vs final (3158, 0), steps {'rho': 0, 'ecm': 0}; with p-1 (1448, 1024, 0) vs (d) (0, 1024, 6317), steps {'rho': None, 'pm1_B': 0, 'ecm': None}  MOVED > 1 STEP
+72 bits: ECM alone new/old mean cost offi 2.392 / ruin 1.047 / mont 1.174; same success/failure on 480/480
+   Track R: no p-1 (1448, 0) vs final (1448, 0), steps {'rho': 0, 'ecm': 0}; with p-1 (790, 512, 0) vs (d) (790, 512, 0), steps {'rho': 0, 'pm1_B': 0, 'ecm': 0}
+   Track M: no p-1 (5312, 0) vs final (1448, 35734), steps {'rho': 15, 'ecm': None}; with p-1 (5312, 2048, 0) vs (d) (664, 2048, 17867), steps {'rho': 24, 'pm1_B': 0, 'ecm': None}  MOVED > 1 STEP
+84 bits: ECM alone new/old mean cost offi 2.408 / ruin 1.045 / mont 1.173; same success/failure on 559/560
+   Track R: no p-1 (5793, 0) vs final (5793, 0), steps {'rho': 0, 'ecm': 0}; with p-1 (3158, 2048, 0) vs (d) (3158, 2048, 0), steps {'rho': 0, 'pm1_B': 0, 'ecm': 0}
+   Track M: no p-1 (5793, 77936) vs final (3158, 32768), steps {'rho': 7, 'ecm': 10}; with p-1 (3158, 4096, 77936) vs (d) (2896, 4096, 32768), steps {'rho': 1, 'pm1_B': 0, 'ecm': 10}  MOVED > 1 STEP
+96 bits: ECM alone new/old mean cost offi 2.053 / ruin 0.882 / mont 0.992; same success/failure on 604/640
+   Track R: no p-1 (12634, 0) vs final (12634, 0), steps {'rho': 0, 'ecm': 0}; with p-1 (10624, 4096, 0) vs (d) (10624, 4096, 0), steps {'rho': 0, 'pm1_B': 0, 'ecm': 0}
+   Track M: no p-1 (12634, 285870) vs final (4871, 120194), steps {'rho': 11, 'ecm': 10}; with p-1 (12634, 8192, 142935) vs (d) (2896, 8192, 120194), steps {'rho': 17, 'pm1_B': 0, 'ecm': 2}  MOVED > 1 STEP
+exit 0

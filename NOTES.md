@@ -3537,3 +3537,46 @@ The final Track R genes run as qs alone on the corrected card with kset = sf32. 
 - Finish the ECM-additions change and the confirmation-share measurement first.
 - If confirmation is ≥ 20% of qs cost under ruint or Montgomery, build root-matched confirmation (cost model first) before pm1 stage 2. Otherwise keep pm1 stage 2 next, as planned.
 - *Outcome of the measurement:* confirmation is 23–33% (ruint) and 22–31% (Montgomery) at every size, so the rule's condition holds and root-matched confirmation would come before pm1 stage 2. **Pending the user's confirmation;** the ECM change finishes first in either case.
+
+### ECM additions charged: before / after (`evolve/ecmword_measure.py`, `ecmword_measure.out`; ratios recomputed to completion)
+
+**ECM alone, cost new / old, every map number run to completion** (lampcore, cap 2^34, the saved pre-change build against the current one; every run finds its factor):
+
+| bits | official | ruint | Montgomery | word ops per ECM multiply |
+|---|---|---|---|---|
+| 54 | 2.335 | 1.045 | 1.166 | 1.34 |
+| 72 | 2.392 | 1.047 | 1.174 | 1.40 |
+| 84 | 2.416 | 1.048 | 1.177 | 1.42 |
+| 96 | 2.451 | 1.049 | 1.182 | 1.45 |
+
+- The first printed ratios at 84 and 96 (`ecmword_measure.out`) were biased: under the new count, 1 and 36 numbers no longer finish within the map's ECM cap of 2^21, and their partial costs were compared. The table above replaces them. The re-solves are unaffected, because rows beyond 2^20 are extended to 2^22 / 2^24 as before.
+- **Larger than my expectation** (+80–90% official, +3% ruint, +11% Montgomery), because stage 2's per-candidate bookkeeping (4 word ops for each of the 24 baby values per giant step, hit or not) is heavy at b2 = 50. Word ops are 1.34–1.45 per ECM multiply, against the 0.91 I took from stage 1 alone.
+
+**Units.** An ECM op budget (ob) is counted in meter ops, and the meter now counts word ops. So the same ob buys ~2.4x fewer multiplies. Below, ECM budgets are also given in **work-equivalent** terms (new ob ÷ the official ratio at that size), which is what is comparable with the old budgets.
+
+**Re-solves with the new ECM columns** (rho, [p-1 B,] ECM):
+
+| bits | track | no p-1: new (work-equivalent ECM) vs final round | with p-1: new (work-equivalent ECM) vs kc / lc (d) |
+|---|---|---|---|
+| 54 | R | (0, 0), unchanged | (0, 2^8, 0), unchanged |
+| 54 | M | (3,158, 0), unchanged | (1,448, 2^10, **0**) vs (0, 2^10, 6,317): **ECM switches off**, rho back on |
+| 72 | R | unchanged | unchanged |
+| 72 | M | (5,312, **0**) vs (1,448, 35,734): **ECM switches off**, rho +15 steps | (5,312, 2^11, **0**) vs (664, 2^11, 17,867): **ECM off**, rho +24 steps |
+| 84 | R | unchanged | unchanged |
+| 84 | M | (5,793, 77,936 ≈ 32,258) vs (3,158, 32,768): ECM work unchanged, rho +7 steps | (3,158, 2^12, 77,936 ≈ 32,258) vs (2,896, 2^12, 32,768): ECM work unchanged, rho +1 step |
+| 96 | R | unchanged | unchanged |
+| 96 | M | (12,634, 285,870 ≈ 116,634) vs (4,871, 120,194): ECM work unchanged, rho +11 steps | (12,634, 2^13, 142,935 ≈ 58,317) vs (2,896, 2^13, 120,194): **ECM work halves** (−8 steps), rho +17 steps |
+
+- **Track R does not move anywhere** (no ECM in its pipelines).
+- **Track M moves at every size with p-1:**
+  - ECM switches off at 54 and 72;
+  - its work halves at 96 and stays the same at 84;
+  - rho rises everywhere ECM gives way.
+- **Track M at 72 now has no ECM.** Its pipeline (rho 5,312, p-1 2^11, qs) has the same shape as Track R's, so PD_M and PD_R at 72 should move toward 1. That is measured in the next sealed run; no PD is claimed from the map.
+
+**Predictions on this change, scored as written.**
+- (D-ecmadd, DeepSeek) ECM cost +5% Montgomery and +1.4% ruint; no Track M budget moves at 72–96, possibly one step down at 54: **missed** (+16.6–18.2% and +4.5–4.9%; ECM switches off at 72 and rho moves at 72–96). Its PD_M clause awaits a sealed run, with the direction note recorded.
+- (G-ecmadd, Grok) Track M ECM cost +12–18%; budgets possibly one step lower at 84–96, unlikely at 54–72: **missed.** The cost clause held at 54–84 (16.6–17.7%), with 96 just above (18.2%). The budget clause missed: ECM switched off at 54 and 72. The PD_M clause awaits a sealed run.
+- *My expectation in the cost model* (+80–90% official, +3% ruint, +11% Montgomery): **missed** (×2.34–2.45, +4.5–4.9%, +16.6–18.2%; stage 2's bookkeeping was not in my estimate).
+- **Any Track M budget move (user's question): yes, at every size with p-1, and at 72–96 without it.**
+- **Consequence:** the kc / lc round's Track M (d) budgets, and the final-round Track M budgets, are in the old ECM units and are superseded. A re-solve with the new columns is needed before any further Track M sealed run; the table above is that re-solve.

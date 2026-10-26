@@ -1,0 +1,334 @@
+{
+ "54": {
+  "ecm_alone_new_over_old": {
+   "official": 2.3351975156942792,
+   "ruint": 1.0453418744735956,
+   "montgomery": 1.1657081186824556
+  },
+  "same_success": 320,
+  "n": 320,
+  "tracks": {
+   "R": {
+    "no_p1": {
+     "budgets": [
+      0,
+      0
+     ],
+     "previous": [
+      0,
+      0
+     ],
+     "steps": {
+      "rho": 0,
+      "ecm": 0
+     },
+     "fitness": 0.9371121966598447
+    },
+    "with_p1": {
+     "budgets": [
+      0,
+      256,
+      0
+     ],
+     "previous": [
+      0,
+      256,
+      0
+     ],
+     "steps": {
+      "rho": 0,
+      "pm1_B": 0,
+      "ecm": 0
+     },
+     "moved_more_than_one": false,
+     "fitness": 0.8599303083819151
+    }
+   },
+   "M": {
+    "no_p1": {
+     "budgets": [
+      3158,
+      0
+     ],
+     "previous": [
+      3158,
+      0
+     ],
+     "steps": {
+      "rho": 0,
+      "ecm": 0
+     },
+     "fitness": 0.6697914813242635
+    },
+    "with_p1": {
+     "budgets": [
+      1448,
+      1024,
+      0
+     ],
+     "previous": [
+      0,
+      1024,
+      6317
+     ],
+     "steps": {
+      "rho": null,
+      "pm1_B": 0,
+      "ecm": null
+     },
+     "moved_more_than_one": true,
+     "fitness": 0.6152774889025013
+    }
+   }
+  }
+ },
+ "72": {
+  "ecm_alone_new_over_old": {
+   "official": 2.3918779554842162,
+   "ruint": 1.0472750554789607,
+   "montgomery": 1.173885401456727
+  },
+  "same_success": 480,
+  "n": 480,
+  "tracks": {
+   "R": {
+    "no_p1": {
+     "budgets": [
+      1448,
+      0
+     ],
+     "previous": [
+      1448,
+      0
+     ],
+     "steps": {
+      "rho": 0,
+      "ecm": 0
+     },
+     "fitness": 0.7348627900878358
+    },
+    "with_p1": {
+     "budgets": [
+      790,
+      512,
+      0
+     ],
+     "previous": [
+      790,
+      512,
+      0
+     ],
+     "steps": {
+      "rho": 0,
+      "pm1_B": 0,
+      "ecm": 0
+     },
+     "moved_more_than_one": false,
+     "fitness": 0.6880919879513978
+    }
+   },
+   "M": {
+    "no_p1": {
+     "budgets": [
+      5312,
+      0
+     ],
+     "previous": [
+      1448,
+      35734
+     ],
+     "steps": {
+      "rho": 15,
+      "ecm": null
+     },
+     "fitness": 0.5642009973760405
+    },
+    "with_p1": {
+     "budgets": [
+      5312,
+      2048,
+      0
+     ],
+     "previous": [
+      664,
+      2048,
+      17867
+     ],
+     "steps": {
+      "rho": 24,
+      "pm1_B": 0,
+      "ecm": null
+     },
+     "moved_more_than_one": true,
+     "fitness": 0.5429723969692978
+    }
+   }
+  }
+ },
+ "84": {
+  "ecm_alone_new_over_old": {
+   "official": 2.4080977471895175,
+   "ruint": 1.0446921163306673,
+   "montgomery": 1.1733795147148218
+  },
+  "same_success": 559,
+  "n": 560,
+  "tracks": {
+   "R": {
+    "no_p1": {
+     "budgets": [
+      5793,
+      0
+     ],
+     "previous": [
+      5793,
+      0
+     ],
+     "steps": {
+      "rho": 0,
+      "ecm": 0
+     },
+     "fitness": 0.5898954660238297
+    },
+    "with_p1": {
+     "budgets": [
+      3158,
+      2048,
+      0
+     ],
+     "previous": [
+      3158,
+      2048,
+      0
+     ],
+     "steps": {
+      "rho": 0,
+      "pm1_B": 0,
+      "ecm": 0
+     },
+     "moved_more_than_one": false,
+     "fitness": 0.5761940026718995
+    }
+   },
+   "M": {
+    "no_p1": {
+     "budgets": [
+      5793,
+      77936
+     ],
+     "previous": [
+      3158,
+      32768
+     ],
+     "steps": {
+      "rho": 7,
+      "ecm": 10
+     },
+     "fitness": 0.4647432434012828
+    },
+    "with_p1": {
+     "budgets": [
+      3158,
+      4096,
+      77936
+     ],
+     "previous": [
+      2896,
+      4096,
+      32768
+     ],
+     "steps": {
+      "rho": 1,
+      "pm1_B": 0,
+      "ecm": 10
+     },
+     "moved_more_than_one": true,
+     "fitness": 0.4474077794803278
+    }
+   }
+  }
+ },
+ "96": {
+  "ecm_alone_new_over_old": {
+   "official": 2.0525570160806375,
+   "ruint": 0.8817913889317662,
+   "montgomery": 0.9924173547319234
+  },
+  "same_success": 604,
+  "n": 640,
+  "tracks": {
+   "R": {
+    "no_p1": {
+     "budgets": [
+      12634,
+      0
+     ],
+     "previous": [
+      12634,
+      0
+     ],
+     "steps": {
+      "rho": 0,
+      "ecm": 0
+     },
+     "fitness": 0.5004229131146901
+    },
+    "with_p1": {
+     "budgets": [
+      10624,
+      4096,
+      0
+     ],
+     "previous": [
+      10624,
+      4096,
+      0
+     ],
+     "steps": {
+      "rho": 0,
+      "pm1_B": 0,
+      "ecm": 0
+     },
+     "moved_more_than_one": false,
+     "fitness": 0.4685506676597759
+    }
+   },
+   "M": {
+    "no_p1": {
+     "budgets": [
+      12634,
+      285870
+     ],
+     "previous": [
+      4871,
+      120194
+     ],
+     "steps": {
+      "rho": 11,
+      "ecm": 10
+     },
+     "fitness": 0.3895162618117174
+    },
+    "with_p1": {
+     "budgets": [
+      12634,
+      8192,
+      142935
+     ],
+     "previous": [
+      2896,
+      8192,
+      120194
+     ],
+     "steps": {
+      "rho": 17,
+      "pm1_B": 0,
+      "ecm": 2
+     },
+     "moved_more_than_one": true,
+     "fitness": 0.3658239014465314
+    }
+   }
+  }
+ }
+}
