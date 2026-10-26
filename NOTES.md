@@ -6351,3 +6351,24 @@ Each cell gives ratio A / ratio B, with the materiality (time share × (ratio_B 
 - On prices, 84–96 say raise F (solve far below 8–15%) and move M down. On wall-clock time, F is inside the band and M points the other way.
 - **The two disagree because setup and solve run slower than they are priced.** Which is right depends on whether those regions are slow code or underpriced (ranked after step 7).
 - *Caveat:* e_M (~0.71) was measured by Wolfram at M = 20,000, not at the card's M (mc · B: a few hundred to ~1,000). The reviewer's theory puts the card's e_M near 0.67 (sealed R-E2 0.63–0.70; step 6c measures it).
+
+**Sealed predictions (the reviewer's / the user's; recorded before X3 or any L test is computed):**
+- **R-X3:** the card's never-combined 1LP share at 96, reference genes: 0.86–0.94 (central 0.90).
+- **L test at 96** (L/B = 12, i.e. lc = 1 + ln 12 / ln B = 1.3305 with the card's B = 1,841; all else the reference):
+  - *R-L1 (the user's):* polynomials to completion +5% to +12% (central +8%);
+  - *R-L2 (the user's):* stored partials per number −65% to −82% (central −75%);
+  - *R-L3 (the user's):* priced qs ruint per number, mean −2% to +8%. Clearly positive means the meter underprices partials; near zero means drift on a flat fitness curve;
+  - *R-L4 (the user's):* wall-clock µs per number, mean −4% to −15%; lp_ledger itself −50% to −75%.
+  - (DeepSeek's sealed R-L1–R-L4 from round 31 are recorded above under the same names and are scored separately.)
+
+**Step 7 added (user, Oct 26): a gene test, with no code change. Report only; the decision is the user's. It runs before any lp_ledger storage rewrite.**
+- *7a (read-only):*
+  - the lc history at 96: was 1.974 evolved or hand-set, and what did fitness look like across lc in the last run that set it (flat or sloped)?
+  - the drift-against-mispricing separators: lc's trajectory at 96 across generations and its correlation with priced fitness; whether earlier 96-bit generations sat near ~1.7; whether lc moved in steps without priced-fitness gains or rose steadily with them.
+- *7b (read-only):* X3 on the card from the traces (inserts and combinations per attempt) at 84 and 96, reference genes. Scores X3 (DeepSeek's, the user's, R-X3).
+- *7c (card runs at 84 and 96):* the reference against L/B = 12 (lc 1.3526 at 84, 1.3305 at 96), and L/B = 8 at 96 if cheap.
+  - Per size: polynomials to completion, stored partials, priced qs ruint (mean, median, slowest decile), and wall-clock µs per number (the time-weighted anchor, with lp_ledger and confirm shown separately).
+  - Also the measured per-partial price in sieve positions, which scores W3 (i) and sets I-028's m.
+  - The same N sets as step 5. Scores R-L1–R-L4 (both sources).
+- *7d:* acceptance for the test build is that it is the reference card with lc changed; no parity work beyond confirming the gene is the only difference.
+- *Then (step 5 of the user's message):* rank the remaining fixes in light of 7c (lp_ledger storage, setup at 72–84, solve's price). For each flagged region, say whether the evidence points to slow code or a wrong price (its ns per op against the calibrated clean op, anchor C).
