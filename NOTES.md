@@ -3650,3 +3650,18 @@ Cost split under ruint (setup = multiplier, factor base and polynomial setup; th
 - **The mechanism is the per-polynomial setup cost** (DeepSeek's alternative under D-pv). At low slack, few relations come per polynomial, and setup is 53–75% of ruint cost at slack 1.0. A looser threshold amortizes setup over more relations, until confirmation (0.47–0.52 of ruint cost at 2.5) takes over. The toy, with no setup cost, misses this, which is why its best slack is ~1.0.
 - **Setup is 35–40% of qs's ruint cost at the tuned slack.** That is a target in its own right, the largest single slice under ruint at 72–84.
 - *For root-matching:* cheaper confirmation lowers the cost of a looser threshold, so the optimal slack should rise and setup's share fall. The saving after retuning can exceed the static estimate in the cost model.
+
+**Grok, after the user's root-matching toy** (labelled as Grok's; revisions, so the originals stay scored).
+- *Timing:* this arrived after the slack sweep had run and been committed (a20bb11). G-slack is therefore **post hoc**, recorded and scored only for the record.
+- **Confirmation share REVISED** (total qs, F 57–151): official 35–50%, ruint 45–65%, Montgomery 45–65%. (Measured: 10.5–23% / 23–33% / 22–31%.)
+- **G-rm REVISED:** root-matching alone saves −2% to +2% official, 20–32% ruint and 22–35% Montgomery (now close to DeepSeek's D-rm2).
+- **(G-slack, post hoc)** qs cost against slack 1.0–2.5: official has a clear minimum at 1.8–2.2, rising below 1.5 and above 2.4; ruint and Montgomery have a broader, shallower minimum at 1.9–2.3, not a flat plateau; the mechanism is per-polynomial setup amortization.
+  - *Scored post hoc:* **missed.** The mechanism and "not a plateau" agree with the sweep, but the shape is the other way round. Official is flat above 2.0 (0.99–1.05 at 2.5, and lowest at 2.5 at 96), while ruint and Montgomery have the sharper minimum (+11–25% at 2.5).
+- *Grok's build order, if root-matching delivers ~24–33% calibrated:* root-matching, then small-prime skipping, then the threshold reparameterization, then pm1 stage 2.
+
+**Recommended order (the user's, to confirm):**
+1. root-matched confirmation first (the confirmation share is ≥ 20% under ruint and Montgomery: measured 22–33%);
+2. then pm1 stage 2 (cost model written, predictions on record, ~6.5–11% in the toy, mostly Track M);
+3. then small-prime skipping (mainly an official gain, ~9%, and 2–4 points calibrated on top of root-matching);
+4. then the threshold reparameterization (search-space cleanup, no cost change).
+- Step 1 already follows from the ordering rule; the rest of the order is pending the user's confirmation.
