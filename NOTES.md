@@ -5457,3 +5457,30 @@ Time shares (new reference, 96): sieve 24%, confirm 29%, setup 24%, solve 8%, lp
   2. the item 14 and 15 cost models and charges (an hour, with parity);
   3. the gray flat layout (an hour, identical counts);
   4. then the wall-clock re-run again. The 2×2, p-1 stage 2 (parked, accepted) and the re-solve follow unchanged.
+
+## 2026-10-26 (day) — after the overnight stop: the user's plan and sealed predictions (recorded before any step ran)
+
+**Plan (user, Oct 26):**
+- Step 0: (a) restore and commit p-1 stage 2 after its acceptance and parity; (b) check the 84-bit re-sieve on / off coincidence.
+- Step 1: delete the fills, a code change in both cores; only word counts change.
+  - (1a) the re-sieve slot array is allocated once per number and only the set slots are cleared, |cand| word;
+  - (1b) the sieved flags become a u32 generation stamp, |st| word;
+  - (1c) one reused exponent vector, clearing only the touched entries; kept relations stored sparse; solve's bit rows built from the sparse form and charged per entry;
+  - (1d) the direct list's pass stays charged.
+- Step 2: audit items 14 (solve's copies, word per 64-bit word moved) and 15 (the A-prime adds), cost model first.
+- Step 3: the hash price's dependence on table size. Measured; banded prices adopted only if ns per hash at 96's size exceeds 1.5x the calibrated 0.364 ruint.
+- Step 4: gray, a flat (structure-of-arrays) layout; counts identical.
+- Step 5: wall-clock re-run with two anchors: (A) the median region, (B) total ns / total priced units (time-weighted).
+  - From now on the materiality rule uses anchor B: a flagged region stops the run only if time share × (ratio_B − 1) ≥ 1%.
+  - If it passes, the overnight brief's stages 2–4 run as written. If not, stop and report.
+
+**Sealed predictions (the user's):**
+- P1. After step 1, re-sieve at p0 200 is cheaper than the full pass at 84 and 96 (ruint), by ≥ 5% at 96.
+- P2. Step 1 cuts the c13019b rise by ≥ 70% with re-sieve on, and leaves ≤ 2% with re-sieve off.
+- P3. The median ns per priced unit returns to 60–90 at every size after step 1.
+- P4. setup at 72 (re-sieve off) falls under 1.5x under both anchors.
+- P5. Ledger hash at 96's table size costs ≥ 2x the clean calibrated price, and step 3 adopts banding.
+- P6. After item 14, solve at 84–96 is under 1.5x (anchor B).
+- P7. Gray stays above 1.5x even after the flat layout (anchor A); under anchor B it passes the 1% bar.
+- P8. Step 0b: the 84 equality is a coincidence (re-sieve did run), not a bug. (Confidence: low.)
+- *Base for P2 (stated here):* "the c13019b rise" is the vecinit_accept before → after per pricing. Ruint, re-sieve off: +141 / +681 / +1,745 / +3,659 per number at 54 / 72 / 84 / 96; on (p0 200): +299 / +1,627 / +4,782 / +13,835.
