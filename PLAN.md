@@ -811,6 +811,10 @@ computed; with four stages, trying every order makes it moot.
 - **MAP-Elites:** pyribs (reuse rule), not the island code.
 - **Fixed tuning sets in future runs:** 24 numbers per band (doubled from 12 after Run 8's
   seed 73 misled four of five methods). The sealed ACCEPT gate stays.
+  *Note (Oct 26, user's dark-mass prototype):* "best pipeline" claims depend on the theta prior
+  of the test numbers. Small lamps first cut expected cost 25-45% against qs alone under a
+  uniform or random-semiprime prior, and not at all under a balanced prior. The maps' equal
+  bands per smaller-factor size are one such prior; results are stated for that prior.
   **Gate with per-band intervals (Oct 24, user):** per band and pricing, the 95% interval of
   mean cost / mean reference cost (numbers resampled within the band, 10,000,
   random.Random(2026)). PASS: every upper bound <= 1.5 and no misses; FAIL: any lower bound

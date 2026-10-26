@@ -56,3 +56,11 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 ### I-003 to I-007 — The Illumination program (watt meter, price map, light spectrum, hazard monitor, dark mass)
 - Date: 2026-10-26. Source: Claude chat. Trigger: the user's question about better measures than a single efficiency number.
 - Decision: adopted (user, Oct 26) as the Illumination program; see PLAN.md, "Illumination program (Oct 26)", and the five MOVES rows.
+
+### I-008 — Index rule for the hazard monitor (Gittins / Sidney prefix ratio)
+- Date: 2026-10-26. Source: Claude chat. Trigger: the dark-mass prototype's one-step greedy lost 2-5% at 84-96 (rho's toll).
+- Idea: score each lamp by its best AVERAGE light per cost over any continuation (from now to its best stopping level) and run that whole stretch; qs's index = remaining dark mass / qs cost. This is the correct form of Phase 4's hazard monitor ("how bright does this lamp get once its toll is paid"), and it makes Phases 4 and 5 one mechanism.
+- Why now: the one-step rule's failure is structural, not a tuning issue.
+- Payoff/cost: estimated; being tested by the user's next Mathematica run (index rule vs fixed vs one-step). Cost: small (a scheduler change in the prototype; later in the harness).
+- Recommended timing: settle in the prototype now; carry into Phase 4's design in PLAN.md.
+- Decision: pending.

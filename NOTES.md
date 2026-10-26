@@ -4471,3 +4471,20 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
   - the ratio clause (calibrated > half official) fires at 84 (0.54) and 96 (0.67), as annotated (mis-specified);
   - **missed; falsified by its ratio clause.**
 - *Base note:* the cost model charges 2–3 word ops per relation offered, against 1 assumed by G-ledger2.
+
+**Dark-mass scheduler prototype** (user, Mathematica, Oct 26; Illumination Phases 4–5 with analytic lamp curves; information only).
+- *Model:*
+  - the smaller factor sits at θ = log p / log N, with a prior;
+  - lamps: td (to 2^j); rho (2^i iterations, survival exp(−k²/2p)); p-1 stage 1 (bound B, Dickman); ECM curves (B1 2^8 … 2^16, Dickman on p/12);
+  - qs always succeeds, at its post-Gray new-reference ruint cost (10,736 / 26,606 / 69,874);
+  - prices: multiply 1, small-modulus 0.114, gcd 7.9. Expected cost is exact (failure is the only continuing branch).
+- *Results* (expected cost per number; ratio to the best fixed rho-then-p-1 pipeline):
+  - balanced prior (θ 0.45–0.50): every scheduler equals qs alone.
+  - uniform θ: 72: qs 10,736, fixed 8,053 (rho 2^8, B 2^9), greedy-mass 7,954 (0.988), greedy-bits 7,958; 84: 26,606 / 19,398 (rho 2^9, B 2^10) / 19,521 (1.006) / 19,635; 96: 69,874 / 48,997 (rho 2^11, B 2^11) / 50,223 (1.025) / 50,392.
+  - random semiprime, prior ∝ 1/(θ(1 − θ)): 72: 10,736 / 6,746 (rho 2^9, B 2^9) / 6,671 (0.989) / 6,680; 84: 26,606 / 15,722 (rho 2^10, B 2^10) / 16,071 (1.022) / 16,108; 96: 69,874 / 38,082 (rho 2^11, B 2^11) / 39,893 (1.048) / 39,900.
+- *The user's findings:*
+  1. Running small lamps first cuts expected cost 25–45% against qs alone under the uniform and random-semiprime priors, and not at all under the balanced prior. So "best pipeline" claims depend on the θ prior of the test numbers (noted beside the band design in PLAN.md).
+  2. The one-step "most dark mass per cost" scheduler matches the fixed pipeline at 72 but loses 2–5% at 84–96. *Cause:* rho's success grows with the square of its effort (the birthday bound), so its early increments look dim, a toll before it gets bright, and a one-step rule under-invests in it. One-step greedy is optimal only when a lamp's light per cost never improves with effort.
+  3. Bits against mass: nearly identical schedules; bits worse by < 1%.
+  4. Claude chat's pre-run expectation: the balanced prior held; "greedy-mass beats fixed by a few % to 15%" **failed** (it loses at 84–96); "bits worse than mass" held in direction only (negligible).
+- IDEAS.md: I-008 added (index rule for the hazard monitor).
