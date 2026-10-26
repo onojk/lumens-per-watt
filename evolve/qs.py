@@ -330,6 +330,11 @@ def sieve_source(N, k, g, led, ch, at):
                 charge("word", len(cand) + walk + nhit)     # bitmap set per candidate, the walk, one per hit
                 sieved_j = {idx[p] for p, _, _ in st_}
                 direct = [j for j in range(1, F) if base[j] < P0 or j not in sieved_j]
+                # per-polynomial initialization, counted as lampcore does it: the slot array (width), the sieved
+                # flags' fill (F) and setting (|st|), the direct list's pass (F - 1), the record lists (|cand|)
+                charge("word", width + 2 * F - 1 + len(st_) + len(cand))
+                if at is not None:
+                    at["polys"][-1]["nc"] = len(cand)   # trace only: candidates of this polynomial (all, processed or not)
             # 5. confirm
             for i0 in cand:
                 x = i0 - M
@@ -342,6 +347,7 @@ def sieve_source(N, k, g, led, ch, at):
                 charge("confirm", len(plist) if RS else F - 1)
                 if at is not None:
                     at["cands"].append(v)
+                charge("word", F)                  # the exponent vector's zero-fill (NOTES.md, "Meter correction: exponent-vector ...")
                 vec = [0] * F
                 if v < 0:
                     vec[0] = 1; v = -v

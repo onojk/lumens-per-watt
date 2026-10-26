@@ -795,6 +795,9 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 }
                 m.charge(crate::PH_WORD, cand.len() as u64 + walk + nhit)?;
                 direct = (1..f).filter(|&j| (base[j] as i128) < p0 || !sieved_j[j]).collect();
+                // per-polynomial initialization: the slot array (width), the sieved flags' fill (F) and setting
+                // (|st|), the direct list's pass (F - 1), the record lists (|cand|)
+                m.charge(crate::PH_WORD, (width + 2 * f - 1 + st.len() + cand.len()) as u64)?;
             }
             crate::pt_end(m, 6, pt);
             // 5. confirm
@@ -822,10 +825,13 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                     m.charge(crate::PH_WORD, l.len() as u64)?;
                     l
                 } else {
-                    (1..f).collect()
+                    Vec::new() // the full pass iterates 1..f directly (no list is built, as in Python)
                 };
                 m.charge(crate::PH_WORD, 1)?; // the sign check (audit 8)
                 m.charge(CONFIRM, if rs_on { plist.len() as u64 } else { f as u64 - 1 })?;
+                // the exponent vector's zero-fill, F word ops (NOTES.md, "Meter correction: exponent-vector and
+                // per-polynomial initializations")
+                m.charge(crate::PH_WORD, f as u64)?;
                 let mut vec_ = vec![0u32; f];
                 if v < 0 {
                     vec_[0] = 1;
@@ -835,7 +841,9 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                     m.test(false);
                     continue;
                 }
-                for &j in &plist {
+                let n_pl = if rs_on { plist.len() } else { f - 1 };
+                for t in 0..n_pl {
+                    let j = if rs_on { plist[t] } else { t + 1 };
                     let p = base[j] as i128;
                     if v % p == 0 {
                         v /= p;

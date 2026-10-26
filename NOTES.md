@@ -5351,3 +5351,30 @@ Time shares (new reference, 96): sieve 24%, confirm 29%, setup 24%, solve 8%, lp
   - **ruint −35.7, Montgomery −132.8, official +327.7.** That is ruint −1.55 / −0.42 / −0.16 / −0.06% and Montgomery −1.70 / −0.44 / −0.17 / −0.06% at 54 / 72 / 84 / 96 (new reference, re-sieve off).
   - My cost model's estimate (about −36 ruint, −133 Montgomery per number) **held**. Official was not estimated in the entry: 280 → 117 + 20 + ~471 ops, +328.
   - New reference qs cost per number after I-021 (ruint): 2,266.4 / 8,502.7 / 22,083.0 / 58,098.9.
+
+### Exponent-vector zero-fill and re-sieve initialization charged: results (`evolve/vecinit_accept.py`, `vecinit_accept.out`, `.json`; `parity_vecinit.out`)
+
+- *Acceptance:*
+  1. against the build before this change, only word (and ops) rise, by the same amount: 12,000 / 12,000 (all map numbers; new reference off and on at p0 30 / 200 / 1000, frozen, corrected);
+  2. the word rise equals the formula from the Python trace and Python = Rust per type, 48 / 48;
+  3. parity passes (types 6,894 pairs, 0 mismatches; mutations 54 / 54).
+  - *The test was first too strict* (27 / 48). When the ledger fills mid-polynomial, the trace's candidate list omits that polynomial's unprocessed candidates, while the record-list initialization covers all of them.
+    - A trace-only per-polynomial candidate count (`nc`) was added to qs.py's trace, and the formula uses it. Python and Rust agreed on every case throughout.
+  - Rust's full pass no longer collects plist = (1..F) per candidate; it iterates the range. This is a code change, identical counts.
+- *Cost per number, before → after* (new reference; all map numbers):
+
+| size | re-sieve off: official / ruint / Montgomery | re-sieve on (p0 200): official / ruint / Montgomery |
+|---|---|---|
+| 54 | +19.8% / **+6.2%** / +6.7% (ruint 2,266 → 2,407) | +36.5% / **+13.1%** / +14.2% (2,296 → 2,595) |
+| 72 | +18.8% / **+8.0%** / +8.3% (8,503 → 9,184) | +41.3% / **+21.3%** / +22.2% (7,647 → 9,274) |
+| 84 | +15.2% / **+7.9%** / +8.0% (22,083 → 23,828) | +38.7% / **+25.1%** / +25.7% (19,046 → 23,828) |
+| 96 | +10.0% / **+6.3%** / +6.3% (58,099 → 61,758) | +33.7% / **+26.2%** / +26.4% (52,882 → 66,717) |
+
+- *Against the cost model:*
+  - The zero-fill's size held: confirm rises about 23% at every size, which on a confirm share near 30% gives the 6–8% totals.
+  - **The re-sieve initialization's size missed badly.** I wrote "width + 2F, small next to the walk at 84–96". It is not small: the slot array alone is width words per polynomial (median width 279–2,113), the same order as the scan.
+  - With it, re-sieve at p0 200 is now dearer than the full pass at every size (ruint 9,274 against 9,184 at 72; 23,828 against 23,828 at 84; 66,717 against 61,758 at 96).
+- **Pricing concern, for the user (not acted on).** The slot array and the sieved flags are a fill (memset, vectorized), priced here at the word price calibrated on the sieve's random-access update (0.71 ns per update in the clean benchmark).
+  - A sequential fill runs nearer 0.05–0.1 ns per element, so this charge likely overprices re-sieve's initialization by several times.
+  - It is what the decision specified ("as word ops"). The wall-clock re-run will show whether the resieve region falls well below the median.
+  - Alternatives for a decision: a measured "fill" type, or a code change (a reused slot array cleared only at the candidates' positions, |cand| writes instead of width) that would make most of this charge vanish.

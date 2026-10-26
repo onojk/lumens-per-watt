@@ -1,0 +1,10 @@
+54 bits, new ref: cost per number before / after: offi 27,520 / 32,973 (+19.82%)  ruin 2,266 / 2,407 (+6.21%)  mont 7,695 / 8,214 (+6.74%)
+54 bits, new ref + re-sieve p0 200: cost per number before / after: offi 31,809 / 43,433 (+36.54%)  ruin 2,296 / 2,595 (+13.06%)  mont 7,798 / 8,904 (+14.18%)
+72 bits, new ref: cost per number before / after: offi 140,408 / 166,829 (+18.82%)  ruin 8,503 / 9,184 (+8.02%)  mont 30,227 / 32,740 (+8.31%)
+72 bits, new ref + re-sieve p0 200: cost per number before / after: offi 152,901 / 215,965 (+41.25%)  ruin 7,647 / 9,274 (+21.28%)  mont 27,003 / 33,001 (+22.21%)
+84 bits, new ref: cost per number before / after: offi 444,698 / 512,336 (+15.21%)  ruin 22,083 / 23,828 (+7.90%)  mont 80,014 / 86,446 (+8.04%)
+84 bits, new ref + re-sieve p0 200: cost per number before / after: offi 479,611 / 664,970 (+38.65%)  ruin 19,046 / 23,828 (+25.11%)  mont 68,582 / 86,210 (+25.70%)
+96 bits, new ref: cost per number before / after: offi 1,423,319 / 1,565,126 (+9.96%)  ruin 58,099 / 61,758 (+6.30%)  mont 212,835 / 226,321 (+6.34%)
+96 bits, new ref + re-sieve p0 200: cost per number before / after: offi 1,591,474 / 2,127,729 (+33.70%)  ruin 52,882 / 66,717 (+26.16%)  mont 193,029 / 244,027 (+26.42%)
+1. only word (and ops) rise, by the same amount: 12000/12000
+2-3. word rise = formula (trace), Python = Rust per type: 48/48
