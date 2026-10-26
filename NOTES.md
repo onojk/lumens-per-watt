@@ -4319,6 +4319,7 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
      - items 6–8 at 0.114 / 0.426 (~0.70);
      - items 4–5 and item 1's target check at 1.0 (~0.97 ruint / ~0.88 Montgomery).
    - Its Montgomery method (ruint share ÷ a total-cost ratio of ~3.4) holds only for full-price ops; small-op shares are about equal under both pricings (see the audit table). Item by item on the audit table's base: ruint ~24.6 / 22.3 / 13.4 / 11.1%, Montgomery ~17.2 / 16.6 / 9.6 / 9.3%. Scored as given.
+   - *Correction (user's arithmetic check, Oct 26):* compared on its own (post-Gray) base, its ruint ranges contain the item-by-item expectation at all sizes; only its Montgomery figures are off (2–3x low). The annotation above had compared it on the audit-table base.
 3. **(D-p0R / D-p0M)** re-sieve after p0 tuning, at the retuned slack; saving against the full pass at the same slack.
    - Track R chooses no re-sieve at 54–96 (if forced, p0 ~1000, saving −1 to +1%).
    - Track M's best p0 is 30-or-lower / 60–200 / 100–400 / 400–1000, saving 8–10 / 8–12 / 6–10 / 4–10%.
@@ -4337,7 +4338,7 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
 1. Grok accepts: G-rm scored on the NOTES ranges (missed); G-dup2 as given; G-ledger2's ratio clause self-falsified, with its share ranges scored separately.
 2. **(G-audit)** items 1–8 re-typed together (base: qs cost after the ledger and multiplier-set correction, before the 2×2; new reference genes): ruint 18–26 / 16–23 / 9–14 / 7–12%; Montgomery 12–18 / 10–15 / 6–10 / 4–8% at 54 / 72 / 84 / 96. Grok expects only the double divide above 3x sieve_update (the others ≤ 2x). Falsified if any ruint cut falls outside 5–35%, or if 96's cut exceeds 54's.
    - *Annotations:*
-     - On the base it names (after the Gray-code re-typing; total ~12% lower at 72–96), the item-by-item expectation is roughly ruint ~25 / ~15 / ~12.6% and Montgomery ~19 / ~11 / ~10.6% at 72 / 84 / 96. That is above its ruint ranges at 72 and 96, and above its Montgomery ranges at 72–96.
+     - On the base it names (after the Gray-code re-typing; total ~12% lower at 72–96), the item-by-item expectation is roughly ruint ~25 / ~15 / ~12.6% and Montgomery ~19 / ~11 / ~10.6% at 72 / 84 / 96. That is above its ruint ranges at 72, 84 and 96, and above its Montgomery ranges at 72–96. [Corrected Oct 26 (user's arithmetic check): first written as "at 72 and 96".]
      - Its stated old prices differ from the card's: item 5 was charged at 1.0 (not 1.0–1.5), and items 6–8 at 0.114 (not 0.2–0.4).
      - The falsifier (outside 5–35%, or 96 > 54) is very loose. The ranges are scored separately, and both are reported.
    - *Note (mine):* the start-offset correction also precedes the audit re-typing; the base is reported with and without it.
@@ -4348,3 +4349,19 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
    - Falsified if the Track M best p0 at 96 is ≤ 200, or if re-sieve at its Track M optimum loses under Montgomery at 72, 84 or 96.
    - *Annotation:* Track R picks p0 by worst-of-three. The user's cost model puts official's break-even / optimum at p0 ~270–310 (72) and ~560–640 (84), so Track R's p0 is likely above Grok's 100–200 at 72 and at or above 200–400 at 84. Its Track R savings are quoted under ruint / Montgomery, not the worst-of-three objective; both are reported. The Track M ranges agree with the model and with W-p0.
 4. **(G-pool)** the old figures are pooled; the cv of partials per number is 0.35–0.55 / 0.40–0.60 / 0.45–0.70 at 72 / 84 / 96. Falsified if the per-number mean yield is within 5% of pooled at two or more sizes, or if the cv is < 0.25 at every size.
+
+**Audit re-typing, item-by-item arithmetic check** (user, Mathematica, Oct 26; information only, expectations, not scores).
+- *Method:* each item's cut = its audit-table share × (1 − word price / old price). Old prices: setup_small 0.307 / 1.137, full 1.0 / 1.0, small 0.114 / 0.426; word 0.034 / 0.125. Item 3's and item 4's Montgomery shares are approximated (the audit gave ranges). Post-Gray base = audit-base cut / (1 − Gray-code cut).
+- *Expected total cut* (% of qs cost) at 54 / 72 / 84 / 96:
+  - ruint, audit base: 24.5 / 22.3 / 13.4 / 11.1; post-Gray base: 25.9 / 25.1 / 15.2 / 12.7;
+  - Montgomery, audit base: 17.1 / 16.7 / 9.5 / 9.2; post-Gray base: 18.3 / 19.1 / 10.9 / 10.5.
+- *Per item, ruint at 72:* A search 8.09, sorts 2.40, forming A 1.07, B_l 0.29, v evaluation 7.92, large-prime compare / hash 0.70, F adds 1.47, sign compare 0.35.
+- *Against the registered ranges, each on its own base* (expectations; scoring uses the formal report):
+  - W-audit (audit base): in at all sizes, both pricings. *Note:* circular (built from the same arithmetic); it shows only consistency with the audit shares.
+  - D-audit (post-Gray base): ruint in at all sizes; Montgomery out at all sizes (expected 18.3 / 19.1 / 10.9 / 10.5 against 7.8–9.2 / 6.5–7.8 / 3.7–4.7 / 3.0–3.9).
+  - G-audit (post-Gray base): ruint in at 54 only (out at 72 / 84 / 96: 25.1 / 15.2 / 12.7 against 16–23 / 9–14 / 7–12); Montgomery out at all sizes.
+- *Expected differences in the formal report:*
+  - item 1's target check and item 2's multiplier ranking were partly full-price (cut slightly larger);
+  - a separate double-divide price after the microbenchmark would make the cut smaller;
+  - the ledger correction shifts totals slightly;
+  - so will the start-offset correction (added after this check).
