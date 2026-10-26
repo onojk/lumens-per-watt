@@ -3481,3 +3481,9 @@ The final Track R genes run as qs alone on the corrected card with kset = sf32. 
 - B is allowed up to 2^16 in the map check.
 
 **Decision (user, Oct 25): the old frozen reference stays in a side column for the next two sealed runs**, then is dropped unless a replacement check is triggered again (end condition written into PLAN; this replaces "for one round").
+
+**Grok, before stage-2 code** (labelled as Grok's; recorded Oct 25).
+- **G-c REVISED** (written after the user's c-vs-N toy; a revision, so the original G-c stays scored): c ~ 15–25 for Track R and 15–30 for Track M at 72 / 84 / 96 (central 20; Track M possibly one step higher at 96 if B hits 2^16). c no longer falls with size.
+- **(G-r3)** Track R stage 2 at 72: off, or on but inside noise. Falsified if the map check shows a robust gain of 4% or more at 72.
+  - *Note beside it:* one of Grok's reasons (the robust max may reject a setting that gains under ruint because it loses under official or Montgomery) is backwards. Ruint is where stage 2 helps least, since qs is cheapest there in multiply terms, so ruint decides the robust score. Its other reasons (rho's overlap with stage-2 catches; a lumpier real population than the toy) are recorded as given.
+- **(G-cconst)** If c = 10, 20 and 50 tie on sealed numbers, make c a constant at 20 (DeepSeek proposes the same rule). **Adopted as the default for that outcome, pending the user's confirmation when it happens.**
