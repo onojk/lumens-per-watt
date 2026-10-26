@@ -4376,3 +4376,16 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
    - Falsified if any 72 / 84 / 96 best slack is outside its range by more than 0.2; if ruint re-sieve fails to beat the full pass by at least 1% at 72 or 84; if ruint re-sieve beats it by more than 3% at 96; if the Montgomery full pass wins at 72, 84 or 96; or if the best p0 is outside the D-p0M ranges. The 54 diagnostic is falsified if the slack shift exceeds 0.2 or the Montgomery saving is outside 6–10%.
    - *Annotation:* re-sieve trades small-modulus divisions for word steps, and both prices scale ~3.7x from ruint to Montgomery while qs's total scales ~3.4x (full-price ops don't scale). So the Montgomery saving, as a share of qs cost, should be ~1.1x the ruint saving, not 2–4x as predicted at 72–84. The p0 = 30 measurement agrees (−9.9 against −11.1% at 72; −7.2 against −7.8% at 84). Its ruint and Montgomery clauses (especially the 96 pair: ruint within ±2% while Montgomery saves 4–10%) are therefore unlikely to hold together. Scored as given.
    - *Note (mine):* the fully corrected meter will also include the start-offset correction (audit item 10, decided after the predictions that name the corrections). D-2x2full is scored on the fully corrected pricing as built, and the start-offset part's effect on its cells is reported beside it.
+
+**Grok's reply (Oct 26, 01:03), with annotations** (labelled as Grok's; annotations by Claude chat, relayed by the user).
+1. Grok accepts the annotations on G-audit, G-p0 and G-pool. G-audit's registered ranges remain the scored intervals; the arithmetic figures are noted as a better point estimate, not a revision.
+2. **(G-slackFC)** fully corrected meter (Gray-code + ledger / multiplier set + items 1–8); best slack on the 0.1 grid over 1.6–2.8; re-sieve-on cells at their best p0 from the sweep; new reference genes, all map numbers; ruint and Montgomery separately; a shift counts only if the paired-bootstrap interval excludes zero.
+   - ruint: off 1.90–2.10 / 1.95–2.15 / 2.00–2.20; on 2.15–2.35 / 2.20–2.40 / 2.25–2.45 (72 / 84 / 96);
+   - Montgomery: off 1.85–2.05 / 1.90–2.10 / 1.95–2.15; on 2.10–2.30 / 2.15–2.35 / 2.20–2.40;
+   - net against G-slack2x2's on/yes cell: −0.05 to +0.15 under both pricings.
+   - Falsified if, under ruint, the on-cell best slack at any size is below 2.05, or if the off-to-on rise is under 0.10 at two or more sizes. G-slack2x2 stays scored on the Gray-code-only axis under ruint.
+   - *Annotations:*
+     - Its mechanism counts only cheaper setup (which lowers the best slack). The correction also makes candidate confirmation cheaper (item 5, the v evaluation, is per candidate and was the largest audit item at 54–72), which pushes the best slack up; the net direction off re-sieve is uncertain.
+     - Its off-cell ranges rise with size, while the current tuned slack falls with size (2.23 / 2.10 / 2.01), and nothing in its reasoning explains the reversal. At 72 its off range sits ~0.13–0.33 below today's tuned value.
+     - "Track-specific best p0": the ruint ranges are scored at the ruint-best p0 and the Montgomery ranges at the Montgomery-best p0.
+   - *Note (mine):* as for D-2x2full, the fully corrected meter as built also includes the start-offset correction. G-slackFC is scored on it, with the start-offset part's effect reported beside it.
