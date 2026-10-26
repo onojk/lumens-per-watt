@@ -4581,3 +4581,26 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
 - *Claude chat's* (same time):
   - (Q1) rho returns at 84 and 96 at 2^10–2^12, not at 72. (Q2) 2–5% at each size. (Q3) ECM at 96 under 2–3 priors, gain ≥ 4% (an honestly priced p-1 makes ECM relatively more attractive). (Q4) agree. (Q6) 2^8–2^10 at all sizes.
   - *Notes:* Q1 and Q6 trade off directly (more rho means a lower p-1 bound), as do Q2 and Q3, so they are not independent. Q1's upper levels needed the rho grid extended past 2^14.
+
+### Item 11: re-sieve's prime list by a charged merge — results (`evolve/merge_accept.py`, `merge_accept.out`, `.json`; `parity_merge.out`)
+- **Acceptance:**
+  - without re-sieve, identical to the pre-change lampcore (6,000 / 6,000);
+  - with re-sieve (p0 30 / 200 / 1000), factor, tests, hits and every type except word identical, with word and ops rising by the same amount (18,000 / 18,000);
+  - the rise equals Σ |plist| from the trace (confirm_td − candidates − repeats), and Python = Rust per type (72 / 72).
+  - **Parity passes** (types 6,894, mutations 50 / 50, 0 mismatches).
+- **Before / after, re-sieve-on cells (p0 30), cost per number, absolute:**
+
+| bits | genome + re-sieve | official | ruint | Montgomery |
+|---|---|---|---|---|
+| 54 | new reference | 26,992 → 29,057 (+7.65%) | 2,739 → 2,809 (+2.56%) | 8,332 → 8,591 (+3.11%) |
+| 54 | frozen / corrected reference | +5.19% / +6.14% | +0.61% / +1.78% | +1.41% / +2.08% |
+| 72 | new reference | 144,361 → 150,831 (+4.48%) | 9,545 → 9,765 (+2.30%) | 31,020 → 31,832 (+2.62%) |
+| 72 | frozen / corrected | +3.55% / +3.67% | +0.96% / +1.60% | +1.57% / +1.76% |
+| 84 | new reference | 498,679 → 509,235 (+2.12%) | 24,462 → 24,821 (+1.47%) | 84,125 → 85,449 (+1.57%) |
+| 84 | frozen / corrected | +2.09% / +2.33% | +0.43% / +1.35% | +0.92% / +1.45% |
+| 96 | new reference | 1,743,471 → 1,759,199 (+0.90%) | 72,183 → 72,717 (+0.74%) | 257,708 → 259,680 (+0.77%) |
+| 96 | frozen / corrected | +1.38% / +1.46% | +0.46% / +1.11% | +0.84% / +1.17% |
+
+- **Re-sieve (p0 30) against the full pass, restated on the current meter** (Gray-code re-typed, ledger charged, merge charged; new reference genes; cost ratio re-sieve / full pass): official 1.116 / 1.129 / 1.187 / 1.274, ruint 0.947 / 0.909 / 0.933 / 1.040, Montgomery 0.936 / 0.896 / 0.925 / 1.039 at 54 / 72 / 84 / 96.
+  - *Before* the merge charge (772632a, also before the Gray-code re-typing and the ledger charge), ruint was 0.928 / 0.901 / 0.928 / 1.029.
+  - The uncharged sort had flattered re-sieve by 0.5–2 points under ruint and 1–9 points under official. The fixed-gene verdicts of D-rm, D-rm2 and G-rm (missed) do not change; their after-retune clauses wait for the 2×2.

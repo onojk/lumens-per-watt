@@ -101,6 +101,17 @@ def lamp_qs(N, g, m):
 
 SF32 = [1, 2, 3, 5, 6, 7, 10, 11, 13, 14, 15, 17, 19, 21, 22, 23, 26, 29, 30, 31]   # squarefree k <= 32
 
+def merge_asc(a, b):
+    """Linear merge of two ascending lists of distinct ints (re-sieve's prime list; NOTES.md, item 11)."""
+    out, i, j = [], 0, 0
+    while i < len(a) and j < len(b):
+        if a[i] < b[j]:
+            out.append(a[i]); i += 1
+        else:
+            out.append(b[j]); j += 1
+    out.extend(a[i:]); out.extend(b[j:])
+    return out
+
 def sort_cost(n):
     """sort_charge (NOTES.md, "The sort_charge option"): n ceil(log2 n) comparisons for n >= 2."""
     return n * (n - 1).bit_length() if n >= 2 else 0
@@ -305,7 +316,10 @@ def sieve_source(N, k, g, led, ch, at):
             for i0 in cand:
                 x = i0 - M
                 v = (A * x + 2 * Bv) * x + C; charge("confirm", 2)
-                plist = sorted(direct + rec[i0]) if RS else range(1, F)
+                if RS:                             # merge two ascending lists, |plist| word ops (NOTES.md, item 11)
+                    plist = merge_asc(direct, rec[i0]); charge("word", len(plist))
+                else:
+                    plist = range(1, F)
                 charge("confirm", 1 + len(plist) if RS else F)
                 if at is not None:
                     at["cands"].append(v)

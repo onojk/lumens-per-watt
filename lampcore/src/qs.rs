@@ -756,8 +756,22 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 let mut v = (a * x + 2 * bv) * x + c;
                 m.charge(CONFIRM, 2)?;
                 let plist: Vec<usize> = if rs_on {
-                    let mut l: Vec<usize> = direct.iter().copied().chain(rec[ci].iter().copied()).collect();
-                    l.sort_unstable();
+                    // merge two ascending lists, |plist| word ops (NOTES.md, item 11)
+                    let (a_, b_) = (&direct, &rec[ci]);
+                    let (mut i, mut j) = (0usize, 0usize);
+                    let mut l = Vec::with_capacity(a_.len() + b_.len());
+                    while i < a_.len() && j < b_.len() {
+                        if a_[i] < b_[j] {
+                            l.push(a_[i]);
+                            i += 1;
+                        } else {
+                            l.push(b_[j]);
+                            j += 1;
+                        }
+                    }
+                    l.extend_from_slice(&a_[i..]);
+                    l.extend_from_slice(&b_[j..]);
+                    m.charge(crate::PH_WORD, l.len() as u64)?;
                     l
                 } else {
                     (1..f).collect()
