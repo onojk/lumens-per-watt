@@ -59,7 +59,7 @@ def ecm_counts(tr, N):
         elif setup - done >= 10 + st:
             steps += st
     return {"setup_mul": setup - steps, "setup_euclid_N": steps,
-            "mul": o.get("ecm_s1", 0) + o.get("ecm_s2", 0), "gcd": o.get("ecm_gcd", 0)}
+            "mul": o.get("ecm_s1", 0) + o.get("ecm_s2", 0), "gcd": o.get("ecm_gcd", 0), "word": o.get("word", 0)}
 
 def rho_counts(ops, tests):
     return {"mul": ops - tests, "gcd": tests}
@@ -67,7 +67,7 @@ def rho_counts(ops, tests):
 # The fixed type order of lampcore's --types output (lampcore/src/main.rs, TYPE_NAMES).
 TYPE_ORDER = ["mult", "fb", "setup_full", "setup_euclid", "setup_small", "sieve_update", "sieve_scan",
               "confirm_full", "confirm_td", "la", "sqrt_mul", "sqrt_gcd", "lp_full", "lp_small", "check",
-              "setup_mul", "setup_euclid_N", "mul", "gcd", "td_mod", "sq_ops", "ps_ops", "cfrac_ops"]
+              "setup_mul", "setup_euclid_N", "mul", "gcd", "td_mod", "sq_ops", "ps_ops", "cfrac_ops", "word"]
 
 def prices(path="calibrate.json"):
     """Per pricing, the price of each type: official 1 for every op; ruint and Montgomery from
@@ -78,6 +78,7 @@ def prices(path="calibrate.json"):
     for ref in ("ruint", "montgomery"):
         names = cal["prices"][f"{ref} P1"]
         out[ref] = {t: sorted(cal["prices"][f"{ref} {r}"][t] for r in ("P1", "P2", "P3"))[1] for t in names}
+        out[ref]["word"] = out[ref]["sieve_update"]   # word-level op, priced like sieve_update (no new calibration)
     return out
 
 def cost(counts, pricing, pr):

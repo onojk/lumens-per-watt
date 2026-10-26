@@ -84,6 +84,7 @@ def prices():
     for ref in ("ruint", "montgomery"):
         names = cal["prices"][f"{ref} P1"]
         out[ref] = {t: sorted(cal["prices"][f"{ref} {r}"][t] for r in ("P1", "P2", "P3"))[1] for t in names}
+        out[ref]["word"] = out[ref]["sieve_update"]   # word-level op, priced like sieve_update (no new calibration)
     return out
 
 class SpentMeter(Meter):

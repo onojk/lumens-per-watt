@@ -11,6 +11,9 @@ modular multiply or squaring, every one charged where it is performed (additions
   ecm_s2     2Q (5), baby steps 3Q..103Q (51 xADDs), ladders for W = 210 Q and j0 W,
              6 per giant step, 3 per (j, b) pair with jw + b or jw - b prime in (B1, B2]
   ecm_gcd    1 per gcd (after stage 1, after stage 2)
+  word       (NOTES.md, "ECM modular additions"): 4 per xDBL, 6 per xADD, 5 per curve setup (sigma^2 - 5,
+             4 sigma, v - u, 3u, 3u + v), and in stage 2 4 per (j, b) candidate (two indices, two
+             prime-table tests) and 1 per accumulated pair (p1 - p2); priced like sieve_update
 
 Genes: b1 (B1 = max(10, int(b1 exp(sqrt(ln s ln ln s) / sqrt 2))), s = isqrt(N), default 1.0),
 b2 (B2 = int(b2 B1), 0 = no stage 2, default 50), curves (default 10000), s0 (first sigma,
@@ -59,6 +62,7 @@ def lamp_ecm(N, g, m):
     a24 = 0
 
     def xdbl(X, Z, ph):
+        c("word", 4)                           # X + Z, X - Z, t1 - t2, t2 + e (NOTES.md, "ECM modular additions")
         t1 = (X + Z) * (X + Z) % N; c(ph, 1)
         t2 = (X - Z) * (X - Z) % N; c(ph, 1)
         X2 = t1 * t2 % N; c(ph, 1)
@@ -68,6 +72,7 @@ def lamp_ecm(N, g, m):
         return X2, Z2
 
     def xadd(XP, ZP, XQ, ZQ, XD, ZD, ph):
+        c("word", 6)                           # XP - ZP, XQ + ZQ, XP + ZP, XQ - ZQ, uu + vv, uu - vv
         uu = (XP - ZP) * (XQ + ZQ) % N; c(ph, 1)
         vv = (XP + ZP) * (XQ - ZQ) % N; c(ph, 1)
         sa = (uu + vv) * (uu + vv) % N; c(ph, 1)
@@ -99,15 +104,16 @@ def lamp_ecm(N, g, m):
 
         # setup: Suyama, u = sigma^2 - 5, v = 4 sigma, P = (u^3 : v^3), a24 = (v-u)^3 (3u+v) / (16 u^3 v)
         s_sq = sigma * sigma % N; c("ecm_setup", 1)
-        u = (s_sq - 5) % N
-        v = 4 * sigma % N
+        u = (s_sq - 5) % N; c("word", 1)
+        v = 4 * sigma % N; c("word", 1)
         u2 = u * u % N; c("ecm_setup", 1)
         u3 = u2 * u % N; c("ecm_setup", 1)
         v2 = v * v % N; c("ecm_setup", 1)
         v3 = v2 * v % N; c("ecm_setup", 1)
-        t = (v - u) % N
+        t = (v - u) % N; c("word", 1)
         t2 = t * t % N; c("ecm_setup", 1)
         t3 = t2 * t % N; c("ecm_setup", 1)
+        c("word", 2)                           # 3u, 3u + v
         num = t3 * ((3 * u + v) % N) % N; c("ecm_setup", 1)
         den = u3 * v % N; c("ecm_setup", 1)
         den = 16 * den % N; c("ecm_setup", 1)
@@ -152,11 +158,13 @@ def lamp_ecm(N, g, m):
         acc = 1
         for j in range(j0, jmax + 1):
             for b in BABY:
-                q1, q2 = j * W + b, j * W - b
+                q1, q2 = j * W + b, j * W - b; c("word", 2)            # the two indices
+                c("word", 2)                                           # the two prime-table tests
                 if (B1 < q1 <= B2 and isprime[q1]) or (B1 < q2 <= B2 and isprime[q2]):
                     Xb, Zb = bq[b]
                     p1 = S[0] * Zb % N; c("ecm_s2", 1)
                     p2 = Xb * S[1] % N; c("ecm_s2", 1)
+                    c("word", 1)                                       # p1 - p2
                     acc = acc * (p1 - p2) % N; c("ecm_s2", 1)
             if j < jmax:
                 S, S1 = S1, xadd(*S1, *Wp, *S, "ecm_s2")

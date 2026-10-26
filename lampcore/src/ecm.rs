@@ -33,6 +33,7 @@ impl Ctx {
     }
 
     fn xdbl(&self, (x, z): Pt, ph: usize, m: &mut Meter) -> Result<Pt, Budget> {
+        m.charge(crate::PH_WORD, 4)?; // X + Z, X - Z, t1 - t2, t2 + e (NOTES.md, "ECM modular additions")
         let s = self.add(x, z);
         let t1 = self.mul(s, s);
         m.charge(ph, 1)?;
@@ -50,6 +51,7 @@ impl Ctx {
     }
 
     fn xadd(&self, (xp, zp): Pt, (xq, zq): Pt, (xd, zd): Pt, ph: usize, m: &mut Meter) -> Result<Pt, Budget> {
+        m.charge(crate::PH_WORD, 6)?; // XP - ZP, XQ + ZQ, XP + ZP, XQ - ZQ, uu + vv, uu - vv
         let uu = self.mul(self.sub(xp, zp), self.add(xq, zq));
         m.charge(ph, 1)?;
         let vv = self.mul(self.add(xp, zp), self.sub(xq, zq));
@@ -134,7 +136,9 @@ pub fn lamp_ecm(num: &Num, g: &Value, m: &mut Meter) -> R {
         let s_sq = ctx.mul(sigma, sigma);
         m.charge(ECM_SETUP, 1)?;
         let u = ctx.sub(s_sq, c4(U256::from(5u64)));
-        let v = ctx.mul(U256::from(4u64) % n, sigma); // a small constant: free, as in ecm.py
+        m.charge(crate::PH_WORD, 1)?;
+        let v = ctx.mul(U256::from(4u64) % n, sigma); // a small constant: word-level, as in ecm.py
+        m.charge(crate::PH_WORD, 1)?;
         let u2 = ctx.mul(u, u);
         m.charge(ECM_SETUP, 1)?;
         let u3 = ctx.mul(u2, u);
@@ -144,11 +148,13 @@ pub fn lamp_ecm(num: &Num, g: &Value, m: &mut Meter) -> R {
         let v3 = ctx.mul(v2, v);
         m.charge(ECM_SETUP, 1)?;
         let t = ctx.sub(v, u);
+        m.charge(crate::PH_WORD, 1)?;
         let t2 = ctx.mul(t, t);
         m.charge(ECM_SETUP, 1)?;
         let t3 = ctx.mul(t2, t);
         m.charge(ECM_SETUP, 1)?;
         let three_u_v = ctx.add(ctx.add(ctx.add(u, u), u), v);
+        m.charge(crate::PH_WORD, 2)?; // 3u, 3u + v
         let num_ = ctx.mul(t3, three_u_v);
         m.charge(ECM_SETUP, 1)?;
         let den = ctx.mul(u3, v);
@@ -213,6 +219,8 @@ pub fn lamp_ecm(num: &Num, g: &Value, m: &mut Meter) -> R {
         for j in j0..=jmax {
             for &bb in &baby {
                 let (q1, q2) = (j * W + bb, j * W - bb);
+                m.charge(crate::PH_WORD, 2)?; // the two indices
+                m.charge(crate::PH_WORD, 2)?; // the two prime-table tests
                 let hit = |x: u64| b1 < x && x <= b2 && isprime[x as usize];
                 if hit(q1) || hit(q2) {
                     let (xb, zb) = bq[bb as usize];
@@ -220,6 +228,7 @@ pub fn lamp_ecm(num: &Num, g: &Value, m: &mut Meter) -> R {
                     m.charge(ECM_S2, 1)?;
                     let p2 = ctx.mul(xb, s.1);
                     m.charge(ECM_S2, 1)?;
+                    m.charge(crate::PH_WORD, 1)?; // p1 - p2
                     acc = ctx.mul(acc, ctx.sub(p1, p2));
                     m.charge(ECM_S2, 1)?;
                 }

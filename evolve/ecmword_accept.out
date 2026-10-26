@@ -1,0 +1,3 @@
+1. non-word types, factor and multiply-side ops unchanged vs pre-change lampcore: 2000/2000
+2. word count = formula (Python trace): 100/100
+3. Python = Rust per type (word included) and total ops: 100/100
