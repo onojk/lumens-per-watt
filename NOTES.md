@@ -6534,3 +6534,20 @@ Each cell gives ratio A / ratio B, with the materiality (time share × (ratio_B 
   - The sieve threshold subtracts (tc + lc − 1) · log2 B. With tc held, B × 1.3 and lc′ loosen it by **0.39 bits** at 96 (more candidates).
 - **Two variants, as in step 7:** (a) the literal test (bc × 1.3, mc / 1.3, lc′, all else the reference), scored; (b) the same with tc = 1.0002 so that the threshold in bits is unchanged, information.
 - *Same numbers as step 5* (all 640 map numbers at 96). Reported: polynomials to completion, solve's share of priced qs ruint, total priced qs ruint (mean, median, slowest decile; official and Montgomery too), and wall-clock (replicate means, two runs). Scores R-F1 to R-F3 (both sources).
+
+### Step 8: results — the F test at 96 (`evolve/ftest.py`, `ftest.out`, `.json`; all 640 map numbers; wall-clock the mean of two runs)
+
+| configuration | polynomials | solve share (priced) | ruint mean / median / slowest decile | official / Montgomery mean | wall total | wall by region (setup / sieve / confirm / lp_ledger / solve) |
+|---|---|---|---|---|---|---|
+| reference (bc 0.432, mc 0.602, tc 1.035, lc 1.974) | 156.0 | 3.65% | 59,071 / 58,514 / 80,787 | 1,461,014 / 216,420 | 2,087.8 µs | 497 / 471 / 557 / 187 / 163 µs |
+| **(a) B × 1.3, tc held (scored)** | **−20.3%** | **4.67%** | **+8.65%** / +9.16% / +1.76% | −6.34% / +8.72% | **+11.3%** | −3% / −15% / **+41%** / +18% / +38% |
+| (b) B × 1.3, threshold held | −18.6% | 4.70% | +7.04% / +7.16% / +0.80% | −6.00% / +7.11% | +9.8% | −1% / −13% / +34% / +13% / +38% |
+
+- **Scored on (a):**
+  - **R-F1** polynomials: −20.3%. DeepSeek's −8% to −22%: **held**. The user's −12% to −22%: **held**.
+  - **R-F2** solve share: 4.67%. DeepSeek's 6.5–11.0%, falsified below 5.0%: **falsified**. The user's 6–11%: **missed**.
+  - **R-F3** total priced ruint, mean: +8.65%. DeepSeek's −8% to +3%, falsified above +6%: **falsified**. The user's −8% to +2%: **missed**.
+- **Reading (report only):** a larger base cuts polynomials by a fifth, as the yield model says (e_F ~0.8 at the card's point gives −19% for ×1.28). But the cost per number rises under ruint and Montgomery (+7–9%) and in wall-clock (+10–11%). Official falls (−6%), because sieving dominates official.
+  - The rise comes from **confirm (+34–41% wall)**: the card's full-pass trial division costs F − 1 small-modulus ops per candidate, so its cost per candidate grows with F. Solve also rises (+38%).
+  - **I-027's F rule** (LA share against ~e_F / (3 + e_F)) left out the confirm term. With confirm ∝ F per candidate (DeepSeek's U1 included a confirm term, c), the card's low LA share does not mean F is too small. At the card's prices, raising F does not pay at 96. The rule would need the confirm share in its balance; that is a model question for step 6c.
+  - With re-sieve (which divides only by the matched primes), confirm's growth with F would be smaller. That is not tested here, since re-sieve is not the reference.
