@@ -2684,3 +2684,25 @@ Mine: Track R 5 held, 2 missed. Track M 0 held, 6 missed.
 - The Track M budget at 72 had not settled when the cap was reached.
 - kc and lc sit at their upper bounds in several final genomes.
 - 54 bits' Track R round-2 genome is slightly worse than round 1's (row (b) against (a): +0.008, not significant).
+
+## 2026-10-25 — Per-track p-1 map check (B = 2^8 … 2^15; protocol and predictions before the map is extended)
+
+**Meter.** No change to charging, op counts or pricing. The existing pm1 card (`lamp_pm1`: bit_length(p^k) per prime power plus one gcd; all or nothing) runs with new bound values only. The card computes B = max(10, int(N^b)); here b = log₂(2^k + 0.5) / log₂ N, so B = 2^k exactly, k = 8 … 15. B is absolute, so b varies with size.
+
+**Protocol.**
+- *Map extension:* the eight cards run alone on the numbers of the corrected maps at 54 / 72 / 84 / 96 (`sizescale_map54.json` and the maps `sizescale2.py resolve` uses), with success or failure and per-type counts recorded per number. Python `run_alone`, as for the maps' existing pm1 column. Nothing else is rerun.
+- *Final qs per track and size:* that track's final winner from `sizescale_r2_sealed.json` (each is its own size's round-3 frozen genome).
+- *Joint optimum:* rho ∈ the map grid; p-1 B ∈ {off, 2^8, …, 2^15}; ECM ∈ {0} ∪ the 1/8-octave grid to 2^22 (widened to 2^24 if at the edge). Order rho → p-1 → ECM → qs; p-1 is paid in full by every number that reaches it. Track R minimizes the robust score (max over pricings of cost / qs + lc 1.4 corrected alone); Track M minimizes Montgomery. Exact composition on the map, as in the re-solves.
+- *Report per track per size:* the joint optimum (rho, B, ECM); its track fitness against the final pipeline's on the same map (log₂); whether p-1 is on; the no-p-1 optimum as a check (it should reproduce the final budgets, which were solved on these maps with these genes). Also the official-alone, ruint-alone and Montgomery-alone joint optima, for P3.
+- **Map-only, in-sample.** No sealed numbers. If p-1 switches on anywhere, step 2 (the kc / lc bound round) tunes in the p-1-inclusive budgets, and its sealed scoring carries the p-1 verdict.
+
+**Predictions (the user's, labelled as the user's).**
+- (P1) Track R: p-1 stays off at every size (the user's recorded expectation).
+- (P2) Track M: p-1 switches on at at least one of 84 / 96 bits, with B at most 2^12. Where it does, ECM falls by at least one grid step, and the Montgomery gain over the final pipeline is at most 5%.
+- (P3) Under official, p-1 is on at 84–96 bits in the official-alone optimum (direction only, as in the earlier outside model).
+- *Scoring:* P3 uses each track's final genes; it holds if p-1 is on at both 84 and 96 for both tracks' genes. The earlier P1/P2 (mine, Oct 24) and the user's revised Oct 24 prediction were stated for the enumerate-era pipeline and stay as written; they are not rescored here.
+
+**Predictions (mine, labelled W to avoid a clash with the Oct 24 P1/P2).**
+- (W1) Track R: p-1 switches **on** at 84 and 96 (against P1), with B 2^9–2^12, and robust gain 1–5% over the final pipeline on the map (log₂ −0.015 to −0.074). Off at 54, where Track R runs qs alone. Reason: rho is on in Track R, so ruint already pays for modmul ops at the margin. For p of 24–32 bits, small-B p-1 costs ~7,600–45,000 ops per factor found, against rho's ~12,400–200,000. The 2.12x ruint figure was for B ≈ 2^16.7, ~100k ops per number.
+- (W2) Track M: p-1 on at 72, 84 and 96, B 2^10–2^13. ECM falls by ≥ 1 step where p-1 is on. Montgomery gain ≤ 4% at every size.
+- (W3) Official-alone optimum: p-1 on at 72–96 for both tracks' genes.
