@@ -3525,3 +3525,15 @@ The final Track R genes run as qs alone on the corrected card with kset = sf32. 
 - **(D-rm+spv)** Root-matching plus skipping primes below 30: official 8–12%, ruint 22–30%, Montgomery 25–33% (super-additive under the calibrated pricings). If the slack rises 0.3–0.6 with cheap confirmations (it predicts so, absorbing ~25% of the root-match gain), subtract ~5 points from the calibrated figures.
 - **(D-slack-cut)** Best slack by cutoff (none / < 10 / < 20 / < 30): official 2.0–2.2 / 2.2–2.4 / 2.3–2.6 / 2.5–2.9; ruint 2.0–2.2 / 2.3–2.5 / 2.5–2.8 / 2.7–3.1; Montgomery 2.0–2.2 / 2.4–2.6 / 2.6–2.9 / 2.8–3.2. Slack below 2.0 with the skip on means the skip doesn't pay at that pricing.
 - **Priority note (DeepSeek's; the measured X supports it):** with X near 30% under the calibrated pricings (measured 0.22–0.33), root-matched confirmation may be the largest remaining calibrated gain. It is costed before small-prime variation; the two are costed together, as the MOVES row says.
+
+**Grok, before any root-matching, small-prime-variation or stage-2 code** (labelled as Grok's; recorded Oct 25, after the confirmation sizing was committed).
+- *Stated assumption:* confirmation is 25–35% of qs cost under official, 12–20% under ruint and 18–28% under Montgomery.
+  - *Note beside it:* the direction is likely backwards. qs's other large cost, sieve updates, is word-level, much cheaper relative to small-modulus divisions under the calibrated pricings, so confirmation's share should be larger under ruint and Montgomery than under official. **The measurement confirms the note:** official 0.105–0.232, ruint 0.230–0.330, Montgomery 0.220–0.306. Grok's predictions are rescaled by the measured share.
+- **(G-rm)** Root-matched confirmation, total qs saving: official −1% to +3%, ruint 8–14%, Montgomery 10–16%.
+- **(G-rm+spv)** Root-matching plus skipping small primes: official 7–12% (cutoff 30), ruint 12–18%, Montgomery 14–20% (cutoff 20–30). The interaction is positive but sub-additive (DeepSeek says super-additive); the result reports which.
+- *Grok's build order:* root-matched confirmation, then small-prime skipping, then pm1 stage 2, then the threshold reparameterization.
+
+**Ordering decision rule** (recommended; the user to confirm):
+- Finish the ECM-additions change and the confirmation-share measurement first.
+- If confirmation is ≥ 20% of qs cost under ruint or Montgomery, build root-matched confirmation (cost model first) before pm1 stage 2. Otherwise keep pm1 stage 2 next, as planned.
+- *Outcome of the measurement:* confirmation is 23–33% (ruint) and 22–31% (Montgomery) at every size, so the rule's condition holds and root-matched confirmation would come before pm1 stage 2. **Pending the user's confirmation;** the ECM change finishes first in either case.
