@@ -1,0 +1,9 @@
+54 Track R: winner old ref R-k@54 (0.8289; gate PASS 1.072) | new ref R-k@54 (0.9330; 0.819 / 0.933 / 0.851; gate PASS 1.136)  unchanged
+54 Track M: winner old ref current final (0.5953; gate PASS 0.997) | new ref current final (0.7049; 0.453 / 1.724 / 0.705; gate PASS 1.167)  unchanged
+72 Track R: winner old ref R-k@72 (0.7102; gate PASS 0.986) | new ref R-k@72 (0.8957; 0.780 / 0.896 / 0.815; gate PASS 1.148)  unchanged
+72 Track M: winner old ref current final (0.5383; gate PASS 0.997) | new ref current final (0.6967; 0.643 / 1.466 / 0.697; gate PASS 1.299)  unchanged
+84 Track R: winner old ref current final (0.5731; gate PASS 0.88) | new ref current final (0.8236; 0.667 / 0.824 / 0.707; gate PASS 1.223)  unchanged
+84 Track M: winner old ref current final (0.4255; gate PASS 0.852) | new ref current final (0.6196; 0.480 / 1.227 / 0.620; gate PASS 1.222)  unchanged
+96 Track R: winner old ref R-k@96 (0.4837; gate PASS 0.831) | new ref R-k@96 (0.7686; 0.618 / 0.769 / 0.656; gate PASS 1.225)  unchanged
+96 Track M: winner old ref M-k@84 (0.3348; gate PASS 0.826) | new ref M-k@84 (0.5359; 0.350 / 1.178 / 0.536; gate PASS 1.295)  unchanged
+exit 0

@@ -1,0 +1,410 @@
+{
+ "54": {
+  "R": {
+   "recorded_winner": "R-k@54",
+   "by_reference": {
+    "old (qs + lc 1.4 corrected)": {
+     "winner": "R-k@54",
+     "fitness": 0.8289081926479286,
+     "scores": {
+      "official": 0.8289081926479286,
+      "ruint": 0.815051185557113,
+      "montgomery": 0.7185733648664877
+     },
+     "gate": [
+      "PASS",
+      1.072
+     ],
+     "candidates": {
+      "R-k@54": 0.8289081926479286,
+      "R-k@72": 1.4166238018535435,
+      "R-k@84": 2.3049862877907357,
+      "R-k@96": 6.615881405182852,
+      "current final": 0.8766076151417519,
+      "old genes": 0.9050089763892785,
+      "new genes": 1.0834724272673528
+     }
+    },
+    "new (final Track R genes)": {
+     "winner": "R-k@54",
+     "fitness": 0.933018394744866,
+     "scores": {
+      "official": 0.8185037328254872,
+      "ruint": 0.933018394744866,
+      "montgomery": 0.8508672594726399
+     },
+     "gate": [
+      "PASS",
+      1.136
+     ],
+     "candidates": {
+      "R-k@54": 0.933018394744866,
+      "R-k@72": 1.6216601962971375,
+      "R-k@84": 2.5945172234910507,
+      "R-k@96": 7.043280531901996,
+      "current final": 1.0034842527609213,
+      "old genes": 1.035996312063827,
+      "new genes": 1.0698726758857011
+     }
+    }
+   },
+   "winner_changed": false
+  },
+  "M": {
+   "recorded_winner": "current final",
+   "by_reference": {
+    "old (qs + lc 1.4 corrected)": {
+     "winner": "current final",
+     "fitness": 0.5952721080573442,
+     "scores": {
+      "official": 0.45925828821529,
+      "ruint": 1.5060969173066445,
+      "montgomery": 0.5952721080573442
+     },
+     "gate": [
+      "PASS",
+      0.997
+     ],
+     "candidates": {
+      "M-k@54": 0.6043886726856992,
+      "M-k@72": 0.7777934717987353,
+      "M-k@84": 1.1943953707993606,
+      "M-k@96": 1.0676097076174278,
+      "current final": 0.5952721080573442,
+      "old genes": 0.6383475689765873,
+      "new genes": 0.6216770231875925
+     }
+    },
+    "new (final Track R genes)": {
+     "winner": "current final",
+     "fitness": 0.704865462578566,
+     "scores": {
+      "official": 0.4534936758610619,
+      "ruint": 1.724083288284683,
+      "montgomery": 0.704865462578566
+     },
+     "gate": [
+      "PASS",
+      1.167
+     ],
+     "candidates": {
+      "M-k@54": 0.715660444330464,
+      "M-k@72": 0.9209901620943929,
+      "M-k@84": 1.414291101741135,
+      "M-k@96": 1.2641633972553497,
+      "current final": 0.704865462578566,
+      "old genes": 0.7558713878951648,
+      "new genes": 0.736131689343952
+     }
+    }
+   },
+   "winner_changed": false
+  }
+ },
+ "72": {
+  "R": {
+   "recorded_winner": "R-k@72",
+   "by_reference": {
+    "old (qs + lc 1.4 corrected)": {
+     "winner": "R-k@72",
+     "fitness": 0.7101742817471536,
+     "scores": {
+      "official": 0.7101742817471536,
+      "ruint": 0.7089796959094232,
+      "montgomery": 0.630054683129048
+     },
+     "gate": [
+      "PASS",
+      0.986
+     ],
+     "candidates": {
+      "R-k@54": 0.7808757954654,
+      "R-k@72": 0.7101742817471536,
+      "R-k@84": 0.83827883609998,
+      "R-k@96": 1.0865038589251068,
+      "current final": 0.7156064563856949,
+      "old genes": 0.8608379794249859,
+      "new genes": 0.8972811446112362
+     }
+    },
+    "new (final Track R genes)": {
+     "winner": "R-k@72",
+     "fitness": 0.8957215728874577,
+     "scores": {
+      "official": 0.7800334234021112,
+      "ruint": 0.8957215728874577,
+      "montgomery": 0.8154795987331911
+     },
+     "gate": [
+      "PASS",
+      1.148
+     ],
+     "candidates": {
+      "R-k@54": 0.9865547628226742,
+      "R-k@72": 0.8957215728874577,
+      "R-k@84": 0.9318070243885295,
+      "R-k@96": 1.1933821688556978,
+      "current final": 0.9040937905281061,
+      "old genes": 1.087578605396788,
+      "new genes": 0.9855458032968578
+     }
+    }
+   },
+   "winner_changed": false
+  },
+  "M": {
+   "recorded_winner": "current final",
+   "by_reference": {
+    "old (qs + lc 1.4 corrected)": {
+     "winner": "current final",
+     "fitness": 0.5383138781853668,
+     "scores": {
+      "official": 0.5852943404637028,
+      "ruint": 1.1604861680169265,
+      "montgomery": 0.5383138781853668
+     },
+     "gate": [
+      "PASS",
+      0.997
+     ],
+     "candidates": {
+      "M-k@54": 0.5705165189055429,
+      "M-k@72": 0.5561451146504375,
+      "M-k@84": 0.5642414753492112,
+      "M-k@96": 0.6033358760467473,
+      "current final": 0.5383138781853668,
+      "old genes": 0.6325005737510776,
+      "new genes": 0.5735691360447591
+     }
+    },
+    "new (final Track R genes)": {
+     "winner": "current final",
+     "fitness": 0.6967395007604411,
+     "scores": {
+      "official": 0.6428691658146107,
+      "ruint": 1.4661527004619033,
+      "montgomery": 0.6967395007604411
+     },
+     "gate": [
+      "PASS",
+      1.299
+     ],
+     "candidates": {
+      "M-k@54": 0.7384193695651932,
+      "M-k@72": 0.719818465089755,
+      "M-k@84": 0.7302975824594498,
+      "M-k@96": 0.7808974542598021,
+      "current final": 0.6967395007604411,
+      "old genes": 0.8186453142756774,
+      "new genes": 0.7423703710678107
+     }
+    }
+   },
+   "winner_changed": false
+  }
+ },
+ "84": {
+  "R": {
+   "recorded_winner": "current final",
+   "by_reference": {
+    "old (qs + lc 1.4 corrected)": {
+     "winner": "current final",
+     "fitness": 0.5730868899590013,
+     "scores": {
+      "official": 0.5643416283205572,
+      "ruint": 0.5730868899590013,
+      "montgomery": 0.4858021839389901
+     },
+     "gate": [
+      "PASS",
+      0.88
+     ],
+     "candidates": {
+      "R-k@54": 0.727349890360051,
+      "R-k@72": 0.622320251586421,
+      "R-k@84": 0.5769908017439787,
+      "R-k@96": 0.6409865895384884,
+      "current final": 0.5730868899590013,
+      "old genes": 0.774839360282109,
+      "new genes": 0.7062898667336518
+     }
+    },
+    "new (final Track R genes)": {
+     "winner": "current final",
+     "fitness": 0.8236446689297148,
+     "scores": {
+      "official": 0.6674479752107286,
+      "ruint": 0.8236446689297148,
+      "montgomery": 0.7073792438115756
+     },
+     "gate": [
+      "PASS",
+      1.223
+     ],
+     "candidates": {
+      "R-k@54": 1.0453525811496522,
+      "R-k@72": 0.894403216278118,
+      "R-k@84": 0.8292553994943219,
+      "R-k@96": 0.82881339729138,
+      "current final": 0.8236446689297148,
+      "old genes": 1.1136047945869538,
+      "new genes": 0.9778766125780488
+     }
+    }
+   },
+   "winner_changed": false
+  },
+  "M": {
+   "recorded_winner": "current final",
+   "by_reference": {
+    "old (qs + lc 1.4 corrected)": {
+     "winner": "current final",
+     "fitness": 0.425511959906209,
+     "scores": {
+      "official": 0.4057671037277774,
+      "ruint": 0.8539660691478937,
+      "montgomery": 0.425511959906209
+     },
+     "gate": [
+      "PASS",
+      0.852
+     ],
+     "candidates": {
+      "M-k@54": 0.4967880399961375,
+      "M-k@72": 0.43267216583990376,
+      "M-k@84": 0.4302143829947979,
+      "M-k@96": 0.4363347396599808,
+      "current final": 0.425511959906209,
+      "old genes": 0.5566642136105112,
+      "new genes": 0.4951912745666098
+     }
+    },
+    "new (final Track R genes)": {
+     "winner": "current final",
+     "fitness": 0.6195903155285871,
+     "scores": {
+      "official": 0.47990156706354253,
+      "ruint": 1.2273262791805373,
+      "montgomery": 0.6195903155285871
+     },
+     "gate": [
+      "PASS",
+      1.222
+     ],
+     "candidates": {
+      "M-k@54": 0.7233758095069321,
+      "M-k@72": 0.6300163309446649,
+      "M-k@84": 0.6264375397660679,
+      "M-k@96": 0.6353494249176956,
+      "current final": 0.6195903155285871,
+      "old genes": 0.810561836688287,
+      "new genes": 0.7210507505437851
+     }
+    }
+   },
+   "winner_changed": false
+  }
+ },
+ "96": {
+  "R": {
+   "recorded_winner": "R-k@96",
+   "by_reference": {
+    "old (qs + lc 1.4 corrected)": {
+     "winner": "R-k@96",
+     "fitness": 0.48368811446897203,
+     "scores": {
+      "official": 0.4787481185978569,
+      "ruint": 0.48368811446897203,
+      "montgomery": 0.40984139785184764
+     },
+     "gate": [
+      "PASS",
+      0.831
+     ],
+     "candidates": {
+      "R-k@54": 0.6795829006020728,
+      "R-k@72": 0.5705474872921195,
+      "R-k@84": 0.4931996516216252,
+      "R-k@96": 0.48368811446897203,
+      "current final": 0.48891309628529867,
+      "old genes": 0.7101307327997187,
+      "new genes": 0.6099251314418076
+     }
+    },
+    "new (final Track R genes)": {
+     "winner": "R-k@96",
+     "fitness": 0.7685717208674853,
+     "scores": {
+      "official": 0.6176127290091573,
+      "ruint": 0.7685717208674853,
+      "montgomery": 0.6560387456980805
+     },
+     "gate": [
+      "PASS",
+      1.225
+     ],
+     "candidates": {
+      "R-k@54": 1.0798450153386139,
+      "R-k@72": 0.9065897032143294,
+      "R-k@84": 0.7836853824581478,
+      "R-k@96": 0.7685717208674853,
+      "current final": 0.7768741230683007,
+      "old genes": 1.1283849716836067,
+      "new genes": 0.9508975217879871
+     }
+    }
+   },
+   "winner_changed": false
+  },
+  "M": {
+   "recorded_winner": "M-k@84",
+   "by_reference": {
+    "old (qs + lc 1.4 corrected)": {
+     "winner": "M-k@84",
+     "fitness": 0.3347791254958034,
+     "scores": {
+      "official": 0.2716556577136088,
+      "ruint": 0.7412513817036904,
+      "montgomery": 0.3347791254958034
+     },
+     "gate": [
+      "PASS",
+      0.826
+     ],
+     "candidates": {
+      "M-k@54": 0.42351236195585756,
+      "M-k@72": 0.3466018395513883,
+      "M-k@84": 0.3347791254958034,
+      "M-k@96": 0.3382288922513162,
+      "current final": 0.33763774847125044,
+      "old genes": 0.44708386172690223,
+      "new genes": 0.39787175286033033
+     }
+    },
+    "new (final Track R genes)": {
+     "winner": "M-k@84",
+     "fitness": 0.5358855370085378,
+     "scores": {
+      "official": 0.35045149128243597,
+      "ruint": 1.1778351234800752,
+      "montgomery": 0.5358855370085378
+     },
+     "gate": [
+      "PASS",
+      1.295
+     ],
+     "candidates": {
+      "M-k@54": 0.6779220454093513,
+      "M-k@72": 0.5548103175222348,
+      "M-k@84": 0.5358855370085378,
+      "M-k@96": 0.5414076259607516,
+      "current final": 0.5404613740056434,
+      "old genes": 0.7156532683289274,
+      "new genes": 0.636878770820372
+     }
+    }
+   },
+   "winner_changed": false
+  }
+ }
+}

@@ -3410,3 +3410,17 @@ The final Track R genes run as qs alone on the corrected card with kset = sf32. 
 - **(G-ecmadd)** Charging ECM additions: Track M's ECM cost rises 12–18%; budgets possibly one step lower at 84–96, unlikely at 54–72; PD_M up 0.05–0.12.
   - *Notes beside it:* the user's arithmetic note (4 additions × 0.125 on ~10 multiplies ≈ +5% Montgomery, +1.4% ruint) assumes 4 per step. The counted sites are 10 per ladder step (4 per xDBL + 6 per xADD) beside 11 multiplies, which gives ≈ +11% Montgomery and +3% ruint on stage 1.
   - Track R has no ECM at 72–96, so a costlier Track M lowers PD_M (Montgomery cost of R / Montgomery cost of M). Both outside reviewers predicted that PD_M rises; the direction is recorded.
+
+**Reference change check: results** (`evolve/reselect.py`, `reselect.out`; the kc / lc round's sealed numbers, candidates and budgets; the lampcore build before the ECM change).
+- The old-reference column reproduces the recorded (d) values (e.g. R@54 0.8289).
+- **No winner changes in any of the eight cells.** Every gate passes under the new reference (upper end 1.14–1.30). **The round's PD values stand.**
+
+| bits | Track R (d) winner: robust, old ref → new ref (official / ruint / Montgomery, new) | Track M (d) winner: Montgomery, old → new |
+|---|---|---|
+| 54 | R-k@54: 0.829 → 0.933 (0.819 / 0.933 / 0.851) | current final: 0.595 → 0.705 |
+| 72 | R-k@72: 0.710 → 0.896 (0.780 / 0.896 / 0.815) | current final: 0.538 → 0.697 |
+| 84 | current final: 0.573 → 0.824 (0.667 / 0.824 / 0.707) | current final: 0.426 → 0.620 |
+| 96 | R-k@96: 0.484 → 0.769 (0.618 / 0.769 / 0.656) | M-k@84: 0.335 → 0.536 |
+
+- Under the new reference, the Track R (d) pipeline beats qs alone (same genes, corrected card, kset) by 7–23% on the robust score. That is the front end's net gain on the mixed population.
+- **(G-reref)** no Track R winner changes at 84–96, at most a near-tie swap at 54–72: **held** (no change anywhere).
