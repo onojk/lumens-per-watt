@@ -4101,3 +4101,20 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
 
 **Acceptance:** with the correction, every other type is unchanged per number; the new word count equals Σ (2 per full relation offered + 3 per combined relation offered) from the trace (qs, cfrac) and (inserts + tests) for sq; Python = Rust parity, per type.
 **Report:** before / after cost per number per pricing (absolute), per size, for the new, frozen and corrected references; D-ledger and G-ledger are scored; committed separately from the Gray-code commit.
+
+**Within-bin concentration sweep** (user, Mathematica, Oct 26; information only; post hoc), and one pre-registration.
+- *Setup:* as before (residue primes, 200 trials, balanced N, k = 1, same B, lc and partials). Bin shares are fixed to lpdist's filed shares (0.2-wide bins). Within each bin the weight is q^−α, α = 1, 1.5, 2, 3, 4 (α = 1 is 1/q; larger α concentrates draws near each bin's lower edge).
+
+| bits | α | simulated per-distinct yield | ratio to measured (0.166 / 0.125 / 0.082) | share drawn in (B, 2B] | median log_B q drawn (filed 1.363 / 1.358 / 1.469) |
+|---|---|---|---|---|---|
+| 72 | 1 / 1.5 / 2 / 3 / 4 | 0.147 / 0.171 / 0.192 / 0.262 / 0.349 | 0.89 / 1.03 / 1.16 / 1.58 / 2.10 | 0.155 / 0.175 / 0.193 / 0.223 / 0.243 | 1.346 / 1.330 / 1.317 / 1.292 / 1.269 |
+| 84 | same | 0.116 / 0.139 / 0.165 / 0.234 / 0.320 | 0.93 / 1.11 / 1.32 / 1.87 / 2.56 | 0.133 / 0.155 / 0.177 / 0.210 / 0.233 | 1.351 / 1.337 / 1.320 / 1.292 / 1.269 |
+| 96 | same | 0.071 / 0.086 / 0.105 / 0.152 / 0.205 | 0.87 / 1.05 / 1.28 / 1.85 / 2.50 | 0.090 / 0.109 / 0.126 / 0.153 / 0.168 | 1.464 / 1.449 / 1.438 / 1.425 / 1.417 |
+
+- *The user's findings:*
+  1. A modest extra concentration near B within each bin closes the residual: α ≈ 1.4–1.5 at 72, ≈ 1.2 at 84 and ≈ 1.4 at 96 matches the measured per-distinct yield. That corresponds to a share of filed q in (B, 2B] of ~0.17 / ~0.14 / ~0.105.
+  2. Medians cannot discriminate (α = 1.5 lowers the drawn median by ~0.015; binning alone already drifts ~0.017 at 72).
+  3. The clean check's fine histogram discriminates. If near-B concentration carries the residual, the (B, 2B] share lands near the values in finding 1. If it lands at or below the α = 1 values (0.155 / 0.133 / 0.090), it cannot, and exact duplicates (or something else) must.
+- **(W-b2b, Claude chat's; pre-registered before the clean check):** the share of filed q in (B, 2B] is 0.16–0.18 / 0.13–0.15 / 0.10–0.115 at 72 / 84 / 96. Falsified if any size is at or below its α = 1 value (0.155 / 0.133 / 0.090) or above its α = 2 value (0.193 / 0.177 / 0.126).
+  - *Note beside it:* D-b2b (0.11–0.13 / 0.12–0.14 / 0.09–0.11) is lower; G-b2b (0.155–0.185 / 0.150–0.180 / 0.100–0.135) overlaps.
+  - *Timing (mine):* lpdist's saved output has only 0.2-wide bins; no (B, 2B] share has been computed from any trace, so this is a genuine pre-registration.
