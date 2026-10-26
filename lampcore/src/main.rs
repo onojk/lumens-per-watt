@@ -118,8 +118,11 @@ type R = Result<Option<U256>, Budget>;
 // ---- phase-level wall-clock timing (NOTES.md, "Phase-level wall-clock check"; --phasetime, off by default;
 // read-only instrumentation: no charge or count depends on it) ------------------------------------------
 pub static PT_ON: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
-pub const PT_N: usize = 10;
-pub const PT_NAMES: [&str; PT_N] = ["mult", "fb", "setup", "gray", "sieve", "scan", "resieve", "confirm", "lp_ledger", "solve"];
+pub const PT_N: usize = 14;
+// the last four are sub-regions inside lp_ledger, timed only with LAMPCORE_LPBREAK=1 (NOTES.md, "lp_ledger breakdown")
+pub const PT_NAMES: [&str; PT_N] = ["mult", "fb", "setup", "gray", "sieve", "scan", "resieve", "confirm", "lp_ledger", "solve",
+                                    "lp:copy", "lp:hash", "lp:comb", "lp:add"];
+pub static LPB_ON: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 type PtAcc = ([u64; PT_N], [u64; PT_N], [[i64; 29]; PT_N]);
 thread_local! {
     static PT: std::cell::RefCell<PtAcc> = std::cell::RefCell::new(([0; PT_N], [0; PT_N], [[0; 29]; PT_N]));
@@ -129,6 +132,15 @@ pub type Snap = Option<(std::time::Instant, [u64; 21], [u64; 7], u64, u64)>;
 fn pt_snap(m: &Meter) -> Snap {
     if PT_ON.load(std::sync::atomic::Ordering::Relaxed) {
         Some((std::time::Instant::now(), m.phases, m.ev, m.ops, m.tests))
+    } else {
+        None
+    }
+}
+/// A sub-region snap inside lp_ledger: only with --phasetime and LAMPCORE_LPBREAK=1 (read-only, like pt_snap).
+#[inline]
+fn pt_snap_lp(m: &Meter) -> Snap {
+    if LPB_ON.load(std::sync::atomic::Ordering::Relaxed) {
+        pt_snap(m)
     } else {
         None
     }
@@ -869,6 +881,9 @@ fn main() {
     let types_out = std::env::args().any(|a| a == "--types");
     if std::env::args().any(|a| a == "--phasetime") {
         PT_ON.store(true, std::sync::atomic::Ordering::Relaxed);
+        if std::env::var("LAMPCORE_LPBREAK").map(|v| v == "1").unwrap_or(false) {
+            LPB_ON.store(true, std::sync::atomic::Ordering::Relaxed);
+        }
         // the per-region overhead: an empty snap / end pair on a dummy meter, timed in a loop
         let dm = Meter { ops: 0, cap: u64::MAX, tests: 0, hits: 0, k: None, phases: [0; 21], hook: None, race: None,
                          ob: None, ob_spent: 0, ob_hit: false, ev: [0; 7], types: [0; 29] };

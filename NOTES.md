@@ -6251,3 +6251,18 @@ The estimate is unchanged in scale: about 0.1–0.15% of qs's cost at 96 and a f
   - Robust choice on current evidence: L ~ 8 p_max (≤ 3.5% above the best at any m in 30–300).
   - The final choice waits on the card's measured price and real L (step 3; the I-028 check).
   - *Note (mine):* the card's real L is known from its genes (L / B ≈ 67 / 89 / 92 / 1,511 at 54 / 72 / 84 / 96; recorded above). The per-partial price is what remains unmeasured.
+
+### lp_ledger breakdown: read-only sub-timers (`LAMPCORE_LPBREAK=1` with `--phasetime`; `evolve/phasetime.py lpbreak`, `phasetime_lpbreak.out`, `.json`; `lpbreak_check.py`, `lpbreak_check.out`; `parity_lpbreak.out`)
+
+- *Instrumentation:* four sub-regions inside lp_ledger: lp:copy (A-prime adds, sparse copy, clear), lp:hash (large-prime table lookup and insert), lp:comb (combination), lp:add (ledger add with its duplicate check).
+  - Timed only with --phasetime and LAMPCORE_LPBREAK=1. phasetime.py excludes them from the anchors and shares and reports them as a breakdown.
+- *Read-only, confirmed both ways:*
+  - lampcore's stdout (ops, factor, tests, hits, per-type counts) is identical on all map numbers (new reference, off and on) with --phasetime and the variable set, with --phasetime and it unset, without --phasetime, and on the pre-change binary: 4,000 / 4,000 (`lpbreak_check.out`);
+  - parity passes with LAMPCORE_LPBREAK=1 exported (types 7,182 pairs; mutations 54 / 54). Parity never passes --phasetime, so this is the "set" case of a run without timing.
+- **Overhead of the timers themselves:** lp_ledger at 96 bits (re-sieve off) reads 279,839 ns per number with the sub-timers on against 196,691 with them off (`phasetime_step5.out`), +42%.
+  - Both figures are after phasetime.py's subtraction of lp_ledger's own per-call region overhead (~35 ns per call).
+  - Neither subtracts the nested sub-timers' snap / end cost inside lp_ledger: they exist only in the "on" run, so the +83 µs is that cost (four snap / end pairs on up to ~1,000 kept candidates per number).
+  - The sub-regions' own ns do have their per-call overhead subtracted.
+- *Shares at 96* (re-sieve off; of the inflated lp_ledger): lp:copy 35.5%, lp:hash 12.4%, lp:comb 4.0%, lp:add 2.5%; the rest (bound check, N mod q, the test, the loop, the nested timers' own cost) ~46%.
+  - Per call: lp:copy ~100 ns for ~25 ns priced (the heap allocation of each kept relation's sparse list dominates); lp:hash ~38 ns per call, ~54 ns per priced unit.
+- **These shares are approximate (timer-inflated) and are used for ranking only. Any fix is judged by a before / after run without the sub-timers, as in step 1b.**

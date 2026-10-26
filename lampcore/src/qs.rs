@@ -907,6 +907,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                     continue;
                 }
                 let u = a * x + bv;
+                let ptl = crate::pt_snap_lp(m); // "lp:copy"
                 let nt = tt.len();
                 for &ql in qs_ {
                     // the A-primes (uncharged until item 15)
@@ -921,8 +922,12 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 for &j in &tt {
                     ev[j as usize] = 0;
                 }
+                crate::pt_end(m, 10, ptl);
                 if smooth {
-                    if led.add(u, vec_, 1, chk, m)? {
+                    let ptl = crate::pt_snap_lp(m); // "lp:add"
+                    let full = led.add(u, vec_, 1, chk, m)?;
+                    crate::pt_end(m, 13, ptl);
+                    if full {
                         return Ok(None);
                     }
                     crate::pt_end(m, 8, pt);
@@ -932,13 +937,17 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 if n_i % v == 0 {
                     return Ok(Some(U256::from(v as u128)));
                 }
+                let ptl = crate::pt_snap_lp(m); // "lp:hash"
                 m.charge(crate::PH_HASH, 1)?; // hash lookup (audit 6)
                 let Some((u1, v1)) = partials.get(&v) else {
                     m.charge(crate::PH_HASH, 1)?; // insert (audit 6)
                     partials.insert(v, (u, vec_));
+                    crate::pt_end(m, 11, ptl);
                     crate::pt_end(m, 8, pt);
                     continue;
                 };
+                crate::pt_end(m, 11, ptl);
+                let ptl = crate::pt_snap_lp(m); // "lp:comb"
                 let cu = U256::from(u1.rem_euclid(n_i) as u128)
                     .mul_mod(U256::from(u.rem_euclid(n_i) as u128), n)
                     .to::<u128>() as i128;
@@ -957,7 +966,11 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 }
                 m.charge(crate::PH_WORD, (v1.len() + vec_.len() + 2 * out.len()) as u64)?;
                 m.ev(crate::EV_LP_FULL, 1); // at["lp"]["combos"] += 1
-                if led.add(cu, cvec, v, chk, m)? {
+                crate::pt_end(m, 12, ptl);
+                let ptl = crate::pt_snap_lp(m); // "lp:add"
+                let full = led.add(cu, cvec, v, chk, m)?;
+                crate::pt_end(m, 13, ptl);
+                if full {
                     return Ok(None);
                 }
                 crate::pt_end(m, 8, pt);
