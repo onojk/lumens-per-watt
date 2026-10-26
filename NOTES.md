@@ -4172,3 +4172,20 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
      - u is multi-word at 72–96 bits, not a 64-bit key; the type and op count are set by the cost model.
    - *Note (mine):* the cost model fixes 2 word ops per full relation offered and 3 per combined relation (not 1), so measured shares will be ~2–3x a one-op estimate. The ranges are scored as given.
 3. *Grok's optional mechanism (not registered), note only:* its direction is reversed. α > 1 means smaller q are favoured, not larger, and more slack admits larger q, raising (not lowering) the average log_B q. The consistent mechanism is the sieve threshold (the estimate is short by about log q, so acceptance falls with q within a bin).
+
+**Smooth-tilt fits to the filed bin shares** (user, Mathematica, Oct 26; information only).
+- *Setup:* per-prime weight w_q = (1/q) · exp[k (t − 1) + m (t − 1)²], t = log_B q. k (one parameter), or k and m (two parameters), is fitted to lpdist's filed 0.2-bin shares by least squares. Then residue primes only, 200 trials, partials 260 / 443 / 976, and the per-distinct yield against the unrounded measured 0.166 / 0.125 / 0.082.
+
+| bits | model {k, m} | fit SSE | share in (B, 2B] | simulated per-distinct | ratio |
+|---|---|---|---|---|---|
+| 72 | 1/q {0, 0} / one-parameter {0.75, 0} / two-parameter {1.79, −1.56} | 0.0061 / 0.00081 / 0.00033 | 0.190 / 0.154 / 0.145 | 0.188 / 0.143 / 0.144 | 1.13 / 0.86 / 0.87 |
+| 84 | 1/q / {1.47, 0} / {1.89, −0.65} | 0.0182 / 0.0001 / 0.00004 | 0.187 / 0.125 / 0.122 | 0.181 / 0.111 / 0.111 | 1.45 / 0.89 / 0.89 |
+| 96 | 1/q / {0.53, 0} / {2.85, −2.46} | 0.0092 / 0.0044 / 0.00001 | 0.129 / 0.104 / 0.079 | 0.113 / 0.081 / 0.065 | 1.37 / 0.98 / 0.79 |
+
+- *The user's findings:*
+  1. Every good smooth fit depletes q near B: the (B, 2B] share comes out below the α = 1 values (0.155 / 0.133 / 0.090) at all sizes, and the yield is 11–21% short of measured (ratio 0.87 / 0.89 / 0.79).
+  2. *Reason:* relative to 1/q, the filed shares rise across bins (fewer small q, more large q). A smooth density with that trend keeps falling toward B inside the lowest bin. The α > 1 within-bin concentration that closed the gap in the earlier sweep would need a localized spike just above B, against the trend elsewhere.
+  3. The one-parameter fit at 96 reaches a ratio of 0.98 only by misfitting the lowest bin (0.222 against the filed 0.19, SSE 0.0044); not credible.
+  4. Claude chat's expectation, written in the prompt before the run (informal, not registered in NOTES): a (B, 2B] share at or below the α = 1 values and a ratio at or below ~0.87. It held, except 84 at 0.89.
+  5. *Implication:* W-b2b (0.16–0.18 / 0.13–0.15 / 0.10–0.115) now looks likely to fail; the clean check decides. The residual points at same-q clustering (D-occ) or an unnamed mechanism. Both reviewers now predict small duplicate shares (D-dup < 1%, G-dup2 0–12%).
+- **Clean check, added:** fit the same two-parameter smooth model to the 0.05-wide histogram, and report whether the lowest 0.05 bin sits above the smooth fit (a localized excess just above B) or on it.
