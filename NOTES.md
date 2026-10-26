@@ -3104,3 +3104,18 @@ Mine: Track R 5 held, 2 missed. Track M 0 held, 6 missed.
 - *Sizing the small-prime-variation row* (upper bound, before the offset): skipping primes below 30 would remove 0.64–0.82 of sieve updates. That is ~22–40% of qs's official ops, but only ~6–25% of its ruint and Montgomery cost, where sieve updates are cheap.
 - The offset is about 0.5 log₂ B units more slack for the same catch (user's Mathematica), which means more candidates confirmed by trial division (charged).
 - Recorded as information on the MOVES row; untested.
+
+**DeepSeek, before any stage-2 code** (labelled as DeepSeek's; recorded Oct 25).
+- **(D-m1) Stage-2 method.**
+  - Implement prime-gap stepping first (~2 multiplies per prime) as the clean reference, then paired baby-step giant-step (~1 per prime plus setup ~2√B2).
+  - Paired wins by 1.5–1.7x under ruint and Montgomery and ties (~1.0x) under official, because the pairing bookkeeping (~1 small op per prime) is charged at multiply price there.
+  - *Meter audit:* if paired also wins clearly under official, the pairing bookkeeping is undercharged. If pairing sorts, the charged sort (~π(B2) log₂ π(B2), ~80k at B2 = 2^16) makes it lose; bucket by gap instead.
+- **D-s1 REVISED again** (still pre-registered; no stage-2 code exists): Track R on at 54 (B 2^10, B2 2^13–2^14, c ~8–16) with gain 6–10% over stage-1-only. At 72–96 the gain is 1–3%, undecided (if on, B 2^11 and B2 2^14). The best stage-1 B falls from ~2^12 to 2^11. Falsified if the Track R 54-bit gain is under 3%.
+- **D-s2 REVISED again:**
+  - Track M on at all sizes; gain 5–8% at 54, 8–12% at 72–84, 4–7% at 96;
+  - c 20–50 (paired) or 10–25 (gap stepping);
+  - ECM falls one grid step at 72–84;
+  - at 54, rho stays off and ECM and p-1 share the small-band work.
+  - (Its heading said "rho returns", but the prediction says rho stays off; the prediction is scored.)
+- **(D-r54)** Track M at 54 after a settled re-solve: rho stays off, ECM within 1–2 grid steps of 6,317, and PD_R improves. *Note:* DeepSeek gave the current PD_R at 54 as 1.20–1.36; the current (d) value is 1.85, and "improves" is scored against 1.85. (The Track M 54-bit retune is open, skipped for now by the user.)
+- **(D-knee)** The frozen slack tc + lc − 1 stays within 1.9–2.3 in future rounds; above 2.5 would mean the threshold or slack accounting changed. **A standing check for every round that tunes tc or lc.**
