@@ -6872,3 +6872,16 @@ Each cell gives ratio A / ratio B, with the materiality (time share × (ratio_B 
   - 96: lp_ledger 3.10 / 2.99 (21.2% / 19.1%); solve 2.38 / 2.36 (12.0% / 11.6%); confirm with re-sieve 2.25 (11.4%); gray 1.57 / 1.53 (1.4% / 1.3%).
 - **Recorded: fails.** Per the queue, the old stage 2–4 runs are not started.
 - Against step 5: setup at 84 and resieve at 72–96 no longer flag; setup at 72 still does (A selection, untouched); lp_ledger and solve are unchanged in time, and their ratios rose as the anchor fell.
+
+## Stage D: I-029 read-out (read-only; completes the read-out above, f596d18)
+
+- *Unchanged by stage A* (confirmed in the code after A3): the full pass tests every base prime j = 1 … F − 1 per candidate by an i128 remainder of v (`v % p`), dividing out repeats. It is charged 1 confirm_td (0.114 / 0.426) per prime tested plus 1 per repeat, 1 word for the sign and 2 words for v.
+- *With stage B's counts at 96:* a candidate has F − 1 ≈ 137 primes tested. The primes that actually divide it (the touched entries per candidate, step 1) number ~7.6, and a root check would leave only those to divide.
+  - Per candidate: 137 tests at ~3.9 ns ≈ 530 ns today, against 137 root tests (x mod p by a precomputed reciprocal, ~1 ns each, unmeasured) plus ~7.6 divisions ≈ 170 ns.
+  - With ~1,040 candidates per number at 96 (confirm_td 142,064 / 137), that is ~370 µs of wall-clock saved, from confirm's ~560 µs (estimate).
+  - Priced (root test at ~3 word = 0.077 against 0.114): ~5,300 ruint per number (~−9%), as before.
+- *Same caveats:*
+  - a root test by hardware division of x saves about nothing priced, and little in wall-clock;
+  - the gain overlaps re-sieve (root matching for primes ≥ p0);
+  - the deciding measurement is the reciprocal test's ns per prime.
+- *Note from stage B:* the threshold, not confirm, decides which partials exist. I-029 changes confirm's cost per candidate, not capture.
