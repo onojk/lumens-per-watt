@@ -3487,3 +3487,18 @@ The final Track R genes run as qs alone on the corrected card with kset = sf32. 
 - **(G-r3)** Track R stage 2 at 72: off, or on but inside noise. Falsified if the map check shows a robust gain of 4% or more at 72.
   - *Note beside it:* one of Grok's reasons (the robust max may reject a setting that gains under ruint because it loses under official or Montgomery) is backwards. Ruint is where stage 2 helps least, since qs is cheapest there in multiply terms, so ruint decides the robust score. Its other reasons (rho's overlap with stage-2 catches; a lumpier real population than the toy) are recorded as given.
 - **(G-cconst)** If c = 10, 20 and 50 tie on sealed numbers, make c a constant at 20 (DeepSeek proposes the same rule). **Adopted as the default for that outcome, pending the user's confirmation when it happens.**
+
+**Ledger early stop: replay of the card's relations** (information only; `evolve/earlystop.py`, `earlystop.out`).
+- Setup: final Track R genes (the new reference) as qs alone, corrected card with kset; 4 balanced map numbers per size. Ledger.add is wrapped only to note the sieve ops at each kept relation; no charge changes.
+
+| bits | F | relations at stop (F + 10) | primes active in ≥ 1 / ≥ 2 relations | null-space dimension at stop | ≥ 5 deps: relations before stop; share of sieve ops after | ≥ 10 deps: relations before stop; share of sieve ops after |
+|---|---|---|---|---|---|---|
+| 54 | 30–42 | 40–52 | all but 0–1 / all but 0–2 | 12–13 | 7–9; 7.7–14.2% | 2–3; 0–10% |
+| 72 | 49–67 | 59–77 | all but 0–2 / all but 2–3 | 11–13 | 8–24; 9.3–28.7% | 1–3; 0–4.4% |
+| 84 | 86–97 | 96–107 | all but 0–5 / all but 3–10 | 12–16 | 8–16; 6.2–11.3% | 2–6; 1.3–2.5% |
+| 96 | 131–150 | 141–160 | all but 1–5 / all but 4–9 | 13–17 | 9–13; 2.5–5.5% | 3–8; 0.5–2.0% |
+
+- **Almost every factor-base prime is active.** At 0–5 inactive primes, the card's null space at the stop is only 11–17, against the user's Mathematica toy (F = 237, ~38 free dependencies from primes that never or rarely appear). The card's factor bases are small (30–150 primes), and the KS multiplier makes the small primes residues, so nearly every prime appears.
+- **Stopping at ≥ 10 dependencies** (failure chance ~0.1%) saves only 1–8 relations: 0–4.4% of sieve ops (≤ ~2% of qs's official ops, less under the calibrated pricings, where sieve updates are cheap).
+- **Stopping at ≥ 5 dependencies** saves 7–24 relations: 2.5–29% of sieve ops, typically 3–11%, i.e. ~1–5% of qs's official cost. A ~3% failure chance per number costs a full retry with the next multiplier, so most of that would be given back.
+- **Not a large saving, so no MOVES row is added.** It is recorded here in case the factor base grows (larger N or larger bc), where inactive primes become common.
