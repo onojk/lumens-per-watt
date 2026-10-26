@@ -63,4 +63,17 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Why now: the one-step rule's failure is structural, not a tuning issue.
 - Payoff/cost: estimated; being tested by the user's next Mathematica run (index rule vs fixed vs one-step). Cost: small (a scheduler change in the prototype; later in the harness).
 - Recommended timing: settle in the prototype now; carry into Phase 4's design in PLAN.md.
+- Decision: superseded by I-009 (2026-10-26); kept as a diagnostic (a lamp's toll) in the Phase 4 picture.
+- Outcome: works (0-2.7% above the exact DP optimum) but unnecessary in this model; NOTES, "Index rule and the exact optimum".
+
+### I-009 — Re-prioritize the Illumination program after the DP result
+- Date: 2026-10-26. Source: Claude chat. Trigger: the exact DP optimum is within 0.2-1.3% of the best fixed pipeline; the theta prior is worth 25-45%.
+- Idea: (a) Phase 3 (light spectrum per theta band) moves to the front after Phase 1; (b) Phases 4-5 become diagnostic and explanatory (the dark-mass picture, a lamp's toll), not production schedulers, unless Phase 3's measured curves reopen the gap (re-run the DP on measured curves: cheap); (c) every "best pipeline" claim names its theta prior / test-set composition.
+- Why now: NOTES, "Index rule and the exact optimum" and "Dark-mass scheduler prototype".
+- Decision: pending.
+
+### I-010 — Check the card's small-factor end at 72 bits
+- Date: 2026-10-26. Source: Claude chat. Trigger: the DP optimum uses trial division to ~2^15-2^16 instead of rho at 72.
+- Idea: confirm whether the evolved pipelines at 72 include a td stage with a free bound, and whether td could replace rho there; an information step from existing results first.
+- Note (Claude Code, from the code): the size-scaling pipelines fix td off (sizescale.pipeline sets td's ob = 0); td's depth was searched only in the 84-bit partition study (turned off there). So td at 72 has not been tested in the current pipelines.
 - Decision: pending.

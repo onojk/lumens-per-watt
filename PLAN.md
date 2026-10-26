@@ -1008,6 +1008,9 @@ meter is touched, and predictions in NOTES before it runs.
 5. **Dark mass.** Treat the factor's position on the theta line as uncertain. Every stage,
    including one that fails, rules part of it out. Score lamps by bits of uncertainty removed
    per unit cost, and schedule them greedily by that measure.
+   *Note under Phases 4 and 5:* Oct 26 prototype (analytic curves): fixed pipelines within
+   0.2-1.3% of the exact DP optimum; see IDEAS I-009 for the proposed re-prioritization
+   (pending the user's decision).
 
 ## Checkpoints
 
