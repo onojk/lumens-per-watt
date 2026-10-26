@@ -4294,3 +4294,19 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
 - *What it physically is,* as the code computes it: a reduction modulo the small prime p, small-modulus by the fixed rule. If instead M mod p were computed once per prime per number (F reductions), each start would be an add and a conditional subtract, word-level.
 - *Size if charged* (sieve only, new reference genes, at 72): as small-modulus (0.307 ruint), ~2,060 against 10,736, **~19% of qs's ruint cost**; as word (0.034), ~2%; official +~5% at 72. **This is not negligible.**
 - **It is a meter correction** (it changes official counts) and needs its own cost-model entry. Which form is charged (a per-root reduction, or a per-number precompute plus word-level adds) is a decision for the user. **Not fixed; reported for a decision**, alongside the ledger correction now in parity.
+
+## 2026-10-26 — Meter correction: the sieve's start offsets (audit item 10; cost model before code)
+
+**Decision (user, Oct 26): precompute M mod p.**
+- **Change in the card** (both cores): once per attempt (one multiplier k; M is fixed per attempt), compute m_p = M mod p for every sieved factor-base prime. Then each root's start position is s = r + m_p, minus p if s ≥ p, instead of (r + M) mod p.
+  - The start positions, and so every sieve update, candidate and relation, are identical. Only the charges change.
+- **Charges:**
+  - **m_p:** one small-modulus op per factor-base prime per attempt (a reduction modulo p), charged in the setup phase (type setup_small: 1 / 0.307 / 1.137).
+  - **Each start offset:** one word op per root per polynomial in the sieve (an add and a conditional subtract), type word. In the re-sieve walk, one more word op per root walked (it recomputes the start the same way).
+- **This is a meter correction:** it adds charges, so official counts change.
+- *Expected size* (new reference genes; from slackrep's counts): ~6.7k / ~13.9k / ~54k word ops per number at 72 / 84 / 96, plus F (≈ 57–151) setup_small ops per attempt. That is roughly +2% of qs's ruint and Montgomery cost and +4–5% official at 72 (less at 96, where the sieve updates dominate official).
+- *Acceptance:*
+  - every sieve update, candidate, relation and factor is unchanged per number;
+  - the new word count equals roots × polynomials (+ roots walked under re-sieve), and the new setup_small count equals F × attempts, from the trace;
+  - Python = Rust parity, per type.
+- *Report:* separately, absolute before / after cost per number per pricing per size for the three references. It is committed after the ledger correction and before the 2×2.
