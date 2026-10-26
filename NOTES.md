@@ -2914,3 +2914,16 @@ Mine: Track R 5 held, 2 missed. Track M 0 held, 6 missed.
   - In the user's Mathematica run, partials below B² supplied most of the combined relations (492 against 317 full at lc = 2.0).
   - The reparameterization MOVES row stands; the coupled form stays the card's default.
 - **kc, pending the selected-k check:** if kc is flat above ~20, replace it with a constant: score squarefree k ≤ 32 only, and keep the KS winner. Both outside reviewers recommend dropping non-squarefree k. Today the card's candidate list is every integer k = 1 … kc, including non-squarefree k such as 4, 8 and 9. Changing that is a card change: cost model first, and a new decision.
+
+**Paperwork (Oct 25): sq card, small-prime variation, seven MOVES rows** (information only; the running round is unchanged).
+- **What the "sq" card is:** a square search on kN, with three modes: Fermat (k = 1, wide window), Lehman (windows of about N^(1/6)/√k) and Hart's one-line method (window 1). Every test of x² − kN is one op. It is **not SQUFOF**.
+- **Small-prime variation:** the qs card does **not** use it. It sieves every odd factor-base prime, including 3, 5 and 7 (log weight max(1, round(log₂ p))), and skips only −1, 2 and the primes dividing A.
+- **MOVES rows added, all UNTESTED:**
+  - p+1 (Williams);
+  - an ECM curve family with larger torsion;
+  - a SQUFOF card for small N;
+  - small-prime variation in the qs sieve;
+  - bandit (BaSE-style) allocation of tuning budget;
+  - anytime curves for every search method;
+  - a GPU-style pricing track.
+  - The card and pricing changes each carry "cost model in NOTES before code".
