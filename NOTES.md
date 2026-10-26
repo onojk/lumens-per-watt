@@ -3745,3 +3745,20 @@ Cost split under ruint (setup = multiplier, factor base and polynomial setup; th
 - setup_small: 0.215–0.265 / 0.255–0.293;
 - setup_euclid: 0.052–0.062 / 0.058–0.067.
 - **A selection's 6–11% (ruint) is mostly setup_small**, not the full-price A formation. It is the on-demand search's closeness scans over the pool, the overlap checks against used A's, the sort comparisons and the target check: comparisons and index arithmetic on word-size values. These go on the audit list below.
+
+**Large primes: distribution and the realistic 2LP rate** (information; `evolve/lpdist.py`, `lpdist.out`). New reference genes as qs alone (corrected card, kset), Python traces on 3 balanced map numbers per size.
+- *Outside context (user, Mathematica):* the simulated 1LP pairing yield (large primes drawn ∝ 1/q in (B, B^lc)) is 0.076 / 0.064 / 0.051 at 72 / 84 / 96, against the measured 0.17 / 0.13 / 0.08 (1.6–2.2x higher). Simulated combined relations are ~24–28% of F + 10, against ~50% measured. 2LP cycles would add 1.3–9.5% of F + 10 at 0.25–1 two-large-prime relations per partial (before the splitting cost).
+
+| bits | lc | candidates / full / partials filed per number | log_B q of filed partials: median (mean) | share in [1, 1.2) / [1.2, 1.4) / [1.4, 1.6) / [1.6, 1.8) / [1.8, 2) | 2LP-qualifying cofactors per number (per partial) |
+|---|---|---|---|---|---|
+| 54 | 1.74 | 202 / 29 / 142 | 1.364 (1.376) | 0.22 / 0.34 / 0.28 / 0.17 / 0 | 0 (0) |
+| 72 | 1.70 | 429 / 30 / 260 | 1.363 (1.355) | 0.27 / 0.31 / 0.28 / 0.14 / 0 | 3.0 (0.012) |
+| 84 | 1.64 | 771 / 52 / 444 | 1.358 (1.345) | 0.26 / 0.31 / 0.35 / 0.08 / 0 | 2.3 (0.005) |
+| 96 | 1.97 | 1,069 / 75 / 976 | 1.469 (1.470) | 0.19 / 0.23 / 0.24 / 0.21 / 0.13 | 0 (0) |
+
+- **(a) No skew toward small q beyond the 1/q prior.** Under the prior, log_B q has density ∝ 1/t on [1, lc], with median √lc = 1.32 / 1.30 / 1.28 / 1.40. The measured medians (1.36 / 1.36 / 1.36 / 1.47) sit slightly above it, so the threshold-skew explanation is not supported.
+  - *A more likely reason for the 1.6–2.2x repeat rate:* a large prime q dividing Q(x) must have kN as a quadratic residue mod q, so only about half the primes in (B, B^lc) can occur at all. Drawing from all primes halves the repeat rate, and the factor of ~2 matches. (Not tested here.)
+- **(b) The realistic 2LP rate at the card's threshold is essentially zero:** 0–3 qualifying cofactors per number, 0–1.2% per partial.
+  - A two-large-prime cofactor falls short of the sieve estimate by ~2 log₂ B or more, beyond the tuned slack (~2.0, about half of it already used by single large primes up to B^lc).
+  - Admitting them would need a much looser threshold, where candidates per relation are already 11–19 at slack 2.5.
+- **The 2LP MOVES row stays "marginal; revisit after re-sieve and small-prime skipping".** Cheaper confirmation lowers the cost of a looser threshold, which is the only way 2LP cofactors would reach confirmation.
