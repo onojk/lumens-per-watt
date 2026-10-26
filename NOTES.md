@@ -6551,3 +6551,40 @@ Each cell gives ratio A / ratio B, with the materiality (time share × (ratio_B 
   - The rise comes from **confirm (+34–41% wall)**: the card's full-pass trial division costs F − 1 small-modulus ops per candidate, so its cost per candidate grows with F. Solve also rises (+38%).
   - **I-027's F rule** (LA share against ~e_F / (3 + e_F)) left out the confirm term. With confirm ∝ F per candidate (DeepSeek's U1 included a confirm term, c), the card's low LA share does not mean F is too small. At the card's prices, raising F does not pay at 96. The rule would need the confirm share in its balance; that is a model question for step 6c.
   - With re-sieve (which divides only by the matched primes), confirm's growth with F would be smaller. That is not tested here, since re-sieve is not the reference.
+
+**Documentation addendum (user, Oct 26; recorded before any new work):**
+1. *The reviewer's own errors, recorded:*
+   - The step-7 test as specified (lc only) did not isolate L, because lc also sets the threshold. That was the reviewer's specification error, not knowledge anyone had.
+     - R-L1–R-L4 stay scored on (a) as registered. The user's: R-L1 / L2 / L3 and the R-L4 total missed, the lp_ledger clause held. DeepSeek's: R-L1 / L2 / L3 and the R-L4 total falsified, the lp_ledger clause held.
+     - **Annotation on all of them: "test did not isolate L (reviewer's spec)".**
+     - For information only, on (b): polynomials +7.0%, stored −66%, priced +4.9%, wall +1.5% would have fallen inside the user's R-L1, R-L2 (barely) and R-L3, and outside R-L4.
+   - R-X3 (0.86–0.94) missed narrowly (0.852).
+   - The "raise F" reading omitted confirm; R-F2 and R-F3 missed.
+   - The "card B 1,841 / 1,151, F ~122 / ~82" relayed to DeepSeek were Claude Code's rough estimates; measured B is 1,752 / 1,093 and F 138 / 93. DeepSeek's B values were still not given, but ours were not the card's either.
+2. **Correction to the step-7 break-even note (mine was wrong):** a smaller polynomial increase *lowers* the break-even price (m* = c0 dP / −dA); it does not raise it. The real reason the L-only cut is neutral in wall-clock is the card's large per-polynomial base cost.
+   - *The reviewer's check at 96 on the card's (b) numbers:* saving ~559 partials × 143 positions × ~1.43 ns/position ≈ 114 µs; cost ~10.9 extra polynomials × ~12.7 µs (non-ledger wall per polynomial) ≈ 139 µs; net ~+25 µs (~+1.1%), against the measured +1.5%; break-even ~170 positions per partial.
+   - **Checked against lctest.json and the replicate wall means (mine):**
+     - mean width 2,113.3, so 329,764 sieve positions per number, and the sieve runs at 1.483 ns per position;
+     - 564 fewer partials looked up (559 fewer stored) × 143.1 positions × 1.483 ns = **119.6 µs saved**;
+     - 10.87 extra polynomials × 12.74 µs (non-ledger wall per polynomial, (2,187.9 − 199.9) / 156.0) = **138.5 µs added**;
+     - **net +18.9 µs (+0.86%)**, against the measured +32.0 µs (+1.46%); **break-even ≈ 166 positions per partial**, against the measured 143.
+     - The measured lp_ledger drop is 99.4 µs, not 119.6, because the per-partial price averages in lp_ledger's fixed costs. Using it, the net is +39 µs (+1.8%).
+     - The reviewer's figures stand within these differences.
+3. *I-028 reading:* on the card, L is a near-neutral lever (±2%); deprioritized. Re-check only after the lp_ledger and setup / confirm fixes, which move both sides of the break-even.
+4. *I-027 reading:* DeepSeek's U1 form (with a confirm term) was right in shape. Its c ~0.05–0.10 was far below the card's confirm share (~27% of wall at 96, ~557 of 2,088 µs), and with re-sieve off confirm's cost per candidate grows ~F. Step 8 is the evidence.
+
+### I-029 read-out: how the card's full-pass confirm tests each prime today (read-only; no code)
+
+- **What it does:** per candidate, the card evaluates v = (A x + 2B) x + C as an i128 (|v| up to ~2^60 at 96 bits). For every base prime p (j = 1 … F − 1, re-sieve off) it tests `v % p == 0`: an **i128 remainder of the multi-word value by p**, the same in Python. A hit divides v and repeats while it divides.
+- **What it is charged:**
+  - F − 1 `confirm` ops per candidate (type confirm_td, 0.114 / 0.426, the trial-division class), plus 1 per repeated division;
+  - 1 word for the sign check and 2 word for evaluating v;
+  - no charge for the touched entries beyond step 1's sets and clear.
+- **Counts at 96 (all map numbers):** confirm_td is 142,064 per number at the reference and 209,214 with B × 1.3. Confirm's wall-clock is ~556–558 µs per number, so **~3.9 ns per prime test**, against the price of 0.114 × 27.3 ≈ 3.1 ns. Confirm runs at anchor C 1.28: today's divisions are priced about right. The i128 remainder by a small divisor appears to take a fast path.
+- **The root check** (I-029): p divides the residue at sieve position x only if x ≡ a root of p (mod p); x is a small integer (|x| ≤ M).
+  - Testing that needs x mod p, then a compare with one or two stored roots. Only the matching primes then divide the multi-word value.
+  - **Estimate, by how x mod p is computed:**
+    - *a hardware division of the small x:* it is itself a trial-division-class op (0.114). The priced saving is about zero, and the wall saving small (a 32-bit divide is not much cheaper than today's ~3.9 ns test).
+    - *a precomputed reciprocal per prime (multiply, shift, compare, ~3 word ops = 0.077 ruint):* the priced saving is about (0.114 − 0.077) × 142,064 ≈ **5,300 ruint per number at 96 (~−9%)**, and (0.114 − 0.077) × 209,214 ≈ 7,700 (~−12%) at B × 1.3. The wall saving might be larger (~1 ns against ~3.9 ns per test), but that is unmeasured.
+    - *re-sieve (already in the card):* re-sieve already matches roots, for the primes ≥ p0, during a second walk. At p0 200 it was −6.8% ruint at 96 after step 1.
+  - So I-029 overlaps re-sieve, and pays only with a reciprocal-based test. A benchmark of that test (ns per prime) is the deciding measurement. Report only; no code.

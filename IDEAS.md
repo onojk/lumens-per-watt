@@ -246,3 +246,16 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Note (Claude Code): the card's L / B with the new reference genes is 67 / 89 / 92 / 1,511 at 54 / 72 / 84 / 96 (L = B^lc, lc 1.974 at 96), so the 96-bit card sits far above the scanned range.
 - Next: report the card's actual L/pmax (above), and redo the scan at the card's F, M and measured per-partial price; the L = 16 card test measures the polynomial increase on the card's traces. Report only; decision for the user.
 
+### I-029 — Cheaper confirm by a root check
+- Date: 2026-10-26. Source: the user, from step 8 (confirm grows with F when re-sieve is off).
+- Idea: a base prime p divides the residue at sieve position x only if x mod p equals one of p's roots. x is a small integer, so the test is cheap; only the matching primes need a division of the multi-word value.
+- Read-out (NOTES, "I-029 read-out"): today's full pass divides the i128 value by every prime (confirm_td, 0.114 ruint; ~3.9 ns measured per test at 96, about its price). The root check pays only if x mod p is done by a precomputed reciprocal (~3 word ops): estimated ~-9% ruint at 96 (~-12% at B x 1.3); with a hardware divide, about nothing. It overlaps re-sieve (root matching for primes >= p0).
+- Next: benchmark the reciprocal-based test (ns per prime) before any code.
+- Decision: pending (the user's).
+
+### I-030 — Decouple the threshold from L in the genes
+- Date: 2026-10-26. Source: the user, from step 7 (lc moves both L and the sieve threshold).
+- Idea: encode the slack (tc + lc - 1) and L/B as separate genes, so evolution can move L without moving the threshold.
+- Priority: low (L is a near-neutral lever on the card); recorded for the next gene-set revision.
+- Decision: pending.
+
