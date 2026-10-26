@@ -6372,3 +6372,23 @@ Each cell gives ratio A / ratio B, with the materiality (time share × (ratio_B 
   - The same N sets as step 5. Scores R-L1–R-L4 (both sources).
 - *7d:* acceptance for the test build is that it is the reference card with lc changed; no parity work beyond confirming the gene is the only difference.
 - *Then (step 5 of the user's message):* rank the remaining fixes in light of 7c (lp_ledger storage, setup at 72–84, solve's price). For each flagged region, say whether the evidence points to slow code or a wrong price (its ns per op against the calibrated clean op, anchor C).
+
+### Step 7a: the lc history at 96 (read-only; from `sizescale_tune.json`, `sizescale_r2_tune.json`, `sizescale_r3_tune.json`, `sizescale_k_tune.json`)
+
+- **lc = 1.974 was evolved, not hand-set.** It is TPE seed 2's best in the kc / lc bound round (`sizescale3.py tune`: Track R, kc 1–64, lc bounded 1.0–2.5, 4 seeds × 200 trials, map-composed pipeline budgets), frozen as the best of the four seeds.
+- Track R seed bests at 96, round by round (fitness against the reference of that round; meters differ between rounds):
+
+| round | seed: lc (tc), fitness | slack tc + lc − 1 |
+|---|---|---|
+| size-scaling round 1 | 1.523 (1.205) 0.5172; 1.524 (1.286) 0.5131; 1.447 (1.251) 0.5138; 1.537 (1.159) 0.5130 | 1.70–1.81 |
+| rounds 2 and 3 (same file content) | 1.516 (1.500) 0.4873; 1.856 (1.143) 0.4797; 1.584 (1.451) 0.4846; 1.660 (1.291) 0.4779 | 1.95–2.04 |
+| kc / lc round (sets today's gene) | 1.560 (1.471) 0.4770; 1.572 (1.345) 0.4807; **1.974 (1.035) 0.4696**; 1.921 (1.038) 0.4755 | 1.92–2.03 |
+
+- *Reading (information, not a test):* the slack converges to ~2.0 and lc moves along a tc–lc ridge. Within the last round, fitness across lc 1.56–1.97 spans 2.4% (seed-level noise size), with the two high-lc bests having tc pinned at its lower bound (1.035, 1.038).
+  - lc rose in steps between rounds (best seeds 1.53 → 1.66 → 1.97), each time with tc falling. The priced fitness gains between rounds came with meter and budget changes, so they cannot be credited to lc.
+  - This looks like drift on a flat ridge with at most a slight priced preference for higher lc. The controlled test (7c) decides via R-L3's sign.
+  - Earlier 96-bit generations sat at lc ~1.45–1.66, i.e. near ~1.5–1.7 as the reviewer asked.
+- **A design point for 7c, recorded before running:** the card's sieve threshold is T = log2(M √(kN/2)) − (tc + lc − 1) log2 B, so lc moves both L and the threshold.
+  - Changing lc alone to 1.3305 at 96 also tightens the threshold by 0.64 slack units (fewer candidates of every kind).
+  - **Both are run:** (a) the literal test as specified (lc changed, all else the reference), on which R-L1–R-L4 are scored as written; and (b) an L-only variant with tc raised by the same amount, so that the slack, and thus the threshold, is unchanged. (b) is information beside (a).
+  - Values: 96: lc 1.3305 (L/B = 12), 1.2770 (L/B = 8); 84: lc 1.3526 (L/B = 12).
