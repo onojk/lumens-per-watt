@@ -3119,3 +3119,22 @@ Mine: Track R 5 held, 2 missed. Track M 0 held, 6 missed.
   - (Its heading said "rho returns", but the prediction says rho stays off; the prediction is scored.)
 - **(D-r54)** Track M at 54 after a settled re-solve: rho stays off, ECM within 1–2 grid steps of 6,317, and PD_R improves. *Note:* DeepSeek gave the current PD_R at 54 as 1.20–1.36; the current (d) value is 1.85, and "improves" is scored against 1.85. (The Track M 54-bit retune is open, skipped for now by the user.)
 - **(D-knee)** The frozen slack tc + lc − 1 stays within 1.9–2.3 in future rounds; above 2.5 would mean the threshold or slack accounting changed. **A standing check for every round that tunes tc or lc.**
+
+**Grok, before any stage-2 code** (labelled as Grok's; recorded Oct 25; pre-registered).
+- **G-s1 / G-s2 REVISED** (assumes paired baby-step giant-step stage 2, ~1 multiply per prime):
+  - Track R: 54 B 2^10–2^11, c 10–20, gain 4–8%; 72 B 2^11, c 15–25, 3–6%; 84 B 2^11–2^12, c 10–20, 2–5%; 96 B 2^12, c 10–15, 1–4%; ECM stays off.
+  - Track M: 54 B 2^10, c 20–40, 6–12%; 72 B 2^11, c 20–50, 5–10%; 84 B 2^11–2^12, c 15–40, 4–9%; 96 B 2^12, c 10–30, 3–7%; ECM falls about one grid step at 84 and 96.
+- **(G-m1)** Paired BSGS against prime-gap stepping, on stage 2: under official at most 1.1–1.3x, or a tie; under Montgomery 1.3–1.8x (outside that range means the pairing cost model needs adjusting); smaller under ruint.
+- **(G-r54)** Track M at 54 after a settled re-solve: rho stays off; ECM 4k–8k (most likely 5k–7k); ruint penalty 0.3–0.6 log₂; the same shape on a second fresh set.
+
+**The user's prediction** (labelled as the user's; recorded beside G-m1 and D-m1, both of which put the paired advantage under Montgomery at 1.3–1.8x):
+- **(W-m)** Pairing trades multiplies for small-op bookkeeping, so its advantage scales with the multiply-to-small-op price ratio. It should be largest under ruint and near a tie under official, and also near a tie under Montgomery if Montgomery prices a small op near a multiply.
+- *Scoring:* W-m, G-m1 and D-m1 are scored against the measured stage-2 cost per pricing once both stage-2 methods exist.
+
+**Small-op / multiply price ratios** (information; the price table `P.prices()`, the median of the three calibration runs, normalized to 1 full modmul of N):
+- *official:* 1 : 1 for every op.
+- *ruint:* word-level small ops (sieve_scan 0.012, la 0.017, sieve_update 0.034) at 0.01–0.03; small-modulus ops at 0.11–0.31 (confirm_td and lp_small 0.114, td_mod 0.146, setup_small / fb / mult 0.307); gcd 7.9.
+- *Montgomery:* word-level small ops at 0.05–0.13 (sieve_scan 0.047, la 0.063, sieve_update 0.125); small-modulus ops at 0.43–1.14 (confirm_td and lp_small 0.426, td_mod 0.55, setup_small / fb / mult 1.137); gcd 29.1.
+- So **Montgomery prices small ops about 3.7x higher relative to a multiply than ruint does**, because its multiply is cheaper (7.4 ns against 27 ns).
+- If pairing bookkeeping is charged as a word-level op, it costs ~0.01–0.03 of a multiply under ruint and ~0.05–0.13 under Montgomery: the advantage holds under both, largest under ruint. If it is charged as a small-modulus op (like setup_small), it costs ~0.3 under ruint and ~1.1 under Montgomery: then Montgomery ties, as W-m allows.
+- Which type the stage-2 cost model assigns to the bookkeeping is part of that cost model.
