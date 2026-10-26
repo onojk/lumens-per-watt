@@ -6173,3 +6173,32 @@ The estimate is unchanged in scale: about 0.1–0.15% of qs's cost at 96 and a f
   - DeepSeek: (i) optimal L / p_max 40–110 (central 64); (ii) 64 → 128 p_max gives 6–14% fewer polynomials (central 9%); (iii) the 128 → 256 gain is < 60% of the 64 → 128 gain. Falsified if the optimum is < 20 or > 200; if (ii) is negative or > 25%; if (iii) is ≥ the 64 → 128 gain. Fewer than 5 N is inconclusive.
   - The user's: (ii) 8–15%, diminishing beyond 128.
   - (i) is underdetermined (the per-partial cost multiple was not fixed): compute at 30, 100 and 300 sieve positions per accepted partial, and score (i) later at the multiple the card's prices imply. (ii) and (iii) are price-free and can be scored now.
+
+**I-027 / I-028 — large-prime bound scan (Wolfram, Oct 26; model only; recorded as given)** (84 and 96 bits, 5 N each, KS on, F_ref, M = 20,000; single large primes; L / p_max = 16 … 512):
+- Polynomials to F + 12 barely move with L: at 96, 6.78 / 6.58 / 6.46 / 6.38 / 6.33 / 6.29; at 84, 2.89 / 2.81 / 2.75 / 2.72 / 2.69 / 2.68.
+  - The 64 → 128 gain is 1.2–1.3%, and 128 → 256 is 0.66 of that.
+  - Reason: at completion most q are seen ~once (κ ~1.87); partials with q near L rarely combine.
+- Accepted partials per polynomial grow ~22–25% per doubling of L (96: 183 / 243 / 309 / 385 / 470 / 566), faster than ln ln L (larger q leave smaller cofactors).
+- Proxy cost (2M (1 + 2 Σ 1/p) + 4F + multiple × partials): the best L / p_max is 32 at 30 sieve positions per partial, and 16 (the grid edge) at 100 and 300.
+- *Scoring (the user's):*
+  - W3 (ii): DeepSeek's 6–14% missed (1.2%; falsifiers not triggered); the user's 8–15% missed.
+  - W3 (iii): ratio 0.66; both "< 0.6" missed narrowly.
+  - W3 (i): the user's (256–512) missed badly, in the wrong direction. DeepSeek's: 32 at multiple 30, 16 at 100 / 300 (its "< 20" falsifier triggers if the card's multiple is ≥ ~100). Scored at the card's multiple.
+- IDEAS I-028 added (a smaller large-prime bound).
+- *Note (mine, from the genes; see the earlier entry):* the card's L / p_max is not 64. With the new reference, L / B = B^(lc − 1) = 67 / 89 / 92 / **1,511** at 54 / 72 / 84 / 96, so at 96 the card sits far above this scan's range. I-028's "lower L" question applies to the card's 96-bit genes more strongly than the scan's 64 → 16 suggests.
+
+**DeepSeek, Oct 26, round 25 (I-028; recorded as given):**
+- W3 scored as registered: (ii) miss (1.2–1.3% against 6–14%), (iii) miss (0.66), (i) miss at multiple 30, and falsified if the card's measured per-partial price is ≥ ~100 sieve positions. Its reasoning error recorded (partials grow ~L^0.3; the marginal value of a partial at q is 1 − e^(−P λ_q), small near L).
+- Its "computed check" (no base cost makes 32 optimal at m = 30) is wrong, per the user.
+  - Only the 16-against-32 (C > ~54k) and 32-against-64 (C < ~98k) conditions matter; 64-against-128 is irrelevant.
+  - The proxy base C = 2M (1 + 2 Σ 1/p) + 4F ~ 79k at 96 bits; costs 574k / 569k / 571k at L = 16 / 32 / 64 p_max reproduce the printed 1.010 / 1.000 / 1.003.
+- *X1:* direction right (the best L grows with run length P; this reconciles practice's 30–100 with the 16–32 here at P ~ 3–7).
+  - Its exponent rests on an unmeasured λ_q ~ q^−(1.2–1.5) ("the band test and D-alpha" didn't measure that).
+  - The model gives λ_q ~ S(log |g| − log q) / q ~ q^−0.7, so L* grows faster with P than its P^0.75. "P λ_L ~ 1 at the optimum" is a heuristic; the implied-L table is estimated.
+- *X2 (computed, adopted):* at 96, d ln P / d ln L ~ −0.018 against e_F ~ 0.45, so F is ~25x more effective per log.
+  - Reading: lowering L is nearly free; raising F is the next lever if the LA share is low (U3); raising L is not justified at 84–96. Redo if 2LP is enabled.
+- **Sealed X3** (96 bits; the card's F, M, A-primes and stopping rule; KS on: the share of 1LP partials never combined by completion, Σ λ_q e^(−P λ_q) / Σ λ_q at the card's P):
+  - DeepSeek: 62–86% (central 75%). Falsified if < 50% or > 95%; inconclusive if the card's P at 96 is < 3, or with < 5 N.
+  - The user's: 65–85%.
+  - *Note (mine):* the card's traces contain inserts and combinations per attempt (the measured counterpart of this share), but nobody has computed it; the model-side quantity needs step 6.
+- *L = 16 card test:* score W3 (i) at the card's measured per-partial price, and measure the polynomial increase on the card's traces rather than inferring it.

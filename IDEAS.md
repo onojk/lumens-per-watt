@@ -239,3 +239,10 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Timing: STEP 6c (revised).
 - Decision: pending.
 
+### I-028 — A smaller large-prime bound
+- Date: 2026-10-26. Source: the user (Wolfram L scan), with DeepSeek round 25 (X2).
+- Idea: yield is nearly flat in L (64 -> 128 p_max: 1.2-1.3% fewer polynomials) while stored partials grow ~25% per doubling. Lowering L from 64 to 16 p_max cuts partials ~40% for ~5% more polynomials at 96 bits (model, Wolfram F and M). F is ~25x more effective per log than L (X2).
+- Link: lp_ledger at 96 bits failed materiality; fewer partials shrink the ledger and its hash table.
+- Note (Claude Code): the card's L / B with the new reference genes is 67 / 89 / 92 / 1,511 at 54 / 72 / 84 / 96 (L = B^lc, lc 1.974 at 96), so the 96-bit card sits far above the scanned range.
+- Next: report the card's actual L/pmax (above), and redo the scan at the card's F, M and measured per-partial price; the L = 16 card test measures the polynomial increase on the card's traces. Report only; decision for the user.
+
