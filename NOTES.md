@@ -4024,3 +4024,31 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
 - *Found while checking this:* the square-search card ("sq", mode "smooth", main.rs ~line 306 and its lamps.py twin) also keeps an uncharged set of tried multipliers (insert per k, contains per k up to kk). The sq card is not in any current pipeline. It is listed as audit item 9, same treatment.
 
 *5. Re-sieve scoring:* the formal re-sieve measurement (all sizes, per pricing, against the full pass, on all map numbers) **has already run and is committed** (772632a, "Re-sieve against full-pass confirmation"). D-rm, D-rm2 and G-rm were scored there "as written at the current tuned genes". The user's instruction not to score before the formal measurement is met by that run. If the user prefers the scores held until the retune, they can be marked provisional; they are left as recorded.
+
+**Pairing yield on both definitions** (user, Mathematica, Oct 26; information only; post hoc).
+- *Setup:* as the previous run (residue primes only, 200 trials, same B, lc and partials); arm 1 1/q, arm 2 filed shape. Per-partial = combined / partials; per-distinct = combined / (partials − combined).
+
+| bits | arm 1: per-partial / per-distinct | arm 2: per-partial / per-distinct | user's ratios if the measured 0.17 / 0.13 / 0.08 were per-partial (A) / per-distinct (B) |
+|---|---|---|---|
+| 72 | 0.157 / 0.187 | 0.126 / 0.145 | arm 1 A 0.92, B 1.10; arm 2 A 0.74, B 0.85 |
+| 84 | 0.151 / 0.179 | 0.103 / 0.115 | arm 1 A 1.16, B 1.38; arm 2 A 0.79, B 0.88 |
+| 96 | 0.100 / 0.111 | 0.067 / 0.071 | arm 1 A 1.25, B 1.39; arm 2 A 0.83, B 0.89 |
+
+- *The user's findings:*
+  1. The definition matters but does not close the gap. Under B, the shape-matched simulation is short by 11–15% (under A, by 17–26%). Claude chat's earlier statement that most of the excess "would be a definitional artifact" overstated it; about half would be.
+  2. Under either definition the truth lies between the two arms, consistent with the open candidates (concentration near B within 0.2-wide bins; exact duplicate partials).
+  3. The arms reproduce the previous runs.
+- **The definition behind 0.17 / 0.13 / 0.08, confirmed from the code** (`slack2.py`: Rc / ins, inserts = first filings of a q): **(B) per-distinct q.** The unrounded values are 0.166 / 0.125 / 0.082 per-distinct, and 0.142 / 0.111 / 0.076 per-partial. **Column B is the matching column.**
+- Matched ratios with the unrounded measured values (per-distinct): arm 1 = 0.187 / 0.166 = **1.13**, 0.179 / 0.125 = **1.43**, 0.111 / 0.082 = **1.35**; arm 2 = 0.145 / 0.166 = **0.87**, 0.115 / 0.125 = **0.92**, 0.071 / 0.082 = **0.87**.
+
+**Large-prime predictions re-scored on the matched definition** (per-distinct, column B; the original scores, which compared different definitions, are kept beside them):
+
+| prediction | original score (mismatched definitions) | matched-definition score |
+|---|---|---|
+| (W-qr, Claude chat's) residue simulation within ±25% of measured; combined share 40–55% | FALSIFIED (96 at 1.26; combined clause missed) | **FALSIFIED** (1.13 / 1.43 / 1.35: holds at 72 only; the combined clause is definition-free and still missed) |
+| (D-qr, DeepSeek's) restricted simulated yield 0.07–0.09 at every size | MISSED | **MISSED** (per-distinct simulated yield 0.187 / 0.179 / 0.111) |
+| (G-qr, Grok's) simulated yield 0.14–0.20 / 0.11–0.16 / 0.07–0.11; falsified if any size outside ±30% of measured, or combined share < 35% | HOLDS | **FALSIFIED** (simulated per-distinct yield 0.179 at 84 and 0.111 at 96 are above their ranges; ratios 1.43 and 1.35 are outside ±30%) |
+| (D-cc, DeepSeek's; post hoc) clean-check ratio 0.98–1.08 / 1.05–1.15 / 1.10–1.20 | MISSED (per-partial 1.12 / 1.36 / 1.32) | **MISSED** (1.13 / 1.43 / 1.35) |
+
+- The clean-check predictions (D-b2b, D-mt, G-b2b, G-mt, G-dup) await the clean check itself.
+- **G-qr flips from held to falsified on the matched definition.** The others keep their verdicts.
