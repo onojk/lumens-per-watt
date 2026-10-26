@@ -3731,3 +3731,17 @@ Cost split under ruint (setup = multiplier, factor base and polynomial setup; th
 - Next, per A: A selection (6–11%), the inverse of A mod each sieved prime (5–6%) and the roots (6%). Those are paid once per A, so they shrink with more polynomials per A (larger s).
 - The factor base and the multiplier matter only at 54–72.
 - The per-root, per-polynomial update (r ± 2B_l A⁻¹ mod p) is an addition followed by a conditional subtraction, not a reduction. It is charged as setup_small (0.307 ruint), the small-modulus price. *Under the fixed classification rule, an add-and-conditional-subtract is word-level arithmetic, not a reduction modulo p.* Re-typing it would be a pricing change with its own cost-model entry, not a new algorithm; it is recorded on the MOVES row as the first candidate.
+
+**Decisions and corrections (user, Oct 25):**
+1. **Gray-code root update re-typing: ADOPTED**, by the fixed classification rule (the same principle as the ECM-additions decision). The per-polynomial update r ± 2 B_l A⁻¹ (mod p) is an add and a conditional subtract, so it is charged at the word-level price, not setup_small.
+   - This is a pricing change, not an algorithm change. A cost-model entry comes first. It applies to every qs genome including both references, then parity, then before / after qs cost per pricing on the map numbers, with the reference comparisons re-stated under the corrected pricing.
+   - The card is audited for any other add / conditional-subtract steps charged as small-modulus; they are listed, not re-typed without a note.
+   - It is reported separately from re-sieve, so their effects are not mixed. The order is unchanged: re-sieve parity, measure, retune slack, sealed check.
+2. The MOVES "Cheaper polynomial setup" candidate (c) is corrected: Montgomery's batch inversion needs a common modulus and does not apply. It is replaced by precomputing the inverses of the A-pool primes modulo every factor-base prime once per number, so each A's inverse mod p costs s − 1 small multiplications instead of a Euclid run.
+3. **Beside DeepSeek's D-setup** (as relayed by the user; its text was not recorded here before): the measured shares contradict it. The inverses are ~5–6% of qs cost, ~15% of setup, against its 60–75% of setup; Gray-code switching is ~35–40% of setup against its 20–35%.
+
+**Setup by type** (information, lampcore types on all map numbers, new reference genes; share of total qs cost, ruint / Montgomery):
+- setup_full: 0.025 / 0.008 (54), 0.017 / 0.005 (72), 0.008 / 0.002 (84), 0.006 / 0.002 (96);
+- setup_small: 0.215–0.265 / 0.255–0.293;
+- setup_euclid: 0.052–0.062 / 0.058–0.067.
+- **A selection's 6–11% (ruint) is mostly setup_small**, not the full-price A formation. It is the on-demand search's closeness scans over the pool, the overlap checks against used A's, the sort comparisons and the target check: comparisons and index arithmetic on word-size values. These go on the audit list below.
