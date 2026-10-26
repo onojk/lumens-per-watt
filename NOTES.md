@@ -3234,3 +3234,63 @@ The rule recommends; changing the reference is the user's decision.
 
   - *Note beside (2):* it implies a small card effect. The earlier measurement put the Track R winners at 0.81 / 0.35 / 0.66 of the frozen reference at 54 bits (full pipeline, mixed population), mostly from the card. Scored as written, cell by cell (a cell holds if the measured log₂ lies in its range).
 - **Grok's view on the reference:** keep one formal reference, plus a side table of the card-matched comparison at every size. This matches the adopted default (the frozen reference stays formal; card-matched comparisons are reported beside it).
+
+## 2026-10-25 — pm1 stage 2: cost model (before any code; item 4 of the user's order)
+
+**Scope.** This is the cost model only; no code exists. When built, it goes into Python (`lamp_pm1`) and lampcore together, with parity, and is scored against the pre-registered predictions: DeepSeek's D-s1 / D-s2 (revised twice), D-s3, D-m1 (revised) and D-p1; Grok's G-s1 / G-s2 (revised), G-m1 (revised) and G-p1b; and the user's W-m.
+
+**Genes and options.**
+- `c`: B2 = c · B. **c = 0 or absent means no stage 2: today's card, op for op.** Searched over at least 5–200 (the user's Mathematica: the best c depends on the per-prime stage-2 cost).
+- `s2`: the method, "gap" (prime-gap stepping) or "pair" (paired baby-step giant-step). It is an option, not a tuned gene, so both methods are measured and compared.
+
+**Order of work** (stage 1 unchanged):
+1. Stage 1 as now: b = 2^E mod N with E = Π p^e ≤ B; charged bit_length(p^e) "mul" per prime power, then 1 gcd(b − 1, N). If that gcd is nontrivial, the card returns as now and stage 2 does not run.
+2. Stage 2 runs only if the stage-1 gcd is 1. It accumulates acc = Π (f-difference) over the primes in (B, B2], then takes one gcd(acc, N).
+
+**Classification of every stage-2 operation, by what it physically is** (user's rule, fixed before code):
+
+| operation | what it is | type charged | official | ruint | Montgomery |
+|---|---|---|---|---|---|
+| multiply or square mod N (table steps, ladders, giant steps, acc ← acc · d) | full multiply of N-size residues | "mul" (as stage 1) | 1 | 1 | 1 |
+| d = X − Y mod N (one per accumulated factor) | multi-limb subtraction, no multiply | word-level, priced as sieve_update | 1 | 0.034 | 0.125 |
+| gap q − q_prev, table index, q div D and q mod D, bitmap set, test and scan, loop counters | index arithmetic on machine-word integers | word-level, priced as sieve_update | 1 | 0.034 | 0.125 |
+| the final gcd(acc, N) | gcd | "gcd" | 1 | 7.86 | 29.06 |
+
+- No stage-2 operation reduces modulo a small prime, so none is typed small-modulus.
+- *Mod-N additions and subtractions:* the ECM card's cost model counts them as free ("additions free"). Here they are charged at the word-level price, by the user's classification rule. The ECM card is not changed by this entry; the mismatch is flagged for the user's decision.
+- *The prime list (B, B2]* does not depend on N. It is treated as a precomputed table, as stage 1's primes ≤ B and the ECM card's prime list are today (both uncharged). This is an existing convention, and it is flagged here so that it is a stated decision rather than an omission. Scanning the list (one word op per prime) is charged.
+- *Implementation:* a word-level type means a new per-type column ("pm1_word") whose ruint and Montgomery prices are set equal to sieve_update's calibrated price, with no new calibration. Official counts it as 1 op, like every op.
+
+**(gap) Prime-gap stepping.** For the primes q₁ < q₂ < … in (B, B2]:
+- *Table:* D[d] = b^d for even d up to the largest gap g_max. Cost: 1 "mul" for b², then 1 "mul" per further entry, so g_max/2 "mul" in all.
+- *Start:* X = b^{q₁} by left-to-right square-and-multiply: (bit_length(q₁) − 1) squarings plus (popcount(q₁) − 1) multiplies, all "mul".
+- *Per prime:* 1 word op (gap) + 1 word op (index) + 1 "mul" (X ← X · D[gap]) + 1 word op (X − 1) + 1 "mul" (acc ← acc · (X − 1)). So **2 "mul" + 3 word ops per prime.**
+- acc starts at 1, so its first product counts as a "mul" like the others.
+- *End:* 1 gcd.
+- Total ≈ 2 π(B2..B) + g_max/2 + 1.5 log₂ q₁ "mul", + 3 π(B2..B) word ops, + 1 gcd.
+
+**(pair) Paired baby-step giant-step** (Montgomery's pairing, with f(n) = b^{n²}, so one factor f(kD) − f(j) catches both kD − j and kD + j):
+- *D:* 210 if B2 ≤ 2^17, otherwise 2310. It is a constant of the card, not a gene; the table is recorded with the code.
+- *Baby table:* f(j) = b^{j²} for j < D/2 coprime to D, built by second differences: b^{(j+2)²} = b^{j²} · b^{4j+4} and b^{4(j+2)+4} = b^{4j+4} · b^8. That is 2 "mul" per odd j up to D/2 (D/4 odd j's), plus 3 "mul" for b², b⁴, b⁸ and 1 "mul" for b^{4·1+4} = b^8 reuse; 2 "mul" per odd j covers the table.
+- *Giants:* G_k = b^{(kD)²} for k from ⌊B / D⌋ to ⌈B2 / D⌉, by second differences: b^{((k+1)D)²} = G_k · b^{(2k+1)D²}, with b^{(2k+3)D²} = b^{(2k+1)D²} · b^{2D²}. That is 2 "mul" per giant step, plus a start-up of two ladders (b^{(k₀D)²} and b^{(2k₀+1)D²}, square-and-multiply as above) and one for b^{2D²}.
+- *Pairs:* for each k, the set of j with kD − j or kD + j prime in (B, B2]. Each prime q costs 2 word ops (q div D, q mod D; folded to j ≤ D/2) + 1 word op (set the pair's bit).
+- *Per pair* (k, j) with at least one of kD ± j prime: 1 word op (test and scan the bit), 1 word op (G_k − f(j)), 1 "mul" (acc ← acc · d). A pair with both primes costs once: that is the pairing gain.
+- *Bucketing, not sorting:* primes are assigned to (k, j) directly by div and mod, so there is no sort (DeepSeek's D-m1 note: a charged sort would cost ~π(B2) log₂ π(B2) and make pairing lose).
+- *End:* 1 gcd.
+- Total ≈ (number of pairs) + 2 · (number of giants) + D/2 + ladders "mul", + 3 π(B2..B) + 2 · (number of pairs) word ops, + 1 gcd. Here number of pairs = π(B2..B) − (pairs with both primes), and number of giants ≈ (B2 − B) / D.
+
+**Expected per-prime costs, before measurement** (information; the scored predictions are the outside ones above):
+- (gap): 2 "mul" + 3 word per prime.
+- (pair) with D = 210 and B2 ~ 2^15–2^17: per prime, ~0.8–0.9 "mul" for the pairs (10–20% of pairs carry both primes at these sizes), plus ~0.1–0.3 "mul" amortized giants and babies, plus ~4–5 word ops.
+- So under official, pair ≈ 1.0–1.2 "mul"-equivalents + 4–5 word ≈ 5–6 ops per prime, against gap's 5. It roughly ties or loses slightly.
+- Under ruint and Montgomery the word ops are cheap (0.034 and 0.125), so pair costs ~1.1–1.4 and gap ~2.1–2.4 multiply-equivalents per prime: about 1.6–2.0x in pairing's favour, somewhat less under Montgomery than under ruint.
+
+**Charging points and acceptance (for the code, later).**
+- Every op above is charged where it is performed, in both cores.
+- Acceptance:
+  - c absent or 0 is today's card on all map numbers;
+  - the stage-2 charge equals the formula from a trace (primes, pairs, giants, table sizes) on a sample;
+  - a number whose p − 1 is (B, B2]-smooth-except-one-prime is caught by both methods;
+  - both methods find the same set of factors on the map numbers when given the same B and B2;
+  - Python = Rust parity, per type.
+- In pipelines, pm1's ob must cover stage 1 + stage 2; the pipeline sets ob from the formula's upper bound.
