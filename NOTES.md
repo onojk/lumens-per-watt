@@ -3955,3 +3955,36 @@ Cost per number (op-cost units, absolute), current / re-typed:
    - (ii) exact duplicate partials (the same relation found twice, e.g. by A's sharing s − 1 primes; see the dedupe MOVES row, which measured 0.30 per run under enumerate and "more" under on-demand, unmeasured).
    - The pairing yield is reported with and without exact duplicates. Exact duplicates are a candidate for the card's ~1.2–1.3x excess over the shape-matched simulation, alongside within-bin concentration near B. (Run mismatch is already excluded: same traces.)
    - *Note (mine):* the ledger's dedupe keys full relations by |u| and combined ones by min(cu, N − cu). A partial found twice (same u, same q) combines with its own first copy into u² · …, a trivial relation, unless the check is on. The clean check counts these.
+
+## 2026-10-26 — Gray-code root update re-typed to word-level: cost-model entry (before code), and the card audit
+
+**What changes.** In qs's polynomial switching (Gray code), each switch updates every sieved prime's roots: r ← r ± 2 B_v A⁻¹ (mod p) for each root (1 or 2 per prime).
+- Today it is charged `setup` (typed setup_small: 1 / 0.307 / 1.137 under official / ruint / Montgomery), n_roots ops per switch (qs.py, "charge("setup", n_roots)"; qs.rs, the same).
+- **New:** the same n_roots ops per switch, charged to the word-level phase (type "word": 1 / 0.034 / 0.125).
+- **Ops per update: one word op** (the add and conditional subtract as a single word op; user's decision). **Updates per switch:** n_roots = Σ over sieved primes of their root count, as now. Switches per A: 2^(s−1) − 1.
+- **Op counts are unchanged**, so official changes by exactly 0%. Only the type label moves from setup_small to word.
+- *Expected cut of the slice:* 1 − 0.034 / 0.307 = 89% (ruint) and 1 − 0.125 / 1.137 = 89% (Montgomery). The slice is the Gray-code switching share measured by setupshare: ruint 0.058 / 0.141 / 0.128 / 0.146, Montgomery 0.069 / 0.155 / 0.136 / 0.150 at 54 / 72 / 84 / 96. Expected qs cost cut: **ruint 5.2 / 12.5 / 11.4 / 13.0%, Montgomery 6.1 / 13.8 / 12.1 / 13.4%; official 0%.** The formal before / after on all map numbers measures it.
+- **The slice contains only these updates** (setupshare's call-site slice equals slackrep's exact update count; see above).
+- *Applies to every qs genome,* including both references. *Acceptance:* every type except setup_small and word is unchanged per number; setup_small falls by exactly the word count, which equals Σ switches × n_roots from the trace; Python = Rust parity.
+
+**Audit: other steps charged above word level that are, physically, adds, compares, word multiplies or lookups.** Listed only; **none is re-typed without its own note and the user's decision.**
+
+| # | step (where) | today's type and price (ruint / Montgomery) | what it physically is | candidate type |
+|---|---|---|---|---|
+| 0 | **Ledger duplicate check, `add()`: a set lookup of \|u\| (full) or min(cu, N − cu) (combined) per relation offered** | **uncharged** | a hash lookup | word, 1 per relation offered. **An uncharged op: a critical bug by CLAUDE.md. Small (~F + 10 to a few hundred lookups per run), but it must be charged; cost-model note and fix proposed as the next pricing commit.** |
+| 1 | On-demand A selection: overlap checks against used A's ((s − 1)·\|used\| per prefix, s·\|used\| per accepted A), the closeness scan over remaining pool primes, the target check, t′ = target / A′ | setup_small, 0.307 / 1.137 | comparisons of small integers and floats, a float divide | word |
+| 2 | The sorts under sort_charge: multiplier ranking (mult), pool selection, enumerate's candidate sort (setup) | mult / setup_small, 0.307 / 1.137 | comparisons | word |
+| 3 | Forming A and its prefixes: (s − 1) multiplies per prefix or candidate; A′ = product of s − 2 primes | setup_full, 1.0 / 1.0 (full mod-N multiply) | products of primes < 2^16 into A < 2^40: a word multiply | word |
+| 4 | B_l = A/q · γ (and the 2s-per-A part of setup_full) | setup_full, 1.0 / 1.0 | a word multiply (A/q < 2^40, γ < q) | word |
+| 5 | Evaluating v = (A x + 2B) x + C per candidate (2 confirm_full) | confirm_full, 1.0 / 1.0 | |v| ≤ M√(kN/2) ≤ ~2^60 at 96 bits: one- or two-word multiplies, not a mod-N multiply | word (or a two-word multiply type) |
+| 6 | Large primes: the bound check v < L, the hash lookup and insert | lp_small, 0.114 / 0.426 | a compare, a lookup, an insert | word |
+| 7 | Large primes: the F-entry exponent-vector add per combination | lp_small, 0.114 / 0.426 | F small-integer adds | word |
+| 8 | The confirmation's sign check (the "1 +" in re-sieve's charge, and inside today's F) | confirm_td, 0.114 / 0.426 | a compare | word |
+
+Not candidates, because they really reduce modulo a small prime: the factor-base Legendre symbols and Tonelli–Shanks, the KS scores' Legendre symbols, A/q mod q and γ = t · inv mod q, the per-A roots r1, r2 and 2 B_l A⁻¹ mod p, the Euclid inverses, the trial divisions and repeats, and N mod q for a large prime.
+
+- *Sizes, for ordering (information, from the setupshare / confirmshare splits; not measured per item):*
+  - item 1 is most of A selection's 6–11% (ruint) at 54–72;
+  - items 3–4 are setup_full, 0.6–2.5% of ruint cost;
+  - item 5 is confirm_full, about 1–3% of ruint cost (2 per candidate);
+  - items 6–7 are lp_small, ~1–3%.
