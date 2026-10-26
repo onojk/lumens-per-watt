@@ -4161,3 +4161,14 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
    - (c) α fitted within each 0.2-wide bin for filed q, and separately for paired and unpaired q.
    - In the scored 2×2 slack retune, the same α_filed is logged per cell, so D-alpha's slack clause can be scored.
    - *Optional, information only, low priority:* α_raw from a harness-only factoring of a sample of threshold-rejected sieve positions at 72.
+
+**Grok's reply (new chat, Oct 26, 00:32), with annotations** (labelled as Grok's; annotations by Claude chat, relayed by the user). Pre-registered; the clean check and the ledger correction have not run.
+1. **(G-dup2)** clean check, both definitions: exact duplicates are 0–12% of all repeats at 72 / 84 / 96. Falsified if any size exceeds 18%, or if (yield without duplicates) / (shape-matched simulation) falls below 0.85 at two or more sizes. Base: filings with the same |u| or min(cu, N − cu). G-dup stays on record as registered.
+   - *Annotation:* its framing labels ~0.17 / 0.14 / 0.105 as the "α ~1" values; those are the α ~1.2–1.5 values (α = 1 gives 0.155 / 0.133 / 0.090). A labelling slip; G-dup2 is unconditional and scored as given.
+   - *Note beside it:* G-dup2 and D-dup (under 1%) now both predict small duplicate shares.
+2. **(G-ledger2)** (base: once per relation offered, ~110 per run; one word op per check): share of qs cost at 72 / 84 / 96: official 0.05–0.15 / 0.02–0.06 / 0.004–0.015%; ruint 0.02–0.05 / 0.008–0.025 / 0.002–0.008%; Montgomery 0.02–0.06 / 0.008–0.025 / 0.002–0.008%. Falsified if any official share > 0.4%, or if any calibrated share exceeds half the official share. G-ledger stays on record.
+   - *Annotations:*
+     - The "calibrated > half official" clause was already flagged as mis-specified for G-ledger. For a word-level op the ratio is fixed by the totals: 0.37 / 0.50 / 0.62 (ruint) and 0.40 / 0.52 / 0.63 (Montgomery) at 72 / 84 / 96. Its own figures at 96 (ruint 0.004% against official 0.006%) give 0.67, so as written G-ledger2 is falsified by its own numbers, independent of measurement. The share ranges are scored separately, and both are reported.
+     - u is multi-word at 72–96 bits, not a 64-bit key; the type and op count are set by the cost model.
+   - *Note (mine):* the cost model fixes 2 word ops per full relation offered and 3 per combined relation (not 1), so measured shares will be ~2–3x a one-op estimate. The ranges are scored as given.
+3. *Grok's optional mechanism (not registered), note only:* its direction is reversed. α > 1 means smaller q are favoured, not larger, and more slack admits larger q, raising (not lowering) the average log_B q. The consistent mechanism is the sieve threshold (the estimate is short by about log q, so acceptance falls with q within a bin).
