@@ -5053,3 +5053,17 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
 - **(W-audit, Claude chat's; audit-table base)** ruint 23–26 / 21–24 / 12–15 / 10–12.5%, Montgomery 16–18.5 / 15–18 / 8.5–11 / 8.5–10.5%: **FALSIFIED** (ruint 19.9 / 15.6 / 10.4 / 8.1%, Montgomery 12.3 / 9.9 / 6.8 / 6.0%: outside at every size).
   - By its own rule (own types excluded), the all-word counterfactual gives ruint 25.2 / 18.7 / 12.3 / 9.5% (in at 54 and 84) and Montgomery 18.6 / 13.3 / 8.8 / 7.5% (in at 84 only): still outside at two or more sizes under each pricing.
 - **(W2)** already scored post hoc (2e0f8d5): Grok's missed, Claude chat's held.
+
+## 2026-10-26 — Phase-level wall-clock check: instrumentation and protocol (before measuring)
+
+**Instrumentation** (lampcore `--phasetime`, off by default; read-only; no charge or count depends on it):
+- Ten timed regions in the qs card: mult (multiplier scoring and ranking), fb (the factor base), setup (the attempt's setup before the first A, and each A's choice and per-A roots), gray (polynomial switching), sieve (start offsets and updates), scan (candidate collection), resieve (the re-sieve walk), confirm (per candidate: v, the prime list, trial division), lp_ledger (per candidate: large primes and the ledger), solve (linear algebra and the square root).
+- Each region records its wall time and its own per-type op counts (stage_types on the meter's deltas), so its priced cost is exact. Per-number results go to stderr; stdout is unchanged.
+- The per-region overhead (an empty snapshot / end pair, measured at start-up) is subtracted per region call.
+- *Why regions, not time between charges:* some charges precede their work (the trial-division block is charged before its loop) and others follow it (the sieve), so time between consecutive charges misattributes whole phases.
+- *Check:* without the flag, the binary is identical to the committed one on all map numbers × 6 genomes (12,000 / 12,000).
+
+**Protocol:**
+- New reference genes as qs alone, with and without re-sieve (p0 30), on all map numbers per size; one run on a P-core (`taskset -c 2`).
+- Per region: overhead-corrected ns, priced ruint cost (Σ count × ruint price), and ns per priced unit. A region whose ns per priced unit is more than 1.5x the median region's is flagged as uncharged or underpriced work, and listed before the 2×2.
+- Scored here: GP2 (Grok's: the relation-processing / ledger phase flags; sieving, setup and polynomial generation stay inside; falsified if no phase flags, or if sieving flags). Claude chat's guess: the large-prime / relation-combining phase flags too.
