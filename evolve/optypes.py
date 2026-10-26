@@ -114,8 +114,13 @@ def per_type(stage, tr, ops, tests, N):
         c = qs_counts(tr)
     elif t == "ecm":
         c = ecm_counts(tr, N)
-    elif t in ("rho", "pm1"):
+    elif t == "rho":
         c = rho_counts(ops, tests)
+    elif t == "pm1":                           # stage 2's word ops (NOTES.md, "p-1 stage 2 by prime-gap stepping")
+        w = (tr or {}).get("word", 0)
+        c = rho_counts(ops - w, tests)
+        if w:
+            c["word"] = w
     elif t == "td":
         c = {"td_mod": ops}
     else:

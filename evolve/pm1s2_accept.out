@@ -1,0 +1,10 @@
+1. stage-2 catches = the exact predicate (ord_p(2) | E q): 3360/3360 (593 caught by stage 2); the user's p - 1 form differs from the predicate on 1 (ord_p(2) a proper divisor of p - 1)
+2a. Python = Rust per type (known primes): 3360/3360
+3. charge formula = measured (word, gcd, mul): 2864/2864
+54 bits done
+72 bits done
+84 bits done
+96 bits done
+4. c absent or 0 = pre-change lampcore: 12000/12000
+2b. Python = Rust per type (all, incl. pipelines): 3960/3960
+5. forced backtrack (N = 1073741839 x 1073742073): factor found through the backtrack, Python = Rust, formula: 1/1

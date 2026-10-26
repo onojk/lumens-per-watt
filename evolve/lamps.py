@@ -263,9 +263,87 @@ def lamp_pm1(N, g, m):
         while pk * p <= B:
             pk *= p
         a = pow(a, pk, N); m.tick(max(1, pk.bit_length()))
+        if PM1_TRACE is not None:
+            PM1_TRACE["s1_mul"] = PM1_TRACE.get("s1_mul", 0) + max(1, pk.bit_length())
     d = math.gcd(a - 1, N); m.tick()
     m.test(d != 1)
-    return d if 1 < d < N else None
+    if d != 1 or not g.get("c"):
+        return d if 1 < d < N else None
+    return pm1_stage2(N, a, B, int(g["c"]) * B, m)
+
+PM1_TRACE = None   # with TYPES: the pm1 stage's word count and stage-2 trace (read-only instrumentation)
+
+def pm1_ob(B, c):
+    """pm1's op budget in pipelines: stage 1 (2B) plus stage 2's upper bound (NOTES.md, "p-1 stage 2 by
+    prime-gap stepping: cost model, completed for the code")."""
+    if not c:
+        return 2 * B
+    B2 = c * B
+    return 2 * B + math.ceil(6.5 * B2 / math.log(B2)) + 512
+
+def pm1_stage2(N, a, B, B2, m):
+    """Stage 2 by prime-gap stepping over the primes in (B, B2] (NOTES.md, "p-1 stage 2 by prime-gap
+    stepping"): a gap table D[2j] = a^(2j), X = a^q1 by square-and-multiply, then per prime 2 mul + 3 word
+    (1 mul + 1 word for q1); a gcd of the running product every 64 primes and after the last; a gcd of N
+    backtracks through that batch prime by prime."""
+    tr = PM1_TRACE
+    def word(n):
+        if tr is not None:
+            tr["word"] = tr.get("word", 0) + n
+        m.tick(n)
+    qs_ = [q for q in (primes_upto(B2) if B2 <= (1 << 26) else primes_segmented(B2)) if q > B]
+    if not qs_:
+        return None
+    gmax = max([qs_[i + 1] - qs_[i] for i in range(len(qs_) - 1)], default=2)
+    if tr is not None:
+        tr.update(m=len(qs_), gmax=gmax, q1=qs_[0], batches=0, s1_mul=tr.get("s1_mul", 0))
+    D = {2: a * a % N}; m.tick(1)
+    for j in range(4, gmax + 1, 2):
+        D[j] = D[j - 2] * D[2] % N; m.tick(1)
+    q1 = qs_[0]
+    X = a
+    for bit in bin(q1)[3:]:                    # left to right: bit_length - 1 squarings, popcount - 1 multiplies
+        X = X * X % N; m.tick(1)
+        if bit == "1":
+            X = X * a % N; m.tick(1)
+    acc = 1
+    x_batch, i_batch = X, 0                    # X before the batch's first step (for batch 1: a^q1, no step)
+    for i, q in enumerate(qs_):
+        if i:
+            word(2)                            # the gap and the table index
+            X = X * D[q - qs_[i - 1]] % N; m.tick(1)
+        word(1)                                # X - 1
+        acc = acc * (X - 1) % N; m.tick(1)
+        if tr is not None:
+            tr["done"] = i + 1
+        if (i + 1) % 64 == 0 or i == len(qs_) - 1:
+            gg = math.gcd(acc, N); m.tick(1)
+            m.test(gg != 1)
+            if tr is not None:
+                tr["batches"] += 1
+            if 1 < gg < N:
+                return gg
+            if gg == N:
+                return pm1_backtrack(N, qs_, D, x_batch, i_batch, i, m, word, tr)
+            x_batch, i_batch = X, i + 1
+    return None
+
+def pm1_backtrack(N, qs_, D, X, i0, i1, m, word, tr):
+    """Prime by prime through one batch from X (before its first step): the step, X - 1 and a gcd each."""
+    if tr is not None:
+        tr["backtrack"] = 0; tr["bt_first"] = i0 == 0
+    for i in range(i0, i1 + 1):
+        if i:
+            word(2)
+            X = X * D[qs_[i] - qs_[i - 1]] % N; m.tick(1)
+        word(1)
+        gg = math.gcd(X - 1, N); m.tick(1)
+        m.test(gg != 1)
+        if tr is not None:
+            tr["backtrack"] += 1
+        if gg != 1:
+            return gg if gg < N else None
+    return None
 
 from blockflash import lamp_ps
 from qs import lamp_qs
@@ -478,6 +556,8 @@ def run(gen, N, cap):
     its own tests, its own hits). With TYPES on, LAST["types"] holds the run's per-type op
     counts, taken per stage (each stage on its own counting meter and with its own traces;
     read-only, no op changes)."""
+    global PM1_TRACE
+    PM1_TRACE = None
     validate_genome(gen)
     m = Meter(cap)
     obs = []
@@ -497,6 +577,8 @@ def run(gen, N, cap):
                 if mod is not None:
                     saved, tr = mod.TRACE, {}
                     mod.TRACE = tr
+                if TYPES and s["t"] == "pm1":
+                    PM1_TRACE = {}
                 try:
                     d = LAMPS[s["t"]](N, s, sm)
                     if ob is not None:
@@ -518,7 +600,8 @@ def run(gen, N, cap):
                     if TYPES:
                         if mod is not None:
                             mod.TRACE = saved
-                        for t, n in _stage_types(s, tr if mod is not None else None, sm.spent, sm.tests, N).items():
+                        st_tr = tr if mod is not None else (PM1_TRACE if s["t"] == "pm1" else None)
+                        for t, n in _stage_types(s, st_tr, sm.spent, sm.tests, N).items():
                             types[t] = types.get(t, 0) + n
             if d:
                 LAST.update(tests=m.tests, hits=m.hits, stage=i, k=m.k, ob=obs, types=types)

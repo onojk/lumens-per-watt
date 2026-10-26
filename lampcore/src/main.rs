@@ -95,9 +95,15 @@ fn stage_types(t: &str, d_ops: u64, d_tests: u64, ph: &[u64; 21], ev: &[u64; 7])
             o[18] = p(ecm::ECM_GCD);
             o[23] = p(PH_WORD);
         }
-        "rho" | "pm1" => {
+        "rho" => {
             o[17] = d_ops as i64 - d_tests as i64;
             o[18] = d_tests as i64;
+        }
+        "pm1" => {
+            // stage 2's word ops (NOTES.md, "p-1 stage 2 by prime-gap stepping"); zero without stage 2
+            o[17] = d_ops as i64 - d_tests as i64 - p(PH_WORD);
+            o[18] = d_tests as i64;
+            o[23] = p(PH_WORD);
         }
         "td" => o[19] = d_ops as i64,
         "sq" => o[20] = d_ops as i64,
@@ -572,7 +578,90 @@ fn lamp_pm1(num: &Num, g: &Value, m: &mut Meter) -> R {
     let d = if a == U256::ZERO { U256::from(1u64) } else { (a - U256::from(1u64)).gcd(n) };
     m.tick(1)?;
     m.test(d != U256::from(1u64));
-    Ok(if d > U256::from(1u64) && d < n { Some(d) } else { None })
+    let c = g.get("c").and_then(|v| v.as_f64()).unwrap_or(0.0) as u64;
+    if d != U256::from(1u64) || c == 0 {
+        return Ok(if d > U256::from(1u64) && d < n { Some(d) } else { None });
+    }
+    pm1_stage2(n, a, bnd, c * bnd, m)
+}
+
+/// Stage 2 by prime-gap stepping over the primes in (B, B2] (NOTES.md, "p-1 stage 2 by prime-gap stepping: cost
+/// model, completed for the code"): a gap table D[2j] = a^(2j), X = a^q1 by square-and-multiply, then per prime
+/// 2 mul + 3 word (1 mul + 1 word for q1); a gcd of the running product every 64 primes and after the last; a gcd
+/// of N backtracks through that batch prime by prime.
+fn pm1_stage2(n: U256, a: U256, bnd: u64, b2: u64, m: &mut Meter) -> R {
+    let qs: Vec<u64> = qs::primes_upto(b2).into_iter().filter(|&q| q > bnd).collect();
+    if qs.is_empty() {
+        return Ok(None);
+    }
+    let gmax = qs.windows(2).map(|w| w[1] - w[0]).max().unwrap_or(2) as usize;
+    let mut tab = vec![U256::ZERO; gmax + 1];
+    tab[2] = a.mul_mod(a, n);
+    m.tick(1)?;
+    let mut j = 4;
+    while j <= gmax {
+        tab[j] = tab[j - 2].mul_mod(tab[2], n);
+        m.tick(1)?;
+        j += 2;
+    }
+    let q1 = qs[0];
+    let mut x = a;
+    for bit in (0..bit_length(q1) - 1).rev() {
+        // left to right: bit_length - 1 squarings, popcount - 1 multiplies
+        x = x.mul_mod(x, n);
+        m.tick(1)?;
+        if (q1 >> bit) & 1 == 1 {
+            x = x.mul_mod(a, n);
+            m.tick(1)?;
+        }
+    }
+    let one = U256::from(1u64);
+    let mut acc = one;
+    let (mut x_batch, mut i_batch) = (x, 0usize);
+    for i in 0..qs.len() {
+        if i > 0 {
+            m.charge(PH_WORD, 2)?; // the gap and the table index
+            x = x.mul_mod(tab[(qs[i] - qs[i - 1]) as usize], n);
+            m.tick(1)?;
+        }
+        m.charge(PH_WORD, 1)?; // X - 1
+        acc = acc.mul_mod(x.wrapping_sub(one).wrapping_add(n) % n, n);
+        m.tick(1)?;
+        if (i + 1) % 64 == 0 || i == qs.len() - 1 {
+            let gg = acc.gcd(n);
+            m.tick(1)?;
+            m.test(gg != one);
+            if gg > one && gg < n {
+                return Ok(Some(gg));
+            }
+            if gg == n {
+                return pm1_backtrack(n, &qs, &tab, x_batch, i_batch, i, m);
+            }
+            x_batch = x;
+            i_batch = i + 1;
+        }
+    }
+    Ok(None)
+}
+
+/// Prime by prime through one batch from X (before its first step): the step, X - 1 and a gcd each.
+fn pm1_backtrack(n: U256, qs: &[u64], tab: &[U256], mut x: U256, i0: usize, i1: usize, m: &mut Meter) -> R {
+    let one = U256::from(1u64);
+    for i in i0..=i1 {
+        if i > 0 {
+            m.charge(PH_WORD, 2)?;
+            x = x.mul_mod(tab[(qs[i] - qs[i - 1]) as usize], n);
+            m.tick(1)?;
+        }
+        m.charge(PH_WORD, 1)?;
+        let gg = (x.wrapping_sub(one).wrapping_add(n) % n).gcd(n);
+        m.tick(1)?;
+        m.test(gg != one);
+        if gg != one {
+            return Ok(if gg < n { Some(gg) } else { None });
+        }
+    }
+    Ok(None)
 }
 
 // ---- block flash (replay) ------------------------------------------------------------

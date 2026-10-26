@@ -5623,3 +5623,33 @@ Time shares (new reference, 96): sieve 24%, confirm 29%, setup 24%, solve 8%, lp
 - (G3) DeepSeek: KS raises the base's Σ 2/p by 0.1–0.3 over k = 1. The user expects 0.3–0.8. Wolfram to test.
 - (G1) its saddle-point formula is not usable: a sign error in the saddle equation, α 0.1–0.3 where ~0.7–0.8 is standard, and large primes counted twice. A corrected tilted-valuation model is the next Wolfram test.
 - (F3) it repeated the "card F 57–151" misattribution after conceding it. To-do (low priority): read the SIQS factor-base schedule from msieve's or YAFU's source, to place "F = 1,000 base primes" in bits.
+
+**Wolfram, Oct 26: the tilted-valuation saddle-point model against the same 1,219 exact relations** (user's; recorded as given).
+- *Model* (nothing fitted):
+  - untilted P(p^k | Q) = 2 / p^k per base prime;
+  - the valuation k is tilted by p^(k(1 − α)), with α solved per relation so that Σ_base E[v_p] log p = log |Q|;
+  - predicted ω = Σ P(v_p ≥ 1).
+- *Per relation:* measured ω = 0.30 + 0.96 × model (R² 0.46, against 0.19 for u alone); mean miss +0.06; every cell within 0.26; solved α 0.58–0.71.
+  - The model also gives within-cell slopes above 1 with no threshold, so the saddle point explains the slope.
+- **Correction to the previous entry:** weighted per relation (as ω is), the offset over Σ 2/p + u is 0.13–0.22 (54), 0.37–0.46 (72), 0.49–0.61 (84) and 0.38–0.52 (96). It rises with size; it is not a steady +0.5.
+  - The earlier figure averaged Σ 2/p per N. N's with richer bases yield more relations, so per-N weighting understated their share.
+- *KS* (300 random N per size, odd squarefree k ≤ 63):
+  - k = 1 is best for 31–33% of N;
+  - the mean gain in Σ 2/p is 0.54–0.61 (the N that move gain ~0.5–1.3, centred ~0.9);
+  - the u gain from the larger kN is 0.09–0.12;
+  - the net touched-entry gain is 0.65–0.71.
+- *The user's scoring:*
+  - the user's own: per-cell held; offset held at 72–96, missed at 54; α range mostly missed low; model slope held; per-relation slope held; KS gain held; u gain missed low; net gain held; "k = 1 under 15%" missed;
+  - DeepSeek's: G3 (0.1–0.3) missed; F1's extra 0.4–0.9 holds at 72–96 only.
+- *Optional after step 1:* `evolve/omega_model.py`, the same model in Python (bisection on α per relation; inputs: the card's base primes with their root counts, and each relation's |Q|). It runs on the card's traced relations at 54–96 with KS on and reports predicted against measured touched entries per relation. No meter or card change.
+
+### Step 0a: p-1 stage 2 restored and committed (`evolve/pm1s2_accept.py`, `pm1s2_accept.out`; `parity_pm1s2.out`)
+
+- The parked patch applied cleanly to c13019b's files (lamps.py, optypes.py, parity.py, main.rs).
+- **pm1s2_accept.py is now seeded:** sympy's randprime draws from the global RNG, so the earlier runs used different prime sets (672 and 515 stage-2 catches). With random.seed(2026):
+  1. stage-2 catches = the exact predicate, 3,360 / 3,360 (593 caught by stage 2). The user's p − 1 form differs from the predicate on 1 number (ord_p(2) a proper divisor of p − 1, as expected; the predicate is what the card computes);
+  2. Python = Rust per type, 3,360 / 3,360 and 3,960 / 3,960 with the pipelines;
+  3. charge formula = measured, 2,864 / 2,864;
+  4. c absent or 0 identical to the pre-change build, 12,000 / 12,000;
+  5. forced backtrack 1 / 1.
+- Parity passes with the stage-2 genomes: types 7,182 pairs, 0 mismatches; mutations 54 / 54.

@@ -93,6 +93,13 @@ def genomes():
     for B in (256, 2048, 32768):
         gs[f"pm1 B {B}"] = [{"t": "pm1", "b": 0.2, "B": B}]
         gs[f"rho then pm1 B {B}"] = [{"t": "rho", "c": 1, "b": 64, "ob": 300}, {"t": "pm1", "b": 0.2, "B": B}]
+    # p-1 stage 2 by prime-gap stepping (NOTES.md, "p-1 stage 2 by prime-gap stepping"): c 10 / 30, alone, after
+    # rho, and with an op budget that ends the stage inside stage 2
+    for B in (64, 256, 2048):
+        for c in (10, 30):
+            gs[f"pm1 B {B} c {c}"] = [{"t": "pm1", "b": 0.2, "B": B, "c": c}]
+            gs[f"rho then pm1 B {B} c {c}"] = [{"t": "rho", "c": 1, "b": 64, "ob": 300}, {"t": "pm1", "b": 0.2, "B": B, "c": c}]
+            gs[f"pm1 B {B} c {c} ob mid stage 2"] = [{"t": "pm1", "b": 0.2, "B": B, "c": c, "ob": 2 * B + 40 * c}]
     # sq's ksq as 0 / 1 (Python truthiness) as well as false / true (NOTES.md, "sq ksq parsing"); smooth mode
     # also exercises the charged tried-multiplier set (NOTES.md, "Meter correction")
     for ksq in (0, 1, False, True):
