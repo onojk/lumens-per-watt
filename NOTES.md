@@ -5484,3 +5484,66 @@ Time shares (new reference, 96): sieve 24%, confirm 29%, setup 24%, solve 8%, lp
 - P7. Gray stays above 1.5x even after the flat layout (anchor A); under anchor B it passes the 1% bar.
 - P8. Step 0b: the 84 equality is a coincidence (re-sieve did run), not a bug. (Confidence: low.)
 - *Base for P2 (stated here):* "the c13019b rise" is the vecinit_accept before → after per pricing. Ruint, re-sieve off: +141 / +681 / +1,745 / +3,659 per number at 54 / 72 / 84 / 96; on (p0 200): +299 / +1,627 / +4,782 / +13,835.
+
+### Step 0b: the 84-bit re-sieve on / off equality (answered; information)
+
+- *Question:* after c13019b, the new reference at 84 cost 23,828.1 (re-sieve off) against 23,828.4 (on, p0 200) ruint per number. Did re-sieve run?
+- **It did. The equality is a coincidence of two moves of the same size.**
+  - Re-sieve cut confirm_td from 67,847 to 23,268 per number: −44,579 × 0.1141 = −5,088 ruint.
+  - It added 197,214 word ops: +5,088 at 0.0258.
+  - Per number the difference has mean +0.3 and sd 1,656 (range −3,849 to +6,317); re-sieve is cheaper on 308 of 560 numbers.
+  - Python traces on 4 numbers: 398 / 398 polynomials re-sieved primes ≥ p0.
+  - The resieve region took 27% of the time in the final wall-clock run (`phasetime_final.out`).
+- **(P8, the user's)** coincidence, not a bug: **held.**
+
+### Step 1: delete the fills (cost model, before code)
+
+*Code changes in both cores; counts change only in `word` (plus cfrac_ops, which is untyped; see below).*
+- *F* is the factor-base size, *width* = 2M + 1, *|st|* the polynomial's sieved primes, *|cand|* its candidates.
+- *T* is a candidate's touched exponent entries: the sign entry if v < 0, plus each prime that divides it, in that order.
+- *T′* is T plus the A-primes' entries for a kept candidate (smooth or partial).
+
+**(1a, 1b) Re-sieve, per attempt (rs on):**
+- the slot array is allocated once (width word) and the generation-stamp array once (F word, u32);
+- *per polynomial:* the slots are set (already charged, |cand|) and **cleared right after the walk** (|cand| word, new);
+- the stamps for the sieved primes are written (|st| word);
+- the direct list's pass is unchanged (F − 1 word, 1d), as are the record lists (|cand| word).
+- **Per polynomial: old width + 2F − 1 + |st| + |cand| → new 2|cand| + |st| + F − 1.** The change is |cand| − width − F per polynomial, plus width + F once per attempt.
+
+**(1c) Exponent vector:**
+- One dense vector of F entries per attempt (F word, once), reused.
+- *Per candidate:*
+  - the entries written during the sign check and trial division are recorded (T);
+  - the old per-candidate zero-fill (F word) goes;
+  - a kept candidate's A-prime adds go into the same vector (T → T′). Those adds stay uncharged in step 1; they are item 15, charged in step 2;
+  - its relation is copied out sparse as (j, e) pairs (|T′| word);
+  - the touched entries are then cleared: |T′| if kept, |T| otherwise.
+  - One charge per candidate at the clear point: |T| (sets) + |T′| (copy, kept only) + |T′| or |T| (clear).
+  - The clear point is: at once for v = 0; after the luck-meter test for a candidate not kept; after the sparse copy for a kept one (before the large-prime and ledger steps).
+- **Large primes:** the table stores the partial's sparse list (moved, no copy).
+  - A combination adds both lists into the clean dense vector, reads out the union and clears it: |a| + |b| + 2|out| word.
+  - This **replaces the F-word vector add** (audit item 7) with the sparse merge's real work.
+- **Ledger:** relations are kept sparse (moved, no copy).
+  - The check's charges are unchanged: same factors and multiplies, and the parity scan stays ⌈F/64⌉ as charged.
+- **Solve:** the GF(2) bit rows are built from the sparse lists, 1 word per entry (Σ nnz over rows). This is the bit-matrix build that item 14 had listed.
+  - *Disjoint charges:* step 1 charges the bit-row build. Item 14 (step 2) covers only the combination-matrix initialization, the per-pivot row clones and the dependency sums (now over sparse entries).
+- **cfrac (shared ledger):** cfrac keeps its own dense vector per residue.
+  - That vector's per-residue fill is a pre-existing uncharged hole; it is recorded as audit item 16 and not fixed here (cfrac is in no deck).
+  - It records the entries it touches and hands the ledger a sparse list, charging |T| word per smooth residue offered. cfrac_ops therefore rises by that, and cfrac_accept's formula follows.
+
+**Size, before the run** (new reference, from the traces' scale: |T| ≈ 5–12, kept candidates ≈ 30–60% of candidates, F 26–122, width 279–2,113):
+- *Without re-sieve:* per candidate F → about 2|T| + kept · 2|T′| ≈ 15–30 word.
+  - At 54 (F ≈ 26) that is about break-even. At 96 (F ≈ 122) it is about −90 to −105 word per candidate.
+  - Combinations: F → |a| + |b| + 2|out| ≈ 35–60 word; a cut at 96, a rise at 54.
+  - The bit-row build adds Σ nnz ≈ (F + 10) × 12 word per solve, small.
+  - So **the c13019b rise without re-sieve shrinks by about 50–85% at 72–96 and about 0–40% at 54.**
+- *With re-sieve:* the per-polynomial width + F (most of the c13019b rise) goes. **About 80–90% of the rise goes at 72–96.**
+- *Wall-clock:* confirm and resieve move back toward their time, so the median rises.
+
+**Acceptance:**
+1. Against c13019b (the pre-step build), all map numbers (new reference off and on at p0 30 / 200 / 1000, frozen, corrected): factor, tests, hits and every type but word identical.
+2. The word change equals the formula from the Python trace (trace-only accumulators per attempt: attempts, F, width, rs-on polynomials with |cand|, ΣT, ΣT′ over kept, combination terms, Σ nnz in solve; the old zero-fill and vector-add terms subtracted). 2 numbers per size per genome.
+3. Python = Rust per type.
+4. cfrac_accept passes with its formula updated.
+5. Parity passes.
+- Report: cost per number before / after (official / ruint / Montgomery; off and on at p0 200; 54–96). P1 and P2 are scored.
