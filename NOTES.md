@@ -3628,3 +3628,25 @@ The final Track R genes run as qs alone on the corrected card with kset = sf32. 
   - *Note beside it:* in the user's large-prime Mathematica run, ~14,000 partials gave 492 combined relations (~0.04 each), so 0.75 is not supported.
   - *Alternative mechanism, recorded:* per-polynomial setup cost, which a looser threshold amortizes over more relations per sieve interval (absent in the toy).
 - **Recorded (user):** root-matching is slightly negative under official (−1.8% in the toy; the cost model above expects a loss under official), so it is a **card option each track can take or leave**. The official count would reject it.
+
+**Slack check: optimum or plateau?** (information; `evolve/slackcheck.py`, `slackcheck.out`; the committed lampcore build). New reference genes as qs alone on all map numbers; lc fixed as tuned, tc set so that the slack tc + lc − 1 is 1.0 / 1.5 / 2.0 / 2.5; cost relative to the tuned slack (official / ruint / Montgomery). No misses at any slack.
+
+| bits (tuned slack) | 1.0 | 1.5 | 2.0 | 2.5 |
+|---|---|---|---|---|
+| 72 (2.23) | 3.45 / 3.51 / 3.75 | 1.72 / 1.51 / 1.59 | 1.07 / 0.99 / 1.01 | 1.03 / 1.13 / 1.11 |
+| 84 (2.10) | 2.55 / 2.22 / 2.31 | 1.51 / 1.30 / 1.33 | 1.03 / 0.99 / 0.99 | 1.05 / 1.25 / 1.22 |
+| 96 (2.01) | 2.48 / 2.33 / 2.38 | 1.51 / 1.36 / 1.38 | 1.00 / 1.00 / 1.00 | 0.99 / 1.22 / 1.20 |
+
+Cost split under ruint (setup = multiplier, factor base and polynomial setup; then sieve, confirmation, large primes, linear algebra + square root):
+
+| bits | slack 1.0 | slack 1.5 | slack 2.0 | slack 2.5 |
+|---|---|---|---|---|
+| 72 | setup 0.75, sieve 0.22, confirm 0.02 | 0.64 / 0.26 / 0.07 | 0.48 / 0.22 / 0.23 | 0.31 / 0.14 / 0.47 |
+| 84 | 0.58 / 0.38 / 0.02 | 0.51 / 0.38 / 0.08 | 0.39 / 0.29 / 0.26 | 0.24 / 0.18 / 0.52 |
+| 96 | 0.53 / 0.45 / 0.02 | 0.46 / 0.46 / 0.06 | 0.36 / 0.37 / 0.23 | 0.23 / 0.24 / 0.49 |
+
+- **Under ruint and Montgomery, ~2.0 is a true optimum, not a plateau.** The cost rises steeply below it (×1.3–1.6 at 1.5, ×2.2–3.7 at 1.0) and clearly above it (+11–25% at 2.5).
+- Under official it is flat above 2.0 (0.99–1.05 at 2.5), since confirmation is cheap relative to the sieve in official ops.
+- **The mechanism is the per-polynomial setup cost** (DeepSeek's alternative under D-pv). At low slack, few relations come per polynomial, and setup is 53–75% of ruint cost at slack 1.0. A looser threshold amortizes setup over more relations, until confirmation (0.47–0.52 of ruint cost at 2.5) takes over. The toy, with no setup cost, misses this, which is why its best slack is ~1.0.
+- **Setup is 35–40% of qs's ruint cost at the tuned slack.** That is a target in its own right, the largest single slice under ruint at 72–84.
+- *For root-matching:* cheaper confirmation lowers the cost of a looser threshold, so the optimal slack should rise and setup's share fall. The saving after retuning can exceed the static estimate in the cost model.
