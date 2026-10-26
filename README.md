@@ -34,6 +34,8 @@ Independent research by Jonathan Kendall. Rust ("lampcore") for the fast core, P
 - Root-matched confirmation ("re-sieve") pays only when its prime cutoff p0 is tuned. A cost model puts the best p0 in the hundreds at 84-96 bits, and suggests it matters for Track M but barely for Track R. A scored slack retune with a p0 sweep is next.
 - Large-prime pairing is explained by three things: only quadratic-residue primes can occur (halving the support), the filed size distribution, and pooling across numbers. The double-large-prime variation stays marginal at these sizes.
 
+New ideas and opportunities are logged and evaluated in `IDEAS.md`.
+
 Details, numbers and every prediction with its score are in `NOTES.md`; candidate moves in `MOVES.md`; the plan in `PLAN.md`.
 
 ## Roadmap: the Illumination program
@@ -53,6 +55,7 @@ After the current meter corrections, five phases (full plan in `PLAN.md`):
 - `NOTES.md`: the running lab notebook: decisions, cost models, results, predictions and scores
 - `MOVES.md`: candidate moves (card changes, pricing changes, search methods) and their status
 - `PLAN.md`: the plan and the order of work
+- `IDEAS.md`: ideas and opportunities: proposed, adopted, parked, rejected
 
 ## Running it
 

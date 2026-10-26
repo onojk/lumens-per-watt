@@ -978,7 +978,9 @@ a model propose code changes to one card, under a harness it cannot touch.
   - Reported whatever the outcome, including proposals that failed the static check,
     acceptance or mutation tests, and why.
 
-## The Illumination program (roadmap, after the current meter corrections; README, Oct 26)
+## Illumination program (Oct 26)
+
+(Roadmap, after the current meter corrections; from the README of Oct 26.)
 
 Five phases, in order. Planning only; each phase gets its own protocol, cost model where the
 meter is touched, and predictions in NOTES before it runs.
@@ -1002,3 +1004,7 @@ meter is touched, and predictions in NOTES before it runs.
 5. **Dark mass.** Treat the factor's position on the theta line as uncertain. Every stage,
    including one that fails, rules part of it out. Score lamps by bits of uncertainty removed
    per unit cost, and schedule them greedily by that measure.
+
+## Checkpoints
+
+Ideas and opportunities are reviewed at every checkpoint (a scored result, a closed phase or meter correction, a reviewer round, a surprise, or at least once per session), following the rules in IDEAS.md. Integrity ideas (meter holes, mispricing, confounding) may enter the current queue; all others are scheduled, parked with a revisit trigger, or rejected, and every decision is logged in IDEAS.md.
