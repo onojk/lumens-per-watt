@@ -6142,3 +6142,11 @@ The estimate is unchanged in scale: about 0.1–0.15% of qs's cost at 96 and a f
   - **Timing (mine):** as for U3, the card's priced setup, sieve and confirm per region are already in committed phasetime outputs (`phasetime_s4after.json`, `phasetime_s1b.json`). Nobody computed the ratio before V3 arrived; it is scored post hoc against the step-5 run, with that stated.
 
 **User's instructions for the lp_ledger sub-timers (recorded):** (1) read-only: op counts, results and parity identical with the variable set or unset, confirmed by running the ledger acceptance and a parity subset both ways; (2) report their own overhead (the region's ns with timers on against off). Documentation addenda go in their own commits (NOTES.md / IDEAS.md only), separate from step commits.
+
+### Step 1b: results (`evolve/gray_a_accept.py` reused, `s1b_accept.out`; `parity_s1b.out`; `phasetime_s1b.out` / `.json`)
+
+- *Acceptance:* every run identical to the step-4 build per number and per type, 8,000 / 8,000; Python = Rust per type 32 / 32. Parity passes (types 7,182 pairs; mutations 54 / 54).
+- *Wall-clock* (µs per number, step 4 → step 1b; same protocol):
+  - lp_ledger at 96: 250 → 197 (off), 248 → 202 (on); at 54: 26 → 19;
+  - confirm with re-sieve: 278 → 197 (96), 194 → 131 (84), 121 → 83 (72).
+- The step-5 run follows on the committed card.

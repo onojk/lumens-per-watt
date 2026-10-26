@@ -647,6 +647,8 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
     // step 1 (NOTES.md, "Step 1: delete the fills"): one exponent vector per attempt, reused (F word); with
     // re-sieve, the slot array (width) and the generation stamps (F) once per attempt
     let mut ev = vec![0u32; f];
+    // step 1b: per-attempt buffers, cleared per use (no per-candidate allocation; counts unchanged)
+    let (mut tt, mut plist, mut out): (Vec<u32>, Vec<usize>, Vec<u32>) = (Vec::new(), Vec::new(), Vec::new());
     let mut slot = vec![usize::MAX; if rs_on { width } else { 0 }];
     let mut stamp = vec![0u32; if rs_on { f } else { 0 }];
     let mut gen = 0u32;
@@ -837,30 +839,27 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 let x = i0 as i128 - mm_ as i128;
                 let mut v = (a * x + 2 * bv) * x + c;
                 m.charge(crate::PH_WORD, 2)?; // two word multiply-adds (audit 5)
-                let plist: Vec<usize> = if rs_on {
+                plist.clear();
+                if rs_on {
                     // merge two ascending lists, |plist| word ops (NOTES.md, item 11)
                     let (a_, b_) = (&direct, &rec[ci]);
                     let (mut i, mut j) = (0usize, 0usize);
-                    let mut l = Vec::with_capacity(a_.len() + b_.len());
                     while i < a_.len() && j < b_.len() {
                         if a_[i] < b_[j] {
-                            l.push(a_[i]);
+                            plist.push(a_[i]);
                             i += 1;
                         } else {
-                            l.push(b_[j]);
+                            plist.push(b_[j]);
                             j += 1;
                         }
                     }
-                    l.extend_from_slice(&a_[i..]);
-                    l.extend_from_slice(&b_[j..]);
-                    m.charge(crate::PH_WORD, l.len() as u64)?;
-                    l
-                } else {
-                    Vec::new() // the full pass iterates 1..f directly (no list is built, as in Python)
-                };
+                    plist.extend_from_slice(&a_[i..]);
+                    plist.extend_from_slice(&b_[j..]);
+                    m.charge(crate::PH_WORD, plist.len() as u64)?;
+                } // else: the full pass iterates 1..f directly (no list is built, as in Python)
                 m.charge(crate::PH_WORD, 1)?; // the sign check (audit 8)
                 m.charge(CONFIRM, if rs_on { plist.len() as u64 } else { f as u64 - 1 })?;
-                let mut tt: Vec<u32> = Vec::new(); // entries touched in the reused vector (step 1)
+                tt.clear(); // entries touched in the reused vector (step 1)
                 if v < 0 {
                     ev[0] = 1;
                     tt.push(0);
@@ -945,7 +944,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                     .to::<u128>() as i128;
                 m.charge(LP, 1)?;
                 // sparse combination through the clean vector (step 1)
-                let mut out: Vec<u32> = Vec::new();
+                out.clear();
                 for &(j, e) in v1.iter().chain(vec_.iter()) {
                     if ev[j as usize] == 0 {
                         out.push(j);
