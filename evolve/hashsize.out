@@ -1,0 +1,4 @@
+54 bits (8 numbers): large-prime table at lookup: median 53, 90th pct 114, max 147 (986 lookups); final table median 95, max 148; ledger duplicate sets at probe: median 11, 90th pct 26 (362 probes)
+72 bits (12 numbers): large-prime table at lookup: median 110, 90th pct 205, max 276 (3051 lookups); final table median 224, max 277; ledger duplicate sets at probe: median 16, 90th pct 31 (790 probes)
+84 bits (12 numbers): large-prime table at lookup: median 197, 90th pct 366, max 463 (5355 lookups); final table median 406, max 464; ledger duplicate sets at probe: median 25, 90th pct 47 (1220 probes)
+96 bits (12 numbers): large-prime table at lookup: median 395, 90th pct 732, max 929 (10324 lookups); final table median 812, max 930; ledger duplicate sets at probe: median 36, 90th pct 69 (1750 probes)

@@ -1,0 +1,19 @@
+{"name": "mulmod ruint chain", "ns_median": 31.5332, "ns_min": 30.7841, "ns_q1": 31.2909, "ns_q3": 31.9350, "iters": 1018929, "batches": 31, "secs": 1.12, "bits": 84}
+{"name": "hash op (large-prime table, grown from empty)", "size": 95, "state": "warm", "ns_per_hash": 15.968}
+{"name": "hash op (large-prime table, grown from empty)", "size": 95, "state": "L1-evicted", "ns_per_hash": 16.102}
+{"name": "hash op (large-prime table, grown from empty)", "size": 148, "state": "warm", "ns_per_hash": 17.103}
+{"name": "hash op (large-prime table, grown from empty)", "size": 148, "state": "L1-evicted", "ns_per_hash": 17.842}
+{"name": "hash op (large-prime table, grown from empty)", "size": 224, "state": "warm", "ns_per_hash": 16.061}
+{"name": "hash op (large-prime table, grown from empty)", "size": 224, "state": "L1-evicted", "ns_per_hash": 17.004}
+{"name": "hash op (large-prime table, grown from empty)", "size": 277, "state": "warm", "ns_per_hash": 16.245}
+{"name": "hash op (large-prime table, grown from empty)", "size": 277, "state": "L1-evicted", "ns_per_hash": 18.080}
+{"name": "hash op (large-prime table, grown from empty)", "size": 406, "state": "warm", "ns_per_hash": 17.344}
+{"name": "hash op (large-prime table, grown from empty)", "size": 406, "state": "L1-evicted", "ns_per_hash": 17.461}
+{"name": "hash op (large-prime table, grown from empty)", "size": 464, "state": "warm", "ns_per_hash": 19.001}
+{"name": "hash op (large-prime table, grown from empty)", "size": 464, "state": "L1-evicted", "ns_per_hash": 19.495}
+{"name": "hash op (large-prime table, grown from empty)", "size": 812, "state": "warm", "ns_per_hash": 15.613}
+{"name": "hash op (large-prime table, grown from empty)", "size": 812, "state": "L1-evicted", "ns_per_hash": 17.385}
+{"name": "hash op (large-prime table, grown from empty)", "size": 930, "state": "warm", "ns_per_hash": 23.411}
+{"name": "hash op (large-prime table, grown from empty)", "size": 930, "state": "L1-evicted", "ns_per_hash": 24.878}
+{"name": "hash op (large-prime table, grown from empty)", "size": 512, "state": "warm", "ns_per_hash": 19.164}
+{"name": "hash op (large-prime table, grown from empty)", "size": 512, "state": "L1-evicted", "ns_per_hash": 20.209}

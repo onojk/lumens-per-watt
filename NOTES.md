@@ -5770,3 +5770,63 @@ Time shares (new reference, 96): sieve 24%, confirm 29%, setup 24%, solve 8%, lp
 - **Touched-entry predictions, scored post hoc** (the measurement existed before G4 was recorded; see above):
   - **(G4, DeepSeek's)** 7.3–7.6 / 7.6–7.9 / 7.9–8.2 at 72 / 84 / 96, falsified if > 8.5 at 96: **falsified** on either definition (with the A-primes 13.10 at 96; without them 9.16).
   - **(the user's 7.5–9.0 at each size):** with the A-primes, **missed at every size**. Without them: held at 72 and 84 (7.65, 8.70), missed at 54 (7.03) and 96 (9.16).
+
+**IDEAS renumbered to the user's numbering (Oct 26):** I-022 is the tilted multiplier score (chooser); I-023 is the tilted yield predictor (the "light meter"); the sparse-rows entry I filed as I-022 earlier today is now **I-024**. Earlier NOTES text that says "IDEAS I-022 (sparse rows)" or "IDEAS row I-023 (tilted chooser)" refers to the old numbers.
+
+**I-022 re-run with the 2-adic bug fixed — Wolfram, Oct 26** (recorded as given; seed 2029: 160 N / 109 movers / 2.07x reproduced; seed 2030: 60 movers / 5,431 / 2,578 reproduced).
+- Fixed tilted model, absolute relation counts at k = 1, predicted / measured: 0.98 / 1.00 / 1.02 / 0.94 at 54–96. By N mod 8, all classes are 0.91–1.07 (N ≡ 1 mod 8: 1.01 / 1.04 / 1.07 / 0.91). The exact-ρ route over-predicts by 1.10–1.33.
+- Movers' yield ratio (ratio of totals): measured 2.57 / 1.83 / 2.18 / 2.16; fixed tilted 2.56 / 1.93 / 2.16 / 2.18; exact ρ 1.36–1.48.
+  - Per-N mean log error (movers): fixed tilted −0.03, standard KS logic +0.43.
+  - The "KS pays ~2x" puzzle is explained: smooth residues lean on small primes (the saddle-point tilt), which the expected-log KS logic ignores.
+- As a chooser: the tilted best k differs from the KS best k for 26 / 160 N (16%); there it yields 1.04x (16 wins / 9 losses); overall under 1% more relations.
+- *Sealed scoring (the user's):*
+  - K1 held on matched metrics. The printed headline (mean of predicted ratios 2.40 against the ratio of measured totals 2.07) mixed metrics, the user's design flaw; taken literally it sits just outside both bands.
+  - K2 held for both (16.25%; DeepSeek central 16%).
+  - K3 held for both (1.04).
+  - K4: the user's held; DeepSeek's falsified (the bug factor under the tilt was ~1.74, not 1.5).
+- IDEAS updated: I-022 validated as a predictor, chooser gain < 1% (low priority, the user's decision); I-023 added (the light meter).
+
+**DeepSeek, Oct 26, round 8** (recorded as given):
+- *Accepted:* K4 falsified (it divided by the untilted 1.5; the tilted factor was ~1.74); K1 on matched metrics.
+- *L1 (SIQS):* the A-primes need their own local factors. Correction: for p | a, the sieved g(x) = Q(x)/a is linear mod p, so p | g with one root (probability 1/p). The A-primes are modelled as single-root primes (as already done for p | k), and a's factor is added deterministically, as the card does (audit item 15). The model already solves α across residue sizes (6–24 points), so DeepSeek's per-size-bucket advice is in.
+- *L2 (single large-prime partials):* the sum over primes q in (p_max, L] with (kN/q) = 1 of the tilted smooth probability at log |Q| − log q; the base is excluded and defined identically at the boundary. DeepSeek's "2LP contamination" pitfall is moot while L < p_max² (the card's L ~ 64 p_max): a base-free cofactor below p_max² is prime.
+- **Sealed (L3, the chooser gain surviving α frozen per size, on the 26 disagreement N):**
+  - DeepSeek: 0.55–0.75, central 0.65; falsified if < 0.40 or > 0.90. Also: I-023's absolute error within ±5–10% with α frozen. Its "2.6% actual gain" applies to the disagreement N only; overall ~0.4%.
+  - The user's: 0.8–1.0 (α depends mainly on residue size, weakly on N).
+- I-023's next steps belong to the card, after the brief's steps 0–5: (1) SIQS residue sizes per polynomial with the A-primes as single-root primes; (2) single large-prime partials; (3) predicted against measured relations per polynomial from the card's traces at 54–96. The L3 test is deferred (low priority).
+
+**Step 3, first benchmark run: not usable, recorded and redone** (`calibrate_bench/hashsize/hashsize_p1-3.jsonl`, kept).
+- *L2-evicted:* negative values. The 4 MB sweep's run-to-run timing noise (µs) swamps a ~50 ns op when the sweep's time is subtracted. That state cannot be measured this way.
+- *Warm and L1-evicted:* bimodal across sizes (12–15 ns at 114, 197, 366, 395, 512, 732; 55–65 ns at 53, 110, 205).
+  - My rebuild scheme (rebuild after growing by an eighth) put a HashMap resize inside the timed region at sizes just under a capacity step.
+  - The card's table grows from empty, so its resizes are amortized over its whole growth.
+- **Redo (protocol change, written before the rerun):**
+  - each repetition grows a table from empty to the card's final size by the card's own pattern (a lookup per partial, an insert on a miss; ~30% of lookups hit), timing every op, resizes included;
+  - final sizes are the card's median and maximum final tables: 95 / 148 (54), 224 / 277 (72), 406 / 464 (84), 812 / 930 (96), plus 512;
+  - warm and L1-evicted only. L2-evicted is dropped as unmeasurable by subtraction, and recorded so.
+  - The decision state stays L1-evicted, at 96's sizes.
+
+### Step 3: results — banding not adopted (`opbench --hashsize`, `calibrate_bench/hashsize/hashsize2_p1-3.jsonl`; median of 3 P-core runs)
+
+ns per hash op (lookup, or insert on a miss) on a table grown from empty to the card's final size by the card's pattern. Price = ns ÷ this run's 84-bit ruint multiply (31.53 ns), and its ratio to the calibrated 0.3638:
+
+| size (from) | warm: ns / price / × calibrated | L1-evicted: ns / price / × calibrated |
+|---|---|---|
+| 95 (54 median) | 16.20 / 0.514 / 1.41x | 16.26 / 0.516 / 1.42x |
+| 148 (54 max) | 17.10 / 0.542 / 1.49x | 17.84 / 0.566 / 1.56x |
+| 224 (72 median) | 16.14 / 0.512 / 1.41x | 16.52 / 0.524 / 1.44x |
+| 277 (72 max) | 17.38 / 0.551 / 1.52x | 18.08 / 0.573 / 1.58x |
+| 406 (84 median) | 17.28 / 0.548 / 1.51x | 17.46 / 0.554 / 1.52x |
+| 464 (84 max) | 19.07 / 0.605 / 1.66x | 19.50 / 0.618 / 1.70x |
+| **812 (96 median)** | 15.92 / 0.505 / 1.39x | **16.54 / 0.525 / 1.44x** |
+| **930 (96 max)** | 23.41 / 0.742 / 2.04x | **24.77 / 0.786 / 2.16x** |
+| 512 (calibration's set) | 18.34 / 0.582 / 1.60x | 18.94 / 0.601 / 1.65x |
+
+- **Decision, by the rule fixed before the run:** at 96's median final table the L1-evicted price is 1.44x the calibrated price, under the 1.5x bar. Only the maximum (930, a table that has just resized from 896 to 1,792 slots, so the rehash is amortized over few ops) clears it. **No size-banded price is adopted.**
+- **What the data does show:** the like-for-like op mix (a HashMap lookup or insert with a 24-byte value pointing to a sparse list, resizes amortized over the growth) runs **1.4–1.7x the calibrated hash price at every size**, small tables included.
+  - So the excess is not a size effect. It is the op mix and the value type against the calibration's HashSet<i128> insert-only loop, with my timer-subtraction method adding some uncertainty.
+  - A flat re-price of the large-prime table's hash ops (~1.5x) would be a separate pricing decision. Not done.
+  - Cache state barely matters at these sizes (L1-evicted is +1–6% over warm), as DeepSeek expected: the tables stay far below L2.
+- **(P5, the user's)** hash at 96's table size ≥ 2x the clean calibrated price, and step 3 adopts banding: **missed** (1.44x at the median; 2.16x only at the maximum; not adopted).
+- **(D-P5, DeepSeek's)** 1.3–1.8x, not ≥ 2x: **held** at 96's median (1.44x); the maximum-size cell (2.16x) is a resize artifact of the final size.
+- *Step 3 extra (lp_ledger breakdown if the hash is under 2x and lp_ledger still flags):* it depends on the step-5 wall-clock re-run; it is done there if lp_ledger flags. The entry width is reported there too (today a partial's table entry is a 16-byte key + 16-byte u + a 24-byte Vec header, with the sparse list on the heap at 8 bytes per (j, e) pair).

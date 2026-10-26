@@ -191,16 +191,27 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Cost: small.
 - Decision: adopted 2026-10-26 (the user), as the multiplicativity form: (N / p) once per number by the Legendre power, (k / p) from a constant table, identical rankings (NOTES.md, "I-021 adopted").
 
-### I-022 — Sparse GF(2) rows from F ~ 1,000
+### I-022 — Multiplier selection by a tilted smooth-probability score
+- Date: 2026-10-26. Source: the user (Wolfram), with DeepSeek's rounds 5-8. (Filed briefly as I-023 while the number clashed; renumbered to the user's I-022.)
+- Idea: choose the multiplier k by the tilted saddle-point estimate of the smooth probability of kN's residues, instead of the Knuth-Schroeppel expected-log score.
+- Evidence: KS pays ~2.1x in relation yield for the N whose best k is not 1 (measured), more than the standard KS logic or exact rho predicts (~1.40x). The first test read "refuted as built" (the tilted choice yielded 0.85x KS's), but a bug in the tilted estimate's 2-adic law for kN = 1 mod 8 (P(v = j) for j >= 3 coded 2^(2-j), correct 2^(1-j)) overvalued that class (NOTES, "Correction ... I-022 is UNTESTED").
+- Cost: a Wolfram re-run with the fix; no card change unless it holds (then a scoring change in both cores, with KS kept as the control).
+- Update (2026-10-26, the fixed re-run): VALIDATED as a predictor. Absolute counts at k = 1 within 0.91-1.07 in every N mod 8 class; movers' yield ratios 2.56 / 1.93 / 2.16 / 2.18 predicted against 2.57 / 1.83 / 2.18 / 2.16 measured (per-N mean log error -0.03, against +0.43 for the standard KS logic). The "KS pays ~2x" puzzle is explained: smooth residues lean on small primes (the saddle-point tilt), which the expected-log KS logic ignores.
+- As a chooser: the tilted best k differs from the KS best k for 26 / 160 N (16%); there it yields 1.04x (16 wins / 9 losses); overall under 1% more relations.
+- As built it costs more than qs (a saddle solve per k per size). A cheap form (alpha frozen per size, tabulated log Z_p over small primes plus the 2-adic factor, cost ~ the current KS score) is possible.
+- Decision: validated as a predictor; as a chooser, gain < 1% of relations. Low priority; decision for the user. Standard KS stays.
+
+### I-023 — Tilted saddle-point yield predictor (the "light meter")
+- Date: 2026-10-26. Source: the user (Wolfram), from the I-022 re-run; DeepSeek round 8 on the SIQS and partial terms.
+- Idea: predict full relations per interval to within ~5% from the base, the multiplier and the residue sizes alone, with no sieving.
+- Uses: pre-screen the 2x2 and the p0 sweep; choose F and the interval width per size; give outside models a principled yield curve.
+- Needed first: (1) SIQS residue sizes (the per-polynomial |Q| distribution), with the A-primes as single-root primes (g(x) = Q(x)/a is linear mod p for p | a) and a's factor added deterministically, as the card does; (2) single large-prime partials: the sum over primes q in (pmax, L] with (kN/q) = 1 of the tilted smooth probability at log|Q| - log q, the base excluded and defined identically at the boundary (2LP contamination is moot while L < pmax^2).
+- Validation: predicted against measured relations per polynomial from the card's traces at 54-96.
+- Timing: after the brief's steps 0-5. The L3 test (chooser gain surviving alpha frozen per size) is deferred, low priority.
+- Decision: pending.
+
+### I-024 — Sparse GF(2) rows from F ~ 1,000 (filed as I-022 earlier on Oct 26; renumbered to follow the user's numbering)
 - Date: 2026-10-26. Source: the user, from the Wolfram ω-against-u run. Trigger: touched entries per relation stay near u + 2.5 (+0.5 for the sign), under ~9 well past 96 bits, while dense bit rows cost F/64 words.
 - Idea: dense bit rows and sparse rows (~8 entries) break even near F ~ 500. Keep solve dense at F <= 400 (today's sizes); switch to sparse rows (and a sparse solver) from F ~ 1,000, around 120-128 bits.
 - Cost: moderate (solve in both cores).
 - Decision: pending (not at today's sizes).
-
-### I-023 — Multiplier selection by a tilted smooth-probability score (the user's "I-022")
-- Date: 2026-10-26. Source: the user (Wolfram), with DeepSeek's rounds 5-6. Numbering: the user called this I-022; IDEAS' I-022 was already the sparse-rows entry, so it is filed here as I-023 until the user renumbers.
-- Idea: choose the multiplier k by the tilted saddle-point estimate of the smooth probability of kN's residues, instead of the Knuth-Schroeppel expected-log score.
-- Evidence: KS pays ~2.1x in relation yield for the N whose best k is not 1 (measured), more than the standard KS logic or exact rho predicts (~1.40x). The first test read "refuted as built" (the tilted choice yielded 0.85x KS's), but a bug in the tilted estimate's 2-adic law for kN = 1 mod 8 (P(v = j) for j >= 3 coded 2^(2-j), correct 2^(1-j)) overvalued that class (NOTES, "Correction ... I-022 is UNTESTED").
-- Cost: a Wolfram re-run with the fix; no card change unless it holds (then a scoring change in both cores, with KS kept as the control).
-- Decision: UNTESTED (corrected from "refuted as built"). Standard KS stays meanwhile.
-

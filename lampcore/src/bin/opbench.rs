@@ -208,6 +208,7 @@ fn main() {
             "--probe" => PROBE_ONLY.store(true, Ordering::SeqCst),
             "--batches" => BATCHES.store(argv.next().unwrap().parse().unwrap(), Ordering::SeqCst),
             "--audit" => AUDIT.store(true, Ordering::SeqCst),
+            "--hashsize" => HASHSIZE.store(true, Ordering::SeqCst),
             _ => args.push(a.parse().unwrap()),
         }
     }
@@ -217,6 +218,10 @@ fn main() {
     const K: usize = 1024; // operand pool, L1-resident
     if AUDIT.load(Ordering::SeqCst) {
         audit_main(&args, &mut rng);
+        return;
+    }
+    if HASHSIZE.load(Ordering::SeqCst) {
+        hashsize_main(&args, &mut rng);
         return;
     }
 
@@ -501,6 +506,81 @@ fn main() {
 /// outside it), and four representative audited ops: a 64-bit multiply-add chain (item 5's v),
 /// a HashSet<i128> probe-and-insert (items 0 / 6), one comparison inside a sort of ~32 keys
 /// (item 2), and a double-precision divide (item 1's t').
+static HASHSIZE: AtomicBool = AtomicBool::new(false);
+
+/// --hashsize (NOTES.md, "Step 3: the hash price's size dependence"): the 84-bit ruint multiply, then the
+/// large-prime table's op mix (a lookup of a 24-bit key, about half present; an insert on a miss) on a
+/// HashMap<i128, (i128, Vec<(u32, u32)>)> held near each size in HASH_SIZES (values: 12 sparse pairs), in three
+/// cache states: warm; L1-evicted (a 64 KB sweep between ops); L2-evicted (a 4 MB sweep between ops). The sweep's
+/// own time is measured alone and subtracted. One JSON line per (size, state): ns per hash op.
+fn hashsize_main(args: &[u128], rng: &mut Rng) {
+    const K: usize = 1024;
+    let n = args[1];
+    let nu = U256::from(n);
+    let ys: Vec<U256> = (0..K).map(|_| U256::from(rng.below_u128(n))).collect();
+    let xs: Vec<U256> = (0..K).map(|_| U256::from(rng.below_u128(n))).collect();
+    let ex = format!(", \"bits\": {}", 128 - n.leading_zeros());
+    bench("mulmod ruint chain", &ex, |it| {
+        let mut x = xs[0];
+        for i in 0..it as usize {
+            x = x.mul_mod(black_box(ys[i & (K - 1)]), nu);
+        }
+        black_box(x);
+        it
+    });
+    let sizes: Vec<usize> = std::env::var("HASH_SIZES").unwrap_or("400".into()).split(',').map(|x| x.parse().unwrap()).collect();
+    let mut sweep = vec![0u64; (64 << 10) / 8];
+    let val = || (0i128, (0..12u32).map(|j| (j, 1u32)).collect::<Vec<(u32, u32)>>());
+    for &size in &sizes {
+        for (state, sw_bytes) in [("warm", 0usize), ("L1-evicted", 64usize << 10)] {
+            let sw = sw_bytes / 8;
+            let mut best = f64::INFINITY;
+            for _rep in 0..7 {
+                // grow a table from empty to `size` by the card's pattern: a lookup per partial (about 30% hit an
+                // existing key), an insert on a miss; resizes included; repeat until enough ops are timed
+                let (mut t_ops, mut t_sw, mut done) = (0f64, 0f64, 0u64);
+                while done < 200_000 {
+                    let mut keys: Vec<i128> = Vec::new();
+                    let mut tab: std::collections::HashMap<i128, (i128, Vec<(u32, u32)>)> = std::collections::HashMap::new();
+                    while tab.len() < size {
+                        let probe = if rng.next() % 10 < 3 && !keys.is_empty() {
+                            keys[(rng.next() as usize) % keys.len()]
+                        } else {
+                            (rng.next() % (1 << 24)) as i128
+                        };
+                        let v = val();
+                        // the sweep alone (and the timer), then the sweep and the op; for warm the sweep is empty
+                        let t = Instant::now();
+                        for i in (0..sw).step_by(8) {
+                            sweep[i] = sweep[i].wrapping_add(1);
+                        }
+                        black_box(&sweep);
+                        t_sw += t.elapsed().as_nanos() as f64;
+                        let t = Instant::now();
+                        for i in (0..sw).step_by(8) {
+                            sweep[i] = sweep[i].wrapping_add(1);
+                        }
+                        black_box(&sweep);
+                        let hit = black_box(tab.get(&probe).is_some());
+                        let mut nop = 1u64;
+                        if !hit {
+                            tab.insert(probe, v);
+                            nop += 1;
+                        }
+                        t_ops += t.elapsed().as_nanos() as f64;
+                        if !hit {
+                            keys.push(probe);
+                        }
+                        done += nop;
+                    }
+                }
+                best = best.min((t_ops - t_sw) / done as f64);
+            }
+            println!("{{\"name\": \"hash op (large-prime table, grown from empty)\", \"size\": {size}, \"state\": \"{state}\", \"ns_per_hash\": {best:.3}}}");
+        }
+    }
+}
+
 fn audit_main(args: &[u128], rng: &mut Rng) {
     const K: usize = 1024;
     let n = args[1];
