@@ -3218,3 +3218,19 @@ The rule recommends; changing the reference is the user's decision.
 - *Why no committed population changes:* a strong test accepts every prime, and it rejects a candidate only if the Fermat test would also reject it or the candidate is composite. So the random sequence differs from before only where the old test accepted a composite. Every committed population has passed `oracle.check` (no composites), so each regenerates identically. This is checked by regenerating them (`oracle.py`, and the map rows' N against `map_nums`).
 - The pre-registered fresh sets change only from the rejected draw on: the 54-bit band-24 subset of the 9430000 set. The seeds and the protocol are otherwise as registered.
 - *Check:* 31 population calls were regenerated with the old (Fermat) and new (strong) generator: every size-scaling set (9300000 / 9400000 / 9410000 / 9420000 / 9430000 / 9500000 at all four sizes), the four 9600000 balanced sets, `calibrate.pops()` and both partition populations. **Only `SS.pop(54, 80, 9430000)` differs**, as expected. The strong test agrees with sympy on 20,000 random odd n of 8–50 bits.
+
+**Grok, before the replacement test** (labelled as Grok's).
+- *Timing disclosure:* the user's message arrived after the replacement test had started (relaunched after the generator fix), but **before any of its output was read**. Its predictions are recorded as pre-registered on that basis.
+- **(G-sat)** The optimal rho budget scales linearly with downstream cost Q until it clears the small-factor population, then saturates; in our setup, not before ~110–130 bits.
+  - *Note beside it:* Grok's earlier G-rho predicted that rho goes to zero at 110–130 bits. Saturating (the budget stops growing) and switching off are different claims; both are recorded as given.
+- **(G-rep2)** Balanced numbers, qs alone, log₂ ratios (official / ruint / Montgomery ranges):
+
+| bits | (2) as-frozen | (1) card-matched |
+|---|---|---|
+| 54 | −0.05..+0.10 / −0.05..+0.12 / −0.05..+0.10 | +0.05..+0.20 / +0.05..+0.22 / +0.05..+0.20 |
+| 72 | −0.10..+0.05 / −0.08..+0.08 / −0.10..+0.05 | −0.02..+0.12 / −0.02..+0.15 / −0.02..+0.12 |
+| 84 | −0.15..−0.02 / −0.12..+0.02 / −0.15..−0.02 | −0.12..+0.02 / −0.10..+0.05 / −0.12..+0.02 |
+| 96 | −0.18..−0.05 / −0.15..−0.02 / −0.18..−0.05 | −0.15..−0.02 / −0.12..0.00 / −0.15..−0.02 |
+
+  - *Note beside (2):* it implies a small card effect. The earlier measurement put the Track R winners at 0.81 / 0.35 / 0.66 of the frozen reference at 54 bits (full pipeline, mixed population), mostly from the card. Scored as written, cell by cell (a cell holds if the measured log₂ lies in its range).
+- **Grok's view on the reference:** keep one formal reference, plus a side table of the card-matched comparison at every size. This matches the adopted default (the frozen reference stays formal; card-matched comparisons are reported beside it).
