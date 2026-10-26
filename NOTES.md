@@ -3437,3 +3437,19 @@ The final Track R genes run as qs alone on the corrected card with kset = sf32. 
 - **So the card does charge a full F-division pass per candidate, as the toy does.** The toy does not over-charge candidates relative to the card.
 - The slack difference (toy ~1.0, card ~2.0) comes from the large-prime variation: the card's tuned lc of 1.6–2.0 makes partials worth admitting, and admitting them needs about one more unit of slack. The toy values a partial at 0.3 and has no lc term in its threshold.
 - So the toy's savings are not upper estimates on the confirmation side. The open question for the cost model is how the sub-30 skip interacts with the partials' larger slack.
+
+**DeepSeek, before any small-prime-variation or stage-2 code** (labelled as DeepSeek's; recorded Oct 25).
+- **D-spv REVISED** (assumes candidates are confirmed by dividing only by root-matching primes, ~5–10 divisions):
+  - On the sieve + confirm slice: official 15–22%, ruint 5–9%, Montgomery 5–9%, best cutoff 30 everywhere.
+  - On total qs cost: official 7–12%, calibrated 2–5%.
+  - Falsified for "cutoff 30 everywhere" if the calibrated gains peak at 20.
+  - *Note beside it:* its assumption does not match the card, which charges a full F-division pass per candidate (stated above). Scored as written.
+- **(D-cslack)** At the tuned slack, the extra candidates' confirm cost equals the extra relations' value, so the tuned slack implies an effective confirm cost.
+  - Its numbers (a relation "~500 ops" on average at 84 bits; a marginal value much below average) are not supported.
+  - *Adopted as information in the small-prime-variation cost model:* count the divisions actually charged per confirmed candidate in the card's traces, per size.
+- **(D-c)** The pm1 stage-2 c chosen by the map check:
+  - Track R 10–25 / 30–60 / 60–120 at 72 / 84 / 96; Track M 20–40 / 50–90 / 90–150; c rises with size in both;
+  - c(Montgomery) / c(ruint) 1.2–1.5 at every size (reason given: qs is small-op heavy, so a catch saves more multiply-equivalents under Montgomery);
+  - paired chosen everywhere.
+  - *Notes:* Track R's stage-1 p-1 was within noise at 72–96, so stage 2 may stay off there. Pairing's setup is genuinely multiplies and is charged as such.
+- **Reference policy:** recorded in PLAN. DeepSeek's proposed criterion (no change that reverses a PD sign) is recorded but not adopted, because PD ratios do not depend on the reference.

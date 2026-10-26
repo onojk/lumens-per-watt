@@ -448,6 +448,11 @@ any scored run, and parity gates the Rust port.
       per-band gate passing. That margin is beyond what a reference change can manufacture by
       re-weighting pricings. A future change of reference again needs the pre-registered rule
       to pass on fresh numbers; convenience or a closer fit is not enough.
+      **Reference policy (Oct 25):** the reference changes only when the pre-registered
+      replacement rule passes on fresh numbers, and the old reference is reported in a side
+      column for one round. DeepSeek's proposed extra criterion (no change that reverses a PD
+      sign) is recorded but not adopted: PD ratios compare two pipelines directly and do not
+      depend on the reference.
       The first wording (the worst raw cost) collapsed to the official count.
     - Reports call a cell only where all three pricings agree; otherwise the cell is
       "undecided".
