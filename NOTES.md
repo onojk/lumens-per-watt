@@ -6678,3 +6678,57 @@ Each cell gives ratio A / ratio B, with the materiality (time share × (ratio_B 
 - *Gene design for the retune (I-030):* DeepSeek recommends slack only, with L set from the measured median under-count, plus the confirm mode as a gene.
   - The reviewer prefers L = B^slack exactly (the most the threshold can ever admit). Setting L lower discards partials that already passed the threshold and paid for confirm, and step 7 (b) showed that lowering L below the cap costs slightly in both price and wall-clock. One gene (slack), nothing fitted.
   - Agreed: slack and the confirm mode are coupled (a looser slack sends more candidates to confirm), so both belong in the same retune.
+
+**I-023 / I-028 — the light meter with a threshold cap (Wolfram, Oct 26; model; recorded as given)** (the card's means: 96 B 1,752, M 1,056, L/B 1,440, slack 2.009; 84 B 1,093, M 560, L/B 88.7, slack 2.098; 8 N per size).
+- A partial at x is caught only if log2 q ≤ slack × log2 B − log2(Qmax / |Q(x)|) − D, with D a deterministic under-count scanned over 0–8 bits. D* is set once, to match the card's 96-bit partials per polynomial (5.87).
+- *No cap:* 96: polynomials 105.3, fulls / polynomial 0.604, partials / polynomial 19.2. 84: polynomials 60.5, fulls / polynomial 0.737, partials / polynomial 9.91.
+- **D* = 4.33 bits.** At D* (the card in brackets):
+  - 96: polynomials 123.4 [156]; fulls / polynomial 0.604 [0.50]; combos 83.0 [71.9]; combined share 0.549 [0.48]; never-combined 0.771 [0.852]. L/B 12: polynomials +5.7% [+7.0%], partials −41.3% [−61.6%], combos −4.6% [−6.4%].
+  - 84 (a prediction): polynomials 67.3 [83.9]; fulls / polynomial 0.737 [0.662]; partials / polynomial 7.22 [5.15]; combos 57.9 [49.8]; never-combined 0.768 [0.790]. L/B 12: polynomials +6.3% [+5.9%], partials −41.9% [−44.9%], combos −4.9% [−6.4%].
+- *The user's scoring:* T1, T2a, T4a, T4c, T5b held; T2b, T3a, T3b, T4b, T5a missed.
+- **The reviewer's reading:** a single threshold cap is not the main cause of the card's missing partials.
+  - A cap removes the largest q first, so cutting L would remove fewer partials (model −41% against the card's −62%), and the never-combined share would fall (0.77 against the card's 0.85).
+  - And 84 bits, with ~4.6 bits of headroom, still catches only ~52% of the model's partials. The loss is spread across q.
+  - A two-parameter description (a q-independent partial capture ~0.57 at both sizes plus a mild cap, D ~2 bits) fits partials per polynomial at both sizes and the 96-bit L/B 12 cut (~−63%). It is an adjusted fit, not a test.
+  - Fulls are also short: the card's fulls per polynomial over the model's are ~0.83 at 96 and ~0.90 at 84, which the threshold cannot explain (~20 bits of room for fulls).
+- *Candidate causes to check (the reviewer's):* an early-abort rule in confirm; a cofactor test stricter than q < L; partials dropped at filing; A off target (residues larger than M √(kN/2)).
+- The reviewer's sealed S9-1 and the S9-3 low band now look likely to miss; they stand as sealed.
+
+**Step 9 amendment (user, Oct 26; read-only; before 9b runs):**
+- *9a additions:*
+  - describe confirm in full: the order of trial division, any early-abort rule, the cofactor tests (bounds, primality), and every place a candidate or partial can be dropped before it is looked up in the ledger;
+  - report the realized |A| against its target √(2kN)/M (mean and spread of log2(|A| / target)), and the realized max |Q(x)/A| against M √(kN/2).
+- *9b, the funnel,* separately for true fulls and true 1LP partials (q ≤ L), per size: true (exact factoring) → passed the sieve threshold → survived confirm (each internal check separately if there are several) → filed / looked up.
+  - The fraction surviving each stage, overall and for partials by band of log2(q/B) (0–2, 2–4, 4–6, 6–8, 8+);
+  - the capture against log2(Qmax / |Q(x)|) table, and the under-count distribution as before.
+- **9c, sealed before 9b (the reviewer's; informed by the Wolfram run above, blind to any trace data):**
+  - *S9-6:* end-to-end capture (true → looked up) of partials with log2(q/B) < 3 at 96: 0.45–0.70.
+  - *S9-7:* end-to-end capture of true fulls at 96: 0.78–0.90.
+  - *S9-8:* at 96, the single stage that loses the most partials is not the sieve threshold (more partials are lost after passing it, or the threshold loss is spread across all q rather than concentrated at high q).
+  - *S9-9:* at 84, end-to-end partial capture is within 0.15 of the capture at 96 for the same log2(q/B) band below 4 (the loss is size-independent at low q).
+
+**DeepSeek, Oct 26, round 39 (I-023 / step 9; recorded as given, before 9b):**
+- *Accepted:* S9-1–S9-5 recorded as agreement (its falsifiers scored); the capture-formula correction (the joint (x, q) weight, a prime density ~1 / ln q, half the primes having roots); L = B^slack preferred; the single-cap hypothesis largely refuted; the two-number fit (a q-independent partial capture ~0.57 plus a ~2-bit cap) an adjusted fit, not a test.
+- **Sealed (independent this time):**
+  - *S9-6 (96, end-to-end capture of partials with log2(q/B) < 3):* 0.50–0.68 (central 0.59). Falsified if < 0.38 or > 0.78.
+  - *S9-7 (96, end-to-end capture of true fulls):* 0.79–0.91 (central 0.85). Falsified if < 0.70 or > 0.95.
+  - *S9-8 (96):* the largest partial-losing stage is after the threshold (confirm or filing); the threshold's loss is < 40% of the total partial loss and not concentrated at high q. Falsified if the threshold is the largest stage, if the threshold's loss is > 50% of the total, or if the top q/B band's loss is > 2x the low band's.
+  - *S9-9 (84 against 96, partials with log2(q/B) < 4):* 84 higher by +0.01 to +0.14 (central +0.07). Falsified if the absolute difference is > 0.18, or if 84 is lower than 96 by > 0.05.
+- *Mechanisms (its table):* early abort and stricter cofactor tests hit high q harder; a filing / ledger rejection would be flat across q and spare fulls (its leading candidate); A off target varies by polynomial and hits fulls and partials by similar fractions.
+- *A off target (checked):* ~22% fewer fulls per bit of larger residue at 96 (u ~5.4; the reviewer's check of the slope gives ~0.26 per bit against its 0.25). A 40% partial loss would need ~2 bits, which would also cut fulls ~40%, so A off target is not the main cause by itself.
+- *Early abort (checked):* p_part = E_q[Pr(R_>C ≤ U / q)]. It hits partials harder than fulls, and high q hardest; the q-dependence vanishes only if U ≫ L. A flat-in-q loss argues against it.
+- *Errors (the reviewer's):*
+  - "A support check (kN/q) = 1 rejects about half the primes" is impossible for a true partial: if q divides the residue, kN is a square mod q, so the check always passes.
+  - "Dedup hits small q more at filing": a partial whose q was already seen is combined, not rejected. That is the normal ledger path, not a loss.
+- *Reminder (the reviewer's):* its round-37 alternative "the model over-predicts partials" is not in this table but matters. Step 9b's first funnel stage (true partials per polynomial from exact factoring on the card's own polynomials) is reported beside the model's 19.2 (96) / 9.9 (84), and true fulls per polynomial beside 0.60 / 0.74. If the true counts are already low, the gap is in the model (or the card's polynomials), not in the card's sieve, confirm or filing.
+
+**Overnight queue (user, Oct 26; unattended), recorded:**
+- *Stages, in order:*
+  - A: the three slow-code fixes (A1 setup in 64-bit arithmetic, A2 lp_ledger arenas, A3 re-sieve record buffers), counts identical, each with acceptance, parity and before / after wall-clock (two replicates);
+  - B: step 9 as amended (read-only);
+  - C: the step-5 timing check on the committed card (anchor B), recording passes / fails only;
+  - D: the I-029 read-out;
+  - E: the re-sieve × F 2×2 at 96 (report only; R-G1 / R-G2);
+  - F: if time remains, step 6 (the yield model against the card's traces, with stage B's capture rates as a measured input).
+- *Rules:* no push; explicit adds; documentation in its own commits; nothing adopted or reference genes changed; predictions recorded before computing; a failed stage's code reverted (notes kept); open questions under "Open questions for the user"; a quiet machine for timing.
+- At the end, an "Overnight summary (Oct 26–27)" section.
