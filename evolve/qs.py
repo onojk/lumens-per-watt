@@ -116,7 +116,7 @@ def sort_cost(n):
     """sort_charge (NOTES.md, "The sort_charge option"): n ceil(log2 n) comparisons for n >= 2."""
     return n * (n - 1).bit_length() if n >= 2 else 0
 
-def a_on_demand(pool, s, q, target, charge, at, sc=False):
+def a_on_demand(pool, s, q, target, charge, at, sc=False, by_q=None):
     """a_mode = on_demand (NOTES.md, "On-demand A selection", second amendment): A's formed one at
     a time, each charged when formed. Prefixes are the (s - 1)-combinations of the pool ordered
     by closeness to q. A prefix lying within a used A is skipped ((s - 1) small ops per used A).
@@ -127,7 +127,8 @@ def a_on_demand(pool, s, q, target, charge, at, sc=False):
     with each (A's differing in one prime find the same u). If that pass runs out of prefixes,
     pass 2 walks them again (third amendment), paying again, with no prefix check, and accepts
     any A not already used."""
-    by_q = sorted(pool, key=lambda p: (abs(math.log(p / q)), p))
+    # the pool in closeness order, as the pool selection already produced it (item 12: no re-sort)
+    by_q = list(by_q)
     used = []
     for limit in (s - 2, s - 1):
         if limit == s - 1 and at is not None:
@@ -197,7 +198,8 @@ def sieve_source(N, k, g, led, ch, at):
         s -= 1
     q = target ** (1 / s)
     P = min(len(pool_all), 40 if s == 1 else 16 + 4 * s)
-    pool = sorted(sorted(pool_all, key=lambda p: (abs(math.log(p / q)), p))[:P])
+    closeness = sorted(pool_all, key=lambda p: (abs(math.log(p / q)), p))[:P]
+    pool = sorted(closeness)
     sc = bool(g.get("sort_charge", 0))
     if sc:                                     # sort_charge: pool selection (n keys + comparisons), then ascending
         charge("setup", len(pool_all) + sort_cost(len(pool_all)) + sort_cost(P))
@@ -210,7 +212,7 @@ def sieve_source(N, k, g, led, ch, at):
         if at is not None:
             at["combos"], at["s"] = 0, s
     elif g.get("a_mode", "enumerate") == "on_demand" and s >= 2:
-        combos = a_on_demand(pool, s, q, target, charge, at, sc)
+        combos = a_on_demand(pool, s, q, target, charge, at, sc, by_q=closeness)
         if at is not None:
             at["combos"], at["s"] = 0, s
     else:

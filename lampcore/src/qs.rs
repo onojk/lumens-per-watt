@@ -477,12 +477,9 @@ struct OnDemand {
 }
 
 impl OnDemand {
-    fn new(pool: &[u64], s: usize, q: f64, target: f64, sc: bool) -> Self {
-        let mut by_q = pool.to_vec();
-        by_q.sort_by(|a, b| {
-            ((*a as f64 / q).ln().abs(), *a).partial_cmp(&((*b as f64 / q).ln().abs(), *b)).unwrap()
-        });
-        OnDemand { pool: pool.to_vec(), prefixes: combinations(&by_q, s - 1), at: 0, target, s,
+    /// `by_q`: the pool in closeness order, as the pool selection produced it (item 12: no re-sort).
+    fn new(pool: &[u64], by_q: &[u64], s: usize, target: f64, sc: bool) -> Self {
+        OnDemand { pool: pool.to_vec(), prefixes: combinations(by_q, s - 1), at: 0, target, s,
                    used: Vec::new(), limit: s - 2, sc }
     }
 
@@ -596,7 +593,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
     let mut combos: Vec<Vec<u64>> = Vec::new();
     let mut od: Option<OnDemand> = None;
     if on_demand {
-        od = Some(OnDemand::new(&pool, s, q, target, sc));
+        od = Some(OnDemand::new(&pool, &by_q[..pn], s, target, sc));
     } else {
         combos = combinations(&pool, s);
         m.charge(SETUP, (s as u64 - 1) * combos.len() as u64)?;

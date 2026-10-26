@@ -4893,3 +4893,8 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
 
 - **The meter correction alone** adds 2.8–7.3% official and 0.5–3.2% calibrated (re-sieve-on cells most, since re-sieve recomputes starts). With the clean sieve_update price as well, the calibrated totals end 0.2–7.3% **lower** than before: the clean price applies to every sieve update, which outweighs the newly charged starts.
 - No registered prediction names this correction.
+
+### Item 12: on-demand selection reuses the pool-selection order — results (`evolve/item12_accept.py`, `item12_accept.out`)
+- The pool's closeness order is taken from the pool selection (the first P of its closeness sort) and passed to on-demand selection, which no longer re-sorts it (Python `a_on_demand(..., by_q=closeness)`; Rust `OnDemand::new(&pool, &by_q[..pn], ...)`).
+- **Exact, as the cost model requires:** identical to the pre-change lampcore per number and per type on all map numbers for the new reference (with and without re-sieve), the corrected reference and the frozen reference (8,000 / 8,000), and Python = Rust per type (32 / 32). Nothing is charged differently and no op count changes.
+- *Parity:* the output is identical to a build that passed the full parity suite (78e13d1). The full suite is rerun after item 13 and covers both.
