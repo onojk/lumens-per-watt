@@ -4569,3 +4569,15 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
   - *Per prime in (B1, B2]:* ≤ 3 multiplies (fewer with pairs carrying two primes), plus the giant steps' 6 multiplies per 24 candidates (~0.25 per candidate) and ~4–5 word ops. That is roughly the model's S2 "2 multiplies per prime" for ECM, plus about 1 for the accumulation.
 
 **Ideas checkpoint (2026-10-26):** added I-016; I-014 updated (cover stage 2 and its per-prime cost); parked triggers checked (none parked).
+
+**Sealed predictions for the corrected stage-2 DP (Oct 26)** — p-1 stage 2 one-shot (it ends p-1); the rho grid extended to 2^16.
+- *Grok's* (labelled as Grok's):
+  - (Q1) rho returns at all sizes: 2^12–2^14 / 2^13–2^15 / 2^14–2^16 at 72 / 84 / 96.
+  - (Q2) stage-2 saving (S1 against S2, no ECM): 2–4.5 / 2.5–5 / 3–5.5%. Falsified if any size is ≥ 6% or the saving is gone.
+  - (Q3) ECM in S2 at 96 under 1–2 of 3 priors, gain 1.5–4.5%.
+  - (Q4) no ECM at 84 in any arm.
+  - (Q5) revises GP7: on measured curves the best fixed pipeline is within 3% of the optimum at every size (gap 0.5–3.0%), confidence ~80%. It replaces GP7 for scoring; the original GP7 is still scored as written.
+  - (Q6) one-shot p-1 bound 2^11–2^13 / 2^12–2^14 / 2^13–2^15. Falsified outside 2^9–2^16.
+- *Claude chat's* (same time):
+  - (Q1) rho returns at 84 and 96 at 2^10–2^12, not at 72. (Q2) 2–5% at each size. (Q3) ECM at 96 under 2–3 priors, gain ≥ 4% (an honestly priced p-1 makes ECM relatively more attractive). (Q4) agree. (Q6) 2^8–2^10 at all sizes.
+  - *Notes:* Q1 and Q6 trade off directly (more rho means a lower p-1 bound), as do Q2 and Q3, so they are not independent. Q1's upper levels needed the rho grid extended past 2^14.
