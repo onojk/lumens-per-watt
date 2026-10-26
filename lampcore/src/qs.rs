@@ -7,7 +7,7 @@
 //!
 //! Values of size kN live in i128 (N must stay below 2^100); products mod N use U256.
 
-use super::{ks_score, Budget, Meter, Num, KS_PRIMES, R};
+use super::{ks_rank, Budget, Meter, Num, R};
 use ruint::aliases::U256;
 use serde_json::Value;
 
@@ -193,8 +193,12 @@ pub fn lamp_qs(num: &Num, g: &Value, m: &mut Meter) -> R {
     };
     let kc = cands.len() as u64;
     let pt = crate::pt_snap(m);
-    m.charge(MULT, kc * KS_PRIMES.len() as u64)?;
-    let mut ranked: Vec<(u64, f64)> = cands.iter().map(|&k| (k, -ks_score(k, num))).collect();
+    // I-021 (NOTES.md, "I-021 adopted"): symbols, charged by the work
+    let (sc, (mu, wo, fl)) = ks_rank(num, &cands);
+    m.charge(MULT, mu)?;
+    m.charge(crate::PH_WORD, wo)?;
+    m.charge(crate::PH_FLOG, fl)?;
+    let mut ranked: Vec<(u64, f64)> = cands.iter().zip(&sc).map(|(&k, &s)| (k, -s)).collect();
     ranked.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap().then(a.0.cmp(&b.0)));
     if gene(g, "sort_charge", 0.0) != 0.0 {
         m.charge(crate::PH_SORT, sort_cost(kc))?; // sort_charge: the multiplier ranking (audit item 2: sort_cmp)

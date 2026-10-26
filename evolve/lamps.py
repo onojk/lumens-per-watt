@@ -95,17 +95,62 @@ def ks_score(k, N):
             s += 2 * math.log(p) / (p - 1)
     return s
 
+# I-021 (NOTES.md, "I-021 adopted"): the same scores by multiplicativity of the Legendre symbol. (kN / p) =
+# (k / p)(N / p): the 14 symbols of N once per number (N mod p, then the Legendre power), (k / p) from a constant
+# table (k <= KS_TMAX; above it, k mod p and the residue table of p). The ln p terms are a constant table, so the
+# scores are bit-identical to ks_score's.
+KS_W1 = [math.log(p) / p for p in KS_PRIMES]
+KS_W2 = [2 * math.log(p) / (p - 1) for p in KS_PRIMES]
+KS_SYM = [[0] + [1 if pow(r, (p - 1) // 2, p) == 1 else -1 for r in range(1, p)] for p in KS_PRIMES]
+KS_TMAX = 64
+KS_T = [[KS_SYM[i][k % p] for i, p in enumerate(KS_PRIMES)] for k in range(KS_TMAX + 1)]
+# per number: 14 reductions N mod p + the Legendre powers' bit_length(e) + popcount(e) small multiplies (83)
+KS_PREP_MULT = len(KS_PRIMES) + sum(((p - 1) // 2).bit_length() + bin((p - 1) // 2).count("1") for p in KS_PRIMES)
+
+def ks_prep(N):
+    """(N / p) for the 14 primes: 0, 1 or -1. Charged KS_PREP_MULT small-modulus ops by the caller."""
+    out = []
+    for p in KS_PRIMES:
+        r = pow(N % p, (p - 1) // 2, p)
+        out.append(0 if r == 0 else 1 if r == 1 else -1)
+    return out
+
+def ks_eval(k, N, legn):
+    """ks_score(k, N) from the symbols of N, and its charges (mult, word, flog): k*N 1 mult (plus k mod p
+    per prime when k > KS_TMAX), ln k 1 flog, 2 word + 1 per table lookup + 1 per term added."""
+    kN = k * N
+    r8 = kN % 8
+    s = (2.0 if r8 == 1 else 1.0 if r8 == 5 else 0.5) * math.log(2) - 0.5 * math.log(k)
+    row = KS_T[k] if k <= KS_TMAX else [KS_SYM[i][k % p] for i, p in enumerate(KS_PRIMES)]
+    adds = 0
+    for i, t in enumerate(row):
+        if t == 0:
+            s += KS_W1[i]; adds += 1
+        elif t * legn[i] == 1:
+            s += KS_W2[i]; adds += 1
+    return s, (1 + (len(KS_PRIMES) if k > KS_TMAX else 0), 2 + len(KS_PRIMES) + adds, 1)
+
+def ks_rank(N, cands):
+    """Scores for cands and the summed charges (mult incl. the per-number KS_PREP_MULT, word, flog)."""
+    legn = ks_prep(N)
+    sc, mu, wo, fl = {}, KS_PREP_MULT, 0, 0
+    for k in cands:
+        sc[k], (a, b, c) = ks_eval(k, N, legn)
+        mu += a; wo += b; fl += c
+    return sc, (mu, wo, fl)
+
 def ks_order(N, K, mult, chunk, m):
     """Luck by design: multipliers mult*i, i <= K, taken in chunks of `chunk`.
 
-    Each chunk is scored (one op per small prime per candidate, charged when the chunk
-    is reached) and tried best-first, so ranking cost is only paid as it's used.
+    Each chunk is scored (charged by ks_rank's work when the chunk is reached; I-021) and tried
+    best-first, so ranking cost is only paid as it's used.
     """
     i = 1
     while i <= K:
         block = [mult * j for j in range(i, min(K, i + chunk - 1) + 1)]
-        m.tick(len(block) * len(KS_PRIMES))
-        block.sort(key=lambda k: -ks_score(k, N))
+        sc, (mu, wo, fl) = ks_rank(N, block)        # I-021: scored by symbols, charged by its work
+        m.tick((mu if i == 1 else mu - KS_PREP_MULT) + wo + fl)   # the per-number symbols with the first block
+        block.sort(key=lambda k: -sc[k])
         yield from block
         i += chunk
 

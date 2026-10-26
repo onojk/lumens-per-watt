@@ -4,7 +4,7 @@
 //! NOTES.md, "CFRAC as a second relation source".
 
 use super::qs::{gene, Ledger, MULT};
-use super::{ks_score, Budget, Meter, Num, KS_PRIMES, R};
+use super::{ks_rank, Budget, Meter, Num, R};
 use ruint::aliases::U256;
 use serde_json::Value;
 
@@ -22,8 +22,11 @@ pub fn lamp_cfrac(num: &Num, g: &Value, m: &mut Meter) -> R {
     }
     // 1. multiplier
     let kc = (gene(g, "kc", 16.0) as u64).max(1);
-    m.charge(MULT, kc * KS_PRIMES.len() as u64)?;
-    let mut ranked: Vec<(u64, f64)> = (1..=kc).map(|k| (k, -ks_score(k, num))).collect();
+    // I-021: symbols, charged by the work; cfrac is untyped (cfrac_ops), one lump
+    let ks: Vec<u64> = (1..=kc).collect();
+    let (sc, (mu, wo, fl)) = ks_rank(num, &ks);
+    m.charge(MULT, mu + wo + fl)?;
+    let mut ranked: Vec<(u64, f64)> = ks.iter().zip(&sc).map(|(&k, &s)| (k, -s)).collect();
     ranked.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap().then(a.0.cmp(&b.0)));
     let ln_n = num.f.ln();
     let bnd = ((gene(g, "bc", 1.5) * (0.5 * (ln_n * ln_n.ln()).sqrt()).exp()) as u64).max(30);

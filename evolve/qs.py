@@ -63,20 +63,21 @@ def lamp_qs(N, g, m):
         return 2
     if N >= 1 << 100:                          # lampcore's limit (i128 arithmetic), kept here too
         raise ValueError(f"qs supports N < 2^100, got a {N.bit_length()}-bit N")
-    from lamps import ks_score, KS_PRIMES
+    from lamps import ks_rank
 
     # 1. multiplier
     # kset "sf32" (NOTES.md, "kc becomes a constant"): the squarefree k <= 32; absent: 1..kc
     cands = SF32 if g.get("kset") == "sf32" else list(range(1, max(1, int(g.get("kc", 16))) + 1))
     kc = len(cands)
-    ch.charge("mult", kc * len(KS_PRIMES))
+    sc, (mu, wo, fl) = ks_rank(N, cands)      # I-021 (NOTES.md, "I-021 adopted"): symbols, charged by the work
+    ch.charge("mult", mu); ch.charge("word", wo); ch.charge("flog", fl)
     if tr is not None:
         tr["k_cands"] += kc
 
     # Multipliers best-first by ks score. An attempt that fails (no dependency splits N, or
     # the polynomials run out) is retried with the next k, paying again for everything:
     # a fresh ledger (2. factor base) for each k.
-    ranked = sorted(cands, key=lambda kk: (-ks_score(kk, N), kk))
+    ranked = sorted(cands, key=lambda kk: (-sc[kk], kk))
     SC = bool(g.get("sort_charge", 0))
     if SC:                                     # sort_charge: the multiplier ranking (keys already charged)
         ch.charge("sortc", sort_cost(kc))     # comparisons (audit item 2: sort_cmp)

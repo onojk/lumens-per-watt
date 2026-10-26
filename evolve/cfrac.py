@@ -38,15 +38,16 @@ def lamp_cfrac(N, g, m):
         return 2
     if N >= 1 << 100:                          # lampcore's limit (i128 arithmetic), kept here too
         raise ValueError(f"cfrac supports N < 2^100, got a {N.bit_length()}-bit N")
-    from lamps import ks_score, KS_PRIMES
+    from lamps import ks_rank
 
     # 1. multiplier
     kc = max(1, int(g.get("kc", 16)))
-    ch.charge("mult", kc * len(KS_PRIMES))
+    sc, (mu, wo, fl) = ks_rank(N, range(1, kc + 1))   # I-021: symbols; cfrac is untyped (cfrac_ops), one lump
+    ch.charge("mult", mu + wo + fl)
     if tr is not None:
         tr["k_cands"] += kc
 
-    ranked = sorted(range(1, kc + 1), key=lambda kk: (-ks_score(kk, N), kk))
+    ranked = sorted(range(1, kc + 1), key=lambda kk: (-sc[kk], kk))
     lnN = math.log(N)
     B = max(30, int(g.get("bc", 1.5) * math.exp(0.5 * math.sqrt(lnN * math.log(lnN)))))
     for k in ranked:

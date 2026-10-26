@@ -270,22 +270,89 @@ const SMOOTH_K: [u64; 46] = [
 ];
 const KS_PRIMES: [u64; 14] = [3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47];
 
-fn ks_score(k: u64, num: &Num) -> f64 {
+// I-021 (NOTES.md, "I-021 adopted"): Knuth-Schroeppel scores by multiplicativity of the Legendre symbol.
+// (kN / p) = (k / p)(N / p): the 14 symbols of N once per number (N mod p, then the Legendre power), (k / p)
+// from a constant table (k <= KS_TMAX; above it, k mod p and the residue table of p). The ln p terms are a
+// constant table computed with the old expressions, so the scores are bit-identical to the old ks_score.
+pub(crate) const KS_TMAX: u64 = 64;
+struct KsTab {
+    w1: [f64; 14],
+    w2: [f64; 14],
+    sym: Vec<Vec<i8>>,
+    t: Vec<[i8; 14]>,
+    prep_mult: u64,
+}
+fn ks_tab() -> &'static KsTab {
+    static TAB: std::sync::OnceLock<KsTab> = std::sync::OnceLock::new();
+    TAB.get_or_init(|| {
+        let w1 = std::array::from_fn(|i| (KS_PRIMES[i] as f64).ln() / KS_PRIMES[i] as f64);
+        let w2 = std::array::from_fn(|i| 2.0 * (KS_PRIMES[i] as f64).ln() / (KS_PRIMES[i] - 1) as f64);
+        let sym: Vec<Vec<i8>> = KS_PRIMES
+            .iter()
+            .map(|&p| (0..p).map(|r| if r == 0 { 0 } else if powmod_small(r, (p - 1) / 2, p) == 1 { 1 } else { -1 }).collect())
+            .collect();
+        let t = (0..=KS_TMAX).map(|k| std::array::from_fn(|i| sym[i][(k % KS_PRIMES[i]) as usize])).collect();
+        // per number: 14 reductions N mod p + the Legendre powers' bit_length(e) + popcount(e) small multiplies
+        let prep_mult = KS_PRIMES.iter().map(|&p| 1 + bit_length((p - 1) / 2) + ((p - 1) / 2).count_ones() as u64).sum();
+        KsTab { w1, w2, sym, t, prep_mult }
+    })
+}
+
+/// (N / p) for the 14 primes: 0, 1 or -1.
+fn ks_prep(num: &Num) -> [i8; 14] {
+    std::array::from_fn(|i| {
+        let p = KS_PRIMES[i];
+        let r = powmod_small((num.n % U256::from(p)).to::<u64>(), (p - 1) / 2, p);
+        if r == 0 { 0 } else if r == 1 { 1 } else { -1 }
+    })
+}
+
+/// The score of k, and its charges (mult, word, flog): k*N 1 mult (plus k mod p per prime when k > KS_TMAX),
+/// ln k 1 flog, 2 word + 1 per table lookup + 1 per term added.
+fn ks_eval(k: u64, num: &Num, legn: &[i8; 14]) -> (f64, (u64, u64, u64)) {
+    let tab = ks_tab();
     let kn = U256::from(k) * num.n;
     let r8 = (kn % U256::from(8u64)).to::<u64>();
     let base = if r8 == 1 { 2.0 } else if r8 == 5 { 1.0 } else { 0.5 };
     let mut s = base * 2f64.ln() - 0.5 * (k as f64).ln();
-    for &p in KS_PRIMES.iter() {
-        if k % p == 0 {
-            s += (p as f64).ln() / p as f64;
-        } else {
-            let r = (kn % U256::from(p)).to::<u64>();
-            if powmod_small(r, (p - 1) / 2, p) == 1 {
-                s += 2.0 * (p as f64).ln() / (p - 1) as f64;
-            }
+    let row: [i8; 14] = if k <= KS_TMAX {
+        tab.t[k as usize]
+    } else {
+        std::array::from_fn(|i| tab.sym[i][(k % KS_PRIMES[i]) as usize])
+    };
+    let mut adds = 0u64;
+    for i in 0..14 {
+        if row[i] == 0 {
+            s += tab.w1[i];
+            adds += 1;
+        } else if row[i] * legn[i] == 1 {
+            s += tab.w2[i];
+            adds += 1;
         }
     }
-    s
+    (s, (1 + if k > KS_TMAX { 14 } else { 0 }, 2 + 14 + adds, 1))
+}
+
+/// Scores for cands, and the summed charges (mult incl. the per-number symbols, word, flog).
+pub(crate) fn ks_rank(num: &Num, cands: &[u64]) -> (Vec<f64>, (u64, u64, u64)) {
+    let legn = ks_prep(num);
+    let (mut mu, mut wo, mut fl) = (ks_tab().prep_mult, 0u64, 0u64);
+    let sc = cands
+        .iter()
+        .map(|&k| {
+            let (s, (a, b, c)) = ks_eval(k, num, &legn);
+            mu += a;
+            wo += b;
+            fl += c;
+            s
+        })
+        .collect();
+    (sc, (mu, wo, fl))
+}
+
+/// The per-number part of ks_rank's mult charge (the 14 symbols of N).
+pub(crate) fn ks_prep_mult() -> u64 {
+    ks_tab().prep_mult
 }
 
 fn powmod_small(mut b: u64, mut e: u64, m: u64) -> u64 {
@@ -382,12 +449,11 @@ fn lamp_sq(num: &Num, g: &Value, m: &mut Meter) -> R {
             let mut i = 1u64;
             while i <= kk {
                 let hi = kk.min(i + chunk - 1);
-                let mut block: Vec<(u64, f64)> =
-                    (i..=hi).map(|j| (mult * j, 0.0)).collect();
-                m.tick(block.len() as u64 * KS_PRIMES.len() as u64)?;
-                for b in block.iter_mut() {
-                    b.1 = -ks_score(b.0, num);
-                }
+                let ks: Vec<u64> = (i..=hi).map(|j| mult * j).collect();
+                // I-021: scored by symbols, charged by its work; the per-number symbols with the first block
+                let (sc, (mu, wo, fl)) = ks_rank(num, &ks);
+                m.tick(if i == 1 { mu } else { mu - ks_prep_mult() } + wo + fl)?;
+                let mut block: Vec<(u64, f64)> = ks.iter().zip(&sc).map(|(&k, &s)| (k, -s)).collect();
                 block.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap()); // stable, like Python
                 for (k, _) in block {
                     if let Some(d) = sq_one_k(num, g, k, m)? {

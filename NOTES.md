@@ -5284,3 +5284,70 @@ Time shares (new reference, 96): sieve 24%, confirm 29%, setup 24%, solve 8%, lp
   - The reduction was not most of the cost. Per root the loop now does one i128 add or subtract and a compare, but it walks the polynomial's prime table, a Vec of (p, roots Vec, B-inverse Vec, index) entries with 1–2 roots each. The per-entry indirection (two heap vectors per prime) costs more than the arithmetic.
   - A flat layout (roots and B-inverses in contiguous arrays) would be a further card code change with identical counts. It is not in the decisions, so not done.
 - *Materiality, if these held at the final re-run (rule 3: time share × (ratio − 1) under 1% of total):* 96 without re-sieve 0.048 × 0.60 = 2.9% and 54 without re-sieve 1.4%, both material; 84 0.040 × 0.52 = 2.1%, material. The full re-run after I-021 and the initialization charges decides, since those change the median and the shares.
+
+### p-1 stage 2 by prime-gap stepping: cost model, completed for the code (I-016, adopted; before any code)
+
+*From the Oct 25 cost model ("pm1 stage 2: cost model"), with the overnight go's specifics (user, Oct 26): gap stepping only; a gcd per 64 primes with a backtrack; c ∈ {10, 15, 20, 30}.*
+
+**Gene.** `c` on the pm1 stage: B2 = c · B, with B the stage-1 bound ("B", or N^b).
+- **c absent or 0 means no stage 2: today's card, op for op.**
+- The search offers c ∈ {10, 15, 20, 30}. 30 is added because the best B2 grows with qs's cost.
+- The qs reference costs it was chosen against are those recorded at the end of stage 1 ("Final qs reference costs").
+
+**Where it runs.**
+- After stage 1's gcd: if stage 1's d = 1 and c > 0, stage 2 runs once.
+- Stage 2 ends p-1, whether or not it finds a factor; there is no extension of B1 afterwards.
+- If stage 1's d ≠ 1 the card returns as today (a factor, or nothing when d = N).
+
+**Operations and charges** (a = stage 1's residue 2^E mod N; primes q₁ < q₂ < … < q_m in (B, B2]):
+1. *Prime list:* from a sieve to B2. A table independent of N, uncharged (the existing convention, as for stage 1's primes and ECM's list). If m = 0, stage 2 ends at once with no charge.
+2. *Gap table:* g_max is the largest gap q_{i+1} − q_i in the list (2 if m = 1). D[2] = a² is 1 mul; D[2j] = D[2j − 2] · D[2] is 1 mul each. That is g_max / 2 mul. Gaps below 2^17 are at most 72, so the table has at most 36 entries there.
+3. *Start:* X = a^{q₁} by left-to-right square-and-multiply: (bit_length(q₁) − 1) squarings + (popcount(q₁) − 1) multiplies, all mul.
+4. *Per prime i:*
+   - for i > 1: the gap q_i − q_{i−1} (1 word), the table index (1 word), and X ← X · D[gap] (1 mul);
+   - for every i: d = X − 1 (1 word) and acc ← acc · d (1 mul; acc starts at 1, and its first product is charged like the rest);
+   - so 2 mul + 3 word per prime, and 1 mul + 1 word for q₁.
+5. *Batch gcd:* after every 64th prime and after the last, g = gcd(acc, N). That is 1 op, type gcd, and one luck-meter test (hit if g ≠ 1).
+   - If 1 < g < N: return g.
+   - acc is cumulative, not reset. A gcd of 1 means no earlier factor, so g = N means both prime factors came in this batch.
+6. *Backtrack, when g = N:* restart from X as it stood before the batch's first prime. For batch 1 that is X = a^{q₁}; there is no step for q₁, and the ladder is not repeated.
+   - For each prime of the batch in turn: the step as in 4 (2 word + 1 mul, none for q₁), then d = X − 1 (1 word) and gcd(d, N) (1 gcd, one test).
+   - Stop at the first g ≠ 1: return g if 1 < g < N, nothing if g = N.
+7. *End:* no factor means pm1 returns nothing.
+
+**Typing.** mul and gcd as stage 1; the word ops as `word` (the clean word price, 0.0258 / 0.0951), with no new type.
+- Rust's pm1 per-type split becomes: word = the stage's word phase, gcd = tests, mul = ops − tests − word. Stage 1 alone gives word = 0, which is today's split.
+- Python's split gets the stage's word count from a pm1 trace (lamps.PM1_TRACE, on only with TYPES, read-only).
+
+**Budget in pipelines.** pm1's ob covers both stages:
+- ob = 2B (stage 1, as today) + ⌈6.5 · B2 / ln B2⌉ + 512 (stage 2's upper bound: 5 ops per prime with π(x) < 1.26 x / ln x, plus the table, the ladder and a backtrack);
+- with c = 0 it stays 2B.
+
+**Expected cost per prime** under ruint: 2 + 3 × 0.0258 = 2.08 multiplies; Montgomery 2 + 3 × 0.0951 = 2.29.
+
+**Acceptance (before any search).**
+1. *Exact check on known primes:* for primes p of 16–40 bits, N = p · r with r a 60-bit prime whose p−1 stage cannot fire. Across B ∈ {2^7, 2^9, 2^11} and c ∈ {10, 15, 20, 30}:
+   - the card's stage-2 catch (stage 1 fails, stage 2 returns p) must equal the exact predicate. That predicate is ord_p(2) | E · q for some prime q ∈ (B, B2], where E is stage 1's exponent and ord_p(2) ∤ E;
+   - the user's form, p − 1 = (B-powersmooth part) × one prime q ∈ (B, B2], is reported beside it. It implies the predicate. The two differ only where ord_p(2) is a proper divisor of p − 1, and those numbers are counted and reported.
+2. Python = Rust per type, on the same set and on map numbers in pm1-then-qs pipelines.
+3. The charge formula (items 2–6 above, from a trace: m, g_max, q₁, batches, backtrack length) matches the measured charges, per type.
+4. With c absent or 0, every run is identical to the current build: all map numbers, the pipelines with pm1 on.
+5. A forced backtrack case: N = p · q with both caught by stage 2 in the same batch (constructed), which must return p or q via the backtrack.
+6. Parity passes, with stage-2 cases added.
+
+### I-021, KS scoring by multiplicativity: results (`evolve/i021_accept.py`, `i021_accept.out`; `i021_cost.py`, `i021_cost.out`; `cfrac_accept_i021.out`; `parity_i021.out`)
+
+- *Acceptance:*
+  1. scores bit-identical to the old ks_score, 3,328,000 / 3,328,000 (all map numbers × k ∈ 1..64 and the sq-style mult · j);
+  2. qs against the pre-change build: only mult / word / f64_log change, by the formula, 10,000 / 10,000 (new reference with and without re-sieve, frozen, corrected, kc 32);
+  3. cfrac: same results, cfrac_ops by the formula, 160 / 160;
+  4. sq "ks": same factor, Python = Rust ops, 180 / 180;
+  5. Python = Rust per type (qs), 40 / 40.
+- Parity passes: types 6,894 pairs, 0 mismatches; mutations 54 / 54.
+- *cfrac_accept.py, updated:* its mult expectation now follows the formula.
+  - It had been failing since the ledger duplicate-check correction (it fails at HEAD as well): its phase list lacked the ledger's hash and word charges, so its sum check fell short by one hash and one word per smooth residue offered. That was a stale test, not a meter defect. Both phases are added, with formula = smooth residues offered (from its own replay).
+  - Now 240 / 240 exact, ACCEPTANCE PASS.
+- *Cost per number, before → after* (all map numbers; `i021_cost.out`): the same absolute change at every size and with or without re-sieve.
+  - **ruint −35.7, Montgomery −132.8, official +327.7.** That is ruint −1.55 / −0.42 / −0.16 / −0.06% and Montgomery −1.70 / −0.44 / −0.17 / −0.06% at 54 / 72 / 84 / 96 (new reference, re-sieve off).
+  - My cost model's estimate (about −36 ruint, −133 Montgomery per number) **held**. Official was not estimated in the entry: 280 → 117 + 20 + ~471 ops, +328.
+  - New reference qs cost per number after I-021 (ruint): 2,266.4 / 8,502.7 / 22,083.0 / 58,098.9.

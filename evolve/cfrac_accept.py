@@ -19,6 +19,7 @@ Genome: cfrac with tuned qs's kc 32 and bc 1.1 (the genes NOTES's prediction ass
 import json, math, sys, types
 from multiprocessing import Pool
 import cfrac, ledger, lamps
+import lamps
 from lamps import Meter, Budget, KS_PRIMES
 from fastlamps import semiprimes_pq
 from qs_accept import sqm, ts_count, euclid_steps
@@ -29,7 +30,7 @@ SIZES = [40, 44, 48, 52, 56, 60]
 COUNT = 40
 CAP = 2 ** 29
 GENE = {"t": "cfrac", "kc": 32, "bc": 1.1}
-PHASES = ["mult", "fb", "cf_step", "cf_td", "la", "sqrt"]
+PHASES = ["mult", "fb", "cf_step", "cf_td", "la", "sqrt", "hash", "word"]   # hash, word: the ledger's duplicate check
 
 def base_of(N, k):
     lnN = math.log(N)
@@ -39,12 +40,12 @@ def base_of(N, k):
                       if kN % p == 0 or pow(kN % p, (p - 1) // 2, p) == 1]
 
 def replay(N, k, base):
-    """(cf_step ops, cf_td ops, residues, rows) for one attempt, from scratch."""
+    """(cf_step ops, cf_td ops, residues, rows, smooth relations offered to the ledger) for one attempt."""
     kN, F = k * N, len(base)
     g = math.isqrt(kN)
-    step, td, residues, seen, rows = kN.bit_length(), 0, [], set(), 0
+    step, td, residues, seen, rows, offers = kN.bit_length(), 0, [], set(), 0, 0
     if g * g == kN:
-        return step, td, residues, rows
+        return step, td, residues, rows, offers
     # the convergent recurrence written out again: x_i = (sqrt(kN) + P_i) / Q_i
     Ps, Qs, As = [0], [1], [g % N]
     Qm1, Am1 = kN, 1
@@ -56,7 +57,7 @@ def replay(N, k, base):
         assert Q == (Qs[i - 1] if i else Qm1) + a * (Ps[i] - P)
         step += 4
         if Q == 1:
-            return step, td, residues, rows
+            return step, td, residues, rows, offers
         residues.append(Q)
         td += F
         v, smooth = Q, True
@@ -66,17 +67,19 @@ def replay(N, k, base):
                 v //= p; e += 1
             td += max(0, e - 1)
         u = As[i]
+        offers += v == 1                           # each smooth residue: 1 hash + 1 word (duplicate check)
         if v == 1 and u not in seen:
             seen.add(u); rows += 1
             if rows >= F + ledger.DELTA:
-                return step, td, residues, rows
+                return step, td, residues, rows, offers
         a1 = (g + P) // Q
         As.append((a1 * As[i] + (As[i - 1] if i else Am1)) % N)
         Ps.append(P); Qs.append(Q)
 
 def check(N, tr):
     f = dict.fromkeys(PHASES, 0)
-    f["mult"] = tr["k_cands"] * len(KS_PRIMES)
+    _, (mu, wo, fl) = lamps.ks_rank(N, range(1, tr["k_cands"] + 1))   # I-021: one lump (cfrac is untyped)
+    f["mult"] = mu + wo + fl
     rels = bad_rel = deps = bad_dep = 0
     residues_ok = True
     for at in tr["attempts"]:
@@ -85,8 +88,8 @@ def check(N, tr):
             continue
         base = base_of(N, at["k"])
         assert len(base) == at["F"], "factor base rebuilt differently"
-        s, t, res, rows = replay(N, at["k"], base)
-        f["cf_step"] += s; f["cf_td"] += t
+        s, t, res, rows, offers = replay(N, at["k"], base)
+        f["cf_step"] += s; f["cf_td"] += t; f["hash"] += offers; f["word"] += offers
         residues_ok &= res == at["residues"]
         if at["rows"]:
             f["la"] += -(-at["rows"] * at["F"] * at["rows"] // 64)

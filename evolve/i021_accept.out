@@ -1,0 +1,9 @@
+1. scores bit-identical: 3328000/3328000
+54 bits: qs done
+72 bits: qs done
+84 bits: qs done
+96 bits: qs done
+2. qs vs pre-change lampcore: only mult / word / f64_log change, by the formula: 10000/10000
+3. cfrac: same results, cfrac_ops by the formula: 160/160
+4. sq ks: same factor as before, Python = Rust ops: 180/180
+5. Python = Rust per type (qs): 40/40
