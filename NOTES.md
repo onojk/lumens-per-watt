@@ -6502,3 +6502,35 @@ Each cell gives ratio A / ratio B, with the materiality (time share × (ratio_B 
   - On priced cost the card is below the break-even (cutting L should not pay), and the card agrees: the L-only variant costs +4.9% priced.
   - On wall-clock the card is above the break-even (cutting L should pay), but the card's own L-only run is +1.5% in wall-clock, not a saving.
   - The model's break-even uses Wolfram's proxy base cost per polynomial and its larger polynomial increase (+15–16% against the card's measured +7%). The card's smaller increase moves the real break-even up, beyond its measured wall-clock price.
+
+**DeepSeek, Oct 26, round 33 (I-027 / I-028; recorded as given):**
+- *Annotations accepted:* the card's B (1,841 at 96, 1,151 at 84) and lc 1.3305 / 1.3526 for L/B = 12; its R-L2 ln(L/B) reasoning recorded as wrong (the range still covers ~−75% to −79%); its round-31 direction calls scored as recorded (e_F direction wrong, e_M wrong on size, κ_eff right). R-L1 to R-L4 stand as sealed.
+  - *Note (mine):* the "card's B 1,841 / 1,151" were my rough figures; the measured means are 1,752 / 1,093 (corrected in the entry above).
+- **Sealed, the proposed F test** (the card, 96 bits, B → 1.3 B so F ~×1.28; L/B, M, A-primes and all else at the reference):
+  - *R-F1, polynomials to completion:* −8% to −22% (central −15%). Falsified if ≥ 0% or ≤ −28%.
+  - *R-F2, solve's share of priced qs ruint:* 6.5% to 11.0% (central 8.5%). Falsified if < 5.0% or > 13.0%.
+  - *R-F3, total priced qs ruint per number, mean:* −8% to +3% (central −4%). Falsified if < −12% or > +6%.
+  - *The user's (sealed earlier, in the round-33 update):* polynomials −12% to −22% (central −17%); solve share 6% to 11%; total priced ruint −8% to +2% (central −3%).
+- *Combined-share mechanism:* DeepSeek's account (low fulls per polynomial, many partials) restates the identity s_C = 1 − Fulls / (F + 12).
+  - The reviewer: P × M at completion is smaller at the card's point (~75k–112k) than at F 400 / M 20,000 (~250k), so "more polynomials" is not the cause.
+  - The comparison is confounded by L (the card's reference L/B 1,511 against the earlier scan's 64; ~30 partials per full here) and by the smaller p_max. Separable with one model run (the combined share at L/B 64 and 12 at the card's point); not yet run.
+- *V1-implied e_C:* DeepSeek "computed" e_C ~1.19. **Wrong:** it used e_F,full = e_f − F / Fulls with the all-usable Fulls (53.6).
+  - In fulls-only completion Fulls = F + 12, so e_F,full = e_f − F / (F + 12) (the theory term). Corrected with its inputs (F 122): e_f = 1.2 + 0.910 = 2.11, e_C = 2.10.
+  - With the model's own F (141) and means: e_f 2.09 / 2.19, e_C ~2.02 / 2.20 (M 300 / 1,000).
+  - V1 implies e_C ~2.0–2.2 at the card's point (against 1.38–1.57 at F 400); plausible, since combined relations grow roughly with the square of the partial rate.
+- *L break-even:* the algebra is confirmed (m* = 0.024 c0, a discrete total-cost comparison; m* = c0 dP / −dA with totals).
+  - Adopted: the measured per-partial price must include every per-partial cost (insert, hash, storage, ledger, and its share of later combination work).
+  - Its clause "multiply by ε_a if acceptance is below 1" confuses notation (ε_a is d ln a / d ln L, not an acceptance rate); disregarded.
+  - *Note (mine):* step 7's per-partial price is lp_ledger's whole cost per partial looked up (hash lookup and insert, the sparse copy, combinations, ledger adds, the bound check and N mod q), over the sieve's cost per position. It covers the insert, hash, storage, ledger and combination work, but not the candidate's trial division (confirm), which every candidate pays whether or not it becomes a partial.
+
+### Step 8: the F test — protocol (written before it ran)
+
+*Queued after step 7 (user, Oct 26). Report only; the decision is the user's.*
+- **How "B × 1.3 with L/B, M and the rest held" maps to the genes** (stated before running, as asked):
+  - B = bc · exp(½ √(ln N ln ln N)), so B × 1.3 is **bc × 1.3** (F rises ~×1.28 with it).
+  - M = mc · B, so M held is **mc / 1.3**.
+  - L = B^lc, so L/B held is **lc′ = 1 + (lc − 1) · ln B / ln(1.3 B)**, computed with the size's mean B (1,752 at 96): 1.9737 → **1.9406**. L/B drifts slightly across numbers, whose B varies.
+  - The A-primes cannot be held exactly: the A pool is drawn from base primes and the A target depends on M. With M held the A target is unchanged, but the pool's primes come from the larger base.
+  - The sieve threshold subtracts (tc + lc − 1) · log2 B. With tc held, B × 1.3 and lc′ loosen it by **0.39 bits** at 96 (more candidates).
+- **Two variants, as in step 7:** (a) the literal test (bc × 1.3, mc / 1.3, lc′, all else the reference), scored; (b) the same with tc = 1.0002 so that the threshold in bits is unchanged, information.
+- *Same numbers as step 5* (all 640 map numbers at 96). Reported: polynomials to completion, solve's share of priced qs ruint, total priced qs ruint (mean, median, slowest decile; official and Montgomery too), and wall-clock (replicate means, two runs). Scores R-F1 to R-F3 (both sources).
