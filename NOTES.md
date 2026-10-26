@@ -6202,3 +6202,18 @@ The estimate is unchanged in scale: about 0.1–0.15% of qs's cost at 96 and a f
   - The user's: 65–85%.
   - *Note (mine):* the card's traces contain inserts and combinations per attempt (the measured counterpart of this share), but nobody has computed it; the model-side quantity needs step 6.
 - *L = 16 card test:* score W3 (i) at the card's measured per-partial price, and measure the polynomial increase on the card's traces rather than inferring it.
+
+**I-028 — best L against run length (Wolfram, Oct 26; model only; recorded as given)** (6 configurations: 72 / 84 / 96 at M = 20,000; 96 at 8,000 and 4,000; 84 at 4,000; 4 N each; KS on; L / p_max 8 … 256; proxy per-partial cost 30 / 100 / 300 sieve positions):
+- λ_q ~ q^−α with α 0.733–0.749 in every configuration (the tilt). DeepSeek's X1 assumption of 1.2–1.5 is refuted.
+- **The completion state is invariant to run length:** as P at L = 64 p_max goes 0.9 → 23, the never-combined 1LP share stays 0.797–0.808 and P λ_L at the best L stays 0.21–0.22.
+  - Reason: qs stops at F + 12 relations, so a shorter interval just takes more polynomials to reach the same total partials over the same q.
+  - The best L is set by F (the relation target) and the q window, not by polynomials to completion.
+- Best L / p_max: 8 (the grid floor) at multiples 100 and 300 in every configuration; 8–32 at multiple 30, with no trend in P.
+  - So at these sizes the optimum may lie below 8 p_max. But partials supply ~half of usable relations, so it sits between p_max and 8 p_max. Probe 2–8 p_max next.
+- *Scoring (the user's):*
+  - α 0.55–0.9 held (the user's);
+  - "the best L grows with P" refuted (both);
+  - P λ_L ~ 1 at the optimum refuted (DeepSeek's; ~0.21); P λ_L < 0.3 held (the user's);
+  - never-combined 65–85% at 96 / 20,000 held (0.80); "falls to 40–65% in long runs" missed (stays 0.81);
+  - the model's 0.80 is inside both sealed X3 ranges (X3 is still scored on the card).
+- *I-028 strengthened:* at 84–96 bits and per-partial costs ≥ ~100 sieve positions, the best L is ≤ 8 p_max. The card's measured per-partial price decides it. (The card's 96-bit L / B is ~1,511; see above.)
