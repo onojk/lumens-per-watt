@@ -3057,3 +3057,23 @@ Mine: Track R 5 held, 2 missed. Track M 0 held, 6 missed.
 - Partials need about one unit more slack than full relations. This supports the coupled threshold (context for Grok's disputed view under "Grok, after the user's Mathematica lc result").
 - *In our card*, the slack is t = tc + lc − 1, since T = log₂(M√(kN/2)) − (tc + lc − 1)·log₂ B. The kc / lc round's frozen genomes sit at t = 1.91–2.28 (tc + lc 2.91–3.28): the region where full relations are all caught and most partials are, before candidates per useful relation climb.
 - *Skipping primes below 30:* about 0.5 units of extra slack are needed for the same catch (at t = 2.0: 93% of full relations and 21% of partials). This is context for the "Small-prime variation in the qs sieve" MOVES row.
+
+## 2026-10-25 — Decision (user): kc becomes a constant; cost model for the `kset` option (before code)
+
+**Decision (user, Oct 25).** The qs card scores squarefree k ≤ 32 only and keeps the Knuth–Schroeppel winner; the fallback order is unchanged. kc leaves the gene list for future rounds. The frozen reference (qs + lc 1.4, enumerate) keeps its own kc.
+- *Basis:* the median selected k is 2–3 and always squarefree (`kcheck.out`), and R@96's kc 60 against 31 is drift (−0.0075 log₂, interval includes 0; `dvd.out`).
+
+**Card option `kset`** (not a gene; set by hand like `a_mode`; never mutated or tuned).
+- `"kset": "sf32"` makes the candidate multipliers the 20 squarefree integers ≤ 32 (1, 2, 3, 5, 6, 7, 10, 11, 13, 14, 15, 17, 19, 21, 22, 23, 26, 29, 30, 31), and kc is ignored.
+- Absent: today's card, op for op (candidates 1 … kc). Every existing genome and the frozen reference are unchanged.
+- *Order:* candidates are ranked by KS score, best first, ties to the smaller k, exactly as now; a failed attempt moves to the next k, as now.
+- *Charges:* the same per-candidate charges as today, with the candidate count 20 in place of kc:
+  - "mult" 20 × |KS_PRIMES| = 20 × 14 = 280 ops for the scores;
+  - under sort_charge, sort_cost(20) = 20 · ⌈log₂ 20⌉ = 100 ops for the ranking.
+  - The list itself is a constant in the card (like KS_PRIMES), so forming it is not charged.
+  - So the multiplier phase costs exactly what kc = 20 costs today; only which 20 k's are scored changes.
+- *Acceptance:*
+  - Identity: with `kset` absent, lampcore is unchanged on the map numbers (per type, per number).
+  - With `kset` = sf32, the multiplier-phase charge equals today's kc = 20 charge, and every other phase follows from the selected k. The selected k equals the top squarefree KS pick (checked in Python against `kcheck.py`'s scoring).
+  - Python = Rust parity pairs: kset with both a_modes, sort_charge, a retry and a low cap.
+- **Corrected card for future rounds:** a_mode = on_demand, sort_charge = 1, kset = sf32. Past results keep their recorded cards.
