@@ -3727,10 +3727,9 @@ Cost split under ruint (setup = multiplier, factor base and polynomial setup; th
 | inverses for B_l and B_l per A | 0.003 / 0.009 / 0.011 | 0.002 / 0.007 / 0.008 | 0.001 / 0.003 / 0.004 | 0.000 / 0.003 / 0.003 |
 | **setup, all parts** | 0.150 / 0.393 / 0.452 | 0.128 / 0.444 / 0.472 | 0.077 / 0.354 / 0.368 | 0.066 / 0.374 / 0.379 |
 
-- **Gray-code switching is the largest part at 72–96 (13–15% of qs's calibrated cost):** one small-modulus op per root per polynomial switch, over every sieved prime.
+- **Gray-code switching is the largest part at 72–96 (13–15% of qs's calibrated cost):** one op per root per polynomial switch, over every sieved prime. That op, r ± 2B_l A⁻¹ mod p, is an addition followed by a conditional subtraction, not a reduction, yet it is charged as setup_small (0.307 ruint), the small-modulus price. Under the fixed classification rule it is word-level arithmetic; re-typing it is a pricing change with its own cost-model entry (adopted below).
 - Next, per A: A selection (6–11%), the inverse of A mod each sieved prime (5–6%) and the roots (6%). Those are paid once per A, so they shrink with more polynomials per A (larger s).
 - The factor base and the multiplier matter only at 54–72.
-- The per-root, per-polynomial update (r ± 2B_l A⁻¹ mod p) is an addition followed by a conditional subtraction, not a reduction. It is charged as setup_small (0.307 ruint), the small-modulus price. *Under the fixed classification rule, an add-and-conditional-subtract is word-level arithmetic, not a reduction modulo p.* Re-typing it would be a pricing change with its own cost-model entry, not a new algorithm; it is recorded on the MOVES row as the first candidate.
 
 **Decisions and corrections (user, Oct 25):**
 1. **Gray-code root update re-typing: ADOPTED**, by the fixed classification rule (the same principle as the ECM-additions decision). The per-polynomial update r ± 2 B_l A⁻¹ (mod p) is an add and a conditional subtract, so it is charged at the word-level price, not setup_small.
@@ -3756,9 +3755,14 @@ Cost split under ruint (setup = multiplier, factor base and polynomial setup; th
 | 84 | 1.64 | 771 / 52 / 444 | 1.358 (1.345) | 0.26 / 0.31 / 0.35 / 0.08 / 0 | 2.3 (0.005) |
 | 96 | 1.97 | 1,069 / 75 / 976 | 1.469 (1.470) | 0.19 / 0.23 / 0.24 / 0.21 / 0.13 | 0 (0) |
 
-- **(a) No skew toward small q beyond the 1/q prior.** Under the prior, log_B q has density ∝ 1/t on [1, lc], with median √lc = 1.32 / 1.30 / 1.28 / 1.40. The measured medians (1.36 / 1.36 / 1.36 / 1.47) sit slightly above it, so the threshold-skew explanation is not supported.
-  - *A more likely reason for the 1.6–2.2x repeat rate:* a large prime q dividing Q(x) must have kN as a quadratic residue mod q, so only about half the primes in (B, B^lc) can occur at all. Drawing from all primes halves the repeat rate, and the factor of ~2 matches. (Not tested here.)
+- **(a)** Under a 1/q prior, log_B q has density ∝ 1/t on [1, lc], with median √lc = 1.32 / 1.30 / 1.28 / 1.40. The measured medians are 1.36 / 1.36 / 1.36 / 1.47.
+  - *[Corrected Oct 25 (user); the first conclusion here was "no skew toward small q, so the threshold-skew explanation is not supported". That was wrong.]* The 1/q prior is not the right baseline for skew. Without a threshold, a partial with a larger q has a smaller smooth part and is much likelier to be smooth, so unfiltered partials would lean strongly toward B^lc. **Medians near √lc therefore mean the threshold does filter large leftovers**, which supports the user's mechanism.
+  - What the data does show: the filed q's have about the same shape as the user's 1/q simulation, so **shape does not explain the 1.6–2.2x repeat gap** against that simulation.
+  - The quadratic-residue restriction (only q with (kN/q) = 1 can occur, about half the primes) is the leading candidate for the gap. A test is pending (user, Mathematica, residue-restricted draws).
+  - **(W-qr, Claude chat's prediction; pre-registered before that test):** the residue-restricted simulated pairing yield is within ±25% of the measured 0.17 / 0.13 / 0.08 at 72 / 84 / 96, and the simulated combined relations rise from 24–28% to 40–55% of F + 10.
 - **(b) The realistic 2LP rate at the card's threshold is essentially zero:** 0–3 qualifying cofactors per number, 0–1.2% per partial.
-  - A two-large-prime cofactor falls short of the sieve estimate by ~2 log₂ B or more, beyond the tuned slack (~2.0, about half of it already used by single large primes up to B^lc).
+  - A 2LP cofactor is ≥ B², a shortfall of ≥ 2 in log_B units, at or beyond the tuned slack (~2.0).
+  - The counts are small (3 numbers per size; about 9 and 7 qualifying cofactors in total at 72 and 84), so the rate is rough.
   - Admitting them would need a much looser threshold, where candidates per relation are already 11–19 at slack 2.5.
 - **The 2LP MOVES row stays "marginal; revisit after re-sieve and small-prime skipping".** Cheaper confirmation lowers the cost of a looser threshold, which is the only way 2LP cofactors would reach confirmation.
+- *Recorded for the Gray-code cost-model entry (user, Oct 25):* it states the word ops per update (add; compare; conditional subtract) and the update count per switch, and derives the expected cut of the slice from those (one op: ~89%; two: ~78% under ruint). The same goes for any audit item. Before / after qs cost per pricing is reported in absolute terms (op cost per number), with shares secondary.
