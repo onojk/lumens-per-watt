@@ -5187,3 +5187,40 @@ Time shares (new reference, 96): sieve 24%, confirm 29%, setup 24%, solve 8%, lp
   1. Against the build after the mult correction: factor, tests, hits and every type except word identical. The word rise equals F × candidates + per-polynomial (width + 2F − 1 + |st| + |cand|) with re-sieve, computed from the Python trace.
   2. Python = Rust per type.
   3. parity passes.
+
+### The user's decisions (Oct 26, second set), recorded
+
+1. Item 3 is accepted as corrected: charge only the zero-fill (F per candidate) and re-sieve's per-polynomial initialization (width + 2F − 1 + |st| + |cand|). Inserts and ledger entries move, and the combination add is already charged, so neither is charged.
+   - *Attribution, recorded as the decision asks:* the user's note names Claude chat's item-3 diagnosis. The diagnosis behind decision 3 of the first set ("uncharged data movement in the large-prime table and the ledger": F-sized copies on insert, combination and ledger storage) was **Claude Code's**, in the wall-clock results entry above. That entry stays as written. It was wrong on insert and ledger entry (moves) and on the combination (already charged).
+   - Claude chat's own call on this phase was the guess that the large-prime / relation-combining phase flags. That is scored above (holds at 96 only) and is unaffected.
+2. mult: the planned charge-by-work correction ("Meter correction: KS multiplier scoring charged by its work", above) is **withdrawn before any code**. It is replaced by I-021, adopted as a card code change with identical rankings (entry below). The withdrawn entry stays as written; its size estimate is not used.
+3. *Materiality rule for the wall-clock re-run:* a region above 1.5x the median does not stop the 2×2 if its time share × (ratio − 1) is under 1% of the total time at that size. Each such region is recorded in NOTES with that figure, and the 2×2 proceeds. A region above that threshold stops it and is reported.
+4. Order: gray (a) → I-021 → the zero-fill / re-sieve charges, each with acceptance and parity → the full wall-clock re-run → the 2×2 under rule 3.
+
+### I-021 adopted: KS scoring by multiplicativity of the Legendre symbol (cost model, before code)
+
+- *Identity:* for p ∤ k, the code's test is (kN mod p)^((p−1)/2) ≡ 1 (mod p), that is (kN / p) = 1.
+  - Since (kN / p) = (k / p)(N / p) and (k / p) = ±1, the test is (k / p)·(N / p) = 1.
+  - When p | N, (N / p) = 0, the product is 0 and the test fails, as the power gives 0 today. So the outcome is identical for every (k, p).
+- *Per number, once per scoring call* (qs, cfrac; sq "ks" with its first block), charged as `mult` (the small-modulus price):
+  - N mod p for the 14 primes: 14 (a U256 reduction by a small modulus);
+  - (N / p) by the Legendre power, the same square-and-multiply as today: bitlen(e) + popcount(e) small multiplies, e = (p − 1)/2. That is 83 over the 14 primes;
+  - total 97 `mult`, a constant. The Legendre power is kept rather than binary Jacobi: it has a fixed, exact step count and reuses the existing routine. Jacobi would be a few word steps fewer per prime, about 50 ruint units per number in all, a later refinement.
+- *Per candidate k:*
+  - `mult` 1: k·N, for kN mod 8;
+  - `f64_log` 1: ln k;
+  - `word`: 2 (the mod 8 select; the initial terms), plus 14 table lookups, plus 1 per term added (when p | k, or the symbols' product is 1);
+  - the table T[k][p] ∈ {0 (p | k), +1, −1} is constant for k ≤ 64, computed once per process like the prime list. One lookup gives divisibility and the symbol, one word.
+  - For k > 64 (only sq's "ks" mode, k = mult·j), there is no table row: per p, k mod p (1 `mult`) and a lookup in the constant quadratic-residue table of p (1 word, already counted as the lookup).
+  - The ln p / p and 2 ln p / (p − 1) terms come from a constant 14-entry table computed with the same expressions as today, so the scores are bit-identical.
+- *Charging point:* where today's flat charge is (before the ranking is used), in one lump per scoring call or sq block. The per-number 97 is added to the first lump.
+  - qs and cfrac charge per type (`mult`, `word`, `f64_log`);
+  - sq charges the sum through `tick`.
+- *Size:* qs with kset sf32 (20 candidates, all ≤ 32) goes from 280 `mult` (86 ruint) to 117 `mult` + 20 `f64_log` + about 20 × (16 + adds ≈ 7) ≈ 460 `word`. That is about 36 + 2 + 12 ≈ 50 ruint units, about −36 per number: −1.6% / −0.4% / −0.2% / −0.06% of the new reference's qs cost at 54 / 72 / 84 / 96.
+  - Montgomery: 280 × 1.137 = 318 → 117 × 1.137 + 20 × 0.392 + 460 × 0.0951 ≈ 185, about −133 per number.
+- *Prediction (wall-clock, same protocol):* the mult region's ratio falls, since time falls (fewer powmods) by more than priced cost falls. From 1.15–1.57x to under 1.2x at every size.
+- *Op counts change* (mult, word, f64_log, total ops) for qs, cfrac and sq "ks" genomes. Rankings, factors, and tests and hits are unchanged where the cap does not bind.
+- *Acceptance:*
+  1. Rankings: on all map numbers, for qs's candidate lists (sf32 and 1..32) and cfrac's (1..kc, kc up to 64), plus sq-style lists k = mult·j for j ≤ 200, the new scores equal the old ks_score bit for bit in Python. Rust's ranking from the new build equals the pre-change build's (same factor, tests and hits, and the same k order, read from the qs attempts).
+  2. Against the pre-change build per number: every type except mult, word and f64_log identical. The changes in those three equal the formula, computed independently in Python.
+  3. Python = Rust per type; cfrac_accept's mult expectation is updated to the formula; parity passes.
