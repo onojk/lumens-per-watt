@@ -6217,3 +6217,23 @@ The estimate is unchanged in scale: about 0.1–0.15% of qs's cost at 96 and a f
   - never-combined 65–85% at 96 / 20,000 held (0.80); "falls to 40–65% in long runs" missed (stays 0.81);
   - the model's 0.80 is inside both sealed X3 ranges (X3 is still scored on the card).
 - *I-028 strengthened:* at 84–96 bits and per-partial costs ≥ ~100 sieve positions, the best L is ≤ 8 p_max. The card's measured per-partial price decides it. (The card's 96-bit L / B is ~1,511; see above.)
+
+**DeepSeek, Oct 26, round 27 (I-028; recorded as given):**
+- X1 refuted on all clauses (exponent 1.2–1.5 against 0.73–0.75; L* flat in P, not ~P^0.75; P λ_L ~0.21, not ~1); its two reasoning errors recorded by DeepSeek.
+- *Y1:* the cost-balance condition for L is correct and adopted: m ε_a a = e_L (c0 + m a), with a = partials per polynomial, ε_a = d ln a / d ln L (~0.32), e_L = −d ln P / d ln L, and c0 = the base cost per polynomial (from d ln cost / d ln L = 0).
+  - Its invariant "P 2M is fixed by the target" is contradicted by its own numbers (P 2M = 256k / 214k / 186k at M = 20k / 8k / 4k, −27%): a smaller M means smaller, smoother residues, so yield per position rises.
+  - What stays fixed is the completion mix (partials per needed relation over the same q window), hence a constant P λ_q profile, never-combined share and best L.
+  - It again cites F ~96 / 151; the runs used 256 / 400 (its "L* flat over ~1.6x F" survives with the correct values).
+- *Y2:* no known literature result; treated as an empirical result of this project.
+- **Sealed Y3** (model only, 96 bits, M = 20,000, KS on, m = 100, grid L / p_max 1.5 / 2 / 3 / 4 / 6 / 8):
+  - DeepSeek: 2–7 (central 4). Falsified if ≤ 1.5 or ≥ 8; inconclusive if the cost falls monotonically over the grid.
+  - The user's: 3–6.
+
+**I-028 — finer L grid (Wolfram, Oct 26; corrects the "best L ≤ 8 p_max" statement; recorded as given)** (96 bits, M = 20,000, 8 N, KS on; scored grid 1.5–8, context 1 / 12 / 16):
+- P: 15.19 (L = p_max, no partials) / 12.09 / 10.93 / 9.91 / 9.42 / 8.94 / 8.68 / 8.41 / 8.26 at L / p_max = 1 / 1.5 / 2 / 3 / 4 / 6 / 8 / 12 / 16. Partials are worth ~1.8x fewer polynomials, but only a narrow window is needed.
+- Proxy cost / min: at m = 100 flat from 8 to 16 (1.005 / 1.000 / 1.002), minimum at 12; at m = 300 minimum at 4; at m = 30 minimum at ≥ 16. Best L ~ m^−0.6.
+- The previous run's "best 8 (grid floor) at m = 100" was within noise of this flat curve. **Correction: best L ~8–16 p_max at m = 100, ~4 at m = 300.**
+- The cost-balance condition m ε_a a = e_L (c0 + m a) changes sign between 12 and 16 (LHS − RHS = −1,110 for 8–12, +666 for 12–16), matching the direct minimum.
+- *Scoring Y3:* DeepSeek's 2–7 **falsified** (the scored grid's best is 8, its "≥ 8" clause; the true minimum is 12); the user's 3–6 missed. The user's: P(L = p_max) ≥ 1.5x P(best) held (1.8x); the sign change matching the minimum held.
+- *I-028 (revised):* if the card's L is ~64 p_max, moving to ~8–16 p_max recovers an estimated 7–12% (m = 100) and cuts stored partials ~60–70%. The exact L hardly matters (a flat curve); the card's measured per-partial price decides it.
+  - *Note (mine):* the card's L / B is ~67–92 at 54–84 and ~1,511 at 96 (new reference genes; above), so the revised estimate's "~64 p_max" premise fits 54–84 and understates the gap at 96.
