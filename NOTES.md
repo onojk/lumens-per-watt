@@ -3424,3 +3424,16 @@ The final Track R genes run as qs alone on the corrected card with kset = sf32. 
 
 - Under the new reference, the Track R (d) pipeline beats qs alone (same genes, corrected card, kset) by 7–23% on the robust score. That is the front end's net gain on the mixed population.
 - **(G-reref)** no Track R winner changes at 84–96, at most a near-tie swap at 54–72: **held** (no change anywhere).
+
+**Outside context for the small-prime-variation cost model** (user, Mathematica; 18-digit N, B = 3000, F = 237, 20,000 positions; sieve cost = hits × update price; each candidate charged a full trial-division pass over the factor base, F divisions; a partial valued at 0.3 of a full relation; best slack chosen per case).
+- Saving in cost per useful relation against sieving every prime, for cutoffs 10 / 20 / 30: official 8.7 / 9.1 / 9.3%; ruint 2.7 / 2.6 / 2.2%; Montgomery 2.6 / 2.6 / 2.2%. Official gains most (DeepSeek's direction, not Grok's). The best cutoff is 30 under official and 10–20 under the calibrated pricings.
+- *The user's stated limitation:* the toy's best slack is ~1.0 (full relations only), while the card's tuned slack is ~2.0, so the user supposed the card confirms candidates more cheaply than a full F-division pass.
+
+**How a candidate is confirmed in the card** (qs.py "5. confirm" and its qs.rs twin; stated as the cost model requires):
+- For each sieve position at or above the threshold, the card evaluates v = (A·x + 2B)·x + C. That is **2 ops of type confirm_full** (full price: 1 multiply each under every pricing).
+- It then trial-divides v by **every** factor-base prime: **F ops of type confirm_td**, one division per prime whether or not it divides, charged as one block of F. Each repeated division by a prime that divides again costs **1 more confirm_td**.
+- confirm_td is priced as a small-modulus op: 1 (official), 0.114 (ruint), 0.426 (Montgomery).
+- The cofactor test, and the large-prime steps if lc > 1, follow under their own types.
+- **So the card does charge a full F-division pass per candidate, as the toy does.** The toy does not over-charge candidates relative to the card.
+- The slack difference (toy ~1.0, card ~2.0) comes from the large-prime variation: the card's tuned lc of 1.6–2.0 makes partials worth admitting, and admitting them needs about one more unit of slack. The toy values a partial at 0.3 and has no lc term in its threshold.
+- So the toy's savings are not upper estimates on the confirmation side. The open question for the cost model is how the sub-30 skip interacts with the partials' larger slack.
