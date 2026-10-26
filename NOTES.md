@@ -4266,3 +4266,31 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
 - Every generated genome (rand_stage) uses a real boolean, so no recorded result is affected. It is a Python / Rust divergence on the same input.
 - *Fix, its own item (no charging change):* lampcore reads ksq with Python's truthiness (a bool, or a number ≠ 0; anything else false).
 - *Parity:* sq "smooth" genomes with ksq 0, 1, false and true are added to parity.py's genome set; they also exercise the charged tried-multiplier set. It is verified by the same parity run as the meter correction, and committed separately.
+
+**Re-sieve cost model and the best p0** (user, Mathematica, Oct 26; information only), one pre-registration and a change to the planned p0 sweep.
+- *Model:* per polynomial, per factor-base prime p ≥ p0 re-sieved instead of trial-divided: a walk of λ · 4M/p word ops; start offsets 2z small-modulus ops (variants z = 1 and z = 0); matched divisions c · 2/p small-modulus; a saving of c small-modulus divisions.
+  - Inputs: M = 2^6.4 / 2^7.7 / 2^9.1 / 2^10; polynomials per number 15.1 / 68.4 / 81.9 / 214.9; candidates per number 202 / 429 / 771 / 1,069 (c = candidates / polynomials); factor base from one random N per size (F 38 / 63 / 82 / 144).
+  - λ is fitted to the measured official delta at p0 = 30; the ruint and Montgomery deltas are the validation.
+
+| bits | λ (z = 1 / z = 0) | ruint delta at p0 = 30, model vs measured | best p0, ruint: saving | best p0, official: saving |
+|---|---|---|---|---|
+| 54 | 5.18 / 5.97 (not physical) | −413 / −493 vs −225 | model breaks down (interval ~84 positions); excluded | — |
+| 72 | 1.49 / 1.92 | −945 / −1,569 vs −1,197 | 97 / 79: 8.8 / 13.9% | 307 / 269: 1.9 / 3.7% |
+| 84 | 2.13 / 2.36 | −1,334 / −2,343 vs −2,153 | 197 / 181: 9.1 / 12.4% | 641 / 557: 1.3 / 2.4% |
+| 96 | 1.47 / 1.66 | +5,488 / +847 vs +2,296 | 613 / 419: 4.1 / 9.5% | ∞ / 1,373: 0 / 0.6% |
+
+  Montgomery tracks ruint (best p0 599 / 419 at 96, saving 4.4 / 9.9%).
+- *The user's findings:*
+  1. At 72–96 the measured deltas lie between the two variants, so the model has the right shape. The start offsets are probably charged cheaper than a full small-modulus op.
+  2. p0 = 30 is far too low. The ruint-best p0 is ~80–100 at 72, ~180–200 at 84 and ~420–610 at 96; at 96, re-sieve should turn from a 2.9% loss into a 4–10% saving.
+  3. Under official, re-sieve barely pays at any p0 (best p0 ~1,400 or none at 96). Track R (worst of three) may therefore want a much higher p0 than Track M, or no re-sieve at 96.
+  4. Claude chat's pre-run expectation (best p0 a few hundred at 96, lower at 72–84; a small gain; official barely pays) held, except that the 96 gain (4–10%) is larger than "a few %".
+- **(W-p0, Claude chat's; pre-registered before the 2×2):** at the best slack, on the grid {30, 60, 100, 200, 400, 700, 1000}, the ruint-best p0 is 60–200 at 72, 100–400 at 84 and 200–1000 at 96. At its best p0, re-sieve beats the full pass at 96 by 3–10% (ruint). Falsified if the best p0 at 96 is ≤ 100, or if re-sieve loses at 96 at every p0.
+- **The planned p0 sweep, changed** (information, inside the 2×2's re-sieve-on cells, at the best slack per size): grid {30, 60, 100, 200, 400, 700, 1000} instead of {30, 100, 300, 1000}; all three pricings per p0; plus the Track R (worst-of-three) and Track M best p0 per size.
+
+**How the start offsets are actually charged: they are not (z = 0 by omission). A new audit finding, item 10: an uncharged op.**
+- In both the main sieve and the re-sieve walk, each root's start position is computed as (r + M) mod p, once per root per polynomial (qs.py lines 276 and 294; qs.rs lines 699 and 735). **Neither core charges it.** The sieve charges only its updates and the scan; the re-sieve walk charges 2 word ops per position visited.
+- *Count:* one per root per polynomial, about the Gray-code update count plus the first polynomial of each A: ~6.7k / ~13.9k / ~54k per number at 72 / 84 / 96 (from slackrep's update counts × ~1.14). Re-sieve repeats it for primes ≥ p0.
+- *What it physically is,* as the code computes it: a reduction modulo the small prime p, small-modulus by the fixed rule. If instead M mod p were computed once per prime per number (F reductions), each start would be an add and a conditional subtract, word-level.
+- *Size if charged* (sieve only, new reference genes, at 72): as small-modulus (0.307 ruint), ~2,060 against 10,736, **~19% of qs's ruint cost**; as word (0.034), ~2%; official +~5% at 72. **This is not negligible.**
+- **It is a meter correction** (it changes official counts) and needs its own cost-model entry. Which form is charged (a per-root reduction, or a per-number precompute plus word-level adds) is a decision for the user. **Not fixed; reported for a decision**, alongside the ledger correction now in parity.
