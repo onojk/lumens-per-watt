@@ -3271,7 +3271,7 @@ The rule recommends; changing the reference is the user's decision.
 
 **(pair) Paired baby-step giant-step** (Montgomery's pairing, with f(n) = b^{n²}, so one factor f(kD) − f(j) catches both kD − j and kD + j):
 - *D:* 210 if B2 ≤ 2^17, otherwise 2310. It is a constant of the card, not a gene; the table is recorded with the code.
-- *Baby table:* f(j) = b^{j²} for j < D/2 coprime to D, built by second differences: b^{(j+2)²} = b^{j²} · b^{4j+4} and b^{4(j+2)+4} = b^{4j+4} · b^8. That is 2 "mul" per odd j up to D/2 (D/4 odd j's), plus 3 "mul" for b², b⁴, b⁸ and 1 "mul" for b^{4·1+4} = b^8 reuse; 2 "mul" per odd j covers the table.
+- *Baby table:* f(j) = b^{j²} for j < D/2 coprime to D, built by second differences: b^{(j+2)²} = b^{j²} · b^{4j+4} and b^{4(j+2)+4} = b^{4j+4} · b^8. That is 2 "mul" per odd j up to D/2 (D/4 odd j's), plus 3 "mul" for b², b⁴ and b⁸ (b^{4·1+4} = b⁸ starts the difference chain, and f(1) = b).
 - *Giants:* G_k = b^{(kD)²} for k from ⌊B / D⌋ to ⌈B2 / D⌉, by second differences: b^{((k+1)D)²} = G_k · b^{(2k+1)D²}, with b^{(2k+3)D²} = b^{(2k+1)D²} · b^{2D²}. That is 2 "mul" per giant step, plus a start-up of two ladders (b^{(k₀D)²} and b^{(2k₀+1)D²}, square-and-multiply as above) and one for b^{2D²}.
 - *Pairs:* for each k, the set of j with kD − j or kD + j prime in (B, B2]. Each prime q costs 2 word ops (q div D, q mod D; folded to j ≤ D/2) + 1 word op (set the pair's bit).
 - *Per pair* (k, j) with at least one of kD ± j prime: 1 word op (test and scan the bit), 1 word op (G_k − f(j)), 1 "mul" (acc ← acc · d). A pair with both primes costs once: that is the pairing gain.
