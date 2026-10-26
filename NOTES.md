@@ -4670,3 +4670,15 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
   - D-gc54: still held (ruint 5.59%, Montgomery 6.63%).
   - G-gc: still falsified (96 at 12.65% > 12%).
   - G-gc54 (ruint 5.0–5.6%, Montgomery 6.0–6.7%): still held, with ruint at 5.59% now at the top of its range.
+
+**DeepSeek's reply (Oct 26, third) on the stage-2 results, with Claude chat's review** (labelled as DeepSeek's).
+- DeepSeek concedes that "ECM never chosen" was conditional on stage 1 only, and accepts the S2 reading (ECM pays at 96 bits with a cheap stage 2).
+- **(1) Stage-2 cost:** budget 1.5–2.5 multiplies per prime with prime pairing, 4–8 for a naive BSGS without pairing; sweep B2 / B1 ∈ {20, 30, 50, 100}.
+  - *Claude chat:* its "8N multiplies" figure is for ECM points, not p-1. A plain p-1 stage 2 (a gap table for x^(next q), then one multiply into the running product of x^q − 1) costs about 2 multiplies per prime without pairing, so the model's 1 per prime was optimistic. Rerun at 2.
+  - *Note (mine):* this matches the card's own p-1 stage-2 cost model (Oct 25): gap stepping at 2 multiplies + 3 word ops per prime.
+- **(2) Dickman on p understates p-1** (p − 1 is smoother than a random integer); effective size p/c with c ≈ 2–4, to be calibrated by measurement.
+  - *Claude chat's estimate:* the extra expected log-exponent of a prime q in p − 1 over a random integer is log q / (q − 1)²; summed over primes this is about 1.2, so c ≈ e^1.2 ≈ 3.4. Use 3.4 as the model input and calibrate on measured p-1 success later.
+- **(3) Keep a small rho (2^8–2^9) as insurance** for worst-of-three and the per-band gate.
+  - *Claude chat:* not adopted. Track R's worst-of-three is over price tables, not hard instances, and rho and p-1 are both generic multiplies, so it buys no pricing insurance. The blind spot it names (p in about 2^12–2^18 with a non-smooth p − 1) is real but already priced by the DP. Whether rho pays in some band is left to the evolver and the per-band gate.
+- **(4) Suyama's torsion 12** (Dickman on p/12) is adequate as a scheduler input. The 96-bit ECM gain is reported as conditional on it, and the GMP-ECM check (I-014) measures the error. Its claim that the true torsion-16 advantage over torsion 12 is only ~1.018 is recorded, unverified.
+- *Effect on I-016's sealed 4–5.5%:* two adjustments pull opposite ways: 2 multiplies per prime (down) and a p-1 smoothness c ≈ 3.4 (up). A rerun with both, plus the B2 / B1 sweep, sets the number to seal.
