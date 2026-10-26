@@ -145,7 +145,7 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Date: 2026-10-26. Source: Claude chat, from the user's DP. Trigger: ECM at B1 2^8 with stage 2 is chosen at 96 under all three priors (gain 4.75-7.35%). Our ECM already has a BSGS stage 2 (B2 = 50 B1).
 - Information step from the code and results: does the current 96-bit card run any ECM, and at what measured cost per curve (stage 1 + stage 2) under ruint pricing? If none, an ECM-at-small-B1 option belongs in the 96-bit re-solve.
 - The DP chooses ECM at 84 and 96 at B1 2^8 even at 1-2 curves; pending the rerun at the card's measured 8,187 per curve and 0.8 x success.
-- Result (2026-10-26, the honest-price ECM DP): ECM never at 72 or 84; at 96 under all 3 priors (S1 2 curves, 4.7-8.3%; with p-1 stage 2, 1 curve, 0.3-4.2%). Near break-even at 96 with the new qs costs; decide in the re-solve.
+- Result (2026-10-26, the honest-price ECM DP): ECM never at 72 or 84; at 96 under all 3 priors (S1 2 curves, 4.7-8.3%; with p-1 stage 2, 1 curve, 0.3-4.2%). ECM at 96 keeps 0.6-3.6% (1 curve, B1 2^8) with p-1 stage 2 and the new qs costs; the re-solve decides. [Corrected Oct 26: first written as "near break-even".]
 - Card ECM cost confirmed: 8,187 ruint per curve at B1 = 257 against the model's ~8,900. Track M's 96-bit card runs ~1 curve at B1 = 2,059 (59,257 ruint, ~85% of qs at 96). The 96-bit re-solve offers ECM B1 down to 2^8 with its existing stage 2.
 - Answered (Claude Code, NOTES "I-017 information step"): Track R's 96-bit pipeline runs no ECM; Track M's runs ~1 curve at the default B1 = 2,059 (59,257 ruint per curve). At b1 = 0.125 (B1 = 257 ~ 2^8, B2 = 12,850) a curve costs 8,187 ruint (~12% of qs at 96), close to the model's ~8,900.
 - Decision: pending.

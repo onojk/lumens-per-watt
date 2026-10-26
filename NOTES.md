@@ -4935,3 +4935,10 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
   - With the new qs costs (−7.6% at 96), one ECM curve's gross value (about 9,000) falls to about 8,300 against its 8,187 cost: near break-even in the stage-2 arms. The card's 96-bit re-solve (I-017) decides on real costs.
   - Rho's place depends on its detection overhead: absent from every optimum at K / 2 (the card), present at 2^9–2^10 at 84–96 at K / 1.4 (the real-prime split-half search). Check the card's rho choice at 84–96 in the re-solve before retiring it.
 - *Scoring:* A1 held (Grok, Claude chat). A2 failed for both (3 of 3 priors at 96; the plain gain up to 4.2%, above Grok's 3% and Claude chat's 2%); Claude chat's "at most 1 curve" held. A3: Grok failed (no rho at 72 or 84); Claude chat held (0 of 27 cells).
+- **Sensitivity: the same DP with the new meter's qs costs** (10,414 / 25,233 / 64,559):
+  - no ECM at 72–84; at 96, ECM gain S1 4.0 / 5.8 / 7.1%, plain 0.6 / 2.8 / 3.6% (1 curve), paired 0 / 1.3 / 2.1% (dropped under uniform; 1 curve otherwise);
+  - rho in no optimum;
+  - stage-2 saving against S1 with ECM: plain 12.3–13.3 / 11.6–13.5 / 7.2–7.6%; paired 18.5–20.6 / 16.7–19.7 / 10.7–11.3%.
+  - B2 / B1 at 96 lengthened slightly (plain 10 → 15; paired uniform 15 → 20) as ECM's role shrank. So the B2-against-qs-cost rule holds with the other lamps fixed, not when they trade off.
+- *Correction:* Claude chat's "near break-even at 96 with the new qs" estimate was too pessimistic. ECM keeps 0.6–3.6% in the stage-2 arms and drops only in paired-uniform.
+- Scoring stays on the run as sealed (old qs costs); this is a sensitivity record. Under it, Grok's A2 paired arm would hold on priors (2 of 3) and partly on gain (1.3% just under its 1.5% floor, 2.1% inside); its plain arm still fails.
