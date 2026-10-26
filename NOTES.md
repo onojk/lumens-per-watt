@@ -4001,3 +4001,26 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
      - The residual clause compares with the residue 1/q arm (0.159 / 0.151 / 0.100), but the 1.2–1.3x excess was measured against the shape-matched arm (0.129 / 0.104 / 0.068). The clause is scored as written, and the residual against the shape-matched arm is also reported.
    - *Note (mine):* run mismatch is already excluded (same traces).
 4. **Clean-check reporting, added:** per size, the duplicate share d of repeats, the without / with yield ratio, and the residual ratio of the without-duplicates yield to both simulation arms (1/q and shape-matched), on both yield definitions.
+
+**Report and hold before the 2×2 retune (user, Oct 26).**
+
+*1. Re-sieve parity:* it finished and passed (qs 4,410 pairs, types 6,830, mutations 48/48, 0 mismatches; `parity_resieve.out` ends "exit 0"). It is committed in **7d3b4b3**, with the acceptance output. The card code itself entered in 783e885 (the disclosed `commit -a` slip).
+
+*2. Pairing-yield definitions, exactly:*
+- (i) **The old "measured" 0.17 / 0.13 / 0.08** (`slack2.py`) is Rc / ins. Rc = at["lp"]["combos"], the number of times a partial met an already-filed q and was combined. ins = at["lp"]["inserts"], the number of q's filed for the first time, i.e. the distinct q. So it is **per-distinct-q** = (partials − distinct q) / distinct q. The printed values were 0.166 / 0.125 / 0.082 (distinct q 223 / 394 / 902 per number).
+- (ii) **lpdist** counts every candidate whose cofactor after trial division is 1 < v < L, i.e. every partial occurrence: 260 / 443 / 976 per number. Its label "partials filed" is a misnomer: these are occurrences, = distinct q + combinations. It computes no yield.
+- **The old values on both definitions:** per-distinct-q 0.166 / 0.125 / 0.082; **per-partial = (partials − distinct q) / partials = 37.0 / 260 = 0.142, 49.3 / 443 = 0.111, 74.0 / 976 = 0.076.**
+- **So the simulation comparisons (W-qr, D-qr, G-qr, and both Mathematica runs) compared different definitions.** The simulations used per-partial; the "measured" target was per-distinct-q. This is a miss in the setup of the comparison (Claude chat's: the Wolfram prompts did not check the definition).
+- Re-stated per-partial (measured 0.142 / 0.111 / 0.076): ratio to the residue 1/q arm (0.159 / 0.151 / 0.100) = **1.12 / 1.36 / 1.32**; to the shape-matched arm (0.129 / 0.104 / 0.068) = **0.91 / 0.94 / 0.89**. (The user's approximations were 0.145 / 0.115 / 0.074, 1.10 / 1.31 / 1.35 and 0.89 / 0.90 / 0.92.)
+- **Proposed, not applied until the user confirms:** score all large-prime predictions on the per-partial definition, with the original scores kept beside them.
+
+*4. The audit list:* in full in the Gray-code cost-model entry above (items 0–8). Item 0 in detail:
+- **What it does:** `Ledger.add` (ledger.py; `Ledger::add` in qs.rs, line ~340) rejects a relation already kept. For a full relation (y = 1) it looks up |u| in a hash set and inserts it if absent. For a combined relation it looks up min(cu, N − cu) in a second set and inserts it if absent.
+- **Charged today:** nothing. In Rust it is one `HashSet::insert` (a lookup and an insert in one call); in Python a membership test plus an add.
+- **Ops per run if charged** at one word op per relation offered (the lookup-and-insert as one op, as Rust does it), or two (lookup + insert): relations offered ≈ full relations + combinations. From the slack2 traces that is ≈ 30 + 37 / 52 + 49 / 75 + 74 per number at 72 / 84 / 96, i.e. **~70–150 ops per run (140–300 at two ops)**. Under ruint that is ~2–10 op-cost units against qs's 12k–80k (< 0.05%); under official, < 0.1%.
+- **Type and price:** word (1 / 0.034 / 0.125).
+- **Affected:** every genome that uses the ledger: **both references and the new reference genes, every qs genome, and the cfrac card** (it shares the Ledger). min(cu, N − cu) also involves one multi-word subtraction (word-level).
+- **It changes official counts, so it is a meter correction, not a re-pricing.** It needs its own cost-model entry, application to every genome, parity and a separate report. **Not fixed yet** (user's instruction).
+- *Found while checking this:* the square-search card ("sq", mode "smooth", main.rs ~line 306 and its lamps.py twin) also keeps an uncharged set of tried multipliers (insert per k, contains per k up to kk). The sq card is not in any current pipeline. It is listed as audit item 9, same treatment.
+
+*5. Re-sieve scoring:* the formal re-sieve measurement (all sizes, per pricing, against the full pass, on all map numbers) **has already run and is committed** (772632a, "Re-sieve against full-pass confirmation"). D-rm, D-rm2 and G-rm were scored there "as written at the current tuned genes". The user's instruction not to score before the formal measurement is met by that run. If the user prefers the scores held until the retune, they can be marked provisional; they are left as recorded.
