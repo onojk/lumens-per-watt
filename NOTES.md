@@ -3138,3 +3138,10 @@ Mine: Track R 5 held, 2 missed. Track M 0 held, 6 missed.
 - So **Montgomery prices small ops about 3.7x higher relative to a multiply than ruint does**, because its multiply is cheaper (7.4 ns against 27 ns).
 - If pairing bookkeeping is charged as a word-level op, it costs ~0.01–0.03 of a multiply under ruint and ~0.05–0.13 under Montgomery: the advantage holds under both, largest under ruint. If it is charged as a small-modulus op (like setup_small), it costs ~0.3 under ruint and ~1.1 under Montgomery: then Montgomery ties, as W-m allows.
 - Which type the stage-2 cost model assigns to the bookkeeping is part of that cost model.
+
+**Fixed before any stage-2 code or result (user, Oct 25): how stage-2 operations are typed.**
+- The pm1 stage-2 cost model classifies every stage-2 operation by what it physically is, and that classification is stated in NOTES before implementation.
+- **Pairing and bucketing bookkeeping** (prime-gap indexing, pair tables, bucket placement, loop counters) is index arithmetic on machine-word integers. It is charged at the **word-level price**, like sieve_update. The exception is an operation that actually reduces modulo a small prime, which is charged as a small-modulus op.
+- Products and multiplications mod N are full multiplies; the final gcd is a gcd.
+- This is fixed now because it decides W-m, G-m1 and D-m1: under word-level pricing, the bookkeeping costs ~0.01–0.03 of a multiply under ruint and ~0.05–0.13 under Montgomery.
+- **Beside D-m1:** the price table puts a gcd at 7.9 multiplies (ruint) and 29.1 (Montgomery), not ~50. DeepSeek's correction (one gcd per candidate overstates the cost against one accumulated product and a final gcd) still holds, by that smaller factor.
