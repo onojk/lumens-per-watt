@@ -6885,3 +6885,22 @@ Each cell gives ratio A / ratio B, with the materiality (time share × (ratio_B 
   - the gain overlaps re-sieve (root matching for primes ≥ p0);
   - the deciding measurement is the reciprocal test's ns per prime.
 - *Note from stage B:* the threshold, not confirm, decides which partials exist. I-029 changes confirm's cost per candidate, not capture.
+
+## Stage E: the re-sieve × F 2×2 at 96 (`evolve/e2x2.py`, `e2x2.out`, `.json`; card 06ebcf8; all 640 map numbers; wall-clock the mean of two runs)
+
+| cell | polynomials | solve share | ruint mean / median / slowest decile | official / Montgomery mean | wall total | wall: setup / sieve / resieve / confirm / lp_ledger / solve |
+|---|---|---|---|---|---|---|
+| re-sieve off, reference F | 156.0 | 3.65% | 59,071 / 58,514 / 80,787 | 1,461,014 / 216,420 | 1,909.2 µs | 376 / 457 / — / 539 / 185 / 158 |
+| re-sieve off, F × 1.3 | 127.0 | 4.70% | 63,230 / 62,705 / 81,436 | 1,373,411 / 231,803 | 2,132.4 µs | 370 / 401 / — / 723 / 225 / 221 |
+| re-sieve on (p0 200), reference F | 156.0 | 3.92% | 55,049 / 54,038 / 80,146 | 1,675,482 / 201,018 | 2,009.4 µs | 382 / 466 / 331 / 286 / 188 / 159 |
+| re-sieve on (p0 200), F × 1.3 | 127.0 | 5.59% | **53,126** / 52,130 / 73,065 | 1,524,513 / 193,716 | 2,095.6 µs | 373 / 414 / 358 / 316 / 221 / 219 |
+
+- The "resieve" column reads ~−1 µs in the off cells: the region is timed but empty, and its overhead subtraction slightly overshoots. Shown as "—".
+- **Scored:**
+  - **(R-G1)** re-sieve on, F × 1.3 against the reference F, priced ruint mean: **−3.49%**. DeepSeek's −5% to +6%: **held**. The user's −7% to +3%: **held**.
+  - **(R-G2)** re-sieve on, confirm wall-clock, F × 1.3 against the reference F: **+10.5%** (285.5 → 315.5 µs). DeepSeek's −18% to +4%: **missed** (not falsified; that needs > +12%). The user's −20% to +10%: **missed narrowly**.
+- *Reading (report only):*
+  - With re-sieve on, the larger base pays under the meter: −3.5% against re-sieve on at the reference F, and −10.1% against the reference (re-sieve off, reference F). Montgomery is −10.5% against the reference.
+  - Official and wall-clock disagree: official +4.3%; wall-clock +9.8% against the reference (2,095.6 against 1,909.2 µs), +4.3% against re-sieve on at the reference F.
+  - In wall-clock, re-sieve itself costs more than it saves at 96 on this card (+5.2% at the reference F): re-sieve's walk (331–358 µs) exceeds confirm's saving (539 → 286 µs) plus nothing elsewhere.
+  - The priced and wall-clock answers point in opposite directions, so **the meter's prices for re-sieve's word ops and confirm's divisions are what decide this cell.** Stage C shows confirm with re-sieve at ~2.6–2.7x the calibrated multiply per priced unit.
