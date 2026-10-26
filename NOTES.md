@@ -4432,3 +4432,42 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
   - the per-candidate prime list, and so every division, relation and factor, is identical to today's;
   - the new word count equals Σ |plist| from the trace;
   - Python = Rust parity, per type.
+
+### Meter correction, ledger duplicate check and sq tried-multiplier set: results (`evolve/meter_accept.py`, `meter_accept.out`, `.json`; `parity_meter.out`)
+
+**Acceptance:**
+- qs on all 2,000 map numbers × 4 genomes against the pre-change lampcore: factor, tests and hits identical; every type except word identical; ops and word rise by the same amount (8,000 / 8,000).
+  - The first pass flagged 2 runs: one 96-bit number where qs found the factor from a large-prime cofactor (N mod q) before any relation reached the ledger. Zero new charge is correct there. The condition "must rise" was too strict and is now "rises by the formula, possibly zero".
+- The word rise equals 2 × (full relations offered) + 3 × (combined relations offered) from the trace, and Python = Rust per type (32 / 32).
+- cfrac and sq smooth: the same factors (40 / 40).
+- **Parity passes** (genomes 1,408 including the sq ksq cases, qs 4,410, types 6,894, mutations 50 / 50, 0 mismatches).
+
+**Before / after, cost per number on all map numbers** (absolute; after the Gray-code re-typing):
+
+| bits | genome | official | ruint | Montgomery | charged ops per run |
+|---|---|---|---|---|---|
+| 54 | new reference | 25,934 → 26,037 (+0.40%) | 2,961.4 → 2,964.9 (+0.12%) | 9,168 → 9,181 (+0.14%) | 103 |
+| 54 | frozen reference | 30,297 → 30,405 (+0.36%) | +0.04% | +0.09% | 108 |
+| 54 | corrected reference | 25,930 → 26,040 (+0.42%) | +0.11% | +0.13% | 109 |
+| 72 | new reference | 133,431 → 133,602 (+0.13%) | 10,736 → 10,742 (+0.05%) | 35,510 → 35,531 (+0.06%) | 171 |
+| 72 | frozen reference | +0.16% | +0.04% | +0.06% | 247 |
+| 72 | corrected reference | +0.17% | +0.06% | +0.07% | 246 |
+| 84 | new reference | 428,755 → 429,017 (+0.06%) | 26,606 → 26,615 (+0.03%) | 92,303 → 92,336 (+0.04%) | 262 |
+| 84 | frozen reference | +0.08% | +0.02% | +0.03% | 424 |
+| 84 | corrected reference | +0.08% | +0.04% | +0.04% | 425 |
+| 96 | new reference | 1,380,373 → 1,380,745 (+0.03%) | 69,874 → 69,887 (+0.02%) | 249,775 → 249,821 (+0.02%) | 371 |
+| 96 | frozen reference | +0.04% | +0.01% | +0.02% | 739 |
+| 96 | corrected reference | +0.04% | +0.02% | +0.02% | 737 |
+
+- The correction is tiny everywhere (≤ 0.42% official, ≤ 0.12% calibrated), as expected, and largest at 54 where qs's total is smallest.
+
+**Predictions, scored as written** (new reference genes; the share is the rise as a fraction of qs cost):
+- **(D-ledger, DeepSeek's)** 0.02–0.15% calibrated, 0.2–1.5% official; by implementation, hash 0.01–0.05% calibrated / 0.04–0.5% official. Falsified above 2% calibrated or 10% official.
+  - Measured ruint 0.118 / 0.054 / 0.033 / 0.018%, Montgomery 0.141 / 0.061 / 0.036 / 0.019%, official 0.398 / 0.128 / 0.061 / 0.027%.
+  - **Missed** on its main ranges: calibrated in at 54–84, below at 96; official in only at 54. The hash-implementation ranges hold at 84–96 calibrated and at 54–84 official. **Not falsified.**
+- **(G-ledger, Grok's)** official 0.8–1.5 / 1.0–1.8 / 1.2–2.2% at 72 / 84 / 96, ruint 0.3–0.7 / 0.4–0.9 / 0.5–1.1%, Montgomery 0.4–0.9 / 0.5–1.1 / 0.6–1.3%: **missed** at every size and pricing (measured 6–40x lower), and **falsified** by its "official < 0.3%" clause.
+- **(G-ledger2, Grok's)** official 0.05–0.15 / 0.02–0.06 / 0.004–0.015%, ruint 0.02–0.05 / 0.008–0.025 / 0.002–0.008%, Montgomery 0.02–0.06 / 0.008–0.025 / 0.002–0.008%:
+  - share ranges: official in at 72 only (0.128%; 84 is 0.061%, just above 0.06; 96 is 0.027%); ruint and Montgomery out at every size (0.054 / 0.033 / 0.018% and 0.061 / 0.036 / 0.019%, above every range);
+  - the ratio clause (calibrated > half official) fires at 84 (0.54) and 96 (0.67), as annotated (mis-specified);
+  - **missed; falsified by its ratio clause.**
+- *Base note:* the cost model charges 2–3 word ops per relation offered, against 1 assumed by G-ledger2.

@@ -58,7 +58,7 @@ SMOOTH_K = [1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 16, 18, 20, 24, 30, 36, 40, 45, 48,
             72, 80, 90, 120, 144, 180, 210, 240, 360, 420, 480, 720, 840, 1260, 1680,
             2520, 5040, 7560, 10080, 15120, 20160, 25200, 27720, 45360, 50400, 55440]
 
-def multipliers(mode, K, mult):
+def multipliers(mode, K, mult, m=None):
     if mode == "one":
         yield 1
     elif mode == "seq":
@@ -68,13 +68,17 @@ def multipliers(mode, K, mult):
         for i in range(1, K + 1):
             yield mult * i
     else:                           # "smooth": highly divisible k first, then the rest
-        seen = set()
+        seen = set()                # charged: 1 op per insert and per test (NOTES.md, "Meter correction")
         for k in SMOOTH_K:
             if k > K:
                 break
+            if m is not None:
+                m.tick(1)
             seen.add(k)
             yield k
         for k in range(1, K + 1):
+            if m is not None:
+                m.tick(1)
             if k not in seen:
                 yield k
 
@@ -110,7 +114,7 @@ def lamp_sq(N, g, m):
     Hart (window 1). Every test of x^2 - kN is one op."""
     K = max(1, int(N ** g["k"]))
     ks = ks_order(N, K, g.get("mult", 1), g.get("r", 16), m) if g["mode"] == "ks" else None
-    for k in (ks if ks is not None else multipliers(g["mode"], K, g.get("mult", 1))):
+    for k in (ks if ks is not None else multipliers(g["mode"], K, g.get("mult", 1), m)):
         kN = k * N
         if g["ksq"]:
             kN *= 4

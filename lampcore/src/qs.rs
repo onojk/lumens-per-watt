@@ -337,6 +337,8 @@ impl Ledger {
         if chk && !self.check(u, &v, y, m)? {
             return Ok(false);
         }
+        // the duplicate check (NOTES.md, "Meter correction"): 2 word ops (full), 3 (combined: also min(cu, N - cu))
+        m.charge(crate::PH_WORD, if y == 1 { 2 } else { 3 })?;
         let fresh = if y == 1 { self.seen.insert(u.abs()) } else { self.seen_c.insert(u.min(self.n_i - u)) };
         if !fresh {
             return Ok(false);

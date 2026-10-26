@@ -1,0 +1,190 @@
+{
+ "54": {
+  "new ref": {
+   "official": {
+    "before": 25933.75,
+    "after": 26037.028125
+   },
+   "ruint": {
+    "before": 2961.3659883315604,
+    "after": 2964.874194326335
+   },
+   "montgomery": {
+    "before": 9168.287152583982,
+    "after": 9181.237523176527
+   },
+   "relations_charged_ops_per_run": 103.278125
+  },
+  "frozen ref": {
+   "official": {
+    "before": 30296.55,
+    "after": 30404.709375
+   },
+   "ruint": {
+    "before": 9241.876745545853,
+    "after": 9245.550760423312
+   },
+   "montgomery": {
+    "before": 15142.6525564885,
+    "after": 15156.215002449908
+   },
+   "relations_charged_ops_per_run": 108.159375
+  },
+  "corrected ref": {
+   "official": {
+    "before": 25930.30625,
+    "after": 26039.50625
+   },
+   "ruint": {
+    "before": 3359.311859624875,
+    "after": 3363.021223002931
+   },
+   "montgomery": {
+    "before": 10758.451107861727,
+    "after": 10772.144041081669
+   },
+   "relations_charged_ops_per_run": 109.2
+  }
+ },
+ "72": {
+  "new ref": {
+   "official": {
+    "before": 133430.45,
+    "after": 133601.78333333333
+   },
+   "ruint": {
+    "before": 10736.043471962666,
+    "after": 10741.863413282324
+   },
+   "montgomery": {
+    "before": 35509.52054799891,
+    "after": 35531.004576311025
+   },
+   "relations_charged_ops_per_run": 171.33333333333334
+  },
+  "frozen ref": {
+   "official": {
+    "before": 151867.01875,
+    "after": 152113.65833333333
+   },
+   "ruint": {
+    "before": 21310.414992470218,
+    "after": 21318.792976334647
+   },
+   "montgomery": {
+    "before": 52369.027679278835,
+    "after": 52399.95459634823
+   },
+   "relations_charged_ops_per_run": 246.63958333333332
+  },
+  "corrected ref": {
+   "official": {
+    "before": 145888.23958333334,
+    "after": 146133.97083333333
+   },
+   "ruint": {
+    "before": 13817.533475399125,
+    "after": 13825.880604516284
+   },
+   "montgomery": {
+    "before": 47342.245425051,
+    "after": 47373.058443332164
+   },
+   "relations_charged_ops_per_run": 245.73125
+  }
+ },
+ "84": {
+  "new ref": {
+   "official": {
+    "before": 428754.79107142857,
+    "after": 429016.5142857143
+   },
+   "ruint": {
+    "before": 26606.121361485668,
+    "after": 26615.011714107084
+   },
+   "montgomery": {
+    "before": 92303.08812836178,
+    "after": 92335.90642960097
+   },
+   "relations_charged_ops_per_run": 261.7232142857143
+  },
+  "frozen ref": {
+   "official": {
+    "before": 559864.6339285715,
+    "after": 560289.0035714286
+   },
+   "ruint": {
+    "before": 99408.23208538885,
+    "after": 99422.64729795272
+   },
+   "montgomery": {
+    "before": 192419.28176045173,
+    "after": 192472.4948115526
+   },
+   "relations_charged_ops_per_run": 424.3696428571429
+  },
+  "corrected ref": {
+   "official": {
+    "before": 504317.4910714286,
+    "after": 504742.3696428572
+   },
+   "ruint": {
+    "before": 38817.781947125266,
+    "after": 38832.21444724411
+   },
+   "montgomery": {
+    "before": 136919.4643500064,
+    "after": 136972.74121726974
+   },
+   "relations_charged_ops_per_run": 424.87857142857143
+  }
+ },
+ "96": {
+  "new ref": {
+   "official": {
+    "before": 1380373.3828125,
+    "after": 1380744.4546875
+   },
+   "ruint": {
+    "before": 69874.21587347957,
+    "after": 69886.82063926484
+   },
+   "montgomery": {
+    "before": 249774.74450931093,
+    "after": 249821.27438480704
+   },
+   "relations_charged_ops_per_run": 371.071875
+  },
+  "frozen ref": {
+   "official": {
+    "before": 1873183.1296875,
+    "after": 1873922.58125
+   },
+   "ruint": {
+    "before": 219539.53629566412,
+    "after": 219564.65437758528
+   },
+   "montgomery": {
+    "before": 510591.1032334889,
+    "after": 510683.82540257944
+   },
+   "relations_charged_ops_per_run": 739.4515625
+  },
+  "corrected ref": {
+   "official": {
+    "before": 1771051.2046875,
+    "after": 1771787.9375
+   },
+   "ruint": {
+    "before": 113957.16817713351,
+    "after": 113982.19390711612
+   },
+   "montgomery": {
+    "before": 410834.8908567786,
+    "after": 410927.2721132118
+   },
+   "relations_charged_ops_per_run": 736.7328125
+  }
+ }
+}

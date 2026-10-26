@@ -144,11 +144,15 @@ class Ledger:
             if self.at is not None:
                 self.at["rejected"] = self.at.get("rejected", 0) + 1
             return False
+        # the duplicate check (NOTES.md, "Meter correction: the ledger's duplicate check"): a hash
+        # lookup-and-insert of the two-word key, 2 word ops; a combined key also forms min(cu, N - cu), 3
         if y == 1:
+            self.ch.charge("word", 2)
             if abs(u) in self.seen:
                 return False
             self.seen.add(abs(u))
         else:
+            self.ch.charge("word", 3)
             key = min(u, self.N - u)
             if key in self.seen_c:
                 if self.at is not None:

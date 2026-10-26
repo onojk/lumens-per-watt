@@ -1,0 +1,15 @@
+54 bits, new ref: cost per number before / after: offi 25,933.8 / 26,037.0 (+0.398%)  ruin 2,961.4 / 2,964.9 (+0.118%)  mont 9,168.3 / 9,181.2 (+0.141%); charged ops per run 103
+54 bits, frozen ref: cost per number before / after: offi 30,296.5 / 30,404.7 (+0.357%)  ruin 9,241.9 / 9,245.6 (+0.040%)  mont 15,142.7 / 15,156.2 (+0.090%); charged ops per run 108
+54 bits, corrected ref: cost per number before / after: offi 25,930.3 / 26,039.5 (+0.421%)  ruin 3,359.3 / 3,363.0 (+0.110%)  mont 10,758.5 / 10,772.1 (+0.127%); charged ops per run 109
+72 bits, new ref: cost per number before / after: offi 133,430.5 / 133,601.8 (+0.128%)  ruin 10,736.0 / 10,741.9 (+0.054%)  mont 35,509.5 / 35,531.0 (+0.061%); charged ops per run 171
+72 bits, frozen ref: cost per number before / after: offi 151,867.0 / 152,113.7 (+0.162%)  ruin 21,310.4 / 21,318.8 (+0.039%)  mont 52,369.0 / 52,400.0 (+0.059%); charged ops per run 247
+72 bits, corrected ref: cost per number before / after: offi 145,888.2 / 146,134.0 (+0.168%)  ruin 13,817.5 / 13,825.9 (+0.060%)  mont 47,342.2 / 47,373.1 (+0.065%); charged ops per run 246
+84 bits, new ref: cost per number before / after: offi 428,754.8 / 429,016.5 (+0.061%)  ruin 26,606.1 / 26,615.0 (+0.033%)  mont 92,303.1 / 92,335.9 (+0.036%); charged ops per run 262
+84 bits, frozen ref: cost per number before / after: offi 559,864.6 / 560,289.0 (+0.076%)  ruin 99,408.2 / 99,422.6 (+0.015%)  mont 192,419.3 / 192,472.5 (+0.028%); charged ops per run 424
+84 bits, corrected ref: cost per number before / after: offi 504,317.5 / 504,742.4 (+0.084%)  ruin 38,817.8 / 38,832.2 (+0.037%)  mont 136,919.5 / 136,972.7 (+0.039%); charged ops per run 425
+96 bits, new ref: cost per number before / after: offi 1,380,373.4 / 1,380,744.5 (+0.027%)  ruin 69,874.2 / 69,886.8 (+0.018%)  mont 249,774.7 / 249,821.3 (+0.019%); charged ops per run 371
+96 bits, frozen ref: cost per number before / after: offi 1,873,183.1 / 1,873,922.6 (+0.039%)  ruin 219,539.5 / 219,564.7 (+0.011%)  mont 510,591.1 / 510,683.8 (+0.018%); charged ops per run 739
+96 bits, corrected ref: cost per number before / after: offi 1,771,051.2 / 1,771,787.9 (+0.042%)  ruin 113,957.2 / 113,982.2 (+0.022%)  mont 410,834.9 / 410,927.3 (+0.022%); charged ops per run 737
+1. qs vs pre-change lampcore: only word (and ops) rise, by the same amount: 8000/8000
+2. word rise = 2 x full offered + 3 x combined offered (trace), and Python = Rust: 32/32
+3. cfrac / sq smooth at 54 bits: same factor, ops not lower: 40/40

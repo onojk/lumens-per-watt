@@ -310,12 +310,14 @@ fn lamp_sq(num: &Num, g: &Value, m: &mut Meter) -> R {
                 if k > kk {
                     break;
                 }
+                m.tick(1)?; // charged insert (NOTES.md, "Meter correction")
                 seen.insert(k);
                 if let Some(d) = sq_one_k(num, g, k, m)? {
                     return Ok(Some(d));
                 }
             }
             for k in 1..=kk {
+                m.tick(1)?; // charged membership test
                 if !seen.contains(&k) {
                     if let Some(d) = sq_one_k(num, g, k, m)? {
                         return Ok(Some(d));
