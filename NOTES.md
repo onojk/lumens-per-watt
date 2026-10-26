@@ -6294,3 +6294,60 @@ The estimate is unchanged in scale: about 0.1–0.15% of qs's cost at 96 and a f
   - *R-E2, e_M:* 0.63–0.70.
 - *V1 at L ~1,511 B:* the closed form still applies with measured inputs. κ_eff should be at or slightly above 1.87 (x → 0 gives 2), not reused blindly; recompute κ_eff from the card's x = P λ_q in step 6.
   - The reviewer: the effect is probably small (the extra high-q partials have tiny x and add little to Comb).
+
+## Step 5: wall-clock re-run with two anchors — STOP (`phasetime_step5.out`, `.json`; committed card aa1d291)
+
+**Anchor change, recorded:** after the stage-1 stop, the materiality rule moved from anchor A (the unweighted median region) to **anchor B (the time-weighted mean: total ns / total priced units)**.
+- The reason: the median moved when two regions were cheapened (the fill charges deleted in step 1, gray in step 4), and that shifted every ratio.
+- Under B, a flagged region (ratio_B > 1.5) stops the run only if time share × (ratio_B − 1) ≥ 1%.
+- Anchor C (the calibrated clean multiply, 27.3 ns per ruint unit) is information.
+
+Anchors, ns per priced ruint unit (re-sieve off / on): A 44.4 / 53.2, 47.0 / 61.4, 44.3 / 51.4, 41.1 / 46.0; **B 48.0 / 56.5, 48.1 / 58.2, 38.9 / 44.3, 34.0 / 35.5** at 54 / 72 / 84 / 96.
+
+Each cell gives ratio A / ratio B, with the materiality (time share × (ratio_B − 1)) where ratio_B > 1.5, without re-sieve ; with re-sieve (p0 30):
+
+| region | 54 | 72 | 84 | 96 |
+|---|---|---|---|---|
+| mult | 0.65/0.60 ; 0.56/0.52 | 0.74/0.72 ; 0.55/0.58 | 0.77/0.88 ; 0.69/0.80 | 0.87/1.05 ; 0.79/1.02 |
+| fb | 0.37/0.34 ; 0.33/0.31 | 0.41/0.40 ; 0.32/0.34 | 0.44/0.50 ; 0.37/0.43 | 0.44/0.53 ; 0.39/0.50 |
+| setup | 1.58/1.46 ; 1.30/1.23 | **1.85/1.81 (27.3%)** ; 1.41/1.48 | **1.35/1.54 (14.5%)** ; 1.15/1.34 | 1.13/1.36 ; 1.00/1.30 |
+| gray | 0.91/0.84 ; 0.76/0.72 | 1.11/1.08 ; 0.84/0.88 | 1.16/1.32 ; 1.00/1.16 | **1.28/1.54 (1.3%)** ; 1.13/1.46 |
+| sieve | 0.59/0.54 ; 0.49/0.46 | 0.53/0.52 ; 0.41/0.44 | 0.50/0.57 ; 0.43/0.50 | 0.49/0.59 ; 0.44/0.57 |
+| resieve | — ; **1.92/1.81 (10.2%)** | — ; 1.21/1.28 | — ; 0.93/1.08 | — ; 0.74/0.96 |
+| confirm | 1.09/1.01 ; 1.49/1.41 | 0.89/0.87 ; 1.28/1.35 | 0.84/0.96 ; **1.49/1.72 (9.9%)** | 0.85/1.03 ; **1.65/2.13 (9.8%)** |
+| lp_ledger | 1.62/1.50 ; 1.36/1.28 | 1.42/1.39 ; 1.11/1.17 | **1.64/1.86 (7.3%)** ; **1.45/1.68 (5.7%)** | **2.37/2.86 (17.2%)** ; **2.14/2.77 (15.7%)** |
+| solve | 1.19/1.10 ; 1.00/0.94 | 1.29/1.26 ; 1.00/1.05 | **1.57/1.79 (7.5%)** ; **1.36/1.58 (5.3%)** | **1.87/2.25 (10.3%)** ; **1.65/2.14 (8.7%)** |
+
+- **The run fails under B, so stages 2–4 (the 2×2, the p-1 stage-2 re-solve, the 96-bit re-solve) do not run.**
+- Above the 1% bar: setup at 72 and 84; lp_ledger at 84–96; solve at 84–96; confirm with re-sieve at 84–96; resieve at 54; gray at 96 without re-sieve.
+
+**Predictions scored** (the base stated for each):
+- **(P3, the user's)** the median returns to 60–90 at every size after step 1: **missed.** Anchor A at step 5 (after steps 1–4 and 1b) is 41–47 without re-sieve and 46–61 with it.
+- **(D-P3)** 55–85, falsified if < 45: **falsified** (44.4 at 54, 44.3 at 84, 41.1 at 96, re-sieve off).
+- **(P4, the user's)** and **(D-P4)** setup at 72 (off) under 1.5x under both anchors: **missed** (A 1.85, B 1.81).
+- **(P6, the user's)** and **(D-P6)** solve at 84–96 under 1.5x on anchor B: **missed** (1.79 / 1.58 at 84, 2.25 / 2.14 at 96).
+- **(P7, the user's)** and **(D-P7)** gray stays above 1.5x on anchor A after the flat layout, and passes the 1% bar on B: **missed on both clauses.**
+  - Anchor A is 0.76–1.28, under 1.5x everywhere.
+  - B fails the bar at 96 without re-sieve (1.54, 1.3%).
+  - D-P7's speed-up range held, as recorded at step 4.
+- **U3 and V3** (sealed after the data existed in committed outputs; scored post hoc). The committed reference variant is **re-sieve off**: the new reference genes have no confirm gene, and re-sieve was never adopted. Values without / with re-sieve (p0 30):
+  - **U3** (solve ruint / total qs ruint): 13.7 / 14.6% (54), 7.7 / 8.6% (72), **5.3** / 5.8% (84), **3.7** / 3.6% (96).
+    - DeepSeek (5–14% at 84, 6–16% at 96): **held at 84, missed at 96**; not falsified (> 2%; 96 is 1.6 pp below 84, inside 3 pp).
+    - The user's (4–12% at both): **held at 84, missed at 96.**
+    - The card's solve has no singleton removal; it is dense elimination plus the square root.
+  - **V3** (setup ruint / (sieve + confirm) ruint): 52.2 / 63.5% (54), 35.9 / 44.8% (72), **29.1** / 34.3% (84), **28.7** / 28.2% (96).
+    - DeepSeek (18–55% at 84, 16–50% at 96): **held.** The user's (15–60%): **held.**
+- *Wall-clock M* (V3's base taken on time instead of price): 87.8 / 68.6%, 85.6 / 72.0%, 57.3 / 53.6%, 51.6 / 46.1%.
+
+**I-027 direction, priced against wall-clock (report only).** The card's LA proxy is solve, which includes the square root:
+
+| size | solve share, priced / wall (rule: 8–15%) | setup / (sieve + confirm), priced / wall (rule: ~41%; ~49% at the card's e_M per the reviewer) |
+|---|---|---|
+| 54 | 13.7% / 15.1% (inside / at the edge) | 52% / 88% (above: raise M) |
+| 72 | 7.7% / 9.7% (just below / inside) | 36% / 86% (priced: near; wall: raise M) |
+| 84 | 5.3% / 9.4% (below: raise F / inside) | 29% / 57% (priced: lower M; wall: raise M) |
+| 96 | 3.7% / 8.2% (below: raise F / inside) | 29% / 52% (priced: lower M; wall: near or raise M) |
+
+- On prices, 84–96 say raise F (solve far below 8–15%) and move M down. On wall-clock time, F is inside the band and M points the other way.
+- **The two disagree because setup and solve run slower than they are priced.** Which is right depends on whether those regions are slow code or underpriced (ranked after step 7).
+- *Caveat:* e_M (~0.71) was measured by Wolfram at M = 20,000, not at the card's M (mc · B: a few hundred to ~1,000). The reviewer's theory puts the card's e_M near 0.67 (sealed R-E2 0.63–0.70; step 6c measures it).
