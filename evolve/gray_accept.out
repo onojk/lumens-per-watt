@@ -1,0 +1,18 @@
+54 bits, new ref: cost per number before / after (cut): offi 25,934 / 25,934 (0.000)  ruin 3,131 / 2,961 (0.054)  mont 9,800 / 9,168 (0.064)
+54 bits, new ref + re-sieve: cost per number before / after (cut): offi 26,889 / 26,889 (0.000)  ruin 2,906 / 2,735 (0.059)  mont 8,951 / 8,319 (0.071)
+54 bits, frozen ref: cost per number before / after (cut): offi 30,297 / 30,297 (0.000)  ruin 9,520 / 9,242 (0.029)  mont 16,174 / 15,143 (0.064)
+54 bits, corrected ref: cost per number before / after (cut): offi 25,930 / 25,930 (0.000)  ruin 3,641 / 3,359 (0.077)  mont 11,805 / 10,758 (0.089)
+72 bits, new ref: cost per number before / after (cut): offi 133,430 / 133,430 (0.000)  ruin 12,106 / 10,736 (0.113)  mont 40,597 / 35,510 (0.125)
+72 bits, new ref + re-sieve: cost per number before / after (cut): offi 144,189 / 144,189 (0.000)  ruin 10,909 / 9,539 (0.126)  mont 36,087 / 30,999 (0.141)
+72 bits, frozen ref: cost per number before / after (cut): offi 151,867 / 151,867 (0.000)  ruin 22,586 / 21,310 (0.056)  mont 57,104 / 52,369 (0.083)
+72 bits, corrected ref: cost per number before / after (cut): offi 145,888 / 145,888 (0.000)  ruin 15,086 / 13,818 (0.084)  mont 52,051 / 47,342 (0.090)
+84 bits, new ref: cost per number before / after (cut): offi 428,755 / 428,755 (0.000)  ruin 30,087 / 26,606 (0.116)  mont 105,227 / 92,303 (0.123)
+84 bits, new ref + re-sieve: cost per number before / after (cut): offi 498,417 / 498,417 (0.000)  ruin 27,934 / 24,454 (0.125)  mont 97,016 / 84,092 (0.133)
+84 bits, frozen ref: cost per number before / after (cut): offi 559,865 / 559,865 (0.000)  ruin 103,497 / 99,408 (0.040)  mont 207,600 / 192,419 (0.073)
+84 bits, corrected ref: cost per number before / after (cut): offi 504,317 / 504,317 (0.000)  ruin 42,915 / 38,818 (0.095)  mont 152,134 / 136,919 (0.100)
+96 bits, new ref: cost per number before / after (cut): offi 1,380,373 / 1,380,373 (0.000)  ruin 79,657 / 69,874 (0.123)  mont 286,099 / 249,775 (0.127)
+96 bits, new ref + re-sieve: cost per number before / after (cut): offi 1,743,100 / 1,743,100 (0.000)  ruin 81,953 / 72,170 (0.119)  mont 293,985 / 257,661 (0.124)
+96 bits, frozen ref: cost per number before / after (cut): offi 1,873,183 / 1,873,183 (0.000)  ruin 231,684 / 219,540 (0.052)  mont 555,686 / 510,591 (0.081)
+96 bits, corrected ref: cost per number before / after (cut): offi 1,771,051 / 1,771,051 (0.000)  ruin 126,114 / 113,957 (0.096)  mont 455,974 / 410,835 (0.099)
+1. vs pre-change lampcore: identical except setup_small -> setup_gray, which moves exactly: 8000/8000
+2-3. setup_gray = trace update count, and Python = Rust per type: 32/32

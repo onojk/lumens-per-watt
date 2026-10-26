@@ -685,7 +685,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                     }
                     n_roots += ent.1.len() as u64;
                 }
-                m.charge(SETUP, n_roots)?;
+                m.charge(crate::PH_GRAY, n_roots)?; // word-level type setup_gray
             }
             let c = (bv * bv - kn) / a;
             // 4. sieve

@@ -4189,3 +4189,46 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
   4. Claude chat's expectation, written in the prompt before the run (informal, not registered in NOTES): a (B, 2B] share at or below the α = 1 values and a ratio at or below ~0.87. It held, except 84 at 0.89.
   5. *Implication:* W-b2b (0.16–0.18 / 0.13–0.15 / 0.10–0.115) now looks likely to fail; the clean check decides. The residual points at same-q clustering (D-occ) or an unnamed mechanism. Both reviewers now predict small duplicate shares (D-dup < 1%, G-dup2 0–12%).
 - **Clean check, added:** fit the same two-parameter smooth model to the 0.05-wide histogram, and report whether the lowest 0.05 bin sits above the smooth fit (a localized excess just above B) or on it.
+
+### Gray-code re-typing: results (`evolve/gray_accept.py`, `gray_accept.out`, `.json`; `parity_gray.out`)
+
+**Acceptance.**
+- Against the pre-change lampcore on all 2,000 map numbers × 4 genomes (new reference, new reference + re-sieve, frozen reference, corrected reference): total ops, factor and every other type are identical, and setup_small moves to setup_gray exactly (8,000 / 8,000).
+- setup_gray equals the trace's update count, and Python = Rust per type (32 / 32).
+- Full parity passes (qs 4,410 pairs, types 6,830, mutations 50/50, 0 mismatches; `parity_gray.out`).
+
+**Formal before / after** (op counts unchanged; before = setup_gray priced as setup_small, after = word-level). Cost per number on all map numbers, absolute (cut):
+
+| bits | genome | official | ruint | Montgomery |
+|---|---|---|---|---|
+| 54 | new reference | 25,934 (0) | 3,131 → 2,961 (5.4%) | 9,800 → 9,168 (6.4%) |
+| 54 | new reference + re-sieve | 26,889 (0) | 2,906 → 2,735 (5.9%) | 8,951 → 8,319 (7.1%) |
+| 54 | frozen reference | 30,297 (0) | 9,520 → 9,242 (2.9%) | 16,174 → 15,143 (6.4%) |
+| 54 | corrected reference | 25,930 (0) | 3,641 → 3,359 (7.7%) | 11,805 → 10,758 (8.9%) |
+| 72 | new reference | 133,430 (0) | 12,106 → 10,736 (11.3%) | 40,597 → 35,510 (12.5%) |
+| 72 | new reference + re-sieve | 144,189 (0) | 10,909 → 9,539 (12.6%) | 36,087 → 30,999 (14.1%) |
+| 72 | frozen reference | 151,867 (0) | 22,586 → 21,310 (5.6%) | 57,104 → 52,369 (8.3%) |
+| 72 | corrected reference | 145,888 (0) | 15,086 → 13,818 (8.4%) | 52,051 → 47,342 (9.0%) |
+| 84 | new reference | 428,755 (0) | 30,087 → 26,606 (11.6%) | 105,227 → 92,303 (12.3%) |
+| 84 | new reference + re-sieve | 498,417 (0) | 27,934 → 24,454 (12.5%) | 97,016 → 84,092 (13.3%) |
+| 84 | frozen reference | 559,865 (0) | 103,497 → 99,408 (4.0%) | 207,600 → 192,419 (7.3%) |
+| 84 | corrected reference | 504,317 (0) | 42,915 → 38,818 (9.5%) | 152,134 → 136,919 (10.0%) |
+| 96 | new reference | 1,380,373 (0) | 79,657 → 69,874 (12.3%) | 286,099 → 249,775 (12.7%) |
+| 96 | new reference + re-sieve | 1,743,100 (0) | 81,953 → 72,170 (11.9%) | 293,985 → 257,661 (12.4%) |
+| 96 | frozen reference | 1,873,183 (0) | 231,684 → 219,540 (5.2%) | 555,686 → 510,591 (8.1%) |
+| 96 | corrected reference | 1,771,051 (0) | 126,114 → 113,957 (9.6%) | 455,974 → 410,835 (9.9%) |
+
+- **New reference genes: ruint −5.4 / −11.3 / −11.6 / −12.3%, Montgomery −6.4 / −12.5 / −12.3 / −12.7%, official 0% (exact).** My cost-model expectation was 5.2 / 12.5 / 11.4 / 13.0 and 6.1 / 13.8 / 12.1 / 13.4, within ~1.3 points.
+- The frozen reference gains least (3–6% ruint): its enumerate setup is dominated by setup_full (A formation), not Gray-code switching.
+- **Reference comparisons re-stated under the corrected pricing** (map numbers, qs alone; new reference / frozen reference cost per number):
+  - ruint: before 0.329 / 0.536 / 0.291 / 0.344, after 0.320 / 0.504 / 0.268 / 0.318;
+  - Montgomery: before 0.606 / 0.711 / 0.507 / 0.515, after 0.605 / 0.678 / 0.480 / 0.489;
+  - official: unchanged (0.856 / 0.879 / 0.766 / 0.737).
+  - The new reference's lead over the frozen one widens by 3–8% under ruint and 0–5% under Montgomery, because it spends a larger share on Gray-code switching (more polynomials per A).
+  - The sealed replacement-test ratios (9600000) were not re-run; on the map numbers the direction is the same, and the rule's verdict (PASS) cannot flip under a re-pricing that favours the candidate.
+- **Predictions, scored as written:**
+  - (D-gc, DeepSeek's) official 0% exact (held); ruint 9–11% and Montgomery 9–11%, falsified outside 7–13%: **missed.** Ruint is 5.4 / 11.3 / 11.6 / 12.3% (none in 9–11; 54 is outside 7–13, so the falsifier fires), and Montgomery is 6.4 / 12.5 / 12.3 / 12.7%. Its slack clauses await the 2×2.
+  - (D-gc54, DeepSeek's) ruint 4.6–5.8%, Montgomery 5.4–6.8%, official 0%: **held** (5.4%, 6.4%, 0%). Its slack clause awaits the 2×2.
+  - (G-gc54, Grok's) ruint 5.0–5.6%, Montgomery 6.0–6.7%: **holds** on the cut clauses (5.4% / 6.4%), as recorded above.
+  - (G-gc, Grok's) ruint 4–7 / 5–9 / 6–10 / 6–11%, Montgomery 3–6 / 4–8 / 5–9 / 5–10%, falsified if the ruint saving falls outside 3–12%: **missed.** Ruint is in range only at 54 (5.4%), and 96 (12.3%) is above 12%, so the falsifier fires. Montgomery is above every range.
+  - The annotation's implied figures (ruint ~4.5 / 11.0 / 10.0 / 11.4%, Montgomery ~5.4 / 12.1 / 10.6 / 11.7%, for 2 ops) were not a registered prediction. The measured cut is the 1-op cut, as adopted.

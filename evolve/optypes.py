@@ -33,7 +33,7 @@ def qs_counts(tr):
             "confirm_full": confirm_full, "confirm_td": o.get("confirm", 0) - confirm_full,
             "la": o.get("la", 0), "sqrt_mul": o.get("sqrt", 0) - sqrt_gcd, "sqrt_gcd": sqrt_gcd,
             "lp_full": lp_full, "lp_small": o.get("lp", 0) - lp_full, "check": o.get("check", 0),
-            "word": o.get("word", 0)}
+            "word": o.get("word", 0), "setup_gray": o.get("gray", 0)}
 
 def ecm_setup_steps(N, sigma):
     """(Euclid steps of den^-1 mod N, whether den is invertible) for a Suyama curve."""
@@ -68,7 +68,7 @@ def rho_counts(ops, tests):
 # The fixed type order of lampcore's --types output (lampcore/src/main.rs, TYPE_NAMES).
 TYPE_ORDER = ["mult", "fb", "setup_full", "setup_euclid", "setup_small", "sieve_update", "sieve_scan",
               "confirm_full", "confirm_td", "la", "sqrt_mul", "sqrt_gcd", "lp_full", "lp_small", "check",
-              "setup_mul", "setup_euclid_N", "mul", "gcd", "td_mod", "sq_ops", "ps_ops", "cfrac_ops", "word"]
+              "setup_mul", "setup_euclid_N", "mul", "gcd", "td_mod", "sq_ops", "ps_ops", "cfrac_ops", "word", "setup_gray"]
 
 def prices(path="calibrate.json"):
     """Per pricing, the price of each type: official 1 for every op; ruint and Montgomery from
@@ -80,6 +80,7 @@ def prices(path="calibrate.json"):
         names = cal["prices"][f"{ref} P1"]
         out[ref] = {t: sorted(cal["prices"][f"{ref} {r}"][t] for r in ("P1", "P2", "P3"))[1] for t in names}
         out[ref]["word"] = out[ref]["sieve_update"]   # word-level op, priced like sieve_update (no new calibration)
+        out[ref]["setup_gray"] = out[ref]["sieve_update"]   # Gray-code root update: word-level (NOTES.md, "Gray-code root update re-typed")
     return out
 
 def cost(counts, pricing, pr):

@@ -263,7 +263,7 @@ def sieve_source(N, k, g, led, ch, at):
                     p, rs, bainv = ent
                     ent[1] = [(r + d * bainv[v]) % p for r in rs]
                     n_roots += len(rs)
-                charge("setup", n_roots)
+                charge("gray", n_roots)            # word-level type setup_gray (NOTES.md, "Gray-code root update re-typed")
                 if at is not None:
                     at["switches_roots"].append(n_roots)
             C = (Bv * Bv - kN) // A
