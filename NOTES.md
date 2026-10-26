@@ -4365,3 +4365,14 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
   - a separate double-divide price after the microbenchmark would make the cut smaller;
   - the ledger correction shifts totals slightly;
   - so will the start-offset correction (added after this check).
+
+**DeepSeek's reply (Oct 26, 01:02), with annotation** (labelled as DeepSeek's; the annotation is Claude chat's, relayed by the user).
+1. DeepSeek accepts the annotations: D-audit stays as registered (Montgomery centrals low; ruint contains the post-Gray expectation); D-pool's two clauses conflict (the cv ranges imply 14–30% below pooled, not 8–15%); both are scored as given; no revisions.
+2. **(D-2x2full)** fully corrected meter (Gray-code + ledger / sq + audit items 1–8, the double divide separately priced if > 3x sieve_update); new reference genes; all map numbers; best slack on the 0.1 grid over 1.6–2.8; re-sieve on at its best p0 from {30, 60, 100, 200, 400, 700, 1000}; the off cell is the same genome without re-sieve; ruint and Montgomery scored separately, official reported:
+   - 72: best slack with re-sieve on, ruint 2.3–2.6 and Montgomery 2.2–2.6; re-sieve saves 2–6% ruint and 8–12% Montgomery; best p0 60–200.
+   - 84: ruint 2.2–2.5, Montgomery 2.1–2.5; saves 1–5% ruint, 6–10% Montgomery; best p0 100–400.
+   - 96: ruint 2.1–2.4, Montgomery 2.0–2.4; ruint on / off within ±2% (leans off for Track R); Montgomery saves 4–10%; best p0 400–1000.
+   - 54 (diagnostic, not scored under D-2x2full): no slack shift > 0.2; ruint on / off within ±3%; Montgomery saves 6–10% at low p0.
+   - Falsified if any 72 / 84 / 96 best slack is outside its range by more than 0.2; if ruint re-sieve fails to beat the full pass by at least 1% at 72 or 84; if ruint re-sieve beats it by more than 3% at 96; if the Montgomery full pass wins at 72, 84 or 96; or if the best p0 is outside the D-p0M ranges. The 54 diagnostic is falsified if the slack shift exceeds 0.2 or the Montgomery saving is outside 6–10%.
+   - *Annotation:* re-sieve trades small-modulus divisions for word steps, and both prices scale ~3.7x from ruint to Montgomery while qs's total scales ~3.4x (full-price ops don't scale). So the Montgomery saving, as a share of qs cost, should be ~1.1x the ruint saving, not 2–4x as predicted at 72–84. The p0 = 30 measurement agrees (−9.9 against −11.1% at 72; −7.2 against −7.8% at 84). Its ruint and Montgomery clauses (especially the 96 pair: ruint within ±2% while Montgomery saves 4–10%) are therefore unlikely to hold together. Scored as given.
+   - *Note (mine):* the fully corrected meter will also include the start-offset correction (audit item 10, decided after the predictions that name the corrections). D-2x2full is scored on the fully corrected pricing as built, and the start-offset part's effect on its cells is reported beside it.
