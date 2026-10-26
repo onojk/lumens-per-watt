@@ -3322,7 +3322,7 @@ The final Track R genes run as qs alone on the corrected card with kset = sf32. 
 | pooled | −0.191 [−0.205, −0.176] | −0.429 [−0.443, −0.413] | −0.458 [−0.472, −0.443] | | |
 
 - The rule passes on (1) too: the official interval at 54 includes 0, so the genes are not clearly worse there. **The genes' own gain (card held fixed) is 0% official at 54, rising to 9–23% official and 21–38% ruint and Montgomery at 72–96.**
-- The rest of (2)'s gain is the card: on_demand A, the sort charge and kset against the frozen reference's enumerate. The card is most of the calibrated gain at 54 (ruint −1.61 of −1.61 log₂) and about two thirds of it at 84–96 (ruint −1.2 of −1.7).
+- The rest of (2)'s gain is the card: on_demand A, the sort charge and kset against the frozen reference's enumerate. The card is most of the calibrated gain at 54 (ruint −1.44 of −1.61 log₂) and 57–69% of it at 84–96 (ruint −1.20 of −1.73 at 84, −0.88 of −1.55 at 96).
 - The robust ratio is set by official in every row (official moves least).
 
 **Balanced numbers: the (d) pipeline against the genes as qs alone** (information; same reference, so the ratio is 2^(pipeline log₂ − qs log₂)):
