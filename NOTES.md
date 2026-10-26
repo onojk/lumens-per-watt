@@ -4964,3 +4964,15 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
 - *Claude chat's:* (C1) Brent's factoring variant (about 55%). (C2) rho dropped at 84 and 96. (C3) one ECM curve at B1 = 2^8 at 96 (the honest-price DP keeps it under 2–3 of 3 priors).
 - *Annotation:* Grok's C3 contradicts the honest-price DP. If the re-solve picks no ECM at 96, the card's ECM is weaker or dearer than modelled, and I-014 (measured ECM success per curve) is the next step.
 - **Timing (mine): C1 is post hoc.** The code answer was committed (5a84aa6) before these predictions arrived: the card's rho is Brent's factoring variant (r uncompared steps, then r compared steps, a gcd every 64). *Scored post hoc:* C1 **held** for both. C2 and C3 await the re-solve after p-1 stage 2.
+
+### Item 13: on-demand selection's rest-list bookkeeping charged — results (`evolve/item13_accept.py`, `item13_accept.out`, `.json`; `parity_item13.out`)
+- **Acceptance:**
+  - on all map numbers × 4 genomes, only word (and ops) rise, and the enumerate frozen reference is unchanged (8,000 / 8,000);
+  - the word rise equals P × prefixes + picks from the trace, and Python = Rust per type (32 / 32);
+  - **parity passes** (types 6,894, mutations 50 / 50, 0 mismatches), covering item 12 as well.
+- **Cost per number, absolute, before → after:**
+  - new reference: official 26,928 → 27,192 (+0.98%) / 139,455 → 140,080 (+0.45%) / 443,798 → 444,370 (+0.13%) / 1,422,045 → 1,422,992 (+0.07%) at 54 / 72 / 84 / 96; ruint +0.23 / +0.15 / +0.06 / +0.04%; Montgomery +0.28 / +0.17 / +0.06 / +0.04%;
+  - new reference + re-sieve: about the same (official +0.86 / +0.39 / +0.11 / +0.05%);
+  - corrected reference (on_demand): official +1.46 / +0.25 / +0.10 / +0.03%; calibrated ≤ 0.36%;
+  - frozen reference (enumerate): 0.
+- No registered prediction names items 12 or 13.

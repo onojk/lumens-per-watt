@@ -508,6 +508,7 @@ impl OnDemand {
             m.charge(SETUP, 1)?;
             m.ev(crate::EV_SETUP_FULL, s as u64 - 1);
             let mut rest: Vec<u64> = self.pool.iter().copied().filter(|p| !pre.contains(p)).collect();
+            m.charge(crate::PH_WORD, self.pool.len() as u64)?; // building rest: one word op per pool prime (item 13)
             while !rest.is_empty() {
                 let mut bi = 0usize;
                 for i in 1..rest.len() {
@@ -518,6 +519,7 @@ impl OnDemand {
                 }
                 m.charge(SETUP, rest.len() as u64)?;
                 let last = rest.remove(bi);
+                m.charge(crate::PH_WORD, 1)?; // the removal (item 13)
                 let a = ap * last;
                 m.charge(SETUP, 1)?;
                 m.charge(SETUP, 1)?; // target check

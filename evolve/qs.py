@@ -148,11 +148,12 @@ def _a_pass(by_q, pool, s, target, charge, at, used, limit, sc):
         if at is not None:
             at["od_prefixes"] += 1
         rest = [p for p in pool if p not in pre]
+        charge("word", len(pool))              # building rest: one word op per pool prime (item 13)
         while rest:
             last = min(rest, key=lambda p: (abs(math.log(p / tp)), p)); charge("setup", len(rest))
             if at is not None:
                 at["od_small"] += len(rest)
-            rest.remove(last)
+            rest.remove(last); charge("word", 1)    # the removal (item 13)
             A = Ap * last; charge("setup", 1)
             charge("setup", 1)                 # target check
             if at is not None:
