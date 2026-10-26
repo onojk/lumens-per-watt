@@ -2900,5 +2900,5 @@ Mine: Track R 5 held, 2 missed. Track M 0 held, 6 missed.
   - lc(96) − lc(72) in [0, +0.2] per track.
 - Its Q1 answer implied tc + lc of 2.8–3.2; the Q2 numbers above are the scored ones.
 - *Note (mine):* the round's tc search bound is 1.0–3.5, so tc in 0.7–1.0 is outside the searchable range. The tc clause can hold only at 1.0–1.1, and a frozen tc near 1.0 would be a bound hit.
-- *Factor base size, for the 2LP MOVES row* (information; the card's own Ledger on every 8th map number, final genomes): median F is 34 / 28 at 54 (R / M), 57 / 65 at 72, 96 / 94 at 84 and 151 / 141 at 96. A run needs about F + a few relations.
+- *Factor base size, for the 2LP MOVES row* (information; the card's own Ledger on every 8th map number, final genomes): median F is 34 / 28 at 54 (R / M), 57 / 65 at 72, 96 / 94 at 84 and 151 / 141 at 96. A run needs F + 10 relations (ledger DELTA = 10).
 - Two MOVES rows added, UNTESTED: "qs threshold reparameterization (slack s = tc + lc − 1, lc)" and "Double large prime variation", the latter with DeepSeek's estimate and the corrections recorded beside it.
