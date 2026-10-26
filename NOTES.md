@@ -3042,3 +3042,18 @@ Mine: Track R 5 held, 2 missed. Track M 0 held, 6 missed.
 - p-1's budgets were chosen on the maps (in-sample) and scored here on fresh numbers.
 - Track M at 54 moved at the re-solve and was not retuned (by protocol).
 - Track R's p-1 gain at 72–96 is within noise under ruint.
+
+**Outside context: threshold slack against relation type** (user, Mathematica, Oct 25; 18-digit N, B = 3000, 20,000 sieve values with exact per-x sizes; slack t in units of log₂ B; 525 full relations and 4,751 partials below B²).
+- *Shortfall bands* (how far a value falls short of the sieve estimate): full relations 0 to ~1, partials ~1–2.3, useless candidates ~2–3.8.
+- *Sieving every prime* (full caught / partials caught / candidates per useful relation):
+
+| slack t | full caught | partials caught | candidates per useful relation |
+|---|---|---|---|
+| 2.0 | 100% | 68% | 1.00 |
+| 2.2 (tc + lc − 1 at tc 1.38, lc 1.8) | 100% | 84% | 1.10 |
+| 2.5 | 100% | 97% | 1.45 |
+| 3.0 | ~100% | ~100% | 2.43 |
+
+- Partials need about one unit more slack than full relations. This supports the coupled threshold (context for Grok's disputed view under "Grok, after the user's Mathematica lc result").
+- *In our card*, the slack is t = tc + lc − 1, since T = log₂(M√(kN/2)) − (tc + lc − 1)·log₂ B. The kc / lc round's frozen genomes sit at t = 1.91–2.28 (tc + lc 2.91–3.28): the region where full relations are all caught and most partials are, before candidates per useful relation climb.
+- *Skipping primes below 30:* about 0.5 units of extra slack are needed for the same catch (at t = 2.0: 93% of full relations and 21% of partials). This is context for the "Small-prime variation in the qs sieve" MOVES row.
