@@ -86,3 +86,11 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Caveat: the constant 1/2 is conjectural in the paper; 72-96 bits is far beyond enumeration, so it is a heuristic prior and is labelled as such.
 - Not useful (recorded so it isn't revisited): primehelix's geometric/spectral embeddings (the paper's own separation result: theta is not recoverable from n alone) and residue labels (they need the factors first).
 - Decision: pending.
+
+### I-012 — The theta tower: primehelix's spine/skin visual as the Illumination picture
+- Date: 2026-10-26. Source: Claude chat, from the user's primehelix repo (scripts/primehelix_viz.py).
+- What exists: semiprimes split into lopsided (bit gap > 8, wound on a helix "skin", colored by residue family) and balanced (on the central axis, the "spine"). The helix angle is list order; the repo's own test (helix_factor_prediction_test.py; datasets/clustering_results.json: z = 0.40, not significant) shows it carries no factor information -- "visualization only".
+- Idea: rebuild it with theta in the geometry: radius proportional to (1/2 - theta) (balanced on the spine, lopsided outward), height = log N. Then each lamp lights a SHELL; a pipeline run animates trial division lighting the outer skin, rho / p-1 moving inward, qs lighting the spine; the unlit volume is the dark mass. Shell populations follow the paper's P(N, theta0) (I-011).
+- Use: the visual for Phase 3 (light spectrum) and Phase 5 (dark mass); film material for the Lumens Per Watt video.
+- Cost: small (a visualization over existing spectrum data; no meter change). Recommended timing: with Phase 3 output.
+- Decision: pending.
