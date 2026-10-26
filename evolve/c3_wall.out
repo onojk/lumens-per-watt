@@ -1,0 +1,16 @@
+54 new ref              confirm         31.4 ->      31.1 us (  -0.7%)  C after  1.78
+54 new ref + re-sieve   sieve            8.0 ->       7.8 us (  -1.8%)  C after  0.94
+54 new ref + re-sieve   resieve         16.2 ->      13.0 us ( -19.9%)  C after  3.00
+54 new ref + re-sieve   confirm         25.9 ->      25.9 us (  +0.3%)  C after  2.90
+72 new ref              confirm        126.2 ->     125.4 us (  -0.6%)  C after  1.50
+72 new ref + re-sieve   sieve           48.8 ->      46.0 us (  -5.9%)  C after  0.88
+72 new ref + re-sieve   resieve         82.5 ->      70.0 us ( -15.1%)  C after  2.34
+72 new ref + re-sieve   confirm         78.2 ->      78.7 us (  +0.6%)  C after  2.86
+84 new ref              confirm        287.4 ->     284.4 us (  -1.0%)  C after  1.34
+84 new ref + re-sieve   sieve          147.4 ->     143.5 us (  -2.7%)  C after  0.77
+84 new ref + re-sieve   resieve        195.1 ->     173.8 us ( -10.9%)  C after  1.58
+84 new ref + re-sieve   confirm        124.6 ->     125.6 us (  +0.9%)  C after  2.81
+96 new ref              confirm        560.1 ->     558.7 us (  -0.3%)  C after  1.26
+96 new ref + re-sieve   sieve          490.2 ->     491.8 us (  +0.3%)  C after  0.73
+96 new ref + re-sieve   resieve        507.6 ->     458.8 us (  -9.6%)  C after  1.14
+96 new ref + re-sieve   confirm        183.0 ->     180.4 us (  -1.4%)  C after  2.73

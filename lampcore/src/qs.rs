@@ -682,6 +682,8 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
     let mut ev = vec![0u32; f];
     // step 1b: per-attempt buffers, cleared per use (no per-candidate allocation; counts unchanged)
     let (mut tt, mut plist, mut out): (Vec<u32>, Vec<usize>, Vec<u32>) = (Vec::new(), Vec::new(), Vec::new());
+    // fix C.3: per-attempt buffers for the candidates, re-sieve's record lists and the direct list
+    let (mut cand, mut rec, mut direct): (Vec<usize>, Vec<Vec<usize>>, Vec<usize>) = (Vec::new(), Vec::new(), Vec::new());
     let mut slot = vec![usize::MAX; if rs_on { width } else { 0 }];
     let mut stamp = vec![0u32; if rs_on { f } else { 0 }];
     let mut gen = 0u32;
@@ -818,18 +820,22 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
             m.ev(crate::EV_SIEVE_SCAN, width as u64); // at["polys"] append
             crate::pt_end(m, 4, pt);
             let pt = crate::pt_snap(m); // "scan"
-            let cand: Vec<usize> = (0..width).filter(|&i0| (arr[i0] as f64) >= thr).collect();
+            cand.clear();
+            cand.extend((0..width).filter(|&i0| (arr[i0] as f64) >= thr));
             crate::pt_end(m, 5, pt);
             let pt = crate::pt_snap(m); // "resieve"
             // re-sieve (NOTES.md, "Root-matched candidate confirmation"): primes >= p0 matched over a
             // candidate bitmap; v divided only by the matched primes and the direct ones
-            let mut rec: Vec<Vec<usize>> = Vec::new();
-            let mut direct: Vec<usize> = Vec::new();
             if rs_on {
                 for (k, &i0) in cand.iter().enumerate() {
                     slot[i0] = k;
                 }
-                rec = vec![Vec::new(); cand.len()];
+                if rec.len() < cand.len() {
+                    rec.resize_with(cand.len(), Vec::new);
+                }
+                for r in rec.iter_mut().take(cand.len()) {
+                    r.clear();
+                }
                 let (mut walk, mut nhit) = (0u64, 0u64);
                 gen += 1;
                 for k in 0..sr.len() {
@@ -865,7 +871,8 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 for &i0 in &cand {
                     slot[i0] = usize::MAX; // cleared after the walk, only the set slots
                 }
-                direct = (1..f).filter(|&j| (base[j] as i128) < p0 || stamp[j] != gen).collect();
+                direct.clear();
+                direct.extend((1..f).filter(|&j| (base[j] as i128) < p0 || stamp[j] != gen));
                 // per polynomial: the slots cleared (|cand|), the generation stamps written (|st|), the direct
                 // list's pass (F - 1), the record lists (|cand|)
                 m.charge(crate::PH_WORD, (2 * cand.len() + n_st + f - 1) as u64)?;

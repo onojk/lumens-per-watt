@@ -1,62 +1,62 @@
 {
  "54": {
   "new ref": {
-   "overhead_ns_per_region": 34.23,
-   "median_ns_per_priced_unit": 44.60758867768111,
-   "weighted_ns_per_priced_unit": 46.204702013976,
+   "overhead_ns_per_region": 34.18,
+   "median_ns_per_priced_unit": 46.11651764692053,
+   "weighted_ns_per_priced_unit": 45.986732427697206,
    "regions": {
     "mult": {
-     "ns_per_number": 1801.9450000000002,
+     "ns_per_number": 1793.1043750000001,
      "priced_ruint_per_number": 61.8217420905529,
-     "ns_per_priced_unit": 29.14743161654383,
-     "ratio_to_median": 0.6534186778656209,
-     "ratio_B": 0.6308325851279664,
-     "ratio_C": 1.0676714877854883,
-     "time_share": 0.016201778732334738,
-     "materiality_B": -0.005981168770944709
+     "ns_per_priced_unit": 29.00442974210537,
+     "ratio_to_median": 0.6289379862584261,
+     "ratio_B": 0.6307129950515115,
+     "ratio_C": 1.0624333238866435,
+     "time_share": 0.016198707280410753,
+     "materiality_B": -0.005981972095620163
     },
     "fb": {
-     "ns_per_number": 5379.9560624999995,
+     "ns_per_number": 5286.272,
      "priced_ruint_per_number": 325.3443977620009,
-     "ns_per_priced_unit": 16.536187804394277,
-     "ratio_to_median": 0.37070346760680134,
-     "ratio_B": 0.35788971865660796,
-     "ratio_C": 0.6057211649961274,
-     "time_share": 0.04837265161495375,
-     "materiality_B": -0.03106057693780384
+     "ns_per_priced_unit": 16.24823429068868,
+     "ratio_to_median": 0.3523300353051196,
+     "ratio_B": 0.35332439233935614,
+     "ratio_C": 0.5951734172413435,
+     "time_share": 0.04775559857335774,
+     "materiality_B": -0.030882380726623897
     },
     "setup": {
-     "ns_per_number": 29030.321750000003,
+     "ns_per_number": 28853.010499999997,
      "priced_ruint_per_number": 478.68589767202974,
-     "ns_per_priced_unit": 60.64586797142297,
-     "ratio_to_median": 1.3595414988608527,
-     "ratio_B": 1.3125475401416682,
-     "ratio_C": 2.2214603652535887,
-     "time_share": 0.2610195369570018,
-     "materiality_B": 0.08158101420482816
+     "ns_per_priced_unit": 60.275455450681676,
+     "ratio_to_median": 1.3070253029980599,
+     "ratio_B": 1.3107140313882915,
+     "ratio_C": 2.207892141050611,
+     "time_share": 0.2606549165595103,
+     "materiality_B": 0.08098913992538417
     },
     "gray": {
-     "ns_per_number": 662.1721562500001,
+     "ns_per_number": 701.5091875,
      "priced_ruint_per_number": 16.105730625,
-     "ns_per_priced_unit": 41.114071237609565,
-     "ratio_to_median": 0.9216833381128381,
-     "ratio_B": 0.8898243998018509,
-     "ratio_C": 1.5060099354435739,
-     "time_share": 0.005953770374942346,
-     "materiality_B": -0.0006559602245012321
+     "ns_per_priced_unit": 43.55649574885398,
+     "ratio_to_median": 0.9444879616091851,
+     "ratio_B": 0.9471535255812278,
+     "ratio_C": 1.5954760347565562,
+     "time_share": 0.006337356676647048,
+     "materiality_B": -0.00033490695749506354
     },
     "sieve": {
-     "ns_per_number": 8102.087781249999,
+     "ns_per_number": 7879.4966875,
      "priced_ruint_per_number": 306.0208069810641,
-     "ns_per_priced_unit": 26.47561079646241,
-     "ratio_to_median": 0.5935225727569797,
-     "ratio_B": 0.5730068508710232,
-     "ratio_C": 0.9698025932770112,
-     "time_share": 0.0728480799923224,
-     "materiality_B": -0.03110563108392135
+     "ns_per_priced_unit": 25.748238380364658,
+     "ratio_to_median": 0.558330066842851,
+     "ratio_B": 0.5599058037195274,
+     "ratio_C": 0.9431589150316724,
+     "time_share": 0.07118250456434175,
+     "materiality_B": -0.03132700713547506
     },
     "scan": {
-     "ns_per_number": 4516.26278125,
+     "ns_per_number": 3187.3654374999996,
      "priced_ruint_per_number": 0.0,
      "ns_per_priced_unit": null,
      "ratio_to_median": null,
@@ -66,7 +66,7 @@
      "materiality_B": null
     },
     "resieve": {
-     "ns_per_number": -136.6153437499999,
+     "ns_per_number": -144.7751875,
      "priced_ruint_per_number": 0.0,
      "ns_per_priced_unit": null,
      "ratio_to_median": null,
@@ -76,34 +76,34 @@
      "materiality_B": null
     },
     "confirm": {
-     "ns_per_number": 30891.804843750004,
+     "ns_per_number": 31261.363437500004,
      "priced_ruint_per_number": 642.2264961667645,
-     "ns_per_priced_unit": 48.10110611775264,
-     "ratio_to_median": 1.0783166618871618,
-     "ratio_B": 1.0410435306606463,
-     "ratio_C": 1.7619452790385584,
-     "time_share": 0.2777566389212235,
-     "materiality_B": 0.011400113125761287
+     "ns_per_priced_unit": 48.67653954498707,
+     "ratio_to_median": 1.055512038390815,
+     "ratio_B": 1.0584909380443355,
+     "ratio_C": 1.783023426556303,
+     "time_share": 0.282411711538319,
+     "materiality_B": 0.016518525922582558
     },
     "lp_ledger": {
-     "ns_per_number": 17664.801906250003,
+     "ns_per_number": 17528.6820625,
      "priced_ruint_per_number": 246.9286758048228,
-     "ns_per_priced_unit": 71.53807409639455,
-     "ratio_to_median": 1.6037198202598162,
-     "ratio_B": 1.5482855851933797,
-     "ratio_C": 2.620442274593207,
-     "time_share": 0.15882904963003167,
-     "materiality_B": 0.08708367842211025
+     "ns_per_priced_unit": 70.98682243108536,
+     "ratio_to_median": 1.5392927751956043,
+     "ratio_B": 1.5436370162349462,
+     "ratio_C": 2.6002499059005624,
+     "time_share": 0.15835218166919263,
+     "materiality_B": 0.08608610755693402
     },
     "solve": {
-     "ns_per_number": 17685.871687500003,
+     "ns_per_number": 17390.850125,
      "priced_ruint_per_number": 329.9580928983454,
-     "ns_per_priced_unit": 53.60035734279967,
-     "ratio_to_median": 1.2015972826977306,
-     "ratio_B": 1.1600628292459636,
-     "ratio_C": 1.9633830528498046,
-     "time_share": 0.15901849377718996,
-     "materiality_B": 0.025452950016408682
+     "ns_per_priced_unit": 52.70623906278254,
+     "ratio_to_median": 1.1428928668533593,
+     "ratio_B": 1.146118375460794,
+     "ratio_C": 1.9306314675011917,
+     "time_share": 0.1571070231382207,
+     "materiality_B": 0.02295622299443818
     },
     "lp:copy": {
      "ns_per_number": 0.0,
@@ -148,62 +148,62 @@
    }
   },
   "new ref + re-sieve": {
-   "overhead_ns_per_region": 36.08,
-   "median_ns_per_priced_unit": 54.716259469235574,
-   "weighted_ns_per_priced_unit": 55.11131083772146,
+   "overhead_ns_per_region": 33.79,
+   "median_ns_per_priced_unit": 52.575186245983396,
+   "weighted_ns_per_priced_unit": 52.628877585120456,
    "regions": {
     "mult": {
-     "ns_per_number": 1827.4481250000001,
+     "ns_per_number": 1812.7568749999998,
      "priced_ruint_per_number": 61.8217420905529,
-     "ns_per_priced_unit": 29.559958409506805,
-     "ratio_to_median": 0.5402408478987312,
-     "ratio_B": 0.5363682692387387,
-     "ratio_C": 1.0827823593225936,
-     "time_share": 0.01468183328635867,
-     "materiality_B": -0.0068069637773027665
+     "ns_per_priced_unit": 29.322319522228582,
+     "ratio_to_median": 0.5577216480991302,
+     "ratio_B": 0.557152667274796,
+     "ratio_C": 1.074077638176871,
+     "time_share": 0.015250757819041807,
+     "materiality_B": -0.0067537574222007145
     },
     "fb": {
-     "ns_per_number": 5765.007,
+     "ns_per_number": 5612.0300625,
      "priced_ruint_per_number": 325.3443977620009,
-     "ns_per_priced_unit": 17.719705763051973,
-     "ratio_to_median": 0.3238471696519194,
-     "ratio_B": 0.32152575385529664,
-     "ratio_C": 0.6490734711740649,
-     "time_share": 0.04631642918383291,
-     "materiality_B": -0.031424504374615574
+     "ns_per_priced_unit": 17.24950575791186,
+     "ratio_to_median": 0.3280921474477834,
+     "ratio_B": 0.3277574318398297,
+     "ratio_C": 0.6318500277623391,
+     "time_share": 0.04721411488585284,
+     "materiality_B": -0.03173933784427503
     },
     "setup": {
-     "ns_per_number": 29597.23175,
+     "ns_per_number": 29398.144,
      "priced_ruint_per_number": 486.7771807970297,
-     "ns_per_priced_unit": 60.80242237637077,
-     "ratio_to_median": 1.1112313408513819,
-     "ratio_B": 1.1032657625474946,
-     "ratio_C": 2.22719495884142,
-     "time_share": 0.23778602322362594,
-     "materiality_B": 0.024555155011324003
+     "ns_per_priced_unit": 60.39343083392825,
+     "ratio_to_median": 1.1487059798773827,
+     "ratio_B": 1.1475340840444417,
+     "ratio_C": 2.2122135836603753,
+     "time_share": 0.24732714058707791,
+     "materiality_B": 0.0364891831458454
     },
     "gray": {
-     "ns_per_number": 666.4645,
+     "ns_per_number": 663.90178125,
      "priced_ruint_per_number": 16.105730625,
-     "ns_per_priced_unit": 41.380581577931366,
-     "ratio_to_median": 0.7562757757810136,
-     "ratio_B": 0.750854605868094,
-     "ratio_C": 1.5157722189718448,
-     "time_share": 0.00535441775140752,
-     "materiality_B": -0.0013340285210213002
+     "ns_per_priced_unit": 41.221463136820596,
+     "ratio_to_median": 0.7840478765773237,
+     "ratio_B": 0.7832480004945986,
+     "ratio_C": 1.509943704645443,
+     "time_share": 0.005585418221886055,
+     "materiality_B": -0.0012106505676677058
     },
     "sieve": {
-     "ns_per_number": 8009.302000000001,
+     "ns_per_number": 7874.51428125,
      "priced_ruint_per_number": 306.0208069810641,
-     "ns_per_priced_unit": 26.17240990576042,
-     "ratio_to_median": 0.4783296621450514,
-     "ratio_B": 0.474900878021694,
-     "ratio_C": 0.9586963335443378,
-     "time_share": 0.06434723650724644,
-     "materiality_B": -0.03378867739168551
+     "ns_per_priced_unit": 25.73195711407054,
+     "ratio_to_median": 0.4894315921902491,
+     "ratio_B": 0.4889322800481998,
+     "ratio_C": 0.9425625316509355,
+     "time_share": 0.06624843733991069,
+     "materiality_B": -0.03385743782167786
     },
     "scan": {
-     "ns_per_number": 4549.53325,
+     "ns_per_number": 3202.0392812500004,
      "priced_ruint_per_number": 0.0,
      "ns_per_priced_unit": null,
      "ratio_to_median": null,
@@ -213,44 +213,44 @@
      "materiality_B": null
     },
     "resieve": {
-     "ns_per_number": 16366.3645,
+     "ns_per_number": 12926.17053125,
      "priced_ruint_per_number": 157.946390625,
-     "ns_per_priced_unit": 103.61974360564783,
-     "ratio_to_median": 1.893765118646468,
-     "ratio_B": 1.8801901466427162,
-     "ratio_C": 3.7955950038698836,
-     "time_share": 0.13148840276534735,
-     "materiality_B": 0.1157347965118476
+     "ns_per_priced_unit": 81.83897384486369,
+     "ratio_to_median": 1.55660834869826,
+     "ratio_B": 1.5550203158427547,
+     "ratio_C": 2.9977646097019663,
+     "time_share": 0.10874811675985437,
+     "materiality_B": 0.060357414111359135
     },
     "confirm": {
-     "ns_per_number": 26025.15875,
+     "ns_per_number": 25761.728593750002,
      "priced_ruint_per_number": 327.61743825345144,
-     "ns_per_priced_unit": 79.43764803467639,
-     "ratio_to_median": 1.4518106465106686,
-     "ratio_B": 1.441403712362881,
-     "ratio_C": 2.9098039573141534,
-     "time_share": 0.2090877638556873,
-     "materiality_B": 0.09229211517555376
+     "ns_per_priced_unit": 78.6335694799622,
+     "ratio_to_median": 1.4956403409026364,
+     "ratio_B": 1.4941145068652186,
+     "ratio_C": 2.8803505304015458,
+     "time_share": 0.2167339091091108,
+     "materiality_B": 0.1070913686204194
     },
     "lp_ledger": {
-     "ns_per_number": 18158.973625000002,
+     "ns_per_number": 17466.54228125,
      "priced_ruint_per_number": 246.9286758048228,
-     "ns_per_priced_unit": 73.5393472054789,
-     "ratio_to_median": 1.344012692366639,
-     "ratio_B": 1.3343784803453487,
-     "ratio_C": 2.693748981885674,
-     "time_share": 0.14589033733235748,
-     "materiality_B": 0.04878258929426398
+     "ns_per_priced_unit": 70.73517170219587,
+     "ratio_to_median": 1.3454098169286057,
+     "ratio_B": 1.3440372462397816,
+     "ratio_C": 2.591031930483365,
+     "time_share": 0.14694635002688808,
+     "materiality_B": 0.050555017608237635
     },
     "solve": {
-     "ns_per_number": 18054.072625,
+     "ns_per_number": 17347.6081875,
      "priced_ruint_per_number": 329.9580928983454,
-     "ns_per_priced_unit": 54.716259469235574,
+     "ns_per_priced_unit": 52.575186245983396,
      "ratio_to_median": 1.0,
-     "ratio_B": 0.9928317551790931,
-     "ratio_C": 2.0042585886166875,
-     "time_share": 0.1450475560941364,
-     "materiality_B": -0.0010397363927570026
+     "ratio_B": 0.9989798121943562,
+     "ratio_C": 1.9258309980213697,
+     "time_share": 0.1459457552503776,
+     "materiality_B": -0.00014889207979191493
     },
     "lp:copy": {
      "ns_per_number": 0.0,
@@ -297,62 +297,62 @@
  },
  "72": {
   "new ref": {
-   "overhead_ns_per_region": 34.37,
-   "median_ns_per_priced_unit": 47.074282705213335,
-   "weighted_ns_per_priced_unit": 46.00564589345462,
+   "overhead_ns_per_region": 33.3,
+   "median_ns_per_priced_unit": 45.765547114725834,
+   "weighted_ns_per_priced_unit": 45.240692839896305,
    "regions": {
     "mult": {
-     "ns_per_number": 2150.47375,
+     "ns_per_number": 2077.702083333333,
      "priced_ruint_per_number": 61.81720021555291,
-     "ns_per_priced_unit": 34.78762775572859,
-     "ratio_to_median": 0.7389943246416364,
-     "ratio_B": 0.7561599686328487,
-     "ratio_C": 1.2742720789644173,
-     "time_share": 0.005270066924715416,
-     "materiality_B": -0.0012850532842295934
+     "ns_per_priced_unit": 33.610420337519486,
+     "ratio_to_median": 0.7344044255226388,
+     "ratio_B": 0.742924527183181,
+     "ratio_C": 1.2311509281142667,
+     "time_share": 0.0051778223400886815,
+     "materiality_B": -0.001331091126239786
     },
     "fb": {
-     "ns_per_number": 14269.206083333333,
+     "ns_per_number": 13964.230833333333,
      "priced_ruint_per_number": 742.665050854979,
-     "ns_per_priced_unit": 19.213514984859167,
-     "ratio_to_median": 0.4081531120755947,
-     "ratio_B": 0.4176338493183233,
-     "ratio_C": 0.703791757687149,
-     "time_share": 0.03496888581956557,
-     "materiality_B": -0.02036469542836747
+     "ns_per_priced_unit": 18.802865191053865,
+     "ratio_to_median": 0.410851970018375,
+     "ratio_B": 0.41561841808205524,
+     "ratio_C": 0.6887496406979438,
+     "time_share": 0.03480013181436872,
+     "materiality_B": -0.02033655608063379
     },
     "setup": {
-     "ns_per_number": 127373.40560416666,
+     "ns_per_number": 125598.20854166667,
      "priced_ruint_per_number": 1653.8869295528452,
-     "ns_per_priced_unit": 77.01457900668221,
-     "ratio_to_median": 1.6360223583003863,
-     "ratio_B": 1.674024513970346,
-     "ratio_C": 2.8210468500616193,
-     "time_share": 0.3121481357132957,
-     "materiality_B": 0.21039549546090375
+     "ns_per_priced_unit": 75.94123050215056,
+     "ratio_to_median": 1.6593537123412907,
+     "ratio_B": 1.6786044981870933,
+     "ratio_C": 2.78173005502383,
+     "time_share": 0.31300214562947265,
+     "materiality_B": 0.2124046639663718
     },
     "gray": {
-     "ns_per_number": 6887.799520833333,
+     "ns_per_number": 6564.6381249999995,
      "priced_ruint_per_number": 129.7270225,
-     "ns_per_priced_unit": 53.094562629257396,
-     "ratio_to_median": 1.1278889359131399,
-     "ratio_B": 1.1540879732939766,
-     "ratio_C": 1.9448557739654724,
-     "time_share": 0.016879612894049247,
-     "materiality_B": 0.0026009453408309237
+     "ns_per_priced_unit": 50.603474885118864,
+     "ratio_to_median": 1.1057111315257575,
+     "ratio_B": 1.1185389017847511,
+     "ratio_C": 1.8536071386490425,
+     "time_share": 0.01635967457071161,
+     "materiality_B": 0.0019392578571680742
     },
     "sieve": {
-     "ns_per_number": 49168.0911875,
+     "ns_per_number": 45816.013125000005,
      "priced_ruint_per_number": 1907.4166294793217,
-     "ns_per_priced_unit": 25.777321235225724,
-     "ratio_to_median": 0.5475881894291926,
-     "ratio_B": 0.5603077782001785,
-     "ratio_C": 0.9442242210705393,
-     "time_share": 0.12049397539432195,
-     "materiality_B": -0.05298026375462244
+     "ns_per_priced_unit": 24.019929582718724,
+     "ratio_to_median": 0.5248474255645883,
+     "ratio_B": 0.530936377736822,
+     "ratio_C": 0.8798509004658873,
+     "time_share": 0.11417766685386821,
+     "materiality_B": -0.05355658999603382
     },
     "scan": {
-     "ns_per_number": 18164.9411875,
+     "ns_per_number": 12688.194375,
      "priced_ruint_per_number": 0.0,
      "ns_per_priced_unit": null,
      "ratio_to_median": null,
@@ -362,7 +362,7 @@
      "materiality_B": null
     },
     "resieve": {
-     "ns_per_number": -478.9463125,
+     "ns_per_number": -426.0160416666666,
      "priced_ruint_per_number": 0.0,
      "ns_per_priced_unit": null,
      "ratio_to_median": null,
@@ -372,34 +372,34 @@
      "materiality_B": null
     },
     "confirm": {
-     "ns_per_number": 125882.5585625,
+     "ns_per_number": 125495.033125,
      "priced_ruint_per_number": 3066.267599617351,
-     "ns_per_priced_unit": 41.05400278116928,
-     "ratio_to_median": 0.8721110640868602,
-     "ratio_B": 0.8923687948267709,
-     "ratio_C": 1.5038096256838565,
-     "time_share": 0.3084945855669164,
-     "materiality_B": -0.03320364403398306
+     "ns_per_priced_unit": 40.9276193443328,
+     "ratio_to_median": 0.8942888684742425,
+     "ratio_B": 0.9046638496269901,
+     "ratio_C": 1.4991801957631061,
+     "time_share": 0.31274502311818964,
+     "materiality_B": -0.029815906552406186
     },
     "lp_ledger": {
-     "ns_per_number": 40932.650395833334,
+     "ns_per_number": 40807.55229166667,
      "priced_ruint_per_number": 626.9582005094875,
-     "ns_per_priced_unit": 65.28768642402329,
-     "ratio_to_median": 1.3869077269401042,
-     "ratio_B": 1.4191233522777689,
-     "ratio_C": 2.3914903452023184,
-     "time_share": 0.10031176013751418,
-     "materiality_B": 0.04204300118171841
+     "ns_per_priced_unit": 65.08815461462194,
+     "ratio_to_median": 1.42220859834709,
+     "ratio_B": 1.4387081746286343,
+     "ratio_C": 2.3841814877150895,
+     "time_share": 0.1016961274645986,
+     "materiality_B": 0.04461492244679498
     },
     "solve": {
-     "ns_per_number": 41390.168041666664,
+     "ns_per_number": 40946.10291666666,
      "priced_ruint_per_number": 680.919541200993,
-     "ns_per_priced_unit": 60.785695720618435,
-     "ratio_to_median": 1.291271841596996,
-     "ratio_B": 1.3212659998599567,
-     "ratio_C": 2.226582260828514,
-     "time_share": 0.10143297754962158,
-     "materiality_B": 0.03258696695125172
+     "ns_per_priced_unit": 60.133540659512725,
+     "ratio_to_median": 1.3139478155645985,
+     "ratio_B": 1.3291914178308715,
+     "ratio_C": 2.202693797051748,
+     "time_share": 0.10204140820870186,
+     "materiality_B": 0.03359115584568129
     },
     "lp:copy": {
      "ns_per_number": 0.0,
@@ -444,62 +444,62 @@
    }
   },
   "new ref + re-sieve": {
-   "overhead_ns_per_region": 34.46,
-   "median_ns_per_priced_unit": 60.99269405126515,
-   "weighted_ns_per_priced_unit": 56.03606254554767,
+   "overhead_ns_per_region": 34.02,
+   "median_ns_per_priced_unit": 60.23338101639262,
+   "weighted_ns_per_priced_unit": 53.78168268098509,
    "regions": {
     "mult": {
-     "ns_per_number": 2132.1191666666664,
+     "ns_per_number": 2076.4904166666665,
      "priced_ruint_per_number": 61.81720021555291,
-     "ns_per_priced_unit": 34.49071066357088,
-     "ratio_to_median": 0.5654892147341614,
-     "ratio_B": 0.6155091756408807,
-     "ratio_C": 1.2633959950025964,
-     "time_share": 0.004804596254960891,
-     "materiality_B": -0.0018473231747826505
+     "ns_per_priced_unit": 33.59081953608491,
+     "ratio_to_median": 0.5576778020636615,
+     "ratio_B": 0.6245773256172438,
+     "ratio_C": 1.2304329500397402,
+     "time_share": 0.004875381226396115,
+     "materiality_B": -0.0018303286586491116
     },
     "fb": {
-     "ns_per_number": 14402.6195,
+     "ns_per_number": 14115.738166666668,
      "priced_ruint_per_number": 742.665050854979,
-     "ns_per_priced_unit": 19.393156421484033,
-     "ratio_to_median": 0.31795867887363416,
-     "ratio_B": 0.3460834958866129,
-     "ratio_C": 0.7103720300909901,
-     "time_share": 0.03245539592400521,
-     "materiality_B": -0.02122311904224136
+     "ns_per_priced_unit": 19.006870123235494,
+     "ratio_to_median": 0.3155537644161589,
+     "ratio_B": 0.3534078737546736,
+     "ratio_C": 0.6962223488364649,
+     "time_share": 0.033142269428319354,
+     "materiality_B": -0.02142953045825249
     },
     "setup": {
-     "ns_per_number": 129160.32920833334,
+     "ns_per_number": 128334.89320833333,
      "priced_ruint_per_number": 1667.4203733028453,
-     "ns_per_priced_unit": 77.46116772730268,
-     "ratio_to_median": 1.2700073169779247,
-     "ratio_B": 1.3823449437465398,
-     "ratio_C": 2.8374054112565084,
-     "time_share": 0.29105466697438703,
-     "materiality_B": 0.1112832802714899
+     "ns_per_priced_unit": 76.96612999523695,
+     "ratio_to_median": 1.2777986009832403,
+     "ratio_B": 1.4310844540096344,
+     "ratio_C": 2.8192721609976905,
+     "time_share": 0.301316839229072,
+     "materiality_B": 0.12989300512297328
     },
     "gray": {
-     "ns_per_number": 6819.297208333333,
+     "ns_per_number": 6487.519625,
      "priced_ruint_per_number": 129.7270225,
-     "ns_per_priced_unit": 52.56651295094153,
-     "ratio_to_median": 0.8618493373445465,
-     "ratio_B": 0.9380836297734875,
-     "ratio_C": 1.925513294906283,
-     "time_share": 0.015366856759627772,
-     "materiality_B": -0.0009514599923468998
+     "ns_per_priced_unit": 50.009007375467974,
+     "ratio_to_median": 0.8302540307650659,
+     "ratio_B": 0.9298520403704108,
+     "ratio_C": 1.8318317719951638,
+     "time_share": 0.015232014138728723,
+     "materiality_B": -0.0010684947128808743
     },
     "sieve": {
-     "ns_per_number": 47844.357625,
+     "ns_per_number": 45947.63004166667,
      "priced_ruint_per_number": 1907.4166294793217,
-     "ns_per_priced_unit": 25.083328353942445,
-     "ratio_to_median": 0.4112513595949637,
-     "ratio_B": 0.4476283167389575,
-     "ratio_C": 0.9188032364081481,
-     "time_share": 0.10781424652988107,
-     "materiality_B": -0.05955353683523143
+     "ns_per_priced_unit": 24.08893229278873,
+     "ratio_to_median": 0.3999266168743356,
+     "ratio_B": 0.4479021683958124,
+     "ratio_C": 0.8823784722633234,
+     "time_share": 0.10788020551625589,
+     "materiality_B": -0.05956042753853899
     },
     "scan": {
-     "ns_per_number": 16885.888875,
+     "ns_per_number": 13142.130041666667,
      "priced_ruint_per_number": 0.0,
      "ns_per_priced_unit": null,
      "ratio_to_median": null,
@@ -509,44 +509,44 @@
      "materiality_B": null
     },
     "resieve": {
-     "ns_per_number": 82555.40137499999,
+     "ns_per_number": 69758.19045833334,
      "priced_ruint_per_number": 1093.8574350000001,
-     "ns_per_priced_unit": 75.47181079863482,
-     "ratio_to_median": 1.237391001866548,
-     "ratio_B": 1.3468435748369942,
-     "ratio_C": 2.7645351940891874,
-     "time_share": 0.186033397417101,
-     "materiality_B": 0.06452448859921857
+     "ns_per_priced_unit": 63.77265283965761,
+     "ratio_to_median": 1.0587593086016833,
+     "ratio_B": 1.1857690139212564,
+     "ratio_C": 2.3359946095112676,
+     "time_share": 0.16378489850864453,
+     "materiality_B": 0.030426159091143958
     },
     "confirm": {
-     "ns_per_number": 77875.43620833334,
+     "ns_per_number": 78117.73970833333,
      "priced_ruint_per_number": 1008.5216321472453,
-     "ns_per_priced_unit": 77.2174177786634,
-     "ratio_to_median": 1.2660109375355868,
-     "ratio_B": 1.377995067299722,
-     "ratio_C": 2.828476841709282,
-     "time_share": 0.17548739067195862,
-     "materiality_B": 0.06633336804729963
+     "ns_per_priced_unit": 77.45767390433927,
+     "ratio_to_median": 1.2859592570979708,
+     "ratio_B": 1.4402240696668458,
+     "ratio_C": 2.83727743239338,
+     "time_share": 0.1834122414269943,
+     "materiality_B": 0.08074248334770948
     },
     "lp_ledger": {
-     "ns_per_number": 41445.88545833333,
+     "ns_per_number": 40061.157791666665,
      "priced_ruint_per_number": 626.9582005094875,
-     "ns_per_priced_unit": 66.10629771594502,
-     "ratio_to_median": 1.0838396097142688,
-     "ratio_B": 1.179709899535,
-     "ratio_C": 2.421476106811173,
-     "time_share": 0.09339569249685296,
-     "materiality_B": 0.016784130515611194
+     "ns_per_priced_unit": 63.89765339876184,
+     "ratio_to_median": 1.0608345791077538,
+     "ratio_B": 1.188093235717099,
+     "ratio_C": 2.3405733845700305,
+     "time_share": 0.09405938743445558,
+     "materiality_B": 0.017691934532114994
     },
     "solve": {
-     "ns_per_number": 41531.11725,
+     "ns_per_number": 41014.08616666667,
      "priced_ruint_per_number": 680.919541200993,
-     "ns_per_priced_unit": 60.99269405126515,
+     "ns_per_priced_unit": 60.23338101639262,
      "ratio_to_median": 1.0,
-     "ratio_B": 1.088454314606573,
-     "ratio_C": 2.2341646172624596,
-     "time_share": 0.09358775697122543,
-     "materiality_B": 0.008278240898456274
+     "ratio_B": 1.119960886565726,
+     "ratio_C": 2.2063509529814147,
+     "time_share": 0.09629676309113358,
+     "materiality_B": 0.011551845073822066
     },
     "lp:copy": {
      "ns_per_number": 0.0,
@@ -593,62 +593,62 @@
  },
  "84": {
   "new ref": {
-   "overhead_ns_per_region": 34.28,
-   "median_ns_per_priced_unit": 43.755126586690665,
-   "weighted_ns_per_priced_unit": 36.93019705353761,
+   "overhead_ns_per_region": 34.49,
+   "median_ns_per_priced_unit": 43.37226059881091,
+   "weighted_ns_per_priced_unit": 36.577975200582095,
    "regions": {
     "mult": {
-     "ns_per_number": 2133.8092857142856,
+     "ns_per_number": 2142.611785714286,
      "priced_ruint_per_number": 61.82338914412433,
-     "ns_per_priced_unit": 34.51459577442273,
-     "ratio_to_median": 0.78881261390114,
-     "ratio_B": 0.9345900788015566,
-     "ratio_C": 1.264270907488012,
-     "time_share": 0.0025493535467232676,
-     "materiality_B": -0.000166753014598141
+     "ns_per_priced_unit": 34.65697716311495,
+     "ratio_to_median": 0.7990585845568101,
+     "ratio_B": 0.9474821111083105,
+     "ratio_C": 1.2694863429712437,
+     "time_share": 0.0025845201390413026,
+     "materiality_B": -0.00013573354150050508
     },
     "fb": {
-     "ns_per_number": 26918.512357142856,
+     "ns_per_number": 26596.976982142856,
      "priced_ruint_per_number": 1465.6931010066621,
-     "ns_per_priced_unit": 18.365722222922916,
-     "ratio_to_median": 0.419738751904545,
-     "ratio_B": 0.4973090773466,
-     "ratio_C": 0.6727370777627442,
-     "time_share": 0.03216070218160304,
-     "materiality_B": -0.016166893052851246
+     "ns_per_priced_unit": 18.146347938648013,
+     "ratio_to_median": 0.41838603033630006,
+     "ratio_B": 0.49610039481789675,
+     "ratio_C": 0.6647013896940664,
+     "time_share": 0.032082537352911125,
+     "materiality_B": -0.016166377905371995
     },
     "setup": {
-     "ns_per_number": 199208.80107142855,
+     "ns_per_number": 197252.51928571428,
      "priced_ruint_per_number": 3930.6289634999725,
-     "ns_per_priced_unit": 50.681151266449206,
-     "ratio_to_median": 1.1582905871849376,
-     "ratio_B": 1.372349873816727,
-     "ratio_C": 1.8564524273424616,
-     "time_share": 0.2380033056140413,
-     "materiality_B": 0.0886205008133522
+     "ns_per_priced_unit": 50.18344929460693,
+     "ratio_to_median": 1.157040205001045,
+     "ratio_B": 1.3719580982658746,
+     "ratio_C": 1.8382215858830377,
+     "time_share": 0.23793536093175535,
+     "materiality_B": 0.08850198436238019
     },
     "gray": {
-     "ns_per_number": 17420.931714285714,
+     "ns_per_number": 16812.39925,
      "priced_ruint_per_number": 329.52792,
-     "ns_per_priced_unit": 52.866329852370974,
-     "ratio_to_median": 1.2082316742388703,
-     "ratio_B": 1.4315203835964045,
-     "ratio_C": 1.9364955989879478,
-     "time_share": 0.020813534906973342,
-     "materiality_B": 0.008981464567054292
+     "ns_per_priced_unit": 51.019650322801176,
+     "ratio_to_median": 1.1763198325014197,
+     "ratio_B": 1.3948188778363342,
+     "ratio_C": 1.8688516601758671,
+     "time_share": 0.020279914792283398,
+     "materiality_B": 0.008006893200905805
     },
     "sieve": {
-     "ns_per_number": 146393.7995714286,
+     "ns_per_number": 146887.2224642857,
      "priced_ruint_per_number": 6856.333053797662,
-     "ns_per_priced_unit": 21.351617318289748,
-     "ratio_to_median": 0.48797978623113925,
-     "ratio_B": 0.578161478189146,
-     "ratio_C": 0.7821105244794779,
-     "time_share": 0.17490295625496163,
-     "materiality_B": -0.07378080452694148
+     "ns_per_priced_unit": 21.423583322418416,
+     "ratio_to_median": 0.4939466614522224,
+     "ratio_B": 0.5856962613413736,
+     "ratio_C": 0.7847466418468284,
+     "time_share": 0.1771823468712171,
+     "materiality_B": -0.0734073087330548
     },
     "scan": {
-     "ns_per_number": 45120.33528571429,
+     "ns_per_number": 35904.69925,
      "priced_ruint_per_number": 0.0,
      "ns_per_priced_unit": null,
      "ratio_to_median": null,
@@ -658,7 +658,7 @@
      "materiality_B": null
     },
     "resieve": {
-     "ns_per_number": -664.3575714285714,
+     "ns_per_number": -706.6257500000003,
      "priced_ruint_per_number": 0.0,
      "ns_per_priced_unit": null,
      "ratio_to_median": null,
@@ -668,34 +668,34 @@
      "materiality_B": null
     },
     "confirm": {
-     "ns_per_number": 287205.4742142857,
+     "ns_per_number": 285115.2879107143,
      "priced_ruint_per_number": 7798.329563942656,
-     "ns_per_priced_unit": 36.82910190693213,
-     "ratio_to_median": 0.8417094128150625,
-     "ratio_B": 0.9972625343304038,
-     "ratio_C": 1.3490513519022758,
-     "time_share": 0.3431367082468336,
-     "materiality_B": -0.0009393249588039564
+     "ns_per_priced_unit": 36.5610719030149,
+     "ratio_to_median": 0.842959794998955,
+     "ratio_B": 0.9995378831803974,
+     "ratio_C": 1.3392334030408388,
+     "time_share": 0.34391960712012204,
+     "materiality_B": -0.0001589310350413335
     },
     "lp_ledger": {
-     "ns_per_number": 73505.05114285715,
+     "ns_per_number": 71224.677,
      "priced_ruint_per_number": 1029.159212551665,
-     "ns_per_priced_unit": 71.4224293446405,
-     "ratio_to_median": 1.6323213967426988,
-     "ratio_B": 1.9339845179027773,
-     "ratio_C": 2.6162062031003845,
-     "time_share": 0.08781963978115773,
-     "materiality_B": 0.08202218392340016
+     "ns_per_priced_unit": 69.2066651411571,
+     "ratio_to_median": 1.5956434870045595,
+     "ratio_B": 1.8920310586261144,
+     "ratio_C": 2.5350426791632636,
+     "time_share": 0.08591458953533399,
+     "materiality_B": 0.07663848225463207
     },
     "solve": {
-     "ns_per_number": 84213.76464285715,
+     "ns_per_number": 82985.55821428572,
      "priced_ruint_per_number": 1192.8881673835174,
-     "ns_per_priced_unit": 70.59652945302638,
-     "ratio_to_median": 1.6134458967489371,
-     "ratio_B": 1.9116207084051777,
-     "ratio_C": 2.5859534598178158,
-     "time_share": 0.10061379946770613,
-     "materiality_B": 0.09172162314608676
+     "ns_per_priced_unit": 69.56692209992019,
+     "ratio_to_median": 1.60394964752719,
+     "ratio_B": 1.9018800717764475,
+     "ratio_C": 2.5482389047589815,
+     "time_share": 0.10010112325733568,
+     "materiality_B": 0.09027920822822892
     },
     "lp:copy": {
      "ns_per_number": 0.0,
@@ -740,62 +740,62 @@
    }
   },
   "new ref + re-sieve": {
-   "overhead_ns_per_region": 34.84,
-   "median_ns_per_priced_unit": 50.455177120462665,
-   "weighted_ns_per_priced_unit": 42.35425838760669,
+   "overhead_ns_per_region": 34.06,
+   "median_ns_per_priced_unit": 50.46198474049194,
+   "weighted_ns_per_priced_unit": 40.96714386198262,
    "regions": {
     "mult": {
-     "ns_per_number": 2162.8314285714287,
+     "ns_per_number": 2150.5292857142854,
      "priced_ruint_per_number": 61.82338914412433,
-     "ns_per_priced_unit": 34.984032071250226,
-     "ratio_to_median": 0.6933685315924113,
-     "ratio_B": 0.8259861795027186,
-     "ratio_C": 1.281466376236272,
-     "time_share": 0.0024829270689299635,
-     "materiality_B": -0.00043206362528061976
+     "ns_per_priced_unit": 34.78504358117467,
+     "ratio_to_median": 0.6893316574855664,
+     "ratio_B": 0.8490961366104675,
+     "ratio_C": 1.2741774205558487,
+     "time_share": 0.002552395952899893,
+     "materiality_B": -0.0003851664101924012
     },
     "fb": {
-     "ns_per_number": 27254.11207142857,
+     "ns_per_number": 26582.147035714286,
      "priced_ruint_per_number": 1465.6931010066621,
-     "ns_per_priced_unit": 18.5946921990081,
-     "ratio_to_median": 0.36853883506568474,
-     "ratio_B": 0.4390276894672085,
-     "ratio_C": 0.681124256373923,
-     "time_share": 0.03128767767467554,
-     "materiality_B": -0.017551520836367972
+     "ns_per_priced_unit": 18.136229895233342,
+     "ratio_to_median": 0.35940381632830193,
+     "ratio_B": 0.4427018382422238,
+     "ratio_C": 0.6643307653931627,
+     "time_share": 0.03154951897844612,
+     "materiality_B": -0.017582488931030094
     },
     "setup": {
-     "ns_per_number": 199906.02285714285,
+     "ns_per_number": 199932.995,
      "priced_ruint_per_number": 3962.0517509999727,
-     "ns_per_priced_unit": 50.455177120462665,
+     "ns_per_priced_unit": 50.46198474049194,
      "ratio_to_median": 1.0,
-     "ratio_B": 1.1912657437823628,
-     "ratio_C": 1.8481749860975334,
-     "time_share": 0.22949179896187166,
-     "materiality_B": 0.043893919620394864
+     "ratio_B": 1.2317672159547473,
+     "ratio_C": 1.8484243494685693,
+     "time_share": 0.23729421899951422,
+     "materiality_B": 0.054997020499673505
     },
     "gray": {
-     "ns_per_number": 17395.714785714285,
+     "ns_per_number": 16746.1795,
      "priced_ruint_per_number": 329.52792,
-     "ns_per_priced_unit": 52.78980544566386,
-     "ratio_to_median": 1.0462713334575602,
-     "ratio_B": 1.2463871982494852,
-     "ratio_C": 1.9336925071671742,
-     "time_share": 0.019970253138666533,
-     "materiality_B": 0.004920414719169035
+     "ns_per_priced_unit": 50.81869694076302,
+     "ratio_to_median": 1.0070689292564594,
+     "ratio_B": 1.2404744912647574,
+     "ratio_C": 1.8614907304308796,
+     "time_share": 0.019875516723381125,
+     "materiality_B": 0.004779554772679254
     },
     "sieve": {
-     "ns_per_number": 147728.11657142857,
+     "ns_per_number": 142561.9295,
      "priced_ruint_per_number": 6856.333053797662,
-     "ns_per_priced_unit": 21.546228196951912,
-     "ratio_to_median": 0.42703701436841446,
-     "ratio_B": 0.5087145665441888,
-     "ratio_C": 0.7892391280934766,
-     "time_share": 0.1695916448373024,
-     "materiality_B": -0.0833179047443781
+     "ns_per_priced_unit": 20.792736931155382,
+     "ratio_to_median": 0.4120475450596135,
+     "ratio_B": 0.5075466574190683,
+     "ratio_C": 0.7616387154269371,
+     "time_share": 0.1692022955979142,
+     "materiality_B": -0.0833242360395597
     },
     "scan": {
-     "ns_per_number": 42430.51478571429,
+     "ns_per_number": 36334.48842857143,
      "priced_ruint_per_number": 0.0,
      "ns_per_priced_unit": null,
      "ratio_to_median": null,
@@ -805,44 +805,44 @@
      "materiality_B": null
     },
     "resieve": {
-     "ns_per_number": 195329.7540714286,
+     "ns_per_number": 173767.9545,
      "priced_ruint_per_number": 4032.14655,
-     "ns_per_priced_unit": 48.44311873322872,
-     "ratio_to_median": 0.9601218645525688,
-     "ratio_B": 1.1437602870979249,
-     "ratio_C": 1.7744732136713817,
-     "time_share": 0.2242382496132503,
-     "materiality_B": 0.03223655514273701
+     "ns_per_priced_unit": 43.09564455190747,
+     "ratio_to_median": 0.8540219885034854,
+     "ratio_B": 1.0519562871430754,
+     "ratio_C": 1.5785950385314091,
+     "time_share": 0.20623975072358927,
+     "materiality_B": 0.010715451708911103
     },
     "confirm": {
-     "ns_per_number": 124458.7262142857,
+     "ns_per_number": 124920.53682142858,
      "priced_ruint_per_number": 1636.9354311087523,
-     "ns_per_priced_unit": 76.03154275302451,
-     "ratio_to_median": 1.5069126121883945,
-     "ratio_B": 1.795133373773631,
-     "ratio_C": 2.7850381960814836,
-     "time_share": 0.1428784214061959,
-     "materiality_B": 0.11360740125215912
+     "ns_per_priced_unit": 76.31366176539757,
+     "ratio_to_median": 1.5123000444364527,
+     "ratio_B": 1.86280161542373,
+     "ratio_C": 2.795372225838739,
+     "time_share": 0.14826427835005898,
+     "materiality_B": 0.12792265887006443
     },
     "lp_ledger": {
-     "ns_per_number": 73039.757,
+     "ns_per_number": 72144.38442857143,
      "priced_ruint_per_number": 1029.159212551665,
-     "ns_per_priced_unit": 70.97031840088914,
-     "ratio_to_median": 1.4066013133091615,
-     "ratio_B": 1.6756359597044865,
-     "ratio_C": 2.5996453626699316,
-     "time_share": 0.0838495258426829,
-     "materiality_B": 0.05665175486348721
+     "ns_per_priced_unit": 70.10031445931375,
+     "ratio_to_median": 1.38917077518482,
+     "ratio_B": 1.7111350182351037,
+     "ratio_C": 2.567777086421749,
+     "time_share": 0.08562591361260091,
+     "materiality_B": 0.06089158563829437
     },
     "solve": {
-     "ns_per_number": 83806.30107142858,
+     "ns_per_number": 83746.50785714286,
      "priced_ruint_per_number": 1192.8881673835174,
-     "ns_per_priced_unit": 70.25495210942483,
-     "ratio_to_median": 1.392423059811877,
-     "ratio_B": 1.6587458920065092,
-     "ratio_C": 2.5734414692097007,
-     "time_share": 0.0962095014564248,
-     "materiality_B": 0.0633776138564141
+     "ns_per_priced_unit": 70.2048273651943,
+     "ratio_to_median": 1.3912418967710602,
+     "ratio_B": 1.7136861579052907,
+     "ratio_C": 2.571605397992465,
+     "time_share": 0.09939611106159538,
+     "materiality_B": 0.07093762861427756
     },
     "lp:copy": {
      "ns_per_number": 0.0,
@@ -889,62 +889,62 @@
  },
  "96": {
   "new ref": {
-   "overhead_ns_per_region": 34.93,
-   "median_ns_per_priced_unit": 36.03569047515642,
-   "weighted_ns_per_priced_unit": 32.346306796816215,
+   "overhead_ns_per_region": 34.73,
+   "median_ns_per_priced_unit": 35.42845601828991,
+   "weighted_ns_per_priced_unit": 31.610152593602084,
    "regions": {
     "mult": {
-     "ns_per_number": 2193.1496875000003,
+     "ns_per_number": 2157.0121875,
      "priced_ruint_per_number": 61.8148486530529,
-     "ns_per_priced_unit": 35.479334420269346,
-     "ratio_to_median": 0.9845609714271845,
-     "ratio_B": 1.0968588977756653,
-     "ratio_C": 1.2996093194237854,
-     "time_share": 0.0011478665477453924,
-     "materiality_B": 0.00011118108860817675
+     "ns_per_priced_unit": 34.894725692958076,
+     "ratio_to_median": 0.9849349820648042,
+     "ratio_B": 1.1039088023896724,
+     "ratio_C": 1.2781950803281346,
+     "time_share": 0.00115524429677731,
+     "materiality_B": 0.00012004005134562951
     },
     "fb": {
-     "ns_per_number": 42077.7496875,
+     "ns_per_number": 41446.42,
      "priced_ruint_per_number": 2414.4322525232883,
-     "ns_per_priced_unit": 17.427595925926337,
-     "ratio_to_median": 0.48362042453276144,
-     "ratio_B": 0.5387816307870332,
-     "ratio_C": 0.6383734771401588,
-     "time_share": 0.02202295700378882,
-     "materiality_B": -0.010157392314534764
+     "ns_per_priced_unit": 17.16611429319872,
+     "ratio_to_median": 0.48452899794269133,
+     "ratio_B": 0.5430569891229552,
+     "ratio_C": 0.6287953953552645,
+     "time_share": 0.022197714321832977,
+     "materiality_B": -0.01014309041680686
     },
     "setup": {
-     "ns_per_number": 394383.415265625,
+     "ns_per_number": 387594.879640625,
      "priced_ruint_per_number": 10777.84526049454,
-     "ns_per_priced_unit": 36.5920465300435,
-     "ratio_to_median": 1.0154390285728154,
-     "ratio_B": 1.131258871681919,
-     "ratio_C": 1.340368004763498,
-     "time_share": 0.20641524468173833,
-     "materiality_B": 0.027093832114872197
+     "ns_per_priced_unit": 35.96218634362174,
+     "ratio_to_median": 1.0150650179351957,
+     "ratio_B": 1.1376783530902823,
+     "ratio_C": 1.3172962030630673,
+     "time_share": 0.20758657589407797,
+     "materiality_B": 0.028580177892747555
     },
     "gray": {
-     "ns_per_number": 48860.174515625,
+     "ns_per_number": 46851.064203125,
      "priced_ruint_per_number": 926.1525975000001,
-     "ns_per_priced_unit": 52.75607351047245,
-     "ratio_to_median": 1.4639950786247131,
-     "ratio_B": 1.6309767245410882,
-     "ratio_C": 1.932456905145511,
-     "time_share": 0.025572791571477207,
-     "materiality_B": 0.016135836263142637
+     "ns_per_priced_unit": 50.58676543108761,
+     "ratio_to_median": 1.4278569013837985,
+     "ratio_B": 1.6003328450026657,
+     "ratio_C": 1.85299507073581,
+     "time_share": 0.02509231289107296,
+     "materiality_B": 0.015063739585594893
     },
     "sieve": {
-     "ns_per_number": 507058.577640625,
+     "ns_per_number": 477687.292328125,
      "priced_ruint_per_number": 24516.984659932325,
-     "ns_per_priced_unit": 20.681930697183244,
-     "ratio_to_median": 0.573929080433236,
-     "ratio_B": 0.6393907912608721,
-     "ratio_C": 0.7575798790177012,
-     "time_share": 0.26538798620923276,
-     "materiality_B": -0.09570135171578202
+     "ns_per_priced_unit": 19.483933238690682,
+     "ratio_to_median": 0.5499515200050524,
+     "ratio_B": 0.6163821316900014,
+     "ratio_C": 0.7136971882304279,
+     "time_share": 0.25583792400573163,
+     "materiality_B": -0.09814399903993418
     },
     "scan": {
-     "ns_per_number": 124525.41045312499,
+     "ns_per_number": 110745.106390625,
      "priced_ruint_per_number": 0.0,
      "ns_per_priced_unit": null,
      "ratio_to_median": null,
@@ -954,7 +954,7 @@
      "materiality_B": null
     },
     "resieve": {
-     "ns_per_number": -1264.630171875,
+     "ns_per_number": -1322.1654843749996,
      "priced_ruint_per_number": 0.0,
      "ns_per_priced_unit": null,
      "ratio_to_median": null,
@@ -964,34 +964,34 @@
      "materiality_B": null
     },
     "confirm": {
-     "ns_per_number": 560518.295515625,
+     "ns_per_number": 557835.338953125,
      "priced_ruint_per_number": 16292.243502406938,
-     "ns_per_priced_unit": 34.40399693466505,
-     "ratio_to_median": 0.9547200700478797,
-     "ratio_B": 1.0636143764657353,
-     "ratio_C": 1.2602196679364488,
-     "time_share": 0.29336812005525825,
-     "materiality_B": 0.018662430032240232
+     "ns_per_priced_unit": 34.239320009593094,
+     "ratio_to_median": 0.9664355678361224,
+     "ratio_B": 1.0831747777302143,
+     "ratio_C": 1.2541875461389411,
+     "time_share": 0.2987633067633908,
+     "materiality_B": 0.024849571633988862
     },
     "lp_ledger": {
-     "ns_per_number": 191140.897390625,
+     "ns_per_number": 190553.604890625,
      "priced_ruint_per_number": 1919.8625764001285,
-     "ns_per_priced_unit": 99.55967668739449,
-     "ratio_to_median": 2.7628075215051733,
-     "ratio_B": 3.0779302661283716,
-     "ratio_C": 3.6468746039338638,
-     "time_share": 0.10004070550735401,
-     "materiality_B": 0.20787760981856618
+     "ns_per_priced_unit": 99.25377328200533,
+     "ratio_to_median": 2.80152692035932,
+     "ratio_B": 3.1399333802043827,
+     "ratio_C": 3.635669350989206,
+     "time_share": 0.1020559673032684,
+     "materiality_B": 0.2183929710813111
     },
     "solve": {
-     "ns_per_number": 164398.9820625,
+     "ns_per_number": 163022.482375,
      "priced_ruint_per_number": 2158.651685233113,
-     "ns_per_priced_unit": 76.15817928715374,
-     "ratio_to_median": 2.113409741369002,
-     "ratio_B": 2.3544628994445156,
-     "ratio_C": 2.7896768969653385,
-     "time_share": 0.08604432842340523,
-     "materiality_B": 0.11654385055712159
+     "ns_per_priced_unit": 75.52051286930767,
+     "ratio_to_median": 2.131634323277319,
+     "ratio_B": 2.389122059619322,
+     "ratio_C": 2.7663191527218927,
+     "time_share": 0.08731095452384793,
+     "materiality_B": 0.1212855729754966
     },
     "lp:copy": {
      "ns_per_number": 0.0,
@@ -1036,62 +1036,62 @@
    }
   },
   "new ref + re-sieve": {
-   "overhead_ns_per_region": 34.49,
-   "median_ns_per_priced_unit": 36.617184409543114,
-   "weighted_ns_per_priced_unit": 33.91325431875263,
+   "overhead_ns_per_region": 36.0,
+   "median_ns_per_priced_unit": 36.03725284388019,
+   "weighted_ns_per_priced_unit": 32.39506990148833,
    "regions": {
     "mult": {
-     "ns_per_number": 2220.7131249999998,
+     "ns_per_number": 2214.428125,
      "priced_ruint_per_number": 61.8148486530529,
-     "ns_per_priced_unit": 35.92523759888432,
-     "ratio_to_median": 0.9811032218392396,
-     "ratio_B": 1.0593273432629304,
-     "ratio_C": 1.315942769189902,
-     "time_share": 0.0010914962918906568,
-     "materiality_B": 6.47555751792127e-05
+     "ns_per_priced_unit": 35.82356299906,
+     "ratio_to_median": 0.9940703070307293,
+     "ratio_B": 1.1058337922405335,
+     "ratio_C": 1.3122184248739928,
+     "time_share": 0.0011394150177980807,
+     "materiality_B": 0.0001205886122693858
     },
     "fb": {
-     "ns_per_number": 41762.058437499996,
+     "ns_per_number": 41138.190625,
      "priced_ruint_per_number": 2414.4322525232883,
-     "ns_per_priced_unit": 17.296844172726352,
-     "ratio_to_median": 0.4723695841621967,
-     "ratio_B": 0.5100319777675217,
-     "ratio_C": 0.6335840356310019,
-     "time_share": 0.020526348681913685,
-     "materiality_B": -0.010057254467331486
+     "ns_per_priced_unit": 17.0384530698706,
+     "ratio_to_median": 0.4728011078892228,
+     "ratio_B": 0.5259582128294096,
+     "ratio_C": 0.6241191600685201,
+     "time_share": 0.02116730350106315,
+     "materiality_B": -0.010034186381226272
     },
     "setup": {
-     "ns_per_number": 396782.922828125,
+     "ns_per_number": 390498.7984375,
      "priced_ruint_per_number": 10835.975764557039,
-     "ns_per_priced_unit": 36.617184409543114,
+     "ns_per_priced_unit": 36.03725284388019,
      "ratio_to_median": 1.0,
-     "ratio_B": 1.0797307762143995,
-     "ratio_C": 1.3412888062103705,
-     "time_share": 0.1950216279972836,
-     "materiality_B": 0.015549225778819287
+     "ratio_B": 1.112430161548271,
+     "ratio_C": 1.320045891717223,
+     "time_share": 0.20092781081878336,
+     "materiality_B": 0.02259034622989625
     },
     "gray": {
-     "ns_per_number": 48972.734640625,
+     "ns_per_number": 46707.596875,
      "priced_ruint_per_number": 926.1525975000001,
-     "ns_per_priced_unit": 52.877608693015624,
-     "ratio_to_median": 1.4440653902170246,
-     "ratio_B": 1.5592018446833777,
-     "ratio_C": 1.9369087433339056,
-     "time_share": 0.02407044730912162,
-     "materiality_B": 0.013460238537614855
+     "ns_per_priced_unit": 50.43185863871639,
+     "ratio_to_median": 1.3994368232560956,
+     "ratio_B": 1.5567757313713777,
+     "ratio_C": 1.8473208292570107,
+     "time_share": 0.02403299376656612,
+     "materiality_B": 0.013380987681423612
     },
     "sieve": {
-     "ns_per_number": 493389.66276562505,
+     "ns_per_number": 472069.6484375,
      "priced_ruint_per_number": 24516.984659932325,
-     "ns_per_priced_unit": 20.124402311674285,
-     "ratio_to_median": 0.5495890149989111,
-     "ratio_B": 0.5934081737636816,
-     "ratio_C": 0.7371575938342229,
-     "time_share": 0.2425045276236936,
-     "materiality_B": -0.0986003587570933
+     "ns_per_priced_unit": 19.254800497917476,
+     "ratio_to_median": 0.534302672330011,
+     "ratio_B": 0.594374408095747,
+     "ratio_C": 0.7053040475427647,
+     "time_share": 0.2428993927614371,
+     "materiality_B": -0.09852620996204153
     },
     "scan": {
-     "ns_per_number": 120204.194015625,
+     "ns_per_number": 110708.865625,
      "priced_ruint_per_number": 0.0,
      "ns_per_priced_unit": null,
      "ratio_to_median": null,
@@ -1101,44 +1101,44 @@
      "materiality_B": null
     },
     "resieve": {
-     "ns_per_number": 508306.02526562504,
+     "ns_per_number": 459235.284375,
      "priced_ruint_per_number": 14735.041245937498,
-     "ns_per_priced_unit": 34.496410073216914,
-     "ratio_to_median": 0.9420825393725935,
-     "ratio_B": 1.017195511494803,
-     "ratio_C": 1.2636047645867001,
-     "time_share": 0.24983602585908446,
-     "materiality_B": 0.004296058254475794
+     "ns_per_priced_unit": 31.166202843280995,
+     "ratio_to_median": 0.864832926591229,
+     "ratio_B": 0.9620662322401449,
+     "ratio_C": 1.1416191517685346,
+     "time_share": 0.23629558070196893,
+     "materiality_B": -0.008963581681028595
     },
     "confirm": {
-     "ns_per_number": 183584.201703125,
+     "ns_per_number": 179175.2265625,
      "priced_ruint_per_number": 2424.1048534765205,
-     "ns_per_priced_unit": 75.73278088191542,
-     "ratio_to_median": 2.0682305890831425,
-     "ratio_B": 2.2331322193411065,
-     "ratio_C": 2.7740945377990993,
-     "time_share": 0.09023294055987864,
-     "materiality_B": 0.1112691462502773
+     "ns_per_priced_unit": 73.91397542294285,
+     "ratio_to_median": 2.0510435615930933,
+     "ratio_B": 2.2816427205655456,
+     "ratio_C": 2.707471627214024,
+     "time_share": 0.09219307759771433,
+     "materiality_B": 0.11815858678964505
     },
     "lp_ledger": {
-     "ns_per_number": 196620.28701562498,
+     "ns_per_number": 189575.3265625,
      "priced_ruint_per_number": 1919.8625764001285,
-     "ns_per_priced_unit": 102.41372972866697,
-     "ratio_to_median": 2.7968761492753127,
-     "ratio_B": 3.0198732556325742,
-     "ratio_C": 3.751418671379742,
-     "time_share": 0.0966402691874176,
-     "materiality_B": 0.19520109514879752
+     "ns_per_priced_unit": 98.74421684804466,
+     "ratio_to_median": 2.7400594955398576,
+     "ratio_B": 3.0481248272752777,
+     "ratio_C": 3.617004280148156,
+     "time_share": 0.09754435994136765,
+     "materiality_B": 0.19978302535659112
     },
     "solve": {
-     "ns_per_number": 162919.95525,
+     "ns_per_number": 162863.5921875,
      "priced_ruint_per_number": 2158.651685233113,
-     "ns_per_priced_unit": 75.47301695984652,
-     "ratio_to_median": 2.061136544954474,
-     "ratio_B": 2.22547256156756,
-     "ratio_C": 2.7645793758185535,
-     "time_share": 0.08007631648971623,
-     "materiality_B": 0.09813132868954719
+     "ns_per_priced_unit": 75.44690665085801,
+     "ratio_to_median": 2.0935809668319467,
+     "ratio_B": 2.328962613147248,
+     "ratio_C": 2.7636229542438833,
+     "time_share": 0.0838000658933013,
+     "materiality_B": 0.11136715455147325
     },
     "lp:copy": {
      "ns_per_number": 0.0,

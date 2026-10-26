@@ -6767,3 +6767,20 @@ Each cell gives ratio A / ratio B, with the materiality (time share × (ratio_B 
 - *Counts:* identical. Python unchanged.
 - *Acceptance and timing:* as for A1 / A2.
 - *Estimate:* resieve at 54 (C 3.85) and confirm with re-sieve (C 2.7–2.9) should fall noticeably at 54–72, where per-polynomial allocations are a larger share; little at 96.
+
+### Stage A3 (fix C.3): re-sieve buffers — results (`c3_accept.out`; `parity_c3.out`; `phasetime_c3_after{1,2}.out` / `.json`; `c3_wall.out`)
+
+- *Acceptance:* every run identical to the A2 build per number and per type, 8,000 / 8,000; Python = Rust per type 32 / 32. Parity passes (types 7,182 pairs; mutations 54 / 54).
+- *Wall-clock, before (A2's after-runs) → after* (µs per number, two replicates each; anchor C after):
+  - resieve: 16.2 → 13.0 (−19.9%, C 3.00) at 54; 82.5 → 70.0 (−15.1%, C 2.34) at 72; 195.1 → 173.8 (−10.9%, C 1.58) at 84; 507.6 → 458.8 (−9.6%, C 1.14) at 96;
+  - sieve with re-sieve: −2% to −6% at 54–84, unchanged at 96;
+  - confirm with re-sieve: unchanged (25.9 → 25.9, 78.2 → 78.7, 124.6 → 125.6, 183.0 → 180.4), C 2.7–2.9;
+  - confirm without re-sieve: unchanged.
+- *Estimate:* "resieve and confirm with re-sieve fall noticeably at 54–72": held for resieve, missed for confirm.
+  - Confirm with re-sieve stays at ~2.8x the calibrated multiply per priced unit. Its per-candidate fixed work (the merge, the v evaluation, the touched-entry bookkeeping) costs more than its few priced divisions.
+
+**Stage A summary (anchor C after all three fixes, re-sieve off / on, 54 → 96):**
+- setup 2.31 / 2.90 / 1.86 / 1.32 (off; from 2.6–3.2 / 1.7);
+- lp_ledger 2.67 / 2.39 / 2.59 / 3.64;
+- confirm off 1.78 / 1.50 / 1.34 / 1.26, on 2.90 / 2.86 / 2.81 / 2.73;
+- resieve 3.00 / 2.34 / 1.58 / 1.14.
