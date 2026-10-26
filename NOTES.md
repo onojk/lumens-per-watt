@@ -3467,3 +3467,17 @@ The final Track R genes run as qs alone on the corrected card with kset = sf32. 
 - The rho budget scales roughly with Q, consistent with the budget-as-share-of-qs MOVES row.
 - *Implications, adopted for the protocol:* c ~ 20 as a default; the search covers c 5–200; **B above 2^14 is allowed in the stage-2 map check** (the grid runs to 2^16), since B hits the grid top at the high-Q end.
 - Against the pre-registered c predictions: DeepSeek's D-c (rising steeply to 60–150 at 96) and Grok's G-c (falling with size) both mostly miss in this toy. They are scored on the real map check, not on this.
+
+**DeepSeek, before stage-2 code** (labelled as DeepSeek's; recorded Oct 25).
+- **(D-c2, revised)** Map-check c with B allowed up to 2^16: Track R 15–25 / 20–30 / 25–40 at 72 / 84 / 96; Track M 20–35 / 30–50 / 40–65; c(M) / c(R) ≥ 1.2 at every size.
+  - *Mechanism (accepted):* raising B raises both stage-1 catches and what stage 2 can catch (the rest of p − 1 must be B-smooth), so B absorbs value before c does.
+  - *Note:* DeepSeek says a flat c = 20 would mean the per-track value isn't reaching the optimiser. But the user's toy varied the qs cost ×0.5–×2 and c stayed at 20, so a flat c is a legitimate outcome, not evidence of a bug.
+- **(D-s3b)** Sealed stage-2 totals (stage 1 + 2 against no p-1): Track R 13–16% at 54, 6–10% at 72–84, 5–8% at 96; Track M 14–17 / 16–19 / 13–16 / 10–13% at 54 / 72 / 84 / 96; Track M's total exceeds Track R's at every size.
+- Its claim that the card's confirmation must cost ~50–100 divisions rests on unsupported slope values. The trace count of divisions per confirmed candidate decides it.
+
+**Stage-2 map-check protocol, addition** (information; adopted from DeepSeek):
+- With each track's chosen B, c is frozen at 10, 20 and 50, and the three are compared on sealed numbers with paired intervals.
+- If c = 20 (or the chosen c) beats both by more than the interval, c stays a gene with bounds 5–50. If they tie, c is proposed as a constant (the user's decision).
+- B is allowed up to 2^16 in the map check.
+
+**Decision (user, Oct 25): the old frozen reference stays in a side column for the next two sealed runs**, then is dropped unless a replacement check is triggered again (end condition written into PLAN; this replaces "for one round").

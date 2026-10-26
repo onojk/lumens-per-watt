@@ -440,8 +440,9 @@ any scored run, and parity gates the Rust port.
       **Reference from Oct 25 (user's decision):** the final Track R qs genes per size (R-k@54,
       R-k@72, the round-3 genome at 84, R-k@96) as qs alone on the corrected card (on_demand,
       sort_charge 1, kset sf32). It is size-dependent by construction; between or outside the
-      four sizes the nearest size's genes are used and named. For one round the old frozen
-      reference (qs + lc 1.4, enumerate) is reported in a side column to bridge the change.
+      four sizes the nearest size's genes are used and named. The old frozen reference (qs + lc
+      1.4, enumerate) is reported in a side column for the next two sealed runs (user, Oct 25),
+      then dropped unless a replacement check is triggered again.
       *Why a size-dependent reference is justified here (not a loose precedent):* it replaced a
       fixed reference only because the pre-registered replacement rule passed on fresh numbers
       by 13-27% on the robust score, with no pricing clearly worse at any size and the
@@ -450,7 +451,7 @@ any scored run, and parity gates the Rust port.
       to pass on fresh numbers; convenience or a closer fit is not enough.
       **Reference policy (Oct 25):** the reference changes only when the pre-registered
       replacement rule passes on fresh numbers, and the old reference is reported in a side
-      column for one round. DeepSeek's proposed extra criterion (no change that reverses a PD
+      column for the next two sealed runs, then dropped. DeepSeek's proposed extra criterion (no change that reverses a PD
       sign) is recorded but not adopted: PD ratios compare two pipelines directly and do not
       depend on the reference.
       The first wording (the worst raw cost) collapsed to the official count.
