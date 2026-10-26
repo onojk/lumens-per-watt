@@ -4958,3 +4958,9 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
 - A gcd(q, N) is taken every **b** compared steps; b is a gene, **64** in the pipelines' rho card (`P.PRE["rho"]`). r doubles after each block.
 - If a gcd returns N, it backtracks from the batch's start (`ys`), one step and one gcd at a time.
 - So comparisons happen only in the second half of each 2r-step window, as DeepSeek said. This matches the measured split: 44% of f evaluations carry a product, and Brent with b = 1 already needs 515 evaluations against μ + λ = 279.
+
+**Sealed predictions, Oct 26 (C-set: the card's rho variant, the re-solve after p-1 stage 2)** (labelled by source).
+- *Grok's:* (C1) the card's rho uses Brent's factoring variant (no comparisons in the first half of each power-of-two block). (C2) the evolver drops rho at 84 and at 96 after p-1 stage 2. (C3) the 96-bit re-solve chooses no ECM. Its dependencies: C2 depends on C1; C3 is independent.
+- *Claude chat's:* (C1) Brent's factoring variant (about 55%). (C2) rho dropped at 84 and 96. (C3) one ECM curve at B1 = 2^8 at 96 (the honest-price DP keeps it under 2–3 of 3 priors).
+- *Annotation:* Grok's C3 contradicts the honest-price DP. If the re-solve picks no ECM at 96, the card's ECM is weaker or dearer than modelled, and I-014 (measured ECM success per curve) is the next step.
+- **Timing (mine): C1 is post hoc.** The code answer was committed (5a84aa6) before these predictions arrived: the card's rho is Brent's factoring variant (r uncompared steps, then r compared steps, a gcd every 64). *Scored post hoc:* C1 **held** for both. C2 and C3 await the re-solve after p-1 stage 2.
