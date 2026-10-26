@@ -6611,3 +6611,70 @@ Each cell gives ratio A / ratio B, with the materiality (time share × (ratio_B 
 - *Counts:* identical (the same loops and charges; only where the bytes live changes). Python unchanged.
 - *Acceptance:* identity against the pre-change build per number and per type; Python = Rust per type; parity; before / after wall-clock without sub-timers.
 - *Estimate:* lp:copy was ~35% of the (timer-inflated) lp_ledger at 96, mostly the per-relation allocation. Removing the allocations should cut lp_ledger by roughly a quarter to a third (~50–70 µs of ~195 at 96); solve may gain a little from contiguous relation lists.
+
+**DeepSeek, Oct 26, round 35 (I-027 / I-029; recorded as given):**
+- Corrections accepted (the card's measured B 1,752 / 1,093, F 138 / 93). Step-7 scoring accepted as registered, with the spec annotation; step 8: R-F1 held, R-F2 / R-F3 falsified; X3 held.
+- **Sealed, the 2×2 at 96** (re-sieve p0 200; F × 1.3 threshold-held, the same gene mapping as step 8):
+  - *R-G1* (re-sieve on: F × 1.3 against the reference F, total priced ruint mean): −5% to +6% (central +1%). Falsified if < −9% or > +9%.
+  - *R-G2* (re-sieve on: confirm wall-clock, F × 1.3 against the reference F): −18% to +4% (central −8%). Falsified if < −25% or > +12%.
+  - *The user's (sealed in the round-35 update):* R-G1 −7% to +3% (central −2%); R-G2 −20% to +10%.
+- *I-027 with a full-pass confirm term:* DeepSeek derived e_F* = ((1 + ε_n) s_Cf + 3 s_L + β s_setup) / (1 − s_L − s_setup) and concluded "re-sieve off: lower F or stay; re-sieve on: raise F". The reviewer's corrections:
+  - (1) It substituted the measured total confirm elasticity (ln 1.34 / ln 1.28 = 1.19, which already includes −e_F from fewer polynomials) for (1 + ε_n). The right substitution is 1 + ε_n ~ 1.19 + 0.8 ~ 2.0, giving e_F* ~1.14 (not 0.825). Same direction, different size.
+  - (2) The measured region elasticities from step 8 (a) contradict its assumed exponents: solve ln 1.38 / ln 1.28 ~ 1.3 (not 3); setup per number ~ −0.1 (neither β = 0 nor 1). Summing the measured region elasticities × wall shares reproduces the measured total (~+0.4 per log F): a consistency check, not a finding.
+  - (3) The re-sieve-on figures reuse re-sieve-off shares and the F³ solve exponent; direction only.
+- *The reviewer's methodological point (recorded; it applies to the user's R-F2 / R-F3 as well):* bc was evolved under the priced meter, so the reference is near a priced optimum, and a one-sided step (F × 1.3) is expected to cost something whatever the slope rule says.
+  - Step 8 shows that the F × 1.3 step costs; it does not measure the gradient at the reference.
+  - Hand-derived balance rules are for understanding; the retune after the meter fixes is what sets F.
+- *Proposal for that retune (pending the user; no action now):* make the confirm mode a gene (full pass / re-sieve, with p0), so evolution chooses F and the confirm mode jointly. Re-sieve changes how confirm scales with F.
+- *Root check (I-029) formulas recorded:* full pass C = F d; root check C = F c_root + ω d; hit list C = H c_list + ω d (d = word ops per multi-word division by one prime).
+  - The reviewer's note: at 96 bits the residue is ~2 words and "x mod p" is still one hardware divide, so the saving may be ~2x on confirm rather than an order of magnitude; it depends on what the card does now.
+  - *Note (mine):* the read-out above answers that. Today's test is one i128 remainder per prime (~3.9 ns); a hardware divide of x saves little, a reciprocal test more.
+- *L break-even arithmetic confirmed* (~173 positions per partial on the card against the measured 143; mine from lctest.json: ~166).
+  - DeepSeek's double-count checks: (a) not applicable (12.7 µs per polynomial is total wall minus lp_ledger, divided by polynomials); (b) and (c) to be confirmed against lctest.json.
+  - *Note (mine):* checked in the addendum above. The saving side uses partials looked up (564) × the measured per-partial price; the cost side uses non-ledger wall per polynomial. lp_ledger appears on one side only, so nothing is counted twice.
+
+**I-023 / I-028 / I-030 — the light meter against the card (Wolfram, Oct 26; model only; recorded as given)** (the card's measured means: 96 B 1,752, M 1,056, reference L/B 1,440; 84 B 1,093, M 560, reference L/B 88.7; 8 N per size; KS odd k ≤ 43; A-primes ignored; ideal sieve, no threshold). Means:
+- *96:* F 139.4 (card 138); polynomials 105.5 (card 156); partials looked up 1,912 (card 916); combos 92.8 (card 71.9); combined share 0.614 (card ~0.48); never-combined 0.908 (card 0.852).
+  - L/B 64: polynomials +5.6%, combined share 0.593.
+  - L/B 12: polynomials +16.6%, partials −78.5%, combos −10.2%, combined share 0.551 (the card's L-only run: +7.0%, −61.6%, −6.4%).
+  - B / 1.3: polynomials +23.6%. B × 1.3: polynomials −14.5% (the card: −18.6% threshold held, −20.3% literal).
+- *84:* F 92.6 (card 93.3); polynomials 60.6 (card 83.9); partials 576 (card 432); combos 62.6 (card 49.8); combined share 0.599 (card ~0.47). L/B 12: polynomials +11.7% (card +5.9%).
+- *e_F of polynomials, two-sided:* 0.867 at 96 (up-step 0.762, down-step 0.964); 0.840 at 84 (0.745 / 0.927). Curved: stronger at smaller F.
+- *The user's scoring:* C1, C2, C3, C4, C6b, C7 held; C5a, C5b, C6a missed. C5 refutes the reviewer's "L explains the ~0.6 combined share" idea; the card's own combined share is ~0.48, so the 0.6 was a model quantity.
+- **The reviewer's reading (a hypothesis, recorded; tested in step 9):**
+  - Per polynomial at 96 the card gets ~90% of the model's fulls (0.50 against 0.56) but ~32% of its partials (5.9 against 18.1); at 84, ~95% and ~54%. The gap is partials-specific.
+  - *Proposed mechanism:* the sieve threshold caps the large prime. A partial's q is never sieved, so it must fit in the room the threshold leaves: about slack × log2 B (= (tc + lc − 1) log2 B), minus log2(Qmax / |Q(x)|), minus the sieve's under-count (skipped small primes, prime powers, log rounding).
+    - At 96 the room is ~21.6 bits and L is ~21.3 bits, so a few bits of shortfall cap the effective L/B near ~100–250, not 1,440. At 84 the margin is ~4.6 bits, so capture is higher.
+    - This would explain the flat lc ridge (slack is what matters), the card's smaller partial and combination losses when L is cut, and its lower never-combined share.
+  - *I-030 upgraded:* slack (not lc) is the card's real large-prime control; the retune should search slack and L/B separately.
+
+**Step 9 (read-only; report only; after the three code fixes are committed):**
+- *9a:* describe exactly how the card's sieve computes and compares logs: which small primes are skipped (and any correction for them), whether prime powers are sieved, how logs are scaled and rounded, and how the threshold is set per polynomial (fixed from Qmax, or adjusted by position?).
+- *9b, a capture-rate check on Python traces* (a subset, e.g. 8 numbers at 96 and 8 at 84, reference genes, enough polynomials for a few hundred true partials each). At every sieve position, factor the residue exactly over the base and classify it as a true full, a true 1LP partial with q ≤ L, or neither. Report per size:
+  - the share of true fulls and of true partials that passed the threshold (were candidates);
+  - for partials, the capture rate by band of log2(q / B): 0–2, 2–4, 4–6, 6–8, 8+;
+  - the distribution of the sieve's under-count (the true log2 of the smooth part minus the sieve's accumulated value) at true fulls and true partials (mean, median, 90th percentile);
+  - the same capture rates as a function of log2(Qmax / |Q(x)|), in bands of 1 bit.
+- **9c, sealed before 9b runs (the reviewer's):**
+  - *S9-1:* true-full capture at 96: 0.85–0.95.
+  - *S9-2:* true-partial capture at 96, overall: 0.25–0.45.
+  - *S9-3:* at 96, capture of partials with log2(q/B) < 3: 0.75–0.95; with log2(q/B) ≥ 8: below 0.20.
+  - *S9-4:* true-partial capture at 84, overall: 0.45–0.65 (higher than at 96).
+  - *S9-5:* the sieve's median under-count at true fulls, 96: 1.5–5 bits.
+
+**DeepSeek, Oct 26, round 37 (I-028 / I-030; recorded as given):**
+- *Accepted:* the e_F* slot correction (1 + ε_n = 1.19 + e_F; its 0.825 withdrawn); the measured exponents (solve ~F^1.3, setup per number ~flat); that a one-sided step from the evolved bc measures cost, not slope; the card's combined share ~0.48 (its round-33 mechanism referred to the model's 0.6). R-G1 / R-G2 stand as sealed. The L break-even (~173 positions) is confirmed.
+- **Sealed S9-1 to S9-5:** ranges and centrals identical to the reviewer's, with falsifiers added: S9-1 < 0.75 or > 0.98; S9-2 < 0.12 or > 0.55; S9-3 low band < 0.60 or > 0.98, high band > 0.35; S9-4 < 0.30 or > 0.75; S9-5 < 0.5 or > 8 bits.
+  - The reviewer: recorded as agreement, not an independent prediction; score the falsifiers.
+- *Headroom computed (checked):* at 96 bits R = 2.009 × 10.775 = 21.65 bits, log2 L = 21.27, headroom 0.38 bits. At 84 bits the headroom is ~4.6 bits.
+- **Alternative mechanisms to separate in step 9b (adopted as additions to the report):**
+  - (i) a hard cap on q in the code: a sharp cliff at one q/B, independent of log2(Qmax / |Q|). The threshold cap gives a smooth decline that tracks log2(Qmax / |Q|);
+  - (ii) model over-prediction: report the true partial counts per polynomial beside capture. High capture with low true counts would mean the gap is the model's, not the sieve's;
+  - (iii) rejection after the threshold: report threshold-passed and filed partials separately;
+  - (iv) by-polynomial / by-A variation in capture (a short summary is enough).
+- *Capture formula:* p_cap(x, q) = F_D(R − log2 q − u(x)), u(x) = log2(Qmax / |Q(x)|).
+  - The reviewer: its overall average treats x and q as independent and uses q^−0.73 as a count density. The right weight is the model's joint partial density at (x, q): the smoothness of |Q(x)| / q, a prime density ~1 / ln q, and half the primes having roots.
+  - Small-|Q| positions are smoother and have the least room, so the product form overestimates capture.
+- *Gene design for the retune (I-030):* DeepSeek recommends slack only, with L set from the measured median under-count, plus the confirm mode as a gene.
+  - The reviewer prefers L = B^slack exactly (the most the threshold can ever admit). Setting L lower discards partials that already passed the threshold and paid for confirm, and step 7 (b) showed that lowering L below the cap costs slightly in both price and wall-clock. One gene (slack), nothing fitted.
+  - Agreed: slack and the confirm mode are coupled (a looser slack sends more candidates to confirm), so both belong in the same retune.
