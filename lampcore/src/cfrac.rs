@@ -93,7 +93,7 @@ fn cf_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -> R
         if v == 1 {
             m.charge(crate::PH_WORD, tt.len() as u64)?; // the sparse copy handed to the ledger (step 1)
         }
-        if v == 1 && led.add(aa.to::<u128>() as i128, tt.iter().map(|&j| (j, vec_[j as usize])).collect(), 1, chk, m)? {
+        if v == 1 && led.add(aa.to::<u128>() as i128, &tt.iter().map(|&j| (j, vec_[j as usize])).collect::<Vec<(u32, u32)>>(), 1, chk, m)? {
             return Ok(());
         }
         p = p1;

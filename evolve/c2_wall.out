@@ -1,0 +1,24 @@
+54 new ref              confirm         32.1 ->      31.4 us (  -2.3%)  C after  1.79
+54 new ref              lp_ledger       19.2 ->      18.0 us (  -6.3%)  C after  2.67
+54 new ref              solve           18.1 ->      17.9 us (  -1.0%)  C after  1.99
+54 new ref + re-sieve   confirm         26.3 ->      25.9 us (  -1.7%)  C after  2.89
+54 new ref + re-sieve   lp_ledger       19.5 ->      18.0 us (  -7.8%)  C after  2.67
+54 new ref + re-sieve   solve           18.4 ->      17.9 us (  -2.9%)  C after  1.98
+72 new ref              confirm        127.5 ->     126.2 us (  -1.1%)  C after  1.51
+72 new ref              lp_ledger       43.3 ->      40.9 us (  -5.5%)  C after  2.39
+72 new ref              solve           42.1 ->      41.4 us (  -1.6%)  C after  2.23
+72 new ref + re-sieve   confirm         77.9 ->      78.2 us (  +0.4%)  C after  2.84
+72 new ref + re-sieve   lp_ledger       44.8 ->      41.7 us (  -6.9%)  C after  2.44
+72 new ref + re-sieve   solve           42.4 ->      41.6 us (  -1.8%)  C after  2.24
+84 new ref              confirm        292.2 ->     287.4 us (  -1.7%)  C after  1.35
+84 new ref              lp_ledger       78.7 ->      72.9 us (  -7.4%)  C after  2.59
+84 new ref              solve           85.4 ->      84.3 us (  -1.3%)  C after  2.59
+84 new ref + re-sieve   confirm        122.5 ->     124.6 us (  +1.7%)  C after  2.79
+84 new ref + re-sieve   lp_ledger       79.0 ->      72.9 us (  -7.6%)  C after  2.60
+84 new ref + re-sieve   solve           84.3 ->      83.9 us (  -0.6%)  C after  2.57
+96 new ref              confirm        570.9 ->     560.1 us (  -1.9%)  C after  1.26
+96 new ref              lp_ledger      194.8 ->     190.7 us (  -2.1%)  C after  3.64
+96 new ref              solve          165.7 ->     164.0 us (  -1.0%)  C after  2.78
+96 new ref + re-sieve   confirm        178.5 ->     183.0 us (  +2.5%)  C after  2.76
+96 new ref + re-sieve   lp_ledger      195.8 ->     195.6 us (  -0.1%)  C after  3.73
+96 new ref + re-sieve   solve          163.4 ->     163.5 us (  +0.0%)  C after  2.77

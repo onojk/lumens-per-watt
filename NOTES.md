@@ -6746,3 +6746,17 @@ Each cell gives ratio A / ratio B, with the materiality (time share × (ratio_B 
 | 96 | 506.1 → 388.7 (−23.2%) / 503.1 → 385.6 (−23.4%) | 1.32 | within ±4% |
 
 - Setup still runs at 2.3–2.9x the calibrated multiply per priced unit at 54–72. There it is no longer the per-prime arithmetic but the A selection (on-demand keys, logs, sorts, the rest list), which this fix did not touch.
+
+### Stage A2 (fix C.2): lp_ledger arenas — results (`c2_accept.out`; `cfrac_accept_c2.out`; `parity_c2.out`; `phasetime_c2_after{1,2}.out` / `.json`; `c2_wall.out`)
+
+- *Acceptance:* every run identical to the A1 build per number and per type, 8,000 / 8,000; Python = Rust per type 32 / 32; cfrac_accept passes; parity passes (types 7,182 pairs; mutations 54 / 54).
+- *Wall-clock, before (the A1 after-runs, same binary) → after* (µs per number, two replicates each), lp_ledger off / on:
+  - 54: 19.2 → 18.0 (−6.3%) / 19.5 → 18.0 (−7.8%);
+  - 72: 43.3 → 40.9 (−5.5%) / 44.8 → 41.7 (−6.9%);
+  - 84: 78.7 → 72.9 (−7.4%) / 79.0 → 72.9 (−7.6%);
+  - 96: 194.8 → 190.7 (−2.1%) / 195.8 → 195.6 (−0.1%).
+  - Anchor C after: lp_ledger 2.67 / 2.39–2.44 / 2.59–2.60 / 3.64–3.73. Solve and confirm are unchanged within ±3%.
+- **My estimate missed:** "lp_ledger falls by a quarter to a third at 96" against −2% / 0%.
+  - The timer-inflated breakdown overstated the allocation's share: lp:copy's ~100 ns per call included the cost of the timers around it, and a heap allocation of a small Vec is cheaper than that suggested.
+  - **What makes lp_ledger at 96 slow is still open.** Remaining candidates: the large-prime table's hash ops at 1.4–1.7x their price (step 3); the cold reads of earlier partials in combinations; the bound check and N mod q; and the loop around them.
+  - Kept: the change is counts-identical and slightly faster.
