@@ -1,0 +1,11 @@
+checked 1344 genome x number pairs, mismatches 0
+qs small mc: mc 0.05: 56 pairs, 765662 non-stepping roots, mc 0.1: 56 pairs, 372761 non-stepping roots, mc 0.25: 56 pairs, 63452 non-stepping roots, mc 0.5: 56 pairs, 0 non-stepping roots
+qs: checked 4202 genome x number pairs (ops, factor, tests, hits, stage, k, per-phase ops), mismatches 0
+guards: checked 54 genome x number pairs (block flash and p-1 past 2^32 at 84 bits), mismatches 0; lampcore runs the stop-before-allocating pairs within 256 MB: yes
+qs on N >= 2^100: both cores refuse with an error: yes
+race: checked 653 genome x number pairs (ops, factor, tests, hits, stage, k, per-phase ops, per-side ops and switches), mismatches 0
+race: both cores refuse a nested race and sa = sb = 0 with an error: yes
+ob: checked 369 genome x number pairs (ops, factor, tests, hits, stage, k, per-phase ops), mismatches 0
+ob: both cores refuse bad ob values and ob on a race or its side with an error: yes
+types: checked 6622 genome x number pairs (lampcore --types vs Python's per-stage split), mismatches 0, sum-identity failures 0; mutations caught 46/46
+exit 0

@@ -89,6 +89,10 @@ def genomes():
     deck = ["td", "sq", "ps", "rho", "pm1"]
     for i in range(R):
         gs[f"random {i}"] = rand_genome(deck, rng)
+    # the pm1 absolute bound (NOTES.md, "(A1)"), alone and after rho with a budget
+    for B in (256, 2048, 32768):
+        gs[f"pm1 B {B}"] = [{"t": "pm1", "b": 0.2, "B": B}]
+        gs[f"rho then pm1 B {B}"] = [{"t": "rho", "c": 1, "b": 64, "ob": 300}, {"t": "pm1", "b": 0.2, "B": B}]
     return gs
 
 QS = {"t": "qs", "kc": 16, "bc": 1.5, "mc": 4.0, "tc": 2.0}
@@ -224,8 +228,6 @@ def lp_pairs():
             yield f"lc {lc} tuned", [dict(TUNED, lc=lc)], nums, 2 ** 29, False
             yield f"lc {lc} tuned corrected card", [dict(TUNED, lc=lc, kc=48, **card)], nums, 2 ** 29, False
         yield "lc 2.5 low cap", [dict(TUNED, lc=2.5, **card)], nums, 2 ** 14, False
-        for B in (256, 2048, 32768):
-            yield f"pm1 B {B} alone", [{"t": "pm1", "b": 0.2, "B": B}], nums, 2 ** 29, False
         yield "rho pm1 B ecm qs pipeline", [{"t": "td", "a": 0.5, "ob": 0}, {"t": "rho", "c": 1, "b": 64, "ob": 1448},
                                              {"t": "pm1", "b": 0.2, "B": 2048, "ob": 4096},
                                              {"t": "ecm", "b1": 1.0, "b2": 50, "ob": 17867}, dict(TUNED, lc=2.2, kc=40, **card)], nums, 2 ** 29, False
