@@ -481,10 +481,36 @@ def run(gen, N, cap):
 
 # ---- test semiprimes ---------------------------------------------------------
 
+MR_BASES = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37)   # deterministic for n < 3.3e24
+
+def is_prime_mr(n):
+    """Strong probable-prime test to MR_BASES (deterministic below 3.3e24). Harness only. It replaced
+    a Fermat test that Carmichael numbers pass (NOTES.md, "Population-generator fault"); it accepts
+    exactly the primes, so every population without a composite regenerates unchanged."""
+    if n < 2:
+        return False
+    for p in MR_BASES:
+        if n % p == 0:
+            return n == p
+    d, r = n - 1, 0
+    while d % 2 == 0:
+        d //= 2; r += 1
+    for a in MR_BASES:
+        x = pow(a, d, n)
+        if x in (1, n - 1):
+            continue
+        for _ in range(r - 1):
+            x = x * x % n
+            if x == n - 1:
+                break
+        else:
+            return False
+    return True
+
 def rand_prime(bits, rng):
     while True:
         p = rng.getrandbits(bits) | (1 << (bits - 1)) | 1
-        if all(pow(a, p - 1, p) == 1 for a in (2, 3, 5, 7, 11, 13)):
+        if is_prime_mr(p):
             return p
 
 def semiprimes(bits, count, seed):

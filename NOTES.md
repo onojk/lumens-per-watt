@@ -3209,3 +3209,12 @@ The rule recommends; changing the reference is the user's decision.
 - As the balanced share rises from 0 to 0.9, the best rho budget falls from 16,384 to 1,024. p-1 holds until ~0.8, and everything is off only at 100% balanced.
 - *So* a ~20% balanced surcharge for the full pipeline is the expected price of the front end, not a gene effect. The qs-alone rows carry the gene comparison.
 - My X5 (the (d) pipeline costs 1–8% more than qs alone on balanced numbers) stands as written. Our front-end budgets are far below 20% of qs's cost (e.g. rho 10,624 + p-1 ~6,200 ops at 96 bits against qs's ~10^6), so X5 and the toy differ in their assumption about budget size, and the run will show which holds here.
+
+**Population-generator fault found by the oracle (Oct 25, before any replacement-test measurement).**
+- The banded set `SS.pop(54, 80, 9430000)` contained (10087959220554499, 15829633, 637283203). The "prime" 15,829,633 = 43 × 547 × 673 is a **Carmichael number** (42, 546 and 672 all divide n − 1).
+- `lamps.rand_prime` tests candidates with Fermat tests to bases 2, 3, 5, 7, 11 and 13, which every Carmichael number coprime to those bases passes.
+- `oracle.check` rejected it, and the run stopped before measuring anything. This is a harness fault, not a meter fault: no charged path generates numbers.
+- **Fix (harness only):** `rand_prime` uses a strong (Miller–Rabin) test to the 12 bases 2 … 37, deterministic for n < 3.3 × 10^24 (all our primes are ≤ 50 bits).
+- *Why no committed population changes:* a strong test accepts every prime, and it rejects a candidate only if the Fermat test would also reject it or the candidate is composite. So the random sequence differs from before only where the old test accepted a composite. Every committed population has passed `oracle.check` (no composites), so each regenerates identically. This is checked by regenerating them (`oracle.py`, and the map rows' N against `map_nums`).
+- The pre-registered fresh sets change only from the rejected draw on: the 54-bit band-24 subset of the 9430000 set. The seeds and the protocol are otherwise as registered.
+- *Check:* 31 population calls were regenerated with the old (Fermat) and new (strong) generator: every size-scaling set (9300000 / 9400000 / 9410000 / 9420000 / 9430000 / 9500000 at all four sizes), the four 9600000 balanced sets, `calibrate.pops()` and both partition populations. **Only `SS.pop(54, 80, 9430000)` differs**, as expected. The strong test agrees with sympy on 20,000 random odd n of 8–50 bits.
