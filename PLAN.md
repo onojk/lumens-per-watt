@@ -51,8 +51,8 @@ Staged plan from the Oct 23 review.
     seed 77).
 - **Bound hits (size-scaling rounds, Oct 25):** a tuned gene value within 10% of a search
   bound's value is reported as a bound hit (NOTES, "Size-scaling test, round 2").
-  - **Demand vs drift: PROPOSED, PENDING USER** (DeepSeek's, recommended; future rounds only,
-    not retroactive). A gene at a bound counts as "demand" only if, on the sealed numbers, the
+  - **Demand vs drift: ADOPTED (user, Oct 25)** (DeepSeek's proposal; future rounds only, not
+    retroactive; the kc / lc round, pre-registered before adoption, reports it as information). A gene at a bound counts as "demand" only if, on the sealed numbers, the
     frozen genome beats the same genome with that gene set to the median of its interior
     values by more than the paired 95% interval. Otherwise the hit is reported as drift and
     the gene becomes a candidate for a constant.
