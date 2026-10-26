@@ -3851,3 +3851,26 @@ Cost per number (op-cost units, absolute), current / re-typed:
    - (slackrep's cut / Gray-share ratio of 0.889 is 1 − 0.034 / 0.307 by construction, since it re-priced exactly the counted updates. The evidence is the equality of the two shares.)
 2. G-gc and D-gc are **not** scored from slackrep (a 6-number information sample, 72–96 only). They are scored from the formal before / after on all map numbers, including 54, after the cost-model entry and parity.
 3. The order is unchanged: re-sieve parity, commit, re-sieve measurement, Gray-code cost model and audit list, formal before / after, the scored 2×2 retune.
+
+**Residue-restricted large-prime simulation** (user, Mathematica, Oct 25; information only).
+- *Setup:* 200 trials per size; balanced N, k = 1; B 619 / 1,171 / 1,993; lc 1.698 / 1.64 / 1.97; partials per number 260 / 444 / 976 (from lpdist); large primes drawn with weight 1/q from (B, B^lc); combined = partials − distinct q. Three arms: all primes; residue primes only ((kN/q) = 1); a random half of the primes. Simulated F (residue primes ≤ B, + 2) = 58 / 97 / 153.
+
+| bits | all primes: yield [5%, 95%]; combined / (F + 10) | residue only | random half | measured (as stated) |
+|---|---|---|---|---|
+| 72 | 0.089 [0.062, 0.119]; 0.34 | 0.157 [0.123, 0.192]; 0.60 | 0.156; 0.60 | 0.17 |
+| 84 | 0.087 [0.065, 0.106]; 0.36 | 0.152 [0.122, 0.180]; 0.63 | 0.152; 0.63 | 0.13 |
+| 96 | 0.056 [0.044, 0.067]; 0.33 | 0.101 [0.084, 0.118]; 0.61 | 0.100; 0.60 | 0.08 |
+
+- *The user's findings:*
+  1. Residue-only and random-half agree to within 0.001: the effect is the halved support, not anything particular to residues. The quadratic-residue restriction, which halves the support in the real card, accounts for the repeat gap.
+  2. The unrestricted arm does not reproduce the earlier simulation (0.076 / 0.064 / 0.051), most likely because of different partial counts. Comparisons within this run are sound; the doubling annotation on D-qr used the old baseline.
+  3. Open, low priority: the overshoot at 84–96. A clean check measures the pairing yield on the same traces lpdist used; it is queued as information, not before the current order.
+- **Definition caveat (found while recording):** the "measured" 0.17 / 0.13 / 0.08 (`slack2.out`) is combined relations **per partial filed**, and the card files a q only the first time it appears, so the denominator is the distinct q's. The simulation's yield is combined relations **per partial**. The two denominators differ by exactly the combined count: distinct q + combined = 260 / 443 / 976, the lpdist partial counts.
+  - On the simulation's definition, the measured yields from the same traces are **0.141 / 0.112 / 0.076**, and residue / measured is **1.12 / 1.36 / 1.32** (not 0.92 / 1.17 / 1.26).
+  - The definition-free comparison, combined / (F + 10), gives measured 0.58 / 0.49 / 0.50 against the residue arm's 0.60 / 0.63 / 0.61.
+  - *So:* the halved support explains most of the repeat excess, close at 72 and over-accounting by ~25–35% at 84–96. Finding 3's check (yield on the same traces, matched definition) is the way to settle the remainder.
+- **Scores, as written** (the predictions named the stated figures 0.17 / 0.13 / 0.08, so they are scored against them):
+  - **(W-qr, Claude chat's) FALSIFIED.** The yield clause holds at 72 (0.92) and 84 (1.17) but misses at 96 (1.26 > 1.25). The combined clause misses (0.60–0.63 against 40–55%); its range was anchored on the earlier 24–28% baseline.
+  - **(G-qr, Grok's) HOLDS** at all sizes (0.157 in 0.14–0.20, 0.152 in 0.11–0.16, 0.101 in 0.07–0.11; within ±30%; combined ≥ 35%).
+  - **(D-qr, DeepSeek's) MISSED** at all sizes (0.157 / 0.152 / 0.101 against 0.07–0.09).
+  - *Beside the scores:* on the matched definition, G-qr's ±30% clause would fail at 84 (1.36) and 96 (1.32), and W-qr's ±25% would fail at 84 and 96. The scores above stand as written; the caveat is recorded so the ratios are not read as matched.
