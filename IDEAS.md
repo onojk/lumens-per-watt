@@ -112,6 +112,7 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - If ours is lower by more than the run-to-run noise, the ECM lamp curve in Phase 3 is understated and the dark-mass result on ECM is re-run.
 - Cost: small. Timing: with Phase 3.
 - Update (2026-10-26, the user's stage-2 DP): ECM pays at 96 bits only with a cheap stage 2 (2 multiplies per prime: chosen; 6: not chosen), so the GMP-ECM cross-check should cover stage 2 and our stage-2 cost per prime (ours: <= 3 multiplies per prime with pairing, plus giant steps ~0.25 per candidate and ~4-5 word ops; NOTES, "Stage 2 in the cards today").
+- Also measure the effective ECM size divisor (the DP uses 12; DeepSeek's estimate is about 24.5). If it is about 24, the 96-bit ECM gain is understated.
 - Decision: pending.
 
 ### I-015 — Adaptivity belongs inside qs, not between lamps
@@ -145,6 +146,7 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
   The dark mass is a visible region: the spine plus the non-smooth-p-1 wedge at mid theta.
 - Use: (a) Phase 3's light spectrum measured as this 2D map with the real lamps (a batch of random semiprimes per band, recording which lamp cracked each); (b) a direct check of the p-1 model: measured p-1 light against the predicted wedge, calibrating the p-1 smoothness constant c (model input 3.4); (c) the visual for I-012 and the film.
 - Caveat: both coordinates are computed after factoring; it is a map of where lamps work, never an aiming method (the primehelix separation result).
+- Convention: no external standard was found (DeepSeek); the first coordinate follows primehelix's theta plots.
 - Cost: small (one measurement pass plus a plot). Timing: with Phase 3, or earlier as the p-1 calibration step for I-016.
 - Both views together (user, Oct 26): one number's line, in theta, is one ray of the tower (outer skin to spine at height log N). The number line is the live view of one search (the unlit part of the ray is its dark mass); the tower is the accumulated record of many searches (each find lights its point). Both come from the same per-run log (levels reached, cost at find), aggregated for the tower.
 - Explains p-1's look: on a single ray its light is scattered (it keys on p-1 smoothness, the angle coordinate); on the tower it is a wedge. Rho is the reverse: clean along the ray, fuzzy on the tower.
