@@ -2880,3 +2880,14 @@ Mine: Track R 5 held, 2 missed. Track M 0 held, 6 missed.
 **p-1 map check rerun on commit bdca53e: identical.** The map was recomputed from scratch, with no cache; `pm1check_map.json`, `pm1check.json` and the printed optima are byte-identical to step 1's. Step 1 used the b-card (b set per number so that int(N^b) = 2^k, asserted on every number), not the B gene. The p-1-inclusive budgets stand for the kc / lc round. *Disclosure:* the card code for (A1) and (A2) entered the repo in commit bb89d20 (the addendum's NOTES commit, through `commit -a`), before the parity suite had passed. The code is unchanged since then; parity passed on it (0 mismatches; `parity_bround.out`), and bdca53e adds the parity pairs, the acceptance test and the round driver.
 
 **Decision (user, Oct 25): the demand-vs-drift rule is ADOPTED for future rounds** (PLAN, bound-hit rule). It is not retroactive. The kc / lc round was pre-registered before the adoption, so it is scored by its own protocol. It also reports the demand-vs-drift comparison for each bound-hit gene as information.
+
+**How lc sets the large-prime bound (information, Oct 25; the kc / lc tuning is running).**
+- The card's large-prime bound is **L = B^lc**, in both qs.py and qs.rs. A cofactor v with 1 < v < L is a partial.
+- lc also lowers the sieve threshold: T = log₂(M√(kN/2)) − (tc + lc − 1)·log₂ B.
+- *Outside context (user, Mathematica; 18-digit N, B = 3000, bound B^lc; sieve values needed for the factor base + 10 relations):*
+  - lc 1.0 → 35,287; 1.3 → 20,419; 1.6 → 19,371; 2.0 → 19,274; 2.3 and 2.6 → 19,274 (identical).
+  - The gain is flat above about 1.6 and exactly flat above 2.0, because large primes above B² almost never repeat at this size.
+- *Context for scoring G-b1's lc clause and D-b2:* in our card, lc > 2.0 is not free.
+  - The threshold keeps falling with lc, so more candidates are confirmed by trial division (charged).
+  - Each extra cofactor in [B², B^lc) is charged a bound check, N mod v, a lookup and an insert, even though such cofactors rarely pair.
+  - So the card's cost above 2.0 should rise rather than stay flat, unless tc moves down to offset the threshold term.
