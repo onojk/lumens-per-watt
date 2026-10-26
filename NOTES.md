@@ -3618,3 +3618,4 @@ The final Track R genes run as qs alone on the corrected card with kset = sf32. 
 - the word and confirm_td counts equal the formula from a trace;
 - Python = Rust parity, per type.
 - It is then costed together with small-prime variation (DeepSeek's and Grok's predictions are recorded above).
+- **Decision (user, Oct 25): re-sieve only.** The classification rule stays strict: any reduction modulo a small prime, including one done by multiply-high (Barrett), is small-modulus. Root-matched confirmation is built as option (iii), re-sieving with cutoff P0 (default 30). Option (ii) is not built.
