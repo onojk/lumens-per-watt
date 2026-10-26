@@ -18,6 +18,7 @@ pub const SIEVE: usize = 3;
 pub const CONFIRM: usize = 4;
 pub const LA: usize = 5;
 pub const SQRT: usize = 6;
+const SF32: [u64; 20] = [1, 2, 3, 5, 6, 7, 10, 11, 13, 14, 15, 17, 19, 21, 22, 23, 26, 29, 30, 31]; // squarefree k <= 32
 pub const LP: usize = 7; // large primes (Stage 7), only when lc > 1
 pub const CHECK: usize = 8; // the ledger's relation check, opt-in ("check": 1)
 
@@ -184,9 +185,15 @@ pub fn lamp_qs(num: &Num, g: &Value, m: &mut Meter) -> R {
         std::process::exit(2);
     }
     // 1. multiplier
-    let kc = (gene(g, "kc", 16.0) as u64).max(1);
+    // kset "sf32" (NOTES.md, "kc becomes a constant"): the squarefree k <= 32; absent: 1..kc
+    let cands: Vec<u64> = if g.get("kset").and_then(|v| v.as_str()) == Some("sf32") {
+        SF32.to_vec()
+    } else {
+        (1..=(gene(g, "kc", 16.0) as u64).max(1)).collect()
+    };
+    let kc = cands.len() as u64;
     m.charge(MULT, kc * KS_PRIMES.len() as u64)?;
-    let mut ranked: Vec<(u64, f64)> = (1..=kc).map(|k| (k, -ks_score(k, num))).collect();
+    let mut ranked: Vec<(u64, f64)> = cands.iter().map(|&k| (k, -ks_score(k, num))).collect();
     ranked.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap().then(a.0.cmp(&b.0)));
     if gene(g, "sort_charge", 0.0) != 0.0 {
         m.charge(MULT, sort_cost(kc))?; // sort_charge: the multiplier ranking (keys already charged)

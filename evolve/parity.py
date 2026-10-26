@@ -157,6 +157,15 @@ def qs_pairs():
         g = [dict(st, a_mode="on_demand", sort_charge=1) if st["t"] == "qs" else st for st in g]
         for b in (46, 60, 72):
             yield f"random wide qs sort_charge {i}", g, semiprimes_pq(b, 2, 2400000 + b), min(cap_for(b), 2 ** 24), False
+    # kset = sf32 (NOTES.md, "kc becomes a constant"): both a_modes, sort_charge, a retry, a low cap
+    for b in (48, 60, 72, 84, 96):
+        nums = semiprimes_pq(b, 4, 2700000 + b)
+        for mode in ("enumerate", "on_demand"):
+            yield f"qs kset {mode}", [dict(TUNED, lc=1.4, a_mode=mode, kset="sf32")], nums, 2 ** 29, False
+        yield "qs kset corrected card", [dict(new_genes, a_mode="on_demand", sort_charge=1, kset="sf32")], nums, 2 ** 29, False
+        yield "qs kset low cap", [dict(TUNED, lc=1.4, a_mode="on_demand", sort_charge=1, kset="sf32")], nums, 2 ** 13, False
+    for seed, b, i in RETRY[:4]:
+        yield "qs kset retry", [dict(QS, a_mode="on_demand", sort_charge=1, kset="sf32")], semiprimes_pq(b, i + 1, seed)[i:], 2 ** 29, False
     yield from lp_pairs()
     yield from check_pairs()
     yield from cfrac_pairs()

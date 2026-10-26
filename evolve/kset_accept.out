@@ -1,0 +1,3 @@
+1. kset absent = pre-kset lampcore: 8000/8000 runs identical (per type, factor, ops)
+2a. kset sf32 'mult' count = kc 20's: 8000/8000
+2b. Python's selected k = top squarefree KS pick: 40/40

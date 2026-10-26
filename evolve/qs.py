@@ -32,7 +32,8 @@ Not a gene: "check": 1 turns the ledger's charged relation check on (phase "chec
 acceptance test only; mutation never sets it, and absent it is off.
 Not a gene: "a_mode": "enumerate" (default: every candidate A formed and charged up front, as
 always) or "on_demand" (A's formed one at a time, charged as formed; NOTES.md, "On-demand A
-selection"). Set by hand, never mutated. "sort_charge": 1 charges every sort in the card (NOTES.md,
+selection"). Set by hand, never mutated. "kset": "sf32" scores only the squarefree k <= 32 (kc ignored; NOTES.md, "kc becomes a
+constant"). "sort_charge": 1 charges every sort in the card (NOTES.md,
 "The sort_charge option"); 0 or absent: today's counts. "a_given": a list of A's (prime tuples) used in order
 with no selection charge, for the identity test only.
 
@@ -62,7 +63,9 @@ def lamp_qs(N, g, m):
     from lamps import ks_score, KS_PRIMES
 
     # 1. multiplier
-    kc = max(1, int(g.get("kc", 16)))
+    # kset "sf32" (NOTES.md, "kc becomes a constant"): the squarefree k <= 32; absent: 1..kc
+    cands = SF32 if g.get("kset") == "sf32" else list(range(1, max(1, int(g.get("kc", 16))) + 1))
+    kc = len(cands)
     ch.charge("mult", kc * len(KS_PRIMES))
     if tr is not None:
         tr["k_cands"] += kc
@@ -70,7 +73,7 @@ def lamp_qs(N, g, m):
     # Multipliers best-first by ks score. An attempt that fails (no dependency splits N, or
     # the polynomials run out) is retried with the next k, paying again for everything:
     # a fresh ledger (2. factor base) for each k.
-    ranked = sorted(range(1, kc + 1), key=lambda kk: (-ks_score(kk, N), kk))
+    ranked = sorted(cands, key=lambda kk: (-ks_score(kk, N), kk))
     SC = bool(g.get("sort_charge", 0))
     if SC:                                     # sort_charge: the multiplier ranking (keys already charged)
         ch.charge("mult", sort_cost(kc))
@@ -92,6 +95,8 @@ def lamp_qs(N, g, m):
             if d:
                 return d
     return None
+
+SF32 = [1, 2, 3, 5, 6, 7, 10, 11, 13, 14, 15, 17, 19, 21, 22, 23, 26, 29, 30, 31]   # squarefree k <= 32
 
 def sort_cost(n):
     """sort_charge (NOTES.md, "The sort_charge option"): n ceil(log2 n) comparisons for n >= 2."""
