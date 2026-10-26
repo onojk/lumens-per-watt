@@ -3145,3 +3145,48 @@ Mine: Track R 5 held, 2 missed. Track M 0 held, 6 missed.
 - Products and multiplications mod N are full multiplies; the final gcd is a gcd.
 - This is fixed now because it decides W-m, G-m1 and D-m1: under word-level pricing, the bookkeeping costs ~0.01–0.03 of a multiply under ruint and ~0.05–0.13 under Montgomery.
 - **Beside D-m1:** the price table puts a gcd at 7.9 multiplies (ruint) and 29.1 (Montgomery), not ~50. DeepSeek's correction (one gcd per candidate overstates the cost against one accumulated product and a final gcd) still holds, by that smaller factor.
+
+## 2026-10-25 — Replacement-rule test, final Track R genes (protocol and predictions before the run)
+
+**Card.** The corrected card: a_mode = on_demand, sort_charge = 1, kset = sf32 (kc constant).
+- This assumes the kset parity suite passes. If it fails, this entry is amended before anything runs: the genes run as they are, without kset.
+- The final Track R genes are the kc / lc round's (d) winners: R-k@54, R-k@72, the round-3 genome at 84 (current final) and R-k@96. Under kset their kc is ignored.
+
+**Fresh set, per size (54 / 72 / 84 / 96)** (seeds checked unused; every number through oracle.check):
+- 240 balanced numbers, `semiprimes_pq(bits, 240, 9600000 + bits)`;
+- a banded population, `SS.pop(bits, 80, 9430000)` (9430000 + 100 pb + bits; the top band is balanced).
+
+**Two comparisons, both on the same numbers, every genome as qs alone** (user's design, Oct 25):
+- **(2) as-frozen:** the final Track R genes on the corrected card against the frozen reference (qs + lc 1.4, enumerate, old card). **The pre-registered rule scores this comparison** (the replacement decision as the rule was written).
+- **(1) card-matched:** the same genes against qs + lc 1.4's genes on the same corrected card (with kset). Reported beside (2), so the card fix is not credited to the genes.
+
+**The rule** (as pre-registered in generalization test (2), plus the per-band gate). Recommend replacing only if all hold:
+- at every size, no pricing's paired interval on the balanced numbers lies above 0;
+- no misses (balanced and banded);
+- pooled over the four balanced sets (960 numbers), all three pricings below 1 with intervals excluding 0;
+- the per-band 1.5x gate on the banded set (every band, all three pricings, as in the two-track rule) does not FAIL.
+
+The rule recommends; changing the reference is the user's decision.
+
+**Information:**
+- each genome in its (d) pipeline (rho, p-1 B, ECM from the kc / lc round) against both references, on the balanced numbers and on the banded set. The balanced-only ratio is reported per size for the full pipeline and for the genes as qs alone, which separates early-stage overhead from the genes;
+- the median per-number log₂ ratio beside each mean.
+
+**Predictions (DeepSeek's, labelled as DeepSeek's).**
+- **D-m1 REVISED** (pre-registered; assumes word-level bookkeeping, conditional on bucketing): paired BSGS beats prime-gap stepping by 1.75–1.95x under ruint, 1.55–1.75x under Montgomery and 0.95–1.10x under official. *Meter check:* the same ratio under ruint and Montgomery would mean the bookkeeping charge is not reaching the pairing code. If pairing sorts, expect below 1.0x.
+- **(D-p1)** p+1, ordered after p-1 and a p-1 extension, pays 1–3% only at 84–96, Track M only, and only with a p-1 stage 2 present. More than 5% anywhere would mean extending p-1 is worse than the user's Mathematica suggests. Practical: exclude square D; prefer small D.
+- **(D-rep)** Replacement rule: FAIL at 54–72; at 84–96, pass only if the final genes' mc < 0.7 (they are 0.39–0.60), by under 5% robust. Scored on comparison (2), as written.
+  - *Note beside it:* its reasoning assumed the final Track R genes cost 5–17% more under official; that was the Run 8 mixed-qs genes. The final Track R genes beat qs + lc 1.4's genes under all three pricings at every size (4–28%, corrected card, size-scaling round 1).
+  - "FAIL at 54–72" is read per size: some pricing's balanced interval lies above 0 at 54 or 72. "Pass at 84–96 by under 5%" is read as the robust balanced ratio of (2) in 0.95–1.00 at 84 and 96.
+
+**Predictions (Grok's, labelled as Grok's).**
+- **G-m1 REVISED** (assumes word-level pairing bookkeeping; stage-2 work only): paired against prime-gap stepping 0.9–1.2x under official, 1.4–1.9x under ruint and 1.2–1.5x under Montgomery. DeepSeek's revised D-m1 is 0.95–1.10 / 1.75–1.95 / 1.55–1.75; both are reported against the measurement.
+- **(G-p1b)** p+1 earns a slot only if p-1 has an efficient stage 2 and a large bound, or the population has a residual band where p-1 is rough and p+1 smooth; until then it is low priority.
+- **(G-rep)** Pass at 84 and 96; borderline or fail at 54 and 72 on balanced numbers, which lose 5–15% there (early-stage budget that balanced numbers never use); at 84–96 balanced numbers pass too. Grok's own threshold, which scores only G-rep: fail if any size's balanced loss exceeds 10% or any per-band robust ratio exceeds 1.5x. *Scoring (mine):* the balanced loss is read from the (d) pipeline row on the balanced numbers against the frozen reference, which is what Grok's mechanism refers to. The qs-alone row is reported beside it.
+
+**Predictions (mine).**
+- (X1) Card-matched (1), robust balanced ratio: 0.85–1.00 at 54, 0.80–0.92 at 72, 0.70–0.85 at 84 and 0.65–0.80 at 96. All three pricings below 1 at 72–96.
+- (X2) As-frozen (2): lower than (1) at 84–96, because the frozen reference enumerates C(P, 4) A's there. Within 0.05 of (1) at 54–72. Robust balanced ratio 0.85–1.02 at 54, 0.75–0.92 at 72 and 0.45–0.70 at 84–96.
+- (X3) The rule passes on (2), and also on (1).
+- (X4) The per-band gate PASSes at every size, in both comparisons.
+- (X5) On balanced numbers, the (d) pipeline costs 1–8% more than the genes as qs alone, more under ruint (where rho and p-1 multiplies are relatively dear) than under official.
