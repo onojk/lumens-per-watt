@@ -4310,3 +4310,24 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
   - the new word count equals roots × polynomials (+ roots walked under re-sieve), and the new setup_small count equals F × attempts, from the trace;
   - Python = Rust parity, per type.
 - *Report:* separately, absolute before / after cost per number per pricing per size for the three references. It is committed after the ledger correction and before the 2×2.
+
+**DeepSeek's reply (Oct 26, 00:50), with annotations; one pre-registration** (labelled as DeepSeek's; annotations by Claude chat, relayed by the user).
+1. DeepSeek accepts the seed correction (D-rm and D-rm2 as in NOTES) and the D-occ and D-alpha annotations (n_q − 1 per q; shifts ~2.2 / ~1.0 / ~1.1%; the mechanism is the sieve-threshold shortfall).
+2. **(D-audit)** items 1–8 re-typed together; % cut in qs cost per number, new reference genes, after the ledger correction: ruint 26.5 / 24.2 / 14.7 / 12.3% (ranges 25–28 / 23–25.5 / 13.5–16 / 11–13.5); Montgomery 8.5 / 7.1 / 4.2 / 3.4% (ranges 7.8–9.2 / 6.5–7.8 / 3.7–4.7 / 3.0–3.9). It expects only the double divide to exceed 3x sieve_update. Falsified if ruint differs from its central values by > 2.0 pp at any size or Montgomery by > 1.0 pp; or if the multiply-add, hash probe or sort comparison exceeds 3x; or if the double divide is ≤ 3x.
+   - *Annotation:* it assumes every audited op was charged at 1.0. Most were not:
+     - items 1–2 (and most of 3) are at setup_small, 0.307 / 1.137 (cut factor ~0.89);
+     - items 6–8 at 0.114 / 0.426 (~0.70);
+     - items 4–5 and item 1's target check at 1.0 (~0.97 ruint / ~0.88 Montgomery).
+   - Its Montgomery method (ruint share ÷ a total-cost ratio of ~3.4) holds only for full-price ops; small-op shares are about equal under both pricings (see the audit table). Item by item on the audit table's base: ruint ~24.6 / 22.3 / 13.4 / 11.1%, Montgomery ~17.2 / 16.6 / 9.6 / 9.3%. Scored as given.
+3. **(D-p0R / D-p0M)** re-sieve after p0 tuning, at the retuned slack; saving against the full pass at the same slack.
+   - Track R chooses no re-sieve at 54–96 (if forced, p0 ~1000, saving −1 to +1%).
+   - Track M's best p0 is 30-or-lower / 60–200 / 100–400 / 400–1000, saving 8–10 / 8–12 / 6–10 / 4–10%.
+   - D-p0R is falsified if any grid p0 at 72–96 beats the full pass by > 1% under worst-of-three. D-p0M is falsified if any Montgomery-best p0 or saving falls outside its range, specifically if the 96-bit best p0 is ≤ 100 or the 96-bit saving is < 3%.
+   - *Annotation:* the user's cost model gives small official savings at high p0 at 72–84 (1.9–3.7% at p0 ~270–310 at 72; 1.3–2.4% at ~560–640 at 84), so worst-of-three could prefer re-sieve there by more than 1%; D-p0R is at risk. Scored as given.
+4. **(D-pool)** the old measured yields are pooled; the cv of partials per number is 0.40–0.55 / 0.40–0.60 / 0.45–0.65 at 72 / 84 / 96; the per-number mean is 8–15% below pooled. Falsified if the per-number mean is within 5% of pooled at two or more sizes, if the cv is under 0.25 at every size, or if any cv is outside its range.
+   - *Annotation:* if pooled / per-number = 1 + cv², the per-number mean is cv² / (1 + cv²) below pooled. Its cv ranges imply 14–30% below, not 8–15% (the simulation's 12–14% corresponds to cv ~0.4). The two clauses may contradict each other; both are scored as given.
+5. **(W-audit, Claude chat's; pre-registered before the microbenchmark):** the cut from re-typing items 1–8, on the audit table's base (qs cost before the Gray-code re-typing), assuming every op keeps the word price after the benchmark: ruint 23–26 / 21–24 / 12–15 / 10–12.5%; Montgomery 16–18.5 / 15–18 / 8.5–11 / 8.5–10.5% at 54 / 72 / 84 / 96. Falsified if two or more sizes fall outside under either pricing. If the benchmark gives any op its own type, W-audit is scored with that op's slice excluded and the change noted.
+6. **For the audit re-typing report:**
+   - absolute cost per number before and after, and the base of every percentage stated: the audit-table base (before the Gray-code re-typing) or the post-Gray base (after the Gray-code re-typing and the ledger correction);
+   - D-audit is scored on the post-ledger base it named and W-audit on the audit-table base; both are reported.
+   - *Note (mine):* the start-offset meter correction (audit item 10, decided after these predictions) also lands before the audit re-typing. D-audit's "after the ledger correction" base is computed both with and without it, and both are reported.
