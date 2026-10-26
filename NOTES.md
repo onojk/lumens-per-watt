@@ -6935,3 +6935,46 @@ Each cell gives ratio A / ratio B, with the materiality (time share × (ratio_B 
   - The user's 0.85–1.00: **held at 84** (0.851, at the edge), **missed at 96**.
 - *Not computed here (open):* N2 and S3 (CV across N of polynomials to completion) need ≥ 20 N per size, and these are 8; inconclusive, not run. R-E1 / R-E2 (e_F, e_M at the card's point) are not computed. Step 6d's measured combinations against the Poisson prediction is the row above. 6c and 6e–6g remain.
 - *Parity with qs.py's trace-only TRACE_ARR (stage B) in place:* passes (types 7,182 pairs, 0 mismatches; mutations 54 / 54; `parity_traceflag.out`). The flag is inert by default.
+
+## Open questions for the user (from the overnight queue)
+
+1. **The sieve's under-count:** the prime 2 and prime powers are never sieved, which costs ~4.6–6.5 bits (median) and is essentially the whole partial loss at 96 (stage B). Options:
+   - sieve 2 and prime powers;
+   - add their expected contribution as an offset;
+   - lower the threshold (a slack retune).
+   Each changes the candidate counts and the meter, so each is a card decision.
+2. **Audit item 17:** A mod p per base prime per A is uncharged in both cores (~1.9% at 96, estimated). A meter correction?
+3. **Re-sieve's prices:** stage E shows priced and wall-clock disagree on re-sieve at 96. On price, re-sieve on with F × 1.3 is −10% against the reference; on wall-clock it is +10%. Re-sieve's word ops and confirm's divisions are what decide. Measure re-sieve's walk against its word price first?
+4. **lp_ledger at 96** (still 3.1x anchor B after stage A): the arena fix did not move it. The large-prime table's hash at 1.4–1.7x its price (step 3) is the main known gap; a flat re-price, or a further look with a lighter instrument?
+5. **solve at 84–96** (C ~2.5–2.7): the benchmark of the card's elimination loop against la's price is still to run (held per your order).
+6. **I-029:** the reciprocal-based root test's ns per prime decides it (stage D estimates ~370 µs and ~9% priced at 96).
+
+## Overnight summary (Oct 26–27)
+
+**Done (all report-only; nothing adopted; reference genes unchanged; no push):**
+- *Stage A, three slow-code fixes,* each counts-identical (8,000 / 8,000, Python = Rust 32 / 32, parity) with before / after wall-clock (two replicates):
+  - **A1 setup in i64** (7f14c07): setup −9% to −23% (96: 506 → 389 µs);
+  - **A2 lp_ledger arenas** (bd89a24): lp_ledger −6% to −8% at 54–84, ~0 at 96 (my estimate of a quarter to a third missed; the timer-inflated breakdown misled);
+  - **A3 re-sieve buffers** (06ebcf8): resieve −10% to −20%; confirm with re-sieve unchanged.
+- *Stage B, step 9* (1f45169):
+  - **The card's missing partials are lost at the sieve threshold**, not later: passed 0.316 at 96, 0.541 at 84; after the threshold, processing and filing lose < 1%.
+  - Fulls pass ~0.97.
+  - The cause is the sieve's under-count (median 4.6 bits at partials, 6.5 at fulls), mainly the unsieved prime 2 and prime powers.
+  - The card's polynomials contain about what the model predicts (true partials 89% / 107% of the model's at 96 / 84).
+- *Stage C, the timing check* (9402b8b): **fails** under anchor B. Flags: lp_ledger and solve at 84–96, confirm with re-sieve at 84–96, setup at 72, lp_ledger and resieve at 54, gray at 96 (~1.3%). The old stage 2–4 runs were not started.
+- *Stage D, the I-029 read-out* (1d0c87d):
+  - the full pass divides the i128 residue by all ~137 base primes per candidate (~3.9 ns each, priced about right), against ~7.6 primes that divide;
+  - a reciprocal root test might save ~370 µs and ~9% priced at 96 (estimate).
+- *Stage E, the re-sieve × F 2×2 at 96* (2bfab28): re-sieve on with F × 1.3 is −10.1% priced (ruint) against the reference, but +9.8% wall-clock. Price and time disagree on re-sieve.
+- *Stage F, step 6* (352cfa8): the yield model, given stage B's measured capture, reproduces the card's combinations, never-combined share (0.852 / 0.853 at 96), polynomials to completion (−1% / −6%) and the L/B 12 effects within a few points. It over-predicts the raw true counts by 11–20%.
+
+**Predictions scored overnight:**
+- *S9 (stage B):*
+  - the reviewer's: S9-2, S9-3 high band, S9-4, S9-6, S9-9 held; S9-1, S9-3 low band, S9-5, S9-7, S9-8 missed;
+  - DeepSeek's falsifiers: S9-7 and S9-8 falsified, the rest not;
+  - DeepSeek's independent S9-6 held, S9-9 missed.
+- *R-G (stage E):* R-G1 held (both); R-G2 missed (both; the user's narrowly).
+- *M3 (stage F, on mean ratios):* the user's held at 84, missed at 96; DeepSeek's missed at both, falsified at 96.
+- *My own:* A1's estimate held in direction; A2's missed; A3's held for resieve and missed for confirm.
+
+**Commits since the queue was recorded:** f38b454 (C.3 entry), 7f14c07, bd89a24, 06ebcf8, 1f45169, 9402b8b, 1d0c87d, 2bfab28, 352cfa8, and this summary. Earlier tonight's documentation and step commits are listed in `git log`.
