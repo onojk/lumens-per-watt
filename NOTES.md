@@ -6071,3 +6071,12 @@ The estimate is unchanged in scale: about 0.1–0.15% of qs's cost at 96 and a f
   - lp_ledger and confirm got slower in wall-clock after step 1. At 96, lp_ledger went from 150 to 250 µs per number, and confirm with re-sieve from 210 to 278 µs.
   - Step 1's code allocates a fresh touched-entry Vec per candidate and a fresh output Vec per combination; the re-sieve merge (since item 11) already allocates one list per candidate. These heap allocations are uncharged and costly.
   - Reusing per-attempt buffers removes them with identical counts. That is proposed as a step-1 follow-up (step 1b: code only, counts identical, its own acceptance and parity), done before the formal step-5 run.
+
+### Step 1b: per-attempt buffers instead of per-candidate allocations (code only, counts identical; before code)
+
+- *What changes (Rust):*
+  - the touched-entry list (`tt`), the re-sieve merge list (`plist`) and the combination's union list (`out`) become buffers allocated once per attempt and cleared per use;
+  - the sparse relation lists themselves (a kept candidate's, a combination's) stay as allocations, because they are stored.
+- *Counts:* identical (the same loops, the same charges). Python is unchanged.
+- *Acceptance:* every run identical to the step-4 build per number and per type, Python = Rust per type, and parity.
+- *Expected wall-clock effect:* confirm (with re-sieve) and lp_ledger fall back toward their c13019b-era time per number. They are measured in the step-5 run, and the comparison is reported there.
