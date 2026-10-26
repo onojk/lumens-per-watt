@@ -1,0 +1,533 @@
+{
+ "72": {
+  "1.0": {
+   "types": {
+    "mult": 2280,
+    "fb": 14446,
+    "setup_full": 11744,
+    "setup_euclid": 60350,
+    "setup_small": 752326,
+    "sieve_update": 1467459,
+    "sieve_scan": 878434,
+    "confirm_full": 882,
+    "confirm_td": 25888,
+    "la": 23948,
+    "sqrt_mul": 2542,
+    "sqrt_gcd": 407,
+    "lp_full": 1,
+    "lp_small": 100,
+    "check": 0,
+    "word": 0
+   },
+   "gray_updates": 158373,
+   "cost_per_number": {
+    "official": {
+     "current": 540134.5,
+     "retyped": 540134.5
+    },
+    "ruint": {
+     "current": 55713.70928664439,
+     "retyped": 48520.54754298759
+    },
+    "montgomery": {
+     "current": 200019.07231297382,
+     "retyped": 173310.02545517348
+    }
+   }
+  },
+  "1.5": {
+   "types": {
+    "mult": 2280,
+    "fb": 14446,
+    "setup_full": 4297,
+    "setup_euclid": 31791,
+    "setup_small": 233972,
+    "sieve_update": 749313,
+    "sieve_scan": 450007,
+    "confirm_full": 1678,
+    "confirm_td": 49414,
+    "la": 23948,
+    "sqrt_mul": 2684,
+    "sqrt_gcd": 602,
+    "lp_full": 80,
+    "lp_small": 6534,
+    "check": 0,
+    "word": 0
+   },
+   "gray_updates": 81558,
+   "cost_per_number": {
+    "official": {
+     "current": 261841.0,
+     "retyped": 261841.0
+    },
+    "ruint": {
+     "current": 22300.368993595755,
+     "retyped": 18596.07668689473
+    },
+    "montgomery": {
+     "current": 78893.11008560203,
+     "retyped": 65138.64156111566
+    }
+   }
+  },
+  "2.0": {
+   "types": {
+    "mult": 2280,
+    "fb": 14446,
+    "setup_full": 1776,
+    "setup_euclid": 17284,
+    "setup_small": 94424,
+    "sieve_update": 403370,
+    "sieve_scan": 239500,
+    "confirm_full": 3932,
+    "confirm_td": 114629,
+    "la": 23948,
+    "sqrt_mul": 2365,
+    "sqrt_gcd": 779,
+    "lp_full": 174,
+    "lp_small": 15595,
+    "check": 0,
+    "word": 0
+   },
+   "gray_updates": 43821,
+   "cost_per_number": {
+    "official": {
+     "current": 155750.33333333334,
+     "retyped": 155750.33333333334
+    },
+    "ruint": {
+     "current": 13364.306629982062,
+     "retyped": 11373.995524119417
+    },
+    "montgomery": {
+     "current": 45957.59958715265,
+     "retyped": 38567.34277345543
+    }
+   }
+  },
+  "2.5": {
+   "types": {
+    "mult": 2280,
+    "fb": 14446,
+    "setup_full": 1206,
+    "setup_euclid": 12125,
+    "setup_small": 63321,
+    "sieve_update": 278743,
+    "sieve_scan": 164785,
+    "confirm_full": 9346,
+    "confirm_td": 273251,
+    "la": 23948,
+    "sqrt_mul": 2928,
+    "sqrt_gcd": 660,
+    "lp_full": 230,
+    "lp_small": 22981,
+    "check": 0,
+    "word": 0
+   },
+   "gray_updates": 30110,
+   "cost_per_number": {
+    "official": {
+     "current": 145041.66666666666,
+     "retyped": 145041.66666666666
+    },
+    "ruint": {
+     "current": 14700.11756459422,
+     "retyped": 13332.547965600033
+    },
+    "montgomery": {
+     "current": 48505.20502227295,
+     "retyped": 43427.25991238448
+    }
+   }
+  },
+  "2.226": {
+   "types": {
+    "mult": 2280,
+    "fb": 14446,
+    "setup_full": 1456,
+    "setup_euclid": 13872,
+    "setup_small": 75596,
+    "sieve_update": 326817,
+    "sieve_scan": 193098,
+    "confirm_full": 5508,
+    "confirm_td": 160909,
+    "la": 23948,
+    "sqrt_mul": 2026,
+    "sqrt_gcd": 746,
+    "lp_full": 214,
+    "lp_small": 19325,
+    "check": 0,
+    "word": 0
+   },
+   "gray_updates": 35433,
+   "cost_per_number": {
+    "official": {
+     "current": 140040.16666666666,
+     "retyped": 140040.16666666666
+    },
+    "ruint": {
+     "current": 12801.081803846755,
+     "retyped": 11191.746247514604
+    },
+    "montgomery": {
+     "current": 43449.05139906227,
+     "retyped": 37473.40114736255
+    }
+   }
+  }
+ },
+ "84": {
+  "1.0": {
+   "types": {
+    "mult": 2280,
+    "fb": 28045,
+    "setup_full": 5671,
+    "setup_euclid": 97681,
+    "setup_small": 559378,
+    "sieve_update": 4139957,
+    "sieve_scan": 1800890,
+    "confirm_full": 1310,
+    "confirm_td": 62033,
+    "la": 91092,
+    "sqrt_mul": 3653,
+    "sqrt_gcd": 235,
+    "lp_full": 1,
+    "lp_small": 224,
+    "check": 0,
+    "word": 0
+   },
+   "gray_updates": 239672,
+   "cost_per_number": {
+    "official": {
+     "current": 1132075.0,
+     "retyped": 1132075.0
+    },
+    "ruint": {
+     "current": 65654.16261993347,
+     "retyped": 54768.472120759274
+    },
+    "montgomery": {
+     "current": 238909.6596497169,
+     "retyped": 198489.82370228437
+    }
+   }
+  },
+  "1.5": {
+   "types": {
+    "mult": 2280,
+    "fb": 28045,
+    "setup_full": 2895,
+    "setup_euclid": 55052,
+    "setup_small": 274186,
+    "sieve_update": 2327918,
+    "sieve_scan": 1013297,
+    "confirm_full": 2830,
+    "confirm_td": 132435,
+    "la": 91092,
+    "sqrt_mul": 2884,
+    "sqrt_gcd": 402,
+    "lp_full": 108,
+    "lp_small": 13299,
+    "check": 0,
+    "word": 0
+   },
+   "gray_updates": 135250,
+   "cost_per_number": {
+    "official": {
+     "current": 657787.1666666666,
+     "retyped": 657787.1666666666
+    },
+    "ruint": {
+     "current": 38243.54323107612,
+     "retyped": 32100.607719154363
+    },
+    "montgomery": {
+     "current": 138075.57074383277,
+     "retyped": 115266.13613365615
+    }
+   }
+  },
+  "2.0": {
+   "types": {
+    "mult": 2280,
+    "fb": 28045,
+    "setup_full": 1545,
+    "setup_euclid": 32994,
+    "setup_small": 146383,
+    "sieve_update": 1362609,
+    "sieve_scan": 591500,
+    "confirm_full": 7024,
+    "confirm_td": 328060,
+    "la": 91092,
+    "sqrt_mul": 4389,
+    "sqrt_gcd": 686,
+    "lp_full": 277,
+    "lp_small": 35349,
+    "check": 0,
+    "word": 0
+   },
+   "gray_updates": 78752,
+   "cost_per_number": {
+    "official": {
+     "current": 438705.5,
+     "retyped": 438705.5
+    },
+    "ruint": {
+     "current": 29141.42817244797,
+     "retyped": 25564.581906755833
+    },
+    "montgomery": {
+     "current": 102339.38938230417,
+     "retyped": 89058.14284314984
+    }
+   }
+  },
+  "2.5": {
+   "types": {
+    "mult": 2280,
+    "fb": 28045,
+    "setup_full": 1122,
+    "setup_euclid": 25395,
+    "setup_small": 111032,
+    "sieve_update": 1058372,
+    "sieve_scan": 458844,
+    "confirm_full": 18156,
+    "confirm_td": 847581,
+    "la": 91092,
+    "sqrt_mul": 2217,
+    "sqrt_gcd": 459,
+    "lp_full": 342,
+    "lp_small": 49491,
+    "check": 0,
+    "word": 0
+   },
+   "gray_updates": 61180,
+   "cost_per_number": {
+    "official": {
+     "current": 449071.3333333333,
+     "retyped": 449071.3333333333
+    },
+    "ruint": {
+     "current": 36500.929652915314,
+     "retyped": 33722.18810304934
+    },
+    "montgomery": {
+     "current": 125979.67667438994,
+     "retyped": 115661.88584665903
+    }
+   }
+  },
+  "2.098": {
+   "types": {
+    "mult": 2280,
+    "fb": 28045,
+    "setup_full": 1435,
+    "setup_euclid": 30154,
+    "setup_small": 135341,
+    "sieve_update": 1265491,
+    "sieve_scan": 548434,
+    "confirm_full": 8454,
+    "confirm_td": 394839,
+    "la": 91092,
+    "sqrt_mul": 2922,
+    "sqrt_gcd": 655,
+    "lp_full": 300,
+    "lp_small": 38942,
+    "check": 0,
+    "word": 0
+   },
+   "gray_updates": 73177,
+   "cost_per_number": {
+    "official": {
+     "current": 424730.6666666667,
+     "retyped": 424730.6666666667
+    },
+    "ruint": {
+     "current": 29103.881236893954,
+     "retyped": 25780.24654590765
+    },
+    "montgomery": {
+     "current": 102282.60063128232,
+     "retyped": 89941.55814352712
+    }
+   }
+  }
+ },
+ "96": {
+  "1.0": {
+   "types": {
+    "mult": 2280,
+    "fb": 47079,
+    "setup_full": 18920,
+    "setup_euclid": 404597,
+    "setup_small": 3322677,
+    "sieve_update": 20140897,
+    "sieve_scan": 9142070,
+    "confirm_full": 1816,
+    "confirm_td": 125319,
+    "la": 272545,
+    "sqrt_mul": 5343,
+    "sqrt_gcd": 223,
+    "lp_full": 1,
+    "lp_small": 269,
+    "check": 0,
+    "word": 0
+   },
+   "gray_updates": 941612,
+   "cost_per_number": {
+    "official": {
+     "current": 5580672.666666667,
+     "retyped": 5580672.666666667
+    },
+    "ruint": {
+     "current": 333948.1118417335,
+     "retyped": 291180.92667905946
+    },
+    "montgomery": {
+     "current": 1227604.0589607398,
+     "retyped": 1068804.5222349905
+    }
+   }
+  },
+  "1.5": {
+   "types": {
+    "mult": 2280,
+    "fb": 47079,
+    "setup_full": 7600,
+    "setup_euclid": 218464,
+    "setup_small": 1098238,
+    "sieve_update": 10852963,
+    "sieve_scan": 4929035,
+    "confirm_full": 4440,
+    "confirm_td": 304877,
+    "la": 272545,
+    "sqrt_mul": 4058,
+    "sqrt_gcd": 382,
+    "lp_full": 248,
+    "lp_small": 39751,
+    "check": 0,
+    "word": 0
+   },
+   "gray_updates": 506226,
+   "cost_per_number": {
+    "official": {
+     "current": 2963660.0,
+     "retyped": 2963660.0
+    },
+    "ruint": {
+     "current": 151810.66678849296,
+     "retyped": 128818.32909933884
+    },
+    "montgomery": {
+     "current": 556183.2362539786,
+     "retyped": 470810.0100434702
+    }
+   }
+  },
+  "2.0": {
+   "types": {
+    "mult": 2280,
+    "fb": 47079,
+    "setup_full": 4086,
+    "setup_euclid": 123906,
+    "setup_small": 537862,
+    "sieve_update": 6114161,
+    "sieve_scan": 2767105,
+    "confirm_full": 12296,
+    "confirm_td": 841300,
+    "la": 272545,
+    "sqrt_mul": 5411,
+    "sqrt_gcd": 483,
+    "lp_full": 471,
+    "lp_small": 86199,
+    "check": 0,
+    "word": 0
+   },
+   "gray_updates": 284977,
+   "cost_per_number": {
+    "official": {
+     "current": 1802530.6666666667,
+     "retyped": 1802530.6666666667
+    },
+    "ruint": {
+     "current": 99004.43743669901,
+     "retyped": 86061.03386271806
+    },
+    "montgomery": {
+     "current": 357777.94021592446,
+     "retyped": 309717.57609833265
+    }
+   }
+  },
+  "2.5": {
+   "types": {
+    "mult": 2280,
+    "fb": 47079,
+    "setup_full": 2925,
+    "setup_euclid": 97796,
+    "setup_small": 398139,
+    "sieve_update": 4805582,
+    "sieve_scan": 2174345,
+    "confirm_full": 33034,
+    "confirm_td": 2256929,
+    "la": 272545,
+    "sqrt_mul": 5005,
+    "sqrt_gcd": 537,
+    "lp_full": 550,
+    "lp_small": 118764,
+    "check": 0,
+    "word": 0
+   },
+   "gray_updates": 224318,
+   "cost_per_number": {
+    "official": {
+     "current": 1702585.0,
+     "retyped": 1702585.0
+    },
+    "ruint": {
+     "current": 112622.65877502976,
+     "retyped": 102434.33339119788
+    },
+    "montgomery": {
+     "current": 400211.85012508725,
+     "retyped": 362381.412026118
+    }
+   }
+  },
+  "2.009": {
+   "types": {
+    "mult": 2280,
+    "fb": 47079,
+    "setup_full": 4073,
+    "setup_euclid": 123182,
+    "setup_small": 535522,
+    "sieve_update": 6085143,
+    "sieve_scan": 2754403,
+    "confirm_full": 12740,
+    "confirm_td": 870558,
+    "la": 272545,
+    "sqrt_mul": 3842,
+    "sqrt_gcd": 413,
+    "lp_full": 473,
+    "lp_small": 87304,
+    "check": 0,
+    "word": 0
+   },
+   "gray_updates": 283727,
+   "cost_per_number": {
+    "official": {
+     "current": 1799926.1666666667,
+     "retyped": 1799926.1666666667
+    },
+    "ruint": {
+     "current": 99037.31653431272,
+     "retyped": 86150.6868560057
+    },
+    "montgomery": {
+     "current": 358425.34817695717,
+     "retyped": 310575.79214263876
+    }
+   }
+  }
+ }
+}

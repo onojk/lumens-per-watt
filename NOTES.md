@@ -3815,3 +3815,31 @@ Cost split under ruint (setup = multiplier, factor base and polynomial setup; th
 4. **(G-pinv; post hoc)** lazy pool-prime inverse cache, net saving of total qs ruint cost at the tuned genes: 1.5–3% / 2–4% / 2.5–4.5% / 3–5% at 54 / 72 / 84 / 96. Falsified if above 7% at any size, or below 1% at 84–96.
    - Note beside it: DeepSeek's D-pinv is lower. *Scored post hoc against `acount.out`:* **missed (falsified).** The lazy cache's net is −9.2 / −8.9 / −8.6 / −3.9% under ruint, below 1% at 84–96.
 5. **(G-qr)** residue-restricted simulated pairing yield: 0.14–0.20 at 72, 0.11–0.16 at 84, 0.07–0.11 at 96; W-qr holds. Falsified if any size is outside ±30% of the measured 0.17 / 0.13 / 0.08, or if the simulated combined-relation share stays below 35% of F + 10.
+
+**Full-pass slack sweep, priced both ways** (information; the confounding guard; `evolve/slackrep.py`, `slackrep.out`, `.json`).
+- Python traces on 3 balanced and 3 band-24 map numbers per size. Gray-code updates are counted exactly, one charged op per root per switch, as the card charges today. Re-typed means those updates are priced at the word-level price (sieve_update's) instead of setup_small's. Op counts are identical; only prices differ.
+- **The saved `slackcheck.out` could not be re-priced:** it kept only ratios, and lampcore's types do not separate Gray-code updates from the rest of setup_small. Hence this rerun on a sample.
+
+Cost per number (op-cost units, absolute), current / re-typed:
+
+| bits | slack | official | ruint | Montgomery | Gray updates per number |
+|---|---|---|---|---|---|
+| 72 | 1.0 | 540,134 | 55,714 / 48,521 | 200,019 / 173,310 | 26,396 |
+| 72 | 1.5 | 261,841 | 22,300 / 18,596 | 78,893 / 65,139 | 13,593 |
+| 72 | 2.0 | 155,750 | 13,364 / 11,374 | 45,958 / 38,567 | 7,304 |
+| 72 | 2.5 | 145,042 | 14,700 / 13,333 | 48,505 / 43,427 | 5,018 |
+| 72 | 2.226 (tuned) | 140,040 | 12,801 / 11,192 | 43,449 / 37,473 | 5,906 |
+| 84 | 1.0 | 1,132,075 | 65,654 / 54,768 | 238,910 / 198,490 | 39,945 |
+| 84 | 1.5 | 657,787 | 38,244 / 32,101 | 138,076 / 115,266 | 22,542 |
+| 84 | 2.0 | 438,706 | 29,141 / 25,565 | 102,339 / 89,058 | 13,125 |
+| 84 | 2.5 | 449,071 | 36,501 / 33,722 | 125,980 / 115,662 | 10,197 |
+| 84 | 2.098 (tuned) | 424,731 | 29,104 / 25,780 | 102,283 / 89,942 | 12,196 |
+| 96 | 1.0 | 5,580,673 | 333,948 / 291,181 | 1,227,604 / 1,068,805 | 156,935 |
+| 96 | 1.5 | 2,963,660 | 151,811 / 128,818 | 556,183 / 470,810 | 84,371 |
+| 96 | 2.0 | 1,802,531 | 99,004 / 86,061 | 357,778 / 309,718 | 47,496 |
+| 96 | 2.5 | 1,702,585 | 112,623 / 102,434 | 400,212 / 362,381 | 37,386 |
+| 96 | 2.009 (tuned) | 1,799,926 | 99,037 / 86,151 | 358,425 / 310,576 | 47,288 |
+
+- **Re-typing cuts qs cost at the tuned slack by 12.6 / 11.4 / 13.0% (ruint) and 13.8 / 12.1 / 13.3% (Montgomery) at 72 / 84 / 96; official 0% (exact).** This is with one charged op per update, as today. If the cost model counts two word ops per update, the cut is smaller (≈ 78% of the slice instead of ≈ 89%).
+- **The best slack barely moves on this coarse grid:** 72 stays at the tuned 2.23; 84 goes from 2.10 to 2.0 under ruint and Montgomery (re-typed 25,565 against 25,780); 96 stays at 2.0 (official's best is 2.5 at 96).
+- The scored 2×2 retune uses the 0.1 grid and paired intervals, per the adopted rule. This table is information.

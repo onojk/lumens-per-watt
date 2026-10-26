@@ -1,0 +1,28 @@
+72 bits (tuned slack 2.226): cost per number (op-cost units), current / re-typed
+   slack 1.000: offi 540,134 / 540,134  ruin 55,714 / 48,521  mont 200,019 / 173,310; Gray updates per number 26,396
+   slack 1.500: offi 261,841 / 261,841  ruin 22,300 / 18,596  mont 78,893 / 65,139; Gray updates per number 13,593
+   slack 2.000: offi 155,750 / 155,750  ruin 13,364 / 11,374  mont 45,958 / 38,567; Gray updates per number 7,304
+   slack 2.500: offi 145,042 / 145,042  ruin 14,700 / 13,333  mont 48,505 / 43,427; Gray updates per number 5,018
+   slack 2.226: offi 140,040 / 140,040  ruin 12,801 / 11,192  mont 43,449 / 37,473; Gray updates per number 5,906
+   official: best slack current 2.226, re-typed 2.226; re-typing cuts qs cost at the tuned slack by 0.000
+   ruint: best slack current 2.226, re-typed 2.226; re-typing cuts qs cost at the tuned slack by 0.126
+   montgomery: best slack current 2.226, re-typed 2.226; re-typing cuts qs cost at the tuned slack by 0.138
+84 bits (tuned slack 2.098): cost per number (op-cost units), current / re-typed
+   slack 1.000: offi 1,132,075 / 1,132,075  ruin 65,654 / 54,768  mont 238,910 / 198,490; Gray updates per number 39,945
+   slack 1.500: offi 657,787 / 657,787  ruin 38,244 / 32,101  mont 138,076 / 115,266; Gray updates per number 22,542
+   slack 2.000: offi 438,706 / 438,706  ruin 29,141 / 25,565  mont 102,339 / 89,058; Gray updates per number 13,125
+   slack 2.500: offi 449,071 / 449,071  ruin 36,501 / 33,722  mont 125,980 / 115,662; Gray updates per number 10,197
+   slack 2.098: offi 424,731 / 424,731  ruin 29,104 / 25,780  mont 102,283 / 89,942; Gray updates per number 12,196
+   official: best slack current 2.098, re-typed 2.098; re-typing cuts qs cost at the tuned slack by 0.000
+   ruint: best slack current 2.098, re-typed 2.0; re-typing cuts qs cost at the tuned slack by 0.114
+   montgomery: best slack current 2.098, re-typed 2.0; re-typing cuts qs cost at the tuned slack by 0.121
+96 bits (tuned slack 2.009): cost per number (op-cost units), current / re-typed
+   slack 1.000: offi 5,580,673 / 5,580,673  ruin 333,948 / 291,181  mont 1,227,604 / 1,068,805; Gray updates per number 156,935
+   slack 1.500: offi 2,963,660 / 2,963,660  ruin 151,811 / 128,818  mont 556,183 / 470,810; Gray updates per number 84,371
+   slack 2.000: offi 1,802,531 / 1,802,531  ruin 99,004 / 86,061  mont 357,778 / 309,718; Gray updates per number 47,496
+   slack 2.500: offi 1,702,585 / 1,702,585  ruin 112,623 / 102,434  mont 400,212 / 362,381; Gray updates per number 37,386
+   slack 2.009: offi 1,799,926 / 1,799,926  ruin 99,037 / 86,151  mont 358,425 / 310,576; Gray updates per number 47,288
+   official: best slack current 2.5, re-typed 2.5; re-typing cuts qs cost at the tuned slack by 0.000
+   ruint: best slack current 2.0, re-typed 2.0; re-typing cuts qs cost at the tuned slack by 0.130
+   montgomery: best slack current 2.0, re-typed 2.0; re-typing cuts qs cost at the tuned slack by 0.133
+exit 0
