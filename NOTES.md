@@ -6237,3 +6237,17 @@ The estimate is unchanged in scale: about 0.1–0.15% of qs's cost at 96 and a f
 - *Scoring Y3:* DeepSeek's 2–7 **falsified** (the scored grid's best is 8, its "≥ 8" clause; the true minimum is 12); the user's 3–6 missed. The user's: P(L = p_max) ≥ 1.5x P(best) held (1.8x); the sign change matching the minimum held.
 - *I-028 (revised):* if the card's L is ~64 p_max, moving to ~8–16 p_max recovers an estimated 7–12% (m = 100) and cuts stored partials ~60–70%. The exact L hardly matters (a flat curve); the card's measured per-partial price decides it.
   - *Note (mine):* the card's L / B is ~67–92 at 54–84 and ~1,511 at 96 (new reference genes; above), so the revised estimate's "~64 p_max" premise fits 54–84 and understates the gap at 96.
+
+**DeepSeek, Oct 26, round 29 (I-028; recorded as given):**
+- Y3 falsified (its own ≥ 8 clause; the true minimum is 12); its reasoning error (extrapolating from a grid-floor value on a flat curve) recorded by DeepSeek.
+- *Z3, scored from the existing finer-grid table:* worst-case regret over m in {30, 100, 300} is 40 / 27 / 16 / 11 / 6.0 / 3.5 / 5.9 / 9.0% at L / p_max = 1.5 / 2 / 3 / 4 / 6 / 8 / 12 / 16.
+  - The minimax-regret L is 8 p_max, regret 3.5%. DeepSeek's (6–9, 2–4%) and the user's (6–8, 2–5%) are both inside.
+  - **Weak test:** DeepSeek sealed with two of the three cost curves in hand; the user's was written with all three visible (no weight as a prediction).
+- *Z1:* the form is right but its numbers aren't.
+  - −1/ε_a with ε_a ~1.5–1.7 at L ~ 4 contradicts the table (ε_a ~0.90 at 3–4, ~0.72 at 4–6, which would give ~−1.2).
+  - Including the decline of e_L with L in m ε_a a ~ e_L c0 gives d ln L* / d ln m ~ −1/(ε_a + η), with η = −d ln e_L / d ln L ~ 0.7–0.9, so ~−1/1.6 ~ −0.63, matching the observed ~−0.6.
+  - At m = 300 the full condition (m a not ≪ c0) applies; the sign change of the condition is the reliable test.
+- *Z2:* minimax regret adopted while the per-partial price is unmeasured.
+  - Robust choice on current evidence: L ~ 8 p_max (≤ 3.5% above the best at any m in 30–300).
+  - The final choice waits on the card's measured price and real L (step 3; the I-028 check).
+  - *Note (mine):* the card's real L is known from its genes (L / B ≈ 67 / 89 / 92 / 1,511 at 54 / 72 / 84 / 96; recorded above). The per-partial price is what remains unmeasured.
