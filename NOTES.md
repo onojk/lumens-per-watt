@@ -5067,3 +5067,42 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
 - New reference genes as qs alone, with and without re-sieve (p0 30), on all map numbers per size; one run on a P-core (`taskset -c 2`).
 - Per region: overhead-corrected ns, priced ruint cost (Σ count × ruint price), and ns per priced unit. A region whose ns per priced unit is more than 1.5x the median region's is flagged as uncharged or underpriced work, and listed before the 2×2.
 - Scored here: GP2 (Grok's: the relation-processing / ledger phase flags; sieving, setup and polynomial generation stay inside; falsified if no phase flags, or if sieving flags). Claude chat's guess: the large-prime / relation-combining phase flags too.
+
+### Phase-level wall-clock check: results (`evolve/phasetime.py`, `phasetime.out`, `.json`) — **phases flagged; reported before the 2×2 (the user's stop condition)**
+
+- *Setup:* new reference genes as qs alone, all map numbers, one P-core; region overhead 34–38 ns per region call, subtracted.
+- **The median region runs at 71–90 ns per priced ruint unit**, about 2.6–3.3x the calibrated 27.3 ns multiply. The card as a whole runs slower per priced unit than the microbenchmarks (allocation, branches, data movement); only the ratios between regions are used here.
+
+ns per priced ruint unit ÷ the median region (flags > 1.5):
+
+| region | 54 | 72 | 84 | 96 | 54 / 72 / 84 / 96 with re-sieve |
+|---|---|---|---|---|---|
+| mult | 1.15 | 1.37 | **1.51** | **1.57** | 1.00 / 1.29 / 1.29 / 1.30 |
+| fb | 0.25 | 0.24 | 0.26 | 0.25 | 0.22 / 0.23 / 0.23 / 0.20 |
+| setup | 1.02 | 1.05 | 0.81 | 0.68 | 0.89 / 1.00 / 0.69 / 0.54 |
+| **gray** | **1.87** | **1.60** | **1.79** | **1.87** | **1.62 / 1.51 / 1.50 / 1.55** |
+| sieve | 0.40 | 0.33 | 0.31 | 0.31 | 0.35 / 0.31 / 0.27 / 0.25 |
+| resieve | — | — | — | — | **2.34** / 1.40 / 0.88 / 0.67 |
+| confirm | 0.87 | 0.59 | 0.56 | 0.55 | 1.21 / 1.07 / 1.00 / 1.00 |
+| lp_ledger | 1.19 | 1.14 | 1.26 | **1.83** | 1.03 / 0.97 / 1.00 / 1.44 |
+| solve | 0.98 | 0.95 | 1.19 | 1.32 | 0.85 / 0.90 / 1.00 / 1.07 |
+
+Time shares (new reference, 96): sieve 24%, confirm 29%, setup 24%, solve 8%, lp_ledger 7%, gray 6%, fb 2%, mult 0.5%.
+
+**Flagged regions, with a diagnosis from the code:**
+1. **gray (1.5–1.9x at every size): the code reduces modulo p.** The Gray-code update is `(*r + d * bi).rem_euclid(p)` in Rust (`% p` in Python), an i128 division per root. The re-typing priced it as an add and a conditional subtract (word), which is what it physically could be (r, bi ∈ [0, p), so r ± bi needs one conditional correction), **but not what the code does.**
+   - *Options (the user's decision):* (a) change the code to an add and one conditional add / subtract, so the word price is correct (results identical, cheap); (b) re-type it back to small-modulus, the price of the reduction it performs.
+   - The same applies to the sieve start offsets (item 10: `r + m_p`, then subtract p if ≥ p, already add / subtract in the code) — **no**: those are already add / subtract. Only the Gray update performs a reduction.
+2. **mult (1.5–1.6x at 84–96): KS scoring is underpriced.** Each (k, p) score charges 1 op (type mult, small mulmod 0.307), but the code does a U256 kN mod p and a powmod_small with exponent (p − 1)/2 (~log₂ p multiplies) per (k, p). The share is small (0.5–6% of time).
+3. **lp_ledger (1.8x at 96, 1.4x with re-sieve): uncharged data movement in the large-prime table and the ledger.** A new partial stores its F-entry exponent vector in the hash map (a copy of F u32, uncharged); a combination allocates the combined vector (the add is charged, the allocation is not); the ledger stores each relation's vector. These are F-sized copies per partial, an uncharged word-level cost that grows with F (largest at 96).
+4. **resieve (2.3x at 54, 1.4x at 72):** per polynomial, the re-sieve allocates and initializes a width-sized slot array and rebuilds the `direct` list (F entries), and per candidate it allocates its recorded-prime list. None of this is charged; it is small against the walk at 84–96 and dominant at 54.
+- *Also uncharged, not flagged:* the confirm region zero-initializes an F-entry exponent vector per candidate (`vec![0u32; f]`), F word ops per candidate (confirm is at 0.55–1.2x).
+- *Overpriced, information:* fb (0.20–0.26x: its Legendre and Tonelli steps are charged at the small-mulmod price but run faster) and sieve (0.25–0.40x against the median, but consistent with its own benchmark: ~0.58 ns per update against the clean benchmark's 0.71 ns).
+
+**(GP2, Grok's)** the relation-processing / ledger phase flags; sieving, setup and polynomial generation stay inside; falsified if no phase flags or if sieving flags: **missed.** lp_ledger flags only at 96 (new reference), and polynomial switching (gray) flags at every size, so "polynomial generation stays inside" fails. The falsifier did not fire (phases flag; sieving does not). *Claude chat's guess* (the large-prime / relation-combining phase flags too): holds at 96 only.
+
+**Stop: reported to the user before the 2×2,** per the standing instruction. Proposed fixes, each its own meter or card entry:
+- gray, option (a) (code to add / conditional subtract) or (b) (re-type to small-modulus);
+- mult: charge KS scoring by its real work (a U256 mod p and ~log₂ p small multiplies per (k, p)), or type it as a per-(k, p) Legendre op with its own measured price;
+- lp_ledger: charge the F-entry vector copies (word ops) on insert, combination and ledger storage;
+- resieve and confirm: charge the per-polynomial slot initialization (width word ops), the direct-list rebuild (F) and the per-candidate vector initialization (F).
