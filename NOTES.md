@@ -4076,3 +4076,28 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
      - The "calibrated share > half the official share" clause is mis-specified. For word-level ops that ratio is 0.034 × (official total / ruint total), about 0.37 / 0.50 / 0.62 at 72 / 84 / 96, so it fires at 96 even if the check is charged exactly as assumed. Scored as written; this note goes beside it.
    - *Note (mine), as for D-ledger:* the check runs once per relation offered to the ledger (~70–150 per run), not per partial; partials have their own, already charged, table lookup.
 3. **G-dup mechanism refined by Grok:** exact duplicates arise across A's sharing s − 1 primes, not within one A (consistent with the dedupe MOVES row). The quantitative ranges are unchanged and scored as registered.
+
+**Corrections (user, Oct 26).**
+1. **D-cc is un-scored.** D-cc predicts the ratio of the restricted simulation to the pairing yield measured on the **same traces** (the clean check), not to the old measured values. It is **PENDING** (like G-cc), to be scored per-partial (DeepSeek's statement), with per-distinct beside it, when the clean check runs. The comparisons with the old values above (1.12 / 1.36 / 1.32 per-partial; 1.13 / 1.43 / 1.35 per-distinct) are kept as information only; the "missed" verdicts recorded for D-cc are withdrawn.
+2. **(G-gc54, Grok's)** ruint 5.0–5.6%, Montgomery 6.0–6.7%, one op per update: measured 5.4% / 6.4%, **HOLDS** on the cut clauses. Its slack clause waits for the 2×2. The separate row scoring the 54-bit part of the original G-gc stands as recorded (ruint held, Montgomery missed).
+3. **Beside D-ledger and G-ledger:** Claude chat's annotations also used partials filed as the base. The check runs once per relation offered (~70–150 per run), so all three estimates (DeepSeek's, Grok's and the annotations' recomputations) overstated the count.
+
+## 2026-10-26 — Meter correction: the ledger's duplicate check, and the sq card's tried-multiplier set (cost model before code)
+
+**This is a meter correction, not a re-pricing:** it adds charges, so official counts change.
+
+**(a) Ledger duplicate check** (ledger.py `Ledger.add`; qs.rs `Ledger::add`; used by qs and cfrac).
+- *What it physically does, per relation offered* (after the optional relation check, before the relation is kept):
+  - **Full relation (y = 1):** form |u| (u < 2N, two machine words at our sizes), hash it, probe the set, compare against the entry found, and insert if absent. Charged **2 word ops**: one for hashing the two-word key, one for the probe, compare and insert.
+  - **Combined relation:** form min(cu, N − cu), a two-word subtraction and compare, then the same hash, probe, compare and insert. Charged **3 word ops**.
+- *Type:* word (1 / 0.034 / 0.125), new phase charges to the existing "word" column. Within qs, the word column also holds re-sieve's ops; setup_gray is separate. Both are word-priced, so pricing is unaffected.
+- *When:* every call that reaches the dedupe step, whether or not the relation proves fresh.
+- *Expected size:* relations offered ≈ 70–150 per run, so ~150–400 word ops per run: official < 0.1–0.3% of qs at 72–96 and under 0.05% under ruint and Montgomery. The cfrac card's share is of the same order.
+
+**(b) sq card, mode "smooth": the tried-multiplier set** (lamps.py lamp_sq / ks-order path, `seen`; main.rs, the "smooth" branch).
+- *What it does:* for each k in SMOOTH_K up to kk, insert k into a set (1 word op); then for k = 1 … kk, test whether k is in the set (1 word op). Charged 1 word op per insert and 1 per membership test, at the point performed.
+- *Type:* word. The sq card's per-type split today puts every op in "sq_ops", so the split gains the word column (sq_ops = ops − tests... as today, minus the word ops).
+- The sq card is in no current pipeline; this is for meter completeness.
+
+**Acceptance:** with the correction, every other type is unchanged per number; the new word count equals Σ (2 per full relation offered + 3 per combined relation offered) from the trace (qs, cfrac) and (inserts + tests) for sq; Python = Rust parity, per type.
+**Report:** before / after cost per number per pricing (absolute), per size, for the new, frozen and corrected references; D-ledger and G-ledger are scored; committed separately from the Gray-code commit.
