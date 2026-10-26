@@ -189,5 +189,5 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Idea: compute (kN / p) by the binary Jacobi algorithm (a few word steps per (k, p)). Identical results, less work.
 - Note (Claude Code): multiplicativity goes further. (kN / p) = (k / p)(N / p), so the 14 symbols of N are computed once, and (k / p) for k <= 32 against the 14 primes is a constant table. That makes scoring 20 candidates about 14 symbols plus 280 table lookups.
 - Cost: small.
-- Decision: pending.
+- Decision: adopted 2026-10-26 (the user), as the multiplicativity form: (N / p) once per number by the Legendre power, (k / p) from a constant table, identical rankings (NOTES.md, "I-021 adopted").
 
