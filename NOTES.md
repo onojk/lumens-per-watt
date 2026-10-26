@@ -3084,3 +3084,23 @@ Mine: Track R 5 held, 2 missed. Track M 0 held, 6 missed.
 - **R@96's tc "demand"** (tc 1.035 with lc 1.97; `dvd.out`) is demand for slack near 2.0. It is a product of the tc / lc coupling: with lc at 1.97, only a tc near 1.0 keeps the slack there. Replacing tc by the interior median 1.40 at the same lc raises the slack to 2.37, past the knee.
 - This is added as evidence on the "qs threshold reparameterization" MOVES row.
 - **Open (user, Oct 25):** the Track M 54-bit retune (its budgets moved at the kc / lc re-solve: rho off, ECM on) is skipped for now.
+
+**Item 2 (information only; no card change): sieve-update share and small-prime share** (`evolve/sieveshare.py`, `sieveshare.out`). Each track's kc / lc-round (d) winner, run as qs alone.
+- The sieve-update share is from lampcore per-type counts on all map numbers.
+- The share from primes below 30 is from exact per-polynomial update counts in Python's trace, (width − 1 − start) // p + 1 per root, as the card charges (asserted equal to the charged total per polynomial). It uses 4 map numbers per size and track (2 balanced, 2 band 24).
+
+| bits | track | sieve updates / qs cost: official ops / ruint / Montgomery | updates from primes < 30 |
+|---|---|---|---|
+| 54 | R | 0.339 / 0.095 / 0.112 | 0.781 |
+| 54 | M | 0.413 / 0.142 / 0.169 | 0.815 |
+| 72 | R | 0.413 / 0.153 / 0.169 | 0.668 |
+| 72 | M | 0.524 / 0.295 / 0.320 | 0.643 |
+| 84 | R | 0.480 / 0.232 / 0.245 | 0.727 |
+| 84 | M | 0.525 / 0.290 / 0.305 | 0.728 |
+| 96 | R | 0.547 / 0.322 / 0.331 | 0.680 |
+| 96 | M | 0.534 / 0.328 / 0.338 | 0.677 |
+
+- Primes below 30 give two thirds to four fifths of all sieve updates. The card charges 1 op per update whatever p is, and the KS multiplier favours kN being a residue mod small primes, so small primes are over-represented in the factor base.
+- *Sizing the small-prime-variation row* (upper bound, before the offset): skipping primes below 30 would remove 0.64–0.82 of sieve updates. That is ~22–40% of qs's official ops, but only ~6–25% of its ruint and Montgomery cost, where sieve updates are cheap.
+- The offset is about 0.5 log₂ B units more slack for the same catch (user's Mathematica), which means more candidates confirmed by trial division (charged).
+- Recorded as information on the MOVES row; untested.
