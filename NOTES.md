@@ -3694,3 +3694,15 @@ Cost split under ruint (setup = multiplier, factor base and polynomial setup; th
 - *DeepSeek's linear-algebra counter-mechanism*, recorded with a note: the relations needed (F + 10) do not depend on slack, so linear-algebra cost cannot favour a looser threshold. The sweep's la + sqrt share is 0.01–0.05 at every slack.
 - **(D-rmslack, DeepSeek's; pre-registered)** after root-matched confirmation, the best slack rises 0.3–0.6 under ruint and Montgomery and stays flat under official.
 - **X REVISED again (DeepSeek's):** confirmation 25–50% of total qs cost; D-rm2's saving 15–30% ruint and 16–33% Montgomery. **D-pv is withdrawn by DeepSeek.**
+
+**Grok, before the slack sweep** (labelled as Grok's; recorded Oct 25). *Timing:* this arrived after the sweep had run and been committed, so G-slack REVISED is **post hoc**. G-rmslack is pre-registered.
+- **G-slack REVISED (conditional; post hoc):** under ruint and Montgomery there is a clear minimum near 2.0 only if setup is ~25–45% of qs cost (~30–60x the sieve-update cost); if the measured setup share is below ~20%, the minimum is at 1.4–1.8. Under official, a minimum near 2.0 with setup ~10–20x the sieve.
+  - *Scored against the measured split:* the ruint setup share at the tuned slack is 0.35–0.48 (in or just above 25–45%), and there is a clear minimum near 2.0 under ruint and Montgomery: **held.** Official: the setup share is 0.07–0.12, and cost is flat above 2.0 (0.99–1.05 at 2.5) rather than a clear minimum: **missed.**
+- **(G-rmslack; pre-registered)** after root-matched confirmation, the best slack stays flat under official (−0.1 to +0.2) and rises 0.2–0.4 under ruint and Montgomery; more than 0.5 would surprise Grok. (DeepSeek's D-rmslack: 0.3–0.6.)
+- *Grok's view:* if the sweep showed slack 1.0–1.5 cheaper than ~2.0 by 8–18% under ruint, adopt it immediately, then drop tc's lower bound and retune. **Moot:** the sweep shows the opposite.
+
+**Protocol for sweep results (recommended; the user to confirm):**
+- A sweep result on map numbers is not adopted directly.
+- If a lower (or different) slack wins in a sweep, run one sealed check on fresh numbers (per-band gate, paired intervals, all three pricings).
+- Because it changes the reference genes, adoption goes through the pre-registered replacement rule. Dropping tc's lower bound and retuning come after.
+- For this sweep, no slack beat the tuned one, so nothing is adopted.
