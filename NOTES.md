@@ -4142,3 +4142,22 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
 **Re-sieve formal results, restated** (772632a; full pass → re-sieve, cost per number, current pricing): in the table under "Re-sieve against full-pass confirmation" above.
 - Scores as recorded there, at the current tuned genes: D-rm missed, D-rm2 missed, G-rm missed. (The user's "D-rs" refers to these.)
 - The before-retune clauses stand; the after-retune clauses wait for the 2×2.
+
+**DeepSeek's reply (new chat, Oct 26, 00:30), with annotations** (labelled as DeepSeek's; annotations by Claude chat, relayed by the user). Pre-registered; the clean check has not run.
+1. **(D-occ)** clean-check diagnostic (per-distinct; base = the matched traces, genuine repeats with exact duplicates removed): the shape-matched shortfall is carried by same-q clustering or overdispersion (repeats correlated within an A or polynomial, or across A's sharing s − 1 primes), not by near-B concentration or exact duplicates.
+   - It predicts an excess of distinct q with n_q ≥ 3 over an independent-occupancy null of ~0.5–1.1 pp at 72, ~0.3–0.6 pp at 84 and ~0.4–0.7 pp at 96, or a share of combinations coming from n_q ≥ 3 or within-A repeats of ~8–25%.
+   - Falsified if the n_q ≥ 3 excess is below 0.3 pp at 96 and below 0.5 pp at 72, or if a null resampled from the filed histogram reproduces the measured yield within 5% at all three sizes.
+   - *Annotations:*
+     - The card's yield counts n_q − 1 combinations per q (each repeat combines with the first filing), not C(n_q, 2) pairs. A 2 → 3 shift adds one combination, not two, so the shifts needed to close the gap are ~2.2% / ~1.0% / ~1.1% of distinct q, double DeepSeek's. Its ranges were built on C(n, 2); scored as given.
+     - The mechanism stands: with partials fixed, yield = (partials − distinct) / distinct, so clustering (fewer distinct q per partial) raises it.
+     - Its null, resampling with replacement from the filed occurrences, keeps their repeats and is biased toward reproducing the measured yield. The fair null draws from a smooth fit to the filed log_B q histogram (as in the user's simulations). Both are reported; the clause is scored against the smooth-fit null, with the resampled one beside it.
+2. **(D-alpha)** mechanism for the within-bin α ≈ 1.2–1.5: α on filed q exceeds α on raw divisor q. It predicts α_raw ~0.9–1.1 and α_filed ~1.2–1.5 at the current slack, with α_filed falling 0.1–0.3 per +0.3 slack, most in the re-sieve-on cells, and little effect from the Gray-code re-typing. Falsified if α_raw > 1.2, or if α_filed does not fall with slack.
+   - *Annotation:* its stated mechanism (upper-edge q "falling under the small-prime / full threshold") does not apply, because every q in these bins is above B. The mechanism consistent with its slack prediction is the sieve threshold: the estimate is short by about log q, so acceptance falls with q within each bin (effective α > 1), and more slack loosens it. Scored as given.
+   - α_raw needs the q's of threshold-rejected positions, which the card never factors. Measuring it needs a harness-only factoring of a sample of rejected sieve positions (optional, information only).
+   - Also: D-b2b's ranges at 72 and 84 sit at or below the α = 1 values (0.155 / 0.133), i.e. less near B than 1/q within bins, which would widen the shortfall that D-occ attributes to clustering.
+3. **Clean check, added to its report:**
+   - (a) the n_q histogram per size (n = 1, 2, 3, 4+), genuine repeats only, against the smooth-fit null (and the resampled null beside it);
+   - (b) the split of combinations into within-A repeats and across-A repeats;
+   - (c) α fitted within each 0.2-wide bin for filed q, and separately for paired and unpaired q.
+   - In the scored 2×2 slack retune, the same α_filed is logged per cell, so D-alpha's slack clause can be scored.
+   - *Optional, information only, low priority:* α_raw from a harness-only factoring of a sample of threshold-rejected sieve positions at 72.
