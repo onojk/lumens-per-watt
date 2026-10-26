@@ -4412,3 +4412,23 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
   - Size: |plist| ≈ 5–15 per candidate, so a sort is ~20–60 comparisons. At 96 bits (1,069 candidates) that is up to ~50k uncharged word-level ops per number: ~2% of qs's ruint cost and ~3–4% official in the re-sieve-on runs.
   - **The re-sieve measurements (772632a) are therefore slightly under-charged**, more so under official. It needs a fix (implement as a charged merge, |plist| word ops per candidate; cost-model entry first) before the 2×2's re-sieve-on cells. **Reported for the user; not fixed yet.**
 - For the 2×2 p0 sweep: the official-best p0 per size is also reported.
+
+**Decisions (user, Oct 26):**
+1. **Item 11 approved:** the re-sieve per-candidate prime list is built by a linear merge of the two factor-base-ordered lists, charged |plist| word ops per candidate, in both cores (cost model below). It gets its own commit and a short report (re-sieve-on cells only).
+2. **Calibration of the word price, before the start-offset code and before the audit re-typing:**
+   - opbench's "sieve update" loop computes (r + mm) % p inside the timed loop, so the calibrated sieve_update price, which is the word price used for setup_gray, the audit re-typing and the start offsets, may be overpriced.
+   - A clean benchmark is added: the same updates with the start positions precomputed outside the timed loop. Reported: old against clean sieve_update ns and price (ruint, Montgomery), and the roots-per-update ratio of the benchmark's prime set against the card's, per size.
+   - Proposed: the word price = the clean sieve_update price, with start offsets charged separately (item 10). **calibrate.json is not changed without the user's go.** If adopted, the Gray-code before / after is restated under the new price (re-pricing only), noting which earlier scores move.
+3. Item 10 (start offsets, precompute M mod p) is implemented after step 2's decision, so it is priced with the settled word price. Its own commit, parity and report.
+4. **Before the 2×2,** after items 10 and 11 and the audit re-typing: a phase-level wall-clock check (information). Time each qs phase in lampcore (setup, sieve, scan, confirm, lp, la, sqrt, check) per run on a sample of map numbers per size (new reference, with and without re-sieve), and compare each phase's time with its priced ruint cost (27.3 ns per priced multiply). Report time / priced cost per phase; any phase above ~1.5x the median ratio flags uncharged or underpriced work and is listed before the 2×2.
+5. **Note:** the user's fitted re-sieve model was built on the under-charged meter (items 10 and 11 uncharged), so its p0 conclusions are directional. The 2×2's p0 sweep on the corrected meter settles them.
+- *Order:* commit the sq ksq fix and the ledger correction (separately) once parity passes → item 11 merge → the step-2 benchmark and decision → item 10 → audit re-typing (with the price check) → the phase-level wall-clock check → the 2×2. A report after each.
+
+### Cost model: re-sieve prime list by a charged merge (item 11; before code)
+- *Today:* for each candidate, plist = sorted(direct + recorded), uncharged.
+- *New:* `direct` (the primes below p0 and the unsieved ones) is in factor-base index order by construction. Each candidate's recorded primes are appended in the walk's order, which is st_'s order, ascending in factor-base index. So plist is the linear merge of two ascending lists.
+- *Charge:* **|plist| word ops per candidate** (one compare-and-advance per element emitted), type word, charged with the candidate's confirm charges (just before the confirm_td charge).
+- *Acceptance:*
+  - the per-candidate prime list, and so every division, relation and factor, is identical to today's;
+  - the new word count equals Σ |plist| from the trace;
+  - Python = Rust parity, per type.
