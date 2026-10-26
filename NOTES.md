@@ -4998,3 +4998,53 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
 - A gcd: **1 op per batch of b = 64 compared steps**, also a luck-meter test.
 - *Types:* mul = ops − tests (price 1 under every pricing) and gcd = tests (7.86 ruint, 29.06 Montgomery).
 - So yes: one f evaluation per step, one multiply only per comparison actually made, and a gcd per 64 comparisons, each a full mod-N op. The comparison rule is skip-half (C1, confirmed).
+
+### Audit re-typing, items 0–8: results (`evolve/audit_accept.py`, `audit_accept.out`, `.json`; `parity_audit.out`)
+- **Acceptance:**
+  - on all 2,000 map numbers × 4 genomes, total ops, factor, tests, hits and every untouched type (fb, setup_euclid, sieve_update, sieve_scan, la, sqrt, lp_full, check, setup_gray) are identical; setup_full and confirm_full are zero; the types sum to ops (8,000 / 8,000);
+  - Python = Rust per type (32 / 32);
+  - **parity passes** (types 6,894, mutations 54 / 54, 0 mismatches).
+  - **Official cost is unchanged, exactly**, everywhere.
+- **Cost per number, absolute, before → after** (base: the meter after the Gray-code re-typing, the ledger correction, items 10–13 and the clean word price):
+
+| bits | genome | ruint | Montgomery |
+|---|---|---|---|
+| 54 | new reference | 2,925 → 2,302 (−21.31%) | 9,034 → 7,828 (−13.35%) |
+| 54 | new reference + re-sieve | 2,736 → 2,112 (−22.78%) | 8,318 → 7,112 (−14.50%) |
+| 54 | corrected / frozen reference | −21.98% / **−72.08%** | −16.06% / −41.15% |
+| 72 | new reference | 10,431 → 8,538 (−18.14%) | 34,373 → 30,360 (−11.67%) |
+| 72 | new reference + re-sieve | 9,285 → 7,393 (−20.38%) | 30,046 → 26,034 (−13.35%) |
+| 72 | corrected / frozen reference | −13.18% / −43.79% | −8.89% / −17.73% |
+| 84 | new reference | 25,248 → 22,119 (−12.39%) | 87,256 → 80,146 (−8.15%) |
+| 84 | new reference + re-sieve | 22,691 → 19,562 (−13.79%) | 77,531 → 70,422 (−9.17%) |
+| 84 | corrected / frozen reference | −10.06% / −64.23% | −6.99% / −32.16% |
+| 96 | new reference | 64,583 → 58,135 (−9.98%) | 230,128 → 212,968 (−7.46%) |
+| 96 | new reference + re-sieve | 64,313 → 57,865 (−10.03%) | 228,469 → 211,308 (−7.51%) |
+| 96 | corrected / frozen reference | −6.73% / −51.14% | −4.69% / −22.08% |
+
+- **The frozen reference falls 44–72% under ruint** because its enumerate setup forms every candidate A with multiplies that were charged as full mod-N multiplies; they are word multiplies. The overcharge recorded on Oct 25 (up to ~60% of its ruint cost) is gone. Its remaining qs cost is now close to the corrected reference's.
+- *The own types cost something:* pricing hash, sort_cmp, f64_log and f64_div at the word price instead would add back 166 / 377 / 580 / 1,156 (ruint) and 613 / 1,392 / 2,140 / 4,269 (Montgomery) per number at 54 / 72 / 84 / 96.
+- **Savings on the audit-table base** (absolute saving ÷ the qs cost of the audit table: ruint 3,131 / 12,106 / 30,087 / 79,657, Montgomery 9,800 / 40,597 / 105,227 / 286,099): ruint 19.9 / 15.6 / 10.4 / 8.1%, Montgomery 12.3 / 9.9 / 6.8 / 6.0%. All-word counterfactual: ruint 25.2 / 18.7 / 12.3 / 9.5%, Montgomery 18.6 / 13.3 / 8.8 / 7.5%.
+  - *Caveat:* the absolute savings use today's counts, which include items 10–13 and the clean word price, while the audit table predates them.
+
+**The qs reference cost per number after tonight's corrections** (new reference genes; the reference for outside models):
+
+| bits | official | ruint | Montgomery | + re-sieve (p0 30): official / ruint / Montgomery |
+|---|---|---|---|---|
+| 54 | 27,192 | 2,302 | 7,828 | 30,878 / 2,112 / 7,112 |
+| 72 | 140,080 | 8,538 | 30,360 | 162,414 / 7,393 / 26,034 |
+| 84 | 444,370 | 22,119 | 80,146 | 538,261 / 19,562 / 70,422 |
+| 96 | 1,422,992 | 58,135 | 212,968 | 1,840,718 / 57,865 / 211,308 |
+
+- *Against the qs costs the outside models used* (10,736 / 26,606 / 69,874 ruint, post-Gray), **the ruint reference has fallen by about 20% at 72 (→ 8,538), 17% at 84 (→ 22,119) and 17% at 96 (→ 58,135)** across tonight's meter corrections and re-typings.
+  - Every small-lamp saving measured against the older qs costs (I-016, I-017, I-019) is therefore overstated.
+  - The sealed predictions are unchanged. A real-prime split-half rerun at the new costs (user, Mathematica) comes before the card re-solve.
+
+**Predictions, scored as written** (bases stated):
+- **(W1, Grok's)** ruint change −14 to −20 / −12 to −18 / −9 to −14% at 72 / 84 / 96, official unchanged: **held** at all three (−18.1 / −12.4 / −10.0%; official 0).
+- **(W1, Claude chat's)** −6 to −15%, the cut shrinking with size: **held at 84 and 96, missed at 72** (−18.1%); the shrinking clause held.
+- **(G-audit, Grok's; post-ledger base)** ruint 18–26 / 16–23 / 9–14 / 7–12%, Montgomery 12–18 / 10–15 / 6–10 / 4–8%: **held** at every size under both pricings (ruint 21.3 / 18.1 / 12.4 / 10.0%, Montgomery 13.4 / 11.7 / 8.2 / 7.5%). Its benchmark expectation (only the double divide above 3x) **missed**: hash, sort comparison and log are also above 3x. Its falsifier (outside 5–35%, or 96 > 54) did not fire.
+- **(D-audit, DeepSeek's; post-ledger base, here also after items 10–13)** ruint 26.5 / 24.2 / 14.7 / 12.3% ± 2.0 pp, Montgomery 8.5 / 7.1 / 4.2 / 3.4% ± 1.0 pp; falsified if off by more, or if the multiply-add, hash probe or sort comparison exceeds 3x, or if the double divide is ≤ 3x: **FALSIFIED.** Ruint is 21.3 / 18.1 / 12.4 / 10.0% (off by more than 2 pp at every size), Montgomery 13.4 / 11.7 / 8.2 / 7.5% (off by more than 1 pp at every size), and the hash probe (14.1x) and sort comparison (4.5x) exceed 3x. The double-divide clause held (7.4x).
+- **(W-audit, Claude chat's; audit-table base)** ruint 23–26 / 21–24 / 12–15 / 10–12.5%, Montgomery 16–18.5 / 15–18 / 8.5–11 / 8.5–10.5%: **FALSIFIED** (ruint 19.9 / 15.6 / 10.4 / 8.1%, Montgomery 12.3 / 9.9 / 6.8 / 6.0%: outside at every size).
+  - By its own rule (own types excluded), the all-word counterfactual gives ruint 25.2 / 18.7 / 12.3 / 9.5% (in at 54 and 84) and Montgomery 18.6 / 13.3 / 8.8 / 7.5% (in at 84 only): still outside at two or more sizes under each pricing.
+- **(W2)** already scored post hoc (2e0f8d5): Grok's missed, Claude chat's held.

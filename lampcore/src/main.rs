@@ -34,15 +34,22 @@ struct Budget;
 
 /// Per-type op counts (NOTES.md, "lampcore per-type op counters"): the types optypes.py
 /// splits, in its TYPE_ORDER.
-pub const TYPE_NAMES: [&str; 25] = [
+pub const TYPE_NAMES: [&str; 29] = [
     "mult", "fb", "setup_full", "setup_euclid", "setup_small", "sieve_update", "sieve_scan",
     "confirm_full", "confirm_td", "la", "sqrt_mul", "sqrt_gcd", "lp_full", "lp_small", "check",
     "setup_mul", "setup_euclid_N", "mul", "gcd", "td_mod", "sq_ops", "ps_ops", "cfrac_ops", "word", "setup_gray",
+    "hash", "sort_cmp", "f64_log", "f64_div",
 ];
 /// The word-level phase (NOTES.md, "ECM modular additions"): one machine-word op, priced like sieve_update.
 pub const PH_WORD: usize = 15;
 /// The Gray-code root-update phase (NOTES.md, "Gray-code root update re-typed"): word-level, its own type for both-way pricing.
 pub const PH_GRAY: usize = 16;
+/// The audit re-typing's own types (NOTES.md, "Audit re-typing, items 0-8"): one hash-set probe-and-insert,
+/// one comparison inside a sort, one floating log of a ratio, one floating divide.
+pub const PH_HASH: usize = 17;
+pub const PH_SORT: usize = 18;
+pub const PH_FLOG: usize = 19;
+pub const PH_FDIV: usize = 20;
 /// Event counters for the full-price parts, at the program points of Python's trace updates.
 pub const EV_SETUP_FULL: usize = 0;
 pub const EV_SETUP_EUCLID: usize = 1;
@@ -51,11 +58,11 @@ pub const EV_CONFIRM_FULL: usize = 3;
 pub const EV_SQRT_GCD: usize = 4;
 pub const EV_LP_FULL: usize = 5;
 pub const EV_ECM_EUCLID: usize = 6;
-pub type Types = [i64; 25];
+pub type Types = [i64; 29];
 
 /// One stage's per-type counts from its own deltas (ops, tests, phases, event counters).
-fn stage_types(t: &str, d_ops: u64, d_tests: u64, ph: &[u64; 17], ev: &[u64; 7]) -> Types {
-    let mut o = [0i64; 25];
+fn stage_types(t: &str, d_ops: u64, d_tests: u64, ph: &[u64; 21], ev: &[u64; 7]) -> Types {
+    let mut o = [0i64; 29];
     let (p, e) = (|i: usize| ph[i] as i64, |i: usize| ev[i] as i64);
     match t {
         "qs" => {
@@ -76,6 +83,10 @@ fn stage_types(t: &str, d_ops: u64, d_tests: u64, ph: &[u64; 17], ev: &[u64; 7])
             o[14] = p(qs::CHECK);
             o[23] = p(PH_WORD); // re-sieve word ops (zero unless confirm = resieve)
             o[24] = p(PH_GRAY);
+            o[25] = p(PH_HASH);
+            o[26] = p(PH_SORT);
+            o[27] = p(PH_FLOG);
+            o[28] = p(PH_FDIV);
         }
         "ecm" => {
             o[15] = p(ecm::ECM_SETUP) - e(EV_ECM_EUCLID);
@@ -104,7 +115,7 @@ struct Meter {
     tests: u64,
     hits: u64,
     k: Option<u64>, // instrumentation: the k a square-search win came from
-    phases: [u64; 17], // per-phase ops of qs, cfrac and ecm (see qs.rs, cfrac.rs, ecm.rs)
+    phases: [u64; 21], // per-phase ops of qs, cfrac and ecm (see qs.rs, cfrac.rs, ecm.rs)
     hook: Option<Box<race::Hook>>, // set only on a race side's meter (race.rs)
     race: Option<(u64, u64, u64)>, // the last race's side A ops, side B ops, switches
     ob: Option<u64>, // the running stage's op budget ("ob"; NOTES.md, "Per-stage op budget")
@@ -596,7 +607,7 @@ fn run_stage(num: &Num, s: &Value, m: &mut Meter) -> R {
     }
 }
 
-type RunOut = (Option<Win>, u64, u64, [u64; 17], Option<(u64, u64, u64)>, Types);
+type RunOut = (Option<Win>, u64, u64, [u64; 21], Option<(u64, u64, u64)>, Types);
 
 fn run(genome: &[Value], num: &Num, cap: u64) -> RunOut {
     for s in genome {
@@ -610,8 +621,8 @@ fn run(genome: &[Value], num: &Num, cap: u64) -> RunOut {
             race::validate(s);
         }
     }
-    let mut m = Meter { ops: 0, cap, tests: 0, hits: 0, k: None, phases: [0; 17], hook: None, race: None,
-                        ob: None, ob_spent: 0, ob_hit: false, ev: [0; 7], types: [0; 25] };
+    let mut m = Meter { ops: 0, cap, tests: 0, hits: 0, k: None, phases: [0; 21], hook: None, race: None,
+                        ob: None, ob_spent: 0, ob_hit: false, ev: [0; 7], types: [0; 29] };
     for (i, s) in genome.iter().enumerate() {
         let ob = s.get("ob").and_then(|v| v.as_u64());
         if ob == Some(0) {
@@ -624,7 +635,7 @@ fn run(genome: &[Value], num: &Num, cap: u64) -> RunOut {
         let r = run_stage(num, s, &mut m);
         if s["t"] != "race" {
             // a race adds its sides' split itself (race.rs)
-            let ph: [u64; 17] = std::array::from_fn(|i| m.phases[i] - ph0[i]);
+            let ph: [u64; 21] = std::array::from_fn(|i| m.phases[i] - ph0[i]);
             let ev: [u64; 7] = std::array::from_fn(|i| m.ev[i] - ev0[i]);
             let st = stage_types(s["t"].as_str().unwrap(), m.ops - start, m.tests - t0, &ph, &ev);
             for (a, b) in m.types.iter_mut().zip(st.iter()) {

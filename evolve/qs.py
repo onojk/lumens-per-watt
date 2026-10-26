@@ -79,7 +79,7 @@ def lamp_qs(N, g, m):
     ranked = sorted(cands, key=lambda kk: (-ks_score(kk, N), kk))
     SC = bool(g.get("sort_charge", 0))
     if SC:                                     # sort_charge: the multiplier ranking (keys already charged)
-        ch.charge("mult", sort_cost(kc))
+        ch.charge("sortc", sort_cost(kc))     # comparisons (audit item 2: sort_cmp)
     lnN = math.log(N)
     B = max(30, int(g.get("bc", 1.5) * math.exp(0.5 * math.sqrt(lnN * math.log(lnN)))))
     for k in ranked:
@@ -138,34 +138,34 @@ def a_on_demand(pool, s, q, target, charge, at, sc=False, by_q=None):
 def _a_pass(by_q, pool, s, target, charge, at, used, limit, sc):
     for pre in combinations(by_q, s - 1):
         if limit == s - 2:
-            charge("setup", (s - 1) * len(used))
+            charge("word", (s - 1) * len(used))    # prefix-overlap check (audit item 1)
             if at is not None:
                 at["od_small"] += (s - 1) * len(used)
             if any(all(p in u for p in pre) for u in used):
                 continue
-        Ap = math.prod(pre); charge("setup", s - 2)
-        tp = target / Ap; charge("setup", 1)
+        Ap = math.prod(pre); charge("word", s - 2)      # word multiplies (audit item 3)
+        tp = target / Ap; charge("fdiv", 1)             # a double divide (audit item 1)
         if at is not None:
             at["od_prefixes"] += 1
         rest = [p for p in pool if p not in pre]
         charge("word", len(pool))              # building rest: one word op per pool prime (item 13)
         while rest:
-            last = min(rest, key=lambda p: (abs(math.log(p / tp)), p)); charge("setup", len(rest))
+            last = min(rest, key=lambda p: (abs(math.log(p / tp)), p)); charge("flog", len(rest))   # a log per scanned prime (item 1)
             if at is not None:
                 at["od_small"] += len(rest)
             rest.remove(last); charge("word", 1)    # the removal (item 13)
-            A = Ap * last; charge("setup", 1)
-            charge("setup", 1)                 # target check
+            A = Ap * last; charge("word", 1)    # a word multiply (audit item 3)
+            charge("flog", 1)                  # target check: a log (audit item 1)
             if at is not None:
                 at["od_cands"] += 1
             if abs(math.log2(A / target)) > 0.25:
                 break
             key = tuple(sorted(pre + (last,)))
             if sc:                             # sort_charge: the key's s primes
-                charge("setup", sort_cost(s))
+                charge("sortc", sort_cost(s))
             if at is not None:
                 at["od_keys"] = at.get("od_keys", 0) + 1
-            charge("setup", s * len(used))
+            charge("word", s * len(used))          # overlap compare (audit item 1)
             if at is not None:
                 at["od_small"] += s * len(used)
             if any(len(set(key) & set(u)) > limit for u in used):
@@ -203,7 +203,8 @@ def sieve_source(N, k, g, led, ch, at):
     pool = sorted(closeness)
     sc = bool(g.get("sort_charge", 0))
     if sc:                                     # sort_charge: pool selection (n keys + comparisons), then ascending
-        charge("setup", len(pool_all) + sort_cost(len(pool_all)) + sort_cost(P))
+        charge("flog", len(pool_all))          # the keys: a log each (audit item 2)
+        charge("sortc", sort_cost(len(pool_all)) + sort_cost(P))
     if at is not None:
         at["n_pool_all"], at["P"] = len(pool_all), P
     given = g.get("a_given")                   # test hook (acceptance only): a fixed A sequence, no selection charge
@@ -218,10 +219,10 @@ def sieve_source(N, k, g, led, ch, at):
             at["combos"], at["s"] = 0, s
     else:
         combos = list(combinations(pool, s))
-        charge("setup", (s - 1) * len(combos))     # multiplies forming each A
+        charge("word", (s - 1) * len(combos))      # word multiplies forming each A (audit item 3)
         combos.sort(key=lambda c: (abs(math.log(math.prod(c) / target)), c))
         if sc:                                 # sort_charge: the candidate sort (C keys + comparisons)
-            charge("setup", len(combos) + sort_cost(len(combos)))
+            charge("flog", len(combos)); charge("sortc", sort_cost(len(combos)))
         if at is not None:
             at["combos"], at["s"] = len(combos), s
     lc = min(3.0, max(1.0, g.get("lc", 1.0)))    # clamp 3.0 (NOTES.md, "(A2)"): above 2.0 a cofactor may be composite
@@ -250,7 +251,7 @@ def sieve_source(N, k, g, led, ch, at):
             gam = roots_t[ql] * inv % ql; charge("setup", 1)
             if gam > ql // 2:
                 gam = ql - gam
-            Bl.append(Aq * gam); charge("setup", 1)
+            Bl.append(Aq * gam); charge("word", 1)    # a word multiply (audit item 4); A/q above stays small-modulus
         sieved = [p for p in base[2:] if A % p]
         sieved = [p for p in sieved if p != 2]
         st_ = []                               # per sieved prime: [p, roots, 2 B_l A^-1]
@@ -329,12 +330,13 @@ def sieve_source(N, k, g, led, ch, at):
             # 5. confirm
             for i0 in cand:
                 x = i0 - M
-                v = (A * x + 2 * Bv) * x + C; charge("confirm", 2)
+                v = (A * x + 2 * Bv) * x + C; charge("word", 2)   # two word multiply-adds (audit item 5)
                 if RS:                             # merge two ascending lists, |plist| word ops (NOTES.md, item 11)
                     plist = merge_asc(direct, rec[i0]); charge("word", len(plist))
                 else:
                     plist = range(1, F)
-                charge("confirm", 1 + len(plist) if RS else F)
+                charge("word", 1)                  # the sign check (audit item 8)
+                charge("confirm", len(plist) if RS else F - 1)
                 if at is not None:
                     at["cands"].append(v)
                 vec = [0] * F
@@ -354,7 +356,7 @@ def sieve_source(N, k, g, led, ch, at):
                 smooth = v == 1
                 partial = False
                 if LP and not smooth:              # 8. large primes
-                    charge("lp", 1)                # bound check
+                    charge("word", 1)              # bound check (audit item 6)
                     partial = v < L
                     if at is not None:
                         at["lp"]["cof"] += 1; at["lp"]["lt"] += partial
@@ -371,16 +373,16 @@ def sieve_source(N, k, g, led, ch, at):
                 charge("lp", 1)                    # N mod q
                 if N % v == 0:
                     return v
-                charge("lp", 1)                    # hash lookup
+                charge("hash", 1)                  # hash lookup (audit item 6)
                 other = partials.get(v)
                 if other is None:
-                    charge("lp", 1)                # insert
+                    charge("hash", 1)              # insert (audit item 6)
                     partials[v] = (u, vec)
                     if at is not None:
                         at["lp"]["inserts"] += 1
                     continue
                 cu = other[0] * u % N; charge("lp", 1)
-                cvec = [a + b for a, b in zip(other[1], vec)]; charge("lp", F)
+                cvec = [a + b for a, b in zip(other[1], vec)]; charge("word", F)   # vector add (audit item 7)
                 if at is not None:
                     at["lp"]["combos"] += 1
                 if led.add(cu, cvec, v, chk):

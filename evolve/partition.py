@@ -89,6 +89,8 @@ def prices():
         out[ref]["setup_gray"] = cal["word_price"][ref]   # Gray-code root update: word-level
         # sieve updates at the clean price: the start offsets are charged separately since item 10
         out[ref]["sieve_update"] = cal["word_price"][ref]
+        for t, v in cal["word_price"]["own_types"].items():   # audit re-typing's own types
+            out[ref][t] = v[ref]
     return out
 
 class SpentMeter(Meter):

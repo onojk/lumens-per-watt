@@ -20,10 +20,10 @@ the stop but not yet tested counts as a multiply (1 op). The sum is still exact.
 def qs_counts(tr):
     o = tr["ops"]
     ats = tr["attempts"]
-    setup_full = sum((a["s"] - 1) * a["combos"] + (a["s"] - 1) * a.get("od_prefixes", 0) + 2 * a.get("od_cands", 0) + 2 * a["s"] * a["a_count"] for a in ats)
+    setup_full = 0          # audit re-typing (NOTES.md): no qs charge is a full multiply in setup any more
     setup_euc = sum(st for a in ats for _, _, st in a["inv"])
     scans = sum(2 * p["M"] + 1 for a in ats for p in a["polys"])
-    confirm_full = sum(2 * len(a["cands"]) for a in ats)
+    confirm_full = 0        # audit re-typing: the v evaluation is two word multiply-adds
     sqrt_gcd = sum(d["gcd_steps"] for a in ats for d in a["deps"])
     lp_full = sum(a["lp"]["combos"] for a in ats if "lp" in a)
     return {"mult": o.get("mult", 0), "fb": o.get("fb", 0),
@@ -33,7 +33,8 @@ def qs_counts(tr):
             "confirm_full": confirm_full, "confirm_td": o.get("confirm", 0) - confirm_full,
             "la": o.get("la", 0), "sqrt_mul": o.get("sqrt", 0) - sqrt_gcd, "sqrt_gcd": sqrt_gcd,
             "lp_full": lp_full, "lp_small": o.get("lp", 0) - lp_full, "check": o.get("check", 0),
-            "word": o.get("word", 0), "setup_gray": o.get("gray", 0)}
+            "word": o.get("word", 0), "setup_gray": o.get("gray", 0),
+            "hash": o.get("hash", 0), "sort_cmp": o.get("sortc", 0), "f64_log": o.get("flog", 0), "f64_div": o.get("fdiv", 0)}
 
 def ecm_setup_steps(N, sigma):
     """(Euclid steps of den^-1 mod N, whether den is invertible) for a Suyama curve."""
@@ -68,7 +69,8 @@ def rho_counts(ops, tests):
 # The fixed type order of lampcore's --types output (lampcore/src/main.rs, TYPE_NAMES).
 TYPE_ORDER = ["mult", "fb", "setup_full", "setup_euclid", "setup_small", "sieve_update", "sieve_scan",
               "confirm_full", "confirm_td", "la", "sqrt_mul", "sqrt_gcd", "lp_full", "lp_small", "check",
-              "setup_mul", "setup_euclid_N", "mul", "gcd", "td_mod", "sq_ops", "ps_ops", "cfrac_ops", "word", "setup_gray"]
+              "setup_mul", "setup_euclid_N", "mul", "gcd", "td_mod", "sq_ops", "ps_ops", "cfrac_ops", "word", "setup_gray",
+              "hash", "sort_cmp", "f64_log", "f64_div"]
 
 def prices(path="calibrate.json"):
     """Per pricing, the price of each type: official 1 for every op; ruint and Montgomery from
@@ -84,6 +86,8 @@ def prices(path="calibrate.json"):
         out[ref]["setup_gray"] = cal["word_price"][ref]   # Gray-code root update: word-level
         # sieve updates at the clean price: the start offsets are charged separately since item 10
         out[ref]["sieve_update"] = cal["word_price"][ref]
+        for t, v in cal["word_price"]["own_types"].items():   # audit re-typing's own types
+            out[ref][t] = v[ref]
     return out
 
 def cost(counts, pricing, pr):

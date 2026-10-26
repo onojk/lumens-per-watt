@@ -26,7 +26,7 @@ struct SideEnd {
     tests: u64,
     hits: u64,
     k: Option<u64>,
-    phases: [u64; 17],
+    phases: [u64; 21],
     types: crate::Types,
 }
 
@@ -113,7 +113,7 @@ pub fn lamp_race(num: &Num, g: &Value, m: &mut Meter) -> R {
                 let (stage, size, ops) = (stages[cur], sizes[cur], shared);
                 sc.spawn(move || {
                     let hook = Hook { size, counter: 0, side_ops: 0, solo, tx: tx.clone(), rx: crx };
-                    let mut sm = Meter { ops, cap, tests: 0, hits: 0, k: None, phases: [0; 17], hook: Some(Box::new(hook)), race: None, ob: None, ob_spent: 0, ob_hit: false, ev: [0; 7], types: [0; 25] };
+                    let mut sm = Meter { ops, cap, tests: 0, hits: 0, k: None, phases: [0; 21], hook: Some(Box::new(hook)), race: None, ob: None, ob_spent: 0, ob_hit: false, ev: [0; 7], types: [0; 29] };
                     let res = crate::run_stage(num, stage, &mut sm);
                     let h = sm.hook.take().unwrap();
                     let types = crate::stage_types(stage["t"].as_str().unwrap(), h.side_ops, sm.tests, &sm.phases, &sm.ev);

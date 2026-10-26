@@ -1,0 +1,18 @@
+54 bits, new ref: cost per number before / after: offi 27,192 / 27,192 (+0.00%)  ruin 2,925 / 2,302 (-21.31%)  mont 9,034 / 7,828 (-13.35%)
+54 bits, new ref + re-sieve: cost per number before / after: offi 30,878 / 30,878 (+0.00%)  ruin 2,736 / 2,112 (-22.78%)  mont 8,318 / 7,112 (-14.50%)
+54 bits, corrected ref: cost per number before / after: offi 27,889 / 27,889 (+0.00%)  ruin 3,349 / 2,613 (-21.98%)  mont 10,719 / 8,998 (-16.06%)
+54 bits, frozen ref: cost per number before / after: offi 31,831 / 31,831 (+0.00%)  ruin 9,222 / 2,575 (-72.08%)  mont 15,068 / 8,868 (-41.15%)
+72 bits, new ref: cost per number before / after: offi 140,080 / 140,080 (+0.00%)  ruin 10,431 / 8,538 (-18.14%)  mont 34,373 / 30,360 (-11.67%)
+72 bits, new ref + re-sieve: cost per number before / after: offi 162,414 / 162,414 (+0.00%)  ruin 9,285 / 7,393 (-20.38%)  mont 30,046 / 26,034 (-13.35%)
+72 bits, corrected ref: cost per number before / after: offi 152,893 / 152,893 (+0.00%)  ruin 13,634 / 11,837 (-13.18%)  mont 46,656 / 42,511 (-8.89%)
+72 bits, frozen ref: cost per number before / after: offi 158,517 / 158,517 (+0.00%)  ruin 21,115 / 11,869 (-43.79%)  mont 51,642 / 42,486 (-17.73%)
+84 bits, new ref: cost per number before / after: offi 444,370 / 444,370 (+0.00%)  ruin 25,248 / 22,119 (-12.39%)  mont 87,256 / 80,146 (-8.15%)
+84 bits, new ref + re-sieve: cost per number before / after: offi 538,261 / 538,261 (+0.00%)  ruin 22,691 / 19,562 (-13.79%)  mont 77,531 / 70,422 (-9.17%)
+84 bits, corrected ref: cost per number before / after: offi 523,893 / 523,893 (+0.00%)  ruin 38,048 / 34,222 (-10.06%)  mont 134,055 / 124,687 (-6.99%)
+84 bits, frozen ref: cost per number before / after: offi 578,874 / 578,874 (+0.00%)  ruin 98,627 / 35,278 (-64.23%)  mont 189,511 / 128,560 (-32.16%)
+96 bits, new ref: cost per number before / after: offi 1,422,992 / 1,422,992 (+0.00%)  ruin 64,583 / 58,135 (-9.98%)  mont 230,128 / 212,968 (-7.46%)
+96 bits, new ref + re-sieve: cost per number before / after: offi 1,840,718 / 1,840,718 (+0.00%)  ruin 64,313 / 57,865 (-10.03%)  mont 228,469 / 211,308 (-7.51%)
+96 bits, corrected ref: cost per number before / after: offi 1,823,849 / 1,823,849 (+0.00%)  ruin 111,277 / 103,784 (-6.73%)  mont 400,866 / 382,049 (-4.69%)
+96 bits, frozen ref: cost per number before / after: offi 1,925,453 / 1,925,453 (+0.00%)  ruin 216,852 / 105,952 (-51.14%)  mont 500,594 / 390,054 (-22.08%)
+1. ops, factor, tests, hits and the untouched types identical; setup_full and confirm_full zero: 8000/8000
+2. Python = Rust per type: 32/32

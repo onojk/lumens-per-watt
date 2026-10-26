@@ -196,7 +196,7 @@ pub fn lamp_qs(num: &Num, g: &Value, m: &mut Meter) -> R {
     let mut ranked: Vec<(u64, f64)> = cands.iter().map(|&k| (k, -ks_score(k, num))).collect();
     ranked.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap().then(a.0.cmp(&b.0)));
     if gene(g, "sort_charge", 0.0) != 0.0 {
-        m.charge(MULT, sort_cost(kc))?; // sort_charge: the multiplier ranking (keys already charged)
+        m.charge(crate::PH_SORT, sort_cost(kc))?; // sort_charge: the multiplier ranking (audit item 2: sort_cmp)
     }
     let ln_n = num.f.ln();
     let bnd = ((gene(g, "bc", 1.5) * (0.5 * (ln_n * ln_n.ln()).sqrt()).exp()) as u64).max(30);
@@ -338,7 +338,8 @@ impl Ledger {
             return Ok(false);
         }
         // the duplicate check (NOTES.md, "Meter correction"): 2 word ops (full), 3 (combined: also min(cu, N - cu))
-        m.charge(crate::PH_WORD, if y == 1 { 2 } else { 3 })?;
+        m.charge(crate::PH_HASH, 1)?; // audit item 0: the probe-and-insert is a hash op
+        m.charge(crate::PH_WORD, if y == 1 { 1 } else { 2 })?;
         let fresh = if y == 1 { self.seen.insert(u.abs()) } else { self.seen_c.insert(u.min(self.n_i - u)) };
         if !fresh {
             return Ok(false);
@@ -497,16 +498,15 @@ impl OnDemand {
             let pre = self.prefixes[self.at].clone();
             self.at += 1;
             if self.limit == s - 2 {
-                m.charge(SETUP, ((s - 1) * self.used.len()) as u64)?;
+                m.charge(crate::PH_WORD, ((s - 1) * self.used.len()) as u64)?; // prefix-overlap check (audit 1)
                 if self.used.iter().any(|u| pre.iter().all(|p| u.contains(p))) {
                     continue;
                 }
             }
             let ap: u64 = pre.iter().product();
-            m.charge(SETUP, s as u64 - 2)?;
+            m.charge(crate::PH_WORD, s as u64 - 2)?; // word multiplies (audit 3)
             let tp = self.target / ap as f64;
-            m.charge(SETUP, 1)?;
-            m.ev(crate::EV_SETUP_FULL, s as u64 - 1);
+            m.charge(crate::PH_FDIV, 1)?; // a double divide (audit 1)
             let mut rest: Vec<u64> = self.pool.iter().copied().filter(|p| !pre.contains(p)).collect();
             m.charge(crate::PH_WORD, self.pool.len() as u64)?; // building rest: one word op per pool prime (item 13)
             while !rest.is_empty() {
@@ -517,13 +517,12 @@ impl OnDemand {
                         bi = i;
                     }
                 }
-                m.charge(SETUP, rest.len() as u64)?;
+                m.charge(crate::PH_FLOG, rest.len() as u64)?; // a log per scanned prime (audit 1)
                 let last = rest.remove(bi);
                 m.charge(crate::PH_WORD, 1)?; // the removal (item 13)
                 let a = ap * last;
-                m.charge(SETUP, 1)?;
-                m.charge(SETUP, 1)?; // target check
-                m.ev(crate::EV_SETUP_FULL, 2);
+                m.charge(crate::PH_WORD, 1)?; // A = A' last, a word multiply (audit 3)
+                m.charge(crate::PH_FLOG, 1)?; // target check: a log (audit 1)
                 if (a as f64 / self.target).log2().abs() > 0.25 {
                     break;
                 }
@@ -531,9 +530,9 @@ impl OnDemand {
                 key.push(last);
                 key.sort();
                 if self.sc {
-                    m.charge(SETUP, sort_cost(s as u64))?; // sort_charge: the key's s primes
+                    m.charge(crate::PH_SORT, sort_cost(s as u64))?; // sort_charge: the key's s primes
                 }
-                m.charge(SETUP, (s * self.used.len()) as u64)?;
+                m.charge(crate::PH_WORD, (s * self.used.len()) as u64)?; // overlap compare (audit 1)
                 if self.used.iter().any(|u| u.iter().filter(|x| key.contains(x)).count() > self.limit) {
                     continue;
                 }
@@ -587,7 +586,8 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
     if sc {
         // sort_charge: pool selection (n keys + comparisons), then ascending
         let na = pool_all.len() as u64;
-        m.charge(SETUP, na + sort_cost(na) + sort_cost(pn as u64))?;
+        m.charge(crate::PH_FLOG, na)?; // the keys: a log each (audit 2)
+        m.charge(crate::PH_SORT, sort_cost(na) + sort_cost(pn as u64))?;
     }
     // a_mode (NOTES.md, "On-demand A selection"): "enumerate" (default) forms and charges every
     // candidate up front; "on_demand" forms them one at a time (OnDemand::next), s >= 2 only.
@@ -598,13 +598,13 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
         od = Some(OnDemand::new(&pool, &by_q[..pn], s, target, sc));
     } else {
         combos = combinations(&pool, s);
-        m.charge(SETUP, (s as u64 - 1) * combos.len() as u64)?;
-        m.ev(crate::EV_SETUP_FULL, (s as u64 - 1) * combos.len() as u64); // at["combos"], at["s"]
+        m.charge(crate::PH_WORD, (s as u64 - 1) * combos.len() as u64)?; // word multiplies forming each A (audit 3)
         let key = |c: &Vec<u64>| ((c.iter().product::<u64>() as f64 / target).ln()).abs();
         combos.sort_by(|a, b| key(a).partial_cmp(&key(b)).unwrap().then_with(|| a.cmp(b)));
         if sc {
             let c = combos.len() as u64;
-            m.charge(SETUP, c + sort_cost(c))?; // sort_charge: the candidate sort (C keys + comparisons)
+            m.charge(crate::PH_FLOG, c)?; // sort_charge: the candidate keys, a log each (audit 2)
+            m.charge(crate::PH_SORT, sort_cost(c))?;
         }
     }
     let lc = gene(g, "lc", 1.0).max(1.0).min(3.0); // clamp 3.0 (NOTES.md, "(A2)")
@@ -636,7 +636,6 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
             }
         };
         let qs_ = &cur;
-        m.ev(crate::EV_SETUP_FULL, 2 * s as u64); // at["a_count"] += 1, before the A's charges
         let a: i128 = qs_.iter().map(|&x| x as i128).product();
         let mut bl: Vec<i128> = Vec::with_capacity(s);
         for &ql in qs_ {
@@ -650,7 +649,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 gam = ql_i - gam;
             }
             bl.push(aq * gam);
-            m.charge(SETUP, 1)?;
+            m.charge(crate::PH_WORD, 1)?; // a word multiply (audit 4); A/q above stays small-modulus
         }
         // per sieved prime: (p, roots, 2 B_l A^-1, base index)
         let mut st: Vec<(i128, Vec<i128>, Vec<i128>, usize)> = Vec::new();
@@ -769,7 +768,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
             for (ci, &i0) in cand.iter().enumerate() {
                 let x = i0 as i128 - mm_ as i128;
                 let mut v = (a * x + 2 * bv) * x + c;
-                m.charge(CONFIRM, 2)?;
+                m.charge(crate::PH_WORD, 2)?; // two word multiply-adds (audit 5)
                 let plist: Vec<usize> = if rs_on {
                     // merge two ascending lists, |plist| word ops (NOTES.md, item 11)
                     let (a_, b_) = (&direct, &rec[ci]);
@@ -791,8 +790,8 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 } else {
                     (1..f).collect()
                 };
-                m.charge(CONFIRM, if rs_on { 1 + plist.len() as u64 } else { f as u64 })?;
-                m.ev(crate::EV_CONFIRM_FULL, 2); // at["cands"] append
+                m.charge(crate::PH_WORD, 1)?; // the sign check (audit 8)
+                m.charge(CONFIRM, if rs_on { plist.len() as u64 } else { f as u64 - 1 })?;
                 let mut vec_ = vec![0u32; f];
                 if v < 0 {
                     vec_[0] = 1;
@@ -818,7 +817,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 let mut partial = false;
                 if lp_on && !smooth {
                     // 8. large primes
-                    m.charge(LP, 1)?; // bound check
+                    m.charge(crate::PH_WORD, 1)?; // bound check (audit 6)
                     partial = (v as f64) < l_bound; // exact: L < 2^53, and v > 2^53 rounds above it
                 }
                 m.test(smooth || partial);
@@ -839,9 +838,9 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 if n_i % v == 0 {
                     return Ok(Some(U256::from(v as u128)));
                 }
-                m.charge(LP, 1)?; // hash lookup
+                m.charge(crate::PH_HASH, 1)?; // hash lookup (audit 6)
                 let Some((u1, v1)) = partials.get(&v) else {
-                    m.charge(LP, 1)?; // insert
+                    m.charge(crate::PH_HASH, 1)?; // insert (audit 6)
                     partials.insert(v, (u, vec_));
                     continue;
                 };
@@ -850,7 +849,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                     .to::<u128>() as i128;
                 m.charge(LP, 1)?;
                 let cvec: Vec<u32> = v1.iter().zip(&vec_).map(|(a, b)| a + b).collect();
-                m.charge(LP, f as u64)?;
+                m.charge(crate::PH_WORD, f as u64)?; // vector add (audit 7)
                 m.ev(crate::EV_LP_FULL, 1); // at["lp"]["combos"] += 1
                 if led.add(cu, cvec, v, chk, m)? {
                     return Ok(None);
