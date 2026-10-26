@@ -210,7 +210,15 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Timing: after the brief's steps 0-5. The L3 test (chooser gain surviving alpha frozen per size) is deferred, low priority.
 - Decision: pending.
 
-### I-024 — Sparse GF(2) rows from F ~ 1,000 (filed as I-022 earlier on Oct 26; renumbered to follow the user's numbering)
+### I-024 — Per-N forecast-driven lamp budgets
+- Date: 2026-10-26. Source: the user (Wolfram), from the per-N predictability run.
+- Idea: the yield model (I-023) gives a per-N qs cost forecast from the base (computed during KS scoring), varying ~+/-40% at k = 1. Set the pre-qs budgets (rho, p-1 with stage 2, ECM) per N from the forecast: longer when qs is forecast expensive, shorter when cheap. The other lamps' success odds don't depend on the base, but qs's cost does, so the optimal switch point shifts (run each lamp until hazard x C_N = 1; for a fixed-spend lamp b* = ln(s C_N)/s).
+- Expected gain: a few percent, bounded by the forecast's spread with KS on (second order in the spread).
+- Sealed: DeepSeek P2 0.5-1.8% at 84, 0.4-1.6% at 96; the user's 0.5-2% (NOTES, 2026-10-26 morning entry).
+- Timing: evaluate after STEP 6 validates the forecast in the card.
+- Decision: pending.
+
+### I-025 — Sparse GF(2) rows from F ~ 1,000 (filed as I-022, then I-024, on Oct 26; renumbered to follow the user's numbering)
 - Date: 2026-10-26. Source: the user, from the Wolfram ω-against-u run. Trigger: touched entries per relation stay near u + 2.5 (+0.5 for the sign), under ~9 well past 96 bits, while dense bit rows cost F/64 words.
 - Idea: dense bit rows and sparse rows (~8 entries) break even near F ~ 500. Keep solve dense at F <= 400 (today's sizes); switch to sparse rows (and a sparse solver) from F ~ 1,000, around 120-128 bits.
 - Cost: moderate (solve in both cores).

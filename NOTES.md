@@ -5846,3 +5846,129 @@ Two corrections to the step-2 entry. The code is what the charge follows:
 **Item 15:** s word per kept candidate, added to step 1's per-candidate lump (sets, copy, clear) at the sparse-copy point.
 
 The estimate is unchanged in scale: about 0.1–0.15% of qs's cost at 96 and a few tenths of a percent at 54.
+
+**I-023 — the tilted model on real SIQS polynomials (Wolfram, Oct 26; recorded as given)** (k = 1; 6 N × 2 polynomials per size; M = 30,000; A-primes as single-root primes; partials = a prime cofactor in (p_max, 64 p_max]):
+- full relations predicted / measured: 0.99 / 1.00 / 0.98 / 1.01 at 54 / 72 / 84 / 96;
+- single large-prime partials predicted / measured: 1.05 / 1.03 / 1.03 / 1.01;
+- partials per full: measured 10.7 / 8.9 / 10.3 / 9.3, predicted 11.4 / 9.2 / 10.8 / 9.3;
+- ablation (A-primes as two-root primes): fulls over-predicted 1.11 / 1.09 / 1.02 / 1.02, so single-root A-primes matter at 54–72;
+- *the user's scoring:* fulls held, partials held, partials / fulls held, ablation under 3% at 96 held, +2–10% at 54 missed (+12%).
+
+**Step 6 added to the current brief (user, Oct 26): I-023, read-only, after step 5; no meter, card or genome change.**
+- *6a.* Port the model to `evolve/yieldmodel.py`.
+  - Inputs: the base (primes with root counts: 2, or 1 for A-primes and p | k); the 2-adic class of kN (P(v = 1) = 1/2 for kN ≡ 3 mod 4; P(v = 2) = 1/2 for 5 mod 8; P(v = j) = 2^(1−j) for j ≥ 3 for 1 mod 8); the residue sizes over the interval; and the large-prime bound.
+  - Method: per residue-size bin, solve α by bisection so that Σ E[v_p] log p = log |Q|, with tilted local factors Z_p = 1 − c/p + c(p − 1)/p · r/(1 − r), r = p^−α.
+  - Then log P = Σ log Z_p + log Z_2 + Σ_{p ≤ p_max} −log(1 − 1/p) − (1 − α) log |Q| − ½ log(2π V), capped at 0.
+  - Partials: integrate exp(log P(log |Q| − t)) / t dt over t in [log p_max, log L].
+  - Reference implementation: the user's Wolfram code from Oct 26 (to be pasted if needed).
+- *6b.* Validate against the card's traces at 54 / 72 / 84 / 96 (new reference genes; KS on): predicted against measured fulls and partials per polynomial, median and spread by size. Pass: within ±10% per size.
+- *6c.* If 6b passes, report the model's predicted relations per polynomial across F (0.5x–2x the reference), interval width (0.5x–2x) and the large-prime multiplier (16–256), with the card's priced cost per polynomial (from the ledger) beside it. Report only; no tuning decisions.
+
+**DeepSeek, Oct 26, round 9 (on I-023; recorded as given; extends step 6):**
+- *M1:* the double large-prime partial density is ½ ∬ S(log |g| − t1 − t2) dt1 dt2 / (t1 t2) over t1, t2 in [log p_max, log L], with t1 + t2 < log |g|. A q² cofactor counts as full (even parity).
+  - *Correction (the user's):* for single large primes, n partials sharing q give n − 1 independent relations, not C(n, 2); DeepSeek's own E − V + C gives Σ (n_q − 1).
+- *M2:* keep a light in-run monitor (cumulative measured / predicted yield, switching on a pre-registered band) until the per-N spread of total relations to completion is measured.
+- **Sealed M3** (median over polynomials of the card's fulls / the model's fulls; KS on; the card's F, M, A-primes and threshold):
+  - DeepSeek: 0.86–1.00 / 0.88–1.00 / 0.90–1.00 at 72 / 84 / 96 (central 0.92 / 0.94 / 0.96). Falsified if any median is > 1.02; if one is < 0.82 / 0.84 / 0.86; if all three are > 0.99; or if all three are < 0.85. At least 20 polynomials per size, or a bootstrap 90% CI; otherwise inconclusive.
+  - The user's: 0.85–1.00 at each size.
+- **Step 6 additions (read-only):**
+  - *6d.* Combined relations from single large-prime partials: the model gives λ_q, the expected number of partials per large prime q. Predicted combined relations = Σ_q (λ_q − 1 + e^(−λ_q)) (Poisson). Compare with the card's measured combinations at completion, per size.
+  - *6e.* Per-N spread to completion: for 20+ N per size, the total polynomials needed to reach F + margin, measured against predicted, as a coefficient of variation. This decides whether an in-run monitor is worth keeping (M2).
+
+**I-023 — combined relations from single large-prime partials (Wolfram, Oct 26; recorded as given; step 6d is pre-validated)** (SIQS, k = 1; 2 N × 20 polynomials per size; L = 64 p_max; λ_q from the tilted integrand; Poisson per q):
+- partials predicted / measured 1.00–1.04; distinct q 0.99–1.02, except 72 bits (1.09, 1.13); combined (E − D) 0.95–1.07; usable (fulls + combined) 0.96–1.07 on all 8 N;
+- n − 1 per prime (not C(n, 2)) confirmed: at 54 bits (~15 partials per q), C(n, 2) would over-predict ~7x;
+- growth against polynomials follows the prediction: bending upward at 72–96, near-linear at 54 (saturated);
+- repeat shape: Poisson matches within ~5–10% at 84–96. At 72, fewer singletons than predicted (−17%, −23%) and more 4+; at 54 the low-count tails run 2–3x higher (small counts). Reading: the real λ_q falls faster with q than the model's. Optional diagnostic (low priority): measured against predicted partials binned by log q;
+- *the user's scoring:* partials held; distinct q held except at 72; combined held; Poisson shape held at 84–96, missed at 54 / 72; growth held.
+
+**DeepSeek, Oct 26, round 10 (recorded before any card measurement):**
+- M1's annotation accepted: the single large-prime yield is Σ (n_q − 1), not C(n_q, 2).
+- *N1:*
+  - (a) the bin-centre S steepens the q fall-off by ~1–3% (the user's estimate: < 1%);
+  - (b) borrowed A-primes shift the level only (a null control);
+  - (c) arithmetic-progression sampling biases by ~(q/M)², in the wrong direction, < 1%.
+  - None explains the 72-bit distinct-q excess.
+  - *The user's note:* the excess (+9%, +13% on both N; counting noise ~±1.5%) is systematic, not 2-sample noise. 72 bits is likely the only size where distinct q is sensitive to the shape of λ_q (λ_q ≪ 1 at 84–96 and ≫ 1 at 54 hide it). Direct test: the empirical smoothness of g/q at the actual hit positions, binned by log q, against the histogram-weighted S.
+- **Sealed N2** (the CV across N of polynomials to reach F + margin; the card's F, margin, M, A-primes and stopping rule; KS on):
+  - DeepSeek: 6–11% / 5–10% / 4–9% at 72 / 84 / 96 (central 8 / 7 / 6), falling with size. Falsified if any CV is > 15% or < 3%, or if the CV at 96 is not at least 1 pp below 72's. Fewer than 10 N per size, or a bootstrap 90% CI wider than ±3 pp, makes it inconclusive.
+  - The user's: 5–12% at each size, falling slightly with size.
+  - *Annotation (the user's, before measurement):* both look too low. The user's own SIQS run at k = 1 shows usable relations per 20 polynomials differing 1.38–1.78x between the two N of one size, so the raw CV across N is likely 15–30%. KS will narrow it, but not remove it. Both predictions stand as sealed.
+- **Step 6e (revised):** for 20+ N per size, report both (i) the raw CV across N of polynomials to completion (scores N2) and (ii) the CV of measured / model-predicted polynomials per N (decides M2: if small, a forecast made before the run replaces most of the in-run monitor).
+- **Step 6f (optional):** smoothness of g/q at the actual hit positions against the model, binned by log q at 54–96, to locate the flat-λ_q residual.
+
+## 2026-10-26 morning: Wolfram cross-checks and outside predictions (read before STEP 1)
+
+*Recorded as given by the user. It supersedes the partial versions pasted earlier, which stay above as recorded (append-only).*
+
+**A. Wolfram cross-checks** (plain QS, then SIQS; exact sieves; numbers as measured)
+1. *Touched entries per candidate:* 5.5–6.7 (6.9–8.0 per full relation), flat in F (48–400) and size.
+   - Touched / F is 1.6–6.7% at 72–96.
+   - Candidate density is 0.1–1.4% (2.8% at 54, F 96).
+   - Partials : fulls 10–17 : 1.
+2. *Distinct primes per relation:* ω ≈ u + (Σ 2/p over the base) + offset.
+   - The offset, weighted per relation, is 0.13–0.22 (54), 0.37–0.46 (72), 0.49–0.61 (84), 0.38–0.52 (96).
+   - Median u at mid F: 4.35 / 4.65 / 4.96 / 5.10.
+   - Threshold selection does not explain the within-cell slope > 1 (1.44 exact against 1.47 thresholded).
+3. *The tilted saddle-point model (nothing fitted):*
+   - untilted P(p^j | Q) = c_p / p^j (c = 2 for two-root primes, 1 for one-root); tilt p^(j(1−α)); α solved per residue size so that Σ E[v_p] log p = log |Q|;
+   - log P = Σ log Z_p + log Z_2 + Σ_{p ≤ p_max} −log(1 − 1/p) − (1 − α) log |Q| − ½ log(2π V);
+   - the 2-adic law of t² − kN: kN ≡ 3 mod 4: P(v = 1) = 1/2; 5 mod 8: P(v = 2) = 1/2; 1 mod 8: P(v = j) = 2^(1−j), j ≥ 3. An earlier run coded 2^(2−j); that bug is fixed, and every result below uses the fixed law.
+   - *Results:*
+     - ω per relation: measured = 0.30 + 0.96 × model (R² 0.46);
+     - absolute full relations at k = 1: 0.94–1.02 by size; every N mod 8 class 0.91–1.07;
+     - KS movers' yield (~2.07x measured): the model gives 1.93–2.56 by size, matching per size (per-N log error −0.03). The standard KS logic predicts only 1.40x; the exact Dickman ρ 1.36–1.48x;
+     - SIQS polynomials (A-primes as single-root primes): fulls 0.98–1.01; single large-prime partials 1.01–1.05; combined relations Σ (n_q − 1) 0.95–1.07; usable (fulls + combined) 0.96–1.07;
+     - per N: the raw CV across N at k = 1 is 41–57% (fulls) and 31–42% (partials). The CV of measured / predicted is 1.5–3.4% for partials, at the Poisson floor, and 6.0–17.5% for fulls (floor 5.9–11.5%);
+     - partials by large-prime band (p_max to 64 p_max): 0.95–1.02, no trend. A 72-bit distinct-q excess (+9–13%) remains, likely overdispersion from shared A-primes across polynomials (untested).
+4. *KS facts:*
+   - k = 1 is best for 33–38% of N;
+   - the best kN ≡ 1 mod 8 for 65–69%;
+   - the mean gain in the base's Σ 2/p is 0.54–0.61;
+   - movers' relation yield is ~2x (1.78–2.34 by size, 109 movers).
+5. *α:*
+   - the odd half-base (2/p) and all primes (1/p) agree within 0.03;
+   - the prime 2 moves α by ≤ 0.01;
+   - the textbook 1 − log(u log u) / log y runs 0.05–0.09 high;
+   - including 2 in the base adds ~0.45 touched entries.
+
+**B. Outside sealed predictions still open** (scored when measured; no revision)
+- *DeepSeek G4* (the card's touched entries per full relation, KS on): 7.3–7.6 / 7.6–7.9 / 7.9–8.2 at 72 / 84 / 96. The user's: 7.5–9.0.
+  - Note (after sealing, before measuring): SIQS residues lower u by ~0.4–0.5, so both may run high.
+  - *Claude Code's note:* G4 was already scored post hoc in the step 1 results (falsified: 13.10 at 96 with the A-primes, 9.16 without), because the measurement existed before G4 was recorded.
+- *DeepSeek M3* (the median of the card's fulls / the model's fulls per polynomial): 0.86–1.00 / 0.88–1.00 / 0.90–1.00 (central 0.92 / 0.94 / 0.96).
+  - Falsified if any median is > 1.02; if one is < 0.82 / 0.84 / 0.86; if all three are > 0.99; or if all three are < 0.85.
+  - At least 20 polynomials per size, or a bootstrap 90% CI; otherwise inconclusive.
+  - The user's: 0.85–1.00.
+- *DeepSeek N2* (the CV across N of polynomials to F + margin, KS on): 6–11 / 5–10 / 4–9% (central 8 / 7 / 6).
+  - Falsified if any CV is > 15% or < 3%, or if 96's is not at least 1 pp below 72's. Fewer than 10 N per size is inconclusive.
+  - The user's: 5–12%.
+  - Annotation (before measurement): the raw CV at k = 1 is 31–57%, so both are expected to fail.
+- *DeepSeek L3* (the I-022 chooser gain surviving α frozen per size): 0.55–0.75 (central 0.65). The user's: 0.8–1.0.
+- *DeepSeek P2* (I-024: the total ruint saving of per-N pre-qs budgets against one fixed budget; KS on; qs cost CV 25%): 0.5–1.8% at 84, 0.4–1.6% at 96 (central 0.9 / 0.8%).
+  - Falsified if > 3.0% or < 0.2% at either size, if per-N loses, or if 96 exceeds 84 by > 0.5 pp.
+  - The user's: 0.5–2% at each size.
+  - *Note (the user's):* DeepSeek's cost formula had a sign slip; qs's cost should be weighted by e^−sb, the lamp's failure probability. With it fixed, b* = ln(s C_N) / s for a fixed-spend lamp. General rule: run each lamp until hazard × C_N = 1. The saving is second order in the forecast's spread.
+- *DeepSeek P3* (72 bits: the share of the distinct-q excess removed by disjoint A-prime sets, the same N, 20 polynomials): 0.50–0.80 (central 0.65); falsified if < 0.30 or > 0.95; invalid if the partial rate changes by > 5%. The user's: more than half.
+- *Annotations:*
+  - N2 is at high risk (raw CV 31–57% at k = 1);
+  - M2: a pre-run forecast can replace most of the in-run monitor once the card measures the forecast error with KS on;
+  - N1: a q-slope in λ_q is refuted, and q-to-q overdispersion (shared A-primes across polynomials) is the leading candidate.
+- P2 is scored in step 6 or later, once the re-solve's lamp models exist; P3 in step 6f.
+- *Scored this morning:* K1–K3 held for both (K1 on matched metrics); K4 the user's held, DeepSeek's falsified; J4 DeepSeek's held; G3 DeepSeek's missed; H1 DeepSeek right; H3 DeepSeek refuted.
+
+**C. IDEAS.md**
+- *I-022, the tilted KS score:* validated as a yield predictor. As a chooser, +4% on the 16% of N where it differs (< 1% overall). As built it costs more than qs. A cheap form is possible (α frozen per size, tabulated log Z_p). Low priority; decision for the user.
+- *I-023, the yield predictor ("light meter"):* predicts fulls, partials, combined relations and per-N yield within ~5%, from the base, multiplier, A-primes, residue sizes and L, without sieving. Next: step 6 of the current brief.
+- *I-024, per-N forecast-driven lamp budgets:* the I-023 forecast (from the base, read during KS scoring) varies qs's cost by ~±40% at k = 1. Set the pre-qs budgets (rho, p-1 with stage 2, ECM) per N from it. Expected a few percent; evaluated after step 6 validates the forecast with KS on.
+- *Claude Code's note on numbering:* the sparse-rows entry, filed as I-022 and then I-024 earlier today, is now **I-025**.
+
+**D. Step 6 of the current brief** (read-only, after step 5)
+- *6a:* port the model to evolve/yieldmodel.py.
+- *6b:* validate fulls and partials per polynomial against the card's traces at 54–96 (pass: ±10% per size; scores M3 and G4).
+- *6c:* report predicted relations per polynomial across F (0.5–2x), interval width (0.5–2x) and the large-prime multiplier (16–256), beside the priced cost per polynomial. Report only.
+- *6d:* combined relations Σ (λ_q − 1 + e^−λ_q) against the measured cycles.
+- *6e:* for 20+ N per size, the raw CV of polynomials to completion (scores N2) and the CV of measured / predicted (decides whether a pre-run forecast replaces the in-run monitor).
+- *6f (optional):* overdispersion of q counts with disjoint A-prime sets.
+
+*(Also received this morning, recorded in its own words above the superseding entry's scope: the Wolfram per-N predictability and λ_q-by-band run — raw CV fulls 41 / 57 / 47 / 55%, partials 31 / 42 / 40 / 42%; measured / predicted CV partials 1.7 / 1.5 / 2.5 / 3.4% against floors 1.7 / 2.3 / 2.9 / 3.7%, fulls 6.4 / 6.0 / 17.5 / 14.3% against 5.9 / 7.4 / 9.6 / 11.5%; λ_q by band 0.95–1.02, flat-λ_q refuted; the user's scoring: raw CV fulls 20–35% missed high, partials 15–30% missed high, measured / predicted within 2 pp of the floor held for partials, held for fulls at 54–72, missed at 84–96, band trend missed.)*
