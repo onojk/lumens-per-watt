@@ -192,17 +192,22 @@ pub fn lamp_qs(num: &Num, g: &Value, m: &mut Meter) -> R {
         (1..=(gene(g, "kc", 16.0) as u64).max(1)).collect()
     };
     let kc = cands.len() as u64;
+    let pt = crate::pt_snap(m);
     m.charge(MULT, kc * KS_PRIMES.len() as u64)?;
     let mut ranked: Vec<(u64, f64)> = cands.iter().map(|&k| (k, -ks_score(k, num))).collect();
     ranked.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap().then(a.0.cmp(&b.0)));
     if gene(g, "sort_charge", 0.0) != 0.0 {
         m.charge(crate::PH_SORT, sort_cost(kc))?; // sort_charge: the multiplier ranking (audit item 2: sort_cmp)
     }
+    crate::pt_end(m, 0, pt);
     let ln_n = num.f.ln();
     let bnd = ((gene(g, "bc", 1.5) * (0.5 * (ln_n * ln_n.ln()).sqrt()).exp()) as u64).max(30);
     // a failed attempt is retried with the next k: a fresh ledger (2. factor base) for each
     for (k, _) in ranked {
-        let mut led = match Ledger::build(num, k, bnd, m)? {
+        let pt = crate::pt_snap(m);
+        let built = Ledger::build(num, k, bnd, m)?;
+        crate::pt_end(m, 1, pt);
+        let mut led = match built {
             Ok(led) => led,
             Err(p) => return Ok(Some(p)), // p divides N
         };
@@ -210,7 +215,10 @@ pub fn lamp_qs(num: &Num, g: &Value, m: &mut Meter) -> R {
             return Ok(Some(d));
         }
         if led.full() {
-            if let Some(d) = led.solve(m)? {
+            let pt = crate::pt_snap(m);
+            let solved = led.solve(m)?;
+            crate::pt_end(m, 9, pt);
+            if let Some(d) = solved {
                 return Ok(Some(d));
             }
         }
@@ -544,6 +552,7 @@ impl OnDemand {
 }
 
 fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -> R {
+    let pt_pre = crate::pt_snap(m); // timed region "setup": the attempt's setup before the first A
     let n = num.n;
     let n_i = led.n_i;
     let kn_u = U256::from(k) * n;
@@ -621,7 +630,9 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
     let mut arr = vec![0i32; width];
 
     let mut next_i = 0usize;
+    crate::pt_end(m, 2, pt_pre);
     loop {
+        let pt_a = crate::pt_snap(m); // "setup": choosing this A and its per-A roots
         let cur: Vec<u64> = match od.as_mut() {
             Some(o) => match o.next(m)? {
                 Some(c) => c,
@@ -672,8 +683,10 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
             }
             st.push((p, if t == 0 { vec![r1] } else { vec![r1, r2] }, bainv, j));
         }
+        crate::pt_end(m, 2, pt_a);
         let mut signs = vec![1i128; s];
         for i in 0..(1usize << (s - 1)) {
+            let pt = crate::pt_snap(m); // "gray"
             if i != 0 {
                 // Gray code: flip one B_l, update every root
                 let v = i.trailing_zeros() as usize + 1;
@@ -691,7 +704,9 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 }
                 m.charge(crate::PH_GRAY, n_roots)?; // word-level type setup_gray
             }
+            crate::pt_end(m, 3, pt);
             let c = (bv * bv - kn) / a;
+            let pt = crate::pt_snap(m); // "sieve"
             // 4. sieve
             arr.iter_mut().for_each(|x| *x = 0);
             let mut upd = 0u64;
@@ -721,7 +736,11 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
             m.charge(SIEVE, upd)?;
             m.charge(SIEVE, width as u64)?;
             m.ev(crate::EV_SIEVE_SCAN, width as u64); // at["polys"] append
+            crate::pt_end(m, 4, pt);
+            let pt = crate::pt_snap(m); // "scan"
             let cand: Vec<usize> = (0..width).filter(|&i0| (arr[i0] as f64) >= thr).collect();
+            crate::pt_end(m, 5, pt);
+            let pt = crate::pt_snap(m); // "resieve"
             // re-sieve (NOTES.md, "Root-matched candidate confirmation"): primes >= p0 matched over a
             // candidate bitmap; v divided only by the matched primes and the direct ones
             let mut rec: Vec<Vec<usize>> = Vec::new();
@@ -764,8 +783,10 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 m.charge(crate::PH_WORD, cand.len() as u64 + walk + nhit)?;
                 direct = (1..f).filter(|&j| (base[j] as i128) < p0 || !sieved_j[j]).collect();
             }
+            crate::pt_end(m, 6, pt);
             // 5. confirm
             for (ci, &i0) in cand.iter().enumerate() {
+                let pt = crate::pt_snap(m); // "confirm"
                 let x = i0 as i128 - mm_ as i128;
                 let mut v = (a * x + 2 * bv) * x + c;
                 m.charge(crate::PH_WORD, 2)?; // two word multiply-adds (audit 5)
@@ -813,6 +834,8 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                         }
                     }
                 }
+                crate::pt_end(m, 7, pt);
+                let pt = crate::pt_snap(m); // "lp_ledger": large primes and the ledger
                 let smooth = v == 1;
                 let mut partial = false;
                 if lp_on && !smooth {
@@ -822,6 +845,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 }
                 m.test(smooth || partial);
                 if !(smooth || partial) {
+                    crate::pt_end(m, 8, pt);
                     continue;
                 }
                 let u = a * x + bv;
@@ -832,6 +856,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                     if led.add(u, vec_, 1, chk, m)? {
                         return Ok(None);
                     }
+                    crate::pt_end(m, 8, pt);
                     continue;
                 }
                 m.charge(LP, 1)?; // N mod q
@@ -842,6 +867,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 let Some((u1, v1)) = partials.get(&v) else {
                     m.charge(crate::PH_HASH, 1)?; // insert (audit 6)
                     partials.insert(v, (u, vec_));
+                    crate::pt_end(m, 8, pt);
                     continue;
                 };
                 let cu = U256::from(u1.rem_euclid(n_i) as u128)
@@ -854,6 +880,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 if led.add(cu, cvec, v, chk, m)? {
                     return Ok(None);
                 }
+                crate::pt_end(m, 8, pt);
             }
         }
     }

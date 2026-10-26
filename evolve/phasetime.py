@@ -1,0 +1,41 @@
+"""Phase-level wall-clock check (NOTES.md, "Phase-level wall-clock check"): lampcore --phasetime on all map
+numbers per size, new reference genes as qs alone, with and without re-sieve, pinned to one P-core.
+Per region: overhead-corrected ns, priced ruint cost, ns per priced unit, and its ratio to the median region.
+  python3 phasetime.py -> phasetime.json, stdout
+"""
+import json, subprocess
+import numpy as np
+import partition as P, sizescale as SS, sizescale2 as S2, optypes
+import fastlamps
+sealed = json.load(open("sizescale_k_sealed.json"))
+PR = P.prices()["ruint"]
+out = {}
+for bits in SS.SIZES:
+    nums = S2.map_nums(bits)
+    nr = dict(SS.qsg(sealed["sizes"][str(bits)]["tracks"]["R"]["new_genes"]), kset="sf32")
+    out[bits] = {}
+    for name, g in (("new ref", nr), ("new ref + re-sieve", dict(nr, confirm="resieve"))):
+        text = json.dumps([g]) + "\n" + str(P.QS_CAP) + "\n" + "".join(f"{N} {p} {q}\n" for N, p, q in nums)
+        res = subprocess.run(["taskset", "-c", "2", fastlamps.BIN, "--phasetime"], input=text, capture_output=True, text=True, check=True)
+        lines = [json.loads(l) for l in res.stderr.splitlines() if l.startswith("{")]
+        over = lines[0]["overhead_ns_per_region"]
+        recs = lines[1:]
+        names = recs[0]["regions"]
+        ns = np.sum([r["ns"] for r in recs], axis=0).astype(float)
+        calls = np.sum([r["calls"] for r in recs], axis=0).astype(float)
+        types = np.sum([r["types"] for r in recs], axis=0)
+        ns_c = ns - calls * over
+        priced = np.array([sum(PR.get(t, 0) * types[i][j] for j, t in enumerate(optypes.TYPE_ORDER) if types[i][j]) for i in range(len(names))])
+        per = np.where(priced > 0, ns_c / np.maximum(priced, 1e-9), np.nan)
+        live = [i for i in range(len(names)) if priced[i] > 0 and calls[i] > 0]
+        med = float(np.median(per[live]))
+        rows = {names[i]: {"ns_per_number": ns_c[i] / len(nums), "priced_ruint_per_number": priced[i] / len(nums),
+                           "ns_per_priced_unit": float(per[i]) if i in live else None, "ratio_to_median": float(per[i] / med) if i in live else None,
+                           "time_share": float(ns_c[i] / ns_c[live].sum()) if i in live else 0.0} for i in range(len(names))}
+        out[bits][name] = {"overhead_ns_per_region": over, "median_ns_per_priced_unit": med, "regions": rows}
+        print(f"{bits} bits, {name}: overhead {over:.1f} ns/region; median {med:.1f} ns per priced ruint unit (calibrated multiply 27.3 ns)", flush=True)
+        for i in live:
+            r = rows[names[i]]
+            flag = "  FLAG (> 1.5x median)" if r["ratio_to_median"] > 1.5 else ""
+            print(f"   {names[i]:10s} {r['ns_per_number']:12,.0f} ns/number  priced {r['priced_ruint_per_number']:10,.1f}  {r['ns_per_priced_unit']:7.1f} ns/unit  x{r['ratio_to_median']:.2f}  time share {r['time_share']:.3f}{flag}", flush=True)
+json.dump(out, open("phasetime.json", "w"), indent=1)

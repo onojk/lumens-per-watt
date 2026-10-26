@@ -109,6 +109,46 @@ fn stage_types(t: &str, d_ops: u64, d_tests: u64, ph: &[u64; 21], ev: &[u64; 7])
 }
 type R = Result<Option<U256>, Budget>;
 
+// ---- phase-level wall-clock timing (NOTES.md, "Phase-level wall-clock check"; --phasetime, off by default;
+// read-only instrumentation: no charge or count depends on it) ------------------------------------------
+pub static PT_ON: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+pub const PT_N: usize = 10;
+pub const PT_NAMES: [&str; PT_N] = ["mult", "fb", "setup", "gray", "sieve", "scan", "resieve", "confirm", "lp_ledger", "solve"];
+type PtAcc = ([u64; PT_N], [u64; PT_N], [[i64; 29]; PT_N]);
+thread_local! {
+    static PT: std::cell::RefCell<PtAcc> = std::cell::RefCell::new(([0; PT_N], [0; PT_N], [[0; 29]; PT_N]));
+}
+pub type Snap = Option<(std::time::Instant, [u64; 21], [u64; 7], u64, u64)>;
+#[inline]
+fn pt_snap(m: &Meter) -> Snap {
+    if PT_ON.load(std::sync::atomic::Ordering::Relaxed) {
+        Some((std::time::Instant::now(), m.phases, m.ev, m.ops, m.tests))
+    } else {
+        None
+    }
+}
+/// Ends a timed region: its wall time, and its own per-type op counts (stage_types on the deltas).
+#[inline]
+fn pt_end(m: &Meter, r: usize, s: Snap) {
+    if let Some((t0, ph0, ev0, o0, te0)) = s {
+        let dt = t0.elapsed().as_nanos() as u64;
+        let ph: [u64; 21] = std::array::from_fn(|i| m.phases[i] - ph0[i]);
+        let ev: [u64; 7] = std::array::from_fn(|i| m.ev[i] - ev0[i]);
+        let ty = stage_types("qs", m.ops - o0, m.tests - te0, &ph, &ev);
+        PT.with(|p| {
+            let mut p = p.borrow_mut();
+            p.0[r] += dt;
+            p.1[r] += 1;
+            for k in 0..29 {
+                p.2[r][k] += ty[k];
+            }
+        });
+    }
+}
+fn pt_take() -> PtAcc {
+    PT.with(|p| std::mem::replace(&mut *p.borrow_mut(), ([0; PT_N], [0; PT_N], [[0; 29]; PT_N])))
+}
+
 struct Meter {
     ops: u64,
     cap: u64,
@@ -672,6 +712,20 @@ fn main() {
     let has_qs = genome.iter().any(|s| phased(s) || (s["t"] == "race" && (phased(&s["a"]) || phased(&s["b"]))));
     let has_race = genome.iter().any(|s| s["t"] == "race");
     let types_out = std::env::args().any(|a| a == "--types");
+    if std::env::args().any(|a| a == "--phasetime") {
+        PT_ON.store(true, std::sync::atomic::Ordering::Relaxed);
+        // the per-region overhead: an empty snap / end pair on a dummy meter, timed in a loop
+        let dm = Meter { ops: 0, cap: u64::MAX, tests: 0, hits: 0, k: None, phases: [0; 21], hook: None, race: None,
+                         ob: None, ob_spent: 0, ob_hit: false, ev: [0; 7], types: [0; 29] };
+        let reps = 200_000u64;
+        let t0 = std::time::Instant::now();
+        for _ in 0..reps {
+            pt_end(&dm, 0, pt_snap(&dm));
+        }
+        let per = t0.elapsed().as_nanos() as f64 / reps as f64;
+        pt_take();
+        eprintln!("{{\"overhead_ns_per_region\": {per:.2}}}");
+    }
     // test hook for the per-type mutation check: "<type>:drop" or "<type>:double", applied
     // to the output only
     let mutate: Option<(usize, bool)> = std::env::var("LAMPCORE_TYPES_MUTATE").ok().map(|v| {
@@ -691,6 +745,11 @@ fn main() {
         let q: U256 = parts[2].parse().unwrap();
         let num = Num { n, f: n.to::<u128>() as f64, p, q };
         let (res, t, h, ph, rc, mut ty) = run(&genome, &num, cap);
+        if PT_ON.load(std::sync::atomic::Ordering::Relaxed) {
+            let (ns, calls, tys) = pt_take();
+            let tyj: Vec<String> = tys.iter().map(|r| format!("[{}]", r.iter().map(|x| x.to_string()).collect::<Vec<_>>().join(","))).collect();
+            eprintln!("{{\"N\": \"{n}\", \"regions\": {:?}, \"ns\": {:?}, \"calls\": {:?}, \"types\": [{}]}}", PT_NAMES, ns, calls, tyj.join(","));
+        }
         let mut tail = if has_qs {
             ph.iter().map(|x| format!(" {x}")).collect::<String>()
         } else {
