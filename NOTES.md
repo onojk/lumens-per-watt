@@ -3888,3 +3888,27 @@ Cost per number (op-cost units, absolute), current / re-typed:
 4. **Finding (not a MOVES row):** in the simulation, the residue-only and random-half arms are identical, so the large-prime collision rate depends on the size of the support (roughly 1 / support for spread weights), not on residues as such.
 5. A MOVES row "Pool-reusing A selection" is added (untested, low priority), with DeepSeek's prediction and the ceiling annotation.
 6. *Queued (information, low priority):* the pairing yield on exactly the lpdist traces. **Already available** from `slack2.out` and `lpdist.out` (item 2); only a larger sample remains.
+
+**Large-prime simulation with the filed q shape** (user, Mathematica, Oct 26; information only; post hoc, since no prediction was registered on it).
+- *Setup:* as the previous run (residue primes only). Arm 1: weight 1/q. Arm 2: draws matched to lpdist's filed shares of log_B q in 0.2-wide bins, 1/q within each bin.
+
+| bits | arm 1 (1/q): yield [5%, 95%]; ratio to 0.17 / 0.13 / 0.08; combined / (F + 10); median log_B q | arm 2 (filed shape) | filed median (lpdist) |
+|---|---|---|---|
+| 72 | 0.159 [0.127, 0.192]; 0.94; 0.61; 1.304 | 0.129 [0.096, 0.162]; 0.76; 0.49; 1.345 | 1.363 |
+| 84 | 0.151 [0.124, 0.178]; 1.16; 0.62; 1.283 | 0.104 [0.079, 0.131]; 0.80; 0.43; 1.353 | 1.358 |
+| 96 | 0.100 [0.083, 0.117]; 1.25; 0.60; 1.406 | 0.068 [0.053, 0.082]; 0.85; 0.41; 1.462 | 1.469 |
+
+- *The user's findings:*
+  1. Arm 1 reproduces the previous run, and arm 2's drawn medians match the filed ones (the sanity checks pass).
+  2. Matching the filed shape over-corrects: the simulation now under-predicts at every size (0.76–0.85). Collisions come mostly from q just above B. The filed partials put less weight there than 1/q (the lowest bin is 0.27 against ~0.34 at 72), and that small shift (median +0.06) removes 20–30% of collisions.
+  3. The card therefore repeats ~1.2–1.3x more than a shape-matched simulation. Open candidates: (i) within-bin concentration near B that 0.2-wide bins cannot see; (ii) a run mismatch between the measured yields and the partial counts.
+  4. Nothing is scored. Note only: the shape-matched ratios rise with size (the direction of G-cc's monotone clause), and DeepSeek's "skew explains the 84–96 residual" holds in direction, but the full shape over-corrects.
+- **Definition caveat again (mine):** the ratios above divide by the per-partial-filed figures 0.17 / 0.13 / 0.08 (denominator: distinct q). On the simulation's per-partial definition, the measured yields on the same traces are 0.141 / 0.112 / 0.076 (86eb28f).
+  - On the matched definition, arm 2 / measured is **0.91 / 0.93 / 0.89** (the shape-matched simulation under-predicts by ~7–11%, not 15–24%), and arm 1 / measured is 1.13 / 1.35 / 1.32.
+  - The combined / (F + 10) shares, which need no definition, give measured 0.58 / 0.49 / 0.50 against arm 2's 0.49 / 0.43 / 0.41: under-prediction of 14–18%.
+  - Candidate (ii), run mismatch, is excluded: the measured yields and the partial counts come from the same traces (slack2 and lpdist ran the same three numbers with the same genes; their counts agree exactly).
+- **The clean check, upgraded** (information; queued after the current order; now the decisive step for this thread). On exactly the lpdist traces, per size 72 / 84 / 96:
+  - (a) the measured pairing yield on **both** definitions (combined per partial occurrence, and combined per distinct q filed), and combined / (F + 10);
+  - (b) a histogram of log_B q of filed partials in 0.05-wide bins from 1 to lc, and the share of filed q in (B, 2B];
+  - (c) the number of distinct q and the count of q filed 2, 3 and 4+ times.
+  - D-cc and G-cc are scored from (a) against this run's residue 1/q arm 1 (0.159 / 0.151 / 0.100). The definition used for the score is stated; the user's choice decides, defaulting to per occurrence (matching the simulation).
