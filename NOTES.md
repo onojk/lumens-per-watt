@@ -4389,3 +4389,26 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
      - Its off-cell ranges rise with size, while the current tuned slack falls with size (2.23 / 2.10 / 2.01), and nothing in its reasoning explains the reversal. At 72 its off range sits ~0.13–0.33 below today's tuned value.
      - "Track-specific best p0": the ruint ranges are scored at the ruint-best p0 and the Montgomery ranges at the Montgomery-best p0.
    - *Note (mine):* as for D-2x2full, the fully corrected meter as built also includes the start-offset correction. G-slackFC is scored on it, with the start-offset part's effect reported beside it.
+
+**Re-sieve model with λ and z fitted per size** (user, Mathematica, Oct 26; information only).
+- *Method:* per polynomial, each factor-base prime p ≥ p0 re-sieved costs a walk of λ · 4M/p word ops plus 2z small-modulus start-offset ops, and changes trial division by (2c/p − c) small-modulus ops (c = candidates per polynomial); 5 factor bases per size averaged. λ and z are solved exactly from the measured official and ruint deltas at p0 = 30, and Montgomery is predicted.
+- *Fit:* 54: λ 3.22, z 3.09 (not physical; excluded); 72: 1.97, 0.15; 84: 2.02, 1.06; 96: 1.39, 0.48. Montgomery delta at p0 = 30, model against measured: −4,535 / −4,510 (72); −8,304 / −8,211 (84); +7,578 / +7,886 (96).
+- **Caveat (Claude chat's error in the design):** this is not an independent validation. Both model prices scale almost equally from ruint to Montgomery (3.68x word, 3.74x small-modulus), so any fit to ruint reproduces Montgomery. The measured Montgomery / ruint delta ratios are 3.77 / 3.81 / 3.43.
+- *Best p0* (saving against the full pass, % of qs cost, current genes and pricing):
+  - 72: ruint 89 (11.1%); Montgomery 83 (12.4%); official 277 (2.6%); worst-of-three 277 (2.6%);
+  - 84: ruint 191 (11.7%); Montgomery 181 (12.6%); official 613 (1.7%); worst-of-three 613 (1.7%);
+  - 96: ruint 431 (7.6%); Montgomery 419 (8.0%); official 1,427 (0.4%); worst-of-three 1,427 (0.4%).
+  - On the sweep grid {30, 60, 100, 200, 400, 700, 1000}: Montgomery best 100 / 200 / 400 (12.4 / 12.6 / 8.0%); worst-of-three best 200 / 700 / none-to-1000 (2.4 / 1.7 / ~0%).
+- *The user's findings:*
+  1. For Track M, tuning p0 rescues re-sieve: an 8–13% saving at every size, including 96 (against −2.6% at p0 = 30).
+  2. For Track R (worst of three), official binds: the best p0 is high, and the robust saving only 2.6 / 1.7 / 0.4%.
+  3. After the audit re-typing the percentages grow (a smaller total); the best p0 does not move.
+  4. Model expectations against the open predictions (not scores): W-p0 fits at all sizes; D-p0R would be falsified at 72 and 84 (worst-of-three > 1%); D-p0M's p0 ranges fit, with savings slightly low at 72 and 84; G-p0's Track R p0 ranges are too low at 72 and 84, and its Track M range at 96 (420–700) misses the grid best (400) by one step. Scoring is on the grid, as G-p0 defined it.
+  5. Claude chat's pre-run expectation mostly held; it missed on z at 84 (1.06 against 0–1) and on the worst-of-three saving at 72 (2.6% against ≤ ~2%).
+- **How start offsets are charged: not at all, today (z = 0 in the card).** The fitted z (0.15 / 1.06 / 0.48) therefore absorbs something else in the measured deltas, not start offsets. The start-offset correction (decided, cost model written) will charge them: 1 word op per root per polynomial, plus 1 per root walked under re-sieve.
+- **New audit finding (item 11; mine, found while answering): re-sieve's per-candidate prime list is built by an uncharged sort.**
+  - `plist = sorted(direct + rec[i0])` (qs.py) and `l.sort_unstable()` (qs.rs) sort the direct primes and the recorded primes together for every candidate, and neither core charges it.
+  - Both inputs are already in factor-base order (direct by construction; each candidate's recorded primes in the walk's order), so a linear merge of |plist| word steps would do.
+  - Size: |plist| ≈ 5–15 per candidate, so a sort is ~20–60 comparisons. At 96 bits (1,069 candidates) that is up to ~50k uncharged word-level ops per number: ~2% of qs's ruint cost and ~3–4% official in the re-sieve-on runs.
+  - **The re-sieve measurements (772632a) are therefore slightly under-charged**, more so under official. It needs a fix (implement as a charged merge, |plist| word ops per candidate; cost-model entry first) before the 2×2's re-sieve-on cells. **Reported for the user; not fixed yet.**
+- For the 2×2 p0 sweep: the official-best p0 per size is also reported.
