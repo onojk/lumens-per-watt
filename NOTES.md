@@ -3459,3 +3459,11 @@ The final Track R genes run as qs alone on the corrected card with kset = sf32. 
 - **(G-c)** The pm1 stage-2 c from the map check: Track R 8–15 / 6–12 / 5–10 at 72 / 84 / 96; Track M 15–30 / 12–25 / 10–20; Track M's c exceeds Track R's at every size.
   - *Note:* this has c **falling** with size, the opposite of DeepSeek's D-c (rising: R 10–25 → 60–120, M 20–40 → 90–150). The user's Mathematica stage-2 run found that the best c rises with the value per catch (5–20 at V = 1e5, 20–100 at V = 1e6), and the value per catch rises with size. The map check will report which direction holds.
 - **(G-r2)** Track R stage 2: off at 72; short (c ≤ 10) at 84–96 with robust gain at most 1–3%. It is reported as off if the gain is inside the noise of stage-1-only.
+
+**Outside context for the pm1 stage-2 map check** (user, Mathematica toy: rho, then p-1 stage 1 with optional stage 2, then qs; mixed bands 16 … N/2 bits, 1,200 primes each; qs cost scaled like L(N): 49k / 200k / 756k at 72 / 84 / 96; Q multiplied by 0.5 / 1 / 2 to mimic ruint-like / normal / Montgomery-like qs cost in multiply units; grids rho 0 and 2^8 … 2^18, B 0 and 2^8 … 2^14, c ∈ {1, 5, 10, 20, 50, 100, 200}).
+- With paired stage 2 (k = 1), the best c is 20 in 8 of 9 cells. It is 50 only at 96 bits with Q × 2, where B sits at the grid top (2^14).
+- The extra value from size and Q goes into stage-1 B (2^10 → 2^14) and the rho budget (2k → 131k), not into c.
+- Stage 2's gain over the best stage-1-only pipeline: 6.5–11% (paired), 4.6–5.8% (simple stepping, best c 10–20).
+- The rho budget scales roughly with Q, consistent with the budget-as-share-of-qs MOVES row.
+- *Implications, adopted for the protocol:* c ~ 20 as a default; the search covers c 5–200; **B above 2^14 is allowed in the stage-2 map check** (the grid runs to 2^16), since B hits the grid top at the high-Q end.
+- Against the pre-registered c predictions: DeepSeek's D-c (rising steeply to 60–150 at 96) and Grok's G-c (falling with size) both mostly miss in this toy. They are scored on the real map check, not on this.
