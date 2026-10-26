@@ -697,8 +697,17 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 for ent in st.iter_mut() {
                     let p = ent.0;
                     let bi = ent.2[v];
-                    for r in ent.1.iter_mut() {
-                        *r = (*r + d * bi).rem_euclid(p);
+                    // r, bi in [0, p): one add or subtract and one conditional correction, no reduction
+                    if d > 0 {
+                        for r in ent.1.iter_mut() {
+                            *r += bi;
+                            if *r >= p { *r -= p; }
+                        }
+                    } else {
+                        for r in ent.1.iter_mut() {
+                            *r -= bi;
+                            if *r < 0 { *r += p; }
+                        }
                     }
                     n_roots += ent.1.len() as u64;
                 }

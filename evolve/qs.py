@@ -279,7 +279,9 @@ def sieve_source(N, k, g, led, ch, at):
                 n_roots = 0
                 for ent in st_:
                     p, rs, bainv = ent
-                    ent[1] = [(r + d * bainv[v]) % p for r in rs]
+                    bi = bainv[v]              # r, bi in [0, p): add or subtract, one conditional correction
+                    ent[1] = [r + bi - p if r + bi >= p else r + bi for r in rs] if d > 0 else \
+                             [r - bi + p if r < bi else r - bi for r in rs]
                     n_roots += len(rs)
                 charge("gray", n_roots)            # word-level type setup_gray (NOTES.md, "Gray-code root update re-typed")
                 if at is not None:

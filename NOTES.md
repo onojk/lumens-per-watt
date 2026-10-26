@@ -5224,3 +5224,63 @@ Time shares (new reference, 96): sieve 24%, confirm 29%, setup 24%, solve 8%, lp
   1. Rankings: on all map numbers, for qs's candidate lists (sf32 and 1..32) and cfrac's (1..kc, kc up to 64), plus sq-style lists k = mult·j for j ≤ 200, the new scores equal the old ks_score bit for bit in Python. Rust's ranking from the new build equals the pre-change build's (same factor, tests and hits, and the same k order, read from the qs attempts).
   2. Against the pre-change build per number: every type except mult, word and f64_log identical. The changes in those three equal the formula, computed independently in Python.
   3. Python = Rust per type; cfrac_accept's mult expectation is updated to the formula; parity passes.
+
+### The scored 2×2 slack retune: protocol (written before it ran; `evolve/slack2x2.py`)
+
+*Overnight standing go (user, Oct 26), stage 2. It runs after stage 1 (gray (a), I-021, the vector-initialization charges, the wall-clock re-run) on the card as it then stands.*
+
+**Configurations.**
+- Each size's new reference qs genes (Track R final genes, qs alone, kset sf32), with lc fixed and tc = s + 1 − lc.
+- Slack s on the 0.1 grid 1.6–2.8 (13 points). Re-sieve off (13 configurations) and on at p0 ∈ {30, 60, 100, 200, 400, 700, 1000, 1500} (104).
+- All map numbers (320 / 480 / 560 / 640 at 54 / 72 / 84 / 96), lampcore `--types`.
+
+**Three price axes on the same op counts** (the confounding guard), under each of official, ruint and Montgomery:
+- *fc:* today's prices (fully corrected).
+- *gray:* pre-Gray type prices with only the Gray-code update re-typed to the word price. This is G-slack2x2's scoring axis ("re-typed yes").
+- *old:* pre-Gray type prices ("re-typed no").
+- *Pre-Gray type prices on today's counts:*
+  - word and sieve_update at the old word price (the calibrated sieve_update, 0.0340 / 0.1254);
+  - setup_gray at setup_small (old) or at the old word price (gray);
+  - hash at lp_small; sort_cmp and f64_log at setup_small; f64_div at setup_full (a full multiply).
+- *Limitation, stated before the run:* today's counts include later meter corrections (ledger, start offsets, merge, zero-fill, re-sieve initialization, I-021), so "old" means pre-Gray prices on today's counts, not the historical card. The word ops moved by the audit re-typing cannot be separated from native word ops by type, so all of them take the old word price on the old and gray axes.
+- *The 2×2* is re-sieve off / on × old / gray. *fc* is reported beside it; D-2x2full and G-slackFC are scored on fc.
+
+**Best cells and intervals** (the adopted slack rule).
+- The off cell is the argmin over slack; the on cell is the joint argmin over (slack, p0).
+- The shift against off/no (the old-axis off cell, same pricing) has a 95% interval from 10,000 within-band resamples of the numbers (numpy default_rng(2026)), with the argmin recomputed per resample.
+- A shift counts as real only if its interval excludes zero. ruint and Montgomery are scored; official is reported.
+- *p0, on fc:* at each criterion's best on-slack, the best p0 under ruint, Montgomery, official, Track R (worst of three, against the current reference on the same numbers) and Track M (Montgomery). The cost by p0 is logged.
+- *Re-sieve saving* is the best on cell against the best off cell, each at its own best slack, under ruint, Montgomery, Track R and Track M. Savings at the same slack are computed from the logged means where a prediction names it.
+- *α_filed per slack:* re-sieve finds the same relations as the full pass, so α_filed depends on the slack only, not on re-sieve or pricing.
+  - It is measured on Python traces of 3 top-band map numbers per size at each slack. The filed q are recovered from the candidates as in lpdist.
+  - α is the pooled MLE of a density ∝ q^−α within 0.2-wide bins of log_B q (each bin conditioned on its own range), my estimator.
+
+**Winner and verdict.**
+- The winner per size is the configuration with the lowest Track R fitness on the map numbers, on fc.
+- Sealed verdict: the winner against the current reference, on fresh numbers (seeds 9440000 + 100 pb + bits, 80 per band, run once).
+  - Per-pricing ratios and the robust ratio, each with a paired within-band bootstrap interval (10,000);
+  - the ACCEPT gate with per-band intervals (PASS / BORDERLINE / FAIL at 1.5x, as defined Oct 24).
+- **Adoption rule (fixed before the run):** the winner becomes the new qs reference only if the gate is PASS **and** the sealed robust ratio's interval lies below 1. A winner whose interval includes 1 shows no detectable gain, and the current reference is kept (said so in the report).
+
+**Scored from this run** (as written, with bases; the slack rule applies where it says so):
+- GP3, GP4 (Grok); W3, W4 (Grok's and Claude chat's); W-p0 (Claude chat's);
+- G-slack2x2, G-slackFC, G-rmslack (Grok); D-2x2full, D-rmslack, D-p0R, D-p0M, D-gc's slack clauses, D-alpha's slack clause (DeepSeek); G-p0 (Grok);
+- the slack clauses of G-gc54 / D-gc54.
+- GP7 does not apply here; it needs the DP comparison of the re-solve.
+
+### Gray-code root update without a reduction: results (`evolve/gray_a_accept.py`, `gray_a_accept.out`; `parity_graya.out`; `phasetime_graya.out`)
+
+- *Acceptance:* every run identical to the pre-change build per number and per type, 8,000 / 8,000 (all map numbers; new reference with and without re-sieve, frozen and corrected references). Python = Rust per type 32 / 32. Parity passes (types 6,894 pairs, 0 mismatches; mutations caught 54 / 54).
+- *Gray region, re-measured* (same protocol; ns per priced ruint unit ÷ the median region; time share), before → after:
+
+| size | without re-sieve | with re-sieve | time share (without / with) |
+|---|---|---|---|
+| 54 | 1.87 → **1.86** | 1.62 → **1.65** | 0.016 / 0.015 |
+| 72 | 1.60 → **1.40** | 1.51 → **1.32** | 0.032 / 0.029 |
+| 84 | 1.79 → **1.52** | 1.50 → **1.29** | 0.040 / 0.036 |
+| 96 | 1.87 → **1.60** | 1.55 → **1.33** | 0.048 / 0.042 |
+
+- The region went from 131–139 to 111–130 ns per unit, a 10–20% cut in time. **My prediction (within 0.6–1.2x of the median) missed:** it still sits at 1.3–1.86x.
+  - The reduction was not most of the cost. Per root the loop now does one i128 add or subtract and a compare, but it walks the polynomial's prime table, a Vec of (p, roots Vec, B-inverse Vec, index) entries with 1–2 roots each. The per-entry indirection (two heap vectors per prime) costs more than the arithmetic.
+  - A flat layout (roots and B-inverses in contiguous arrays) would be a further card code change with identical counts. It is not in the decisions, so not done.
+- *Materiality, if these held at the final re-run (rule 3: time share × (ratio − 1) under 1% of total):* 96 without re-sieve 0.048 × 0.60 = 2.9% and 54 without re-sieve 1.4%, both material; 84 0.040 × 0.52 = 2.1%, material. The full re-run after I-021 and the initialization charges decides, since those change the median and the shares.
