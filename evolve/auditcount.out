@@ -1,0 +1,36 @@
+54 bits (6 numbers): ops per run, and share of qs cost (official / ruint / Montgomery) at today's types
+   item 1: 397 ops per run (setup_small 386, setup_full 11); share 0.0146 / 0.0414 / 0.0466
+   item 2: 505 ops per run (mult 100, setup_small 405); share 0.0185 / 0.0495 / 0.0594
+   item 3: 29 ops per run (setup_small 6, setup_full 23); share 0.0011 / 0.0080 / 0.0031
+   item 4: 12 ops per run (setup_full 12); share 0.0005 / 0.0040 / 0.0013
+   item 5: 396 ops per run (confirm_full 396); share 0.0145 / 0.1267 / 0.0409
+   item 6: 426 ops per run (lp_small 426); share 0.0156 / 0.0156 / 0.0188
+   item 7: 566 ops per run (lp_small 566); share 0.0208 / 0.0207 / 0.0249
+   item 8: 198 ops per run (confirm_td 198); share 0.0073 / 0.0072 / 0.0087
+72 bits (6 numbers): ops per run, and share of qs cost (official / ruint / Montgomery) at today's types
+   item 1: 3,189 ops per run (setup_small 3,135, setup_full 54); share 0.0228 / 0.0907 / 0.0966
+   item 2: 982 ops per run (mult 100, setup_small 882); share 0.0070 / 0.0269 / 0.0298
+   item 3: 158 ops per run (setup_small 41, setup_full 116); share 0.0011 / 0.0115 / 0.0044
+   item 4: 36 ops per run (setup_full 36); share 0.0003 / 0.0032 / 0.0010
+   item 5: 918 ops per run (confirm_full 918); share 0.0066 / 0.0820 / 0.0245
+   item 6: 934 ops per run (lp_small 934); share 0.0067 / 0.0095 / 0.0106
+   item 7: 2,015 ops per run (lp_small 2,015); share 0.0144 / 0.0205 / 0.0229
+   item 8: 459 ops per run (confirm_td 459); share 0.0033 / 0.0047 / 0.0052
+84 bits (6 numbers): ops per run, and share of qs cost (official / ruint / Montgomery) at today's types
+   item 1: 3,654 ops per run (setup_small 3,596, setup_full 57); share 0.0086 / 0.0450 / 0.0461
+   item 2: 1,412 ops per run (mult 100, setup_small 1,312); share 0.0033 / 0.0168 / 0.0179
+   item 3: 125 ops per run (setup_small 27, setup_full 98); share 0.0003 / 0.0041 / 0.0014
+   item 4: 42 ops per run (setup_full 42); share 0.0001 / 0.0016 / 0.0005
+   item 5: 1,409 ops per run (confirm_full 1,409); share 0.0033 / 0.0547 / 0.0157
+   item 6: 1,456 ops per run (lp_small 1,456); share 0.0034 / 0.0064 / 0.0069
+   item 7: 4,608 ops per run (lp_small 4,608); share 0.0108 / 0.0204 / 0.0218
+   item 8: 704 ops per run (confirm_td 704); share 0.0017 / 0.0031 / 0.0033
+96 bits (6 numbers): ops per run, and share of qs cost (official / ruint / Montgomery) at today's types
+   item 1: 18,655 ops per run (setup_small 18,473, setup_full 182); share 0.0104 / 0.0678 / 0.0682
+   item 2: 2,846 ops per run (mult 100, setup_small 2,746); share 0.0016 / 0.0101 / 0.0104
+   item 3: 346 ops per run (setup_small 66, setup_full 280); share 0.0002 / 0.0035 / 0.0011
+   item 4: 109 ops per run (setup_full 109); share 0.0001 / 0.0013 / 0.0003
+   item 5: 2,123 ops per run (confirm_full 2,123); share 0.0012 / 0.0246 / 0.0068
+   item 6: 2,872 ops per run (lp_small 2,872); share 0.0016 / 0.0038 / 0.0039
+   item 7: 10,700 ops per run (lp_small 10,700); share 0.0059 / 0.0142 / 0.0147
+   item 8: 1,062 ops per run (confirm_td 1,062); share 0.0006 / 0.0014 / 0.0015

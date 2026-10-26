@@ -4118,3 +4118,27 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
 - **(W-b2b, Claude chat's; pre-registered before the clean check):** the share of filed q in (B, 2B] is 0.16–0.18 / 0.13–0.15 / 0.10–0.115 at 72 / 84 / 96. Falsified if any size is at or below its α = 1 value (0.155 / 0.133 / 0.090) or above its α = 2 value (0.193 / 0.177 / 0.126).
   - *Note beside it:* D-b2b (0.11–0.13 / 0.12–0.14 / 0.09–0.11) is lower; G-b2b (0.155–0.185 / 0.150–0.180 / 0.100–0.135) overlaps.
   - *Timing (mine):* lpdist's saved output has only 0.2-wide bins; no (B, 2B] share has been computed from any trace, so this is a genuine pre-registration.
+
+**Audit items 1–8: ops per run and share of qs cost at today's types** (information; `evolve/auditcount.py`, `auditcount.out`).
+- New reference genes as qs alone (corrected card, kset), Python traces on 3 balanced and 3 band-24 map numbers per size. Counts come from trace fields and the card's charge formulas. **No re-typing without the user's decision.**
+- *Correction to the audit list:* item 4's A/q is a division by the small prime q (small-modulus, not a candidate). Only B_l = (A/q)·γ (s per A) is a word multiply typed full.
+
+| item | step | today's type (ruint / Montgomery price) | proposed type | ops per run at 54 / 72 / 84 / 96 | share of qs cost, official / ruint / Montgomery, at 54 · 72 · 84 · 96 |
+|---|---|---|---|---|---|
+| 1 | on-demand A search: overlap checks, closeness scan, t′, target check | setup_small 0.307 / 1.137 (target check setup_full 1.0) | word | 397 / 3,189 / 3,654 / 18,655 | 0.015 / 0.041 / 0.047 · 0.023 / 0.091 / 0.097 · 0.009 / 0.045 / 0.046 · 0.010 / 0.068 / 0.068 |
+| 2 | sorts (multiplier ranking, pool selection, A keys) | mult / setup_small 0.307 / 1.137 | word | 505 / 982 / 1,412 / 2,846 | 0.019 / 0.050 / 0.059 · 0.007 / 0.027 / 0.030 · 0.003 / 0.017 / 0.018 · 0.002 / 0.010 / 0.010 |
+| 3 | forming A: prefix products, A = A′ · last | setup_small / setup_full | word | 29 / 158 / 125 / 346 | ≤ 0.001 / 0.004–0.012 / ≤ 0.004 |
+| 4 | B_l = (A/q) · γ | setup_full 1.0 / 1.0 | word | 12 / 36 / 42 / 109 | ≤ 0.0005 / 0.001–0.004 / ≤ 0.0013 |
+| 5 | **v = (A x + 2B) x + C per candidate** | **confirm_full 1.0 / 1.0** | word (one- or two-word multiplies) | 396 / 918 / 1,409 / 2,123 | 0.015 / **0.127** / 0.041 · 0.007 / **0.082** / 0.025 · 0.003 / **0.055** / 0.016 · 0.001 / **0.025** / 0.007 |
+| 6 | large primes: bound check, lookup, insert | lp_small 0.114 / 0.426 | word | 426 / 934 / 1,456 / 2,872 | 0.016 / 0.016 / 0.019 · 0.007 / 0.010 / 0.011 · 0.003 / 0.006 / 0.007 · 0.002 / 0.004 / 0.004 |
+| 7 | large primes: F-entry vector add per combination | lp_small 0.114 / 0.426 | word | 566 / 2,015 / 4,608 / 10,700 | 0.021 / 0.021 / 0.025 · 0.014 / 0.021 / 0.023 · 0.011 / 0.020 / 0.022 · 0.006 / 0.014 / 0.015 |
+| 8 | sign check per candidate | confirm_td 0.114 / 0.426 | word | 198 / 459 / 704 / 1,062 | 0.007 / 0.007 / 0.009 · 0.003 / 0.005 / 0.005 · 0.002 / 0.003 / 0.003 · 0.0006 / 0.0014 / 0.0015 |
+
+- **Largest under ruint: item 5** (12.7 / 8.2 / 5.5 / 2.5% of qs cost). Two multiplies of word-size values per candidate are charged at the full mod-N multiply price (27 ns under ruint), which is where ruint's prices bite.
+- **Then item 1** (4.1–9.1%) and item 2 (1.0–5.0%).
+- Items 6–8 together are 2–4% under ruint; items 3–4 are ≤ 1.6%.
+- Under official none of these changes anything (re-typing keeps op counts).
+
+**Re-sieve formal results, restated** (772632a; full pass → re-sieve, cost per number, current pricing): in the table under "Re-sieve against full-pass confirmation" above.
+- Scores as recorded there, at the current tuned genes: D-rm missed, D-rm2 missed, G-rm missed. (The user's "D-rs" refers to these.)
+- The before-retune clauses stand; the after-retune clauses wait for the 2×2.
