@@ -1680,5 +1680,28 @@
     ]
    }
   }
+ },
+ "word_price": {
+  "ruint": 0.0258,
+  "montgomery": 0.0951,
+  "source": "opbench --audit, clean sieve update (start offsets precomputed), median of 3 P-core runs, scaled to this file by the ratio of its sieve_update price to the run's old sieve update; NOTES.md, 'Word-price calibration and the audit ops' (Oct 26). Old word price = sieve_update 0.0340 / 0.1254.",
+  "own_types": {
+   "hash": {
+    "ruint": 0.3638,
+    "montgomery": 1.3427
+   },
+   "sort_cmp": {
+    "ruint": 0.1169,
+    "montgomery": 0.4315
+   },
+   "f64_log": {
+    "ruint": 0.1063,
+    "montgomery": 0.3923
+   },
+   "f64_div": {
+    "ruint": 0.19,
+    "montgomery": 0.7011
+   }
+  }
  }
 }

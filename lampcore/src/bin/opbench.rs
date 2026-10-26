@@ -32,6 +32,9 @@ const LIMIT_S: f64 = 30.0; // per-primitive limit: past it, a timeout record ins
 
 static BATCHES: AtomicUsize = AtomicUsize::new(31);
 static PROBE_ONLY: AtomicBool = AtomicBool::new(false);
+/// --audit (NOTES.md, "word-price calibration"): only the 84-bit reference multiplies, the old and a clean
+/// sieve update, and the four audit ops; nothing else.
+static AUDIT: AtomicBool = AtomicBool::new(false);
 /// Start of the current primitive in ms since UNIX_EPOCH (0: none running), for the watchdog.
 static STARTED_MS: AtomicU64 = AtomicU64::new(0);
 static CURRENT: Mutex<String> = Mutex::new(String::new());
@@ -204,6 +207,7 @@ fn main() {
         match a.as_str() {
             "--probe" => PROBE_ONLY.store(true, Ordering::SeqCst),
             "--batches" => BATCHES.store(argv.next().unwrap().parse().unwrap(), Ordering::SeqCst),
+            "--audit" => AUDIT.store(true, Ordering::SeqCst),
             _ => args.push(a.parse().unwrap()),
         }
     }
@@ -211,6 +215,10 @@ fn main() {
     watchdog();
     let mut rng = Rng(0x9e3779b97f4a7c15);
     const K: usize = 1024; // operand pool, L1-resident
+    if AUDIT.load(Ordering::SeqCst) {
+        audit_main(&args, &mut rng);
+        return;
+    }
 
     // ---- verify the Montgomery multiply against U256::mul_mod ---------------------------------
     for &n in &args {
@@ -480,6 +488,188 @@ fn main() {
         for i in 0..it as usize {
             let p = ps[i & (K - 1)] as u64;
             x = (x % p) * black_box(7 + (i as u64 & 63)) % p + 1;
+        }
+        black_box(x);
+        it
+    });
+}
+
+
+/// The word-price check and the audit ops (NOTES.md, "Word-price calibration and the audit ops"):
+/// the 84-bit reference multiplies (ruint and Montgomery chains), the calibration's "sieve update"
+/// (start offsets computed inside the timed loop) beside a clean one (start offsets precomputed
+/// outside it), and four representative audited ops: a 64-bit multiply-add chain (item 5's v),
+/// a HashSet<i128> probe-and-insert (items 0 / 6), one comparison inside a sort of ~32 keys
+/// (item 2), and a double-precision divide (item 1's t').
+fn audit_main(args: &[u128], rng: &mut Rng) {
+    const K: usize = 1024;
+    let n = args[1];
+    let bits = 128 - n.leading_zeros();
+    let nu = U256::from(n);
+    let ys: Vec<U256> = (0..K).map(|_| U256::from(rng.below_u128(n))).collect();
+    let xs: Vec<U256> = (0..K).map(|_| U256::from(rng.below_u128(n))).collect();
+    let ex = format!(", \"bits\": {bits}");
+    bench("mulmod ruint chain", &ex, |it| {
+        let mut x = xs[0];
+        for i in 0..it as usize {
+            x = x.mul_mod(black_box(ys[i & (K - 1)]), nu);
+        }
+        black_box(x);
+        it
+    });
+    let mo = Mont::new(n);
+    let ym: Vec<u128> = ys.iter().map(|y| mo.to(y.to::<u128>())).collect();
+    let xm: Vec<u128> = xs.iter().map(|x| mo.to(x.to::<u128>())).collect();
+    bench("mulmod montgomery chain", &ex, |it| {
+        let mut x = xm[0];
+        for i in 0..it as usize {
+            x = mo.mul(x, black_box(ym[i & (K - 1)]));
+        }
+        black_box(x);
+        it
+    });
+    // the calibration's geometry (tuned qs at 84 bits)
+    let n84 = n;
+    let ln_n = (n84 as f64).ln();
+    let bnd = ((1.1 * (0.5 * (ln_n * ln_n.ln()).sqrt()).exp()) as usize).max(30);
+    let mm = ((0.25 * bnd as f64) as usize).max(64);
+    let width = 2 * mm + 1;
+    let base: Vec<usize> = primes_upto(bnd)
+        .into_iter()
+        .skip(1)
+        .filter(|&p| {
+            let (mut r, mut b, mut e) = (1u128, n84 % p as u128, (p as u128 - 1) / 2);
+            while e > 0 {
+                if e & 1 == 1 {
+                    r = r * b % p as u128;
+                }
+                b = b * b % p as u128;
+                e >>= 1;
+            }
+            r == 1
+        })
+        .collect();
+    let logp: Vec<i32> = base.iter().map(|&p| ((p as f64).log2().round() as i32).max(1)).collect();
+    let roots: Vec<[usize; 2]> = base.iter().map(|&p| [(rng.next() % p as u64) as usize, (rng.next() % p as u64) as usize]).collect();
+    let mut upd_pass = 0u64;
+    for (j, &p) in base.iter().enumerate() {
+        for &r in &roots[j] {
+            let start = (r + mm) % p;
+            if start < width {
+                upd_pass += ((width - 1 - start) / p + 1) as u64;
+            }
+        }
+    }
+    let geo = format!(", \"B\": {bnd}, \"M\": {mm}, \"width\": {width}, \"F\": {}, \"roots_per_update\": {:.5}",
+                      base.len() + 2, (2 * base.len()) as f64 / upd_pass as f64);
+    let mut arr = vec![0i32; width];
+    bench("sieve update", &geo, |it| {
+        let mut upd = 0u64;
+        while upd < it {
+            for (j, &p) in base.iter().enumerate() {
+                for &r in &roots[j] {
+                    let start = (r + mm) % p;
+                    let mut i0 = start;
+                    while i0 < width {
+                        arr[i0] = arr[i0].wrapping_add(logp[j]);
+                        i0 += p;
+                    }
+                    if start < width {
+                        upd += ((width - 1 - start) / p + 1) as u64;
+                    }
+                }
+            }
+            black_box(&arr);
+        }
+        upd
+    });
+    let starts: Vec<[usize; 2]> = base.iter().zip(&roots).map(|(&p, r)| [(r[0] + mm) % p, (r[1] + mm) % p]).collect();
+    bench("sieve update clean", &geo, |it| {
+        let mut upd = 0u64;
+        while upd < it {
+            for (j, &p) in base.iter().enumerate() {
+                for &start in &starts[j] {
+                    let mut i0 = start;
+                    while i0 < width {
+                        arr[i0] = arr[i0].wrapping_add(logp[j]);
+                        i0 += p;
+                    }
+                    if start < width {
+                        upd += ((width - 1 - start) / p + 1) as u64;
+                    }
+                }
+            }
+            black_box(&arr);
+        }
+        upd
+    });
+    // item 5: v = (A x + 2B) x + C, ~2^36 A, x < 2^10, in i128 as the card does it; 2 multiply-adds per v
+    let av: Vec<i128> = (0..K).map(|_| (rng.next() >> 28) as i128).collect();
+    let xv: Vec<i128> = (0..K).map(|_| (rng.next() % 2048) as i128 - 1024).collect();
+    let (b2, c0) = ((rng.next() >> 27) as i128, -((rng.next() >> 4) as i128));
+    bench("multiply-add i128 (v evaluation, per multiply-add)", &geo, |it| {
+        let mut acc = 0i128;
+        let mut ops = 0u64;
+        let mut i = 0usize;
+        while ops < it {
+            let (a, x) = (black_box(av[i & (K - 1)]), xv[(i * 7) & (K - 1)]);
+            acc ^= (a * x + b2) * x + c0;
+            ops += 2;
+            i += 1;
+        }
+        black_box(acc);
+        ops
+    });
+    // items 0 / 6: HashSet<i128> probe-and-insert (one call), fresh keys, set grown to a few hundred
+    bench("hashset i128 probe+insert", &geo, |it| {
+        let mut done = 0u64;
+        let mut set: std::collections::HashSet<i128> = std::collections::HashSet::new();
+        let mut key = 0x1234_5678_9abc_def0_i128;
+        while done < it {
+            if set.len() > 512 {
+                set.clear();
+            }
+            key = key.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
+            black_box(set.insert(key));
+            done += 1;
+        }
+        done
+    });
+    // item 2: comparisons inside sorting ~32 (u64, f64) keys by f64, counted by the comparator
+    let keys: Vec<(u64, f64)> = (0..K).map(|i| (i as u64, (rng.next() % 100000) as f64 / 7.0)).collect();
+    bench("sort comparison (32 keys)", &geo, |it| {
+        let mut cmps = 0u64;
+        let mut i = 0usize;
+        while cmps < it {
+            let mut v: Vec<(u64, f64)> = (0..32).map(|j| keys[(i + j * 31) & (K - 1)]).collect();
+            v.sort_by(|a, b| {
+                cmps += 1;
+                a.1.partial_cmp(&b.1).unwrap().then(a.0.cmp(&b.0))
+            });
+            black_box(&v);
+            i += 1;
+        }
+        cmps
+    });
+    // item 1's closeness scan and target check: |ln(p / t')| per pool prime (a divide and a log)
+    let pv: Vec<f64> = (0..K).map(|_| 300.0 + (rng.next() % 20000) as f64).collect();
+    bench("f64 ln of a ratio (closeness key)", &geo, |it| {
+        let mut acc = 0.0f64;
+        let tp = 1234.5f64;
+        for i in 0..it as usize {
+            acc += (black_box(pv[i & (K - 1)]) / tp).ln().abs();
+        }
+        black_box(acc);
+        it
+    });
+    // item 1's t' = target / A': a double-precision divide, chained
+    bench("f64 divide (chain)", &geo, |it| {
+        let mut x = 1.0e15f64;
+        for i in 0..it as usize {
+            x = black_box(x) / black_box(1.0000001 + (i & 7) as f64 * 1e-9);
+            if x < 1.0 {
+                x = 1.0e15;
+            }
         }
         black_box(x);
         it

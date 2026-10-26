@@ -79,8 +79,9 @@ def prices(path="calibrate.json"):
     for ref in ("ruint", "montgomery"):
         names = cal["prices"][f"{ref} P1"]
         out[ref] = {t: sorted(cal["prices"][f"{ref} {r}"][t] for r in ("P1", "P2", "P3"))[1] for t in names}
-        out[ref]["word"] = out[ref]["sieve_update"]   # word-level op, priced like sieve_update (no new calibration)
-        out[ref]["setup_gray"] = out[ref]["sieve_update"]   # Gray-code root update: word-level (NOTES.md, "Gray-code root update re-typed")
+        # word-level ops: the clean sieve update price (NOTES.md, "Word-price calibration and the audit ops")
+        out[ref]["word"] = cal["word_price"][ref]
+        out[ref]["setup_gray"] = cal["word_price"][ref]   # Gray-code root update: word-level
     return out
 
 def cost(counts, pricing, pr):

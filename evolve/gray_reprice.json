@@ -1,0 +1,202 @@
+{
+ "54": {
+  "new ref": {
+   "ruint": {
+    "before": 3134.148716562429,
+    "after_old_word": 2964.050209762307,
+    "after_clean_word": 2958.931334137307,
+    "cut_old_word": 0.0542726341928943,
+    "cut_clean_word": 0.055905892882231245
+   },
+   "montgomery": {
+    "before": 9809.777405113,
+    "after_old_word": 9178.113171317138,
+    "after_clean_word": 9159.198301629638,
+    "cut_old_word": 0.06439129123017906,
+    "cut_clean_word": 0.06631945625435609
+   }
+  },
+  "frozen ref": {
+   "ruint": {
+    "before": 9522.30778782675,
+    "after_old_word": 9244.69932026567,
+    "after_clean_word": 9236.345083390672,
+    "cut_old_word": 0.029153486082016067,
+    "cut_clean_word": 0.03003081929379048
+   },
+   "montgomery": {
+    "before": 16183.85012056142,
+    "after_old_word": 15152.94548032687,
+    "after_clean_word": 15122.075556264375,
+    "cut_old_word": 0.06369959141705062,
+    "cut_clean_word": 0.06560704383613081
+   }
+  },
+  "corrected ref": {
+   "ruint": {
+    "before": 3643.8804639470463,
+    "after_old_word": 3362.1617571885045,
+    "after_clean_word": 3353.683828438504,
+    "cut_old_word": 0.0773128288773185,
+    "cut_clean_word": 0.07963944986115212
+   },
+   "montgomery": {
+    "before": 11815.011194641553,
+    "after_old_word": 10768.84309829429,
+    "after_clean_word": 10737.516117669289,
+    "cut_old_word": 0.08854567119003065,
+    "cut_clean_word": 0.09119712704639149
+   }
+  }
+ },
+ "72": {
+  "new ref": {
+   "ruint": {
+    "before": 12110.716605266405,
+    "after_old_word": 10740.6221132709,
+    "after_clean_word": 10699.391044104234,
+    "cut_old_word": 0.11313075325366895,
+    "cut_clean_word": 0.11653526435821726
+   },
+   "montgomery": {
+    "before": 40613.722247902886,
+    "after_old_word": 35525.848733932384,
+    "after_clean_word": 35373.49490518238,
+    "cut_old_word": 0.12527474046615406,
+    "cut_clean_word": 0.12902602993969825
+   }
+  },
+  "frozen ref": {
+   "ruint": {
+    "before": 22591.965977412703,
+    "after_old_word": 21316.925556602753,
+    "after_clean_word": 21278.555006186085,
+    "cut_old_word": 0.05643778067321481,
+    "cut_clean_word": 0.05813619640449874
+   },
+   "montgomery": {
+    "before": 57127.40340852076,
+    "after_old_word": 52392.51510396867,
+    "after_clean_word": 52250.73124084367,
+    "cut_old_word": 0.08288296022650776,
+    "cut_clean_word": 0.08536484903407526
+   }
+  },
+  "corrected ref": {
+   "ruint": {
+    "before": 15092.05626209336,
+    "after_old_word": 13824.019795598482,
+    "after_clean_word": 13785.86001934848,
+    "cut_old_word": 0.08402012585122665,
+    "cut_clean_word": 0.08654859351575872
+   },
+   "montgomery": {
+    "before": 52074.52527047865,
+    "after_old_word": 47365.64629145915,
+    "after_clean_word": 47224.64126458415,
+    "cut_old_word": 0.09042576873358443,
+    "cut_clean_word": 0.09313352317095291
+   }
+  }
+ },
+ "84": {
+  "new ref": {
+   "ruint": {
+    "before": 30093.540564923056,
+    "after_old_word": 26613.275779298023,
+    "after_clean_word": 26508.542099298025,
+    "cut_old_word": 0.11564823281982384,
+    "cut_clean_word": 0.11912850393561514
+   },
+   "montgomery": {
+    "before": 105252.09878748299,
+    "after_old_word": 92328.0653519527,
+    "after_clean_word": 91941.06163195267,
+    "cut_old_word": 0.12279121826943817,
+    "cut_clean_word": 0.12646813991241113
+   }
+  },
+  "frozen ref": {
+   "ruint": {
+    "before": 103507.59573654886,
+    "after_old_word": 99419.65296582291,
+    "after_clean_word": 99296.63207046576,
+    "cut_old_word": 0.039494133175798196,
+    "cut_clean_word": 0.04068265363636692
+   },
+   "montgomery": {
+    "before": 207640.39979318157,
+    "after_old_word": 192459.74191059225,
+    "after_clean_word": 192005.16469969938,
+    "cut_old_word": 0.07311032871112699,
+    "cut_clean_word": 0.07529958095368494
+   }
+  },
+  "corrected ref": {
+   "ruint": {
+    "before": 42926.20962309076,
+    "after_old_word": 38829.21700314363,
+    "after_clean_word": 38705.92376528648,
+    "cut_old_word": 0.09544268305821457,
+    "cut_clean_word": 0.09831489653663983
+   },
+   "montgomery": {
+    "before": 152174.2378064788,
+    "after_old_word": 136959.97312638254,
+    "after_clean_word": 136504.38957673972,
+    "cut_old_word": 0.09997924024067972,
+    "cut_clean_word": 0.10297306860617605
+   }
+  }
+ },
+ "96": {
+  "new ref": {
+   "ruint": {
+    "before": 79666.35528573845,
+    "after_old_word": 69884.91925083617,
+    "after_clean_word": 69590.56067333618,
+    "cut_old_word": 0.12278001171032993,
+    "cut_clean_word": 0.12647490369383074
+   },
+   "montgomery": {
+    "before": 286133.838820923,
+    "after_old_word": 249810.27893412122,
+    "after_clean_word": 248722.58809287118,
+    "cut_old_word": 0.12694604747373095,
+    "cut_clean_word": 0.13074738340006564
+   }
+  },
+  "frozen ref": {
+   "ruint": {
+    "before": 231703.44461949216,
+    "after_old_word": 219560.0166710844,
+    "after_clean_word": 219194.57726483437,
+    "cut_old_word": 0.05240935441572714,
+    "cut_clean_word": 0.05398654031751704
+   },
+   "montgomery": {
+    "before": 555756.5943165639,
+    "after_old_word": 510661.72984665,
+    "after_clean_word": 509311.386674775,
+    "cut_old_word": 0.0811413934284827,
+    "cut_clean_word": 0.08357113188896026
+   }
+  },
+  "corrected ref": {
+   "ruint": {
+    "before": 126132.87437236318,
+    "after_old_word": 113977.57977936133,
+    "after_clean_word": 113611.7832631113,
+    "cut_old_word": 0.09636896529542005,
+    "cut_clean_word": 0.09926905393662666
+   },
+   "montgomery": {
+    "before": 456044.1907084561,
+    "after_old_word": 410905.2592146377,
+    "after_clean_word": 409553.5964777627,
+    "cut_old_word": 0.09897929282619722,
+    "cut_clean_word": 0.10194317826627974
+   }
+  }
+ }
+}

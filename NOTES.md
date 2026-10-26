@@ -4628,3 +4628,45 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
 - So the card's ECM runs at a much larger B1 than the DP's choice. **An ECM-at-small-B1 option (b1 ≈ 0.125) belongs in the 96-bit re-solve** (Track R has no ECM at all today). Note that our B2 is 50 B1, not the DP's 100 B1.
 
 **Ideas checkpoint (2026-10-26):** added I-017; updated I-016 and I-010; parked triggers checked (none parked).
+
+## 2026-10-26 — Word-price calibration and the audit ops (`lampcore/src/bin/opbench.rs --audit`, `evolve/audit_price.py`; raw runs `evolve/calibrate_bench/audit/`)
+
+**Method:** three `opbench --audit` runs on a P-core (`taskset -c 2`), as for calibrate.json; the median per op. The run times the 84-bit reference multiplies (ruint and Montgomery chains), the calibration's "sieve update" (start offsets computed inside the timed loop), a **clean** sieve update (the same updates with the start positions precomputed outside the timed loop), and the audited ops.
+- *Scale:* this run's 84-bit ruint multiply is 31.0 ns (the calibration's runs gave a lower figure), so every new price is put on calibrate.json's own scale by the ratio of the calibration's sieve_update price to this run's old sieve update: ×1.130 (ruint), ×0.987 (Montgomery).
+
+| op | ns (median of 3) | × clean sieve update | price on calibrate's scale, ruint / Montgomery |
+|---|---|---|---|
+| sieve update (calibration's, starts inside the loop) | 0.934 | 1.32 | 0.0340 / 0.1254 (the current price) |
+| **sieve update, clean** | 0.709 | 1.00 | **0.0258 / 0.0951** |
+| 64-bit multiply-add (item 5's v) | 0.856 | 1.21 | word |
+| hash-set probe-and-insert, i128 key (items 0 and 6) | 10.000 | 14.11 | **0.3638 / 1.3427** (own type) |
+| one comparison inside a sort of 32 keys (item 2) | 3.213 | 4.54 | **0.1169 / 0.4315** (own type) |
+| f64 log of a ratio (item 1's closeness scan and target check) | 2.922 | 4.12 | **0.1063 / 0.3923** (own type) |
+| f64 divide, chained (item 1's t′) | 5.221 | 7.37 | **0.1900 / 0.7011** (own type) |
+
+- **Clean / old sieve update = 0.759** (0.755 in the first set of runs, which lacked the log benchmark).
+- *Roots per update:* the benchmark's prime set has 0.185 roots per update; the card's is 0.108 / 0.058 / 0.047 at 72 / 84 / 96 (slackrep). So the calibration's sieve_update folded in 2–4x more start-offset work per update than the card incurs, and the old word price overstated word ops by ~32%.
+- **Adopted (pre-approved by the user: the clean price differs by less than 2x):** the word price is the clean sieve_update price, **ruint 0.0340 → 0.0258, Montgomery 0.1254 → 0.0951**. It applies to the word and setup_gray types now.
+  - The sieve_update type itself keeps 0.0340 / 0.1254 **until item 10 lands**, because its price still carries the start offsets that item 10 will charge separately. With item 10 it moves to the clean price in the same commit.
+  - calibrate.json gains a "word_price" entry with the source; the old values are kept here.
+  - *Sort-comparison note:* the benchmark's per-comparison time includes building the 32-key vector (amortized over ~130 comparisons), so it is slightly high.
+- **Ops above 3x the clean sieve update get their own types** at the measured prices (pre-approved): hash probe-and-insert, sort comparison, f64 log and f64 divide. The 64-bit multiply-add (1.21x) takes the word price.
+- **(GP1, Grok's)** clean / old word price 0.60–0.75, falsified outside 0.45–0.90: **missed** (0.759), not falsified.
+- Restated below: the Gray-code before / after under the new word price (re-pricing only; op counts unchanged).
+
+**Gray-code before / after, restated under the clean word price** (`evolve/gray_reprice.py`, `gray_reprice.out`, `.json`; re-pricing only; the current lampcore, which also charges the ledger check; the word type priced at the clean price in every column). Cut in qs cost per number, all map numbers:
+
+| bits | genome | ruint: old word price → clean | Montgomery: old → clean |
+|---|---|---|---|
+| 54 | new / frozen / corrected | 5.43 → 5.59% / 2.92 → 3.00% / 7.73 → 7.96% | 6.44 → 6.63% / 6.37 → 6.56% / 8.85 → 9.12% |
+| 72 | new / frozen / corrected | 11.31 → 11.65% / 5.64 → 5.81% / 8.40 → 8.65% | 12.53 → 12.90% / 8.29 → 8.54% / 9.04 → 9.31% |
+| 84 | new / frozen / corrected | 11.56 → 11.91% / 3.95 → 4.07% / 9.54 → 9.83% | 12.28 → 12.65% / 7.31 → 7.53% / 10.00 → 10.30% |
+| 96 | new / frozen / corrected | 12.28 → 12.65% / 5.24 → 5.40% / 9.64 → 9.93% | 12.69 → 13.07% / 8.11 → 8.36% / 9.90 → 10.19% |
+
+- Absolute, new reference: ruint 3,134 → 2,959 (54), 12,111 → 10,699 (72), 30,094 → 26,509 (84), 79,666 → 69,591 (96); Montgomery 9,810 → 9,159, 40,614 → 35,373, 105,252 → 91,941, 286,134 → 248,723.
+- The cuts grow by 0.1–0.4 points (the slice now loses 1 − 0.0258 / 0.307 = 91.6% of its cost instead of 88.9%).
+- **Which earlier scores move:** none changes verdict.
+  - D-gc (72–96, ruint 9–11%, Montgomery 9–11%): still missed (ruint 11.65 / 11.91 / 12.65%), and still inside its 7–13% falsifier band.
+  - D-gc54: still held (ruint 5.59%, Montgomery 6.63%).
+  - G-gc: still falsified (96 at 12.65% > 12%).
+  - G-gc54 (ruint 5.0–5.6%, Montgomery 6.0–6.7%): still held, with ruint at 5.59% now at the top of its range.

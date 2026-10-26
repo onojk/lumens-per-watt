@@ -1,0 +1,37 @@
+{
+ "ns": {
+  "mulmod ruint chain": 31.0445,
+  "mulmod montgomery chain": 7.3542,
+  "sieve update": 0.9342,
+  "sieve update clean": 0.7085,
+  "multiply-add i128 (v evaluation, per multiply-add)": 0.8562,
+  "hashset i128 probe+insert": 9.9999,
+  "sort comparison (32 keys)": 3.2135,
+  "f64 ln of a ratio (closeness key)": 2.9216,
+  "f64 divide (chain)": 5.2212
+ },
+ "prices": {
+  "ruint": {
+   "mulmod ruint chain": 1.0,
+   "mulmod montgomery chain": 0.2368922031277682,
+   "sieve update": 0.030092286878513105,
+   "sieve update clean": 0.022822077984828232,
+   "multiply-add i128 (v evaluation, per multiply-add)": 0.027579764531559536,
+   "hashset i128 probe+insert": 0.32211502842693557,
+   "sort comparison (32 keys)": 0.10351269951199085,
+   "f64 ln of a ratio (closeness key)": 0.09411006780589155,
+   "f64 divide (chain)": 0.16818438048607642
+  },
+  "montgomery": {
+   "mulmod ruint chain": 4.221329308422399,
+   "mulmod montgomery chain": 1.0,
+   "sieve update": 0.12702945255772213,
+   "sieve update clean": 0.09633950667645699,
+   "multiply-add i128 (v evaluation, per multiply-add)": 0.1164232683364608,
+   "hashset i128 probe+insert": 1.359753610181937,
+   "sort comparison (32 keys)": 0.43696119224388785,
+   "f64 ln of a ratio (closeness key)": 0.39726958744662916,
+   "f64 divide (chain)": 0.7099616545647385
+  }
+ }
+}
