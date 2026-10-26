@@ -49,6 +49,13 @@ Staged plan from the Oct 23 review.
     seed), summarized by a sign test over seeds plus the paired bootstrap. Never best-of-N
     by tuning fitness: it compares different tuning sets and selects the easiest one (Run 8,
     seed 77).
+- **Bound hits (size-scaling rounds, Oct 25):** a tuned gene value within 10% of a search
+  bound's value is reported as a bound hit (NOTES, "Size-scaling test, round 2").
+  - **Demand vs drift: PROPOSED, PENDING USER** (DeepSeek's, recommended; future rounds only,
+    not retroactive). A gene at a bound counts as "demand" only if, on the sealed numbers, the
+    frozen genome beats the same genome with that gene set to the median of its interior
+    values by more than the paired 95% interval. Otherwise the hit is reported as drift and
+    the gene becomes a candidate for a constant.
 - **Pre-launch consistency check (from Run 8's wrap-up, Oct 24):** after any design change,
   grep PLAN and NOTES for numbers and wording that depend on it (seed counts, budgets, set
   sizes, "best-of-N", time estimates) and update them before launch. Run 8's clause (a)
