@@ -4233,3 +4233,24 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
   - (G-gc, Grok's) ruint 4–7 / 5–9 / 6–10 / 6–11%, Montgomery 3–6 / 4–8 / 5–9 / 5–10%, falsified if the ruint saving falls outside 3–12%: **FALSIFIED** (96 at 12.3% breaks its 3–12% ruint bound). Ruint is in range only at 54 (5.4%); Montgomery is above every range. [Corrected Oct 26: first recorded as "missed"; the 2e903e8 commit message also says "missed".]
   - The annotation's implied figures (ruint ~4.5 / 11.0 / 10.0 / 11.4%, Montgomery ~5.4 / 12.1 / 10.6 / 11.7%, for 2 ops) were not a registered prediction. The measured cut is the 1-op cut, as adopted.
 - *Amendment to the meter-correction cost model, before code:* the cfrac and sq cards report all their ops as one lump (cfrac_ops, sq_ops) in both cores, and neither type is priced. Their new word ops are therefore charged (counted in ops and in the lump) but not split into a separate column. Within qs they go to the word column. The sq set's charges are 1 per insert (charged before the insert) and 1 per membership test (charged before the test), in both cores.
+
+**Pooling across numbers** (user, Mathematica, Oct 26; information only), one pre-registration, and a check of the existing data.
+- *Setup:* the best two-parameter smooth weights per size ({k, m} = {1.79, −1.56} / {1.89, −0.65} / {2.85, −2.46}), residue primes only. Partials per number are lognormal with mean 260 / 443 / 976 and coefficient of variation cv = 0, 0.25, 0.5, 0.75; 40 sets of 15 numbers per size. Pooled yield = Σ combinations / Σ distinct q over a set; per-number = the mean of per-number per-distinct yields.
+
+| bits | cv 0 | cv 0.25 | cv 0.5 | cv 0.75 |
+|---|---|---|---|---|
+| 72 (pooled / measured; per-number mean / measured) | 0.86 / 0.86 | 0.90 / 0.86 | 1.02 / 0.87 | 1.26 / 0.88 |
+| 84 | 0.87 / 0.88 | 0.92 / 0.88 | 1.08 / 0.89 | 1.23 / 0.89 |
+| 96 | 0.81 / 0.81 | 0.85 / 0.81 | 1.00 / 0.82 | 1.14 / 0.79 |
+
+  (Pooled yields 0.142–0.209 / 0.109–0.153 / 0.066–0.093; measured per-distinct 0.166 / 0.125 / 0.082.)
+- *The user's findings:*
+  1. Pooling inflates the per-distinct yield by roughly (1 + cv²), saturating slightly at cv 0.75; the per-number mean does not move.
+  2. A cv of ~0.4–0.5 in partials per number closes the residual at all three sizes, with no clustering, duplicates or near-B spike. (Claude chat's pre-run comment said 0.3–0.45: slightly low; the rest held.)
+- **(W-pool, Claude chat's; pre-registered before looking at the per-number data):** the old measured values (slack2.py, Rc / ins) are pooled across numbers. Their per-number mean yields are 0.135–0.155 / 0.100–0.120 / 0.060–0.075 at 72 / 84 / 96, and the cv of partials per number in those runs is 0.35–0.65. Falsified if the per-number mean lies within 5% of the pooled value at two or more sizes, or if the cv is under 0.25 at every size.
+- **Check of the existing data:**
+  - **(a) Pooled.** `slack2.py` sums Rc and ins over the 3 sample numbers before dividing (`Rc += at["lp"]["combos"]; ins += at["lp"]["inserts"]`, then `Rc / ins`). So 0.166 / 0.125 / 0.082 are pooled over 3 numbers per size, and `lpdist.py` likewise sums its partial counts.
+  - **(b)–(d) are not recoverable from the saved data.** Neither script saved per-number values (`slack2.out` and `lpdist.out` print only the sums). A deterministic rerun of exactly the same 3 numbers per size, same genes and slack, reproduces the traces and gives the per-number yields, partial counts and cv. **It is held for the user's go,** since the instruction was no new runs.
+  - *Caveat:* a cv from 3 numbers per size is a rough estimate.
+  - W-pool's first clause ("pooled") is confirmed by (a); its numeric clauses await (b)–(d).
+- In the clean check, both pooled and per-number yields are reported, and every yield prediction is scored on the matching aggregation (stated per prediction; where unstated, scored on both and reported).
