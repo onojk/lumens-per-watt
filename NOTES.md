@@ -3390,3 +3390,14 @@ The final Track R genes run as qs alone on the corrected card with kset = sf32. 
 - Under **official it rises by about +80–90%**, because official counts every op as 1 and the additions nearly double ECM's op count. This is a consequence of the decision as stated: the official count is a raw op count. It will move official-alone optima, where ECM is large.
 - *Measurement:* before and after on all map numbers (ECM alone at every grid budget, per pricing), then a re-solve of the Track M final budgets on the corrected maps (and the p-1-inclusive joint optimum), reporting whether any budget moves.
 - *Acceptance:* the multiply counts are unchanged per number (only word ops are added); the word count equals the formula from a trace (xDBLs, xADDs, curves, pairs and candidates); Python = Rust parity, per type.
+
+**DeepSeek, before any small-prime-variation or ECM-addition code** (labelled as DeepSeek's; recorded Oct 25. The ECM cost model above was committed before this message; no ECM or small-prime code exists).
+- **(D-spv)** Small-prime variation at 84–96 bits: best cutoff 30 under official (gain 18–28%); 10–15 under ruint (3–8%); 10 or off under Montgomery (−2% to +4%). Slack correction ~+0.5 for cutoff 30, ~+0.3 for cutoff 10.
+  - *Notes beside it:* (a) its mechanism compares one sieve update with one confirmation step (price ratio 3.4x), but each extra candidate costs a full trial-division pass over the factor base (~F td ops), so the magnitudes are unsupported. (b) Primes 3, 5 and 7 are ~65% of the sub-30 1/p mass, not ~52%.
+- **(D-ecmadd)** Charging ECM additions (~4 per ladder step beside ~10 multiplies): ECM cost +5% under Montgomery and +1.4% under ruint; no Track M budget moves at 72–96, possibly one step down at 54.
+  - *Note beside it:* DeepSeek predicted that PD_M rises to 1.18–1.28. But PD_M = (R winner's cost) / (M winner's cost) under Montgomery, so a costlier Track M lowers PD_M, and ECM is only part of the total. The budget clause is scored as written; the PD_M clause is recorded with this direction note.
+  - *Charge sites, counted from the code:* 4 per xDBL and 6 per xADD, so **10 per ladder step** (one xADD + one xDBL) beside 11 multiplies, not ~4. My expectation in the cost model (+3% ruint, +11% Montgomery, +80–90% official) uses the counted 10.
+- **Reference change, recorded precisely** (DeepSeek's point, adopted as a task):
+  - Track M winners cannot change: each is one Montgomery ratio over a fixed per-size reference, so the ordering is unchanged.
+  - Track R winners can change, because the robust max weighs each pricing by its reference cost. The per-band gates change too.
+  - *Task:* with the new reference, re-run winner selection and gates for the last sealed round (the kc / lc round, 9420000), on the lampcore build before the ECM change (kset included, saved), and report any change. PD values stand only where the winners are unchanged.
