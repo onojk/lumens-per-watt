@@ -6588,3 +6588,15 @@ Each cell gives ratio A / ratio B, with the materiality (time share × (ratio_B 
     - *a precomputed reciprocal per prime (multiply, shift, compare, ~3 word ops = 0.077 ruint):* the priced saving is about (0.114 − 0.077) × 142,064 ≈ **5,300 ruint per number at 96 (~−9%)**, and (0.114 − 0.077) × 209,214 ≈ 7,700 (~−12%) at B × 1.3. The wall saving might be larger (~1 ns against ~3.9 ns per test), but that is unmeasured.
     - *re-sieve (already in the card):* re-sieve already matches roots, for the primes ≥ p0, during a second walk. At p0 200 it was −6.8% ruint at 96 after step 1.
   - So I-029 overlaps re-sieve, and pays only with a reciprocal-based test. A benchmark of that test (ns per prime) is the deciding measurement. Report only; no code.
+
+### Fix C.1: setup's per-prime arithmetic in i64 (code only, counts identical; before code)
+
+- *Change (Rust):* in the per-A loop over the base primes (A mod p, A^−1 mod p by Euclid, the two roots, 2 B_l A^−1 mod p), use i64 instead of i128. All values fit: A < 2^62 (asserted), p < 2^30 (asserted), B_l < A. 2 B_l A^−1 is reduced as ((2 B_l) mod p · A^−1) mod p, which is mathematically identical.
+  - The same Euclid routine runs in i64, with the same steps and charges.
+  - bv stays i128 for C = (B² − kN) / A.
+- *Counts:* identical (same loops, same charges). Python unchanged.
+- *Acceptance:* every run identical to the pre-change build per number and per type, Python = Rust per type, and parity. Before / after wall-clock without sub-timers (`phasetime_c1_before.out` / `_after.out`).
+- *Estimate:* setup's per-prime work is about F × (Euclid ~6 steps + 2 roots + s inverses) per A. If i128 division costs ~2–4x an i64 one here, setup's time falls ~20–40%. But setup also includes A selection (on-demand logs, sorts, the rest list), which is untouched, so the region falls less.
+- **Audit item 17, found while reading this code (not fixed here; for the user's decision):** for every base prime and every A, both cores compute A mod p (Rust `a % p == 0` to skip A's own primes, then again as the Euclid input; Python `A % p` in the `sieved` list and the `euclid_inv` call). **Neither charges the reduction of A mod p itself;** the Euclid charge counts only its division steps.
+  - That is ~F − 2 uncharged small-modulus ops per A: ~136 per A at 96, ~27 A's per number, ~3.7k per number, ~0.307 ruint each, ~1,100 ruint (~1.9%) at 96.
+  - A meter correction needs its own cost-model entry. Skipping A's primes could instead test membership among A's s primes, so that only one reduction is needed.
