@@ -4782,3 +4782,12 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
 - Pairing is therefore what brings stage 2 near the "about 1 per prime" at which the DP found it pays. Its implementation cost is moderate (both methods are in the cost model, and the code is not written). The ECM card already pairs (≤ 3 multiplies per pair, often 2 primes per pair).
 
 **Ideas checkpoint (2026-10-26):** updated I-016 (not sealed; next steps), I-014 (Dickman overstatement offsets the torsion argument), I-018 (confirmed: wedge, dark centre; calibration finding); parked triggers checked (none parked).
+
+**DeepSeek's reply (Oct 26, fifth; in Chinese), with Claude chat's review** (labelled as DeepSeek's).
+- DeepSeek accepts both corrections (rho's non-randomness lowers the effective K; dividing by 24.5 raises ECM's smoothness chance).
+- **(1) Dickman at y = 2^8–2^12:** there is no uniform multiplicative fix. Hildebrand's error term is of order log(u + 1) / log y (about 0.29 at y = 2^8, u about 4–5.5), and Lichtman–Pomerance's explicit bounds give a theoretical band. Recommendation: keep the fitted c = 1.41 / 1.83 as working inputs, labelled as valid in this range.
+  - *Claude chat:* adopted. Not adopted: "that term explains the 15–25%" (the O-constant is unknown, so it is consistent, not explanatory) and "multiply Dickman by about 0.71 as a lower bound" (arbitrary without the constant).
+- **(2) Cheapest stage 2 first:** shorten B2 first (B2 / B1 10–20), then prime pairing toward about 1 multiply per prime; full baby-step giant-step only at 96 bits. Adopted for the rerun (the sweep extended down to 10).
+  - Its explanation that p-1's stage 2 lags ECM's because stage 1 "used up" the small primes is not accepted: both add one prime in (B1, B2]; the difference is that ECM can re-roll with a new curve.
+- **(3) ECM's per-curve success at B1 = 2^8–2^10:** the same Dickman overstatement, estimated at 10–20%, partly offset by the torsion correction. Unmeasured; I-014 decides.
+- **(4)** The DP is already the selector between lamps with disjoint light. *Diagnostic (adopted into I-018):* per θ band and p-1-smoothness band, the conditional success of p-1 stage 2 after rho fails, against its marginal success. Bands where the conditional gain is high are stage 2's structural fringe; a uniform gain means it is only a more expensive p-1.
