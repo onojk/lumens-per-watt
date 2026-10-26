@@ -5604,7 +5604,7 @@ Time shares (new reference, 96): sieve 24%, confirm 29%, setup 24%, solve 8%, lp
    - median u at mid F 4.35 / 4.65 / 4.96 / 5.10 at 54 / 72 / 84 / 96 (all cells 3.84–5.53), rising about 0.25 per 12 bits. The flat ~7 touched entries per relation follows from F keeping u in this band;
    - α = u / Ω is 0.53–0.68 but falls as F grows within a size, so ω ≈ u + c fits better than Ω = u / α (the through-origin R² in the printout is uncentered and inflated);
    - within-cell dω/du is 0.68–1.96 (above 1.4 at 72–84), possibly a threshold selection effect (not tested there);
-   - *use:* predicted touched entries per relation = u + 2.5 (+0.5 for the sign), under ~9 well past 96 bits. Dense bit rows (F/64 words) and sparse rows (~8 entries) break even near F ~ 500. Solve stays dense at F ≤ 400; IDEAS entry I-022 (sparse rows from F ~ 1,000, around 120–128 bits);
+   - *use:* predicted touched entries per relation = u + 2.5 (+0.5 for the sign), under ~9 well past 96 bits. Dense bit rows (F/64 words) and sparse rows (~8 entries) break even near F ~ 500. Solve stays dense at F ≤ 400; IDEAS entry I-022 (now I-025) (sparse rows from F ~ 1,000, around 120–128 bits);
    - *the user's scoring:* u band held; ω/u held at mid F, missed in 5 edge cells (to 1.67); α range held, α constant missed; within-cell slope missed.
 2. *Exact smoothness at every position* (no threshold; plain QS, interval 60,001, 4 semiprimes per size, 12 cells, 1,219 exact full relations, no KS multiplier):
    - pooled within-cell dω/du 1.44 exact, 1.47 threshold-passing;
@@ -5671,7 +5671,7 @@ Time shares (new reference, 96): sieve 24%, confirm 29%, setup 24%, solve 8%, lp
 - Pinned to one P-core (taskset -c 2), run once the parity job has finished.
 
 **I-022 (the user's numbering: multiplier selection by a tilted smooth-probability score) — DeepSeek, Oct 26, round 5** (recorded as given; no code change).
-- **Number clash, flagged:** IDEAS.md's I-022, added earlier today at the user's request, is "Sparse GF(2) rows from F ~ 1,000". This entry is the user's I-022 for the tilted multiplier score, which has no IDEAS row yet. The user decides the renumbering; nothing is renumbered here.
+- **Number clash, flagged:** IDEAS.md's I-022 (now I-025), added earlier today at the user's request, is "Sparse GF(2) rows from F ~ 1,000". This entry is the user's I-022 for the tilted multiplier score, which has no IDEAS row yet. The user decides the renumbering; nothing is renumbered here.
 - *Accepted by DeepSeek:* H1 right (k = 1 wins when the small-prime pattern is already near-optimal); H3's density reason wrong; H2's 12–30% matched all N but not the movers.
 - *I1:* DeepSeek says no QS implementation scores multipliers by smooth probability (unverified; the literature is to be checked before calling the idea new).
   - Its Murphy-α comparison is off. Murphy α is an expected-log correction, the NFS analogue of the KS score, and the Murphy E-score's α-shifted ρ is the same linearization that under-predicted KS yield here. If the idea holds, it corrects that family too.
@@ -5771,7 +5771,7 @@ Time shares (new reference, 96): sieve 24%, confirm 29%, setup 24%, solve 8%, lp
   - **(G4, DeepSeek's)** 7.3–7.6 / 7.6–7.9 / 7.9–8.2 at 72 / 84 / 96, falsified if > 8.5 at 96: **falsified** on either definition (with the A-primes 13.10 at 96; without them 9.16).
   - **(the user's 7.5–9.0 at each size):** with the A-primes, **missed at every size**. Without them: held at 72 and 84 (7.65, 8.70), missed at 54 (7.03) and 96 (9.16).
 
-**IDEAS renumbered to the user's numbering (Oct 26):** I-022 is the tilted multiplier score (chooser); I-023 is the tilted yield predictor (the "light meter"); the sparse-rows entry I filed as I-022 earlier today is now **I-024**. Earlier NOTES text that says "IDEAS I-022 (sparse rows)" or "IDEAS row I-023 (tilted chooser)" refers to the old numbers.
+**IDEAS renumbered to the user's numbering (Oct 26):** I-022 is the tilted multiplier score (chooser); I-023 is the tilted yield predictor (the "light meter"); the sparse-rows entry I filed as I-022 earlier today is now **I-024** (now I-025). Earlier NOTES text that says "IDEAS I-022 (sparse rows)" or "IDEAS row I-023 (tilted chooser)" refers to the old numbers.
 
 **I-022 re-run with the 2-adic bug fixed — Wolfram, Oct 26** (recorded as given; seed 2029: 160 N / 109 movers / 2.07x reproduced; seed 2030: 60 movers / 5,431 / 2,578 reproduced).
 - Fixed tilted model, absolute relation counts at k = 1, predicted / measured: 0.98 / 1.00 / 1.02 / 0.94 at 54–96. By N mod 8, all classes are 0.91–1.07 (N ≡ 1 mod 8: 1.01 / 1.04 / 1.07 / 0.91). The exact-ρ route over-predicts by 1.10–1.33.
