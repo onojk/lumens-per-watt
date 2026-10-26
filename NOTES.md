@@ -4254,3 +4254,15 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
   - *Caveat:* a cv from 3 numbers per size is a rough estimate.
   - W-pool's first clause ("pooled") is confirmed by (a); its numeric clauses await (b)–(d).
 - In the clean check, both pooled and per-number yields are reported, and every yield prediction is scored on the matching aggregation (stated per prediction; where unstated, scored on both and reported).
+
+**Step 0 (user, Oct 26): a file overwrite, restored and disclosed.**
+- `evolve/ledger_accept.py` already existed in the repo (a committed 255-line acceptance test from the relation-economy work). The held meter-correction work replaced it with a new 96-line file of the same name, using the Write tool, without checking that the path was free.
+- The replacement was never committed. The original is restored from HEAD (`git checkout -- evolve/ledger_accept.py`), and the meter-correction acceptance moves to a new file, `evolve/meter_accept.py`.
+- *Check:* every other script created this session (23 files, from pm1check.py to resieve_measure.py) was a new file at its first commit (`git log --diff-filter=A`), with no later modifying commit. No other committed file was replaced.
+
+**Step 1: the sq crash (lampcore exit 101) — "sq ksq parsing".**
+- *Cause:* the held acceptance's sq test genome gave `"ksq": 0` (an integer). lampcore reads the gene with `as_bool().unwrap()` (main.rs, sq_one_k), which panics on an integer, while lamps.py treats 0 as false.
+- **Pre-existing:** the committed binary panics identically on the same genome. Not caused by the new sq charges.
+- Every generated genome (rand_stage) uses a real boolean, so no recorded result is affected. It is a Python / Rust divergence on the same input.
+- *Fix, its own item (no charging change):* lampcore reads ksq with Python's truthiness (a bool, or a number ≠ 0; anything else false).
+- *Parity:* sq "smooth" genomes with ksq 0, 1, false and true are added to parity.py's genome set; they also exercise the charged tried-multiplier set. It is verified by the same parity run as the meter correction, and committed separately.
