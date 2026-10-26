@@ -1,0 +1,7 @@
+1. confirm absent = committed lampcore: 6000/6000 runs identical
+2. confirm = resieve (p0 30 / 2 / 1000): same relations and every other type: 18000/18000
+   54 bits confirm_td new/old, p0 30 / 2 / 1000: new ref 0.433 / 0.319 / 1.000; frozen ref 0.376 / 0.277 / 1.000; corrected ref 0.376 / 0.277 / 1.000
+   72 bits confirm_td new/old, p0 30 / 2 / 1000: new ref 0.278 / 0.211 / 1.000; frozen ref 0.159 / 0.117 / 0.908; corrected ref 0.159 / 0.117 / 0.907
+   84 bits confirm_td new/old, p0 30 / 2 / 1000: new ref 0.178 / 0.136 / 0.924; frozen ref 0.095 / 0.071 / 0.522; corrected ref 0.095 / 0.071 / 0.522
+   96 bits confirm_td new/old, p0 30 / 2 / 1000: new ref 0.126 / 0.097 / 0.640; frozen ref 0.057 / 0.043 / 0.296; corrected ref 0.057 / 0.043 / 0.295
+3. Python = Rust per type with confirm = resieve: 24/24
