@@ -223,8 +223,8 @@ budgets by size; a selector on charged features is not built.
 per-track p-1 map check (p-1 on in every cell, map-only); the kc/lc bound round with p-1,
 sealed on 9420000] ->
 [done Oct 25: kc made a constant (kset = sf32, user's decision); the replacement-rule test for
-the final Track R genes: the rule PASSES (as-frozen and card-matched); changing the reference is
-PENDING THE USER'S DECISION] ->
+the final Track R genes: the rule PASSES (as-frozen and card-matched); DECIDED (user, Oct 25):
+the reference is replaced] ->
 pm1 stage 2 (cost model written Oct 25; code next, with parity; pre-registered predictions from
 DeepSeek, Grok and the user; ECM's free additions and the uncharged prime list flagged for the
 user) -> [open: the Track M 54-bit retune] ->
@@ -437,6 +437,11 @@ any scored run, and parity gates the Rust port.
       ruint-calibrated, Montgomery-calibrated, median P-core prices), score_P(g) = mean cost
       of g under P / mean cost of the reference genome under P, on the same numbers; fitness
       = max over P of score_P. Reference for Run 8: tuned qs + lc 1.4 (default, named here).
+      **Reference from Oct 25 (user's decision):** the final Track R qs genes per size (R-k@54,
+      R-k@72, the round-3 genome at 84, R-k@96) as qs alone on the corrected card (on_demand,
+      sort_charge 1, kset sf32). It is size-dependent by construction; between or outside the
+      four sizes the nearest size's genes are used and named. For one round the old frozen
+      reference (qs + lc 1.4, enumerate) is reported in a side column to bridge the change.
       The first wording (the worst raw cost) collapsed to the official count.
     - Reports call a cell only where all three pricings agree; otherwise the cell is
       "undecided".
