@@ -5830,3 +5830,19 @@ ns per hash op (lookup, or insert on a miss) on a table grown from empty to the 
 - **(P5, the user's)** hash at 96's table size ≥ 2x the clean calibrated price, and step 3 adopts banding: **missed** (1.44x at the median; 2.16x only at the maximum; not adopted).
 - **(D-P5, DeepSeek's)** 1.3–1.8x, not ≥ 2x: **held** at 96's median (1.44x); the maximum-size cell (2.16x) is a resize artifact of the final size.
 - *Step 3 extra (lp_ledger breakdown if the hash is under 2x and lp_ledger still flags):* it depends on the step-5 wall-clock re-run; it is done there if lp_ledger flags. The entry width is reported there too (today a partial's table entry is a 16-byte key + 16-byte u + a 24-byte Vec header, with the sparse list on the heap at 8 bytes per (j, e) pair).
+
+### Step 2: cost-model amendment, before code (read from `Ledger::solve` while writing the charges)
+
+Two corrections to the step-2 entry. The code is what the charge follows:
+- *Dependency members:* the code tests the dependency row bit by bit over all rows (`(0..rows).filter(bit(dep, i))`), so the scan is **rows** word ops per dependency tried, not rw.
+- *Collecting the dependencies:* the code scans every row of the reduced matrix for all-zero words, **rows × cw** word ops, plus rw words copied per dependency found.
+
+**Final item 14 charges** (word; charging points the same in both cores):
+1. after step 1's per-entry row build: rows × cw (row initialization) + rows × rw (combination matrix initialization);
+2. after the elimination: pivots × (cw + rw) (the per-pivot row clones);
+3. after collecting the dependencies: rows × cw (the zero-row scan) + deps found × rw (the copies);
+4. per dependency tried, before its multiplies: rows (the member scan) + F (ex[] allocation) + Σ nnz over its members (the sums) + (F − 1) (the Y scan).
+
+**Item 15:** s word per kept candidate, added to step 1's per-candidate lump (sets, copy, clear) at the sparse-copy point.
+
+The estimate is unchanged in scale: about 0.1–0.15% of qs's cost at 96 and a few tenths of a percent at 54.
