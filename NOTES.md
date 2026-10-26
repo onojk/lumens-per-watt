@@ -3937,3 +3937,21 @@ Cost per number (op-cost units, absolute), current / re-typed:
   - (G-rm, Grok's) official −1% to +3%, ruint 8–14%, Montgomery 10–16%: **missed.** Ruint is in range only at 72 (9.9%); official is +3.7–26%.
   - The revisions (G-rm revised 20–32%; D-rm2) are recorded as revisions; the originals are the scored ones.
   - D-rm+spv and G-rm+spv await small-prime skipping.
+
+**DeepSeek's reply (Oct 26), with annotations; two corrections** (labelled as DeepSeek's; annotations by Claude chat, relayed by the user).
+1. DeepSeek acknowledges both direction reversals (the D-cc reading and the D-gc54 audit clause). Its traced statement on D-gc54 is "saves 0.114 − k × 0.034 per update".
+   - *Annotation:* that repeats the original D-gc price error. setup_small is 0.307 under ruint, so the saving per update is 0.307 − k × 0.034: 0.273 (89% of the slice) at k = 1, 0.239 (78%) at k = 2, 0.205 (67%) at k = 3, and negative only at k ≥ 9. The direction is now correct; the numbers are not.
+   - The "Pool-reusing A selection" MOVES row's prediction is reworded, per DeepSeek, to "recovers at most the cache's loss, at the cost of a narrower A choice" (ceiling ~2% of qs cost, as annotated).
+2. **Correction (Claude chat's error):** the 1/q reference for the share of filed q in (B, 2B] given in the last DeepSeek update was ln 2 / (ln B · (lc − 1)), which assumes log_B q is uniform. Under 1/q weighting on primes, the density of t = log_B q is ∝ 1/t on [1, lc]. So the share is ln(1 + log_B 2) / ln(lc) = **0.193 / 0.189 / 0.129** at 72 / 84 / 96 (not 0.154 / 0.153 / 0.094). The lowest-bin reference (~0.34 at 72) was already correct.
+3. **Pre-registered as given:**
+   - **(D-b2b)** share of filed q in (B, 2B]: 0.11–0.13 / 0.12–0.14 / 0.09–0.11 at 72 / 84 / 96. Falsified if the share exceeds the 1/q reference at any size, is below 0.08 at 72 or 84, or rises monotonically across sizes.
+     - *Annotation:* its ranges were scaled from the wrong reference (item 2). Its ranges are scored as given; the "exceeds the reference" clause is scored against the corrected reference 0.193 / 0.189 / 0.129.
+   - **(D-mt)** pairing yield measured on the lpdist traces: 0.16–0.18 / 0.12–0.14 / 0.075–0.085 (within 10% of the old values); the shape-matched simulation keeps under-predicting at a ratio of 0.76–0.85. If the matched-trace yield moves more than 15% from the old values, all large-prime predictions (W-qr, D-qr, G-qr, D-cc, G-cc) are re-scored against the new target as well as the old, both reported.
+     - *Note (mine):* the old values 0.17 / 0.13 / 0.08 are per distinct q filed. D-mt is scored on that same definition, and the per-occurrence figure is reported beside it.
+   - *DeepSeek's proposal* that the repeat histogram predicts the yield independently.
+     - *Annotation:* not independent. Combined from partials = partials − distinct q = Σ over q of (count − 1), so the histogram and the yield are the same count.
+4. **Clean check, item (c) extended:** repeats of a large prime q are split into
+   - (i) genuine repeats (different relations sharing q), and
+   - (ii) exact duplicate partials (the same relation found twice, e.g. by A's sharing s − 1 primes; see the dedupe MOVES row, which measured 0.30 per run under enumerate and "more" under on-demand, unmeasured).
+   - The pairing yield is reported with and without exact duplicates. Exact duplicates are a candidate for the card's ~1.2–1.3x excess over the shape-matched simulation, alongside within-bin concentration near B. (Run mismatch is already excluded: same traces.)
+   - *Note (mine):* the ledger's dedupe keys full relations by |u| and combined ones by min(cu, N − cu). A partial found twice (same u, same q) combines with its own first copy into u² · …, a trivial relation, unless the check is on. The clean check counts these.
