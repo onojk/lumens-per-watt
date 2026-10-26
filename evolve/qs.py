@@ -187,6 +187,9 @@ def sieve_source(N, k, g, led, ch, at):
     pool_all = [p for p in base[2:] if k % p and p > 2]
     if not pool_all:
         return None
+    # M mod p once per attempt (NOTES.md, "Meter correction: the sieve's start offsets"): one small-modulus
+    # op per odd factor-base prime; each start is then r + m_p (- p), one word op per root
+    mp = {p: M % p for p in base[2:]}; charge("setup", len(base) - 2)
     s = 1
     while target ** (1 / s) > pool_all[-1] and s < 8:
         s += 1
@@ -282,12 +285,17 @@ def sieve_source(N, k, g, led, ch, at):
             arr = np.zeros(width, dtype=np.int32)
             upd = 0
             hits = []
+            nr = 0
             for p, rs, _ in st_:
                 for r in rs:
-                    start = (r + M) % p
+                    start = r + mp[p]
+                    if start >= p:
+                        start -= p
+                    nr += 1
                     arr[start::p] += logp[p]
                     upd += (width - 1 - start) // p + 1
                     hits.append((p, r))
+            charge("word", nr)                     # start offsets, one word op per root
             charge("sieve", upd)
             charge("sieve", width)
             if at is not None:
@@ -302,7 +310,10 @@ def sieve_source(N, k, g, led, ch, at):
                     if p < P0:
                         continue
                     for r in rs:
-                        start = (r + M) % p
+                        start = r + mp[p]
+                        if start >= p:
+                            start -= p
+                        walk += 1                          # the start offset, one word op per root walked
                         if start >= width:
                             continue
                         walk += 2 * ((width - 1 - start) // p + 1)   # index step + bitmap test per position

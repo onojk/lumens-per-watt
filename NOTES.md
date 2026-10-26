@@ -4867,3 +4867,29 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
 - **(3) Rho:** it suggests a gcd batch of 16–32 with backtrack, to cut the 2x overhead to 1.4–1.6x.
   - *Claude chat:* not adopted. The batch of 64 explains only about 32 of the ~270-step excess; the rest is Brent's power-of-two stepping, and smaller batches add gcd cost (7.9 each). Its expectation: rho may return at 84 with a small budget, not at 96.
 - **(4) ECM after p-1 stage 2:** its remaining value is re-rolling where p − 1 is not smooth; it expects the 96-bit gain to shrink to single digits. Its "cascade studies, 0.44–1.46%" citation is unverified. The honest-price ECM rerun decides.
+
+### Meter correction, item 10: the sieve's start offsets — results (`evolve/startoff_accept.py`, `startoff_accept.out`, `.json`; `parity_startoff.out`)
+- **Acceptance:**
+  - on all 2,000 map numbers × 4 genomes (new reference, with and without re-sieve; frozen; corrected), only setup_small and word (and ops) rise; factor, tests, hits, sieve updates and scans, confirmations, large primes, la, mult and fb are identical (8,000 / 8,000);
+  - the word rise equals the roots sieved (+ roots walked under re-sieve), the setup_small rise equals (F − 2) per attempt reaching polynomial setup, and Python = Rust per type (32 / 32);
+  - **parity passes** (types 6,894, mutations 50 / 50, 0 mismatches).
+- **The sieve_update price moves to the clean price in the same commit** (0.0340 → 0.0258 ruint, 0.1254 → 0.0951 Montgomery), since the start offsets it used to carry are now charged separately. This also removes the double count noted when reading `opbench.rs`.
+- **Cost per number, absolute:** before → after the meter correction (sieve_update at the old price) → after with the clean sieve_update price.
+
+| bits | genome | official | ruint | Montgomery |
+|---|---|---|---|---|
+| 54 | new reference | 26,037 → 26,928 (+3.42%) | 2,959 → 2,991 → 2,919 (−1.37%) | 9,159 → 9,276 → 9,009 (−1.64%) |
+| 54 | new reference + re-sieve | 29,057 → 30,615 (+5.36%) | 2,752 → 2,801 → 2,729 (−0.85%) | 8,380 → 8,560 → 8,293 (−1.04%) |
+| 54 | frozen / corrected | +4.69% / +5.56% | → −0.16% / −0.46% | → −0.36% / −0.53% |
+| 72 | new reference | 133,602 → 139,455 (+4.38%) | 10,701 → 10,868 → 10,414 (−2.68%) | 35,374 → 35,989 → 34,313 (−3.00%) |
+| 72 | new reference + re-sieve | 150,831 → 161,789 (+7.26%) | 9,424 → 9,722 → 9,269 (−1.65%) | 30,562 → 31,663 → 29,987 (−1.88%) |
+| 72 | frozen / corrected | +4.21% / +4.36% | → −0.77% / −1.19% | → −1.17% / −1.28% |
+| 84 | new reference | 429,017 → 443,798 (+3.45%) | 26,515 → 26,923 → 25,233 (−4.84%) | 91,942 → 93,445 → 87,202 (−5.16%) |
+| 84 | new reference + re-sieve | 509,235 → 537,689 (+5.59%) | 23,605 → 24,366 → 22,676 (−3.94%) | 80,917 → 83,721 → 77,477 (−4.25%) |
+| 84 | frozen / corrected | +3.32% / +3.69% | → −0.68% / −1.75% | → −1.30% / −1.83% |
+| 96 | new reference | 1,380,744 → 1,422,045 (+2.99%) | 69,614 → 70,718 → 64,559 (−7.26%) | 248,728 → 252,799 → 230,038 (−7.51%) |
+| 96 | new reference + re-sieve | 1,759,199 → 1,839,772 (+4.58%) | 68,331 → 70,449 → 64,289 (−5.92%) | 243,333 → 251,139 → 228,379 (−6.15%) |
+| 96 | frozen / corrected | +2.75% / +2.91% | → −1.08% / −2.08% | → −1.71% / −2.13% |
+
+- **The meter correction alone** adds 2.8–7.3% official and 0.5–3.2% calibrated (re-sieve-on cells most, since re-sieve recomputes starts). With the clean sieve_update price as well, the calibrated totals end 0.2–7.3% **lower** than before: the clean price applies to every sieve update, which outweighs the newly charged starts.
+- No registered prediction names this correction.

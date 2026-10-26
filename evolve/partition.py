@@ -87,6 +87,8 @@ def prices():
         # word-level ops: the clean sieve update price (NOTES.md, "Word-price calibration and the audit ops")
         out[ref]["word"] = cal["word_price"][ref]
         out[ref]["setup_gray"] = cal["word_price"][ref]   # Gray-code root update: word-level
+        # sieve updates at the clean price: the start offsets are charged separately since item 10
+        out[ref]["sieve_update"] = cal["word_price"][ref]
     return out
 
 class SpentMeter(Meter):

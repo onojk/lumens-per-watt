@@ -1,0 +1,282 @@
+{
+ "54": {
+  "new ref": {
+   "official": {
+    "before": 26037.028125,
+    "after_meter": 26928.378125,
+    "after_clean_su": 26928.378125
+   },
+   "ruint": {
+    "before": 2959.209007269865,
+    "after_meter": 2990.8921060518396,
+    "after_clean_su": 2918.5420966768397
+   },
+   "montgomery": {
+    "before": 9159.258640171896,
+    "after_meter": 9276.277990579536,
+    "after_clean_su": 9008.935882767037
+   }
+  },
+  "new ref + re-sieve": {
+   "official": {
+    "before": 29057.075,
+    "after_meter": 30614.575,
+    "after_clean_su": 30614.575
+   },
+   "ruint": {
+    "before": 2752.411618731552,
+    "after_meter": 2801.2813875135266,
+    "after_clean_su": 2728.9313781385267
+   },
+   "montgomery": {
+    "before": 8379.852465580294,
+    "after_meter": 8560.222680987932,
+    "after_clean_su": 8292.880573175435
+   }
+  },
+  "frozen ref": {
+   "official": {
+    "before": 30404.709375,
+    "after_meter": 31831.28125,
+    "after_clean_su": 31831.28125
+   },
+   "ruint": {
+    "before": 9236.581862944735,
+    "after_meter": 9283.557798671547,
+    "after_clean_su": 9221.862946171546
+   },
+   "montgomery": {
+    "before": 15122.127008606907,
+    "after_meter": 15295.55644357119,
+    "after_clean_su": 15067.586439821189
+   }
+  },
+  "corrected ref": {
+   "official": {
+    "before": 26039.50625,
+    "after_meter": 27488.6,
+    "after_clean_su": 27488.6
+   },
+   "ruint": {
+    "before": 3353.9251627164726,
+    "after_meter": 3401.4821628182845,
+    "after_clean_su": 3338.600539693284
+   },
+   "montgomery": {
+    "before": 10737.568559756124,
+    "after_meter": 10913.139825032904,
+    "after_clean_su": 10680.784559095406
+   }
+  }
+ },
+ "72": {
+  "new ref": {
+   "official": {
+    "before": 133601.78333333333,
+    "after_meter": 139454.925,
+    "after_clean_su": 139454.925
+   },
+   "ruint": {
+    "before": 10701.131402799503,
+    "after_meter": 10867.855455775903,
+    "after_clean_su": 10414.390740775903
+   },
+   "montgomery": {
+    "before": 35373.873086195825,
+    "after_meter": 35988.8489477913,
+    "after_clean_su": 34313.241525291305
+   }
+  },
+  "new ref + re-sieve": {
+   "official": {
+    "before": 150831.29791666666,
+    "after_meter": 161788.98958333334,
+    "after_clean_su": 161788.98958333334
+   },
+   "ruint": {
+    "before": 9423.871716579397,
+    "after_meter": 9722.293159555797,
+    "after_clean_su": 9268.828444555798
+   },
+   "montgomery": {
+    "before": 30562.173796326224,
+    "after_meter": 31662.5923629217,
+    "after_clean_su": 29986.984940421702
+   }
+  },
+  "frozen ref": {
+   "official": {
+    "before": 152113.65833333333,
+    "after_meter": 158516.97291666668,
+    "after_clean_su": 158516.97291666668
+   },
+   "ruint": {
+    "before": 21279.923202511647,
+    "after_meter": 21471.84917734271,
+    "after_clean_su": 21115.354416509374
+   },
+   "montgomery": {
+    "before": 52251.028550745585,
+    "after_meter": 52959.19636712256,
+    "after_clean_su": 51641.904750872556
+   }
+  },
+  "corrected ref": {
+   "official": {
+    "before": 146133.97083333333,
+    "after_meter": 152506.24583333332,
+    "after_clean_su": 152506.24583333332
+   },
+   "ruint": {
+    "before": 13787.221168422322,
+    "after_meter": 13978.34632200338,
+    "after_clean_su": 13623.687780336713
+   },
+   "montgomery": {
+    "before": 47224.93704311394,
+    "after_meter": 47930.152995115925,
+    "after_clean_su": 46619.64643261591
+   }
+  }
+ },
+ "84": {
+  "new ref": {
+   "official": {
+    "before": 429016.5142857143,
+    "after_meter": 443797.60535714286,
+    "after_clean_su": 443797.60535714286
+   },
+   "ruint": {
+    "before": 26515.026993665477,
+    "after_meter": 26922.595959275204,
+    "after_clean_su": 25232.903607846634
+   },
+   "montgomery": {
+    "before": 91942.47080348188,
+    "after_meter": 93445.4951475811,
+    "after_clean_su": 87201.87584900967
+   }
+  },
+  "new ref + re-sieve": {
+   "official": {
+    "before": 509235.2625,
+    "after_meter": 537688.5232142857,
+    "after_clean_su": 537688.5232142857
+   },
+   "ruint": {
+    "before": 23605.318491903,
+    "after_meter": 24365.629434298447,
+    "after_clean_su": 22675.937082869874
+   },
+   "montgomery": {
+    "before": 80917.3655899042,
+    "after_meter": 83720.61326703914,
+    "after_clean_su": 77476.99396846771
+   }
+  },
+  "frozen ref": {
+   "official": {
+    "before": 560289.0035714286,
+    "after_meter": 578873.8464285714,
+    "after_clean_su": 578873.8464285714
+   },
+   "ruint": {
+    "before": 99301.24530860063,
+    "after_meter": 99828.84386087212,
+    "after_clean_su": 98626.82687337212
+   },
+   "montgomery": {
+    "before": 192006.16715917966,
+    "after_meter": 193952.21585004212,
+    "after_clean_su": 189510.61649379213
+   }
+  },
+  "corrected ref": {
+   "official": {
+    "before": 504742.3696428572,
+    "after_meter": 523370.45714285714,
+    "after_clean_su": 523370.45714285714
+   },
+   "ruint": {
+    "before": 38710.546330777026,
+    "after_meter": 39239.260594834224,
+    "after_clean_su": 38034.813288405654
+   },
+   "montgomery": {
+    "before": 136505.39406306006,
+    "after_meter": 138455.5553194583,
+    "after_clean_su": 134004.97563838685
+   }
+  }
+ },
+ "96": {
+  "new ref": {
+   "official": {
+    "before": 1380744.4546875,
+    "after_meter": 1422045.01875,
+    "after_clean_su": 1422045.01875
+   },
+   "ruint": {
+    "before": 69614.2009380655,
+    "after_meter": 70718.43934112108,
+    "after_clean_su": 64558.77470580857
+   },
+   "montgomery": {
+    "before": 248727.72513691726,
+    "after_meter": 252799.041244614,
+    "after_clean_su": 230038.32923852018
+   }
+  },
+  "new ref + re-sieve": {
+   "official": {
+    "before": 1759199.0984375,
+    "after_meter": 1839771.6078125,
+    "after_clean_su": 1839771.6078125
+   },
+   "ruint": {
+    "before": 68331.1394669476,
+    "after_meter": 70448.59405906565,
+    "after_clean_su": 64288.92942375315
+   },
+   "montgomery": {
+    "before": 243333.19930991827,
+    "after_meter": 251139.27741683376,
+    "after_clean_su": 228378.56541073992
+   }
+  },
+  "frozen ref": {
+   "official": {
+    "before": 1873922.58125,
+    "after_meter": 1925453.296875,
+    "after_clean_su": 1925453.296875
+   },
+   "ruint": {
+    "before": 219209.0547176891,
+    "after_meter": 220624.0446078685,
+    "after_clean_su": 216851.8256678685
+   },
+   "montgomery": {
+    "before": 509314.5326341726,
+    "after_meter": 514532.55415463226,
+    "after_clean_su": 500593.7451446322
+   }
+  },
+  "corrected ref": {
+   "official": {
+    "before": 1771787.9375,
+    "after_meter": 1823386.603125,
+    "after_clean_su": 1823386.603125
+   },
+   "ruint": {
+    "before": 113626.28170715264,
+    "after_meter": 115043.02470733202,
+    "after_clean_su": 111265.33634170704
+   },
+   "montgomery": {
+    "before": 409556.74699855817,
+    "after_meter": 414781.23056401766,
+    "after_clean_su": 400822.21135933016
+   }
+  }
+ }
+}

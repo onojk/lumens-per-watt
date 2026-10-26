@@ -565,6 +565,10 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
     if pool_all.is_empty() {
         return Ok(None);
     }
+    // M mod p once per attempt (NOTES.md, "Meter correction: the sieve's start offsets"): one small-modulus
+    // op per odd factor-base prime; each start is then r + m_p (- p), one word op per root
+    let mp: Vec<i128> = base.iter().map(|&p| if p > 0 { (mm_ as i128).rem_euclid(p as i128) } else { 0 }).collect();
+    m.charge(SETUP, (base.len() - 2) as u64)?;
     let mut s = 1usize;
     while target.powf(1.0 / s as f64) > *pool_all.last().unwrap() as f64 && s < 8 {
         s += 1;
@@ -693,10 +697,16 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
             // 4. sieve
             arr.iter_mut().for_each(|x| *x = 0);
             let mut upd = 0u64;
+            let mut nr = 0u64; // start offsets, one word op per root
             for (p, rs, _, j) in &st {
                 let pu = *p as usize;
                 for &r in rs {
-                    let start = ((r + mm_ as i128) % *p) as usize;
+                    let mut s0 = r + mp[*j];
+                    if s0 >= *p {
+                        s0 -= *p;
+                    }
+                    nr += 1;
+                    let start = s0 as usize;
                     let mut i0 = start;
                     while i0 < width {
                         arr[i0] += logp[*j];
@@ -709,6 +719,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                     }
                 }
             }
+            m.charge(crate::PH_WORD, nr)?;
             m.charge(SIEVE, upd)?;
             m.charge(SIEVE, width as u64)?;
             m.ev(crate::EV_SIEVE_SCAN, width as u64); // at["polys"] append
@@ -732,7 +743,12 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                     }
                     let pu = *p as usize;
                     for &r in rs {
-                        let start = ((r + mm_ as i128) % *p) as usize;
+                        let mut s0 = r + mp[*j];
+                        if s0 >= *p {
+                            s0 -= *p;
+                        }
+                        walk += 1; // the start offset, one word op per root walked
+                        let start = s0 as usize;
                         if start >= width {
                             continue;
                         }
