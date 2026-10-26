@@ -3190,3 +3190,22 @@ The rule recommends; changing the reference is the user's decision.
 - (X3) The rule passes on (2), and also on (1).
 - (X4) The per-band gate PASSes at every size, in both comparisons.
 - (X5) On balanced numbers, the (d) pipeline costs 1–8% more than the genes as qs alone, more under ruint (where rho and p-1 multiplies are relatively dear) than under official.
+
+**The rule's balanced-number condition, verbatim, and what it compares** (user's request, Oct 25). This arrived after the predictions above were committed (1c715b4) and before anything ran.
+- *Verbatim* (generalization test (2), "Replacement rule (decided now)"):
+  > Recommend replacing the reference only if all of these hold:
+  > - at every size, no pricing's paired interval lies above 0 (the new qs is never clearly worse);
+  > - no misses;
+  > - pooled, all three pricings are below 1 with intervals excluding 0.
+  >
+  > Otherwise, qs + lc 1.4 stays the reference, and the new genes are a mixed-population qs.
+- *What it compares:* the design ran "Genomes, each alone": the candidate **qs genes alone** against the reference qs alone, on balanced numbers (`semiprimes_pq(bits, 240, …)`). It compares qs genes against reference qs genes, not full pipelines. Comparison (2) above matches it; the (d)-pipeline rows are information only.
+- *Correction to the outside implication:* the earlier 13–28% balanced loss at 54–72 bits (the Run 8 mixed-qs genes, official) was also qs alone, with no front end. It was a gene effect, not the front-end surcharge.
+- **Amendment, before the run (pooling as written):** the original "pooled" figure was the **mean over sizes of the per-size log₂ ratio** (its table: "pooled (mean of per-size log2)"). `replace_r.py` first pooled by concatenating the 960 numbers into one mean-cost ratio, which weights the 96-bit numbers most. It now uses the mean of the per-size log₂, with a bootstrap that resamples each size's numbers.
+
+**Outside context for the (d)-pipeline balanced rows** (user, Mathematica toy pipeline: rho, then stage-1 p-1, then qs at flat cost Q; bands 16–42 bits, 2,000 primes each; rho length ~ Rayleigh with mean √(πp/2); 1 op per rho step or p-1 squaring).
+- At the mixed-population optimum, a rho + p-1 front end costs ~1.20x qs alone on balanced numbers at every Q: 1.205 (Q 1e4: rho 2,048, p-1 off), 1.200 (Q 1e5: rho 16,384, B 2^12) and 1.216 (Q 1e6: rho 262,144, B 2^14). The optimal front-end budget scales with Q (~20% of it), so the balanced surcharge is structural.
+- The mixed-population cost against qs alone is 0.865 / 0.578 / 0.283. The worst band is 1.2x, under the 1.5x gate.
+- As the balanced share rises from 0 to 0.9, the best rho budget falls from 16,384 to 1,024. p-1 holds until ~0.8, and everything is off only at 100% balanced.
+- *So* a ~20% balanced surcharge for the full pipeline is the expected price of the front end, not a gene effect. The qs-alone rows carry the gene comparison.
+- My X5 (the (d) pipeline costs 1–8% more than qs alone on balanced numbers) stands as written. Our front-end budgets are far below 20% of qs's cost (e.g. rho 10,624 + p-1 ~6,200 ops at 96 bits against qs's ~10^6), so X5 and the toy differ in their assumption about budget size, and the run will show which holds here.
