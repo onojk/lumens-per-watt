@@ -4791,3 +4791,19 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
   - Its explanation that p-1's stage 2 lags ECM's because stage 1 "used up" the small primes is not accepted: both add one prime in (B1, B2]; the difference is that ECM can re-roll with a new curve.
 - **(3) ECM's per-curve success at B1 = 2^8–2^10:** the same Dickman overstatement, estimated at 10–20%, partly offset by the torsion correction. Unmeasured; I-014 decides.
 - **(4)** The DP is already the selector between lamps with disjoint light. *Diagnostic (adopted into I-018):* per θ band and p-1-smoothness band, the conditional success of p-1 stage 2 after rho fails, against its marginal success. Bands where the conditional gain is high are stage 2's structural fringe; a uniform gain means it is only a more expensive p-1.
+
+**Sealed predictions for the measured-c stage-2 DP** (Oct 26; these replace the earlier R1–R7 request) — c = 1.41 / 1.83, rho at K / 1.4, stage 2 one-shot with B2 / B1 ∈ {10, 15, 20, 30, 50, 100}, arms plain (2 multiplies per prime) and paired (1).
+- *Grok's* (labelled as Grok's):
+  - (R1) plain: stage 2 in the optimum at 72 no, 84 no, 96 yes (B2 / B1 10–20).
+  - (R2) paired: yes at all sizes (B2 / B1 10–15 / 10–20 / 10–20).
+  - (R3) saving, no ECM: plain −1.5 to +0.5 / −0.5 to +1.5 / +1.0 to +3.5%; paired +1.5 to 3.5 / 2.0 to 4.0 / 2.5 to 5.0%.
+  - (R4) rho returns only at 96, under 1–2 priors (2^10–2^12), in both arms; absent at 72 and 84.
+  - (R5) ECM at 96: plain 0–1 priors, gain ≤ 2.5%; paired 1–2 priors, gain 1.5–4.0%.
+  - (R6) the largest same-lamps fixed / optimum gap is under 2% (0.2–1.7%).
+- *Claude chat's:*
+  - (R1) plain: stage 2 in the optimum at all sizes, B2 / B1 10–30 (a short B2 is cheap: about 175 primes at B1 = 2^7, B2 = 10 B1).
+  - (R2) paired: all sizes, B2 / B1 20–50.
+  - (R3) plain 0.5–3%, paired 2–4.5%, at each size.
+  - (R4) rho at 84 and 96 under at least one prior (2^10–2^12), either arm; none at 72.
+  - (R5) plain 0–2 priors; paired 2–3 priors, gain 3–7%.
+  - (R6) yes, under 2%.
