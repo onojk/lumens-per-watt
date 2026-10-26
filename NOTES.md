@@ -6600,3 +6600,14 @@ Each cell gives ratio A / ratio B, with the materiality (time share × (ratio_B 
 - **Audit item 17, found while reading this code (not fixed here; for the user's decision):** for every base prime and every A, both cores compute A mod p (Rust `a % p == 0` to skip A's own primes, then again as the Euclid input; Python `A % p` in the `sieved` list and the `euclid_inv` call). **Neither charges the reduction of A mod p itself;** the Euclid charge counts only its division steps.
   - That is ~F − 2 uncharged small-modulus ops per A: ~136 per A at 96, ~27 A's per number, ~3.7k per number, ~0.307 ruint each, ~1,100 ruint (~1.9%) at 96.
   - A meter correction needs its own cost-model entry. Skipping A's primes could instead test membership among A's s primes, so that only one reduction is needed.
+
+### Fix C.2: lp_ledger storage in arenas (code only, counts identical; before code)
+
+- *Change (Rust):* stored sparse lists live in two flat arenas per attempt instead of one heap allocation per relation.
+  - The large-prime table maps q → (u, offset, length) into a partials arena.
+  - The ledger keeps (u, offset, length, y) into its own arena.
+  - A kept candidate's list is built in a reusable scratch buffer; inserting a partial or adding a relation appends the slice to the matching arena (the copy the meter already charges as the sparse copy). A combination reads both slices and appends its union.
+  - The ledger's add / check / product / solve take slices. cfrac passes its list as a slice.
+- *Counts:* identical (the same loops and charges; only where the bytes live changes). Python unchanged.
+- *Acceptance:* identity against the pre-change build per number and per type; Python = Rust per type; parity; before / after wall-clock without sub-timers.
+- *Estimate:* lp:copy was ~35% of the (timer-inflated) lp_ledger at 96, mostly the per-relation allocation. Removing the allocations should cut lp_ledger by roughly a quarter to a third (~50–70 µs of ~195 at 96); solve may gain a little from contiguous relation lists.
