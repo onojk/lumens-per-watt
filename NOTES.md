@@ -2856,3 +2856,9 @@ Mine: Track R 5 held, 2 missed. Track M 0 held, 6 missed.
 **Reporting rule (adopted from Grok, Oct 25).** Every cross-pricing table carries the gate status on the same row as PD_M and PD_R. Examples: "M: conditional on a fast multiply"; "M: passes ruint gate against qs alone; 1.5x Track R under ruint".
 
 **pm1 stage 2 (information, Oct 25).** The pm1 card has **no stage 2**: it runs stage 1 to the bound B (one modular exponentiation per prime power, charged bit_length(p^e)), then takes one gcd, with no B2 bound like the ECM card's b2. A MOVES row "pm1 stage 2 (B2 = c x B)" is added, untested, with the user's outside estimate: for 32-bit factors at B = 1024, the catch rate rises from 3.8% to 22.8% with B2 = 50B (Mathematica, 3,000 primes; stage-2 cost not included, roughly 3x stage 1). The running round is unchanged.
+- *DeepSeek's predictions for a future pm1 stage-2 test* (labelled as DeepSeek's; written before any stage-2 code; pre-registered for any future stage-2 test):
+  - (D-s1) Track R: stage 2 on at 84 and 96 with B = 2^11 and B2 = 2^14–2^15; gain 3–6% over stage-1-only p-1; off at 54–72.
+  - (D-s2) Track M: on at 72–96 with B = 2^10–2^11 and B2 = 2^14–2^16; gain 8–15% at 84–96 and 3–5% at 72; ECM falls at least one grid step at 84 and 96.
+  - (D-s3) c = B2 / B: about 10 wins in Track R, 20–50 in Track M.
+  - *Note:* DeepSeek's cost model charged one gcd per stage-2 candidate. The standard method accumulates a product and takes one gcd at the end, so its Track R cost estimate is high.
+- *DeepSeek's kc test, recorded for the kc / lc report (information only):* how often Knuth–Schroeppel's top-ranked multiplier matches the best-observed multiplier on the sealed numbers. Not run yet. It needs qs run with each multiplier forced, which is a separate information-only pass; its definition (which k's, which genome, which pricing defines "best") is fixed before it runs.
