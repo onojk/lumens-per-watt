@@ -4855,3 +4855,15 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
 **Decision (user, Oct 26): I-016, p-1 stage 2, ADOPTED.**
 - Shape: stage 2 by prime-gap stepping first (2 multiplies + 3 word ops per prime), with B2 = c × B1 and c ∈ {10, 15, 20} offered to the search; paired BSGS later, as a separate change.
 - It is implemented after the meter queue (item 10, items 12–13, the audit re-typing, the wall-clock check, the 2×2). It uses the Oct 25 cost model ("pm1 stage 2: cost model") and its pre-registered predictions, reconciled with the sealed predictions in I-016.
+
+**DeepSeek's reply (Oct 26, sixth; in Chinese), with Claude chat's review** (labelled as DeepSeek's).
+- **(1) Optimal B2:** the marginal balance (extra hits × qs cost = extra stage-2 cost) is accepted. Its conclusion "B2 / B1 ∝ √(C_qs / c_s2)" is not: the hit chance per extra prime and the primes paid for both thin as 1 / ln B2, so the optimal B2 itself grows roughly in proportion to C_qs / c_s2.
+  - *Measured support* (real-prime split-half search): halving the cost per prime doubled B2 / B1 at 72 (plain 10, paired 20); qs is 6.5x dearer from 72 to 96, and the paired B2 grew about 6x (2^9 × 20 to 2^11 × 30).
+  - *Consequence for I-016:* the B2 search range scales with qs's cost; if the meter corrections raise qs, offer larger B2.
+  - Its qs figures (12,801 / 29,104) were disregarded by Claude chat as "not ours (10,736 / 26,606)". *Correction (mine):* they are ours. They are slackrep's tuned-slack ruint costs per number on its 6-number sample, before the Gray-code re-typing (`slackrep.out`: 12,801 at 72, 29,104 at 84). The 10,736 / 26,606 figures are all-map-number means after the Gray-code re-typing. Both are valid on their own bases; DeepSeek used the pre-Gray sample.
+- **(2) Gap stepping is the right baseline.** Add a backtrack for a batch gcd that returns N.
+  - *Correction:* the gcd returns N only when both factors are caught in the same batch (one factor gives gcd = p), so this is rare.
+  - *Gap table:* prime gaps below 2^17 are at most 72, so a small table of even gaps suffices.
+- **(3) Rho:** it suggests a gcd batch of 16–32 with backtrack, to cut the 2x overhead to 1.4–1.6x.
+  - *Claude chat:* not adopted. The batch of 64 explains only about 32 of the ~270-step excess; the rest is Brent's power-of-two stepping, and smaller batches add gcd cost (7.9 each). Its expectation: rho may return at 84 with a small budget, not at 96.
+- **(4) ECM after p-1 stage 2:** its remaining value is re-rolling where p − 1 is not smooth; it expects the 96-bit gain to shrink to single digits. Its "cascade studies, 0.44–1.46%" citation is unverified. The honest-price ECM rerun decides.
