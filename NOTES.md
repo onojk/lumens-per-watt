@@ -2706,3 +2706,43 @@ Mine: Track R 5 held, 2 missed. Track M 0 held, 6 missed.
 - (W1) Track R: p-1 switches **on** at 84 and 96 (against P1), with B 2^9–2^12, and robust gain 1–5% over the final pipeline on the map (log₂ −0.015 to −0.074). Off at 54, where Track R runs qs alone. Reason: rho is on in Track R, so ruint already pays for modmul ops at the margin. For p of 24–32 bits, small-B p-1 costs ~7,600–45,000 ops per factor found, against rho's ~12,400–200,000. The 2.12x ruint figure was for B ≈ 2^16.7, ~100k ops per number.
 - (W2) Track M: p-1 on at 72, 84 and 96, B 2^10–2^13. ECM falls by ≥ 1 step where p-1 is on. Montgomery gain ≤ 4% at every size.
 - (W3) Official-alone optimum: p-1 on at 72–96 for both tracks' genes.
+
+### Per-track p-1 map check: results (`evolve/pm1check.py`; `pm1check.out`, `pm1check.json`, `pm1check_map.json`)
+
+**Map extension.** The eight cards ran on all 2,000 map numbers (54: 320, 72: 480, 84: 560, 96: 640). Charge per number at B = 2^8 … 2^15: 388, 787, 1,558, 3,085, 6,181, 12,259, 24,526 and 48,802 ops, as computed in the Oct 24 entry. Solve fraction at B = 2^10: 0.350, 0.242, 0.193 and 0.166 at 54 / 72 / 84 / 96. **Check:** the no-p-1 optimum reproduces the final budgets in all eight cells.
+
+**Joint optimum per track** (map, in-sample; the track's fitness against qs + lc 1.4 corrected alone; gain = joint / final pipeline on the same map):
+
+| bits | track | final pipeline (rho, ECM): fitness | joint optimum (rho, p-1 B, ECM): fitness | official / ruint / Montgomery (joint) | gain (log₂) | p-1 |
+|---|---|---|---|---|---|---|
+| 54 | R | (0, 0): 0.9371 | (0, 2^8, 0): 0.8818 | 0.791 / 0.882 / 0.786 | 5.9% (−0.088) | ON |
+| 54 | M | (3,158, 0): 0.6698 | (1,448, 2^10, 0): 0.6021 | 0.660 / 1.061 / 0.602 | 10.1% (−0.154) | ON |
+| 72 | R | (1,448, 0): 0.7349 | (790, 2^9, 0): 0.7068 | 0.681 / 0.707 / 0.624 | 3.8% (−0.056) | ON |
+| 72 | M | (1,448, 35,734): 0.5584 | (664, 2^11, 17,867): 0.5150 | 0.530 / 1.162 / 0.515 | 7.8% (−0.117) | ON |
+| 84 | R | (5,793, 0): 0.5899 | (3,158, 2^11, 0): 0.5794 | 0.566 / 0.579 / 0.490 | 1.8% (−0.026) | ON |
+| 84 | M | (3,158, 32,768): 0.4377 | (2,896, 2^12, 32,768): 0.4214 | 0.394 / 0.859 / 0.421 | 3.7% (−0.055) | ON |
+| 96 | R | (12,634, 0): 0.5004 | (10,624, 2^12, 0): 0.4784 | 0.455 / 0.478 / 0.406 | 4.4% (−0.065) | ON |
+| 96 | M | (4,871, 120,194): 0.3660 | (2,896, 2^13, 120,194): 0.3496 | 0.331 / 0.744 / 0.350 | 4.5% (−0.066) | ON |
+
+- **p-1 switches on in every cell, both tracks.** In Track R, ruint still binds and B is 2^8–2^12, rising with size.
+- p-1 replaces part of rho: rho falls in seven of eight cells (Track R 1,448 → 790, 5,793 → 3,158, 12,634 → 10,624; at 54, rho was already off).
+- Track M's ECM falls only at 72 (35,734 → 17,867, 8 steps). At 84 and 96 ECM is unchanged, and p-1 replaces rho.
+- Track M's B is 2^10–2^13, one octave above Track R's at the same size.
+- The per-B profiles are shallow near the optimum. At 84, Track R's best at 2^10 is 0.5797 against 0.5794 at 2^11; at 96, Track M's 2^12 is 0.3514 against 0.3496 at 2^13. Map-only, the chosen B is uncertain by about an octave.
+- **Per-pricing joint optima** (each track's genes, with p-1 against without):
+  - official: p-1 on at every size, with B 2^10 / 2^11 / 2^12 / 2^14 at 54 / 72 / 84 / 96. Official's ECM budget (60,097–2,719,670) solves every number, so qs genes do not matter and both tracks give the same optimum. Gain 2.8–16.5%.
+  - ruint: p-1 on at every size, B 2^8 / 2^9 / 2^10 / 2^12, ECM off; gain 2.7–5.4%.
+  - Montgomery (Track R's genes): p-1 on at every size, B 2^10 / 2^11 / 2^12 / 2^13; gain 3.9–13.8%.
+- **Caveats.** In-sample on the map: nine B options per cell are chosen on the same numbers that score them. No gate was run. Sealed scoring comes with step 2 (the kc / lc round), which tunes in these p-1-inclusive budgets.
+
+**Predictions, scored as written.**
+- *The user's:*
+  - (P1) Track R: p-1 off at every size: **missed** (on at all four sizes).
+  - (P2) Track M: on at 84 or 96 with B ≤ 2^12; where on, ECM falls ≥ 1 step; Montgomery gain ≤ 5%: **missed.** On at 84 with B 2^12 and at 96 with 2^13; the gain clause held at 84 (3.7%) and 96 (4.5%); but ECM did not fall at 84 or 96. (Outside P2's sizes: at 72, ECM fell 8 steps and the gain was 7.8%.)
+  - (P3) official-alone optimum has p-1 on at 84–96: **held** (2^12 at 84, 2^14 at 96, for both tracks' genes).
+- *Mine:*
+  - (W1) Track R: on at 84 and 96 with B 2^9–2^12, gain 1–5%, off at 54: **missed.** On at 84 (2^11, 1.8%) and 96 (2^12, 4.4%) as predicted, but also on at 54 (2^8, 5.9%).
+  - (W2) Track M: on at 72–96 with B 2^10–2^13; ECM falls ≥ 1 step where on; Montgomery gain ≤ 4%: **missed.** On with B in range everywhere; ECM fell only at 72; the gain was above 4% at 72 (7.8%) and 96 (4.5%).
+  - (W3) official-alone optimum: p-1 on at 72–96 for both genes: **held.**
+- The user's: 1 held (P3), 2 missed. Mine: 1 held (W3), 2 missed.
+- The MOVES row "td and p-1 as pre-stages before qs" reopens on the changed condition (small B, re-optimized rho and ECM, corrected card, per-track genes). Status: map-only, pending sealed scoring in step 2.
