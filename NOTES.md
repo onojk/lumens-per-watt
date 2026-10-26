@@ -3782,3 +3782,19 @@ Cost split under ruint (setup = multiplier, factor base and polynomial setup; th
    - For the re-sieve slack retune, op counts by type are logged per run, and every sweep is priced both ways (current and re-typed).
    - The existing full-pass slack sweep is re-priced both ways if its by-type counts are recoverable; if not, this says so.
    - The report gives the 2×2 (re-sieve off / on × re-typed no / yes): best slack and qs cost per pricing, per size. D-rmslack, G-rmslack and D-gc's slack clauses are scored from that table.
+
+**A-count information step** (`evolve/acount.py`, `acount.out`). New reference genes as qs alone (corrected card, kset), Python traces on 3 balanced and 3 band-24 map numbers per size.
+
+| bits | A's per run (range) | distinct pool primes used | P | s | polynomials per A | F | Euclid steps per inverse | per-A inverses today: share of qs cost, off. / ruint / Mont. | lazy cache instead | net |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 54 | 4.2 (3–7) | 9.3 | 28 | 3 | 3.6 | 35 | 4.03 | 0.017 / 0.046 / 0.055 | 0.053 / 0.138 / 0.165 | −0.035 / −0.092 / −0.110 |
+| 72 | 9.0 (6–14) | 17.0 | 32 | 4 | 7.6 | 56 | 4.83 | 0.015 / 0.053 / 0.059 | 0.041 / 0.142 / 0.156 | −0.026 / −0.089 / −0.098 |
+| 84 | 10.5 (6–17) | 21.0 | 32 | 4 | 7.8 | 92 | 5.31 | 0.011 / 0.052 / 0.056 | 0.030 / 0.138 / 0.147 | −0.019 / −0.086 / −0.091 |
+| 96 | 27.2 (13–42) | 28.7 | 32 | 4 | 7.9 | 136 | 5.76 | 0.011 / 0.063 / 0.066 | 0.018 / 0.102 / 0.106 | −0.007 / −0.039 / −0.040 |
+
+- **The lazy cache loses at every size, under every pricing** (−0.7% to −11% of qs cost).
+  - A run uses only 4–27 A's but touches 9–29 distinct pool primes: on-demand selection with its overlap limit brings in about one new prime per A. So filling the cache (distinct primes × F Euclid runs) costs more than today's per-A Euclid runs (A's × F), before the s − 1 extra multiplications per A per prime.
+  - *The annotation's "never costs more than today" assumed distinct primes ≤ A's; here it is the other way round.*
+  - A full precompute (P × F) is worse still. **Candidate (c) does not pay at 54–96 bits.** It could pay only with many more A's per run (larger N), or with A's chosen from a small fixed subset of the pool.
+- Euclid takes 4.0–5.8 steps per inverse (not ~29).
+- **(D-pinv, DeepSeek's)** A's per run 10–20 / 20–40 / 30–60 / 50–100 and net saving 0–0.5 / 0.5–1.5 / 1–3 / 2–4%: **missed.** A's per run are 4.2 / 9.0 / 10.5 / 27.2, below every range, and the lazy-cache net is negative everywhere. (Its precompute variant would be worse.)

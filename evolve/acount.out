@@ -1,0 +1,8 @@
+54 bits (6 numbers): A's per run 4.2 (range 3-7); distinct pool primes used 9.3; P 28; s 3.0; polynomials per A 3.6; F 35; Euclid steps per inverse 4.03
+   per-A inverses today vs lazy cache, share of qs cost (official / ruint / Montgomery): today 0.017 / 0.046 / 0.055; lazy 0.053 / 0.138 / 0.165; net saving -0.035 / -0.092 / -0.110
+72 bits (6 numbers): A's per run 9.0 (range 6-14); distinct pool primes used 17.0; P 32; s 4.0; polynomials per A 7.6; F 56; Euclid steps per inverse 4.83
+   per-A inverses today vs lazy cache, share of qs cost (official / ruint / Montgomery): today 0.015 / 0.053 / 0.059; lazy 0.041 / 0.142 / 0.156; net saving -0.026 / -0.089 / -0.098
+84 bits (6 numbers): A's per run 10.5 (range 6-17); distinct pool primes used 21.0; P 32; s 4.0; polynomials per A 7.8; F 92; Euclid steps per inverse 5.31
+   per-A inverses today vs lazy cache, share of qs cost (official / ruint / Montgomery): today 0.011 / 0.052 / 0.056; lazy 0.030 / 0.138 / 0.147; net saving -0.019 / -0.086 / -0.091
+96 bits (6 numbers): A's per run 27.2 (range 13-42); distinct pool primes used 28.7; P 32; s 4.0; polynomials per A 7.9; F 136; Euclid steps per inverse 5.76
+   per-A inverses today vs lazy cache, share of qs cost (official / ruint / Montgomery): today 0.011 / 0.063 / 0.066; lazy 0.018 / 0.102 / 0.106; net saving -0.007 / -0.039 / -0.040
