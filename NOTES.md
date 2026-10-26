@@ -2927,3 +2927,118 @@ Mine: Track R 5 held, 2 missed. Track M 0 held, 6 missed.
   - anytime curves for every search method;
   - a GPU-style pricing track.
   - The card and pricing changes each carry "cost model in NOTES before code".
+
+### kc / lc bound round: results (`sizescale3.py`; `sizescale_k_tune.out`, `sizescale_k_resolve.out`, `sizescale_k_sealed.out`, `.json`; `kcheck.out`; `dvd.out`)
+
+**Tuning** (kc 1–64, lc 1.0–2.5; step-1 p-1-inclusive budgets). Frozen genomes:
+
+| cell | kc | bc | mc | tc | lc | tc + lc | bound hits |
+|---|---|---|---|---|---|---|---|
+| R@54 | 23 | 0.870 | 0.507 | 1.318 | 1.741 | 3.059 | — |
+| R@72 | 36 | 0.576 | 0.393 | 1.528 | 1.698 | 3.226 | — |
+| R@84 | 60 | 0.511 | 0.480 | 1.268 | 1.737 | 3.005 | kc 60 |
+| R@96 | 60 | 0.432 | 0.602 | 1.035 | 1.974 | 3.009 | kc 60; tc 1.035 |
+| M@54 | 12 | 0.678 | 0.854 | 1.516 | 1.768 | 3.284 | — |
+| M@72 | 46 | 0.501 | 0.719 | 1.540 | 1.650 | 3.190 | — |
+| M@84 | 44 | 0.479 | 0.787 | 1.266 | 1.792 | 3.058 | — |
+| M@96 | 19 | 0.496 | 0.837 | 1.295 | 1.613 | 2.908 | — |
+
+- No frozen genome has lc above 2.0. The only seed best above 2.0 was R@72 seed 1 (lc 2.133), one of the worst seeds (0.801 against 0.646).
+- kc rose above 32 in five of eight cells. tc's lower bound (1.0) is new as a bound hit (R@96).
+
+**Re-solve** (joint rho, p-1 B, ECM, with the new frozen genomes):
+- Seven of eight cells are settled (0 steps).
+- **Track M at 72 settled on the first re-solve**, so no retune was needed.
+- **Track M at 54 moved:** rho 1,448 → off and ECM off → 6,317, with B 2^10 unchanged. By protocol only M@72 is retuned; (d) uses the re-solved budgets.
+
+**Sealed, fresh numbers** (9420000 + 100 pb + bits, 80 per band, run once). Track metric [95%] against qs + lc 1.4 corrected alone, with official / ruint / Montgomery:
+
+| bits | track | (c) current final, no p-1 | (c+p) current final, p-1 budgets | (d) new winner, new budgets | (d) winner; budgets (rho, B, ECM) |
+|---|---|---|---|---|---|
+| 54 | R | 0.958 (0.954 / 0.958 / 0.929) | 0.877 (0.779 / 0.877 / 0.780) | 0.829 (0.829 / 0.815 / 0.719) | R-k@54; (0, 2^8, 0) |
+| 54 | M | 0.682 (0.756 / 1.134 / 0.682) | 0.629 (0.694 / 1.086 / 0.629) | 0.595 (0.459 / 1.506 / 0.595) | current final; (0, 2^10, 6,317) |
+| 72 | R | 0.723 (0.711 / 0.723 / 0.650) | 0.716 (0.696 / 0.716 / 0.638) | 0.710 (0.710 / 0.709 / 0.630) | R-k@72; (790, 2^9, 0) |
+| 72 | M | 0.592 (0.495 / 1.527 / 0.592) | 0.538 (0.585 / 1.160 / 0.538) | 0.538 (= (c+p)) | current final; (664, 2^11, 17,867) |
+| 84 | R | 0.590 (0.590 / 0.587 / 0.506) | 0.573 (0.564 / 0.573 / 0.486) | 0.573 (= (c+p)) | current final; (3,158, 2^11, 0) |
+| 84 | M | 0.455 (0.455 / 0.864 / 0.455) | 0.426 (0.406 / 0.854 / 0.426) | 0.426 (= (c+p)) | current final; (2,896, 2^12, 32,768) |
+| 96 | R | 0.502 (0.502 / 0.502 / 0.444) | 0.489 (0.462 / 0.489 / 0.415) | 0.484 (0.479 / 0.484 / 0.410) | R-k@96; (10,624, 2^12, 0) |
+| 96 | M | 0.350 (0.324 / 0.753 / 0.350) | 0.338 (0.306 / 0.743 / 0.338) | 0.335 (0.272 / 0.741 / 0.335) | M-k@84; (2,896, 2^13, 120,194) |
+
+- Every track gate passes in every row.
+- Track M's ruint gate (information):
+  - (c): FAIL / FAIL / **PASS** / BORDERLINE at 54 / 72 / 84 / 96 (the 84 PASS of the final round replicates on fresh numbers);
+  - (c+p): BORDERLINE / FAIL / BORDERLINE / BORDERLINE;
+  - (d): FAIL / FAIL / BORDERLINE / BORDERLINE.
+- No misses.
+
+**The sealed p-1 verdict, (c+p) against (c)** (track metric, log₂ [95%]):
+- *Track R:* −0.128 [−0.197, −0.066] at 54 (8.5%); −0.015 [−0.064, +0.033] at 72 (1.0%); −0.042 [−0.089, +0.003] at 84 (2.9%); −0.038 [−0.081, +0.000] at 96 (2.6%).
+  - **Significant only at 54.** At 72–96 the direction favours p-1 under every pricing, but the robust interval includes 0. At 84 and 96 its upper end is +0.003 and +0.000, so ruint does not agree with official and Montgomery, which are significant there.
+  - Under the reporting rule (call a cell only where all three agree), Track R's p-1 gain at 72–96 is within noise.
+- *Track M (Montgomery):* −0.116 [−0.209, −0.023] at 54 (7.7%); −0.137 [−0.227, −0.051] at 72 (9.1%); −0.096 [−0.155, −0.040] at 84 (6.4%); −0.052 [−0.099, −0.009] at 96 (3.5%). **Significant at every size.**
+  - At 72, p-1 also cuts Track M's ruint cost by −0.396 log₂ (ECM halves) but raises official cost by +0.243.
+
+**The kc / lc part, (d) against (c+p):**
+- *Track R:* −0.081 [−0.120, −0.043] at 54 (5.4%; it raises official cost by +0.090); −0.011 (not significant) at 72; 0 at 84 (the current final genome won); −0.016 [−0.030, −0.001] at 96 (1.1%).
+- *Track M:*
+  - 54: −0.081 (not significant). The winner is the current final genome in the M@54 re-solved budgets (rho off, ECM on), which raises ruint cost by +0.47.
+  - 72 and 84: 0 (the current final genome won in the same budgets).
+  - 96: −0.012 (not significant).
+- **Widening kc and lc bought ≤ 1.1% at 72–96.** The current final genomes won four of the eight cells (R@84, M@54, M@72, M@84).
+- The 54-bit gains in both tracks come with large moves in the other pricings.
+
+**Headline: cross-pricing, (d) against the final round.** The gate status is on the PD row, per the Oct 25 reporting rule.
+
+| bits | final round (9410000), PD_M / PD_R | (c) on 9420000 | **(d) PD_M [95%]** | **(d) PD_R [95%]** | official M/R (d) | Track M gate status (d) |
+|---|---|---|---|---|---|---|
+| 54 | 1.355 / 1.197 | 1.362 / 1.184 | **1.207 [1.103, 1.322]** | **1.848 [1.727, 1.975]** | 0.554 | M: conditional on a fast multiply (ruint gate FAIL; ECM on in its re-solved budgets) |
+| 72 | 1.112 / 2.087 | 1.098 / 2.113 | **1.170 [1.099, 1.250]** | **1.637 [1.558, 1.719]** | 0.824 | M: conditional on a fast multiply (ruint gate FAIL) |
+| 84 | 1.088 / 1.505 | 1.113 / 1.471 | **1.142 [1.082, 1.207]** | **1.490 [1.435, 1.544]** | 0.719 | M: ruint gate BORDERLINE against qs alone (PASS without p-1); 1.49x Track R under ruint |
+| 96 | 1.232 / 1.541 | 1.269 / 1.501 | **1.224 [1.150, 1.308]** | **1.532 [1.461, 1.605]** | 0.567 | M: ruint gate BORDERLINE against qs alone; 1.53x Track R under ruint |
+
+- At 72, PD_R falls from 2.09 to 1.64, because p-1 halves Track M's ECM there. At 84–96 nothing moves beyond 0.04.
+- At 54, PD_R rises from 1.20 to 1.85, because Track M's re-solved budgets switch ECM on. PD_M falls at 54 (1.36 → 1.21) and rises slightly at 72–84 (by 0.03–0.06).
+
+**Catches per band (G-p1 and the reporting addition).**
+- In Track R, p-1 takes numbers mainly from **qs** at 24–36 bits and from **rho** at 16–24. At 84, rho's band-20 catches fall 79 → 62 and qs's band-24 catches 64 → 61, with p-1 taking 8 / 14 / 10 / 8 in bands 20 / 24 / 28 / 32.
+- In Track M, it takes from **ECM and rho**: at 96, ECM's band-24 catches fall 68 → 35 and rho's band-20 catches 71 → 45, with p-1 taking 38 and 21.
+- p-1 catches in bands 24–36, pooled over sizes, (c+p): Track R 111 / 204 (54%), Track M 221 / 364 (61%).
+
+**Selected-k check** (information; `kcheck.out`; scoring only, on the map numbers):
+- The median selected k is 2–3 in every genome, current and new; k = 1 is the most common pick. The 90th percentile is 7–29.
+- All selected k are squarefree, in every genome: KS never picks a non-squarefree k, so including them in the list only costs their scoring.
+- **kc is not flat:** the selected k stays the same for all kc ≥ 59–61 only. Between kc 32 and 64 it changes on 5–11% of the numbers.
+- *Demand vs drift* (information; `dvd.out`; adopted for future rounds; R@96 is the only winner with bound hits):
+  - **kc 60 is drift:** against the interior median 31, the winner is −0.0075 log₂ [−0.019, +0.003].
+  - **tc 1.035 is demand:** against the interior median 1.40, the winner is −0.129 log₂ [−0.140, −0.118].
+  - With lc 1.97, the low tc keeps tc + lc near 3.0, so the threshold, not tc as such, is what is demanded. That is consistent with the reparameterization MOVES row.
+- *Check E:* the new M@72 genome uses s = 4, where the current final one used s = 3. Its re-solve kept ECM at 17,867, the same as with the s = 3 genome. This is weak evidence against tying the ECM budget to s at 72, and it does not test the 84 dip.
+
+**Predictions, scored as written.**
+- *The user's:*
+  - (K1) kc > 32 in ≥ 2 of the bound-hit cells (R@72 36, R@84 60, M@54 12, M@84 44: three); gain (c) → (d) ≤ 4% at every size: **missed.** The kc clause held, but the gain was 13.5% / 12.7% at 54, 9.1% at M@72, 6.4% at M@84 and 4.3% at M@96, mostly from p-1.
+  - (K2) PD_M and PD_R within 0.15 of the final round at 72–96: **missed** (PD_R at 72: 1.637 against 2.087). The other five values are within 0.06.
+- *Mine:*
+  - (L1) kc > 32 in ≥ 3 of 8 (five) and lc > 2.0 in ≤ 2 (none): **held.**
+  - (L2) (c+p) lower in all eight cells, interval excluding 0 in ≥ 6, Track R 1–6%, Track M 3–10%: **missed.** Lower in all eight, but significant in five (Track R only at 54), and Track R at 54 gained 8.5%.
+  - (L3) (d) against (c+p) ≤ 2% everywhere: **missed** (5.4% at R@54 and M@54).
+  - (L4) PD_R at 72 falls by more than 0.15; PD_R at 84–96 and PD_M at 72–96 within 0.15: **held.**
+  - (L5) Track M at 72 settles within two re-solves: **held** (first re-solve).
+- *DeepSeek's (pre-registered):*
+  - (D-b1) kc hits 64 for Track R at 72 and 84 (36 and 60); Track M settles at 20–40 (12 / 46 / 44 / 19): **missed.** By its scoring rule, kc hit 64 again (R@84, R@96): "kc is effectively unbounded". The selected-k check and the demand-vs-drift test say the hits are drift: they matter for 5–11% of numbers, and the R@96 kc hit is within noise against kc 31.
+  - (D-b2) lc hits 2.5 for Track R at 96 (1.974); Track M lc 1.8–2.2 (1.61–1.79): **missed.**
+  - (D-b3) gain 3–8% Track R at 72–84 (1.8%, 2.9%), 1–3% Track M (4.3–12.7%), PD unchanged within intervals (PD_R at 72 and 54 move outside): **missed.**
+  - (D-c1) at 84–96: Track R lc 1.7–1.9 (1.737, 1.974), Track M lc 1.9–2.1 (1.792, 1.613), neither above 2.2 (held), tc 0.7–1.1 (1.27, 1.04, 1.27, 1.30), tc + lc 2.6–3.0 (3.005, 3.009, 3.058, 2.908), lc(96) − lc(72) in [0, 0.2] (R +0.276, M −0.037): **missed.**
+  - (D-k) median selected k at 84 is 15–35 (it is 3 for both tracks' genomes), 90th percentile under 50 (29 and 22): **missed.** By DeepSeek's decision rule (median < 20), retire kc as a gene.
+- *Grok's (pre-registered):*
+  - (G-b1) Track R kc mostly ≥ 40 (two of four: 60, 60), several at 64 (two), lc 1.6–2.2 (held), gain 3–12% largest at 84–96 (13.5% at 54, 1.8–3.7% at 72–96), no size loses > 2% (held): **missed.**
+  - (G-b1 revised, recorded, not scored) Track R lc 1.5–1.9 at 84–96 (1.737; 1.974 outside); Track M 1.4–1.8 (1.792, 1.613); tc + lc in range. *Direction:* neither holds consistently. At 84 Track M's frozen lc is above Track R's (1.792 vs 1.737); at 96 it is below (1.613 vs 1.974).
+  - (G-b2) Track M kc moves up less than Track R's (mean change +8 against +18.5: held); ECM budgets within one grid step after the re-solve: **missed** at 54 (ECM off → 6,317). It held at 72–96.
+  - (G-p1) stage-1 p-1 catches mostly from bands 24–36: **held** (54% Track R, 61% Track M).
+- Tally: the user's 0 of 2. Mine 3 of 5. DeepSeek's pre-registered 0 of 4 (D-b1, D-b2, D-b3, D-c1) plus D-k missed. Grok's 1 of 3 (G-p1).
+
+**Conditions.**
+- Winners selected on the sealed numbers among seven candidates per cell; the replacement test (queued) uses its own fresh set.
+- p-1's budgets were chosen on the maps (in-sample) and scored here on fresh numbers.
+- Track M at 54 moved at the re-solve and was not retuned (by protocol).
+- Track R's p-1 gain at 72–96 is within noise under ruint.

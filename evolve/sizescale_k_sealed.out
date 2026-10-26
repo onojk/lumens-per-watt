@@ -1,0 +1,113 @@
+
+54 bits (320 fresh sealed numbers)
+  Track R: new winner R-k@54 {'kc': 23, 'bc': 0.87, 'mc': 0.507, 'tc': 1.318, 'lc': 1.741}
+    candidates: R-k@54 0.8289, R-k@72 1.4166, R-k@84 2.3050, R-k@96 6.6159, current final 0.8766, old genes 0.9050, new genes 1.0835
+    (c) current final, final pipeline          [0, 0, 0] 0.9576 [0.9415, 0.9773] (0.954 / 0.958 / 0.929; binds ruin) gate PASS
+    (c+p) current final, step-1 p-1 budgets    [0, 256, 0] 0.8766 [0.8322, 0.9205] (0.779 / 0.877 / 0.780; binds ruin) gate PASS
+    (d) new winner, new budgets                [0, 256, 0] 0.8289 [0.7837, 0.8730] (0.829 / 0.815 / 0.719; binds offi) gate PASS
+    catches (c)    16: qs 80  20: qs 80  24: qs 80  27: qs 80
+    catches (c+p)  16: pm1 38,qs 42  20: pm1 16,qs 64  24: pm1 7,qs 73  27: pm1 2,qs 78
+    catches (d)    16: pm1 38,qs 42  20: pm1 16,qs 64  24: pm1 7,qs 73  27: pm1 2,qs 78
+    (c+p) vs (c): track -0.1276 [-0.1968, -0.0659]  offi -0.2930 [-0.369, -0.223]  ruin -0.1276 [-0.196, -0.065]  mont -0.2530 [-0.327, -0.185]
+    (d) vs (c+p): track -0.0807 [-0.1198, -0.0430]  offi +0.0904 [+0.059, +0.121]  ruin -0.1050 [-0.139, -0.074]  mont -0.1177 [-0.152, -0.087]
+    (d) vs (c): track -0.2083 [-0.2935, -0.1312]  offi -0.2026 [-0.284, -0.127]  ruin -0.2326 [-0.307, -0.163]  mont -0.3706 [-0.450, -0.296]
+  Track M: new winner current final {'kc': 16, 'bc': 0.728, 'mc': 0.944, 'tc': 1.361, 'lc': 1.805}
+    candidates: M-k@54 0.6044, M-k@72 0.7778, M-k@84 1.1944, M-k@96 1.0676, current final 0.5953, old genes 0.6383, new genes 0.6217
+    (c) current final, final pipeline          [3158, 0, 0] 0.6822 [0.6480, 0.7181] (0.756 / 1.134 / 0.682; binds ruin) gate PASS; ruint gate (info) FAIL
+    (c+p) current final, step-1 p-1 budgets    [1448, 1024, 0] 0.6294 [0.5884, 0.6716] (0.694 / 1.086 / 0.629; binds ruin) gate PASS; ruint gate (info) BORDERLINE
+    (d) new winner, new budgets                [0, 1024, 6317] 0.5953 [0.5431, 0.6499] (0.459 / 1.506 / 0.595; binds ruin) gate PASS; ruint gate (info) FAIL
+    catches (c)    16: rho 80  20: qs 24,rho 56  24: qs 72,rho 8  27: qs 78,rho 2
+    catches (c+p)  16: pm1 2,qs 1,rho 77  20: pm1 26,qs 35,rho 19  24: pm1 24,qs 55,rho 1  27: pm1 14,qs 65,rho 1
+    catches (d)    16: ecm 25,pm1 55  20: ecm 33,pm1 36,qs 11  24: ecm 27,pm1 25,qs 28  27: ecm 31,pm1 14,qs 35
+    (c+p) vs (c): track -0.1161 [-0.2094, -0.0225]  offi -0.1235 [-0.250, +0.001]  ruin -0.0622 [-0.123, -0.000]  mont -0.1161 [-0.209, -0.022]
+    (d) vs (c+p): track -0.0805 [-0.1924, +0.0292]  offi -0.5957 [-0.777, -0.425]  ruin +0.4712 [+0.391, +0.550]  mont -0.0805 [-0.192, +0.029]
+    (d) vs (c): track -0.1966 [-0.3324, -0.0632]  offi -0.7192 [-0.923, -0.529]  ruin +0.4090 [+0.304, +0.512]  mont -0.1966 [-0.332, -0.063]
+  (c): PD_M 1.362 [1.300, 1.430]  PD_R 1.184 [1.139, 1.231]  official M/R 0.793
+  (c+p): PD_M 1.239 [1.159, 1.327]  PD_R 1.239 [1.174, 1.308]  official M/R 0.891
+  (d): PD_M 1.207 [1.103, 1.322]  PD_R 1.848 [1.727, 1.975]  official M/R 0.554
+  final round as recorded (9410000 numbers): PD_M 1.355  PD_R 1.197
+
+72 bits (480 fresh sealed numbers)
+  Track R: new winner R-k@72 {'kc': 36, 'bc': 0.576, 'mc': 0.393, 'tc': 1.528, 'lc': 1.698}
+    candidates: R-k@54 0.7809, R-k@72 0.7102, R-k@84 0.8383, R-k@96 1.0865, current final 0.7156, old genes 0.8608, new genes 0.8973
+    (c) current final, final pipeline          [1448, 0, 0] 0.7229 [0.7042, 0.7420] (0.711 / 0.723 / 0.650; binds ruin) gate PASS
+    (c+p) current final, step-1 p-1 budgets    [790, 512, 0] 0.7156 [0.6900, 0.7412] (0.696 / 0.716 / 0.638; binds ruin) gate PASS
+    (d) new winner, new budgets                [790, 512, 0] 0.7102 [0.6837, 0.7395] (0.710 / 0.709 / 0.630; binds offi) gate PASS
+    catches (c)    16: qs 1,rho 79  20: qs 58,rho 22  24: qs 79,rho 1  28: qs 80  32: qs 80  36: qs 80
+    catches (c+p)  16: pm1 11,qs 10,rho 59  20: pm1 15,qs 57,rho 8  24: pm1 9,qs 71  28: pm1 9,qs 71  32: pm1 2,qs 78  36: pm1 1,qs 79
+    catches (d)    16: pm1 11,qs 10,rho 59  20: pm1 15,qs 57,rho 8  24: pm1 9,qs 71  28: pm1 9,qs 71  32: pm1 2,qs 78  36: pm1 1,qs 79
+    (c+p) vs (c): track -0.0147 [-0.0638, +0.0333]  offi -0.0320 [-0.087, +0.022]  ruin -0.0147 [-0.064, +0.033]  mont -0.0277 [-0.081, +0.025]
+    (d) vs (c+p): track -0.0110 [-0.0325, +0.0146]  offi +0.0301 [+0.007, +0.053]  ruin -0.0134 [-0.036, +0.009]  mont -0.0172 [-0.041, +0.006]
+    (d) vs (c): track -0.0257 [-0.0804, +0.0322]  offi -0.0019 [-0.062, +0.057]  ruin -0.0281 [-0.082, +0.025]  mont -0.0449 [-0.103, +0.013]
+  Track M: new winner current final {'kc': 16, 'bc': 0.659, 'mc': 1.603, 'tc': 1.172, 'lc': 1.758}
+    candidates: M-k@54 0.5705, M-k@72 0.5561, M-k@84 0.5642, M-k@96 0.6033, current final 0.5383, old genes 0.6325, new genes 0.5736
+    (c) current final, final pipeline          [1448, 0, 35734] 0.5920 [0.5561, 0.6281] (0.495 / 1.527 / 0.592; binds ruin) gate PASS; ruint gate (info) FAIL
+    (c+p) current final, step-1 p-1 budgets    [664, 2048, 17867] 0.5383 [0.5041, 0.5722] (0.585 / 1.160 / 0.538; binds ruin) gate PASS; ruint gate (info) FAIL
+    (d) new winner, new budgets                [664, 2048, 17867] 0.5383 [0.5041, 0.5722] (0.585 / 1.160 / 0.538; binds ruin) gate PASS; ruint gate (info) FAIL
+    catches (c)    16: ecm 1,rho 79  20: ecm 58,rho 22  24: ecm 69,qs 10,rho 1  28: ecm 58,qs 22  32: ecm 30,qs 50  36: ecm 34,qs 46
+    catches (c+p)  16: ecm 7,pm1 29,rho 44  20: ecm 28,pm1 42,qs 3,rho 7  24: ecm 37,pm1 22,qs 21  28: ecm 25,pm1 17,qs 38  32: ecm 13,pm1 8,qs 59  36: ecm 16,pm1 8,qs 56
+    catches (d)    16: ecm 7,pm1 29,rho 44  20: ecm 28,pm1 42,qs 3,rho 7  24: ecm 37,pm1 22,qs 21  28: ecm 25,pm1 17,qs 38  32: ecm 13,pm1 8,qs 59  36: ecm 16,pm1 8,qs 56
+    (c+p) vs (c): track -0.1371 [-0.2267, -0.0510]  offi +0.2431 [+0.109, +0.384]  ruin -0.3964 [-0.467, -0.330]  mont -0.1371 [-0.227, -0.051]
+    (d) vs (c+p): track +0.0000 [+0.0000, +0.0000]  offi +0.0000 [+0.000, +0.000]  ruin +0.0000 [+0.000, +0.000]  mont +0.0000 [+0.000, +0.000]
+    (d) vs (c): track -0.1371 [-0.2267, -0.0510]  offi +0.2431 [+0.109, +0.384]  ruin -0.3964 [-0.467, -0.330]  mont -0.1371 [-0.227, -0.051]
+  (c): PD_M 1.098 [1.032, 1.172]  PD_R 2.113 [2.015, 2.212]  official M/R 0.695
+  (c+p): PD_M 1.184 [1.113, 1.263]  PD_R 1.622 [1.545, 1.701]  official M/R 0.842
+  (d): PD_M 1.170 [1.099, 1.250]  PD_R 1.637 [1.558, 1.719]  official M/R 0.824
+  final round as recorded (9410000 numbers): PD_M 1.112  PD_R 2.087
+
+84 bits (560 fresh sealed numbers)
+  Track R: new winner current final {'kc': 32, 'bc': 0.526, 'mc': 0.512, 'tc': 1.457, 'lc': 1.641}
+    candidates: R-k@54 0.7273, R-k@72 0.6223, R-k@84 0.5770, R-k@96 0.6410, current final 0.5731, old genes 0.7748, new genes 0.7063
+    (c) current final, final pipeline          [5793, 0, 0] 0.5902 [0.5759, 0.6059] (0.590 / 0.587 / 0.506; binds offi) gate PASS
+    (c+p) current final, step-1 p-1 budgets    [3158, 2048, 0] 0.5731 [0.5547, 0.5912] (0.564 / 0.573 / 0.486; binds ruin) gate PASS
+    (d) new winner, new budgets                [3158, 2048, 0] 0.5731 [0.5547, 0.5912] (0.564 / 0.573 / 0.486; binds ruin) gate PASS
+    catches (c)    16: rho 80  20: qs 1,rho 79  24: qs 64,rho 16  28: qs 78,rho 2  32: qs 80  36: qs 80  42: qs 80
+    catches (c+p)  16: rho 80  20: pm1 8,qs 10,rho 62  24: pm1 14,qs 61,rho 5  28: pm1 10,qs 69,rho 1  32: pm1 8,qs 72  36: pm1 3,qs 77  42: pm1 2,qs 78
+    catches (d)    16: rho 80  20: pm1 8,qs 10,rho 62  24: pm1 14,qs 61,rho 5  28: pm1 10,qs 69,rho 1  32: pm1 8,qs 72  36: pm1 3,qs 77  42: pm1 2,qs 78
+    (c+p) vs (c): track -0.0424 [-0.0892, +0.0027]  offi -0.0646 [-0.118, -0.013]  ruin -0.0349 [-0.078, +0.007]  mont -0.0592 [-0.109, -0.011]
+    (d) vs (c+p): track +0.0000 [+0.0000, +0.0000]  offi +0.0000 [+0.000, +0.000]  ruin +0.0000 [+0.000, +0.000]  mont +0.0000 [+0.000, +0.000]
+    (d) vs (c): track -0.0424 [-0.0892, +0.0027]  offi -0.0646 [-0.118, -0.013]  ruin -0.0349 [-0.078, +0.007]  mont -0.0592 [-0.109, -0.011]
+  Track M: new winner current final {'kc': 32, 'bc': 0.513, 'mc': 0.672, 'tc': 1.127, 'lc': 1.869}
+    candidates: M-k@54 0.4968, M-k@72 0.4327, M-k@84 0.4302, M-k@96 0.4363, current final 0.4255, old genes 0.5567, new genes 0.4952
+    (c) current final, final pipeline          [3158, 0, 32768] 0.4547 [0.4320, 0.4778] (0.455 / 0.864 / 0.455; binds ruin) gate PASS; ruint gate (info) PASS
+    (c+p) current final, step-1 p-1 budgets    [2896, 4096, 32768] 0.4255 [0.4008, 0.4504] (0.406 / 0.854 / 0.426; binds ruin) gate PASS; ruint gate (info) BORDERLINE
+    (d) new winner, new budgets                [2896, 4096, 32768] 0.4255 [0.4008, 0.4504] (0.406 / 0.854 / 0.426; binds ruin) gate PASS; ruint gate (info) BORDERLINE
+    catches (c)    16: rho 80  20: ecm 15,qs 3,rho 62  24: ecm 60,qs 15,rho 5  28: ecm 39,qs 40,rho 1  32: ecm 24,qs 56  36: ecm 17,qs 63  42: ecm 14,qs 66
+    catches (c+p)  16: rho 80  20: ecm 10,pm1 12,qs 1,rho 57  24: ecm 44,pm1 20,qs 13,rho 3  28: ecm 30,pm1 17,qs 32,rho 1  32: ecm 22,pm1 11,qs 47  36: ecm 17,pm1 4,qs 59  42: ecm 14,pm1 5,qs 61
+    catches (d)    16: rho 80  20: ecm 10,pm1 12,qs 1,rho 57  24: ecm 44,pm1 20,qs 13,rho 3  28: ecm 30,pm1 17,qs 32,rho 1  32: ecm 22,pm1 11,qs 47  36: ecm 17,pm1 4,qs 59  42: ecm 14,pm1 5,qs 61
+    (c+p) vs (c): track -0.0956 [-0.1550, -0.0403]  offi -0.1644 [-0.236, -0.100]  ruin -0.0164 [-0.067, +0.031]  mont -0.0956 [-0.155, -0.040]
+    (d) vs (c+p): track +0.0000 [+0.0000, +0.0000]  offi +0.0000 [+0.000, +0.000]  ruin +0.0000 [+0.000, +0.000]  mont +0.0000 [+0.000, +0.000]
+    (d) vs (c): track -0.0956 [-0.1550, -0.0403]  offi -0.1644 [-0.236, -0.100]  ruin -0.0164 [-0.067, +0.031]  mont -0.0956 [-0.155, -0.040]
+  (c): PD_M 1.113 [1.055, 1.175]  PD_R 1.471 [1.416, 1.526]  official M/R 0.771
+  (c+p): PD_M 1.142 [1.082, 1.207]  PD_R 1.490 [1.435, 1.544]  official M/R 0.719
+  (d): PD_M 1.142 [1.082, 1.207]  PD_R 1.490 [1.435, 1.544]  official M/R 0.719
+  final round as recorded (9410000 numbers): PD_M 1.088  PD_R 1.505
+
+96 bits (640 fresh sealed numbers)
+  Track R: new winner R-k@96 {'kc': 60, 'bc': 0.432, 'mc': 0.602, 'tc': 1.035, 'lc': 1.974}
+    candidates: R-k@54 0.6796, R-k@72 0.5705, R-k@84 0.4932, R-k@96 0.4837, current final 0.4889, old genes 0.7101, new genes 0.6099
+    (c) current final, final pipeline          [12634, 0, 0] 0.5018 [0.4892, 0.5171] (0.502 / 0.502 / 0.444; binds ruin) gate PASS
+    (c+p) current final, step-1 p-1 budgets    [10624, 4096, 0] 0.4889 [0.4734, 0.5043] (0.462 / 0.489 / 0.415; binds ruin) gate PASS
+    (d) new winner, new budgets                [10624, 4096, 0] 0.4837 [0.4680, 0.4995] (0.479 / 0.484 / 0.410; binds ruin) gate PASS
+    catches (c)    16: rho 80  20: rho 80  24: qs 29,rho 51  28: qs 75,rho 5  32: qs 78,rho 2  36: qs 80  42: qs 80  48: qs 80
+    catches (c+p)  16: rho 80  20: rho 80  24: pm1 19,qs 22,rho 39  28: pm1 15,qs 61,rho 4  32: pm1 7,qs 71,rho 2  36: pm1 5,qs 75  42: pm1 3,qs 77  48: qs 80
+    catches (d)    16: rho 80  20: rho 80  24: pm1 19,qs 22,rho 39  28: pm1 15,qs 61,rho 4  32: pm1 7,qs 71,rho 2  36: pm1 5,qs 75  42: pm1 3,qs 77  48: qs 80
+    (c+p) vs (c): track -0.0376 [-0.0807, +0.0001]  offi -0.1186 [-0.168, -0.071]  ruin -0.0376 [-0.078, +0.001]  mont -0.0981 [-0.144, -0.053]
+    (d) vs (c+p): track -0.0155 [-0.0304, -0.0006]  offi +0.0509 [+0.031, +0.072]  ruin -0.0155 [-0.030, -0.001]  mont -0.0181 [-0.036, -0.001]
+    (d) vs (c): track -0.0531 [-0.0988, -0.0123]  offi -0.0677 [-0.121, -0.016]  ruin -0.0531 [-0.095, -0.012]  mont -0.1161 [-0.166, -0.068]
+  Track M: new winner M-k@84 {'kc': 44, 'bc': 0.479, 'mc': 0.787, 'tc': 1.266, 'lc': 1.792}
+    candidates: M-k@54 0.4235, M-k@72 0.3466, M-k@84 0.3348, M-k@96 0.3382, current final 0.3376, old genes 0.4471, new genes 0.3979
+    (c) current final, final pipeline          [4871, 0, 120194] 0.3500 [0.3303, 0.3700] (0.324 / 0.753 / 0.350; binds ruin) gate PASS; ruint gate (info) BORDERLINE
+    (c+p) current final, step-1 p-1 budgets    [2896, 8192, 120194] 0.3376 [0.3172, 0.3588] (0.306 / 0.743 / 0.338; binds ruin) gate PASS; ruint gate (info) BORDERLINE
+    (d) new winner, new budgets                [2896, 8192, 120194] 0.3348 [0.3145, 0.3556] (0.272 / 0.741 / 0.335; binds ruin) gate PASS; ruint gate (info) BORDERLINE
+    catches (c)    16: rho 80  20: ecm 9,rho 71  24: ecm 68,qs 1,rho 11  28: ecm 69,qs 10,rho 1  32: ecm 54,qs 26  36: ecm 45,qs 35  42: ecm 17,qs 63  48: ecm 15,qs 65
+    catches (c+p)  16: rho 80  20: ecm 14,pm1 21,rho 45  24: ecm 35,pm1 38,qs 1,rho 6  28: ecm 53,pm1 18,qs 9  32: ecm 46,pm1 10,qs 24  36: ecm 40,pm1 10,qs 30  42: ecm 17,pm1 4,qs 59  48: ecm 15,pm1 2,qs 63
+    catches (d)    16: rho 80  20: ecm 14,pm1 21,rho 45  24: ecm 35,pm1 38,qs 1,rho 6  28: ecm 53,pm1 18,qs 9  32: ecm 46,pm1 10,qs 24  36: ecm 40,pm1 10,qs 30  42: ecm 17,pm1 4,qs 59  48: ecm 15,pm1 2,qs 63
+    (c+p) vs (c): track -0.0518 [-0.0993, -0.0087]  offi -0.0850 [-0.141, -0.035]  ruin -0.0188 [-0.062, +0.022]  mont -0.0518 [-0.099, -0.009]
+    (d) vs (c+p): track -0.0123 [-0.0263, +0.0005]  offi -0.1710 [-0.196, -0.148]  ruin -0.0039 [-0.010, +0.002]  mont -0.0123 [-0.026, +0.001]
+    (d) vs (c): track -0.0640 [-0.1131, -0.0189]  offi -0.2560 [-0.315, -0.201]  ruin -0.0227 [-0.066, +0.018]  mont -0.0640 [-0.113, -0.019]
+  (c): PD_M 1.269 [1.194, 1.349]  PD_R 1.501 [1.436, 1.569]  official M/R 0.647
+  (c+p): PD_M 1.229 [1.155, 1.312]  PD_R 1.520 [1.451, 1.591]  official M/R 0.662
+  (d): PD_M 1.224 [1.150, 1.308]  PD_R 1.532 [1.461, 1.605]  official M/R 0.567
+  final round as recorded (9410000 numbers): PD_M 1.232  PD_R 1.541
+exit 0
