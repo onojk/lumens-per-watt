@@ -2746,3 +2746,54 @@ Mine: Track R 5 held, 2 missed. Track M 0 held, 6 missed.
   - (W3) official-alone optimum: p-1 on at 72–96 for both genes: **held.**
 - The user's: 1 held (P3), 2 missed. Mine: 1 held (W3), 2 missed.
 - The MOVES row "td and p-1 as pre-stages before qs" reopens on the changed condition (small B, re-optimized rho and ECM, corrected card, per-track genes). Status: map-only, pending sealed scoring in step 2.
+
+## 2026-10-25 — kc / lc bound round (pre-registered; two card amendments, protocol and predictions before code)
+
+### Card amendments (cost models before code)
+
+**(A1) pm1: absolute bound gene `B`.** The pm1 card computes its bound as max(10, int(N^b)), so one genome gives a different B for each N. To put a fixed B = 2^k in a pipeline genome shared by many numbers, the card gains an optional integer gene `B`. If present, the bound is B; otherwise it is as today.
+- *Charges unchanged:* bit_length(p^e) per prime power ≤ B, plus one gcd. All or nothing, as before.
+- *Identity:* without `B`, nothing changes. With `B` = 2^k, ops, factor and per-type counts equal the b-card's entries in `pm1check_map.json` (b chosen so int(N^b) = 2^k).
+- *Acceptance:* that equality on all 2,000 map numbers at k = 8 … 15 (Python), Python = Rust on a sample, and a parity pair. In a pipeline the pm1 stage gets ob = 2B, above its charge (≤ 1.53 B at these B), so it always completes.
+
+**(A2) qs: lc clamp raised from 2.0 to 3.0** (Python and Rust). The card clamps lc to [1.0, 2.0] because L = B^lc ≤ B² guarantees that a cofactor below L is prime. The requested bound of 2.5 would otherwise be a no-op above 2.0.
+- For lc in (2.0, 3.0], a cofactor v in [B², B^lc) may be composite. It is filed and combined exactly like a prime partial, with the same charges: bound check, N mod v, hash lookup, then insert, or combine (1 op u₁u₂ mod N plus F ops vector add).
+- No primality test is run on v, so no op is skipped or uncharged.
+- Two relations with the same cofactor v multiply to v² times smooth parts, a valid relation for any v. The ledger multiplies v into the square root exactly as for a prime.
+- A composite v that shares a factor with N but does not divide it is not detected (missed only, not wrong).
+- *Exactness:* in Rust the partial test compares v against L as f64. L ≤ (3·e^{0.5√(ln N ln ln N)})³ < 2^42 for N < 2^100 at bc ≤ 3, so the f64 comparison stays exact.
+- *Identity:* for lc ≤ 2.0, the card is unchanged op for op (only the clamp constant moves).
+- *Acceptance:* the full parity suite, plus Python = Rust pairs at lc 2.3 and 2.5 on map samples.
+
+### Protocol (user's; rules made exact here)
+
+- **Budgets for tuning:** step 1 switched p-1 on everywhere, so tuning uses the p-1-inclusive joint optima (rho, B, ECM) of the p-1 map check, per track and size.
+- **Tuning:** settings as rounds 2–3 (tpe-tuned, seeds 0–3, 200 trials per size, 24 per band tuning numbers, seeds 9300000+). Bounds: kc 1–64 (int), lc 1.0–2.5; bc 0.3–3.0, mc 0.01–12 (log) and tc 1.0–3.5 unchanged. The frozen genome is the best seed. Baselines reported: qs + lc 1.4's genes and the current final genome in the same pipeline.
+- **Bound hits** (same rule, within 10% of a bound's value): kc ≤ 1.1 or ≥ 57.6; lc ≤ 1.1 or ≥ 2.25; bc ≤ 0.33 or ≥ 2.7; mc ≤ 0.011 or ≥ 10.8; tc ≤ 1.1 or ≥ 3.15.
+- **Re-solve:**
+  - every cell once, with its new frozen genome, using the joint (rho, B, ECM) solver of the p-1 check (ECM grid to 2^22, widened if at the edge). These are (d)'s budgets.
+  - *Movement:* rho and ECM in 1/8-octave steps, B in octaves; "settled" means ≤ 1 step for each and no off/on switch.
+- **Track M at 72:**
+  - If its re-solve moves more than one step from the tuning budgets, M@72 is retuned in the re-solved budgets (same settings), then re-solved again.
+  - At most two re-solves follow the tuning round. The report says whether it settled or the limit was reached.
+  - (d) for M@72 uses the last re-solve's budgets with the last genes.
+- **Sealed:** fresh numbers 9420000 + 100 pb + bits (checked unused), 80 per band, run once.
+  - (c) the current final winners in their final pipelines (no p-1);
+  - (c+p) the current final winners in the step-1 joint (p-1) budgets; added by me as an information row: it is the sealed p-1 verdict, separated from kc / lc;
+  - (d) the new winners in (d)'s budgets. New winner: the best by the track's fitness on the sealed numbers, among the track's four new tuned genomes, the cell's current final genome, and qs + lc 1.4's and the new genes (seven candidates).
+  - Both references; all three pricings; gates as in the two-track rule (Track M's ruint gate is information only).
+- **Headline:** PD_M and PD_R from (d), next to the final round's values (the (c) rows of the 9410000 set) and (c) on this set.
+
+### Predictions (the user's, labelled as the user's)
+
+- (K1) kc moves above 32 in at least two of the bound-hit genomes. The gain from (c) to (d) is at most 4% under the track's metric at every size.
+- (K2) PD_M and PD_R each stay within 0.15 of the final round's values at 72–96 bits.
+- *Scoring:* the bound-hit genomes are the three kc-32 hits (R@72, R@84, M@84) and the three lc hits (R@72, M@54, M@84), i.e. the cells R@72, R@84, M@54 and M@84; K1's kc clause counts how many of these cells' new frozen genomes have kc > 32. "The final round's values" are the recorded (c) values on the 9410000 set.
+
+### Predictions (mine)
+
+- (L1) kc > 32 in at least three of the eight new frozen genomes. lc > 2.0 in at most two of the eight.
+- (L2) Sealed p-1 verdict, (c+p) against (c): lower under the track's metric in all eight cells. The interval excludes 0 in at least six. Track R gains 1–6%; Track M gains 3–10% (Montgomery).
+- (L3) The kc / lc part, (d) against (c+p): at most 2% under the track's metric in every cell, with the interval including 0 in at least four of eight.
+- (L4) PD_R at 72 falls by more than 0.15 (Track M's ECM halves there). At 84–96, PD_R stays within 0.15. PD_M stays within 0.15 at 72–96.
+- (L5) Track M at 72 settles within the two re-solves.
