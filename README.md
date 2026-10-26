@@ -1,82 +1,64 @@
 # lumens-per-watt
 
-Growing factoring algorithms by evolution, and measuring them by **lumens per watt**.
+How much of the number line does each step of a factoring algorithm light up, per unit of real cost?
 
-## In plain English
+lumens-per-watt evolves and tunes integer-factoring pipelines and scores them by the work they actually do. Each method is a **lamp**: trial division, Pollard rho, Pollard p-1, ECM and a self-initializing quadratic sieve ("qs"). A pipeline is a sequence of lamps, each with a budget. Every operation a lamp performs is charged on an exact **op meter**, and pipelines are compared by how cheaply they find factors.
 
-**The idea.** Picture a factoring algorithm as a light moving along the number line, ruling out spots where the secret factor could be hiding. That gives a way to grade any algorithm: how much of the line it darkens for each unit of work. We call that **lumens per watt**. More light per watt means a better bulb.
+The picture behind it: place a number's smaller factor on the line θ = log p / log N, from 0 (tiny factors) to ½ (balanced semiprimes). Each lamp lights part of that line brightly and the rest dimly. Some regions are walls, expensive to light by any method. A good pipeline covers the line with the least total cost.
 
-**What this repo does.** It breeds factoring algorithms the way a gardener breeds plants, and measures them honestly. It starts with a box of known parts (trial division, square searches, rho, p − 1, elliptic curves, continued fractions, the quadratic sieve), snaps them together, tests each combination on real numbers, keeps the best, and repeats. Every algorithm gets a name and a family tree.
+Independent research by Jonathan Kendall. Rust ("lampcore") for the fast core, Python for the harness and analysis; the two cores must agree exactly.
 
-**What it has grown into.** Three things now matter as much as the breeding:
-- **An honest meter.** Every operation is charged, and the price list was checked against real timings on this laptop. The official count and real prices can disagree on who wins, so a method now has to win under all three pricings (the official count and two calibrated ones), not just one.
-- **Learning from all algorithms.** Most of factoring's best tricks were borrowed from other fields: probability, algebra, signal processing, SAT solvers. [MOVES.md](MOVES.md) catalogues those moves, drawn from computer science and a survey of sixteen branches of mathematics, and the meter decides which ones pay.
-- **Failures are results.** Every idea gets a prediction written down before it is tested. A loss is recorded with its prediction and conditions, never deleted, and marks the idea as ruled out until those conditions change.
+## How it is measured
 
-**What we've learned so far.**
+- **The op meter.** Every operation is charged by what it physically is (a fixed classification rule): a full multiply mod N, a reduction modulo a small prime, a word-level step (an add, a compare, an index move), a gcd, and so on.
+- **Three pricings of the same counts.**
+  - official: every op costs 1;
+  - ruint: prices relative to a generic 256-bit multiply, calibrated on this machine;
+  - Montgomery: prices relative to a fast multiply.
+- **Two tracks.** Track R (robust: worst of the three pricings) and Track M (Montgomery decides).
+- **Discipline.**
+  - Predictions are registered before results, including those of outside reviewers.
+  - Claims are confirmed on sealed fresh numbers, per size band, with paired bootstrap intervals.
+  - The reference changes only through a pre-registered replacement rule.
+  - Every change to the card or the meter comes with a cost-model entry first, an acceptance test, and a full Python/Rust parity run.
+  - Meter corrections (charging work that was uncharged) are kept separate from re-pricings (charging the same work at its correct type), and each is reported on its own.
 
-- **The meter can pick the winner.** Under the official count, elliptic curves led on balanced numbers; under ruint pricing, a quadratic-sieve genome (N51-0917) led from 60 bits up; under Montgomery pricing ECM ties at 60–66 bits, and the margins are within the sieve-update spread. Run 6's luck champion (p − 1 first) turned out 1.67× slower than plain tuned qs under real prices.
-- **Racing two methods lost; taking turns in order won.** Interleaving two methods in fixed slices never beat the better method alone (0 of 810 cases): the sieve's large steps hog the turns. Running cheap methods first, each for a fixed budget, then the sieve, was 1.5–2.2× faster for allocation A (1.26–1.44× with N51-0917's qs, allocation B) on numbers whose smaller factor ranges from 16 to 42 bits. Scope: 84-bit numbers in that mixed population, with allocation A's absolute budgets; no gain on balanced numbers; A's absolute budgets fail the gate at 72 bits. Budgets scaled by one factor per size pay at 96 bits but not at 72; per-stage budgets chosen from maps per size (ECM off below 84 bits) beat A on fresh 78- and 90-bit numbers (NOTES.md).
-- **Covering, not knowing.** That gain comes from covering every factor size cheaply, not from picking the right method per number. At a fixed size, nothing free reveals how big the hidden factor is.
+## Where it stands (Oct 2026)
 
-- **Results are now reported on two tracks (Oct 25):** ruint-decided (Track R, the robust worst-of-three score, where ruint binds) and Montgomery-decided (Track M). We report both because the winner between algorithm families depends on the price of a multiply: with a slow generic multiply, rho then qs wins; with a fast Montgomery multiply, ECM stays in the pipeline. Each winner is also priced under the other track's pricing. Earlier results are Track R. Round 1 (qs-gene size-scaling test, 54-96 bits): the dependence is lopsided. Track R's answer costs 1.05-1.28x the Track M answer under Montgomery, while Track M's answer costs 1.9-2.9x the Track R answer under ruint. Final round (budgets re-solved with tuned genes, retuned once, fresh numbers): the lopsidedness shrinks. Track R's answer costs 1.09-1.36x Track M's under Montgomery, and Track M's costs 1.2-2.1x Track R's under ruint. Track M's ECM budgets fell 3-10x (to 33k-120k ops at 72-96 bits; off at 54), and at 84 bits its answer passes the ruint gate (against qs alone), though under ruint it still costs 1.5x Track R's answer. With stage-1 p-1 (B 2^8-2^13) and kc/lc widened (Oct 25, fresh numbers): p-1 enters both tracks' pipelines and pays 3.5-9% for Track M at every size; for Track R it pays 8.5% at 54 bits but is within noise at 72-96 (1-3%, ruint does not agree). Widening kc and lc buys at most 1.1% at 72-96. Track R's answer costs 1.14-1.22x Track M's under Montgomery, and Track M's costs 1.49-1.85x Track R's under ruint (1.64x at 72, down from 2.09x). Track M stays conditional on a fast multiply at 54-72, and is borderline on the ruint gate at 84-96.
-- **The scoring has to be cheat-proof.** Early on, algorithms "won" by memorizing the test numbers or by being slow on small numbers so their growth looked flatter. The scoring now uses fresh numbers every round, and every winner is rechecked on numbers it has never seen.
-- **Evolution tunes known tricks well.** The multiplier k was a gene, and evolution tuned it from a plain k = 1, 2, 3… search to Hart-like values (k = 720i, 60i, 12i); it did not invent the trick. Likewise the stage order was a gene, and it put p − 1 before rho.
-- **How you keep score decides who wins.** Judged by the worst case, rho (the "lucky" method) won. Judged by total work across many numbers, a luck-free square search won. We chose the running total as the scoreboard and wrote that down in `NOTES.md`.
-- **"Luck by design" only pays when guessing is cheaper than trying.** Making each test luckier cost more than it saved, so evolution mostly ignored those parts.
-- **Size changes everything.** To test bigger numbers, the core was rebuilt in Rust and proven to give identical answers to the Python version, case for case. On bigger numbers the winner flipped: the square searches that led at small sizes lose clearly to rho from about 60 bits up. At small sizes fixed overhead decides the race; at large sizes the growth rate does. The measured exponents match theory's ordering (rho about N^1/4, qs subexponential), but measured qs growth is slower than L(N) over 72–96 bits: 0.148 log₂ per bit, against L's 0.170 at 72–84 and 0.160 at 84–96 (NOTES.md, size-relative budgets).
+- Two-track size scaling at 54-96 bits is done. Stage-1 p-1 pays for Track M at every size; for Track R only at 54 bits.
+- The quadratic sieve's reference genes were replaced through the replacement rule. Most of the gain came from fixing the card, not from tuning.
+- An audit of the meter is in progress. It found:
+  - operations charged above what they physically are (the Gray-code root update; candidate evaluation; search, sort and bookkeeping steps);
+  - operations not charged at all (the ledger's duplicate check; sieve start offsets; a sort inside re-sieving).
+  Each is being corrected with its own cost model, parity run and report.
+- Root-matched confirmation ("re-sieve") pays only when its prime cutoff p0 is tuned. A cost model puts the best p0 in the hundreds at 84-96 bits, and suggests it matters for Track M but barely for Track R. A scored slack retune with a p0 sweep is next.
+- Large-prime pairing is explained by three things: only quadratic-residue primes can occur (halving the support), the filed size distribution, and pooling across numbers. The double-large-prime variation stays marginal at these sizes.
 
-**Where it's heading.** Done: per-operation counters in the fast core (every score priced three ways); Run 8, with a standard optimizer and random search as control arms (the tuned optimizer is now the default for gene tuning); per-stage budgets by size. Next, in order: a size-scaling test of the qs genes (tuned at 54, 72, 84 and 96 bits, each scored at all four); an illumination picture of primes and gaps; a variable-length structure test, the one remaining claim for island evolution; then imported moves (SQUFOF, p + 1, smarter elliptic-curve arithmetic) and a carefully fenced experiment letting an AI model propose code changes under a meter it can't touch. Existing tools (Python, Java, Rust and C factoring libraries) are used as references and correctness checks, never inside the meter. The plan is in [PLAN.md](PLAN.md), and the reasoning and every result in [NOTES.md](NOTES.md).
+Details, numbers and every prediction with its score are in `NOTES.md`; candidate moves in `MOVES.md`; the plan in `PLAN.md`.
 
-**The honest bottom line.** Evolution has become good at fine-tuning known algorithms. Scored on big numbers, it found a combination (p − 1 before rho) that beats plain rho by 1.3–1.6× (under the official count, 64–78 bits; Run 6's p − 1-first champion L53-0972 is 1.67× slower than tuned qs + lc 1.4 under calibrated pricing), but nothing it has grown beats the known speed limits of its parts. That's a clean, reproducible measurement of where those limits sit, and the tools are now strong enough to keep pushing.
+## Roadmap: the Illumination program
 
-The sections below have the details: the parts, the scoring rules, every run's results, and how to reproduce them.
+After the current meter corrections, five phases (full plan in `PLAN.md`):
 
-## The idea
+1. **Watt meter.** Measure real energy (CPU energy counters), instructions and time per run and per phase, and check them against priced cost. A phase that costs more in joules than its price says is hiding work. This makes "lumens per watt" literal, and turns meter holes into something a run detects rather than something found by reading code.
+2. **Price map.** Since cost is op counts times a price vector, store the counts and show, for any two pipelines, the region of price space where each wins, instead of judging at three fixed hardware points. Decisions become boundaries, such as "re-sieve pays when word / small-modulus price is below r*".
+3. **Light spectrum.** Replace a single efficiency number with a curve: the probability of success as a function of θ, per unit cost, for each lamp and pipeline. Pipelines are compared by which curve dominates, and the dark regions of the line become visible.
+4. **Hazard monitor.** Track each running stage by its chance of success in the next unit of cost (or, for qs, relations collected toward F + 10), giving anytime curves and a rule for when to switch lamps.
+5. **Dark mass.** Treat the factor's position on the θ line as uncertain. Every stage, including one that fails, rules part of it out. Score lamps by bits of uncertainty removed per unit cost, and schedule them greedily by that measure.
 
-Every algorithm lights up the number line as it runs: some stations are queued, some staged, some being crunched, some kept as afterglow. Two quantities fall out of that picture:
+## Repository layout
 
-- **Watts**: compute spent, counted in operations (one modular multiply, square test, or gcd = 1 op).
-- **Lumens**: candidate stations for *p* ruled out. For a balanced semiprime N = pq, finishing means all ~√N candidates are dark.
+- `lampcore/`: the Rust core (lamps, op meter, per-type counters, benchmarks)
+- `evolve/`: the Python harness (lamps, ledger, qs, pricing, tuning, acceptance and parity tests, analysis scripts)
+- `NOTES.md`: the running lab notebook: decisions, cost models, results, predictions and scores
+- `MOVES.md`: candidate moves (card changes, pricing changes, search methods) and their status
+- `PLAN.md`: the plan and the order of work
 
-**Lumens per watt** is stations ruled out per operation, the efficacy of the bulb. Running more hardware in parallel raises the watts, not the efficacy. Only a better bulb moves the wall.
-
-If an algorithm costs N^e operations, its efficacy is N^(1/2 − e):
-
-| Method | Work | Lumens per watt |
-|---|---|---|
-| Trial division | N^(1/2) | 1 |
-| Lehman | N^(1/3) | N^(1/6) |
-| Pollard–Strassen | N^(1/4) | N^(1/4) |
-| Harvey | N^(1/5) | N^(3/10) |
-
-## The lamp parts
-
-- `td`: trial division up to N^a
-- `sq`: square search on kN, which covers Fermat (k = 1, wide window), Lehman (k up to N^(1/3), windows ~N^(1/6)/√k), and Hart (window 1, smooth multiplier)
-- `ps`: **block flash** (Pollard–Strassen). One polynomial f(x) = (x+1)…(x+B) is evaluated at every block start with a product tree and remainder tree, so each block of B stations is ruled out in one gcd. Polynomial products are charged by the FFT cost model, 3·(n/2)·log₂n + n ring multiplies; the Python computes the same products exactly by Kronecker substitution. See `evolve/blockflash.py`.
-- `rho`: Brent's rho with batched gcds
-- `pm1`: Pollard p − 1
-
-A genome is a chain of up to four parts with tunable settings. Evolution tunes settings, inserts, deletes, swaps, replaces, and splices chains.
-
-Two decks evolve separately:
-
-- **no-luck**: `td`, `sq`, `ps`
-- **luck**: adds `rho` and `pm1`, whose speed rests on behaving as if random
-
-## The meter (v2)
-
-- **Fresh numbers every generation.** Each generation trains on new balanced semiprimes at 32, 38, and 44 bits (8 per size), so nothing can memorize them.
-- **Score = effective exponent at the sizes actually run:** log₂(worst ops) / bits, averaged over the top two sizes. Being slow on small N can't lower it. The fitted slope is still reported, as the trend.
-- **Worst luck.** Worst case over every test number. Missing any number counts as not finished.
-- **Validation gate.** Each generation's training winner is re-run on a fixed held-out set of 48-bit numbers. It becomes the champion only if it beats the current champion there.
-- **Lineage catalog.** Every genome gets a name (`N11-0140` = no-luck run 11, individual 140), its parents, the mutation that made it, and its birth generation. Every generation writes every individual's scores to `lineage.jsonl`.
-
-## Running
+## Running it
 
 ```
-cd evolve
+cd lampcore && cargo build --release   # the fast core the harness calls
+cd ../evolve
 python3 evolve.py 25 20 8      # generations, population, worker processes
 python3 validate.py            # champions vs baselines on fresh 36–54 bit numbers
 python3 ancestry.py            # family line of each run's champion
@@ -84,484 +66,6 @@ python3 ancestry.py N11-0076   # family line of any named genome
 ```
 
 Outputs: `evolve.log`, `results.json`, `lineage.jsonl`, `validation.json`. Runs are seeded, so the same commands reproduce the same numbers on any machine.
-
-## Partition study: cheap lamps first, in fixed budgets (Oct 24, 2026)
-
-On a mixed population (84-bit N whose smaller factor is 16 to 42 bits, seven bands, 80 numbers each), a genome gives each cheap lamp a fixed op budget, in order (td, rho, p-1, ECM), and then runs qs to the end. The budgets were chosen on tuning numbers from a cost map of each lamp run alone, and measured once on sealed numbers (`evolve/partition.py`; cost model and predictions in `NOTES.md`, written first).
-
-- **It pays.** With qs + lc 1.4 as the final stage, the chosen budgets (rho 2^12.5 ops, ECM 2^15, td and p-1 off) are 2.19× faster than qs alone on the official count, 1.51× under ruint prices and 1.85× under Montgomery prices. The map predicted it: the sealed result fell inside the map's 95% interval overall and in 6 of 7 bands.
-- **It ranks first under the robust score.** Against qs + lc 1.4 alone as the one reference, its worst ratio over the three pricings is 0.67, ahead of the N51-0917 allocation (0.91) and the Run 6 p-1 front genome (1.67). The (e) call between A and B is undecided: official favours A, ruint and Montgomery favour B.
-- **On balanced numbers alone, every budget goes to 0:** qs alone is best.
-- **Under the corrected qs card** (on-demand A, sorts charged; Oct 25) and the robust score, where ruint binds at every size, the best pipeline at 72-96 bits is rho then qs (0.73-0.87 of qs alone). ECM's budget in allocation A was paid for by the old card's setup overcharge. That is a ruint verdict. Under Montgomery prices alone the optimum keeps ECM (93k-404k ops, 0.44-0.60 of qs alone), and under the official count alone a large ECM budget wins (0.16-0.21 of qs alone). Under the official count, allocation A's ~2.2x gain survives the card change (2.21x at 84 bits on the map). The figures above are under the old card. (NOTES.md, re-solve and per-pricing optima.)
-- **Reference (changed Oct 25):** from Oct 25 on, the reference is the final Track R qs genes **per size** (54 / 72 / 84 / 96 bits; size-dependent by construction), run as qs alone on the corrected card (on-demand A, sorts charged, kc replaced by a fixed set of 20 squarefree multipliers). They passed the pre-registered replacement rule against the old reference: robust 0.73-0.87 on fresh balanced numbers, and 0.77-1.01 card-matched. For the next two sealed runs, results also show the old reference in a side column; then it is dropped. **Earlier results, and the paragraph below, use the old reference:** qs + lc 1.4, with the qs card's original `a_mode = enumerate`, kept fixed until Oct 25 for comparability. That card forms every candidate polynomial coefficient A up front, at full multiply price. This is charged faithfully, but it is a wasteful step, worth up to ~60% of the reference's ruint cost at 78-96 bits (38% at 72). (Its sort of those candidates is uncharged, so the card is if anything undercharged.) The `on_demand` option, which forms A's only as needed, makes the same genes 0.90-0.95x as costly (official), 0.40-0.65x (ruint) and 0.71-0.89x (Montgomery). Results under on_demand are reported beside the frozen reference. With both on on_demand, Run 8's retuned qs genes are cheaper under the calibrated pricings (0.82-0.86x) but dearer official (1.00-1.17x), so they fail the pre-registered replacement rule again (NOTES.md, on-demand A).
-- **Scope:** Allocation A is the 84-bit allocation: its absolute budgets fail the gate at 72 bits (`evolve/newqs_general.out`).
-- **What it can't do:** in the 24–42-bit bands it costs 2–10× the best single lamp for that band. It wins by covering the bands, not within them, and since every N here is 84 bits, nothing free reveals the band, so no selector could close that gap.
-
-## Stage 9: racing two lamps on one meter (Oct 24, 2026)
-
-A race element runs two stages interleaved on one meter, in fixed slices of official ops, until either finds a factor (`evolve/race.py`, `lampcore/src/race.rs`; cost model and predictions in `NOTES.md`, written first). Switching is free, each side resumes exactly where it stopped (checked op for op for every lamp), and both cores agree on every race. The first comparison (`evolve/race_compare.py`, 21,600 races) raced ECM and rho against tuned qs + lc 1.4, and ECM against N51-0917's qs, on the Stage 8 numbers, with slices of 2^8, 2^10 and 2^14 ops, equal or scaled by calibrated price.
-
-- **The race never won.** Its mean was below both of its sides alone in 0 of 810 cases, its worst case never beat both sides' worst, and it failed its own bar (never more than about 2× the better side) in 253 of 270 combinations under at least one of the three pricings.
-- **Why:** qs charges each polynomial's sieve as one chunk, so its turns overrun the slice (by 1.6 slices on average at 2^8). The qs side ends up spending most of the race's ops even when the other side is the one that finds the factor.
-- **Verdict:** the fixed-slice race is ruled out under these conditions (`MOVES.md`, Portfolio row). Finer-grained qs charging, adaptive slices or a mixed population would reopen it.
-
-## Direction: learning from all algorithms (Oct 23, 2026)
-
-- **Most of factoring's tools were imported from other fields.** Rho came from collision and cycle finding, and QS from Eratosthenes' sieve plus GF(2) linear algebra. Block Lanczos came from numerical analysis, ECM's stage 2 from baby-step giant-step, and our race from SAT-solver portfolios.
-- **We catalogue those moves and let the meter score each one.** [MOVES.md](MOVES.md) lists them: where each comes from, where it already appears in factoring, one untried candidate in our deck, and a measured status with its conditions and evidence.
-- **Failures are results.** A loss rules a move out under stated conditions (sizes, pricing, cards). It is recorded, never deleted, and retried only if those conditions change.
-- **Honest limit.** Imports win on constants inside L[1/2] or L[1/3]. The one jump in complexity class in factoring's history, the number field sieve, came from a new place to look for squares, not from an imported move.
-
-The plan, with its phases (the catalogue: done; five moves through the full pipeline: Phase 1, after the qs-gene size-scaling test, the illumination picture and the structure test in the current order of work; then a code-level evolution pilot), is in [PLAN.md, "Learning from all algorithms"](PLAN.md#learning-from-all-algorithms).
-
-## Stage 8: elliptic curves (Oct 23, 2026)
-
-A new card, ECM (`evolve/ecm.py`; cost model in `NOTES.md`, written before the code): Montgomery curves, x-only, Suyama's parametrization, a stage 1 ladder and a baby-step giant-step stage 2. Every modular multiply is charged: 11 per ladder bit. It is accepted at 40–84 bits on balanced and unbalanced numbers (`evolve/ecm_accept.py`: exact accounting with an independent ladder recount, a group-order check, a mutation test), with lampcore parity. Its genes (b1 1.0, b2 50) were fixed on separate tuning seeds (`evolve/ecm_tune.py`). Comparison: `evolve/ecm_compare.py`, cap 2^28, no misses.
-
-**Under the official op count, ECM beats qs at 54–84 bits on balanced numbers. With qs's small-number work priced at 1/8 of a multiply, qs wins from 60 bits. The balanced lead comes from the overcharging rule. On unbalanced numbers, ECM's lead is real where p ≪ √N; rho wins at 24-bit p.**
-
-Balanced numbers (Stage 2 numbers at 54–78 bits, `semiprimes_pq(84, 80, 1300084)`). log₂(mean ops) [95% interval] / worst. The last two columns are qs's work re-priced (NOTES.md, "Pricing sensitivity", stated before the run); ECM and rho are unchanged there, because all their ops are N-sized:
-
-| Bits | ECM | qs + lc 1.4 | rho | qs re-priced, small ops at 1/8 | qs re-priced, at 1/32 |
-|---|---|---|---|---|---|
-| 54 | **13.53** [13.26, 13.79] / 15.81 | 14.90 [14.86, 14.94] / 15.34 | 14.26 [14.09, 14.41] / 15.58 | 13.36 (tie with ECM) | **13.03** |
-| 60 | **14.66** [14.37, 14.92] / 17.06 | 15.58 [15.54, 15.63] / 16.04 | 15.84 [15.67, 16.01] / 17.32 | **13.67** | **13.16** |
-| 66 | **15.21** [14.89, 15.50] / 17.51 | 16.31 [16.27, 16.35] / 16.65 | 17.42 [17.24, 17.58] / 19.01 | **14.08** | **13.35** |
-| 72 | **16.23** [15.95, 16.48] / 18.32 | 17.24 [17.18, 17.30] / 18.15 | 18.90 [18.73, 19.05] / 20.06 | **14.88** | **14.03** |
-| 78 | **17.03** [16.74, 17.29] / 18.93 | 18.14 [18.09, 18.20] / 18.79 | 20.29 [20.09, 20.47] / 21.56 | **15.89** | **15.14** |
-| 84 | **17.84** [17.52, 18.13] / 20.02 | 19.08 [19.03, 19.12] / 19.54 | 21.94 [21.76, 22.10] / 23.15 | **16.93** | **16.28** |
-
-Growth per bit, 54→84: ECM 0.142, qs 0.140, rho 0.253.
-
-Unbalanced numbers (`semiprimes_unbalanced`, 80 per cell; N bits / p bits), log₂(mean ops):
-
-| N / p | ECM | qs + lc 1.4 | rho | Leader at 1/8 pricing |
-|---|---|---|---|---|
-| 72/24 | 14.44 | 17.21 | **13.48** | rho; ECM over qs |
-| 72/28 | **14.71** | 17.21 | 15.47 | ECM ≈ qs |
-| 72/32 | **15.79** | 17.24 | 17.57 | qs |
-| 78/24 | 14.65 | 18.24 | **13.36** | rho; ECM over qs |
-| 78/28 | 15.44 | 18.16 | **15.37** | ECM ≈ rho, both ahead of qs |
-| 78/32 | **16.16** | 18.22 | 17.47 | ECM ≈ qs |
-| 84/24 | 15.10 | 19.10 | **13.34** | rho; ECM over qs |
-| 84/28 | 15.64 | 19.06 | **15.43** | ECM ≈ rho, both ahead of qs |
-| 84/32 | **16.63** | 19.14 | 17.42 | ECM |
-
-What it shows:
-
-- **Both balanced predictions were wrong.** No crossover in 54–84 bits, and growth of 0.134–0.142 per bit rather than 0.18–0.2. ECM needed about half the expected curves. On balanced numbers ECM and qs are the same complexity class, a constants race.
-- **The constants race depends on pricing.** The official count bills qs's byte-sized sieve work like a modular multiply. At a fairer price, qs is ahead.
-- **ECM's real niche is unbalanced numbers.** There it beats qs by 2.7–16× and survives the re-pricing where p ≪ √N. Rho is better still at 24-bit p, and ECM takes over around 28–32 bits.
-- **Worst cases.** ECM's worst case is heavier than qs's at every size (it depends on the number of curves needed).
-
-Data: `evolve/ecm_compare.json` (and `.out`), `evolve/ecm_accept.json`, `evolve/ecm_tune.json`.
-
-## Relation economy: CFRAC (Oct 23, 2026)
-
-qs is now a relation *source* feeding a shared *ledger* (`evolve/ledger.py`: factor base, dedupe, linear algebra, square root), and is op for op unchanged (`evolve/relation_economy_identity.py`, both cores). The ledger has an opt-in charged relation check (`evolve/ledger_accept.py`). A second source, continued fractions (`evolve/cfrac.py`, cost model in `NOTES.md`), feeds the same ledger with one multiplier k and one factor base. It is accepted at 40–60 bits (`evolve/cfrac_accept.py`), with lampcore parity.
-
-The comparison (`evolve/cfrac_compare.py`) runs three setups on the Run 6 ACCEPT numbers, cap 2^28; there were no misses:
-- CFRAC alone, with tuned qs's kc 32 and bc 1.1;
-- tuned qs;
-- qs + CFRAC into one ledger: CFRAC fills a fixed share cs of the needed relations first, then qs fills the rest.
-
-log₂(mean ops) [95% interval] / worst:
-
-| Algorithm | 72 bits | 78 bits | 84 bits | Growth per bit, 72→84 | Ops vs tuned qs (72 / 84 bits) |
-|---|---|---|---|---|---|
-| **tuned qs** | **17.43** [17.36, 17.51] / 18.30 | **18.28** [18.21, 18.36] / 19.10 | **19.22** [19.16, 19.27] / 19.90 | 0.149 | 1 |
-| qs + CFRAC, cs 0.1 | 17.80 [17.73, 17.88] / 18.67 | 18.74 [18.66, 18.82] / 19.67 | 19.74 [19.68, 19.79] / 20.36 | 0.161 | 1.30× / 1.43× |
-| qs + CFRAC, cs 0.25 | 18.19 [18.12, 18.27] / 18.90 | 19.21 [19.12, 19.29] / 20.18 | 20.25 [20.19, 20.31] / 21.02 | 0.171 | 1.70× / 2.05× |
-| qs + CFRAC, cs 0.5 | 18.69 [18.62, 18.76] / 19.29 | 19.74 [19.66, 19.82] / 20.63 | 20.87 [20.80, 20.94] / 21.82 | 0.182 | 2.39× / 3.14× |
-| CFRAC alone | 19.32 [19.26, 19.38] / 19.82 | 20.42 [20.34, 20.50] / 21.34 | 21.58 [21.51, 21.65] / 22.59 | 0.188 | 3.7× / 5.2× |
-
-What it shows:
-
-- **CFRAC loses, as predicted.** It needs 3.7× tuned qs's ops at 72 bits and 5.2× at 84. The prediction stated in advance was ~6× and ~10×, so this is inside the stated uncertainty, on the low side. Its growth is steeper, so the gap widens with size.
-- **Mixing doesn't help.** Every share of CFRAC makes qs worse, and more CFRAC is worse still: a CFRAC relation costs more than the sieving it saves.
-- **Where CFRAC's ops go.** About 95% go to trial-dividing every residue (there is no sieve). That is the target of the planned early-abort gene.
-
-Data: `evolve/cfrac_compare.json` (and `.out`), `evolve/cfrac_accept.json`, `evolve/ledger_accept.json`.
-
-## Growth to 96 bits (Oct 23, 2026)
-
-Does N51-0917's 0.136 log₂-ops per bit hold past 84 bits? 80 fresh numbers each at 90 and 96 bits (`semiprimes_pq(bits, 80, 1400000 + bits)`, cap 2^30), joined to the committed ACCEPT rows at 72/78/84 (cap 2^28). Same bootstrap; no misses. log₂(mean ops):
-
-| Algorithm | 72 | 78 | 84 | 90 | 96 | Growth 72→84 | 84→96 | 72→96 |
-|---|---|---|---|---|---|---|---|---|
-| **tuned qs + lc 1.4** | **17.24** | **18.14** | **19.08** | **20.03** [20.00, 20.07] | **20.83** [20.80, 20.86] | 0.153 | 0.146 | 0.151 |
-| tuned qs | 17.43 | 18.28 | 19.22 | 20.17 [20.12, 20.22] | 20.94 [20.89, 20.99] | 0.149 | 0.143 | 0.148 |
-| N51-0917 | 17.81 | 18.60 | 19.45 | 20.43 [20.37, 20.49] | 21.25 [21.19, 21.31] | 0.136 | 0.150 | 0.145 |
-| rho | 18.90 | 20.29 | 21.94 | 23.29 [23.11, 23.45] | 24.84 [24.67, 24.99] | 0.253 | 0.242 | 0.248 |
-
-What it shows:
-
-- **One exponent for every qs variant.** All three grow about 0.145–0.15 log₂-ops per bit over 72–96.
-- **N51-0917's 0.136 at 72–84 was constants.** From 84 to 96 bits it grows 0.150, and it falls further behind tuned qs: 0.23 log₂ at 84 bits, 0.31 at 96. That fits its mc of 1.0, above the boundary sweep's optimum.
-- **lc 1.4's lead persists to 96 bits:** a constant 0.1–0.2 log₂ below tuned qs.
-- **Rho stays at 0.248 per bit.**
-- **A seam:** 72–84 are the ACCEPT numbers and 90/96 are new seeds, so slopes across 84→90 mix two sets of numbers. Tuned qs's 0.143 dip from 84 to 96 is likely that seam, not a real change.
-
-The run used a scratch script that was never committed, so this table cannot be regenerated from the repo; the data are as above.
-
-## Stage 7: large primes (Oct 23, 2026)
-
-qs gains one gene, lc: a sieve candidate whose leftover cofactor is a prime below L = B^lc is kept as a partial relation, and two partials with the same large prime combine into one full relation (lc = 1.0 is today's qs, op for op). Cost model in `NOTES.md` ("Stage 7"), written before the code; acceptance in `evolve/stage7_accept.py` (40–60 bits: complete, exact per-phase accounting including the new lp phase, every relation and dependency verified, every lp charge caught by a one-op mutation); lampcore parity on 2,638 qs pairs. lc = 1.4 was fixed in advance on separate tuning seeds (`evolve/stage7_lc_sweep.py`).
-
-Comparison (`evolve/stage7_compare.py`): tuned qs (kc 32, bc 1.1, mc 0.25, tc 1.38) against the same genes with lc 1.4, on the Run 6 ACCEPT numbers, cap 2^28, no misses, no retries.
-
-log₂(mean ops) [95% interval] / worst [95% interval]:
-
-| Algorithm | 72 bits | 78 bits | 84 bits | Growth per bit, 72→84 |
-|---|---|---|---|---|
-| **qs + lc 1.4** | **17.24** [17.18, 17.30] / 18.15 [17.61, 18.15] | **18.14** [18.09, 18.20] / **18.79** [18.59, 18.79] | **19.08** [19.03, 19.12] / **19.54** [19.43, 19.54] | 0.153 |
-| tuned qs (lc 1.0) | 17.43 [17.36, 17.51] / 18.30 [18.02, 18.30] | 18.28 [18.21, 18.36] / 19.10 [18.89, 19.10] | 19.22 [19.16, 19.27] / 19.90 [19.57, 19.90] | 0.149 |
-
-What it shows:
-
-- **A constant gain of about 1.1×.** On the same numbers lc 1.4 needs 1.14×, 1.10× and 1.10× fewer ops at 72, 78 and 84 bits. The mean intervals separate at every size (at 78 bits by 0.01). The worst case is better at 78 and 84 bits; at 72 the intervals overlap.
-- **Growth unchanged.** 0.153 log₂-ops per bit against 0.149: a better constant, not a better exponent.
-- **Where the ops moved.** Sieving falls about 1.6× and polynomial setup 1.2–1.3× (fewer polynomials are needed); confirmation rises 1.9–2.1× (more candidates, each paying full trial division); the lp phase itself costs 2^12–2^13.5. About 0.14 combined relations per partial, and about 30% of the matrix rows are combined relations.
-- **The comparison favours tuned qs.** Tuned qs's genes were picked by the boundary sweep on these same ACCEPT numbers, while lc 1.4 was picked on separate seeds, so tuned qs's numbers carry some selection bias in its favour.
-- **Against the prediction.** NOTES expected little or no gain at 72–84 bits, because confirmation is overcharged; the gain is small but real.
-
-Data: `evolve/stage7_compare.json` (and `.out`), `evolve/stage7_accept.json`, `evolve/stage7_lc_sweep.json`.
-
-## Run 6: island model with qs in the deck (Oct 23, 2026)
-
-Four islands of 16 genomes per run, top-2 ring migration every 5 generations, a 2-slot diversity reserve, 20 generations, seeds 51–54 (51–52 no-luck, 53–54 luck), qs in both decks. Training at 66, 72, and 78 bits (cap 2^26), gate at 84 bits (cap 2^28). Outputs in `evolve/run6/`; harness `evolve/evolve_run6.py`; plan in `PLAN.md`.
-
-ACCEPT (`evolve/run6_accept.py`, written before the run): the four champions against qs-default, Run 5's L44-0272, and rho, through `lampcore` at cap 2^28, on Stage 2's 80 numbers at 72 and 78 bits plus 80 fresh 84-bit numbers (`semiprimes_pq(84, 80, 1300084)`). The reference rows reproduce `qs_stage2.json` exactly at 72 and 78 bits. No misses.
-
-```
-cd evolve && python3 run6_accept.py 8
-```
-
-log₂(mean ops) [95% interval] / worst [95% interval]:
-
-| Algorithm | 72 bits | 78 bits | 84 bits | Growth per bit, 72→84 |
-|---|---|---|---|---|
-| **N51-0917** (no-luck-51: qs → 2 square searches) | **17.81** [17.74, 17.89] / 18.60 [18.48, 18.60] | **18.60** [18.52, 18.68] / 19.45 [19.20, 19.45] | **19.45** [19.38, 19.52] / **20.27** [19.93, 20.27] | **0.136** |
-| N52-0833 (no-luck-52: qs → trial → qs) | 17.87 [17.79, 17.95] / 18.68 [18.44, 18.68] | 18.66 [18.57, 18.75] / 19.73 [19.33, 19.73] | 19.51 [19.44, 19.59] / 20.38 [19.99, 20.38] | 0.137 |
-| L53-0972 (luck-53: p − 1 → qs → p − 1 → qs) | 17.65 [17.45, 17.83] / 18.80 [18.60, 18.80] | 18.63 [18.45, 18.78] / 19.68 [19.51, 19.68] | 19.57 [19.41, 19.71] / 20.62 [20.22, 20.62] | 0.160 |
-| L54-0938 (luck-54: p − 1 → qs → trial) | 18.06 [17.90, 18.20] / 18.92 [18.76, 18.92] | 18.96 [18.81, 19.09] / 19.74 [19.57, 19.74] | 19.83 [19.67, 19.97] / 20.86 [20.33, 20.86] | 0.148 |
-| qs default | 18.88 [18.81, 18.95] / 19.78 [19.30, 19.78] | 19.73 [19.66, 19.79] / 20.41 [20.20, 20.41] | 20.67 [20.61, 20.72] / 21.13 [21.02, 21.13] | 0.149 |
-| Run 5 L44-0272 (p − 1, then rho) | 18.56 [18.28, 18.82] / 20.19 [20.16, 20.19] | 20.05 [19.76, 20.30] / 22.04 [21.23, 22.04] | 21.58 [21.32, 21.81] / 23.38 [23.05, 23.38] | 0.252 |
-| Rho | 18.90 [18.73, 19.05] / 20.06 [20.02, 20.06] | 20.29 [20.09, 20.47] / 21.56 [21.27, 21.56] | 21.94 [21.76, 22.10] / 23.15 [23.12, 23.15] | 0.253 |
-
-What it shows:
-
-- **Evolution kept qs on both decks.** All four champions contain qs, each with a tuned first qs stage: kc 10–32, bc 1.06–1.89, mc 1.0–1.83, tc 1.07–1.68 (qs-default is kc 16, bc 1.5, mc 4.0, tc 2.0).
-- **The best bulb so far.** At 84 bits the best no-luck champion, N51-0917, needs 2.3× fewer operations on average than qs-default, 4.4× fewer than L44-0272 and 5.6× fewer than rho; on the worst case, 1.8×, 8.6× and 7.4×. Its intervals separate from all three on both the mean and the worst case.
-- **Luck champions: no better overall.** L53-0972's intervals overlap N51-0917's at every size, and L54-0938, whose chain is p − 1 → qs, is the weakest of the four. Within the luck champions the leading p − 1 pays (removing it costs 1.05–1.24×; it wins 12–23 of 80); they lose to N51-0917 on weaker qs genes. Stages after the first qs never run (ablation, 240/240), so the no-luck champions are tuned qs.
-- **Under real prices (added Oct 24):** plain qs + lc 1.4 beats the luck champion L53-0972 by 1.67× (ruint pricing, partition study's sealed run). Run 6 tuned its champions under the official count.
-- **Mostly tuned constants.** N51-0917 grows 0.136 log₂-ops per bit from 72 to 84 bits (N52-0833 0.137), against qs-default's 0.149 and 0.25 for rho and L44-0272. Most of its lead over qs-default is already there at 72 bits (1.07 of the 1.22 log₂ at 84), so it is mostly a better constant, with a small exponent gain on top.
-- **Still under the overcharging rule.** Every small-number step in qs costs a full op, so these totals overstate qs's real work.
-- **The mutation range binds.** Three champions sit at or near mc = 1.0, the bottom of mc's mutation range (1.0–12.0), so the optimum may lie below it.
-
-Data: `evolve/run6/accept.json`, `results.json`, `lineage.jsonl`, `evolve.log` (`nohup.out` is the same log captured by nohup).
-
-Two follow-up measurements on the ACCEPT numbers (cap 2^28, same bootstrap; not scored runs):
-
-- **Ablation** (`evolve/run6_ablation.py`): each champion in full, with every non-qs stage removed, and with only its first qs stage. On every one of its 240 numbers, each champion was finished by its first qs or a stage before it; removing the later stages changes nothing, op for op. Removing the leading p − 1 from the luck champions costs 1.05–1.24× (L53-0972) and 1.14–1.17× (L54-0938) in total ops at 72–84 bits.
-- **Boundary sweep** (`evolve/qs_boundary_sweep.py`): qs alone with N51-0917's kc 32 and tc 1.38, mc ∈ {0.25, 0.5, 0.75, 1, 1.5, 2} × bc ∈ {0.8, 1.0, 1.1, 1.3, 1.5} at 78 and 84 bits. Cost falls as mc drops in every column but one (78 bits, bc 0.8: mc 0.25 and 0.5 within noise); the best cell is the grid's edge, mc 0.25, bc 1.1: 2^19.22 [19.16, 19.27] at 84 bits against 2^19.44 [19.38, 19.51] at mc 1.0, bc 1.1 (about 1.17× fewer ops, intervals separated). The optimum is below Run 6's mutation floor of mc = 1.0. Every cell was computed by `lamps.py`, because at mc 0.25 lampcore disagreed on all 80 numbers per cell: a sieved prime wider than the interval made `qs.rs` underflow (fixed in the next commit, with parity pairs).
-
-## Run 5: evolution scored at scale (Oct 23, 2026)
-
-Fitness measured through `lampcore` at 52, 58, and 64 bits (6 fresh numbers each per generation), gate at 68 bits, fine deck, seeds 41–44, cap 2^23. Outputs in `evolve/run5/`; script `evolve/evolve_scale.py`.
-
-Champions rechecked on 80 fresh numbers per size (mean / worst ops, log₂):
-
-| Algorithm | 64 bits | 72 bits | 78 bits |
-|---|---|---|---|
-| Rho | 16.80 / 18.52 | 18.99 / 20.21 | 20.41 / 21.57 |
-| **Run 5 luck-44 (L44-0272: p − 1, then rho)** | **16.15** / 18.24 | **18.61** / 20.39 | **19.73** / 21.54 |
-| Run 5 luck-43 (rho variant) | 16.88 / 18.30 | 18.93 / 20.27 | 20.55 / 22.12 |
-| Run 5 no-luck-41 (×480 square search) | 18.08 / 20.70 | 20.92 / 23.37 | 22.71 / 24.99 |
-| Run 5 no-luck-42 (square search) | 20.28 / 23.27 | 22.81 / 25.62 | 25.11 / 28.21 |
-
-What it shows:
-
-- **The first evolved bulb to beat plain rho at scale.** L44-0272 runs p − 1 (bound N^0.21) before rho and needs 1.3–1.6× fewer operations on average at 64–78 bits. The cheap p − 1 stage catches secrets whose p − 1 is made of small factors; at 64 bits the median drops from 2^16.4 to 2^14.9.
-- **A better constant, not a better exponent.** Its growth from 64 to 78 bits is about N^0.256, the same as rho's, and its worst case is unchanged. Running p − 1 before rho is also established practice. Stage order was a gene, so evolution selected this order; it did not invent it.
-- **The first time luck by design paid.** The p − 1 stage is a cheap bet that wins often enough to save watts overall, which is the rule from Run 4: guessing has to cost less than trying.
-- **The scale lesson holds.** Scored at 52–64 bits, the no-luck champions still sit on the N^(1/3) line.
-- **Two baseline notes.** The block-flash baseline logs "misses 1" here only because it is over budget: it needs about 2^27 operations at 64 bits, far above this run's 2^23 cap, so it isn't a correctness miss. Lehman is clean at 52–64 bits, but that doesn't cover its known 66-bit miss, which is a window-rounding issue fixed in Stage 1 (see `PLAN.md`).
-
-## At scale: 54–78 bits through the Rust core (Oct 22, 2026)
-
-`lampcore/` is a Rust port of the lamps with operation counting identical to `lamps.py`. `evolve/parity.py` checks this before any big-number result is trusted: 3,312 genome × number pairs (every baseline, every champion of Runs 2–4, 120 random genomes) matched exactly on ops, factor, tests, and hits. The block flash is replayed rather than recomputed: its charges depend only on block sizes, and which block lights up is fixed by where p and q sit; parity confirms the replay against the real polynomial arithmetic.
-
-```
-(cd lampcore && cargo build --release)
-cd evolve && python3 parity.py && python3 scale.py 40 8
-```
-
-Mean cumulative ops per number, log₂, 40 fresh balanced semiprimes per size, cap 2^29 (* = one number not caught):
-
-| Algorithm | 54 | 60 | 66 | 72 | 78 | Trend | Worst at 78 |
-|---|---|---|---|---|---|---|---|
-| Rho | 14.3 | 15.7 | 17.1 | 18.7 | 20.3 | N^0.249 | 2^21.2 |
-| Run 4 luck-33 (rho variant) | 14.3 | 15.8 | 17.5 | 19.0 | 20.2 | N^0.250 | 2^21.4 |
-| Runs 2–3 luck champions (rho variants) | 14.1 | 15.8 | 17.4 | 18.6–18.7 | 20.4–20.5 | N^0.258 | 2^21.3 |
-| Hart ×480 | 14.8 | 17.2 | 18.5 | 20.4 | 22.7 | N^0.314 | 2^25.1 |
-| Run 3 no-luck-22 | 15.3 | 16.6 | 18.5 | 20.5 | 22.8 | N^0.317 | 2^24.8 |
-| Run 4 no-luck-31 | 15.3 | 16.5 | 18.5 | 20.5 | 22.8 | N^0.317 | 2^24.8 |
-| Run 4 no-luck-32 | 15.0 | 16.4 | 18.3 | 20.7 | 22.6* | N^0.317 | 2^25.0 |
-| Run 4 luck-34 (square search + backups) | 14.6 | 16.7 | 18.9 | 20.3 | 22.8 | N^0.334 | 2^24.7 |
-| Lehman | 17.4 | 19.3 | 21.1* | 23.3 | 25.3 | N^0.331 | 2^26.3 |
-| Block flash | 24.6 | 26.3 | 28.1 | over cap | over cap | N^0.292 | — |
-
-What it shows:
-
-- **Rho wins from about 60 bits up, and the gap widens.** At 78 bits it needs 2^20.3 operations on average; the best luck-free bulb needs 2^22.6, about 5× more.
-- **Measured exponents match theory.** Rho variants: 0.249–0.258 (theory 1/4). Hart and every evolved square-search champion: 0.31–0.33 (Hart's heuristic 1/3). Lehman: 0.33 (proven 1/3). The block flash trends at 0.29 and is still falling toward its 1/4, but its ballast puts it over the cap past 66 bits.
-- **Run 3's "luck-free beats rho" was a small-number effect.** The Hart family has a smaller constant but a larger exponent; the lines cross between 54 and 60 bits.
-- **Evolution at 32–48 bits tuned constants, never exponents.** Every champion sits on its parent method's exponent line. Within this deck, nothing grew a new exponent.
-- The two misses are real: Lehman's window constant here is tighter than Lehman's theorem needs, and no-luck-32's stages stop just short of √N.
-
-## Re-scored after the square-search window fix (Stage 1, Oct 23, 2026)
-
-The Oct 22 table above stays as it was; this is the same set re-run (`scale.py`'s numbers, 40 per size, cap 2^29) after Stage 1 of `PLAN.md`. Every square-search genome, old → new mean cumulative ops per number, log₂ (* = one number not caught):
-
-| Algorithm | 54 | 60 | 66 | 72 | 78 | Trend | Worst at 78 |
-|---|---|---|---|---|---|---|---|
-| Lehman | 17.37 → 17.37 | 19.31 → 19.30 | 21.15* → **21.17** | 23.31 → 23.26 | 25.31 → 25.31 | N^0.331 | 2^26.3 |
-| Run 3 no-luck-21 | 15.33 → 15.47 | 16.75 → 16.93 | 18.93 → 19.09 | 20.86 → 21.04 | 23.30 → 23.46 | N^0.335 | 2^25.2 |
-| Run 3 no-luck-22 | 15.32 | 16.55 | 18.46 → 18.47 | 20.53 | 22.84 | N^0.317 | 2^24.8 |
-| Run 4 luck-34 | 14.58 → 14.64 | 16.73 → 16.77 | 18.93 → 18.87 | 20.31 → 20.35 | 22.80 → 22.82 | N^0.332 | 2^24.7 |
-| Run 4 no-luck-32 | 15.02 | 16.41 | 18.30 | 20.73 | 22.59* | N^0.317 | 2^25.0 |
-| Hart ×480, Run 2 no-luck-11/12, Run 4 no-luck-31 | unchanged | | | | | | |
-
-What changed:
-
-- **Lehman's 66-bit miss was the window, not the constant.** On N = 23736149549216675201 (p = 4638920653), Lehman's theorem catches it at k = 59881 on the second x of the window. The theory width there is N^(1/6)/(4√k) = 1.73, but the window was `int(1.73)` = 1 wide, so only the first x was tested. The search used up every multiplier and stopped after 4,426,055 tests, far below the cap, with no factor. The 0.25 constant was right all along; the note above blaming it is wrong.
-- **The fix.** The window now ends at √(kN) + width, inclusive. √(kN) is taken as s + f from the exact integer square root s, never from a float square root of kN, which loses about 10 bits past 60-bit N. Lehman now catches the number in exactly 1,643,747 operations. Windows only ever get wider, so a mean can rise (more x tested per k) or fall (caught at an earlier k).
-- **Every drop has a reason.** Each number whose cost fell was caught either by the same square-search stage at an earlier multiplier, or by a square-search stage where a later stage used to catch it (16 numbers, counting Lehman's former miss; no exceptions). Trends move by at most 0.002, and no conclusion of the Oct 22 table changes.
-- **Checks.** The Rust core reports which stage won and, for a square-search win, its k. `parity.py 120 6` matches 3,312 pairs on ops, factor, tests, hits, stage, and k. Turning the instrumentation on changes no op count (4,448 pairs compared).
-- **Coverage rule.** A run champion whose stages stop short of √N is now scored with a fallback tail: trial division to √N for a no-luck deck, rho for a luck deck. The tail is charged like any stage and flagged (`fallback` in `lineage.jsonl` and in `scale_coverage.json`). It changed no number in this table: no-luck-32's 78-bit miss (p = 2^38.3, above both its block flash's and its trial division's reach) is still over budget, because its block-flash stage uses up the 2^29 cap by itself before the tail is reached. Trial division to √N would need about 2^37.3 operations there.
-
-Data: `evolve/scale_window_fix.json` (old vs new, coverage rule off) and `evolve/scale_coverage.json` (rule on).
-
-## Statistical re-validation (Stage 2, Oct 23, 2026)
-
-Do the past wins survive a bigger sample with error bars? Rho, Hart ×480, and every Run 3 and Run 4 champion on 80 fresh balanced semiprimes per size (`semiprimes_pq(bits, 80, 990000 + bits)`), cap 2^29, post-Stage-1 code, coverage rule off.
-
-```
-cd evolve && python3 revalidate.py 8
-```
-
-log₂(mean ops) with a 95% bootstrap interval (10,000 resamples over the numbers in each cell, `random.Random(2026)` per cell, percentile method with 250 resamples outside each end; * = one number not caught, left out of the mean and interval):
-
-| Algorithm | 54 | 60 | 66 | 72 | 78 |
-|---|---|---|---|---|---|
-| Rho | 14.26 [14.09, 14.41] | 15.84 [15.67, 16.01] | 17.42 [17.24, 17.58] | 18.90 [18.73, 19.05] | 20.29 [20.09, 20.47] |
-| Hart ×480 | 14.42 [14.04, 14.74] | 16.94 [16.32, 17.55] | 18.77 [18.37, 19.12] | 20.50 [20.19, 20.78] | 22.37 [22.02, 22.68] |
-| Run 3 no-luck-21 | 15.08 [14.81, 15.33] | 17.18 [16.93, 17.42] | 18.94 [18.70, 19.17] | 21.28 [21.03, 21.50] | 23.28 [23.01, 23.53] |
-| Run 3 no-luck-22 | 14.64 [14.30, 14.95] | 17.00 [16.51, 17.46] | 18.40 [18.08, 18.69] | 20.79 [20.49, 21.07] | 22.83 [22.44, 23.16] |
-| Run 3 luck-23 | 14.41 [14.25, 14.55] | 15.84 [15.64, 16.02] | 17.33 [17.14, 17.51] | 18.72 [18.49, 18.92] | 20.06 [19.85, 20.25] |
-| Run 3 luck-24 | 14.42 [14.26, 14.56] | 15.85 [15.65, 16.03] | 17.34 [17.15, 17.52] | 18.73 [18.50, 18.93] | 20.07 [19.87, 20.26] |
-| Run 4 no-luck-31 | 14.64 [14.29, 14.95] | 16.99 [16.51, 17.45] | 18.39 [18.08, 18.68] | 20.79 [20.48, 21.07] | 22.83 [22.44, 23.16] |
-| Run 4 no-luck-32 | 14.73 [14.35, 15.06] | 16.44 [16.12, 16.73] | 18.52* [18.10, 18.90] | 20.84 [20.50, 21.15] | 22.91 [22.55, 23.22] |
-| Run 4 luck-33 | 14.40 [14.23, 14.55] | 16.03 [15.84, 16.20] | 17.35 [17.16, 17.52] | 19.13 [18.97, 19.29] | 20.34 [20.15, 20.51] |
-| Run 4 luck-34 | 14.44 [14.09, 14.74] | 16.78 [16.49, 17.03] | 18.64 [18.34, 18.90] | 20.69 [20.38, 20.97] | 22.88 [22.57, 23.17] |
-
-Which past wins survive (overlapping intervals = within noise):
-
-- **Run 3: "a luck-free evolved bulb beats rho" — no, not at 54–78 bits.** no-luck-22 is within noise of rho at 54 and worse from 60 up. Its win was measured at 36–48 bits, which this sample doesn't cover.
-- **Runs 3–4: "evolved square searches beat Hart ×480" — no, within noise at these sizes.** no-luck-22, no-luck-31, no-luck-32, and luck-34 overlap Hart at every size. no-luck-21 is worse than Hart at 54, 72, and 78.
-- **Run 4: "luck-34 beats rho" — no, not at 54–78 bits.** Within noise at 54, worse from 60 up. (The original claim was at 40 bits.)
-- **Run 4: "luck-33 is a better rho" — within noise at every size,** as Run 4 already concluded. The Run 2–3 rho variants (luck-23, luck-24) are within noise of rho too.
-- **"Rho beats the square searches from 60 bits up" — yes.** Rho and every rho-family champion are better than Hart at 60–78 bits, with intervals that don't overlap, and within noise at 54. This is the scale lesson again, now with error bars.
-- **no-luck-32 misses at 66 bits here** (N = 32724704014144553683). The cause is the one behind its 78-bit miss in the Stage 1 set: its block flash and trial division stop below p (2^32.12), so the number can never be caught, and the trial division runs out the cap first.
-
-Data: `evolve/revalidation.json` (per-cell intervals, verdicts, and every number's ops, winning stage, and k).
-
-## qs vs rho on the Stage 2 numbers (Oct 23, 2026)
-
-A measurement, not a scored run. The quadratic-sieve card alone (its acceptance genome, never tuned above 60 bits) runs on Stage 2's 80 numbers per size, cap 2^29, with Stage 2's bootstrap. qs runs in the Python core, whose accounting was verified phase by phase; the Rust port and parity check are pending (Stage 4). The other rows run through `lampcore`. Rho and Hart ×480 reproduce their Stage 2 rows exactly.
-
-```
-cd evolve && python3 qs_stage2.py 8
-```
-
-log₂(mean ops) [95% interval], then worst:
-
-| Algorithm | 54 | 60 | 66 | 72 | 78 | Growth per bit |
-|---|---|---|---|---|---|---|
-| **qs** | 16.09 [16.01, 16.18] / 16.92 | 17.03 [16.96, 17.11] / 17.72 | 17.91 [17.84, 17.98] / 18.58 | 18.88 [18.81, 18.95] / 19.78 | **19.73** [19.66, 19.79] / **20.41** | **0.152** |
-| Rho | 14.26 [14.09, 14.41] / 15.58 | 15.84 [15.67, 16.01] / 17.32 | 17.42 [17.24, 17.58] / 19.01 | 18.90 [18.73, 19.05] / 20.06 | 20.29 [20.09, 20.47] / 21.56 | 0.252 |
-| Run 5 L44-0272 (p − 1, then rho) | 13.94 [13.68, 14.18] / 16.07 | 15.52 [15.26, 15.75] / 17.27 | 16.94 [16.67, 17.17] / 18.38 | 18.56 [18.28, 18.82] / 20.19 | 20.05 [19.76, 20.30] / 22.04 | 0.254 |
-| Hart ×480 | 14.42 [14.04, 14.74] / 17.01 | 16.94 [16.32, 17.55] / 21.10 | 18.77 [18.37, 19.12] / 21.09 | 20.50 [20.19, 20.78] / 22.40 | 22.37 [22.02, 22.68] / 24.91 | 0.325 |
-
-What it shows:
-
-- **qs crosses rho at about 72 bits.** The two are tied at 72 bits (intervals overlap). At 78 bits qs is ahead and the intervals separate: about 1.5× fewer operations on average (19.73 vs 20.29).
-- **The worst case crosses first.** qs's worst case drops below rho's from 66 bits (2^18.58 vs 2^19.01), before the means cross. At 78 bits its worst case is about 2.2× lower (2^20.41 vs 2^21.56).
-- **The first exponent win in the project.** qs grows about 0.15 log₂-ops per bit; rho, L44-0272 and every earlier winner grow about 0.25 or more. Every earlier win was a constant.
-- **Not yet ahead of the best evolved bulb.** Against L44-0272, qs is within noise at 78 bits (intervals overlap) and behind below 72. L44-0272 grows like rho, so the gap should open past 78 bits, but these numbers don't show it yet.
-- **Conservative, not a fair fight.** qs is overcharged by rule (every small-number step costs a full op), and its genes were tuned only at 40–60 bits.
-- **Narrow intervals.** qs's cost depends on the size of N much more than on which N it is, so its intervals are less than half as wide as rho's.
-
-Data: `evolve/qs_stage2.json`.
-
-## Run 4: luck-by-design cards and the hit-rate meter (Oct 22, 2026)
-
-Same cumulative scoreboard as Run 3, fresh seeds (31–34), with new cards and a new meter column. Outputs in `evolve/run4/`.
-
-```
-cd evolve
-python3 evolve.py 25 20 8 cumulative fine
-python3 validate.py run4
-python3 curves.py run4 40 120 8
-python3 ancestry.py run4
-```
-
-**New cards**
-
-- **Ranked multipliers** (square search mode `ks`): multipliers are taken in chunks of `r` (a gene), each chunk scored Knuth–Schroeppel-style for how square-friendly kN is mod small primes, and tried best-first. Scoring costs one op per small prime per candidate, charged to the meter.
-- **Rho degree and start**: genes `d` (x^d + c, d even; costs about log₂d + popcount(d) − 1 multiplies per step) and `x0` (starting value).
-
-**New meter column: hit rate.** Every lamp counts *tests* (checks against its invariant event: a division, a square test, a gcd) and *hits* (the event firing, useful or not). Hit rate = hits ÷ tests separates "luckier per test" from "cheaper per test".
-
-**The cards tested alone**, cumulative at 42 and 48 bits:
-
-| Bulb | Mean ops at 48 bits | Hit rate |
-|---|---|---|
-| Hart ×480, plain order | 2^13.1 | 2^-12.2 |
-| Hart ×480, ranked multipliers | 2^17.0 | 2^-12.2 |
-| Rho x² | 2^12.6 | 2^-4.7 |
-| Rho x⁴ | 2^13.3 | 2^-4.5 |
-| Rho x⁶ | 2^13.4 | 2^-4.2 |
-
-- **Ranking multipliers doesn't pay for a Hart-style search.** Scoring a candidate costs 14 ops; just trying it costs 1. The ranking also left the hit rate unchanged, so it predicts the wrong thing for this method. Luck by design only pays when a test is much more expensive than predicting it (as in the quadratic sieve, where one multiplier choice feeds millions of sieve steps).
-- **Higher-degree rho is luckier per test but costs more per step**, so its cumulative total gets worse: the two levers trading against each other.
-
-**Run 4 validation** (12 fresh semiprimes each at 36–54 bits):
-
-| Algorithm | Cumulative score | Hit rate | Mean ops at 48 / 54 bits | Worst at 54 bits |
-|---|---|---|---|---|
-| Rho | N^0.267 | 2^-5.3 | 2^12.9 / 2^14.3 | 2^15.4 |
-| Hart ×480 | N^0.264 | 2^-13.0 | 2^12.3 / 2^14.7 | 2^16.8 |
-| **Champion no-luck-31** | **N^0.253** | 2^-12.7 | 2^11.5 / 2^14.4 | 2^16.0 |
-| Champion no-luck-32 | N^0.263 | 2^-12.9 | 2^12.4 / 2^14.5 | 2^16.4 |
-| Champion luck-33 | N^0.262 | 2^-7.1 | 2^12.9 / 2^13.8 | 2^14.6 |
-| Champion luck-34 | N^0.265 | 2^-13.0 | 2^12.5 / 2^14.6 | 2^15.6 |
-
-Champions: no-luck-31 = ×720 square search → block flash → a small ranked-multiplier tail; luck-33 = rho (c = 13, gcd every 13, start 4) → short trial division; luck-34 = ×24 square search → p − 1 → block flash.
-
-What it shows:
-
-- **Evolution mostly declined the new cards.** No champion uses a higher-degree rho. Ranked multipliers survive only as a small tail stage. The best no-luck score ties Run 3's (N^0.253).
-- **The luck deck chose a luck-free bulb.** Champion luck-34 is a square search with p − 1 and block-flash backups, not rho, and it beats rho on lumens per watt at 40 bits (2^10.0 vs 2^9.1).
-- **Luck-33 looked like a better rho, but a bigger sample says not really.** Its 54-bit mean on the 12 validation numbers was 2^13.8 vs rho's 2^14.3. On 80 fresh 54-bit numbers it was 2^14.23 vs 2^14.40 (about 12% fewer ops, same worst case). Rho with the same constant but the default start showed no gain, and theory says a starting value shouldn't help on average, so this is treated as within noise.
-- **Low hit rate doesn't mean unlucky.** Luck-33's hit rate (2^-7.1) is lower than rho's (2^-5.3) only because it runs a gcd test every 13 steps instead of every 64, so it makes more, cheaper tests.
-
-Curves (`curves.py`, 120 planted secrets at 40 bits):
-
-| Algorithm | Median watts | Mean watts | Worst watts | Lumens per watt |
-|---|---|---|---|---|
-| Champion no-luck-31 | 2^9.3 | 2^9.9 | 2^12.6 | 2^10.1 |
-| Champion no-luck-32 | 2^9.5 | 2^10.0 | 2^12.6 | 2^10.0 (1 of 120 never dark) |
-| Champion luck-34 | 2^9.5 | 2^10.0 | 2^12.2 | 2^10.0 |
-| Champion luck-33 | 2^10.6 | 2^10.9 | 2^12.3 | 2^9.1 |
-| Rho | 2^11.1 | 2^10.9 | 2^12.3 | 2^9.1 |
-
-"Never dark" means the bulb's stages stop short of √N, so a secret sitting there is never caught. That secret adds no lumens; the curves tool now counts it instead of crashing.
-
-## Run 3: cumulative scoreboard, started over (Oct 22, 2026)
-
-Same deck and gate as Run 2, fresh seeds (21–24), but scored on the **cumulative total**: watts summed over every test number (see `NOTES.md`). Outputs in `evolve/run3/`.
-
-```
-cd evolve
-python3 evolve.py 25 20 8 cumulative
-python3 validate.py run3
-python3 curves.py run3 40 120 8
-python3 ancestry.py run3
-```
-
-Validation on 12 fresh semiprimes each at 36–54 bits. Score = log₂(mean watts)/bits at 48 and 54 bits.
-
-| Algorithm | Cumulative score | Lumens per watt | Mean ops at 48 / 54 bits | Worst at 54 bits |
-|---|---|---|---|---|
-| Trial division | N^0.470 | N^0.03 | 2^22.4 / 2^25.5 | 2^26.0 |
-| Pollard–Strassen (block flash) | N^0.464 | N^0.04 | 2^22.7 / 2^24.6 | 2^24.8 |
-| Fermat | N^0.341 | N^0.16 | 2^15.8 / 2^19.0 | 2^20.6 |
-| Lehman | N^0.318 | N^0.18 | 2^15.2 / 2^17.2 | 2^17.7 |
-| Rho | N^0.267 | N^0.23 | 2^12.9 / 2^14.3 | 2^15.4 |
-| Hart ×480 | N^0.264 | N^0.24 | 2^12.3 / 2^14.7 | 2^16.8 |
-| Champion no-luck-21 | N^0.264 | N^0.24 | 2^12.2 / 2^14.8 | 2^15.6 |
-| **Champion no-luck-22** | **N^0.253** | **N^0.25** | **2^11.5 / 2^14.4** | 2^16.0 |
-| Champion luck-23 | N^0.273 | N^0.23 | 2^13.4 / 2^14.3 | 2^15.6 |
-| Champion luck-24 | N^0.273 | N^0.23 | 2^13.4 / 2^14.3 | 2^15.6 |
-
-Curves (`curves.py`, 120 planted secrets at 40 bits):
-
-| Algorithm | Median watts | Mean watts | Worst watts | Lumens per watt |
-|---|---|---|---|---|
-| Evolved no-luck-22 | 2^9.3 | 2^9.9 | 2^12.6 | 2^10.1 |
-| Evolved no-luck-21 | 2^9.6 | 2^10.1 | 2^12.7 | 2^9.9 |
-| Hart ×480 | 2^9.3 | 2^10.6 | 2^15.8 | 2^9.4 |
-| Rho | 2^11.1 | 2^10.9 | 2^12.3 | 2^9.1 |
-| Lehman | 2^12.5 | 2^12.6 | 2^13.6 | 2^7.4 |
-| Trial division | 2^18.3 | 2^18.4 | 2^18.9 | 2^1.6 |
-| Block flash | 2^20.2 | 2^20.2 | 2^20.3 | 2^-0.2 |
-
-What it shows:
-
-- **On the cumulative scoreboard, a luck-free evolved bulb beats rho.** Champion no-luck-22 (a ×720 multiplier square search with a short trial-division tail) has the best cumulative score and the best lumens per watt at 36–48 bits. At 54 bits it is level with rho (2^14.4 vs 2^14.3 mean), so rho's flatter growth may take over above that.
-- **The curve shapes are the story.** The Hart family darkens most secrets very early (median 2^9.3) but has a long tail of stubborn ones (Hart's worst is 2^15.8). Rho's curve is a narrow cliff: almost nothing before 2^9, almost everything by 2^12. The evolved champions keep Hart's early light and shorten its tail.
-- **Worst-case and cumulative scoring pick different winners.** Under Run 2's worst-case meter, rho led. Under the cumulative meter, the layered square search leads, because the score now rewards darkening most secrets cheaply, not just the hardest one.
-
-## Run 2: honest meter plus the block flash (Oct 22, 2026)
-
-25 generations, population 20, two runs per deck. Validation on 12 fresh semiprimes each at 36, 42, 48, 54 bits, worst case. Score = effective exponent at 48 and 54 bits.
-
-| Algorithm | Validated score | Lumens per watt | Trend | Worst ops at 54 bits |
-|---|---|---|---|---|
-| Trial division | N^0.478 | N^0.02 | N^0.518 | 2^26.0 |
-| Pollard–Strassen (block flash) | N^0.467 | N^0.03 | N^0.319 | 2^24.8 |
-| Fermat | N^0.375 | N^0.13 | N^0.431 | 2^20.6 |
-| Lehman | N^0.332 | N^0.17 | N^0.339 | 2^17.7 |
-| Hart ×480 | N^0.300 | N^0.20 | N^0.340 | 2^16.8 |
-| Rho | N^0.290 | N^0.21 | N^0.272 | 2^15.4 |
-| Champion N11-0140 (no-luck) | N^0.300 | N^0.20 | N^0.317 | 2^16.7 |
-| Champion N12-0154 (no-luck) | N^0.299 | N^0.20 | N^0.319 | 2^16.3 |
-| Champion L13-0161 (luck) | N^0.293 | N^0.21 | N^0.255 | 2^15.5 |
-| Champion L14-0196 (luck) | N^0.293 | N^0.21 | N^0.255 | 2^15.5 |
-
-What it shows:
-
-- **The overfitting is gone.** Run 1's no-luck winners lost about 0.18 in the exponent between training and validation. Run 2's champions score within 0.015 of their gate scores (the gate is 48 bits only; validation adds 54).
-- **Evolution tuned the multiplier to Hart-like values.** The multiplier k was a gene, so evolution tuned it rather than inventing the trick. Champion N11-0140 descends from a plain k = 1, 2, 3… square search. Its line went: seed (N^0.321) → added a trial-division tail → tuned the multiplier to k = 720i (N^0.275) → k = 60i. The other no-luck run found k = 12i independently. Both match hand-built Hart ×480.
-- **The luck deck regrew rho** and matches it to the third decimal.
-- **The block flash was dropped by every run.** It's the better bulb asymptotically (trend falling toward 1/4), but its tree overhead is heavy ballast: at 54 bits it costs 2^24.8, barely under trial division. A fit to its cost model (N^(1/4)·log² N) projects it overtaking trial division at about 54 bits and Lehman only at about **179 bits**.
-- **Luck buys the block flash's exponent without the ballast.** Rho and the block flash share the N^(1/4) exponent; rho gets there with almost no memory or overhead, which is why it wins at every size tested here.
-
-## Run 1 (Oct 22, 2026)
-
-The first meter fitted a slope over 20–44 bits on a fixed training set, with no block flash. Validated on fresh 36–54 bit numbers:
-
-| Algorithm | Training work | Validated work | Worst ops at 54 bits |
-|---|---|---|---|
-| Lehman (hand-built) | — | N^0.339 | 2^17.7 |
-| Rho (hand-built) | — | N^0.272 | 2^15.4 |
-| Evolved no-luck-1 | N^0.255 | N^0.426 | 2^20.1 |
-| Evolved no-luck-2 | N^0.233 | N^0.410 | 2^18.0 |
-| Evolved luck-3 | N^0.126 | N^0.206 | 2^15.1 |
-| Evolved luck-4 | N^0.188 | N^0.271 | 2^15.4 |
-
-The no-luck winners had overfit, and the luck-3 slope came mostly from being slower on small N. Those two failures are what the v2 meter fixes.
-
-## Honest limits
-
-- Evolution can only recombine the parts it's given. A plateau shows the ceiling of the deck, not of mathematics.
-- Sizes here are small (32–54 bits). Constants and log factors matter a lot, which is exactly why the block flash loses. Asymptotic claims need bigger numbers.
-- Op counts are a model: one ring multiply, square test, or gcd = 1 op regardless of operand size, and block-flash polynomial products are charged at FFT cost.
-- Hart's method and rho are heuristic: they behave well in practice, but neither has a proven worst-case bound like Lehman or Pollard–Strassen.
-- The quadratic-sieve card (`evolve/qs.py`, cost model in `NOTES.md`) is deliberately overcharged. Every small-number step (an add mod p, a log-add into a sieve cell, a word XOR, a Euclid step) costs a full op, the same as one of rho's multiplies mod N. The rule is that qs is never cheaper than rho per unit of work. Its acceptance test factored 240/240 fresh numbers at 40–60 bits, with 1 retry paid in full, and every phase's op count matched its written formula exactly.
-- The sieve array uses numpy for speed. This changes no op count: updates and scanned cells are charged one by one, whatever does the arithmetic.
 
 ## License
 

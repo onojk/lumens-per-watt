@@ -977,3 +977,28 @@ a model propose code changes to one card, under a harness it cannot touch.
     with the baseline when the pilot starts.
   - Reported whatever the outcome, including proposals that failed the static check,
     acceptance or mutation tests, and why.
+
+## The Illumination program (roadmap, after the current meter corrections; README, Oct 26)
+
+Five phases, in order. Planning only; each phase gets its own protocol, cost model where the
+meter is touched, and predictions in NOTES before it runs.
+
+1. **Watt meter.** Measure real energy (CPU energy counters), instructions and time per run and
+   per phase, and check them against priced cost. A phase that costs more in joules than its
+   price says is hiding work. This makes "lumens per watt" literal, and turns meter holes into
+   something a run detects rather than something found by reading code. (The phase-level
+   wall-clock check queued before the 2x2 is its first, time-only step.)
+2. **Price map.** Since cost is op counts times a price vector, store the counts and show, for
+   any two pipelines, the region of price space where each wins, instead of judging at three
+   fixed hardware points. Decisions become boundaries, such as "re-sieve pays when word /
+   small-modulus price is below r*".
+3. **Light spectrum.** Replace a single efficiency number with a curve: the probability of
+   success as a function of theta = log p / log N, per unit cost, for each lamp and pipeline.
+   Pipelines are compared by which curve dominates, and the dark regions of the line become
+   visible.
+4. **Hazard monitor.** Track each running stage by its chance of success in the next unit of
+   cost (or, for qs, relations collected toward F + 10), giving anytime curves and a rule for
+   when to switch lamps.
+5. **Dark mass.** Treat the factor's position on the theta line as uncertain. Every stage,
+   including one that fails, rules part of it out. Score lamps by bits of uncertainty removed
+   per unit cost, and schedule them greedily by that measure.
