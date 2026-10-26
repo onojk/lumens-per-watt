@@ -1,6 +1,9 @@
 """Phase-level wall-clock check (NOTES.md, "Phase-level wall-clock check"): lampcore --phasetime on all map
 numbers per size, new reference genes as qs alone, with and without re-sieve, pinned to one P-core.
-Per region: overhead-corrected ns, priced ruint cost, ns per priced unit, and its ratio to the median region.
+Per region: overhead-corrected ns, priced ruint cost, ns per priced unit, and its ratio to three anchors (NOTES.md,
+"Step 5"): (A) the median region; (B) the time-weighted mean, total ns / total priced units (the materiality rule's
+anchor since the stage-1 stop: a region flagged at ratio_B > 1.5 stops a run only if time share x (ratio_B - 1) >= 1%);
+(C) the calibrated clean multiply, 27.3 ns per ruint unit (information).
   python3 phasetime.py -> phasetime.json, stdout
 """
 import json, subprocess
@@ -29,13 +32,24 @@ for bits in SS.SIZES:
         per = np.where(priced > 0, ns_c / np.maximum(priced, 1e-9), np.nan)
         live = [i for i in range(len(names)) if priced[i] > 0 and calls[i] > 0]
         med = float(np.median(per[live]))
-        rows = {names[i]: {"ns_per_number": ns_c[i] / len(nums), "priced_ruint_per_number": priced[i] / len(nums),
-                           "ns_per_priced_unit": float(per[i]) if i in live else None, "ratio_to_median": float(per[i] / med) if i in live else None,
-                           "time_share": float(ns_c[i] / ns_c[live].sum()) if i in live else 0.0} for i in range(len(names))}
-        out[bits][name] = {"overhead_ns_per_region": over, "median_ns_per_priced_unit": med, "regions": rows}
-        print(f"{bits} bits, {name}: overhead {over:.1f} ns/region; median {med:.1f} ns per priced ruint unit (calibrated multiply 27.3 ns)", flush=True)
+        wmean = float(ns_c[live].sum() / priced[live].sum())
+        CAL = 27.3
+        rows = {}
+        for i in range(len(names)):
+            sh = float(ns_c[i] / ns_c[live].sum()) if i in live else 0.0
+            rb = float(per[i] / wmean) if i in live else None
+            rows[names[i]] = {"ns_per_number": ns_c[i] / len(nums), "priced_ruint_per_number": priced[i] / len(nums),
+                              "ns_per_priced_unit": float(per[i]) if i in live else None, "ratio_to_median": float(per[i] / med) if i in live else None,
+                              "ratio_B": rb, "ratio_C": float(per[i] / CAL) if i in live else None, "time_share": sh,
+                              "materiality_B": sh * (rb - 1) if rb is not None else None}
+        out[bits][name] = {"overhead_ns_per_region": over, "median_ns_per_priced_unit": med, "weighted_ns_per_priced_unit": wmean, "regions": rows}
+        print(f"{bits} bits, {name}: overhead {over:.1f} ns/region; anchors: (A) median {med:.1f}, (B) time-weighted {wmean:.1f}, "
+              f"(C) calibrated multiply {CAL} ns per priced ruint unit", flush=True)
         for i in live:
             r = rows[names[i]]
-            flag = "  FLAG (> 1.5x median)" if r["ratio_to_median"] > 1.5 else ""
-            print(f"   {names[i]:10s} {r['ns_per_number']:12,.0f} ns/number  priced {r['priced_ruint_per_number']:10,.1f}  {r['ns_per_priced_unit']:7.1f} ns/unit  x{r['ratio_to_median']:.2f}  time share {r['time_share']:.3f}{flag}", flush=True)
+            flag = ""
+            if r["ratio_B"] > 1.5:
+                flag = f"  FLAG B ({r['materiality_B'] * 100:.2f}%{' STOP' if r['materiality_B'] >= 0.01 else ', under 1%'})"
+            print(f"   {names[i]:10s} {r['ns_per_number']:12,.0f} ns/number  priced {r['priced_ruint_per_number']:10,.1f}  {r['ns_per_priced_unit']:7.1f} ns/unit  "
+                  f"A x{r['ratio_to_median']:.2f}  B x{r['ratio_B']:.2f}  C x{r['ratio_C']:.2f}  time share {r['time_share']:.3f}{flag}", flush=True)
 json.dump(out, open("phasetime.json", "w"), indent=1)

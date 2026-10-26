@@ -5985,3 +5985,89 @@ The estimate is unchanged in scale: about 0.1–0.15% of qs's cost at 96 and a f
   - on (p0 200): 2,447.5 → 2,479.9 (+1.33%), 8,131.4 → 8,212.7 (+1.00%), 19,952.8 → 20,089.7 (+0.69%), 54,801.8 → 55,049.1 (+0.45%).
 - **My estimate missed low:** "about 0.1–0.15% at 96, a few tenths at 54" against +0.42% and +1.36% (ruint). The per-dependency charges (rows + 2F + member entries, every dependency tried) and the pivot clones are larger than I sized them. The trace formula matched every case, so the counts are as modelled; only my size estimate was off.
 - P6 and D-P6 (solve under 1.5x under anchor B) are scored at the step-5 wall-clock run.
+
+**Correction to the 2026-10-26 morning entry's "q-to-q overdispersion" reading (Wolfram, Oct 26; duplicate-polynomial test, 72 bits, s = 3, 5 N, 20 polynomials per condition; recorded as given).**
+- **The 72-bit distinct-q excess was an artefact of the Wolfram polynomial generator.** Each polynomial drew its A-primes independently from ~6–11 candidates, so whole triples repeated (5 / 9 / 2 / 3 / 2 repeated polynomials per N), and repeated polynomials reproduce identical partials.
+- With duplicates allowed: excess +10.3%, singletons 0.74–0.99 of predicted. Distinct triples only (same pool; A-prime sharing still 0.64–0.95 of pairs): excess +1.6%, singletons 0.98–1.10. Partial rate change 0.02%.
+- So sharing single A-primes causes no overdispersion. DeepSeek's fourth N1 candidate is refuted. **P3 is VOID** (its premise was an artefact, and its disjoint redraw never ran validly); the user's "more than half" is void too.
+- The earlier per-polynomial rates stand (duplicates are valid samples). The 54 / 72-bit combined counts included some trivial self-combinations; on distinct polynomials, combined is 0.98–1.04 and usable 0.98–1.04, so the model holds.
+- *The user's scoring:* repeats under the old generator held (all 5 N, mean 4.2); distinct within ±2% held (1.6%); duplicates 5–15% held (10.3%); partial rate within ±5% held.
+
+**DeepSeek, Oct 26, round 12 (recorded as given):**
+- It accepts P3 void and the fourth N1 candidate refuted. N2 is still registered, at high risk.
+- *Q1 (unverified):* Contini enumerates A-prime combinations deterministically; msieve picks s − 1 at random and fits the last; bsquared requires every a to differ from all others in ≥ 2 primes; YAFU reportedly finds duplicate relations regularly. Consistent with the result that sharing one of three primes is harmless.
+- *Q2, made exact (the user's):* two polynomials share a relation only at a common t = a x + b, so the duplicate share per polynomial is ~ a / lcm(a1, a2) where the root choices agree on all shared primes, else 0. Identical polynomial 100%; s − 1 shared with matching roots ~1/p of the differing prime (~1.3% at 54, ~0.8% at 72); one shared of three ~1/(p2 p3), negligible.
+- **Sealed Q3** (the share of numbers with ≥ 1 repeated a during the card's qs run, if A-prime sets are drawn at random without a used-set check):
+  - DeepSeek: 5–20% at 54 (central 10%), 10–35% at 72 (central 20%). Falsified if 0% at both sizes, > 35% at 54, or > 55% at 72. Fewer than 10 numbers per size is inconclusive. If the card already keeps a used-set check: not applicable. (Its third listed falsifier, 54 exceeding 72 by > 10 pp, is self-withdrawn and not recorded as a falsifier.)
+  - The user's: 0–10% at 54, 0–20% at 72.
+  - *Note (mine, from the code, not a measurement):* the card's on-demand A selection keeps the keys it has used (`OnDemand.used` in qs.rs; `used` in qs.py's a_on_demand) and limits overlap with them. So Q3's "not applicable" clause probably applies to the on-demand references; the enumerate mode (frozen reference) walks a sorted combination list once. Step 6g(i) confirms this from the code.
+- **Step 6g (refined):** from the card's traces at 54–96, report (i) whether A-prime selection keeps a used-set check (from the code); (ii) repeated a and repeated (a, b) per number; (iii) pairs of polynomials sharing s − 1 primes with matching roots; (iv) duplicate relations by t = a x + b, and whether the ledger's duplicate check drops them (sieving wasted against relations double-counted). Report only.
+
+**Duplicate relations between polynomial pairs (Wolfram, Oct 26; 72 bits, s = 3, 6 N × 4 pairs per type, relations matched by |t|; recorded as given; step 6g):**
+- A, identical: 100% duplicates. C, sharing 2 with one root flipped: 0 duplicates (15,906 relations).
+- B, sharing 2 of 3 with matching roots: 2.9% duplicates (459), 3.6x the user's 1/p prediction.
+- D, sharing 1 of 3: 0.082% (13), 13.0x the user's 1/(p p′) prediction.
+- *Corrected rule:* at a shared t, polynomial 2's residue is also divisible by polynomial 1's extra prime(s), which raises its smooth probability by ~p^(1−α) each (the saddle-point tilt). So the duplicate share ~ Π over polynomial-1-only A-primes of p^(−α), if the root choices agree on all shared primes, else 0. With α ~ 0.74 at 72 bits: B 131^−0.74 ~ 2.7% (measured 2.9%); D boost 3.6² ~ 13 (measured 13.0x), share ~0.078% (measured 0.082%).
+- *Card implications:* different a's sharing s − 1 primes with matching roots waste ~3% (72) to ~4–5% (54) of a polynomial's relations; one shared prime of three is negligible; the 2^(s−1) b-polynomials of one a never duplicate each other (they differ in root signs).
+- *The user's scoring:* A held, C held, B missed (3.6x), D missed (13 against < 1). DeepSeek's Q2 ("a small penalty; more than a few percent would be surprising") is consistent.
+- **Step 6g (add):** count the a-pairs sharing s − 1 A-primes per number, and estimate the waste with the corrected rule (sum over such pairs of matching-sign b-pairs × p^−α × relations per polynomial); compare with the measured duplicate relations by t.
+
+**DeepSeek, Oct 26, round 14 (step 6g; recorded as given):**
+- *Q2 annotation:* its "a small penalty; more than a few percent would be surprising" holds (~3% at 72 bits).
+- *R1:* it agrees that p^−α is standard, but its proposed correction is a misapplication.
+  - The quoted Hildebrand–Tenenbaum factor (1 − p^−α) / (1 − p^−1) is for residue classes coprime to p.
+  - For the class divisible by p, the count is Ψ(x/p, y) ~ p^−α Ψ(x, y), a boost of p^(1−α) over the 1/p share, which already covers all valuations.
+  - Its "full factor ~0.981" contradicts the measured 3.6x (case B). The p^−α rule stands.
+- **Sealed R2** (the waste fraction: relations duplicating, by |t|, a relation from a different a in the same number; msieve-style random s − 1 plus a fitted last prime; no composition-distance check):
+  - DeepSeek: 0.3–2.5% at 54 (central 1.0%), 0.2–1.8% at 72 (central 0.8%). Falsified if > 5% or < 0.05% at either size, or if 54's is < 0.5 × 72's. Fewer than 10 N per size is inconclusive.
+  - The user's: 0.5–3% at 54, 0.3–2% at 72.
+  - Applies only if the card's selector is random; with deterministic enumeration, R2 is not applicable.
+  - *Note (mine, from the code, not a measurement):* the card's on-demand selector is deterministic given N (it walks prefixes in a fixed order and checks overlap with the used keys); it is not msieve-style random. Step 6g reports what R2's measurement would be anyway, and whether R2 applies.
+- *R3:* with s = 2 the "differ in ≥ 2 primes" rule admits only ~m/2 a values, so at 54 bits an implementation needs s = 3 or a relaxed rule. Estimated cost of s = 3's wider window: < 1% yield.
+
+**I-023 / I-024 — the model-only forecast of polynomials to completion (Wolfram, Oct 26; recorded as given)** (P = SIQS polynomials to reach F + 12 usable relations: fulls + combined single large-prime partials, Σ (P λ_q − 1 + e^−(P λ_q)); 50 N per size; Wolfram's F, M = 30,000; the KS-best k by the standard score):
+- CV of P across N: k = 1: 42 / 49 / 43 / 53%; KS-best k: 18 / 22 / 16 / 18% at 54 / 72 / 84 / 96. KS-best range ~0.5–1.65x the mean.
+- KS cuts mean P by 41 / 38 / 38 / 38%; movers' P_KS / P_1 = 0.54–0.59 (consistent with the ~2x yield; combined relations make P less than proportional to the rate).
+- *N2:* with KS on, the model spread is 16–22%, so DeepSeek's sealed 4–11% and the user's 5–12% are expected to fail in the card; the user's 15–30% annotation looks right. Still scored only on the card (step 6e).
+- *I-024:* a forecast spread σ ~ 0.16–0.22 gives an expected saving ~σ² / (2 (ln(sC) + 1)) ~ 0.3–1%, the low end of both sealed P2 ranges. Keep low priority.
+- *Caveats:* not the card's F or M (at 54 bits the mean P = 0.17, so one interval more than suffices); no double large primes; no polynomial-switch cost.
+- *The user's scoring:* k = 1 CV 25–45% held at 54 / 84, missed at 72 / 96 (49, 53%); KS CV 12–25% held; KS mean saving 15–30% missed high (38–41%).
+
+**DeepSeek, Oct 26, round 15 (I-023 / step 6e; recorded as given):**
+- *Annotations:* N2 at high risk (the model's KS-on CV 16–22%); P2 at the bottom edge of both ranges (~0.3–1%), not outside.
+  - Caution adopted: compare the model's and the card's spreads only on the same base (usable relations including combined partials, the same stopping rule), and state the base when scoring.
+- *S1:* the residual spread after KS is likely a mix of (1) the small-prime pattern KS can't fix, (2) variation in large-prime combination near completion, and (3) model error. Only per-N predicted against measured P (step 6e ii) separates them. Its "~22% dense against sparse throughput" citation is unverified and a different metric.
+- *S2:* KS is near what a trial sieve would choose (84% agreement with the tilted score, a 4% gain where they differ). A short trial sieve at most as a diagnostic where KS's top-2 scores are close.
+- **Sealed S3** (the mean of the slowest 10% of P_N / the median P_N; polynomials to completion; KS on; the card's F, margin, M, A-primes, threshold and stopping rule):
+  - DeepSeek: 1.20–1.60 at 72 (central 1.35); 1.15–1.55 at 84 and 96 (central 1.30). Falsified if > 1.80 or < 1.05 at any size, or if 96 exceeds 72 by > 0.10. Fewer than 20 N per size is inconclusive. Scored on the stated base only.
+  - The user's: 1.25–1.6, same definition.
+
+**I-023 — double large primes (Wolfram, Oct 26; recorded as given)** (SIQS, k = 1, 84 and 96 bits, 3 N × 20 polynomials with distinct A-prime sets; L = 64 p_max for both large primes; 2LP = a cofactor q1 q2, both in (p_max, L]; q² counted as full; cycles = E − V + C by union-find on the large-prime graph):
+- Model counts: 1LP predicted / measured 1.01–1.04; 2LP 1.00–1.05, from ½ ∬ S(log |g| − t1 − t2) dt1 dt2 / (t1 t2) over [log p_max, log L]².
+- 2LP partials are ~2.5x 1LP. Usable relations at 20 polynomials with 2LP against 1LP only: 4.6–5.2x (84), 4.0–4.7x (96). A giant component forms in the large-prime graph.
+- Polynomials to F + 12: at 84 bits 3 → 3, 4 → 3, 4 → 3; at 96 bits 10 → 6, 5 → 4, 12 → 8. The gain concentrates on the slowest N, so 2LP compresses the per-N tail as well as the mean.
+- Not measured: the cost (a looser threshold admitting cofactors up to L², cofactor factoring, cycle finding).
+- *The user's scoring:* 2LP counts held; 1LP held; usable +10–40% / +5–25% missed badly (4–5x); polynomials to target held at 84, missed at 96 for 2 of 3 N.
+- IDEAS I-026 added (double large primes at 84–96 bits).
+
+### Step 4: gray, a flat layout — results (`evolve/gray_a_accept.py` reused, `s4_accept.out`; `parity_s4.out`; `phasetime_s4before.out` / `.json`, `phasetime_s4after.out` / `.json`)
+
+- *Change (Rust only; Python's lists are unchanged, the counts are identical):* the per-polynomial sieved-prime table became a structure of arrays, one entry per root: prime, base index, root, and per l the 2 B_l A^−1 in its own contiguous vector.
+  - The Gray update runs as a zipped loop over three i32 arrays (primes < 2^30, asserted). Every loop visits the roots in the same order as before.
+  - Measured in three increments on the way, all before acceptance: the flat layout with indexed i64 loops; then zipped iterators; then i32. Only the last is committed.
+- *Acceptance:* every run identical to the pre-change build per number and per type, 8,000 / 8,000 (all map numbers; new reference with and without re-sieve, frozen, corrected); Python = Rust per type 32 / 32. Parity passes (types 7,182 pairs; mutations 54 / 54).
+- *Gray region, before → after* (ns per number; ns per priced ruint unit; same protocol, quiet machine):
+
+| size | before (off / on) | after (off / on) | speed-up | after: ratio A / B, off |
+|---|---|---|---|---|
+| 54 | 2,158 / 2,165 | 984 / 791 | 2.2–2.7x | 1.00 / 0.99 |
+| 72 | 14,923 / 15,036 | 8,494 / 8,162 | 1.76–1.84x | 1.07 / 1.08 |
+| 84 | 37,809 / 38,799 | 21,071 / 20,709 | 1.79–1.87x | 1.12 / 1.30 |
+| 96 | 110,235 / 110,250 | 58,449 / 57,391 | 1.89–1.92x | 1.27 / **1.53** |
+
+- Per root update: about 3.1 ns before and 1.6 ns after, against the clean sieve update's 0.71 ns in its benchmark.
+- *(D-P7's speed-up estimate, DeepSeek's)* 1.3–2.0x, center 1.4–1.7x: **held** on the range at 72–96 (1.76–1.92x), above it at 54 (2.2–2.7x). P7 itself is scored at step 5.
+- **A finding for step 5, from the after run** (no decision taken; reported before step 5 runs):
+  - lp_ledger and confirm got slower in wall-clock after step 1. At 96, lp_ledger went from 150 to 250 µs per number, and confirm with re-sieve from 210 to 278 µs.
+  - Step 1's code allocates a fresh touched-entry Vec per candidate and a fresh output Vec per combination; the re-sieve merge (since item 11) already allocates one list per candidate. These heap allocations are uncharged and costly.
+  - Reusing per-attempt buffers removes them with identical counts. That is proposed as a step-1 follow-up (step 1b: code only, counts identical, its own acceptance and parity), done before the formal step-5 run.

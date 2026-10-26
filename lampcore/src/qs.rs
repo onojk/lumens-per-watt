@@ -685,8 +685,12 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
             bl.push(aq * gam);
             m.charge(crate::PH_WORD, 1)?; // a word multiply (audit 4); A/q above stays small-modulus
         }
-        // per sieved prime: (p, roots, 2 B_l A^-1, base index)
-        let mut st: Vec<(i128, Vec<i128>, Vec<i128>, usize)> = Vec::new();
+        // per sieved root, structure of arrays (step 4, NOTES.md "Step 4: gray, a flat layout"): the prime, its base
+        // index, the root, and per l the root's 2 B_l A^-1 (one contiguous vector per l); roots of one prime adjacent,
+        // in the order (r1, r2), so every loop visits them as before
+        let (mut sp, mut sj, mut sr): (Vec<i32>, Vec<usize>, Vec<i32>) = (Vec::new(), Vec::new(), Vec::new());
+        let mut sbi: Vec<Vec<i32>> = vec![Vec::new(); s]; // primes < 2^31: roots and inverses fit in i32
+        let mut n_st = 0usize; // sieved primes
         let mut bv: i128 = bl.iter().sum();
         for j in 2..f {
             let p = base[j] as i128;
@@ -704,7 +708,16 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 bainv.push((2 * b * ainv).rem_euclid(p));
                 m.charge(SETUP, 1)?;
             }
-            st.push((p, if t == 0 { vec![r1] } else { vec![r1, r2] }, bainv, j));
+            n_st += 1;
+            for r in if t == 0 { vec![r1] } else { vec![r1, r2] } {
+                assert!(p < 1 << 30, "factor-base prime too large for the i32 root arrays");
+                sp.push(p as i32);
+                sj.push(j);
+                sr.push(r as i32);
+                for l in 0..s {
+                    sbi[l].push(bainv[l] as i32);
+                }
+            }
         }
         crate::pt_end(m, 2, pt_a);
         let mut signs = vec![1i128; s];
@@ -716,23 +729,19 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 let d = signs[v];
                 signs[v] = -d;
                 bv -= 2 * d * bl[v];
-                let mut n_roots = 0u64;
-                for ent in st.iter_mut() {
-                    let p = ent.0;
-                    let bi = ent.2[v];
-                    // r, bi in [0, p): one add or subtract and one conditional correction, no reduction
-                    if d > 0 {
-                        for r in ent.1.iter_mut() {
-                            *r += bi;
-                            if *r >= p { *r -= p; }
-                        }
-                    } else {
-                        for r in ent.1.iter_mut() {
-                            *r -= bi;
-                            if *r < 0 { *r += p; }
-                        }
+                let n_roots = sr.len() as u64;
+                let bi = &sbi[v];
+                // r, bi in [0, p): one add or subtract and one conditional correction, no reduction
+                if d > 0 {
+                    for ((r, &b), &p) in sr.iter_mut().zip(bi.iter()).zip(sp.iter()) {
+                        let x = *r + b;
+                        *r = if x >= p { x - p } else { x };
                     }
-                    n_roots += ent.1.len() as u64;
+                } else {
+                    for ((r, &b), &p) in sr.iter_mut().zip(bi.iter()).zip(sp.iter()) {
+                        let x = *r - b;
+                        *r = if x < 0 { x + p } else { x };
+                    }
                 }
                 m.charge(crate::PH_GRAY, n_roots)?; // word-level type setup_gray
             }
@@ -743,25 +752,24 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
             arr.iter_mut().for_each(|x| *x = 0);
             let mut upd = 0u64;
             let mut nr = 0u64; // start offsets, one word op per root
-            for (p, rs, _, j) in &st {
-                let pu = *p as usize;
-                for &r in rs {
-                    let mut s0 = r + mp[*j];
-                    if s0 >= *p {
-                        s0 -= *p;
-                    }
-                    nr += 1;
-                    let start = s0 as usize;
-                    let mut i0 = start;
-                    while i0 < width {
-                        arr[i0] += logp[*j];
-                        i0 += pu;
-                    }
-                    // a prime wider than the interval may start past its end: no steps,
-                    // as Python's (width - 1 - start) // p + 1 = 0 (usize would wrap)
-                    if start < width {
-                        upd += ((width - 1 - start) / pu + 1) as u64;
-                    }
+            for k in 0..sr.len() {
+                let (p, j) = (sp[k] as i128, sj[k]);
+                let pu = p as usize;
+                let mut s0 = sr[k] as i128 + mp[j];
+                if s0 >= p {
+                    s0 -= p;
+                }
+                nr += 1;
+                let start = s0 as usize;
+                let mut i0 = start;
+                while i0 < width {
+                    arr[i0] += logp[j];
+                    i0 += pu;
+                }
+                // a prime wider than the interval may start past its end: no steps,
+                // as Python's (width - 1 - start) // p + 1 = 0 (usize would wrap)
+                if start < width {
+                    upd += ((width - 1 - start) / pu + 1) as u64;
                 }
             }
             m.charge(crate::PH_WORD, nr)?;
@@ -784,16 +792,18 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 rec = vec![Vec::new(); cand.len()];
                 let (mut walk, mut nhit) = (0u64, 0u64);
                 gen += 1;
-                for (p, rs, _, j) in &st {
-                    stamp[*j] = gen;
-                    if *p < p0 {
+                for k in 0..sr.len() {
+                    let (p, j) = (sp[k] as i128, sj[k]);
+                    stamp[j] = gen;
+                    if p < p0 {
                         continue;
                     }
-                    let pu = *p as usize;
-                    for &r in rs {
-                        let mut s0 = r + mp[*j];
-                        if s0 >= *p {
-                            s0 -= *p;
+                    let pu = p as usize;
+                    {
+                        let r = sr[k] as i128;
+                        let mut s0 = r + mp[j];
+                        if s0 >= p {
+                            s0 -= p;
                         }
                         walk += 1; // the start offset, one word op per root walked
                         let start = s0 as usize;
@@ -804,7 +814,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                         let mut i0 = start;
                         while i0 < width {
                             if slot[i0] != usize::MAX {
-                                rec[slot[i0]].push(*j);
+                                rec[slot[i0]].push(j);
                                 nhit += 1;
                             }
                             i0 += pu;
@@ -818,7 +828,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 direct = (1..f).filter(|&j| (base[j] as i128) < p0 || stamp[j] != gen).collect();
                 // per polynomial: the slots cleared (|cand|), the generation stamps written (|st|), the direct
                 // list's pass (F - 1), the record lists (|cand|)
-                m.charge(crate::PH_WORD, (2 * cand.len() + st.len() + f - 1) as u64)?;
+                m.charge(crate::PH_WORD, (2 * cand.len() + n_st + f - 1) as u64)?;
             }
             crate::pt_end(m, 6, pt);
             // 5. confirm

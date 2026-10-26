@@ -223,3 +223,11 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Idea: dense bit rows and sparse rows (~8 entries) break even near F ~ 500. Keep solve dense at F <= 400 (today's sizes); switch to sparse rows (and a sparse solver) from F ~ 1,000, around 120-128 bits.
 - Cost: moderate (solve in both cores).
 - Decision: pending (not at today's sizes).
+
+### I-026 — Double large primes at 84-96 bits
+- Date: 2026-10-26. Source: the user (Wolfram), from the 2LP run.
+- Yield: up to ~35-40% fewer polynomials for slow N at 96 (k = 1, Wolfram F and M); little at 84. 2LP partials ~2.5x 1LP; usable relations at 20 polynomials 4-5x with 2LP (a giant component in the large-prime graph); the gain concentrates on the slowest N.
+- Cost to price first, with the light meter (I-023) and the card's meter: extra candidates per polynomial from the looser threshold, cofactor factoring (~37-bit), cycle finding, ledger size.
+- Timing: evaluate after STEP 6 validates the model in the card.
+- Decision: the user's.
+
