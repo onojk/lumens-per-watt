@@ -174,5 +174,6 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Date: 2026-10-26. Source: Claude chat, from the user's DP runs. Trigger: rho is in no optimum at the card's measured 2x overhead (K/2), but appears at 2^9-2^10 at 84-96 when it detects at 1.4x.
 - Idea, information step first: from the card's re-solve after p-1 stage 2, does the evolver keep rho at 84-96? If it drops rho, measure where the card's 552-vs-279 overshoot comes from (Brent's power-of-two stepping against the gcd batch of 64) before retiring rho.
 - Note (Claude Code, from NOTES, Oct 24 second outside check): the split is already measured on band-16 primes. Brent with b = 1 (no batching) takes 515 f evaluations to detection (1.85x mu + lambda = 279); the card's batch of 64 adds 7.2% (552). So the overshoot is mostly Brent's power-of-two stepping, not the batch.
+- Update (2026-10-26, the user's rho detector measurement): the card's detector (skip-half, confirmed from the code) is already the cheapest; rho's real cost overhead is about 1.3-1.5x, not 2x (the DP's K/2 with 2 multiplies per step double-counted). In the measured split-half search rho pays 3-7% at 96 and nothing at 72-84. Recommendation: keep rho in the 96-bit search; future models price rho per f-evaluation plus per comparison made.
 - Cost: small (from existing traces).
 - Decision: pending.

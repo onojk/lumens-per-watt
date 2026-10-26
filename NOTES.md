@@ -4976,3 +4976,25 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
   - corrected reference (on_demand): official +1.46 / +0.25 / +0.10 / +0.03%; calibrated ≤ 0.36%;
   - frozen reference (enumerate): 0.
 - No registered prediction names items 12 or 13.
+
+**Rho detector measurement** (user, Mathematica, Oct 26; information only).
+- *Setup:* real rho (x² + c mod p) on 400 primes per size at 12–24 bits, the same start for every detector; then the honest split-half pipeline search (1,200 numbers per size, primehelix prior, td and p-1 stage 2 exact, the new qs costs) with rho as a measured lamp. Rho is skipped for p ≥ 2^31 (chance under 0.5% at these budgets).
+- *f evaluations to detection / collision point at 16 bits:* Brent skip-half, gcd every 64: 2.00 (the card: 1.98); Brent every-step gcd / 64: 1.76; every-step gcd / 8: 1.59; skip-half gcd / 8: 1.82; Floyd: 2.99.
+- *Cost* (f evaluations + comparisons + gcds) / (2 × collision point): skip-half gcd / 64 is cheapest at 16–24 bits (1.50 / 1.36 / 1.31); every-step gcd / 64 1.72–1.87; the gcd / 8 variants 1.6–2.4; Floyd 1.7–2.1.
+- *Reading (Claude chat):*
+  - The card's ratio matches Brent's skip-half variant (as the code confirms: 5a84aa6).
+  - It is already the cheapest detector; the 2x step overshoot buys half the comparisons. DeepSeek's smaller-batch idea costs more.
+  - The DP runs at "K / 2 with 2 multiplies per step" double-counted: in cost terms the card's overhead is about 1.3–1.5x, near K / 1.4. "Rho in no optimum" came from that pricing.
+- *Pipeline* (saving from adding rho, best chosen on half A, scored on half B; s.e. 0.9–2.3%):
+  - card-like detector (skip-half): plain −0.8 / −0.2 / +4.4%, paired −0.3 / −0.5 / +3.4% at 72 / 84 / 96;
+  - every-step detector: plain −4.7 / +0.7 / +7.1%, paired −5.2 / −1.0 / +4.2%.
+  - At 96, rho at 2^11–2^12 multiplies pays 3–7% (replacing td); at 72–84, td 2^12–2^14 plus p-1 stage 2 covers its role. The every-step against skip-half difference at 96 is within noise.
+- *Share of numbers rho finds within 2^12 multiplies:* about 0.56–0.58 / 0.55 / 0.49 at 72 / 84 / 96 (both detectors).
+- *Early signal on C2* (sealed: Grok and Claude chat both said rho is dropped at 96): the measured search keeps rho at 96. C2 is still scored on the card's re-solve.
+
+**Information step: how the card's meter charges a rho step** (from the code: lamps.py `lamp_rho` and its lampcore twin; `optypes.rho_counts`).
+- An uncompared step (the first r of each block): **1 op**, the f evaluation x² + c mod N (step_cost = 1 for d = 2).
+- A compared step (the second r): **2 ops**, the f evaluation plus one multiply of |x − y| into the running product.
+- A gcd: **1 op per batch of b = 64 compared steps**, also a luck-meter test.
+- *Types:* mul = ops − tests (price 1 under every pricing) and gcd = tests (7.86 ruint, 29.06 Montgomery).
+- So yes: one f evaluation per step, one multiply only per comparison actually made, and a gcd per 64 comparisons, each a full mod-N op. The comparison rule is skip-half (C1, confirmed).
