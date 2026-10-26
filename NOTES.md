@@ -2891,3 +2891,14 @@ Mine: Track R 5 held, 2 missed. Track M 0 held, 6 missed.
   - The threshold keeps falling with lc, so more candidates are confirmed by trial division (charged).
   - Each extra cofactor in [B², B^lc) is charged a bound check, N mod v, a lookup and an insert, even though such cofactors rarely pair.
   - So the card's cost above 2.0 should rise rather than stay flat, unless tc moves down to offset the threshold term.
+
+**DeepSeek's lc / tc predictions** (labelled as DeepSeek's; recorded Oct 25 while the kc / lc tuning was running, before any kc / lc result was read; Track R at 54, 72 and 84 had finished and were not looked at beyond their progress lines).
+- (D-c1) At 84–96 bits:
+  - lc 1.7–1.9 in Track R and 1.9–2.1 in Track M, neither above 2.2;
+  - tc 0.7–1.1 in both tracks;
+  - tc + lc 2.6–3.0 (DeepSeek's least confident clause);
+  - lc(96) − lc(72) in [0, +0.2] per track.
+- Its Q1 answer implied tc + lc of 2.8–3.2; the Q2 numbers above are the scored ones.
+- *Note (mine):* the round's tc search bound is 1.0–3.5, so tc in 0.7–1.0 is outside the searchable range. The tc clause can hold only at 1.0–1.1, and a frozen tc near 1.0 would be a bound hit.
+- *Factor base size, for the 2LP MOVES row* (information; the card's own Ledger on every 8th map number, final genomes): median F is 34 / 28 at 54 (R / M), 57 / 65 at 72, 96 / 94 at 84 and 151 / 141 at 96. A run needs about F + a few relations.
+- Two MOVES rows added, UNTESTED: "qs threshold reparameterization (slack s = tc + lc − 1, lc)" and "Double large prime variation", the latter with DeepSeek's estimate and the corrections recorded beside it.
