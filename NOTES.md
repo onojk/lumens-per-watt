@@ -3453,3 +3453,9 @@ The final Track R genes run as qs alone on the corrected card with kset = sf32. 
   - paired chosen everywhere.
   - *Notes:* Track R's stage-1 p-1 was within noise at 72–96, so stage 2 may stay off there. Pairing's setup is genuinely multiplies and is charged as such.
 - **Reference policy:** recorded in PLAN. DeepSeek's proposed criterion (no change that reverses a PD sign) is recorded but not adopted, because PD ratios do not depend on the reference.
+
+**Grok, before any stage-2 or small-prime-variation code** (labelled as Grok's; recorded Oct 25).
+- **G-spv REVISED** (written after the user's Mathematica cost run; a revision, so the original G-spv stays the scored prediction): total qs gain official 6–11% (cutoff 30, slack +0.4–0.6); ruint 1.5–4% (cutoff 10–20, slack +0.3–0.5); Montgomery 1.5–4% (cutoff 10–20, slack +0.3–0.5). Cutoff 30 is neutral to slightly worse under the calibrated pricings.
+- **(G-c)** The pm1 stage-2 c from the map check: Track R 8–15 / 6–12 / 5–10 at 72 / 84 / 96; Track M 15–30 / 12–25 / 10–20; Track M's c exceeds Track R's at every size.
+  - *Note:* this has c **falling** with size, the opposite of DeepSeek's D-c (rising: R 10–25 → 60–120, M 20–40 → 90–150). The user's Mathematica stage-2 run found that the best c rises with the value per catch (5–20 at V = 1e5, 20–100 at V = 1e6), and the value per catch rises with size. The map check will report which direction holds.
+- **(G-r2)** Track R stage 2: off at 72; short (c ≤ 10) at 84–96 with robust gain at most 1–3%. It is reported as off if the gain is inside the noise of stage-1-only.
