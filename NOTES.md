@@ -5106,3 +5106,84 @@ Time shares (new reference, 96): sieve 24%, confirm 29%, setup 24%, solve 8%, lp
 - mult: charge KS scoring by its real work (a U256 mod p and ~log₂ p small multiplies per (k, p)), or type it as a per-(k, p) Legendre op with its own measured price;
 - lp_ledger: charge the F-entry vector copies (word ops) on insert, combination and ledger storage;
 - resieve and confirm: charge the per-polynomial slot initialization (width word ops), the direct-list rebuild (F) and the per-candidate vector initialization (F).
+
+### The user's decisions on the wall-clock check (Oct 26), recorded
+
+1. gray: option (a), the code change, results and op counts identical; re-run the gray region afterwards.
+2. mult: charge KS scoring by its real work with existing types. Its own meter-correction entry. Add I-021 (Jacobi symbol) to IDEAS.
+3. lp_ledger / resieve / confirm: charge the exponent-vector copies and initializations as word ops. One meter-correction entry. Add I-020 (sparse relations) to IDEAS.
+4. Order: gray, then mult, then the vector charges, each with acceptance and parity. Then re-run the full wall-clock check. If no region is above 1.5x the median, proceed to the 2×2 (p0 grid with 1,500); otherwise stop and report.
+
+### Gray-code root update without a reduction (card code change; op counts and results identical)
+
+- *Before:* `r = (r + d·bi) mod p` (Rust `rem_euclid`, an i128 division; Python `%`).
+- *After:* r, bi ∈ [0, p) (both are produced by a reduction mod p), so d = +1 gives `r + bi`, minus p if ≥ p, and d = −1 gives `r − bi`, plus p if < 0. That is one add or subtract and one conditional correction, which is the work the word type already prices.
+- *Acceptance:*
+  - every run is identical per type to the current build (all map numbers; new, frozen and corrected references; with and without re-sieve);
+  - parity passes.
+- *Prediction:* the gray region's ns per priced unit falls from 131–139 to within 1.5x the median.
+  - Measured on the same protocol, it should land at about 0.6–1.2x the median: the sieve's word updates run at 0.25–0.40x, and gray adds a loop over roots per switch.
+
+### Meter correction: KS multiplier scoring charged by its work (cost model, before code)
+
+- *What the code does per candidate k* (`ks_score`, both cores; called from qs, cfrac and sq's "ks" mode):
+  1. kN = k·N, a U256 × u64 multiply;
+  2. kN mod 8 and a select;
+  3. ln k;
+  4. per prime p in KS_PRIMES (14): k mod p; if p ∤ k, kN mod p (a U256 reduction by a small modulus) and the Legendre power (kN mod p)^((p−1)/2) mod p by square-and-multiply. The loop runs bitlen(e) iterations, each squaring, plus popcount(e) multiplies, e = (p−1)/2;
+  5. an f64 add per term added (when p | k, or when kN is a QR mod p). The terms ln p / p and 2 ln p / (p − 1) are computed in the code but are constants of the 14 primes.
+- *Charged now:* 14 `mult` per k, flat.
+- *Charged after:*
+  - `mult` (the small-modulus price, 0.307 / 1.137, the same class as setup_small) per k: 1 (k·N), plus per p: 1 (k mod p), plus, when p ∤ k, 1 (kN mod p) + bitlen(e_p) + popcount(e_p). Over the 14 primes, the bitlen + popcount sum is 83 (2, 3, 4, 5, 5, 5, 6, 7, 7, 8, 7, 7, 8, 9).
+  - `f64_log`: 1 per k (ln k).
+  - `word`: 2 per k (the mod 8 select; combining the initial terms), plus 1 per term added.
+  - The user's decision named the kN mod p reduction and the powering steps. k·N, k mod p, ln k and the f64 adds are the rest of the function's work, charged under the same rule (an uncharged op is a bug).
+  - The ln p terms become a precomputed 14-entry table, computed once per process like the prime list (uncharged by the earlier decision). This is a code change; the scores are bit-identical.
+- *Sites:*
+  - qs and cfrac charge these per type, at the point of today's flat charge;
+  - sq's "ks" mode charges the same total through `tick` (sq is untyped), per block as today.
+- *Size:* kset sf32 (20 candidates) goes from 280 `mult` to 2,132 `mult` + 20 `f64_log` + about 180 word per qs attempt-set. In ruint units that is about 86 → 660, roughly +575 per number.
+  - Against the new reference's qs cost (2,302 / 8,538 / 22,119 / 58,135 at 54 / 72 / 84 / 96), that is about +25% / +7% / +2.6% / +1.0% ruint.
+  - Montgomery is similar in proportion: mult 1.137, against the same small-modulus share.
+- *Prediction (wall-clock, same protocol):* the mult region falls from 1.15–1.57x the median to 0.15–0.35x. Time is unchanged, and the priced cost rises about 7.6x.
+  - The correction will then overprice this region by its own measure. The small-modulus price was calibrated on a 64-bit mulmod, while these operands are under 47.
+  - **The 54-bit cells carry the change: KS scoring becomes about a fifth of the reference's priced cost there**, which should push kset toward fewer candidates at 54. I-021, and multiplicativity (score every k from the 14 Legendre symbols of N, plus constant symbols of k), would remove most of it.
+- *Op counts change* for qs, cfrac and sq "ks" genomes (`mult`, `f64_log`, `word`, total ops). Factors and test and hit counts are unchanged except where the cap binds earlier.
+- *Acceptance:*
+  1. Against the current build: every type except mult, f64_log and word is identical, and so are the factor and the tests and hits (runs finishing within the cap). The rises equal the formula, computed independently in Python from (k list, N).
+  2. Python = Rust per type.
+  3. parity passes; cfrac_accept's mult expectation is updated to the formula.
+
+### Meter correction: exponent-vector and per-polynomial initializations (cost model, before code)
+
+**Correction to the wall-clock report's diagnosis (item 3), found on reading the code for this entry.**
+- A partial's insert into the large-prime table and a relation's entry into the ledger **move** the vector: Rust moves the Vec, a three-word header; Python stores a reference. Neither copies the F entries.
+- A combination builds the combined vector by the add, and that is already charged F word ops (audit item 7).
+- So the decision's "F per partial insert, combination and ledger entry" has no uncharged work behind it. **Charging it would bill work the code does not do, so it is not charged.**
+- lp_ledger's 1.83x at 96 is then not a missing count. It is the price of word ops on cold memory: the partial table holds one F-entry u32 vector per partial (about 490 bytes at 96, F ≈ 122; thousands of partials), and a combination reads a vector last touched many polynomials earlier. The word price was measured on a cache-resident sieve. **This region is expected still to flag at 96 after this entry; the run then stops and reports it, per item 4.**
+
+**What the code does that is uncharged (charged after, as word):**
+- *confirm, per candidate:* the exponent vector's zero-fill, F. This is the decision's item, exact.
+  - Rust, without re-sieve, also collects plist = (1..F) into a Vec per candidate (F − 1 writes). Python iterates a range. This is changed in the code to iterate the range (no allocation), so nothing is charged; counts and results are identical.
+- *re-sieve, per polynomial:*
+  - the slot array's initialization (width);
+  - the sieved-prime flags' initialization (F) and their setting (one per sieved prime, |st|);
+  - the direct list's construction (a pass over F − 1 indices);
+  - the per-candidate record lists' initialization (|cand|).
+  - Total width + 2F − 1 + |st| + |cand|. The decision named width + F, the slot array and the direct list; the rest are the same kind of initialization, found in the same code.
+  - Python builds the record dict (charged today as the per-candidate bitmap set) and a set of sieved indices. Its count follows the Rust physical count, the same formula, as with every twin.
+- *Not charged, recorded:* the sieve array's re-zeroing per polynomial (width) is covered by the existing `sieve` width charge (the scan), as audited.
+- *Size, new reference cells:*
+  - confirm, per candidate: + F word. The new reference's F is about 26 / 48 / 82 / 122 at 54 / 72 / 84 / 96, from bc and the bound.
+    - Without re-sieve, against the candidate's confirm_td of F × 0.114 ruint, the zero-fill adds 0.0258 / 0.114 ≈ **+23% to confirm at every size** (Montgomery 0.0951 / 0.426, the same).
+    - With re-sieve, plist is short and the zero-fill is a larger fraction of the candidate's cost (I-020 removes it).
+  - re-sieve, per polynomial: width + 2F, small next to the walk at 84–96, larger at 54.
+  - The totals are measured in the acceptance and reported before / after per pricing.
+- *Predictions (wall-clock, same protocol):*
+  - resieve at 54 falls from 2.34x to under 1.5x;
+  - confirm falls from 0.55–1.2x toward 0.4–0.9x;
+  - lp_ledger at 96 still flags (> 1.5x). The run stops there.
+- *Acceptance:*
+  1. Against the build after the mult correction: factor, tests, hits and every type except word identical. The word rise equals F × candidates + per-polynomial (width + 2F − 1 + |st| + |cand|) with re-sieve, computed from the Python trace.
+  2. Python = Rust per type.
+  3. parity passes.

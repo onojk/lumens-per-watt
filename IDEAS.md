@@ -177,3 +177,17 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Update (2026-10-26, the user's rho detector measurement): the card's detector (skip-half, confirmed from the code) is already the cheapest; rho's real cost overhead is about 1.3-1.5x, not 2x (the DP's K/2 with 2 multiplies per step double-counted). In the measured split-half search rho pays 3-7% at 96 and nothing at 72-84. Recommendation: keep rho in the 96-bit search; future models price rho per f-evaluation plus per comparison made.
 - Cost: small (from existing traces).
 - Decision: pending.
+
+### I-020 — Store relations sparsely (prime lists) instead of F-length vectors
+- Date: 2026-10-26. Source: the user, from the wall-clock check. Trigger: confirm zero-fills an F-entry vector per candidate (now charged), and the partial table holds F-entry vectors on cold memory (lp_ledger 1.83x at 96).
+- Idea: a card change. Keep each candidate's and relation's exponents as its list of (index, exponent) for the primes that divide it (about 5-15 entries, not F of about 26-122 at 54-96 in the new reference). The combination merges two short lists; the matrix is built from the lists. Most of the vector cost goes.
+- Cost: moderate (both cores, the ledger, the lp table, the matrix build; parity).
+- Decision: pending.
+
+### I-021 — Jacobi symbol instead of the Legendre power in KS scoring
+- Date: 2026-10-26. Source: the user, with the KS scoring meter correction. Trigger: each (k, p) pays a small reduction plus bitlen(e) + popcount(e) small multiplies (83 over the 14 primes) for the Legendre power.
+- Idea: compute (kN / p) by the binary Jacobi algorithm (a few word steps per (k, p)). Identical results, less work.
+- Note (Claude Code): multiplicativity goes further. (kN / p) = (k / p)(N / p), so the 14 symbols of N are computed once, and (k / p) for k <= 32 against the 14 primes is a constant table. That makes scoring 20 candidates about 14 symbols plus 280 table lookups.
+- Cost: small.
+- Decision: pending.
+
