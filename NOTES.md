@@ -3988,3 +3988,16 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
   - items 3–4 are setup_full, 0.6–2.5% of ruint cost;
   - item 5 is confirm_full, about 1–3% of ruint cost (2 per candidate);
   - items 6–7 are lp_small, ~1–3%.
+
+**Grok's predictions (Oct 26), with annotations** (labelled as Grok's; annotations by Claude chat, relayed by the user). Pre-registered; the clean check has not run.
+1. **(G-b2b)** share of filed q in (B, 2B]: 0.155–0.185 / 0.150–0.180 / 0.100–0.135 at 72 / 84 / 96 (centres ~0.17 / 0.165 / 0.12; reference 0.193 / 0.189 / 0.129). Falsified if any share is outside 0.12–0.22, or if the shares fail to decline with size.
+   - *Annotation:* the decline clause is weakly informative (the reference itself declines with size).
+2. **(G-mt)** pairing yield on the lpdist traces: with duplicates 0.15–0.19 / 0.11–0.15 / 0.07–0.10; without duplicates 0.13–0.17 / 0.09–0.13 / 0.055–0.085 (10–20% lower). Falsified if any "with" yield is outside 0.05–0.25, or if without / with is outside 0.70–0.95 at any size.
+   - *Note (mine):* the "with" ranges match the per-distinct-q definition (old values 0.17 / 0.13 / 0.08), so G-mt is scored on that definition, with the per-occurrence figures beside it.
+3. **(G-dup)** exact duplicates as a share of all repeats: 25–45% / 30–50% / 35–55% at 72 / 84 / 96. Primary explanation of the 1.2–1.3x excess: exact duplicates; secondary: concentration near B; smallest: run mismatch. Falsified if the duplicate share is under 15% or over 70% at any size, or if, after duplicate removal, (measured without duplicates) / (residue 1/q simulation) exceeds 1.25 at two or more sizes.
+   - *Annotations:*
+     - G-mt and G-dup are mutually inconsistent. Removing duplicates gives without / with ≈ (1 − d) / (1 − y·d) for duplicate share d and yield y. G-dup's ranges imply 0.60–0.78 / 0.53–0.73 / 0.47–0.67, mostly below G-mt's 0.70–0.95; they overlap only at the low end of G-dup, and not at all at 96. Both are scored as given.
+     - To remove a 1.2–1.3x excess, duplicates would need to be ~17–24% of repeats. G-dup's ranges would over-explain it, putting the measured yield below the shape-matched simulation.
+     - The residual clause compares with the residue 1/q arm (0.159 / 0.151 / 0.100), but the 1.2–1.3x excess was measured against the shape-matched arm (0.129 / 0.104 / 0.068). The clause is scored as written, and the residual against the shape-matched arm is also reported.
+   - *Note (mine):* run mismatch is already excluded (same traces).
+4. **Clean-check reporting, added:** per size, the duplicate share d of repeats, the without / with yield ratio, and the residual ratio of the without-duplicates yield to both simulation arms (1/q and shape-matched), on both yield definitions.
