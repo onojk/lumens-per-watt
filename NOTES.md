@@ -6150,3 +6150,26 @@ The estimate is unchanged in scale: about 0.1–0.15% of qs's cost at 96 and a f
   - lp_ledger at 96: 250 → 197 (off), 248 → 202 (on); at 54: 26 → 19;
   - confirm with re-sieve: 278 → 197 (96), 194 → 131 (84), 121 → 83 (72).
 - The step-5 run follows on the committed card.
+
+**I-027 — check of DeepSeek's V1 closed form (Wolfram, Oct 26; recorded as given)** (6 N per size, KS on, F_ref, M = 20,000, ±15%):
+- The e_F formula (e_f Fulls + e_C Comb − F) / (Fulls + κ_eff Comb) against the measured e_F: 0.653 / 0.651, 0.318 / 0.318, 0.400 / 0.400, 0.480 / 0.479 at 54 / 72 / 84 / 96 (max |diff| 0.010 at 54, ≤ 0.002 at 72–96). The formula is essentially exact; DeepSeek credited (V1).
+- At completion:
+  - the combined share of usable is 53 / 45 / 47 / 47%;
+  - κ_eff is 1.85–1.88 at every size (near the quadratic limit 2: most large primes are seen ~once at completion);
+  - e_f 1.99 / 1.56 / 1.64 / 1.72; e_C 1.61 / 1.16 / 1.38 / 1.57.
+- *Use:* e_F needs only the card's own Fulls and Comb at completion (ledger), κ_eff ~ 1.87, e_f from the Dickman formula (validated at 84–96) and e_C (model). This is the input to the I-027 rule.
+- *Observation:* combined relations (~half of usable) are still in their accelerating phase at completion, so the large-prime bound L is worth testing with the same balancing logic in step 6c (a candidate, not a conclusion).
+- *The user's scoring:* DeepSeek's κ_eff 1.3–1.7 missed (1.87); the user's 1.3–1.8 missed slightly; combined share 40–70% held; e_f 1.5–1.8 held at 72–96, missed at 54 (1.99); formula within ±0.05 held.
+
+**DeepSeek, Oct 26, round 23 (I-027; recorded as given):**
+- κ miss owned: combined ~half of usable does not mean each q is seen many times; most q are seen ~once. V1 credited.
+- *W1:* structure right (e_C = c × the κ-weighted average of the Dickman elasticity at the cofactor-reduced size u′ = (log |g| − log q) / ln p_max, plus boundary terms), with two corrections:
+  - (1) ε_q needs the factor 1 / ln p_max (as in e_f);
+  - (2) it omits the lower window boundary. As p_max rises, the highest-λ q just above the old p_max become base primes; that term is negative and likely not small. Only the upper boundary (L) term was included, correctly called small.
+- *W2:* the envelope form is right (usable gain against the cost of all accepted partials, mostly singletons). Its growth rates are wrong: the 1LP partial count grows ~ln(ln L / ln p_max) (Mertens), not (ln(L / p_max))². A practical L / p_max ~ 30–100 with a flat optimum is plausible.
+  - Its "card's current 64" is Wolfram's L.
+  - *Note (mine, from the genes):* the card's L is known, L = B^lc (lc clamped at 3.0). With the new reference genes, L / B ≈ B^(lc − 1) = **67 / 89 / 92 / 1,511 at 54 / 72 / 84 / 96** (lc 1.741 / 1.698 / 1.641 / 1.974).
+- **Sealed W3** (96 bits, model-only, KS on):
+  - DeepSeek: (i) optimal L / p_max 40–110 (central 64); (ii) 64 → 128 p_max gives 6–14% fewer polynomials (central 9%); (iii) the 128 → 256 gain is < 60% of the 64 → 128 gain. Falsified if the optimum is < 20 or > 200; if (ii) is negative or > 25%; if (iii) is ≥ the 64 → 128 gain. Fewer than 5 N is inconclusive.
+  - The user's: (ii) 8–15%, diminishing beyond 128.
+  - (i) is underdetermined (the per-partial cost multiple was not fixed): compute at 30, 100 and 300 sieve positions per accepted partial, and score (i) later at the multiple the card's prices imply. (ii) and (iii) are price-free and can be scored now.
