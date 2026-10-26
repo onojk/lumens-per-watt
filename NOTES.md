@@ -3358,3 +3358,35 @@ The final Track R genes run as qs alone on the corrected card with kset = sf32. 
 - Corrected card for the candidate; the frozen reference on its old card in (2).
 - One generator fault (a Carmichael "prime") was found by the oracle and fixed before measurement; the affected set is the 54-bit banded one.
 - The rule recommends; the reference stays the frozen one until the user decides.
+
+## 2026-10-25 — Decisions (user): new reference; ECM additions charged; stage-2 prime list
+
+**1. The reference is replaced** (user, Oct 25; the replacement rule passed).
+- The new reference is the final Track R genes **per size** as qs alone on the corrected card (a_mode = on_demand, sort_charge = 1, kset = sf32): R-k@54 at 54, R-k@72 at 72, the round-3 genome at 84 and R-k@96 at 96 bits.
+- **It is size-dependent by construction** (per-size genes). At sizes between or outside these four, the nearest size's genes are used, and which ones is stated with the result.
+- **Bridge:** for one round, results also report the old frozen reference (qs + lc 1.4, enumerate) in a side column.
+- Results before Oct 25 keep the reference they were measured against.
+
+**2. ECM additions are charged** (user, Oct 25; card change, cost model below, before code).
+
+**3. The stage-2 prime list stays an uncharged N-independent table** (user's decision; the existing convention for stage 1's primes ≤ B and the ECM card's prime list, now stated as a decision).
+
+### Cost model: ECM modular additions, subtractions and small-constant multiplies at the word-level price (before code)
+
+**New per-type column "word"** (shared with the coming pm1 stage 2): one machine-word-level op.
+- Its ruint and Montgomery prices are set equal to sieve_update's calibrated price (0.034 and 0.125 multiplies), with no new calibration. Official counts 1 op, like every op.
+- lampcore gets a new phase slot for it, and Python's optypes maps it.
+
+**What is charged as "word" in the ECM card** (each where it is performed, in both cores):
+- *xDBL:* X + Z, X − Z, t1 − t2, t2 + e: **4 per xDBL** (beside its 5 multiplies).
+- *xADD:* XP − ZP, XQ + ZQ, XP + ZP, XQ − ZQ, uu + vv, uu − vv: **6 per xADD** (beside its 6 multiplies).
+- *Setup, per curve:* σ² − 5, 4σ, v − u, 3u, 3u + v: **5 per curve.** Multiplying a residue by a small constant is word × residue, so it is word-level. The existing charged "16 · den" stays a full multiply, as recorded in Stage 8; it is not reclassified.
+- *Stage 2:* the factor S·Z − X·S′ (p1 − p2): **1 per accumulated pair**. Also, per (j, b) candidate, the bookkeeping the pm1 stage-2 model charges for its prime table: 2 index computations (jW ± b) and 2 prime-table tests, so **4 per candidate whether or not it hits.**
+- *Not charged* (flagged convention, both cards): the ladder's bit scanning and loop control in stage 1, as in pm1's stage 1 and the qs card's loops.
+
+**Expected effect, before measurement.**
+- Stage 1 dominates ECM's ops: per ladder bit, 11 multiplies plus 10 word ops.
+- So ECM's cost rises by about **+3% under ruint** (10 × 0.034 / 11) and **+11% under Montgomery** (10 × 0.125 / 11).
+- Under **official it rises by about +80–90%**, because official counts every op as 1 and the additions nearly double ECM's op count. This is a consequence of the decision as stated: the official count is a raw op count. It will move official-alone optima, where ECM is large.
+- *Measurement:* before and after on all map numbers (ECM alone at every grid budget, per pricing), then a re-solve of the Track M final budgets on the corrected maps (and the p-1-inclusive joint optimum), reporting whether any budget moves.
+- *Acceptance:* the multiply counts are unchanged per number (only word ops are added); the word count equals the formula from a trace (xDBLs, xADDs, curves, pairs and candidates); Python = Rust parity, per type.
