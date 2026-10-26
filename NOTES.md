@@ -4509,3 +4509,20 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
 **Ideas checkpoint (2026-10-26):** added I-009, I-010; decided I-008 (superseded by I-009, kept as a diagnostic); parked triggers checked (none parked yet).
 
 **Repo relevancy check (Oct 26):** Cprime / rsacrack restarts → I-013; ECC-Tools → I-014; laser-beam-demo and geom_factor's manim scenes → I-012 tooling; the rest are not relevant.
+
+**Sealed predictions, Grok (Oct 26), for the coming meter and retune runs** (verbatim summary; each is scored when its run lands. Referred to as **GP1–GP7**, to avoid a clash with the user's P1–P3 of the p-1 map check.)
+- GP1 (A; clean word-op price / old): 0.60–0.75. Falsified outside 0.45–0.90.
+- GP2 (C; wall-clock per phase): yes, the relation-processing / ledger phase flags (> 1.5x median); sieving, setup and polynomial generation stay inside. Falsified if no phase flags, or if sieving flags.
+- GP3 (D; best p0 under ruint, grid {30, 60, 100, 200, 400, 700, 1000}): 100 / 200 / 400 at 72 / 84 / 96. Falsified if any size is off by two or more grid steps.
+- GP4 (D; re-sieve saving under Track R worst-of-three at its best p0): no size saves ≥ 3% (model: 2.6 / 1.7 / 0.4%). Falsified if ≥ 3% at any size.
+- GP5 (E; our ECM stage-1 success per curve / GMP-ECM at matched B1, known primes 16–48 bits): 0.85–1.05. Falsified outside 0.70–1.20.
+- GP6 (F; a 72-bit re-solve with td allowed): the td stage is kept, bound 2^14–2^17; cost against the current card −8% to −18% (ruint). Falsified if td is absent, the bound is outside 2^12–2^18, or the cost change is positive.
+- GP7 (a fixed pipeline against the exact DP optimum on measured curves): within ~1–2%, confidence 85%. Grok's falsifier: a gap > 4% at two or more sizes.
+
+*Claude chat's annotations (sealed at the same time):*
+- GP4 wording: scored on the Track R (worst-of-three) saving at its best p0, not official pricing alone.
+- GP6 reference: the analytic DP put the whole optimum only 1.3% below the fixed pipeline at 72 (fixed / optimum 1.013), so Claude chat expects −0.5% to −3%. A result in −8% to −18% would mean today's 72-bit card is well off the analytic pipeline; that is worth knowing either way.
+- GP7 is scored twice: strict at 2% (the stated claim) and at Grok's 4% falsifier.
+- *Dependence:* GP3 and GP4 come from the same sweep. GP1 shifts GP3 and GP6 (a lower word price makes re-sieve relatively cheaper and moves the best p0 down). GP3 is scored on the clean price, noting whether a miss is explained by GP1.
+- *Claude chat's own guesses:* GP2 flags the large-prime / relation-combining phase too. GP5 lands in 0.9–1.1 if our ECM uses a torsion-12 curve family, and about 0.6–0.8 if it does not (check the family first and record it).
+  - *Already recorded (Check B2, Oct 25):* the ECM card uses Montgomery curves with Suyama's parametrization (σ = s0 + i), whose group orders are divisible by 12 by construction. So by Claude chat's own rule its GP5 guess is 0.9–1.1.
