@@ -94,3 +94,19 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Use: the visual for Phase 3 (light spectrum) and Phase 5 (dark mass); film material for the Lumens Per Watt video.
 - Cost: small (a visualization over existing spectrum data; no meter change). Recommended timing: with Phase 3 output.
 - Decision: pending.
+- Tooling (user's repos): render with laser-beam-demo's deterministic GLSL pipeline, or start from geom_factor's manim scenes (bit_bucket_prime_towers*). Narration line from the user's essay reuse-and-the-wall: "no slope, no warmer, no colder, just no, until suddenly yes". The dark-mass picture is the warmer/colder signal a factoring run otherwise lacks.
+
+### I-013 — Restart schedules for rho (Luby / "lotto"): decided against, with reason
+- Date: 2026-10-26. Source: Claude chat, from the user's Cprime (factor_luby.sh, rho_driver.cpp) and rsacrack (lotto_factor.py) repos.
+- What exists: rho run as many short restarted runs, on a Luby schedule (Cprime) or as random short "tickets" (rsacrack).
+- Why not: rho's chance of success grows with the square of its effort (the birthday bound; the "toll" in NOTES, "Dark-mass scheduler prototype"), so it gets more likely to finish the longer it runs. A restart throws away toll already paid. Restart schedules pay only when run times are heavy-tailed.
+- Check (no new run): when Phase 4's hazard monitor measures rho's light curve per theta band, confirm the curve rises. If some band shows a flat or falling curve (e.g. a bad polynomial constant), restarts are worth reopening for that band only.
+- Decision: pending (recommended: not adopted; keep as the Phase 4 check).
+
+### I-014 — GMP-ECM as an independent check on the ECM lamp
+- Date: 2026-10-26. Source: Claude chat, from the user's ECC-Tools repo (a CLI over libecm / GMP-ECM). Reuse rule: use GMP-ECM itself (an oracle in the harness, never in a charged path).
+- Trigger: no scheduler in the dark-mass runs ever chose ECM; that is either true or a sign the ECM lamp is under-lit.
+- Idea: on a fixed set of known primes at 16-48 bits, compare the fraction found per curve by our ECM and by GMP-ECM at the same B1 (stage 1 only, then with stage 2). Information only; no card change.
+- If ours is lower by more than the run-to-run noise, the ECM lamp curve in Phase 3 is understated and the dark-mass result on ECM is re-run.
+- Cost: small. Timing: with Phase 3.
+- Decision: pending.

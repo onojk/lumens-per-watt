@@ -4507,3 +4507,5 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
 - *Relevant to I-010 (Claude Code, from the code):* the size-scaling pipelines fix trial division off (`sizescale.pipeline` sets td's ob = 0), and the re-solves searched rho, p-1 and ECM only. td's depth was searched only in the partition study at 84 bits, where every order's optimum turned it off (MOVES, "td and p-1 as pre-stages"). So td at 72 bits has not been tested in the current pipelines.
 
 **Ideas checkpoint (2026-10-26):** added I-009, I-010; decided I-008 (superseded by I-009, kept as a diagnostic); parked triggers checked (none parked yet).
+
+**Repo relevancy check (Oct 26):** Cprime / rsacrack restarts → I-013; ECC-Tools → I-014; laser-beam-demo and geom_factor's manim scenes → I-012 tooling; the rest are not relevant.
