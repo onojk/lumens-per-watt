@@ -133,7 +133,12 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - The rerun sweeps B2/B1 in {10, 15, 20, 30, 50, 100} at 1 and 2 multiplies per prime (pairing against plain), with c = 1.41 / 1.83 and rho at K/1.4.
 - Result (2026-10-26, the measured-c DP): stage 2 in the optimum in 9 of 9 cells, both arms (plain B2/B1 10; paired 15-20); saving without ECM plain 8.4-14.0%, paired 14.6-24.0%, falling with N. Caveats: ECM is flattered (DP per-curve cost 4,800-6,300 against the card's 8,187; raw Dickman), the saving's trend with N is opposite to the real-prime run's, and rho at K/1.4 is generous. Seal only after the real-prime split-half search.
 - Information step answered (Claude Code, from the code): p-1 has no stage 2; its cost model is already written (NOTES, "pm1 stage 2: cost model", Oct 25; MOVES row "pm1 stage 2 (B2 = c x B)"), with predictions pre-registered. ECM has a baby-step giant-step stage 2 (B2 = 50 B1 by default; NOTES, "Stage 2 in the cards today").
-- Decision: pending.
+- Decision: ADOPTED (user, 2026-10-26). Shape: p-1 stage 2 by prime-gap stepping first (2 multiplies + 3 word ops per prime), B2 = c x B1 with c in {10, 15, 20} offered to the search; paired BSGS later as a separate change. Sealed predictions, ruint, at the re-solve after implementation:
+  (1) the search picks c in 10-20 at every size;
+  (2) mean cost falls 6-12% in the size-scaling sets at 72 / 84 / 96 (measured 8-12% under the primehelix prior; the sets' band mix differs);
+  (3) no band costs more than 1% above today's card (the per-band gate);
+  (4) the balanced bands (smaller factor within 4 bits of half) change by less than 1%.
+  Timing: after the meter queue; uses the Oct 25 cost model ("pm1 stage 2: cost model") and its pre-registered predictions, reconciled with these. Evidence: NOTES, "Real-prime split-half search" (honest saving plain 12.1 / 8.1 / 10.0%, paired 17.4 / 14.6 / 12.6%).
 
 ### I-017 — 1-2 small ECM curves at 96 bits
 - Date: 2026-10-26. Source: Claude chat, from the user's DP. Trigger: ECM at B1 2^8 with stage 2 is chosen at 96 under all three priors (gain 4.75-7.35%). Our ECM already has a BSGS stage 2 (B2 = 50 B1).

@@ -4839,3 +4839,19 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
   1. The DP charges ECM about 4,800 (paired) / 6,300 (plain) per curve at B1 = 2^8; the card measures 8,187 ruint (I-017). Raw Dickman overstates ECM success at B1 = 2^8 (15–25% for random integers). Both flatter ECM, so 9–18% at 96 is an upper bound. A rerun with 8,187 per curve and 0.8 × success is queued.
   2. The DP's stage-2 saving falls with N (14 → 9% plain), while the real-prime run's rose with N (−8.4 → +1.8%, on other pipelines). The S1 baseline also shifted (rho at K / 1.4 drops out at 72 in favour of td 2^16). The real-prime split-half search (no Dickman) is the deciding test for I-016.
   3. Rho at K / 1.4 is generous to the card (measured about K / 2); that only weakens rho further.
+
+**Real-prime split-half search** (user, Mathematica, Oct 26; information only).
+- *Setup:* 1,500 numbers per size (primehelix prior, p ≥ 2^8); exact p-1 structure (powersmooth stage 1; one prime up to B2 with the rest powersmooth to B1); real Brent rho mod p (per-step detection, about K / 1.4); ruint prices; about 1,000 pipelines {td, rho, p-1 B1, B2 / B1}. The best is chosen on half A and scored on half B; ECM excluded.
+- **Honest saving from stage 2** (best with against best without; s.e. 1.5–2.4%): plain (2 per prime) **12.1 / 8.1 / 10.0%**; paired (1 per prime) **17.4 / 14.6 / 12.6%** (72 / 84 / 96).
+  - Best without: {0, 10, 9}, {0, 10, 11}, {0, 12, 11}. Best paired: {12, 0, 9, 20}, {0, 9, 10, 20}, {0, 10, 11, 30}.
+- **Appended to the stage-1 pipeline** (all numbers, paired, s.e. 1.1–1.9%):
+  - plain, B2 / B1 = 10: +6.4 / +4.6 / +8.2%; 20: +2.4 / +1.5 / +5.9%; 100: −42.8 / −35.6 / −19.3%;
+  - paired, B2 / B1 = 10–20: +10.3–10.4 / +7.8–8.0 / +10.5–10.7%; 100: −7.6 / −7.2 / +2.1%.
+  - So the earlier loss ("Real-prime measurement run") was the long B2 (100 × B1), not stage 2 itself.
+- **Light, best paired:** 72: td 0.232 / p-1 s1 0.177 / s2 0.216 / dark 0.375; 84: rho 0.392 / 0.103 / 0.128 / 0.377; 96: rho 0.456 / 0.081 / 0.108 / 0.355.
+- *Against the measured-c DP:* plain agrees (DP 13–14 / 10–11 / 8–9%); paired is overstated by about 4–6 points (DP 22–24 / 18–19 / 15%). The "trend" caveat on the DP is resolved (it came from the long-B2 pipelines).
+- *Caveats:* the card's paired stage 2 costs 1.1–1.4 multiplies per prime (cost model), so expect a result between the two rows. This rho is generous to the card (K / 1.4 against the card's measured K / 2), which matters only at 84–96.
+
+**Decision (user, Oct 26): I-016, p-1 stage 2, ADOPTED.**
+- Shape: stage 2 by prime-gap stepping first (2 multiplies + 3 word ops per prime), with B2 = c × B1 and c ∈ {10, 15, 20} offered to the search; paired BSGS later, as a separate change.
+- It is implemented after the meter queue (item 10, items 12–13, the audit re-typing, the wall-clock check, the 2×2). It uses the Oct 25 cost model ("pm1 stage 2: cost model") and its pre-registered predictions, reconciled with the sealed predictions in I-016.
