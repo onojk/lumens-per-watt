@@ -2902,3 +2902,15 @@ Mine: Track R 5 held, 2 missed. Track M 0 held, 6 missed.
 - *Note (mine):* the round's tc search bound is 1.0–3.5, so tc in 0.7–1.0 is outside the searchable range. The tc clause can hold only at 1.0–1.1, and a frozen tc near 1.0 would be a bound hit.
 - *Factor base size, for the 2LP MOVES row* (information; the card's own Ledger on every 8th map number, final genomes): median F is 34 / 28 at 54 (R / M), 57 / 65 at 72, 96 / 94 at 84 and 151 / 141 at 96. A run needs F + 10 relations (ledger DELTA = 10).
 - Two MOVES rows added, UNTESTED: "qs threshold reparameterization (slack s = tc + lc − 1, lc)" and "Double large prime variation", the latter with DeepSeek's estimate and the corrections recorded beside it.
+
+**Grok, after the user's Mathematica lc result** (labelled as Grok's; recorded Oct 25 while the kc / lc tuning was running, before any kc / lc result was read).
+- **G-b1 REVISED** (a revision; the original G-b1 stays the scored prediction). At 84–96 bits:
+  - Track R: lc 1.5–1.9 (mode ~1.6–1.7), tc + lc 2.8–3.4;
+  - Track M: lc 1.4–1.8, tc + lc 2.7–3.3;
+  - any lc ≥ 2.0 winner should fail the demand-vs-drift test.
+- *Direction to report:* this puts Track M's lc below Track R's, the opposite of DeepSeek's D-c1. The kc / lc report states which direction holds at 84–96.
+- **Threshold coupling (Grok's view, disputed).** Grok calls the coupling of the threshold to lc a historical accident.
+  - *Recorded counterpoint:* a partial whose cofactor is up to B^lc falls short of the sieve estimate by up to about (lc − 1)·log₂ B, so a wider large-prime bound does need more slack to admit those partials.
+  - In the user's Mathematica run, partials below B² supplied most of the combined relations (492 against 317 full at lc = 2.0).
+  - The reparameterization MOVES row stands; the coupled form stays the card's default.
+- **kc, pending the selected-k check:** if kc is flat above ~20, replace it with a constant: score squarefree k ≤ 32 only, and keep the KS winner. Both outside reviewers recommend dropping non-squarefree k. Today the card's candidate list is every integer k = 1 … kc, including non-squarefree k such as 4, 8 and 9. Changing that is a card change: cost model first, and a new decision.
