@@ -84,6 +84,7 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Idea: use the paper's measured P(N, theta0) (exact to 1e8-1e9) and its heuristic P ~ 1 - f(theta0)/log log N, f(theta0) = log(1/theta0) - theta0 - log 2 + 1/2 (density ~ (1/theta + 1)/log log N), as the random-semiprime prior at 72-96 bits. Heuristic values: P(theta <= 0.1 / 0.2 / 0.3 / 0.4) = 0.49 / 0.69 / 0.82 / 0.92 at 72 bits, 0.52 / 0.71 / 0.83 / 0.92 at 96. Conditioned on p >= 2^8 it agrees closely with the improvised prior (96 bits: 9% vs 8% below 0.1; 68% vs 65% below 0.3), so the prototype's conclusions stand.
 - Use: (a) Phase 3 reports per theta band and weights bands by P(N, theta0) when a "random semiprime" summary is wanted; (b) every "best pipeline" claim names its prior (balanced/RSA-style vs random semiprime); (c) the dark-mass DP is re-run with this prior once measured lamp curves exist.
 - Caveat: the constant 1/2 is conjectural in the paper; 72-96 bits is far beyond enumeration, so it is a heuristic prior and is labelled as such.
+- Caveat (DeepSeek review, Oct 26, accepted): it is an extrapolation (C = 1/2 open, in-sample fit only); report the finite-N drift of the fitted constant and the sensitivity to the conditioning cut. The relevant cut is the pipeline's own trial-division bound, so the prior is quoted conditioned on p above that bound, at several bounds, and labelled as an extrapolation.
 - Not useful (recorded so it isn't revisited): primehelix's geometric/spectral embeddings (the paper's own separation result: theta is not recoverable from n alone) and residue labels (they need the factors first).
 - Decision: pending.
 
@@ -109,4 +110,11 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Idea: on a fixed set of known primes at 16-48 bits, compare the fraction found per curve by our ECM and by GMP-ECM at the same B1 (stage 1 only, then with stage 2). Information only; no card change.
 - If ours is lower by more than the run-to-run noise, the ECM lamp curve in Phase 3 is understated and the dark-mass result on ECM is re-run.
 - Cost: small. Timing: with Phase 3.
+- Decision: pending.
+
+### I-015 — Adaptivity belongs inside qs, not between lamps
+- Date: 2026-10-26. Source: Claude chat, from the DeepSeek review. Trigger: with found / not-found lamps the optimal schedule is open-loop (NOTES, "DeepSeek's reply (Oct 26) on the dark-mass results").
+- Idea: aim Phase 4's hazard monitor at qs's own progress signals (relations per polynomial, large-prime cycle growth, the projected finish time) to decide when to stop sieving, change polynomials, or move to linear algebra.
+- Information first: log those signals in the next qs runs.
+- Cost: small (logging).
 - Decision: pending.

@@ -4488,6 +4488,7 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
   3. Bits against mass: nearly identical schedules; bits worse by < 1%.
   4. Claude chat's pre-run expectation: the balanced prior held; "greedy-mass beats fixed by a few % to 15%" **failed** (it loses at 84–96); "bits worse than mass" held in direction only (negligible).
 - IDEAS.md: I-008 added (index rule for the hazard monitor).
+- *Annotation (Oct 26):* "ECM never chosen" holds for stage-1-only ECM (Dickman on p/12); it is to be re-checked with stage 2 and after I-014.
 
 **Index rule and the exact optimum** (user, Mathematica, Oct 26; dark-mass model, lamps td / rho / p-1 with analytic curves; prices multiply 1, small-modulus 0.114, gcd 7.9; qs at its post-Gray new-reference ruint cost; information only).
 - **Run A, index rule** (with ECM lamps available; under the balanced prior qs runs immediately everywhere). Index / best fixed: uniform 0.987 / 1.006 / 1.006; random semiprime 0.989 / 1.022 / 1.015 (72 / 84 / 96).
@@ -4505,6 +4506,8 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
   3. At 72 the optimum uses trial division instead of rho (the fixed baseline had no td stage).
   4. Claude chat's pre-run expectations: index rule "≤ fixed everywhere" **failed**; DP "beats fixed by 2–8%" **failed** (0.2–1.3%); "uses rho and p-1 with modest td" held at 84–96 and failed at 72; "index gap largest at 84–96" held.
 - *Relevant to I-010 (Claude Code, from the code):* the size-scaling pipelines fix trial division off (`sizescale.pipeline` sets td's ob = 0), and the re-solves searched rho, p-1 and ECM only. td's depth was searched only in the partition study at 84 bits, where every order's optimum turned it off (MOVES, "td and p-1 as pre-stages"). So td at 72 bits has not been tested in the current pipelines.
+
+- *Annotation (Oct 26):* "ECM never chosen" holds for stage-1-only ECM (Dickman on p/12); it is to be re-checked with stage 2 and after I-014.
 
 **Ideas checkpoint (2026-10-26):** added I-009, I-010; decided I-008 (superseded by I-009, kept as a diagnostic); parked triggers checked (none parked yet).
 
@@ -4526,3 +4529,22 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
 - *Dependence:* GP3 and GP4 come from the same sweep. GP1 shifts GP3 and GP6 (a lower word price makes re-sieve relatively cheaper and moves the best p0 down). GP3 is scored on the clean price, noting whether a miss is explained by GP1.
 - *Claude chat's own guesses:* GP2 flags the large-prime / relation-combining phase too. GP5 lands in 0.9–1.1 if our ECM uses a torsion-12 curve family, and about 0.6–0.8 if it does not (check the family first and record it).
   - *Already recorded (Check B2, Oct 25):* the ECM card uses Montgomery curves with Suyama's parametrization (σ = s0 + i), whose group orders are divisible by 12 by construction. So by Claude chat's own rule its GP5 guess is 0.9–1.1.
+
+**DeepSeek's reply (Oct 26) on the dark-mass results, with Claude chat's review** (labelled as DeepSeek's).
+- **(a) Why fixed pipelines are near-optimal.**
+  - *DeepSeek:* lamp overlap breaks Gittins-index optimality; the gap to a fixed schedule is "the value of the coupling terms".
+  - *Claude chat:* circular as a bound. The clean reason: every lamp outcome is found / not found, and after a failure the remaining dark mass is fixed by the levels reached. So there is no information to adapt to, and every policy is an open-loop sequence. The fixed pipeline already tunes the final levels, so the 0.2–1.3% gap is purely the value of interleaving order, which is small because near a tuned switch point the lamps give similar light per cost.
+  - *Consequence:* adaptivity can pay only inside a lamp that reports partial progress while running; of ours, qs (relation counts, large-prime cycle growth). See I-015.
+- **(b) Rho restarts.**
+  - *DeepSeek* agrees: no benefit for the 1 − exp(−k²/2p) curve, and degenerate cycles are negligible at 72–96 bits.
+  - Its further exception ("prior heterogeneity") is rejected: the spread over p is across numbers, and a restart on the same N does not draw a new p. Heterogeneity argues for stopping rho and handing over, which the fixed pipeline already does. I-013 stands.
+- **(c) ECM never chosen.**
+  - *DeepSeek:* plausible, but conditional on (1) stage 1 only and (2) curve-op pricing.
+  - *Claude chat:* (1) accepted. (2) does not apply: rho and ECM are both generic multiplies mod N under ruint, and audit items 1–8 are qs-only.
+  - *Note (mine):* since this review, ECM's modular additions are charged at the word-level price (Oct 25), which raised ECM's ruint cost by 4.5–4.9% and its Montgomery cost by 16.6–18.2%. The prototype's analytic ECM curve does not include them, which, if anything, favours ECM there.
+  - The annotation is added to "Dark-mass scheduler prototype" and "Index rule and the exact optimum": "ECM never chosen" holds for stage-1-only ECM (Dickman on p/12), to be re-checked with stage 2 and after I-014.
+- **(d) The primehelix prior.**
+  - *DeepSeek:* an extrapolation (C = 1/2 open, in-sample fit only); report the finite-N drift of the fitted constant and the sensitivity to the conditioning cut; the 25–45% saving depends on test-set composition.
+  - *Claude chat:* accepted. The relevant cut is the pipeline's own trial-division bound, so the prior is quoted conditioned on p above that bound, at several bounds. Added to I-011 as a caveat.
+
+**Ideas checkpoint (2026-10-26):** added I-015; I-011 amended (conditioning caveat); I-013 stands; parked triggers checked (none parked).
