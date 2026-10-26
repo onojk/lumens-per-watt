@@ -4548,3 +4548,24 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
   - *Claude chat:* accepted. The relevant cut is the pipeline's own trial-division bound, so the prior is quoted conditioned on p above that bound, at several bounds. Added to I-011 as a caveat.
 
 **Ideas checkpoint (2026-10-26):** added I-015; I-011 amended (conditioning caveat); I-013 stands; parked triggers checked (none parked).
+
+**ECM stage-2 DP** (user, Mathematica, Oct 26; information only; no card changes).
+- *Setup:* exact DP over lamp levels; prices multiply 1, small-modulus 0.114, gcd 7.9; qs 10,736 / 26,606 / 69,874; factor prior on p ≥ 2^8; priors uniform, random semiprime 1/(θ(1 − θ)) and primehelix (1/θ + 1); B2 = 100 B1 for p-1 and ECM; ECM per curve 9 × 1.44 × B1 + 28 multiplies for stage 1, Dickman on p/12.
+  - Arms: S1 (stage 1 only); S2 (stage 2 at 1 multiply per prime for p-1 and 2 for ECM); S2pess (6 per prime for ECM).
+- *ECM chosen:* S1 0 of 9 cells; S2 3 of 9 (96 bits only, B1 2^8, 1–2 curves; gain over no-ECM 4.2 / 6.2 / 7.4% under the uniform / random-semiprime / primehelix priors); S2pess 0 of 9.
+- *Stage 2 without ECM* (S1 → S2, the no-ECM optimum): about 6–7% cheaper at every size and prior (72 uniform 7,636 → 7,160; 84 random semiprime 14,656 → 13,682; 96 uniform 47,275 → 44,125). With ECM at 96: up to 12.5% (primehelix 33,736 → 29,516).
+- *S2 optima at every size:* td to 2^12, then p-1 with stage 2 (B 2^7–2^10), no rho (plus 1–2 ECM curves at 96).
+- *S1 optima:* rho and p-1 interleaved (td to 2^10 only at 72 / primehelix). Fixed rho → p-1 over the optimum is 1.025–1.072, against 0.2–1.3% in the earlier dark-mass model, so the near-optimality margin is model-dependent.
+- *Pre-run predictions:* Claude chat's sealed "ECM never chosen in any arm, 0% gain" **failed** (S2 at 96). DeepSeek's (c), that stage-1-only made "ECM never chosen" an artifact, **held** at 96 bits with a cheap stage 2. Grok's GP7 (fixed within 1–2% of the optimum, strict reading) is at risk; it is scored on measured curves later.
+- *Caveat (Claude chat, a flaw in its prompt):* the DP extends p-1's bound in steps and charges only the cost difference, but a completed stage 2 cannot be reused after stage 1 is extended. Stage 2 is most of p-1's cost (about 9,600 of 11,100 multiplies at B = 2^10), so the S2 p-1 paths are undercharged, possibly by up to about 2x, and "no rho" may be partly an artifact. A rerun with stage 2 as a one-shot step that ends p-1 is pending.
+
+**Stage 2 in the cards today (from the code):**
+- **p-1 (`lamp_pm1`, lamps.py / main.rs): no stage 2.** Stage 1 to B (charged bit_length(p^e) multiplies per prime power), then one gcd. The pm1 stage-2 cost model is already written ("pm1 stage 2: cost model", Oct 25: gap stepping 2 mul + 3 word per prime; paired BSGS with f(n) = b^{n²}, D = 210 / 2310), with the stage-2 typing rule fixed and DeepSeek's and Grok's predictions pre-registered. No code yet.
+- **ECM (`ecm.py` / ecm.rs): yes, stage 2.** B2 = int(b2 · B1) with b2 = 50 by default (not 100), a baby-step giant-step stage 2 with W = 210 and the 24 baby values b < W/2 coprime to W.
+  - *Setup:* 2Q (one xDBL, 5 multiplies); baby steps 3Q … 103Q (one xADD each, 6 multiplies); a ladder for W·Q and one for j0·W·Q.
+  - *Per giant step:* one xADD (6 multiplies).
+  - *Per (j, b) pair with jW + b or jW − b prime in (B1, B2]:* 3 multiplies (S·Z_b, X_b·S′, and the accumulation), so both primes of a pair share one product (pairing).
+  - *Word ops* (since Oct 25): 4 per (j, b) candidate (two indices, two prime-table tests) and 1 per accumulated pair, plus each xADD's / xDBL's adds.
+  - *Per prime in (B1, B2]:* ≤ 3 multiplies (fewer with pairs carrying two primes), plus the giant steps' 6 multiplies per 24 candidates (~0.25 per candidate) and ~4–5 word ops. That is roughly the model's S2 "2 multiplies per prime" for ECM, plus about 1 for the accumulation.
+
+**Ideas checkpoint (2026-10-26):** added I-016; I-014 updated (cover stage 2 and its per-prime cost); parked triggers checked (none parked).

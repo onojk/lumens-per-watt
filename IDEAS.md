@@ -110,6 +110,7 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Idea: on a fixed set of known primes at 16-48 bits, compare the fraction found per curve by our ECM and by GMP-ECM at the same B1 (stage 1 only, then with stage 2). Information only; no card change.
 - If ours is lower by more than the run-to-run noise, the ECM lamp curve in Phase 3 is understated and the dark-mass result on ECM is re-run.
 - Cost: small. Timing: with Phase 3.
+- Update (2026-10-26, the user's stage-2 DP): ECM pays at 96 bits only with a cheap stage 2 (2 multiplies per prime: chosen; 6: not chosen), so the GMP-ECM cross-check should cover stage 2 and our stage-2 cost per prime (ours: <= 3 multiplies per prime with pairing, plus giant steps ~0.25 per candidate and ~4-5 word ops; NOTES, "Stage 2 in the cards today").
 - Decision: pending.
 
 ### I-015 — Adaptivity belongs inside qs, not between lamps
@@ -117,4 +118,10 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Idea: aim Phase 4's hazard monitor at qs's own progress signals (relations per polynomial, large-prime cycle growth, the projected finish time) to decide when to stop sieving, change polynomials, or move to linear algebra.
 - Information first: log those signals in the next qs runs.
 - Cost: small (logging).
+- Decision: pending.
+
+### I-016 — Stage 2 for p-1 (and ECM)
+- Date: 2026-10-26. Source: Claude chat, from the user's DP. Trigger: in the model, stage 2 cuts expected cost about 6-7% at every size (up to 12.5% at 96 with ECM), pending the undercharge fix.
+- Idea, information step first (from the code): do lampcore's p-1 and ECM have a stage 2? If not, cost a plain prime-by-prime stage 2 (B2 = 100 B1) as a new lamp option, priced by the op meter's existing types.
+- Information step answered (Claude Code, from the code): p-1 has no stage 2; its cost model is already written (NOTES, "pm1 stage 2: cost model", Oct 25; MOVES row "pm1 stage 2 (B2 = c x B)"), with predictions pre-registered. ECM has a baby-step giant-step stage 2 (B2 = 50 B1 by default; NOTES, "Stage 2 in the cards today").
 - Decision: pending.
