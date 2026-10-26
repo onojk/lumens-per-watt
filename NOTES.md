@@ -3077,3 +3077,10 @@ Mine: Track R 5 held, 2 missed. Track M 0 held, 6 missed.
   - With `kset` = sf32, the multiplier-phase charge equals today's kc = 20 charge, and every other phase follows from the selected k. The selected k equals the top squarefree KS pick (checked in Python against `kcheck.py`'s scoring).
   - Python = Rust parity pairs: kset with both a_modes, sort_charge, a retry and a low cap.
 - **Corrected card for future rounds:** a_mode = on_demand, sort_charge = 1, kset = sf32. Past results keep their recorded cards.
+
+**Item 1 (user's order, Oct 25): the slack observation.**
+- The user's threshold-slack context is recorded above under "Outside context: threshold slack against relation type". It covers the shortfall bands, the catch table at t = 2.0 / 2.2 / 2.5 / 3.0, and about 0.5 units more slack when skipping primes below 30.
+- **Observation:** all eight frozen genomes of the kc / lc round have slack tc + lc − 1 between 1.91 and 2.28 (R 2.06 / 2.23 / 2.01 / 2.01; M 2.28 / 2.19 / 2.06 / 1.91 at 54 / 72 / 84 / 96). That is the Mathematica knee: every full relation and most partials are caught before candidates per useful relation climb.
+- **R@96's tc "demand"** (tc 1.035 with lc 1.97; `dvd.out`) is demand for slack near 2.0. It is a product of the tc / lc coupling: with lc at 1.97, only a tc near 1.0 keeps the slack there. Replacing tc by the interior median 1.40 at the same lc raises the slack to 2.37, past the knee.
+- This is added as evidence on the "qs threshold reparameterization" MOVES row.
+- **Open (user, Oct 25):** the Track M 54-bit retune (its budgets moved at the kc / lc re-solve: rho off, ECM on) is skipped for now.
