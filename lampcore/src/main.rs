@@ -400,7 +400,11 @@ fn lamp_rho(num: &Num, g: &Value, m: &mut Meter) -> R {
 // ---- p - 1 ------------------------------------------------------------------------
 
 fn lamp_pm1(num: &Num, g: &Value, m: &mut Meter) -> R {
-    let bnd = (num.f.powf(gf(g, "b")) as u64).max(10);
+    // the absolute bound "B" if given (NOTES.md, "(A1)"), else N^b
+    let bnd = match g.get("B").and_then(|v| v.as_u64()) {
+        Some(b) => b,
+        None => (num.f.powf(gf(g, "b")) as u64).max(10),
+    };
     // Each prime ticks at least once, so if even a lower bound on pi(B) can't fit in the
     // remaining budget the run would miss anyway; stop before sieving a huge range.
     let lower_pi = bnd as f64 / (bnd as f64).ln();

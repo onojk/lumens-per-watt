@@ -595,9 +595,9 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
             m.charge(SETUP, c + sort_cost(c))?; // sort_charge: the candidate sort (C keys + comparisons)
         }
     }
-    let lc = gene(g, "lc", 1.0).max(1.0).min(2.0);
+    let lc = gene(g, "lc", 1.0).max(1.0).min(3.0); // clamp 3.0 (NOTES.md, "(A2)")
     let lp_on = lc > 1.0; // lc = 1.0: no large-prime work at all
-    let l_bound = (bnd as f64).powf(lc); // <= B^2, so a cofactor below it is prime
+    let l_bound = (bnd as f64).powf(lc); // lc <= 2: a cofactor below it is prime; above, filed the same way
     let thr = (mm_ as f64 * (kn_u.to::<u128>() as f64 / 2.0).sqrt()).log2()
         - (gene(g, "tc", 2.0) + (lc - 1.0)) * (bnd as f64).log2();
     let width = (2 * mm_ + 1) as usize;

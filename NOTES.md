@@ -2797,3 +2797,60 @@ Mine: Track R 5 held, 2 missed. Track M 0 held, 6 missed.
 - (L3) The kc / lc part, (d) against (c+p): at most 2% under the track's metric in every cell, with the interval including 0 in at least four of eight.
 - (L4) PD_R at 72 falls by more than 0.15 (Track M's ECM halves there). At 84–96, PD_R stays within 0.15. PD_M stays within 0.15 at 72–96.
 - (L5) Track M at 72 settles within the two re-solves.
+
+### Addendum (user, Oct 25): outside predictions, two checks, a reporting rule
+
+**Timing.** This addendum arrived after the p-1 map check (step 1) had run and been recorded, and after step 2's protocol, predictions and card amendments were committed, but **before any step-2 tuning ran**. So the step-1 predictions below are **post hoc**: recorded after the result was known, and scored now only for the record. The step-2 predictions are pre-registered.
+
+**DeepSeek's predictions** (labelled as DeepSeek's; its stated confidence: medium).
+- *Step 1, post hoc (the result was already recorded above):*
+  - (D-a1) Track R: p-1 off at all four sizes; if on anywhere, at 84 with B = 2^10 and gain ≤ 1% (undecided). Scored post hoc: **missed** (on at all four sizes; 84 with B 2^11, 1.8%).
+  - (D-a2) Track M: p-1 on at 72 / 84 / 96 with B = 2^10, off at 54; gain 4–10% at 84–96 and 1–3% at 72; ECM falls ≥ 2 grid steps at 96 and 1 at 84. Scored post hoc: **missed.** On at 72–96, but with B 2^11 / 2^12 / 2^13; also on at 54 (2^10); gain 3.7% / 4.5% at 84 / 96 and 7.8% at 72; ECM unchanged at 84 and 96.
+  - (D-a3) Official: p-1 on at 84–96. Scored post hoc: **held.**
+- *Step 2, pre-registered:*
+  - (D-b1) kc hits 64 again for Track R at 72 and 84; it settles at 20–40 for Track M. Scoring rule: if kc hits 64 again, note "kc is effectively unbounded"; restructuring is a separate decision.
+  - (D-b2) lc hits 2.5 for Track R at 96 (DeepSeek said 90–96; scored at 96); it settles at 1.8–2.2 for Track M.
+  - (D-b3) Gain from the kc / lc round: 3–8% for Track R at 72–84 and 1–3% for Track M. PD_M and PD_R unchanged within intervals.
+  - *Scoring choices (mine):*
+    - "hits 64" means the frozen genome's kc is within the bound-hit rule (≥ 57.6); "settles at 20–40" applies to all four Track M frozen genomes.
+    - "Gain from the round" is (d) against (c) on the sealed numbers, under the track's metric. That includes the p-1 budgets; the (d) against (c+p) gain is reported beside it.
+    - "Unchanged within intervals" means (d)'s PD interval overlaps the final round's.
+
+**Grok's predictions** (labelled as Grok's).
+- (G-a) p-1: the same as the user's prediction already on record (off under Track R; Track M on at 84 or 96 with B ≤ 2^12 and gain ≤ 5%). **Not independent** of P1–P2, and post hoc for step 1. As scored for P1 and P2: missed.
+- (G-b1) Track R: kc mostly ≥ 40, several at 64; lc 1.6–2.2. Gain 3–12% on the robust score, largest at 84–96. No size loses more than 2%. Pre-registered. *Scoring (mine):*
+  - "mostly ≥ 40": at least three of the four Track R genomes;
+  - "several at 64": at least two at the bound-hit rule;
+  - the gain is (d) against (c), as for D-b3.
+- (G-b2) Track M: kc moves up less than in Track R. ECM budgets stay within one grid step after the re-solve, or drop further at 84. Pre-registered.
+- (G-rho) Track R's rho budget goes to zero somewhere in 110–130 bits. Untested at our sizes (the study stays at 40–100 bits). The observed trend points the other way: Track R's rho rises 1,448 → 5,793 → 12,634 from 72 to 96 bits, with no p-1. With p-1 in the step-1 joint optima it is 790 → 3,158 → 10,624, still rising.
+
+**Check B1: absolute sieve interval M and s, final frozen genomes** (information only).
+- *Formulas, from qs.py / qs.rs:*
+  - B = max(30, ⌊bc · e^{0.5 √(ln N ln ln N)}⌋) and M = max(64, ⌊mc · B⌋), with sieve width 2M + 1.
+  - The target A is √(2kN) / M. s starts at 1 and rises while target^{1/s} exceeds the largest pool prime (s ≤ 8), then falls while target^{1/s} is below the third pool prime.
+  - Pool primes are the factor-base primes > 2 that do not divide k. k is the top-ranked multiplier.
+- *Computed* on each size's map numbers (first attempt; base built with the card's own `Ledger`; no sieving):
+
+| bits | track | bc | mc | mc·bc | B (median) | M (median, range) | s |
+|---|---|---|---|---|---|---|---|
+| 54 | R | 0.943 | 0.289 | 0.273 | 298 | 86 (80–91) | 3 (all 320) |
+| 54 | M | 0.728 | 0.944 | 0.687 | 230 | 217 (202–230) | 3 (all) |
+| 72 | R | 0.572 | 0.350 | 0.200 | 584 | 204 (192–215) | **4** (all 480) |
+| 72 | M | 0.659 | 1.603 | 1.057 | 674 | 1,080 (1,018–1,136) | **3** (all) |
+| 84 | R | 0.526 | 0.512 | 0.269 | 1,095 | 560 (527–587) | 4 (all 560) |
+| 84 | M | 0.513 | 0.672 | 0.345 | 1,069 | 718 (675–753) | 4 (all) |
+| 96 | R | 0.479 | 0.518 | 0.248 | 1,943 | 1,007 (954–1,056) | 4 (all 640) |
+| 96 | M | 0.433 | 0.984 | 0.426 | 1,755 | 1,727 (1,638–1,810) | 4 (all) |
+
+- **Track M's wider mc is not the same absolute sieve in other coordinates.** Its B is similar to Track R's, so M = mc·B is also wider in absolute terms: 2.5x / 5.3x / 1.28x / 1.7x Track R's at 54 / 72 / 84 / 96.
+- **Only at 72 does s differ** (Track M 3, Track R 4). At the other sizes both tracks use the same s, and Track M simply sieves a wider interval with fewer polynomials.
+
+**Check B2: ECM curves.** The ECM card uses Montgomery curves, x-only, with **Suyama's parametrization** (σ = s0 + i, s0 = 6; `ecm.py` header). Suyama's family gives group orders divisible by 12 by construction; the card adds no further torsion step.
+
+**Check E (hypothesis: is Track M's ECM dip at 84 tied to the qs s = 3 → 4 step?).**
+- The final Track M genomes use s = 3 at 72 and s = 4 at 84 and 96.
+- The 84-bit dip (ECM 32,768, against 35,734 at 72 and 120,194 at 96) therefore coincides with Track M's s = 3 → 4 step between 72 and 84. Under s = 4, qs is cheaper relative to ECM, so less ECM pays.
+- This is consistent with the hypothesis but does not test it. A test would re-solve 84 with an s = 3 genome, or 72 with an s = 4 genome. Step 2's re-solve reports the s of the new genomes beside the budgets.
+
+**Reporting rule (adopted from Grok, Oct 25).** Every cross-pricing table carries the gate status on the same row as PD_M and PD_R. Examples: "M: conditional on a fast multiply"; "M: passes ruint gate against qs alone; 1.5x Track R under ruint".

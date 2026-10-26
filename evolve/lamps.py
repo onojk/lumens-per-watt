@@ -202,8 +202,8 @@ def primes_segmented(n, seg=1 << 22):
         lo = hi + 1
 
 def lamp_pm1(N, g, m):
-    """Pollard p-1 with bound N^b."""
-    B = max(10, int(N ** g["b"]))
+    """Pollard p-1 with bound N^b, or the absolute bound g["B"] if given (NOTES.md, "(A1)")."""
+    B = int(g["B"]) if "B" in g else max(10, int(N ** g["b"]))
     # Same guard as lampcore: each prime ticks at least once, so if a lower bound on pi(B)
     # can't fit in the budget the run would miss anyway; stop before sieving a huge range.
     if B > (1 << 26) and m.ops + B / math.log(B) > m.cap:

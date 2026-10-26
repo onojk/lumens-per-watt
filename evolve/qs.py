@@ -26,7 +26,7 @@ per dependency tried (hit = it splits N).
 Genes: kc (multipliers 1..kc ranked by ks score, default 16), bc (B = bc * exp(0.5 sqrt(ln N ln ln N)),
 default 1.5),
 mc (M = mc * B), tc (threshold = log2(M sqrt(kN/2)) - (tc + lc - 1) * log2(B)),
-lc (large-prime bound L = B^lc, 1.0..2.0, default 1.0 = no large primes: today's qs op for op;
+lc (large-prime bound L = B^lc, 1.0..3.0, default 1.0 = no large primes: today's qs op for op;
 NOTES.md, "Stage 7").
 Not a gene: "check": 1 turns the ledger's charged relation check on (phase "check"), for the
 acceptance test only; mutation never sets it, and absent it is off.
@@ -199,9 +199,9 @@ def sieve_source(N, k, g, led, ch, at):
             charge("setup", len(combos) + sort_cost(len(combos)))
         if at is not None:
             at["combos"], at["s"] = len(combos), s
-    lc = min(2.0, max(1.0, g.get("lc", 1.0)))
+    lc = min(3.0, max(1.0, g.get("lc", 1.0)))    # clamp 3.0 (NOTES.md, "(A2)"): above 2.0 a cofactor may be composite
     LP = lc > 1.0                              # lc = 1.0: no large-prime work at all
-    L = B ** lc                                # <= B^2, so a cofactor below it is prime
+    L = B ** lc                                # lc <= 2: a cofactor below L is prime; above, filed the same way
     T = math.log2(M * math.sqrt(kN / 2)) - (g.get("tc", 2.0) + (lc - 1.0)) * math.log2(B)
     width = 2 * M + 1
     chk = bool(g.get("check", 0))              # ledger check: qs's acceptance test only

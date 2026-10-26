@@ -215,6 +215,25 @@ def lp_pairs():
         g = [dict(st, lc=rng.uniform(1.0, 2.0)) if st["t"] == "qs" else st for st in g]
         for b in (34, 46, 60, 72, 84):
             yield f"random lc qs {i}", g, semiprimes_pq(b, 2, 1900000 + b), min(cap_for(b), 2 ** 24), False
+    # lc above 2.0 (NOTES.md, "(A2)": clamp 3.0, composite cofactors filed like primes), and the
+    # pm1 absolute bound "B" ("(A1)") alone and in a corrected-card pipeline
+    card = {"a_mode": "on_demand", "sort_charge": 1}
+    for b in (48, 60, 72, 84, 96):
+        nums = semiprimes_pq(b, 4, 2500000 + b)
+        for lc in (2.3, 2.5, 3.0):
+            yield f"lc {lc} tuned", [dict(TUNED, lc=lc)], nums, 2 ** 29, False
+            yield f"lc {lc} tuned corrected card", [dict(TUNED, lc=lc, kc=48, **card)], nums, 2 ** 29, False
+        yield "lc 2.5 low cap", [dict(TUNED, lc=2.5, **card)], nums, 2 ** 14, False
+        for B in (256, 2048, 32768):
+            yield f"pm1 B {B} alone", [{"t": "pm1", "b": 0.2, "B": B}], nums, 2 ** 29, False
+        yield "rho pm1 B ecm qs pipeline", [{"t": "td", "a": 0.5, "ob": 0}, {"t": "rho", "c": 1, "b": 64, "ob": 1448},
+                                             {"t": "pm1", "b": 0.2, "B": 2048, "ob": 4096},
+                                             {"t": "ecm", "b1": 1.0, "b2": 50, "ob": 17867}, dict(TUNED, lc=2.2, kc=40, **card)], nums, 2 ** 29, False
+    rng = random.Random(2031)
+    for i, g in enumerate(random_qs_genomes(15, wide=True)):
+        g = [dict(st, lc=rng.uniform(2.0, 3.0), kc=rng.randint(1, 64)) if st["t"] == "qs" else st for st in g]
+        for b in (46, 60, 72, 84):
+            yield f"random lc>2 qs {i}", g, semiprimes_pq(b, 2, 2600000 + b), min(cap_for(b), 2 ** 24), False
 
 def check_pairs():
     """The ledger's charged relation check (opt-in, "check": 1)."""
