@@ -191,3 +191,9 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Cost: small.
 - Decision: adopted 2026-10-26 (the user), as the multiplicativity form: (N / p) once per number by the Legendre power, (k / p) from a constant table, identical rankings (NOTES.md, "I-021 adopted").
 
+### I-022 — Sparse GF(2) rows from F ~ 1,000
+- Date: 2026-10-26. Source: the user, from the Wolfram ω-against-u run. Trigger: touched entries per relation stay near u + 2.5 (+0.5 for the sign), under ~9 well past 96 bits, while dense bit rows cost F/64 words.
+- Idea: dense bit rows and sparse rows (~8 entries) break even near F ~ 500. Keep solve dense at F <= 400 (today's sizes); switch to sparse rows (and a sparse solver) from F ~ 1,000, around 120-128 bits.
+- Cost: moderate (solve in both cores).
+- Decision: pending (not at today's sizes).
+

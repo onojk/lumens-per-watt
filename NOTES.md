@@ -5567,3 +5567,59 @@ Time shares (new reference, 96): sieve 24%, confirm 29%, setup 24%, solve 8%, lp
 - *Step 5:* add a third anchor column, the calibrated clean multiply (ns per ruint unit), information only. The rule stays on the time-weighted mean, since a uniform scale factor changes no decision.
 - *Step 1 (record only):* for the Wolfram cross-check, also report u = log|Q| / log p_max (median per size). If u stays in a narrow band (about 4.5–6), the flat ~7 touched entries per relation follows from parameter choice.
 - *Timing note (mine):* step 1's code had been drafted, uncompiled into the main build and not run, when this message arrived. No step-1 number exists yet.
+
+### Step 2: audit items 14 and 15 (cost model and estimate, before code)
+
+**Item 14, solve's uncharged copies**, charged as word, one per 64-bit word moved or initialized. *rows* = relations in the ledger (F + 10), *cw* = ⌈F/64⌉, *rw* = ⌈rows/64⌉. Disjoint from step 1, which charges 1 word per sparse entry for setting the row bits.
+- *Row initialization:* each bit row is allocated zeroed, rows × cw.
+- *Combination matrix:* rows × rw (zeroed rows, plus the identity bit, which is counted within the row).
+- *Per pivot:* the row pair is cloned, cw + rw words per pivot found. The number of pivots is counted.
+- *Dependencies:* the dependency rows are collected (rw words each, for every dependency collected).
+- *Per dependency tried* (until one splits N):
+  - members are found by a scan of rows bits, counted as rw words;
+  - ex[] is allocated (F words);
+  - each member's sparse entries are added (Σ nnz over members);
+  - the exponent scan for Y runs over j in 1..F (F − 1 words).
+  - The multiplies and the gcd are already charged (sqrt).
+- The elimination's XORs stay as charged (la, ⌈rows · F · rows / 64⌉).
+- *Python* follows the same counts. Its big-int rows are one object per row, but its counts follow lampcore's physical layout, as with every twin.
+- *Estimate at 96* (F ≈ 122, rows ≈ 132, cw = 2, rw = 3):
+  - row init ≈ 260, comb init ≈ 400, pivot clones ≈ 120 × 5 = 600, dependency rows ≈ 10 × 3 = 30;
+  - per dependency tried ≈ 3 + 122 + ~800 (about 60 members × 13 entries) + 121 ≈ 1,050, with 1–2 tried on average;
+  - total ≈ 2,500–3,500 word, **about 65–90 ruint units per number: ~0.1–0.15% of qs's cost at 96**, more in share at 54.
+  - **So item 14 cannot explain solve's 2.3–2.6x at 84–96.** That time is probably in the elimination itself (priced at la = 0.0167 per word-XOR, a price calibrated on a different loop) and in the per-row heap vectors. It will still flag; P6 and D-P6 are expected to miss.
+  - A check of the la price against the card's elimination loop is the information step that would tell. It is offered, not done.
+
+**Item 15, the A-prime adds:** for a kept candidate (smooth or partial), s word ops for adding the A's primes into the exponent vector (s = 3–4 at these sizes). They are charged in step 1's per-candidate lump at the sparse-copy point. Size: s × kept ≈ 3–4 × (F + 10 + partials) per number, ≈ 0.05% at 96.
+
+**Acceptance:** as in step 1.
+1. Against the step-1 build: factor, tests, hits and every type but word identical.
+2. The word change equals the formula from the trace (pivots, dependencies collected, members, nnz, kept candidates, s).
+3. Python = Rust per type; cfrac_accept follows (shared ledger: items 14's charges also apply to cfrac's solve, in cfrac_ops).
+4. Parity passes.
+
+**Wolfram cross-checks (user, Oct 26; recorded as given, with the user's scoring; no code change).**
+1. *Distinct primes per full relation against Dickman u* (plain QS, interval 60,001, 3 semiprimes per size, F 32–512, 1,993 full relations):
+   - pooled fit ω = 2.52 + 0.98 u (R² 0.19 per relation: u sets the mean, not the single relation);
+   - median u at mid F 4.35 / 4.65 / 4.96 / 5.10 at 54 / 72 / 84 / 96 (all cells 3.84–5.53), rising about 0.25 per 12 bits. The flat ~7 touched entries per relation follows from F keeping u in this band;
+   - α = u / Ω is 0.53–0.68 but falls as F grows within a size, so ω ≈ u + c fits better than Ω = u / α (the through-origin R² in the printout is uncentered and inflated);
+   - within-cell dω/du is 0.68–1.96 (above 1.4 at 72–84), possibly a threshold selection effect (not tested there);
+   - *use:* predicted touched entries per relation = u + 2.5 (+0.5 for the sign), under ~9 well past 96 bits. Dense bit rows (F/64 words) and sparse rows (~8 entries) break even near F ~ 500. Solve stays dense at F ≤ 400; IDEAS entry I-022 (sparse rows from F ~ 1,000, around 120–128 bits);
+   - *the user's scoring:* u band held; ω/u held at mid F, missed in 5 edge cells (to 1.67); α range held, α constant missed; within-cell slope missed.
+2. *Exact smoothness at every position* (no threshold; plain QS, interval 60,001, 4 semiprimes per size, 12 cells, 1,219 exact full relations, no KS multiplier):
+   - pooled within-cell dω/du 1.44 exact, 1.47 threshold-passing;
+   - the threshold misses 0–5.8% of smooth relations at 54 bits and none at 72–96. **Threshold selection does not explain the slope above 1** (DeepSeek's F2 refuted);
+   - typical factor size against u within cells falls at 54 and 96, rises at 72–84 (6 of 12 cells): not established per cell;
+   - c = mean(ω − u) = Σ_FB 2/p + 0.43–0.60 at 54–84 (0.6–0.9 at 96, small samples). Working model: ω ≈ u + Σ_FB 2/p + 0.5 (+0.5 for the sign entry);
+   - the base's Σ 2/p is 0.4–0.7 below ln ln p_max + M: no prime 2 (−0.5), plus each N's quadratic character (84 bits drew 2.02–2.08, 96 bits 1.78–1.84). The KS multiplier raises this sum by design, so the card's c should run above these multiplier-free figures. To-do: measure touched entries per relation in the card with KS on;
+   - mean ω over all positions = Σ 2/p in every cell (nearly true by construction; it confirms the code only);
+   - *the user's scoring:* slope held, threshold-miss held, factor-size signature missed, c within ±0.4 missed (a steady +0.5). DeepSeek's F1 extra 0.4–0.9 held; the user's dismissal of it was wrong.
+
+**DeepSeek, Oct 26, round 3** (recorded as given):
+- **(G4, sealed)** the card's touched entries per full relation (distinct base primes + sign), KS on: 7.3–7.6 / 7.6–7.9 / 7.9–8.2 at 72 / 84 / 96. Falsified if < 7.3 at 72, > 8.5 at 96, or if the KS gain is > 0.6.
+  - The user's, sealed earlier: 7.5–9.0 at each size.
+  - Caveat noted by the user after sealing, before measuring: SIQS residues are much smaller than plain-QS residues, so u should be about 0.4–0.5 lower and both predictions may run high.
+  - **Timing (mine):** step 1's acceptance (`s1_accept.py`, uncommitted and not yet reported) had already run when this arrived, and it measures touched entries per full relation in the card. No one had read the number into this conversation's record before G4 was recorded, but the measurement existed. **G4 and the user's 7.5–9.0 are therefore scored as post hoc**, against that existing output, with the definition stated there: the card's full relation includes the A-primes' entries, which are base primes.
+- (G3) DeepSeek: KS raises the base's Σ 2/p by 0.1–0.3 over k = 1. The user expects 0.3–0.8. Wolfram to test.
+- (G1) its saddle-point formula is not usable: a sign error in the saddle equation, α 0.1–0.3 where ~0.7–0.8 is standard, and large primes counted twice. A corrected tilted-valuation model is the next Wolfram test.
+- (F3) it repeated the "card F 57–151" misattribution after conceding it. To-do (low priority): read the SIQS factor-base schedule from msieve's or YAFU's source, to place "F = 1,000 base primes" in bits.
