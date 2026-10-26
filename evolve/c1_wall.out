@@ -1,0 +1,36 @@
+54 new ref              setup           34.3 ->      30.2 us ( -12.0%)  C after  2.31
+54 new ref              confirm         31.4 ->      32.1 us (  +2.3%)  C after  1.83
+54 new ref              lp_ledger       18.1 ->      19.2 us (  +6.6%)  C after  2.85
+54 new ref              solve           17.9 ->      18.1 us (  +1.4%)  C after  2.01
+54 new ref + re-sieve   setup           34.6 ->      30.8 us ( -10.9%)  C after  2.32
+54 new ref + re-sieve   resieve         16.5 ->      16.6 us (  +0.6%)  C after  3.85
+54 new ref + re-sieve   confirm         26.3 ->      26.3 us (  +0.1%)  C after  2.94
+54 new ref + re-sieve   lp_ledger       18.8 ->      19.5 us (  +3.5%)  C after  2.89
+54 new ref + re-sieve   solve           18.0 ->      18.4 us (  +2.3%)  C after  2.04
+72 new ref              setup          145.9 ->     131.1 us ( -10.1%)  C after  2.90
+72 new ref              confirm        126.6 ->     127.5 us (  +0.7%)  C after  1.52
+72 new ref              lp_ledger       42.6 ->      43.3 us (  +1.6%)  C after  2.53
+72 new ref              solve           41.9 ->      42.1 us (  +0.6%)  C after  2.27
+72 new ref + re-sieve   setup          144.7 ->     131.7 us (  -9.0%)  C after  2.89
+72 new ref + re-sieve   resieve         82.7 ->      82.2 us (  -0.6%)  C after  2.75
+72 new ref + re-sieve   confirm         77.1 ->      77.9 us (  +1.0%)  C after  2.83
+72 new ref + re-sieve   lp_ledger       43.4 ->      44.8 us (  +3.2%)  C after  2.62
+72 new ref + re-sieve   solve           41.9 ->      42.4 us (  +1.1%)  C after  2.28
+84 new ref              setup          235.1 ->     199.2 us ( -15.3%)  C after  1.86
+84 new ref              confirm        286.7 ->     292.2 us (  +1.9%)  C after  1.37
+84 new ref              lp_ledger       75.5 ->      78.7 us (  +4.3%)  C after  2.80
+84 new ref              solve           83.5 ->      85.4 us (  +2.3%)  C after  2.62
+84 new ref + re-sieve   setup          239.1 ->     198.6 us ( -17.0%)  C after  1.84
+84 new ref + re-sieve   resieve        199.9 ->     191.7 us (  -4.1%)  C after  1.74
+84 new ref + re-sieve   confirm        125.7 ->     122.5 us (  -2.6%)  C after  2.74
+84 new ref + re-sieve   lp_ledger       78.0 ->      79.0 us (  +1.2%)  C after  2.81
+84 new ref + re-sieve   solve           84.1 ->      84.3 us (  +0.3%)  C after  2.59
+96 new ref              setup          506.1 ->     388.7 us ( -23.2%)  C after  1.32
+96 new ref              confirm        572.0 ->     570.9 us (  -0.2%)  C after  1.28
+96 new ref              lp_ledger      194.1 ->     194.8 us (  +0.3%)  C after  3.72
+96 new ref              solve          166.1 ->     165.7 us (  -0.2%)  C after  2.81
+96 new ref + re-sieve   setup          503.1 ->     385.6 us ( -23.4%)  C after  1.30
+96 new ref + re-sieve   resieve        519.3 ->     500.1 us (  -3.7%)  C after  1.24
+96 new ref + re-sieve   confirm        180.4 ->     178.5 us (  -1.0%)  C after  2.70
+96 new ref + re-sieve   lp_ledger      192.2 ->     195.8 us (  +1.9%)  C after  3.74
+96 new ref + re-sieve   solve          164.4 ->     163.4 us (  -0.6%)  C after  2.77

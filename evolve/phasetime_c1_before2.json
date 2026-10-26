@@ -1,0 +1,1186 @@
+{
+ "54": {
+  "new ref": {
+   "overhead_ns_per_region": 40.53,
+   "median_ns_per_priced_unit": 41.9537477006093,
+   "weighted_ns_per_priced_unit": 47.81016085471516,
+   "regions": {
+    "mult": {
+     "ns_per_number": 1756.13875,
+     "priced_ruint_per_number": 61.8217420905529,
+     "ns_per_priced_unit": 28.406490833398223,
+     "ratio_to_median": 0.6770906627010504,
+     "ratio_B": 0.5941517519616691,
+     "ratio_C": 1.0405307997581767,
+     "time_share": 0.015259698762642816,
+     "materiality_B": -0.006193122008411272
+    },
+    "fb": {
+     "ns_per_number": 5446.5854375,
+     "priced_ruint_per_number": 325.3443977620009,
+     "ns_per_priced_unit": 16.74098424612905,
+     "ratio_to_median": 0.3990342976173716,
+     "ratio_B": 0.35015536335469183,
+     "ratio_C": 0.6132228661585732,
+     "time_share": 0.047327270160884,
+     "materiality_B": -0.030755372681113995
+    },
+    "setup": {
+     "ns_per_number": 33900.211125,
+     "priced_ruint_per_number": 478.68589767202974,
+     "ns_per_priced_unit": 70.81932283751262,
+     "ratio_to_median": 1.688033291874044,
+     "ratio_B": 1.4812609196759947,
+     "ratio_C": 2.5941143896524768,
+     "time_share": 0.29457069366386496,
+     "materiality_B": 0.14176536294226735
+    },
+    "gray": {
+     "ns_per_number": 579.92809375,
+     "priced_ruint_per_number": 16.105730625,
+     "ns_per_priced_unit": 36.00756198230528,
+     "ratio_to_median": 0.8582680679509912,
+     "ratio_B": 0.753136181485031,
+     "ratio_C": 1.3189583143701569,
+     "time_share": 0.005039196370229107,
+     "materiality_B": -0.0012439952582015286
+    },
+    "sieve": {
+     "ns_per_number": 7711.209343750001,
+     "priced_ruint_per_number": 306.0208069810641,
+     "ns_per_priced_unit": 25.198317133472408,
+     "ratio_to_median": 0.6006213631567043,
+     "ratio_B": 0.5270494113174958,
+     "ratio_C": 0.9230152796143739,
+     "time_share": 0.0670053728279167,
+     "materiality_B": -0.03169023052385387
+    },
+    "scan": {
+     "ns_per_number": 4652.01871875,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "resieve": {
+     "ns_per_number": -240.47503125000003,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "confirm": {
+     "ns_per_number": 30762.60640625,
+     "priced_ruint_per_number": 642.2264961667645,
+     "ns_per_priced_unit": 47.89993341891331,
+     "ratio_to_median": 1.1417319320490087,
+     "ratio_B": 1.0018776879766405,
+     "ratio_C": 1.75457631571111,
+     "time_share": 0.26730695790017794,
+     "materiality_B": 0.0005019190609214996
+    },
+    "lp_ledger": {
+     "ns_per_number": 17374.59596875,
+     "priced_ruint_per_number": 246.9286758048228,
+     "ns_per_priced_unit": 70.36281190153555,
+     "ratio_to_median": 1.6771520009048837,
+     "ratio_B": 1.4717125113917326,
+     "ratio_C": 2.5773923773456247,
+     "time_share": 0.15097389121773733,
+     "materiality_B": 0.07121627338090113
+    },
+    "solve": {
+     "ns_per_number": 17552.1729375,
+     "priced_ruint_per_number": 329.9580928983454,
+     "ns_per_priced_unit": 53.195158158789376,
+     "ratio_to_median": 1.2679477060881694,
+     "ratio_B": 1.1126329049684245,
+     "ratio_C": 1.9485405918970466,
+     "time_share": 0.15251691909654716,
+     "materiality_B": 0.017178423654678282
+    },
+    "lp:copy": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "lp:hash": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "lp:comb": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "lp:add": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    }
+   }
+  },
+  "new ref + re-sieve": {
+   "overhead_ns_per_region": 35.59,
+   "median_ns_per_priced_unit": 54.729346169010284,
+   "weighted_ns_per_priced_unit": 57.47620361739299,
+   "regions": {
+    "mult": {
+     "ns_per_number": 1845.6725,
+     "priced_ruint_per_number": 61.8217420905529,
+     "ns_per_priced_unit": 29.85474749800104,
+     "ratio_to_median": 0.5454979748123844,
+     "ratio_B": 0.519427965297392,
+     "ratio_C": 1.0935804944322725,
+     "time_share": 0.014218131884633143,
+     "materiality_B": -0.006832836569468176
+    },
+    "fb": {
+     "ns_per_number": 5695.8781875,
+     "priced_ruint_per_number": 325.3443977620009,
+     "ns_per_priced_unit": 17.50722688535951,
+     "ratio_to_median": 0.31988737507104975,
+     "ratio_B": 0.3045995696219159,
+     "ratio_C": 0.641290362101081,
+     "time_share": 0.04387817842476398,
+     "materiality_B": -0.030512904160787235
+    },
+    "setup": {
+     "ns_per_number": 34313.452124999996,
+     "priced_ruint_per_number": 486.7771807970297,
+     "ns_per_priced_unit": 70.49108602177388,
+     "ratio_to_median": 1.2879943020713165,
+     "ratio_B": 1.226439492959873,
+     "ratio_C": 2.5820910630686402,
+     "time_share": 0.264333562823467,
+     "materiality_B": 0.059855557938022594
+    },
+    "gray": {
+     "ns_per_number": 668.5467812499999,
+     "priced_ruint_per_number": 16.105730625,
+     "ns_per_priced_unit": 41.50986979828491,
+     "ratio_to_median": 0.7584572574665488,
+     "ratio_B": 0.7222096656662884,
+     "ratio_C": 1.5205080512192275,
+     "time_share": 0.005150147876646308,
+     "materiality_B": -0.001430661300521633
+    },
+    "sieve": {
+     "ns_per_number": 7905.065531249999,
+     "priced_ruint_per_number": 306.0208069810641,
+     "ns_per_priced_unit": 25.83179101197242,
+     "ratio_to_median": 0.4719915880632118,
+     "ratio_B": 0.4494345378816114,
+     "ratio_C": 0.9462194509880008,
+     "time_share": 0.06089664568333768,
+     "materiality_B": -0.033527589872106585
+    },
+    "scan": {
+     "ns_per_number": 4687.61553125,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "resieve": {
+     "ns_per_number": 16489.69678125,
+     "priced_ruint_per_number": 157.946390625,
+     "ns_per_priced_unit": 104.40059260613445,
+     "ratio_to_median": 1.9075797522545557,
+     "ratio_B": 1.8164142033650528,
+     "ratio_C": 3.824197531360236,
+     "time_share": 0.12702832359122387,
+     "materiality_B": 0.10370772760952718
+    },
+    "confirm": {
+     "ns_per_number": 26249.366093750003,
+     "priced_ruint_per_number": 327.61743825345144,
+     "ns_per_priced_unit": 80.12200520731429,
+     "ratio_to_median": 1.4639678858923082,
+     "ratio_B": 1.3940030858800216,
+     "ratio_C": 2.934871985615908,
+     "time_share": 0.20221190325420954,
+     "materiality_B": 0.07967211388383096
+    },
+    "lp_ledger": {
+     "ns_per_number": 18585.11290625,
+     "priced_ruint_per_number": 246.9286758048228,
+     "ns_per_priced_unit": 75.26510578682256,
+     "ratio_to_median": 1.3752239165144706,
+     "ratio_B": 1.3095002983816841,
+     "ratio_C": 2.756963581934892,
+     "time_share": 0.1431703546495167,
+     "materiality_B": 0.04431126748343695
+    },
+    "solve": {
+     "ns_per_number": 18058.3906875,
+     "priced_ruint_per_number": 329.9580928983454,
+     "ns_per_priced_unit": 54.729346169010284,
+     "ratio_to_median": 1.0,
+     "ratio_B": 0.9522087877155568,
+     "ratio_C": 2.0047379549088014,
+     "time_share": 0.13911275181220178,
+     "materiality_B": -0.006648367053329991
+    },
+    "lp:copy": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "lp:hash": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "lp:comb": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "lp:add": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    }
+   }
+  }
+ },
+ "72": {
+  "new ref": {
+   "overhead_ns_per_region": 35.51,
+   "median_ns_per_priced_unit": 46.76309448532031,
+   "weighted_ns_per_priced_unit": 47.79248270244409,
+   "regions": {
+    "mult": {
+     "ns_per_number": 2094.5358333333334,
+     "priced_ruint_per_number": 61.81720021555291,
+     "ns_per_priced_unit": 33.88273532333737,
+     "ratio_to_median": 0.724561445222016,
+     "ratio_B": 0.7089553295293576,
+     "ratio_C": 1.241125836019684,
+     "time_share": 0.0049410735667594,
+     "materiality_B": -0.0014380731280086913
+    },
+    "fb": {
+     "ns_per_number": 14274.017,
+     "priced_ruint_per_number": 742.665050854979,
+     "ns_per_priced_unit": 19.219992893926154,
+     "ratio_to_median": 0.4110077210557488,
+     "ratio_B": 0.40215514673279884,
+     "ratio_C": 0.7040290437335587,
+     "time_share": 0.033672839092913256,
+     "materiality_B": -0.0201311335465928
+    },
+    "setup": {
+     "ns_per_number": 145255.51222916666,
+     "priced_ruint_per_number": 1653.8869295528452,
+     "ns_per_priced_unit": 87.82674899573627,
+     "ratio_to_median": 1.8781209832746741,
+     "ratio_B": 1.8376686882442463,
+     "ratio_C": 3.217097032810852,
+     "time_share": 0.34266215954845947,
+     "materiality_B": 0.2870373616998987
+    },
+    "gray": {
+     "ns_per_number": 6818.601479166667,
+     "priced_ruint_per_number": 129.7270225,
+     "ns_per_priced_unit": 52.56114992669832,
+     "ratio_to_median": 1.123987847793052,
+     "ratio_B": 1.099778604387304,
+     "ratio_C": 1.9253168471318065,
+     "time_share": 0.016085287725710253,
+     "materiality_B": 0.0016049675604395987
+    },
+    "sieve": {
+     "ns_per_number": 46085.25147916667,
+     "priced_ruint_per_number": 1907.4166294793217,
+     "ns_per_priced_unit": 24.161082988852215,
+     "ratio_to_median": 0.5166698922466897,
+     "ratio_B": 0.5055414915203102,
+     "ratio_C": 0.8850213549030115,
+     "time_share": 0.10871650619544743,
+     "materiality_B": -0.053755801500523885
+    },
+    "scan": {
+     "ns_per_number": 17899.43897916667,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "resieve": {
+     "ns_per_number": -532.8506041666665,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "confirm": {
+     "ns_per_number": 125609.7719375,
+     "priced_ruint_per_number": 3066.267599617351,
+     "ns_per_priced_unit": 40.96503904394229,
+     "ratio_to_median": 0.8760121522069477,
+     "ratio_B": 0.8571439843163317,
+     "ratio_C": 1.5005508807304868,
+     "time_share": 0.2963172622639421,
+     "materiality_B": -0.042330703465319384
+    },
+    "lp_ledger": {
+     "ns_per_number": 42139.05077083334,
+     "priced_ruint_per_number": 626.9582005094875,
+     "ns_per_priced_unit": 67.21189823594254,
+     "ratio_to_median": 1.437285085080104,
+     "ratio_B": 1.4063278247000413,
+     "ratio_C": 2.4619742943568697,
+     "time_share": 0.09940729901991661,
+     "materiality_B": 0.04039195157006926
+    },
+    "solve": {
+     "ns_per_number": 41626.244125,
+     "priced_ruint_per_number": 680.919541200993,
+     "ns_per_priced_unit": 61.13239759807806,
+     "ratio_to_median": 1.3072787049468786,
+     "ratio_B": 1.2791216137208912,
+     "ratio_C": 2.2392819632995624,
+     "time_share": 0.09819757258685138,
+     "materiality_B": 0.027409064923916305
+    },
+    "lp:copy": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "lp:hash": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "lp:comb": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "lp:add": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    }
+   }
+  },
+  "new ref + re-sieve": {
+   "overhead_ns_per_region": 34.8,
+   "median_ns_per_priced_unit": 60.60241641846591,
+   "weighted_ns_per_priced_unit": 57.38252886991153,
+   "regions": {
+    "mult": {
+     "ns_per_number": 2042.53125,
+     "priced_ruint_per_number": 61.81720021555291,
+     "ns_per_priced_unit": 33.041471352274364,
+     "ratio_to_median": 0.5452170607211371,
+     "ratio_B": 0.5758106518306415,
+     "ratio_C": 1.2103103059441158,
+     "time_share": 0.004494713987767144,
+     "materiality_B": -0.0019066097966786428
+    },
+    "fb": {
+     "ns_per_number": 14215.901666666667,
+     "priced_ruint_per_number": 742.665050854979,
+     "ns_per_priced_unit": 19.141740479508066,
+     "ratio_to_median": 0.3158577101502419,
+     "ratio_B": 0.33358133314241256,
+     "ratio_C": 0.7011626549270353,
+     "time_share": 0.031282954456578776,
+     "materiality_B": -0.020847544804319853
+    },
+    "setup": {
+     "ns_per_number": 143072.31166666665,
+     "priced_ruint_per_number": 1667.4203733028453,
+     "ns_per_priced_unit": 85.80458410932535,
+     "ratio_to_median": 1.415860772231191,
+     "ratio_B": 1.495308516357788,
+     "ratio_C": 3.1430250589496462,
+     "time_share": 0.3148393056460443,
+     "materiality_B": 0.15594258937065833
+    },
+    "gray": {
+     "ns_per_number": 6624.420416666666,
+     "priced_ruint_per_number": 129.7270225,
+     "ns_per_priced_unit": 51.06430633345235,
+     "ratio_to_median": 0.842611719982386,
+     "ratio_B": 0.8898929227956676,
+     "ratio_C": 1.8704874114817711,
+     "time_share": 0.01457743919836816,
+     "materiality_B": -0.001605079223256185
+    },
+    "sieve": {
+     "ns_per_number": 46555.9725,
+     "priced_ruint_per_number": 1907.4166294793217,
+     "ns_per_priced_unit": 24.407867573592796,
+     "ratio_to_median": 0.40275403219987077,
+     "ratio_B": 0.4253536408081003,
+     "ratio_C": 0.8940610832817873,
+     "time_share": 0.10244924321713682,
+     "materiality_B": -0.058872084616693104
+    },
+    "scan": {
+     "ns_per_number": 17145.8725,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "resieve": {
+     "ns_per_number": 81664.69958333332,
+     "priced_ruint_per_number": 1093.8574350000001,
+     "ns_per_priced_unit": 74.65753485812648,
+     "ratio_to_median": 1.2319233995985992,
+     "ratio_B": 1.3010499245750928,
+     "ratio_C": 2.7347082365614095,
+     "time_share": 0.17970812810037054,
+     "materiality_B": 0.05410111841014767
+    },
+    "confirm": {
+     "ns_per_number": 76020.1175,
+     "priced_ruint_per_number": 1008.5216321472453,
+     "ns_per_priced_unit": 75.37777582236428,
+     "ratio_to_median": 1.2438080901242123,
+     "ratio_B": 1.313601496951253,
+     "ratio_C": 2.7610906894638934,
+     "time_share": 0.16728688262612962,
+     "materiality_B": 0.05246141681186282
+    },
+    "lp_ledger": {
+     "ns_per_number": 42968.31375,
+     "priced_ruint_per_number": 626.9582005094875,
+     "ns_per_priced_unit": 68.53457489683123,
+     "ratio_to_median": 1.1308884850992238,
+     "ratio_B": 1.194345670129001,
+     "ratio_C": 2.510423988894917,
+     "time_share": 0.09455438238357054,
+     "materiality_B": 0.01837623480796882
+    },
+    "solve": {
+     "ns_per_number": 41265.36958333333,
+     "priced_ruint_per_number": 680.919541200993,
+     "ns_per_priced_unit": 60.60241641846591,
+     "ratio_to_median": 1.0,
+     "ratio_B": 1.0561126811935038,
+     "ratio_C": 2.2198687332771394,
+     "time_share": 0.09080695038403411,
+     "materiality_B": 0.00509542145705362
+    },
+    "lp:copy": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "lp:hash": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "lp:comb": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "lp:add": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    }
+   }
+  }
+ },
+ "84": {
+  "new ref": {
+   "overhead_ns_per_region": 35.09,
+   "median_ns_per_priced_unit": 44.17958377592431,
+   "weighted_ns_per_priced_unit": 38.19003127054506,
+   "regions": {
+    "mult": {
+     "ns_per_number": 2076.804642857143,
+     "priced_ruint_per_number": 61.82338914412433,
+     "ns_per_priced_unit": 33.59253951632514,
+     "ratio_to_median": 0.7603634223152509,
+     "ratio_B": 0.8796153969696839,
+     "ratio_C": 1.2304959529789428,
+     "time_share": 0.0023993948607849524,
+     "materiality_B": -0.000288850197828577
+    },
+    "fb": {
+     "ns_per_number": 27720.077696428572,
+     "priced_ruint_per_number": 1465.6931010066621,
+     "ns_per_priced_unit": 18.912607064459788,
+     "ratio_to_median": 0.42808477237773856,
+     "ratio_B": 0.49522366008237784,
+     "ratio_C": 0.6927694895406515,
+     "time_share": 0.032025839403877626,
+     "materiality_B": -0.01616588599707891
+    },
+    "setup": {
+     "ns_per_number": 233472.7782142857,
+     "priced_ruint_per_number": 3930.6289634999725,
+     "ns_per_priced_unit": 59.398325403472626,
+     "ratio_to_median": 1.3444745361281965,
+     "ratio_B": 1.5553358671713093,
+     "ratio_C": 2.1757628352920375,
+     "time_share": 0.26973812202666386,
+     "materiality_B": 0.14979525390483783
+    },
+    "gray": {
+     "ns_per_number": 17103.47282142857,
+     "priced_ruint_per_number": 329.52792,
+     "ns_per_priced_unit": 51.90295505591323,
+     "ratio_to_median": 1.174817656027755,
+     "ratio_B": 1.3590707660913746,
+     "ratio_C": 1.9012071449052466,
+     "time_share": 0.019760156512773023,
+     "materiality_B": 0.007095294537126874
+    },
+    "sieve": {
+     "ns_per_number": 143242.46746428573,
+     "priced_ruint_per_number": 6856.333053797662,
+     "ns_per_priced_unit": 20.8919937728149,
+     "ratio_to_median": 0.4728879719369381,
+     "ratio_B": 0.5470535916771644,
+     "ratio_C": 0.7652744971727069,
+     "time_share": 0.16549233047126072,
+     "materiality_B": -0.0749591566919333
+    },
+    "scan": {
+     "ns_per_number": 44159.13532142857,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "resieve": {
+     "ns_per_number": -800.095035714286,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "confirm": {
+     "ns_per_number": 284297.5596964286,
+     "priced_ruint_per_number": 7798.329563942656,
+     "ns_per_priced_unit": 36.45621249593538,
+     "ratio_to_median": 0.8251823439722449,
+     "ratio_B": 0.9546002263698871,
+     "ratio_C": 1.3353923991185122,
+     "time_share": 0.32845752055468436,
+     "materiality_B": -0.014911897080290837
+    },
+    "lp_ledger": {
+     "ns_per_number": 74641.75342857144,
+     "priced_ruint_per_number": 1029.159212551665,
+     "ns_per_priced_unit": 72.52692539525252,
+     "ratio_to_median": 1.6416389471459012,
+     "ratio_B": 1.899106206053059,
+     "ratio_C": 2.6566639338920335,
+     "time_share": 0.08623586247866998,
+     "materiality_B": 0.07753519913891031
+    },
+    "solve": {
+     "ns_per_number": 82998.59571428572,
+     "priced_ruint_per_number": 1192.8881673835174,
+     "ns_per_priced_unit": 69.57785145638167,
+     "ratio_to_median": 1.5748869842069033,
+     "ratio_B": 1.8218851658821547,
+     "ratio_C": 2.548639247486508,
+     "time_share": 0.09589077369128542,
+     "materiality_B": 0.07881120444183026
+    },
+    "lp:copy": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "lp:hash": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "lp:comb": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "lp:add": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    }
+   }
+  },
+  "new ref + re-sieve": {
+   "overhead_ns_per_region": 33.95,
+   "median_ns_per_priced_unit": 52.261574787697164,
+   "weighted_ns_per_priced_unit": 44.36168742018718,
+   "regions": {
+    "mult": {
+     "ns_per_number": 2194.8339285714287,
+     "priced_ruint_per_number": 61.82338914412433,
+     "ns_per_priced_unit": 35.50167596691882,
+     "ratio_to_median": 0.6793074282804854,
+     "ratio_B": 0.800277853063891,
+     "ratio_C": 1.3004276910959274,
+     "time_share": 0.0024056474470720256,
+     "materiality_B": -0.00048046107290059464
+    },
+    "fb": {
+     "ns_per_number": 28279.096517857146,
+     "priced_ruint_per_number": 1465.6931010066621,
+     "ns_per_priced_unit": 19.294009433785693,
+     "ratio_to_median": 0.36918155474962217,
+     "ratio_B": 0.4349250570889191,
+     "ratio_C": 0.7067402722998422,
+     "time_share": 0.0309953001264043,
+     "materiality_B": -0.017514667449439726
+    },
+    "setup": {
+     "ns_per_number": 236153.7160714286,
+     "priced_ruint_per_number": 3962.0517509999727,
+     "ns_per_priced_unit": 59.603894878916286,
+     "ratio_to_median": 1.1404917498381157,
+     "ratio_B": 1.3435894427179296,
+     "ratio_C": 2.1832928527075564,
+     "time_share": 0.2588362503369766,
+     "materiality_B": 0.08893340300848031
+    },
+    "gray": {
+     "ns_per_number": 17221.648035714286,
+     "priced_ruint_per_number": 329.52792,
+     "ns_per_priced_unit": 52.261574787697164,
+     "ratio_to_median": 1.0,
+     "ratio_B": 1.1780790548538753,
+     "ratio_C": 1.914343398816746,
+     "time_share": 0.01887578512988199,
+     "materiality_B": 0.003361381975554219
+    },
+    "sieve": {
+     "ns_per_number": 144247.70517857143,
+     "priced_ruint_per_number": 6856.333053797662,
+     "ns_per_priced_unit": 21.03860825411244,
+     "ratio_to_median": 0.40256361082837316,
+     "ratio_B": 0.47425175816325316,
+     "ratio_C": 0.7706449909931297,
+     "time_share": 0.1581026788367034,
+     "materiality_B": -0.08312220542807665
+    },
+    "scan": {
+     "ns_per_number": 43293.14267857143,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "resieve": {
+     "ns_per_number": 198629.2569642857,
+     "priced_ruint_per_number": 4032.14655,
+     "ns_per_priced_unit": 49.261418081216746,
+     "ratio_to_median": 0.9425934499932695,
+     "ratio_B": 1.1104496006795246,
+     "ratio_C": 1.8044475487625182,
+     "time_share": 0.2177075717254645,
+     "materiality_B": 0.024045714361986513
+    },
+    "confirm": {
+     "ns_per_number": 125015.04044642858,
+     "priced_ruint_per_number": 1636.9354311087523,
+     "ns_per_priced_unit": 76.37139380736089,
+     "ratio_to_median": 1.4613297459482486,
+     "ratio_B": 1.7215619659365664,
+     "ratio_C": 2.797486952650582,
+     "time_share": 0.13702271911356123,
+     "materiality_B": 0.09887038258155517
+    },
+    "lp_ledger": {
+     "ns_per_number": 77471.85107142858,
+     "priced_ruint_per_number": 1029.159212551665,
+     "ns_per_priced_unit": 75.27683775899679,
+     "ratio_to_median": 1.4403859444495275,
+     "ratio_B": 1.6968885120619057,
+     "ratio_C": 2.7573933245053768,
+     "time_share": 0.08491301247162268,
+     "materiality_B": 0.05917490291604317
+    },
+    "solve": {
+     "ns_per_number": 83154.09464285715,
+     "priced_ruint_per_number": 1192.8881673835174,
+     "ns_per_priced_unit": 69.70820644926629,
+     "ratio_to_median": 1.33383287305143,
+     "ratio_B": 1.5713605704174576,
+     "ratio_C": 2.5534141556507794,
+     "time_share": 0.09114103481231328,
+     "materiality_B": 0.052074393638800676
+    },
+    "lp:copy": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "lp:hash": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "lp:comb": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "lp:add": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    }
+   }
+  }
+ },
+ "96": {
+  "new ref": {
+   "overhead_ns_per_region": 33.97,
+   "median_ns_per_priced_unit": 40.607972648158,
+   "weighted_ns_per_priced_unit": 33.61931279517969,
+   "regions": {
+    "mult": {
+     "ns_per_number": 2124.039375,
+     "priced_ruint_per_number": 61.8148486530529,
+     "ns_per_priced_unit": 34.36131320035349,
+     "ratio_to_median": 0.846171600293179,
+     "ratio_B": 1.022070659495461,
+     "ratio_C": 1.2586561611851097,
+     "time_share": 0.0010696004033390806,
+     "materiality_B": 2.3606786298304534e-05
+    },
+    "fb": {
+     "ns_per_number": 43360.6315625,
+     "priced_ruint_per_number": 2414.4322525232883,
+     "ns_per_priced_unit": 17.958934866440934,
+     "ratio_to_median": 0.4422514520004131,
+     "ratio_B": 0.5341850672514601,
+     "ratio_C": 0.6578364419941733,
+     "time_share": 0.021835070269489363,
+     "materiality_B": -0.01017110178914183
+    },
+    "setup": {
+     "ns_per_number": 499328.281765625,
+     "priced_ruint_per_number": 10777.84526049454,
+     "ns_per_priced_unit": 46.329138125213106,
+     "ratio_to_median": 1.1408877396225943,
+     "ratio_B": 1.378051312573401,
+     "ratio_C": 1.6970380265645826,
+     "time_share": 0.2514462480598424,
+     "materiality_B": 0.09505958412068043
+    },
+    "gray": {
+     "ns_per_number": 48214.387515625,
+     "priced_ruint_per_number": 926.1525975000001,
+     "ns_per_priced_unit": 52.05879424813145,
+     "ratio_to_median": 1.2819845673948678,
+     "ratio_B": 1.5484788331424668,
+     "ratio_C": 1.9069155402245952,
+     "time_share": 0.024279271345174207,
+     "materiality_B": 0.013316666416950479
+    },
+    "sieve": {
+     "ns_per_number": 470821.279703125,
+     "priced_ruint_per_number": 24516.984659932325,
+     "ns_per_priced_unit": 19.20388197136575,
+     "ratio_to_median": 0.4729091535239903,
+     "ratio_B": 0.5712157797026473,
+     "ratio_C": 0.7034389000500274,
+     "time_share": 0.2370910052790733,
+     "materiality_B": -0.101660881838103
+    },
+    "scan": {
+     "ns_per_number": 124026.12657812501,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "resieve": {
+     "ns_per_number": -1173.0812343749997,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "confirm": {
+     "ns_per_number": 568384.357453125,
+     "priced_ruint_per_number": 16292.243502406938,
+     "ns_per_priced_unit": 34.886807171102895,
+     "ratio_to_median": 0.8591122603774061,
+     "ratio_B": 1.0377013766951517,
+     "ratio_C": 1.2779050245825236,
+     "time_share": 0.2862207476655119,
+     "materiality_B": 0.010790916225705433
+    },
+    "lp_ledger": {
+     "ns_per_number": 188990.144640625,
+     "priced_ruint_per_number": 1919.8625764001285,
+     "ns_per_priced_unit": 98.4394127807805,
+     "ratio_to_median": 2.4241400484012043,
+     "ratio_B": 2.928061420544404,
+     "ratio_C": 3.6058392959992855,
+     "time_share": 0.09516957986464995,
+     "materiality_B": 0.1834927953464511
+    },
+    "solve": {
+     "ns_per_number": 164602.022,
+     "priced_ruint_per_number": 2158.651685233113,
+     "ns_per_priced_unit": 76.25223797151165,
+     "ratio_to_median": 1.8777652022224385,
+     "ratio_B": 2.2681081685418816,
+     "ratio_C": 2.7931222700187415,
+     "time_share": 0.08288847711291991,
+     "materiality_B": 0.10511155490489053
+    },
+    "lp:copy": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "lp:hash": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "lp:comb": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "lp:add": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    }
+   }
+  },
+  "new ref + re-sieve": {
+   "overhead_ns_per_region": 35.47,
+   "median_ns_per_priced_unit": 45.87055868657102,
+   "weighted_ns_per_priced_unit": 35.15081106745037,
+   "regions": {
+    "mult": {
+     "ns_per_number": 2153.2034375,
+     "priced_ruint_per_number": 61.8148486530529,
+     "ns_per_priced_unit": 34.83311023837082,
+     "ratio_to_median": 0.7593783733130876,
+     "ratio_B": 0.9909617781373545,
+     "ratio_C": 1.2759381039696271,
+     "time_share": 0.0010210546467257836,
+     "materiality_B": -9.228518430992723e-06
+    },
+    "fb": {
+     "ns_per_number": 43202.5690625,
+     "priced_ruint_per_number": 2414.4322525232883,
+     "ns_per_priced_unit": 17.893469165411297,
+     "ratio_to_median": 0.3900861397323629,
+     "ratio_B": 0.5090485431780162,
+     "ratio_C": 0.6554384309674467,
+     "time_share": 0.020486770141410388,
+     "materiality_B": -0.010058009646502549
+    },
+    "setup": {
+     "ns_per_number": 497052.262234375,
+     "priced_ruint_per_number": 10835.975764557039,
+     "ns_per_priced_unit": 45.87055868657102,
+     "ratio_to_median": 1.0,
+     "ratio_B": 1.304964445871553,
+     "ratio_C": 1.6802402449293414,
+     "time_share": 0.23570347008605466,
+     "materiality_B": 0.07188117814479583
+    },
+    "gray": {
+     "ns_per_number": 47342.511734375,
+     "priced_ruint_per_number": 926.1525975000001,
+     "ns_per_priced_unit": 51.11739886296113,
+     "ratio_to_median": 1.1143836117680896,
+     "ratio_B": 1.4542309924192849,
+     "ratio_C": 1.872432192782459,
+     "time_share": 0.022449941678608126,
+     "materiality_B": 0.010197459288429236
+    },
+    "sieve": {
+     "ns_per_number": 477173.47579687496,
+     "priced_ruint_per_number": 24516.984659932325,
+     "ns_per_priced_unit": 19.462975664242723,
+     "ratio_to_median": 0.42430212802140266,
+     "ratio_B": 0.5536991913755704,
+     "ratio_C": 0.7129295115107225,
+     "time_share": 0.2262768980725689,
+     "materiality_B": -0.10098756258281513
+    },
+    "scan": {
+     "ns_per_number": 120784.928921875,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "resieve": {
+     "ns_per_number": 512502.419546875,
+     "priced_ruint_per_number": 14735.041245937498,
+     "ns_per_priced_unit": 34.78120020113101,
+     "ratio_to_median": 0.7582467098076459,
+     "ratio_B": 0.9894849974980628,
+     "ratio_C": 1.2740366374040661,
+     "time_share": 0.24302997469859083,
+     "materiality_B": -0.0025554607920014057
+    },
+    "confirm": {
+     "ns_per_number": 177467.100421875,
+     "priced_ruint_per_number": 2424.1048534765205,
+     "ns_per_priced_unit": 73.2093334029513,
+     "ratio_to_median": 1.5959982938769814,
+     "ratio_B": 2.082721029181119,
+     "ratio_C": 2.68166056421067,
+     "time_share": 0.0841553586488303,
+     "materiality_B": 0.09111677652736773
+    },
+    "lp_ledger": {
+     "ns_per_number": 189162.484484375,
+     "priced_ruint_per_number": 1919.8625764001285,
+     "ns_per_priced_unit": 98.52917954110413,
+     "ratio_to_median": 2.1479829843439284,
+     "ratio_B": 2.803041424905899,
+     "ratio_C": 3.6091274557180997,
+     "time_share": 0.08970134006158674,
+     "materiality_B": 0.16173523200061193
+    },
+    "solve": {
+     "ns_per_number": 162747.3016875,
+     "priced_ruint_per_number": 2158.651685233113,
+     "ns_per_priced_unit": 75.39303482855544,
+     "ratio_to_median": 1.6436040237423,
+     "ratio_B": 2.144844814075125,
+     "ratio_C": 2.7616496274196134,
+     "time_share": 0.0771751919656244,
+     "materiality_B": 0.08835361829709736
+    },
+    "lp:copy": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "lp:hash": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "lp:comb": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    },
+    "lp:add": {
+     "ns_per_number": 0.0,
+     "priced_ruint_per_number": 0.0,
+     "ns_per_priced_unit": null,
+     "ratio_to_median": null,
+     "ratio_B": null,
+     "ratio_C": null,
+     "time_share": 0.0,
+     "materiality_B": null
+    }
+   }
+  }
+ }
+}

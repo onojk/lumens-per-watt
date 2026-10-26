@@ -6732,3 +6732,17 @@ Each cell gives ratio A / ratio B, with the materiality (time share × (ratio_B 
   - F: if time remains, step 6 (the yield model against the card's traces, with stage B's capture rates as a measured input).
 - *Rules:* no push; explicit adds; documentation in its own commits; nothing adopted or reference genes changed; predictions recorded before computing; a failed stage's code reverted (notes kept); open questions under "Open questions for the user"; a quiet machine for timing.
 - At the end, an "Overnight summary (Oct 26–27)" section.
+
+### Stage A1 (fix C.1): setup in i64 — results (`c1_accept.out`; `parity_c1.out`; `phasetime_c1_before{,2}.out` / `.json`, `phasetime_c1_after{,2}.out` / `.json`; `wallcmp.py`, `c1_wall.out`)
+
+- *Acceptance:* every run identical to the pre-change build per number and per type, 8,000 / 8,000; Python = Rust per type 32 / 32. Parity passes (types 7,182 pairs; mutations 54 / 54).
+- *Wall-clock, before → after* (µs per number, the mean of two replicates each; anchor C after):
+
+| size | setup (off / on) | C after (setup) | other regions |
+|---|---|---|---|
+| 54 | 34.3 → 30.2 (−12.0%) / 34.6 → 30.8 (−10.9%) | 2.31 | within ±7% (noise) |
+| 72 | 145.9 → 131.1 (−10.1%) / 144.7 → 131.7 (−9.0%) | 2.90 | within ±3% |
+| 84 | 235.1 → 199.2 (−15.3%) / 239.1 → 198.6 (−17.0%) | 1.86 | within ±4% |
+| 96 | 506.1 → 388.7 (−23.2%) / 503.1 → 385.6 (−23.4%) | 1.32 | within ±4% |
+
+- Setup still runs at 2.3–2.9x the calibrated multiply per priced unit at 54–72. There it is no longer the per-prime arithmetic but the A selection (on-demand keys, logs, sorts, the rest list), which this fix did not touch.

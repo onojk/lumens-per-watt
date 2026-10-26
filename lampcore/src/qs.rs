@@ -104,6 +104,25 @@ fn euclid_inv(a: i128, md: i128, ph: usize, m: &mut Meter) -> Result<i128, Budge
     Ok(s0.rem_euclid(md))
 }
 
+/// euclid_inv in i64 (fix C.1, NOTES.md): the same steps and charges, for moduli and inputs below 2^62.
+fn euclid_inv64(a: i64, md: i64, ph: usize, m: &mut Meter) -> Result<i64, Budget> {
+    let (mut r0, mut r1, mut s0, mut s1, mut steps) = (md, a.rem_euclid(md), 0i64, 1i64, 0u64);
+    while r1 != 0 {
+        let q = r0.div_euclid(r1);
+        let (nr, ns) = (r0 - q * r1, s0 - q * s1);
+        r0 = r1;
+        r1 = nr;
+        s0 = s1;
+        s1 = ns;
+        steps += 1;
+    }
+    m.charge(ph, steps)?;
+    if ph == SETUP {
+        m.ev(crate::EV_SETUP_EUCLID, steps); // per-type counter: Python's at["inv"] append
+    }
+    Ok(s0.rem_euclid(md))
+}
+
 /// sqrt(n) mod p for a nonzero residue n, charged 1 op per modular multiply.
 fn tonelli(n: u64, p: u64, m: &mut Meter) -> Result<u64, Budget> {
     if p % 4 == 3 {
@@ -694,20 +713,25 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
         let mut sbi: Vec<Vec<i32>> = vec![Vec::new(); s]; // primes < 2^31: roots and inverses fit in i32
         let mut n_st = 0usize; // sieved primes
         let mut bv: i128 = bl.iter().sum();
+        // fix C.1: the per-prime arithmetic in i64 (A < 2^62, p < 2^30, B_l < A; results identical to i128)
+        assert!(a < (1i128 << 62) && bv.abs() < (1i128 << 62), "A or B too large for the i64 setup arithmetic");
+        let (a64, bv64) = (a as i64, bv as i64);
+        let bl64: Vec<i64> = bl.iter().map(|&b| b as i64).collect();
         for j in 2..f {
-            let p = base[j] as i128;
-            if a % p == 0 || p == 2 {
+            let p = base[j] as i64;
+            let ar = a64.rem_euclid(p);
+            if ar == 0 || p == 2 {
                 continue;
             }
-            let ainv = euclid_inv(a.rem_euclid(p), p, SETUP, m)?;
-            let t = roots_t[j] as i128;
-            let r1 = (ainv * (t - bv).rem_euclid(p)).rem_euclid(p);
+            let ainv = euclid_inv64(ar, p, SETUP, m)?;
+            let t = roots_t[j] as i64;
+            let r1 = (ainv * (t - bv64).rem_euclid(p)).rem_euclid(p);
             m.charge(SETUP, 1)?;
-            let r2 = (ainv * (-t - bv).rem_euclid(p)).rem_euclid(p);
+            let r2 = (ainv * (-t - bv64).rem_euclid(p)).rem_euclid(p);
             m.charge(SETUP, 1)?;
             let mut bainv = Vec::with_capacity(s);
-            for &b in &bl {
-                bainv.push((2 * b * ainv).rem_euclid(p));
+            for &b in &bl64 {
+                bainv.push(((2 * b).rem_euclid(p) * ainv).rem_euclid(p));
                 m.charge(SETUP, 1)?;
             }
             n_st += 1;
