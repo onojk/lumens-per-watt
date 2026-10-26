@@ -1,0 +1,12 @@
+84 reference 0 total 937.9 us  lp_ledger 76.7  confirm 293.6  sieve 147.1  setup 241.8
+84 reference 1 total 937.4 us  lp_ledger 76.5  confirm 294.7  sieve 145.5  setup 242.5
+84 (b) L/B 12, slack kept 0 total 952.1 us  lp_ledger 53.2  confirm 312.3  sieve 154.4  setup 252.0
+84 (b) L/B 12, slack kept 1 total 965.1 us  lp_ledger 53.0  confirm 314.8  sieve 163.1  setup 253.4
+84 (a) L/B 12 0 total 900.7 us  lp_ledger 49.8  confirm 187.7  sieve 186.4  setup 293.6
+84 (a) L/B 12 1 total 917.9 us  lp_ledger 50.5  confirm 190.8  sieve 193.5  setup 297.3
+96 reference 0 total 2176.8 us  lp_ledger 194.1  confirm 580.3  sieve 488.6  setup 519.9
+96 reference 1 total 2199.0 us  lp_ledger 205.7  confirm 587.4  sieve 488.2  setup 521.6
+96 (b) L/B 12, slack kept 0 total 2207.6 us  lp_ledger 100.0  confirm 620.6  sieve 532.8  setup 550.9
+96 (b) L/B 12, slack kept 1 total 2232.2 us  lp_ledger 101.0  confirm 631.1  sieve 538.5  setup 555.1
+96 (a) L/B 12 0 total 2737.8 us  lp_ledger 60.7  confirm 169.0  sieve 989.6  setup 993.8
+96 (a) L/B 12 1 total 2722.3 us  lp_ledger 61.0  confirm 170.2  sieve 967.7  setup 996.5

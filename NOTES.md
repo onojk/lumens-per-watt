@@ -6392,3 +6392,72 @@ Each cell gives ratio A / ratio B, with the materiality (time share × (ratio_B 
   - Changing lc alone to 1.3305 at 96 also tightens the threshold by 0.64 slack units (fewer candidates of every kind).
   - **Both are run:** (a) the literal test as specified (lc changed, all else the reference), on which R-L1–R-L4 are scored as written; and (b) an L-only variant with tc raised by the same amount, so that the slack, and thus the threshold, is unchanged. (b) is information beside (a).
   - Values: 96: lc 1.3305 (L/B = 12), 1.2770 (L/B = 8); 84: lc 1.3526 (L/B = 12).
+
+### Step 7: results — the L test (`evolve/lctest.py`, `lctest.out`, `.json`; `lctest_wallrep.out`)
+
+*Gene test only; no card change.*
+- *7d:* each test genome is the reference genome with lc (and, in the (b) variants, tc) replaced, by construction (`dict(reference, lc = …)`).
+- The lc values were computed from the first map number's B at each size: **1.3328 at 96 and 1.3569 at 84**, slightly above the specified 1.3305 / 1.3526 (B ≈ 1,841 / 1,151), because B varies a little with N within a size. L/B is ~12 for that number and ~11.8–12.2 across the set; the effect on the comparison is negligible.
+
+**7b — X3 on the card** (Python traces; 14 numbers at 84, 16 at 96, two per band; partials = candidates whose cofactor after the base is in (1, L); the never-combined share is the partials whose q is seen once by completion):
+- **84: 0.790. 96: 0.852** (877 partials per number in the subset).
+- *Scored at 96:*
+  - **(X3, DeepSeek's)** 62–86%: **held** (inside, near the top; its expectation of a high miss did not happen);
+  - **(the user's)** 65–85%: **missed narrowly** (0.852);
+  - **(R-X3, the reviewer's)** 0.86–0.94: **missed narrowly** (0.852).
+  - The Wolfram model gave 0.80 at 96 / M = 20,000.
+
+**7c — the card runs** (all map numbers; priced per number; polynomials = sieve_scan / width; stored partials and combinations from the sub-timer call counts, which are identical with the timers on or off).
+- Wall-clock is the mean of two replicate runs without sub-timers (`lctest_wallrep.out`). lctest's own first pass gave 1,212 µs for the 84-bit reference against 937.9 / 937.4 on the replicates, an outlier that is not used; its 96-bit values agree with the replicates.
+
+| size | configuration | polynomials | stored partials | combinations | ruint mean / median / slowest decile | official / Mont. mean | wall total | lp_ledger | confirm |
+|---|---|---|---|---|---|---|---|---|---|
+| 84 | reference (lc 1.641, tc 1.457) | 83.9 | 383 | 49.8 | 22,668 / 22,126 / 30,539 | 467,352 / 82,168 | 937.7 µs | 76.6 | 294.2 |
+| 84 | (a) L/B 12, lc only | +29.1% | −56.9% | −25.6% | −0.9% / −1.7% / +5.1% | +14.0% / −0.8% | −3.0% | −34.5% | −35.7% |
+| 84 | (b) L/B 12, slack kept | +5.9% | −49.9% | −6.4% | +3.4% / +3.4% / +3.8% | +4.4% / +3.7% | +2.2% | −30.7% | +6.6% |
+| 96 | reference (lc 1.974, tc 1.035) | 156.0 | 844 | 71.9 | 59,071 / 58,514 / 80,787 | 1,461,014 / 216,420 | 2,187.9 µs | 199.9 | 583.9 |
+| 96 | **(a) L/B 12, lc only (scored)** | **+97.7%** | **−86.3%** | −75.1% | **+37.4%** / +33.8% / +62.8% | +72.3% / +38.0% | **+24.8%** | **−69.5%** | −71.0% |
+| 96 | (b) L/B 12, slack kept | +7.0% | −66.2% | −6.4% | +4.9% / +4.4% / +6.2% | +5.7% / +5.0% | +1.5% | −49.7% | +7.2% |
+| 96 | (a) L/B 8, lc only | +109.3% | −89.6% | −81.5% | +43.9% / +38.1% / +74.7% | +82.0% / +44.6% | (+28.6%, one pass) | (−72.5%) | — |
+| 96 | (b) L/B 8, slack kept | +9.9% | −72.5% | −9.7% | +7.4% / +6.8% / +9.0% | +8.4% / +7.5% | (+3.8%, one pass) | (−55.0%) | — |
+
+- **The literal test (a) is dominated by the threshold, not by L:** lowering lc alone lowers the slack tc + lc − 1 from 2.01 to 1.37 at 96, so candidates and relations per polynomial fall and polynomials double. With the slack kept (b), the L effect alone is small.
+- **Per-partial price** (lp_ledger's cost per partial looked up, over the sieve region's cost per sieve position), reference: **priced 32.6 (84) / 28.2 (96) sieve positions; wall-clock 113.8 (84, from the replicate means) / 143.1 (96).**
+  - The meter prices the ledger's per-partial work at ~1/4–1/5 of its wall-clock cost relative to sieving.
+
+**Scored** (R-L1–R-L4 on the literal test (a) at 96, as specified):
+
+| prediction | measured | the user's | DeepSeek's |
+|---|---|---|---|
+| R-L1 polynomials | +97.7% | +5% to +12%: **missed** | +3% to +14%, falsified at ≥ +18%: **falsified** |
+| R-L2 stored partials | −86.3% | −65% to −82%: **missed** | −60% to −80%, falsified past −90%: **missed** |
+| R-L3 priced ruint mean | +37.4% | −2% to +8%: **missed** (clearly positive) | −4% to +10%, falsified above +15%: **falsified** |
+| R-L4 wall total | +24.8% | −4% to −15%: **missed** | −5% to −18%, falsified at ≥ 0%: **falsified** |
+| R-L4 lp_ledger | −69.5% | −50% to −75%: **held** | −45% to −80%: **held** |
+
+- *Beside it, information (b), L only at 96:* polynomials +7.0%, stored −66.2%, ruint +4.9%, wall +1.5%, lp_ledger −49.7%. Those numbers would fall inside both sources' R-L1, R-L2 and R-L3 ranges; the R-L4 totals still miss (the user's), or would trip DeepSeek's ≥ 0% falsifier.
+- **R-L3's sign, read on the L-only variant (b):** lowering L costs +4.9% priced (ruint), +5.7% official and +5.0% Montgomery at 96, and +3.4% at 84. Wall-clock also rises slightly (+1.5% / +2.2%).
+  - So at the card's F, M and threshold, the high L pays under the meter and is about neutral to slightly favourable in wall-clock.
+  - lc = 1.974 is **not** a pure drift artefact, and the meter's ~5x underpricing of per-partial ledger work does not flip the decision at this threshold: the partials the high L admits still save polynomials (sieve, setup, confirm) worth more than their ledger cost in time.
+- **W3 (i) at the card's multiple:** the card's m is ~28–33 sieve positions priced and ~114–143 wall-clock.
+  - On the wall-clock base, Wolfram's finer grid puts L* at ~8–16 p_max (m ≈ 100) to ~4 (m ≈ 300), and DeepSeek's "< 20" falsifier triggers (m ≥ ~100).
+  - On the priced base (m ≈ 30), Wolfram's minimum is at ≥ 16 (the grid edge), so W3 (i) is indeterminate there.
+  - *But the card's own test contradicts the model's L* at these m:* at the card's threshold, L/B 12 is slightly worse than 1,511 even in wall-clock. The card's polynomial increase for L 1,511 → 12 (+7%) is far smaller than the model's for 512 → 16 (~+31%, from Wolfram's 6.29 against 8.26). The partials matter less in the card than in the plain-F/M model, so the model's L* does not transfer as is (a step-6 question).
+
+### After step 7: the remaining flagged regions — slow code or wrong price? (ranking only; no fix done)
+
+- *Anchor C* (ns per priced unit ÷ the calibrated 27.3 ns multiply), step 5, without / with re-sieve:
+  - clean reference ops for comparison: sieve 0.74–0.96, fb 0.61–0.72, mult 1.06–1.33;
+  - setup 2.57 / 3.19 / 2.19 / 1.70 (54 → 96); lp_ledger 2.6–3.6; solve 1.9–2.8; confirm with re-sieve 2.8–2.9 (without 1.3–1.8); resieve 3.7 / 2.7 / 1.8 / 1.3; gray 1.5–1.9.
+- **Ranked by expected information per compute:**
+  1. **lp_ledger (84–96; up to 17% materiality):** slow code first. The sub-timers put ~35% of it in the per-relation heap allocation of the sparse list (lp:copy, ~100 ns per call for ~25 ns priced). The step-7 per-partial price is ~5x priced.
+     - Fix: an arena or flat buffer for stored sparse lists (one allocation per attempt, offsets per relation), counts identical, judged by a before / after run.
+     - A residual price gap remains (the hash at 1.4–1.7x, step 3) for a decision after the fix.
+  2. **setup at 72–84 (27%, 15%):** slow code most likely. Setup's charged work is Euclid inverses and per-A roots, done in i128 with `rem_euclid` (an i128 division, tens of ns) but priced at small-modulus (0.307 ruint, calibrated on a 64-bit mulmod).
+     - Fix: u64 arithmetic for primes < 2^32, identical results and counts. It may bring the time to the price; if not, the remainder is a price question.
+  3. **confirm with re-sieve (84–96, ~10%) and resieve at 54 (10%):** slow code (per-polynomial allocation of |cand| record lists, Vec<Vec<usize>>, falling with size as widths grow).
+     - Fix: one flat record buffer per polynomial with offsets, counts identical.
+  4. **solve (84–96, 5–10%):** more likely a price question. The elimination's word-XORs are priced at la = 0.0167, calibrated on a different loop, and the per-column pivot search (rows bit tests per column) runs inside the la charge.
+     - Next: a benchmark of the card's own elimination loop (ns per charged la unit), then a decision (re-price la, or charge the pivot search as word).
+  5. **gray at 96 (1.3%, just over):** no action. Near the bar, after the 1.9x speed-up.
+- The I-027 direction (priced against wall, step 5) should be re-read after fixes 1–3, because they move setup's and confirm's wall-clock shares.

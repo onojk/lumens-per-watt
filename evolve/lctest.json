@@ -1,0 +1,320 @@
+{
+ "84": {
+  "B": 1056,
+  "configs": {
+   "reference": {
+    "lc": 1.6411709038747615,
+    "tc": 1.456939234548333,
+    "polys_mean": 83.85357142857143,
+    "polys_median": 80.0,
+    "partials_looked_up": 432.30357142857144,
+    "stored_partials": 382.5053571428572,
+    "combinations": 49.79821428571429,
+    "priced": {
+     "official": {
+      "mean": 467352.02857142856,
+      "median": 451993.5,
+      "slowest_decile_mean": 698591.8571428572
+     },
+     "ruint": {
+      "mean": 22667.508075646565,
+      "median": 22125.768664830262,
+      "slowest_decile_mean": 30539.411671408096
+     },
+     "montgomery": {
+      "mean": 82168.0710724718,
+      "median": 80218.55777143905,
+      "slowest_decile_mean": 111093.40582635347
+     }
+    },
+    "wall_ns": {
+     "total": 1212062.5984285714,
+     "lp_ledger": 103593.09907142857,
+     "confirm": 383322.4328928571,
+     "sieve": 189483.91485714284
+    },
+    "weighted_ns_per_priced_unit": 53.47873703733793,
+    "per_partial_price_sieve_positions": {
+     "priced": 32.6344259568279,
+     "wall": 118.86220817575452
+    },
+    "x3_never_combined": 0.7899025403419077,
+    "partials_per_number_subset": 447.07142857142856,
+    "x3_subset": 14
+   },
+   "(a) L/B 12": {
+    "lc": 1.3569117716928187,
+    "tc": 1.456939234548333,
+    "polys_mean": 108.25357142857143,
+    "polys_median": 101.5,
+    "partials_looked_up": 201.7982142857143,
+    "stored_partials": 164.75714285714287,
+    "combinations": 37.04107142857143,
+    "priced": {
+     "official": {
+      "mean": 532550.5607142857,
+      "median": 505923.5,
+      "slowest_decile_mean": 847916.1964285715
+     },
+     "ruint": {
+      "mean": 22455.821234817548,
+      "median": 21758.419906467967,
+      "slowest_decile_mean": 32109.720707427165
+     },
+     "montgomery": {
+      "mean": 81472.22503674403,
+      "median": 78928.04674878743,
+      "slowest_decile_mean": 117380.40829690613
+     }
+    },
+    "wall_ns": {
+     "total": 903095.5317857144,
+     "lp_ledger": 50641.00750000001,
+     "confirm": 186028.06642857144,
+     "sieve": 186794.30392857143
+    },
+    "weighted_ns_per_priced_unit": 40.22162908582339,
+    "per_partial_price_sieve_positions": {
+     "priced": 41.21561131721978,
+     "wall": 162.99783182435505
+    },
+    "x3_never_combined": 0.667375132837407,
+    "partials_per_number_subset": 201.64285714285714,
+    "x3_subset": 14
+   },
+   "(b) L/B 12, slack kept": {
+    "lc": 1.3569117716928187,
+    "tc": 1.7411983667302757,
+    "polys_mean": 88.80892857142857,
+    "polys_median": 85.0,
+    "partials_looked_up": 238.42678571428573,
+    "stored_partials": 191.80178571428573,
+    "combinations": 46.625,
+    "priced": {
+     "official": {
+      "mean": 487885.34821428574,
+      "median": 469910.0,
+      "slowest_decile_mean": 733648.0714285715
+     },
+     "ruint": {
+      "mean": 23437.25750301838,
+      "median": 22872.414217553516,
+      "slowest_decile_mean": 31700.949783527754
+     },
+     "montgomery": {
+      "mean": 85209.72054452304,
+      "median": 83121.52400007885,
+      "slowest_decile_mean": 115819.81522439909
+     }
+    },
+    "wall_ns": {
+     "total": 957119.4905714287,
+     "lp_ledger": 54577.05642857143,
+     "confirm": 314088.85785714287,
+     "sieve": 154288.7357857143
+    },
+    "weighted_ns_per_priced_unit": 40.84295228543843,
+    "per_partial_price_sieve_positions": {
+     "priced": 45.01476873667747,
+     "wall": 147.68343315283335
+    }
+   }
+  }
+ },
+ "96": {
+  "B": 1750,
+  "configs": {
+   "reference": {
+    "lc": 1.9736809858022166,
+    "tc": 1.035307067324659,
+    "polys_mean": 156.0421875,
+    "polys_median": 151.0,
+    "partials_looked_up": 916.3125,
+    "stored_partials": 844.3875,
+    "combinations": 71.925,
+    "priced": {
+     "official": {
+      "mean": 1461014.453125,
+      "median": 1440545.5,
+      "slowest_decile_mean": 2184632.125
+     },
+     "ruint": {
+      "mean": 59071.42982170333,
+      "median": 58513.83786594034,
+      "slowest_decile_mean": 80786.88970743868
+     },
+     "montgomery": {
+      "mean": 216420.24314595442,
+      "median": 213667.31966003234,
+      "slowest_decile_mean": 296728.0835503156
+     }
+    },
+    "wall_ns": {
+     "total": 2178955.4463125,
+     "lp_ledger": 194324.849875,
+     "confirm": 583198.392375,
+     "sieve": 488913.18525
+    },
+    "weighted_ns_per_priced_unit": 36.88894006458603,
+    "per_partial_price_sieve_positions": {
+     "priced": 28.18827042563421,
+     "wall": 143.07439980194368
+    },
+    "x3_never_combined": 0.8515508021390374,
+    "partials_per_number_subset": 876.5625,
+    "x3_subset": 16
+   },
+   "(a) L/B 12": {
+    "lc": 1.332768604575819,
+    "tc": 1.035307067324659,
+    "polys_mean": 308.4640625,
+    "polys_median": 291.5,
+    "partials_looked_up": 133.9171875,
+    "stored_partials": 116.009375,
+    "combinations": 17.9078125,
+    "priced": {
+     "official": {
+      "mean": 2517631.9546875,
+      "median": 2421037.5,
+      "slowest_decile_mean": 4254091.234375
+     },
+     "ruint": {
+      "mean": 81193.09617531202,
+      "median": 78288.41781914775,
+      "slowest_decile_mean": 131545.38354947517
+     },
+     "montgomery": {
+      "mean": 298722.02757720446,
+      "median": 287742.9852123257,
+      "slowest_decile_mean": 485747.4317848319
+     }
+    },
+    "wall_ns": {
+     "total": 2687156.8343437496,
+     "lp_ledger": 59852.883875,
+     "confirm": 165948.4795,
+     "sieve": 965752.2932187499
+    },
+    "weighted_ns_per_priced_unit": 33.09673865748333,
+    "per_partial_price_sieve_positions": {
+     "priced": 48.28415991154706,
+     "wall": 301.774416190446
+    },
+    "x3_never_combined": 0.7498761763249133,
+    "partials_per_number_subset": 126.1875,
+    "x3_subset": 16
+   },
+   "(b) L/B 12, slack kept": {
+    "lc": 1.332768604575819,
+    "tc": 1.6762194485510566,
+    "polys_mean": 166.9109375,
+    "polys_median": 161.0,
+    "partials_looked_up": 352.453125,
+    "stored_partials": 285.1375,
+    "combinations": 67.315625,
+    "priced": {
+     "official": {
+      "mean": 1544038.8859375,
+      "median": 1519606.5,
+      "slowest_decile_mean": 2324418.6875
+     },
+     "ruint": {
+      "mean": 61978.1272948874,
+      "median": 61070.75386317516,
+      "slowest_decile_mean": 85763.82565755649
+     },
+     "montgomery": {
+      "mean": 227275.9625471231,
+      "median": 224286.02524644788,
+      "slowest_decile_mean": 315270.1717438808
+     }
+    },
+    "wall_ns": {
+     "total": 2192831.6198124997,
+     "lp_ledger": 101011.36782812499,
+     "confirm": 622491.209078125,
+     "sieve": 516484.46801562497
+    },
+    "weighted_ns_per_priced_unit": 35.38257637533567,
+    "per_partial_price_sieve_positions": {
+     "priced": 45.343037989268346,
+     "wall": 195.76560841383775
+    }
+   },
+   "(a) L/B 8": {
+    "lc": 1.278470364341785,
+    "tc": 1.035307067324659,
+    "polys_mean": 326.5953125,
+    "polys_median": 304.0,
+    "partials_looked_up": 100.73125,
+    "stored_partials": 87.3953125,
+    "combinations": 13.3359375,
+    "priced": {
+     "official": {
+      "mean": 2658572.915625,
+      "median": 2496302.5,
+      "slowest_decile_mean": 4585561.265625
+     },
+     "ruint": {
+      "mean": 85017.3177526098,
+      "median": 80814.73288826701,
+      "slowest_decile_mean": 141164.92425358592
+     },
+     "montgomery": {
+      "mean": 312944.0750868172,
+      "median": 296117.9790629456,
+      "slowest_decile_mean": 521383.95253675163
+     }
+    },
+    "wall_ns": {
+     "total": 2814277.5419375002,
+     "lp_ledger": 53506.21324999999,
+     "confirm": 150378.4745,
+     "sieve": 1034324.9760624999
+    },
+    "weighted_ns_per_priced_unit": 33.10314416579835,
+    "per_partial_price_sieve_positions": {
+     "priced": 55.48114806145748,
+     "wall": 354.6420251845197
+    }
+   },
+   "(b) L/B 8, slack kept": {
+    "lc": 1.278470364341785,
+    "tc": 1.7305176887850906,
+    "polys_mean": 171.51875,
+    "polys_median": 166.5,
+    "partials_looked_up": 297.0984375,
+    "stored_partials": 232.1171875,
+    "combinations": 64.98125,
+    "priced": {
+     "official": {
+      "mean": 1583218.4015625,
+      "median": 1548928.0,
+      "slowest_decile_mean": 2392647.9375
+     },
+     "ruint": {
+      "mean": 63432.60701132738,
+      "median": 62497.78840305442,
+      "slowest_decile_mean": 88094.53057947828
+     },
+     "montgomery": {
+      "mean": 232754.7976827002,
+      "median": 228809.6150169313,
+      "slowest_decile_mean": 324332.17717548454
+     }
+    },
+    "wall_ns": {
+     "total": 2271108.4126875,
+     "lp_ledger": 89886.45990624999,
+     "confirm": 648484.67459375,
+     "sieve": 549392.57425
+    },
+    "weighted_ns_per_priced_unit": 35.805282844877254,
+    "per_partial_price_sieve_positions": {
+     "priced": 50.807653441221916,
+     "wall": 199.6482328873378
+    }
+   }
+  }
+ }
+}
