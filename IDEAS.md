@@ -128,6 +128,7 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Idea, information step first (from the code): do lampcore's p-1 and ECM have a stage 2? If not, cost a plain prime-by-prime stage 2 (B2 = 100 B1) as a new lamp option, priced by the op meter's existing types.
 - Update (2026-10-26, the corrected DP): it keeps a 3.9-5.5% saving from p-1 stage 2 at every size. Shape: a short stage 1 (B 2^7-2^9), one stage 2 to about 100 B. Our p-1 has none today (3a7320f; cost model written). Recommended: adopt after the current meter queue, as a lamp change with a sealed prediction and the usual per-band gate.
 - Update (2026-10-26, the real-prime measurement run): not sealed. The measured comparison at 2 multiplies per prime loses at 72 and 84 (+8.4% / +2.9%) and saves 1.8% at 96. Next: (1) from the code, the plain stage-2 cost per prime we would actually get, and whether prime pairing is cheap to add (answered in NOTES: gap stepping 2 mul + 3 word per prime; paired BSGS ~1.1-1.4 multiply-equivalents); (2) a DP rerun at that cost with c = 1.4 / 1.8, rho at K/1.4 and B2/B1 in {20, 30, 50, 100}; seal a prediction only from that.
+- Rho overhead: the card's measured Brent overhead is ~2x the collision point (552 vs 279, Oct 24), against 1.4x in the user's Mathematica Brent (no gcd batching). Future DP runs model the card's rho at K/2; the measured-c rerun used K/1.4, so rho in its optimum is read as slightly favoured.
 - Candidate shape to price in the rerun: the stage-1 optimum with a short stage 2 appended (B2/B1 20-50), 96 bits first; at 72-84 the arithmetic says no.
 - The rerun sweeps B2/B1 in {10, 15, 20, 30, 50, 100} at 1 and 2 multiplies per prime (pairing against plain), with c = 1.41 / 1.83 and rho at K/1.4.
 - Information step answered (Claude Code, from the code): p-1 has no stage 2; its cost model is already written (NOTES, "pm1 stage 2: cost model", Oct 25; MOVES row "pm1 stage 2 (B2 = c x B)"), with predictions pre-registered. ECM has a baby-step giant-step stage 2 (B2 = 50 B1 by default; NOTES, "Stage 2 in the cards today").
@@ -136,19 +137,20 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 ### I-017 — 1-2 small ECM curves at 96 bits
 - Date: 2026-10-26. Source: Claude chat, from the user's DP. Trigger: ECM at B1 2^8 with stage 2 is chosen at 96 under all three priors (gain 4.75-7.35%). Our ECM already has a BSGS stage 2 (B2 = 50 B1).
 - Information step from the code and results: does the current 96-bit card run any ECM, and at what measured cost per curve (stage 1 + stage 2) under ruint pricing? If none, an ECM-at-small-B1 option belongs in the 96-bit re-solve.
+- Card ECM cost confirmed: 8,187 ruint per curve at B1 = 257 against the model's ~8,900. Track M's 96-bit card runs ~1 curve at B1 = 2,059 (59,257 ruint, ~85% of qs at 96). The 96-bit re-solve offers ECM B1 down to 2^8 with its existing stage 2.
 - Answered (Claude Code, NOTES "I-017 information step"): Track R's 96-bit pipeline runs no ECM; Track M's runs ~1 curve at the default B1 = 2,059 (59,257 ruint per curve). At b1 = 0.125 (B1 = 257 ~ 2^8, B2 = 12,850) a curve costs 8,187 ruint (~12% of qs at 96), close to the model's ~8,900.
 - Decision: pending.
 
 ### I-018 — Illuminate the helix, not the number line (two-coordinate light map)
 - Date: 2026-10-26. Source: the user's question ("what if we were illuminating the helix instead of the number line?"), developed in Claude chat.
 - Idea: each point of the theta tower is a whole semiprime (height log N, radius proportional to 1/2 - theta). A lamp lights the numbers it would crack; "lumens per watt" = population lit per unit cost. This is the quantity the dark-mass DP already computes.
-- Second coordinate: angle = smoothness of p-1 (log of the largest prime factor of p-1 / log p). Then:
+- Second coordinate: angle = bits of the largest prime factor of p-1 (absolute), which makes p-1's light an exact wedge. [Corrected Oct 26: first written as "log of the largest prime factor of p-1 / log p".] Then:
   - td lights a solid outer skin; rho the same with a soft inner edge;
   - p-1 lights a wedge of angle; stage 2 widens it (p-1 with one large prime <= B2);
   - ECM is a re-rollable speckle (no fixed region);
   - qs floods the whole cross-section.
   The dark mass is a visible region: the spine plus the non-smooth-p-1 wedge at mid theta.
-- Use: (a) Phase 3's light spectrum measured as this 2D map with the real lamps (a batch of random semiprimes per band, recording which lamp cracked each); (b) a direct check of the p-1 model: measured p-1 light against the predicted wedge, calibrating the p-1 smoothness constant c (model input 3.4); (c) the visual for I-012 and the film.
+- Use: (a) Phase 3's light spectrum measured as this 2D map with the real lamps (a batch of random semiprimes per band, recording which lamp cracked each); (b) a direct check of the p-1 model: measured p-1 light against the predicted wedge, calibrating the p-1 smoothness constant c (fitted c = 1.41 / 1.83; the earlier model input was 3.4); (c) the visual for I-012 and the film.
 - Caveat: both coordinates are computed after factoring; it is a map of where lamps work, never an aiming method (the primehelix separation result).
 - Convention: no external standard was found (DeepSeek); the first coordinate follows primehelix's theta plots.
 - Diagnostic (DeepSeek, adopted Oct 26): per theta band and p-1-smoothness band, the conditional success of p-1 stage 2 after rho fails, against its marginal success. High conditional gain marks stage 2's structural fringe; a uniform gain means it is only a more expensive p-1.

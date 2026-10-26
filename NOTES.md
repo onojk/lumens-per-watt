@@ -4807,3 +4807,23 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
   - (R4) rho at 84 and 96 under at least one prior (2^10–2^12), either arm; none at 72.
   - (R5) plain 0–2 priors; paired 2–3 priors, gain 3–7%.
   - (R6) yes, under 2%.
+
+**Decisions and corrections (user, Oct 26):**
+1. **Word price, recorded against the old:** clean / old = 0.0258 / 0.0340 = 0.76 (ruint), 0.0951 / 0.1254 = 0.76 (Montgomery). The "differs by more than 2x" stop did not fire. **GP1** (Grok's): 0.76 against its 0.60–0.75, missed narrowly, inside its 0.45–0.90 falsifier (as scored in 630e5be). The standing-go restatement of the Gray-code results at the clean word price is done ("Gray-code before / after, restated under the clean word price", 630e5be: cuts +0.1–0.4 points, no verdict changes).
+2. **Rho overhead:** the card's measured Brent overhead is about 2x the collision point (552 f evaluations to detection against μ + λ = 279, Oct 24), against 1.4x in the user's Mathematica Brent (no gcd batching). Future DP runs model the card's rho at K / 2. The current measured-c rerun used K / 1.4, so any rho in its optimum is read as slightly favoured.
+3. I-018's angle definition is fixed (bits of the largest prime factor of p − 1, absolute), and its "model input 3.4" replaced with the fitted c = 1.41 / 1.83.
+4. I-017: the card's ECM cost is confirmed (8,187 ruint per curve at B1 = 257 against the model's ~8,900). Track M's 96-bit card runs ~1 curve at B1 = 2,059 (59,257 ruint, ~85% of qs at 96). The 96-bit re-solve offers ECM B1 down to 2^8 with its existing stage 2.
+5. **Audit items 12 and 13 (user's decision),** each as its own meter-correction entry, after item 10 commits and before the 2×2:
+   - **Item 12:** remove the redundant sort by reusing the pool-selection order (no charge; parity must be exact).
+   - **Item 13:** charge the rest-list building as word ops (~P per prefix).
+
+### Cost models: items 12 and 13 (before code)
+- **Item 12 (a card change with no charge; op counts unchanged).**
+  - Today on-demand selection forms `pool = sorted(sorted(pool_all, key = (|log(p / q)|, p))[:P])` (charged under sort_charge as |pool_all| keys + sort_cost(|pool_all|) + sort_cost(P)), then re-sorts that pool by the same key, uncharged (`by_q`).
+  - The first sort's first P entries are exactly `by_q` (same key, same tie-break). So `by_q` is taken from that list before the ascending re-sort, and the re-sort for `by_q` is removed.
+  - Every A, candidate, charge and relation is identical. *Acceptance:* lampcore and Python identical to the pre-change build per number on all map numbers (exact parity), on_demand genomes and the enumerate reference.
+- **Item 13 (a meter correction; official counts rise).**
+  - For each prefix, `rest = [p for p in pool if p not in pre]` scans the P pool primes, testing each against the s − 1 prefix primes: **P word ops per prefix**, charged where the prefix's A′ is formed.
+  - For each last-prime pick, `rest.remove(last)` removes one entry: **1 word op per pick**, charged with the pick.
+  - Type: word. *Size:* P ≈ 28–32, prefixes 15–215 per run, so ~0.5–7k word ops per run.
+  - *Acceptance:* only word (and ops) rise, by P × prefixes + picks from the trace (od_prefixes, od_cands); Python = Rust per type.
