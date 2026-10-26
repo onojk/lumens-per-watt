@@ -383,6 +383,8 @@ impl Ledger {
                 w
             })
             .collect();
+        // item 14: the bit rows' initialization (rows x cw) and the combination matrix's (rows x rw)
+        m.charge(crate::PH_WORD, (rows * cw + rows * rw) as u64)?;
         let mut comb: Vec<Vec<u64>> = (0..rows)
             .map(|i| {
                 let mut w = vec![0u64; rw];
@@ -392,10 +394,12 @@ impl Ledger {
             .collect();
         let mut used = vec![false; rows];
         let bit = |w: &Vec<u64>, j: usize| (w[j / 64] >> (j % 64)) & 1 == 1;
+        let mut pivots = 0u64;
         for col in 0..f {
             let piv = (0..rows).find(|&r| !used[r] && bit(&mat[r], col));
             let Some(piv) = piv else { continue };
             used[piv] = true;
+            pivots += 1;
             let (pm, pc) = (mat[piv].clone(), comb[piv].clone());
             for r in 0..rows {
                 if r != piv && bit(&mat[r], col) {
@@ -408,12 +412,17 @@ impl Ledger {
                 }
             }
         }
+        m.charge(crate::PH_WORD, pivots * (cw + rw) as u64)?; // item 14: the per-pivot row clones
         let deps: Vec<Vec<u64>> =
             (0..rows).filter(|&r| mat[r].iter().all(|&w| w == 0)).map(|r| comb[r].clone()).collect();
+        m.charge(crate::PH_WORD, (rows * cw + deps.len() * rw) as u64)?; // item 14: the zero-row scan, the copies
 
         // 7. square root, dependency by dependency
         for dep in &deps {
             let members: Vec<usize> = (0..rows).filter(|&i| bit(dep, i)).collect();
+            // item 14: the member scan (rows), ex[] (F), the member sums (their entries), the Y scan (F - 1)
+            let nnz: usize = members.iter().map(|&i| rels[i].1.len()).sum();
+            m.charge(crate::PH_WORD, (rows + f + nnz + f - 1) as u64)?;
             let mut x = U256::ZERO;
             for (j, &i) in members.iter().enumerate() {
                 let ui = U256::from(rels[i].0.rem_euclid(n_i) as u128);
@@ -899,7 +908,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                     ev[j] += 1;
                 }
                 let vec_: Vec<(u32, u32)> = tt.iter().map(|&j| (j, ev[j as usize])).collect(); // the sparse relation
-                m.charge(crate::PH_WORD, (nt + 2 * tt.len()) as u64)?; // sets, the sparse copy, the clear
+                m.charge(crate::PH_WORD, (nt + 2 * tt.len() + qs_.len()) as u64)?; // sets, the sparse copy, the clear; item 15: the A-prime adds
                 for &j in &tt {
                     ev[j as usize] = 0;
                 }

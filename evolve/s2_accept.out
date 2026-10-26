@@ -1,0 +1,10 @@
+54 bits, new ref: cost per number before / after: offi 31,816.2 / 33,073.2 (+3.951%)  ruin 2,377.2 / 2,409.7 (+1.364%)  mont 8,104.0 / 8,223.6 (+1.475%)
+54 bits, new ref + re-sieve p0 200: cost per number before / after: offi 37,696.8 / 38,953.8 (+3.335%)  ruin 2,447.5 / 2,479.9 (+1.325%)  mont 8,358.0 / 8,477.6 (+1.430%)
+72 bits, new ref: cost per number before / after: offi 151,604.6 / 154,757.0 (+2.079%)  ruin 8,791.6 / 8,872.9 (+0.925%)  mont 31,292.2 / 31,592.0 (+0.958%)
+72 bits, new ref + re-sieve p0 200: cost per number before / after: offi 171,664.0 / 174,816.5 (+1.836%)  ruin 8,131.4 / 8,212.7 (+1.000%)  mont 28,787.8 / 29,087.6 (+1.041%)
+84 bits, new ref: cost per number before / after: offi 462,047.2 / 467,352.0 (+1.148%)  ruin 22,530.6 / 22,667.5 (+0.607%)  mont 81,663.6 / 82,168.1 (+0.618%)
+84 bits, new ref + re-sieve p0 200: cost per number before / after: offi 514,756.5 / 520,061.3 (+1.031%)  ruin 19,952.8 / 20,089.7 (+0.686%)  mont 71,924.6 / 72,429.1 (+0.701%)
+96 bits, new ref: cost per number before / after: offi 1,451,431.8 / 1,461,014.5 (+0.660%)  ruin 58,824.2 / 59,071.4 (+0.420%)  mont 215,508.9 / 216,420.2 (+0.423%)
+96 bits, new ref + re-sieve p0 200: cost per number before / after: offi 1,665,899.7 / 1,675,482.3 (+0.575%)  ruin 54,801.8 / 55,049.1 (+0.451%)  mont 200,107.1 / 201,018.4 (+0.455%)
+1. only word (and ops) change, by the same amount: 12000/12000
+2-3. word change = formula (trace), Python = Rust per type: 48/48

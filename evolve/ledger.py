@@ -176,21 +176,33 @@ class Ledger:
         if at is not None:
             at["s1_bits"] = at.get("s1_bits", 0) + nnz
         mat = [sum(1 << j for j, e in vec if e & 1) for _, vec, _ in rels]
+        # item 14 (NOTES.md, "Step 2"), counted as lampcore lays it out: cw = ceil(F/64) words per bit row,
+        # rw = ceil(rows/64) per combination row
+        cw, rw = -(-F // 64), -(-rows // 64)
+        ch.charge("word", rows * cw + rows * rw)   # the rows' and the combination matrix's initialization
         comb = [1 << i for i in range(rows)]
         used = [False] * rows
+        pivots = 0
         for col in range(F):
             piv = next((r for r in range(rows) if not used[r] and mat[r] >> col & 1), None)
             if piv is None:
                 continue
             used[piv] = True
+            pivots += 1
             for r in range(rows):
                 if r != piv and mat[r] >> col & 1:
                     mat[r] ^= mat[piv]; comb[r] ^= comb[piv]
+        ch.charge("word", pivots * (cw + rw))      # the per-pivot row clones
         deps = [comb[r] for r in range(rows) if mat[r] == 0]
+        ch.charge("word", rows * cw + len(deps) * rw)   # the zero-row scan, the copies
+        if at is not None:
+            at["pivots"] = pivots; at["ndeps"] = len(deps)
 
         # 7. square root, dependency by dependency
         for dep in deps:
             members = [i for i in range(rows) if dep >> i & 1]
+            # the member scan (rows), ex[] (F), the member sums (their entries), the Y scan (F - 1)
+            ch.charge("word", rows + F + sum(len(rels[i][1]) for i in members) + F - 1)
             mults = 0
             X = 1
             for j, i in enumerate(members):

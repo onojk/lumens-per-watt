@@ -5972,3 +5972,16 @@ The estimate is unchanged in scale: about 0.1–0.15% of qs's cost at 96 and a f
 - *6f (optional):* overdispersion of q counts with disjoint A-prime sets.
 
 *(Also received this morning, recorded in its own words above the superseding entry's scope: the Wolfram per-N predictability and λ_q-by-band run — raw CV fulls 41 / 57 / 47 / 55%, partials 31 / 42 / 40 / 42%; measured / predicted CV partials 1.7 / 1.5 / 2.5 / 3.4% against floors 1.7 / 2.3 / 2.9 / 3.7%, fulls 6.4 / 6.0 / 17.5 / 14.3% against 5.9 / 7.4 / 9.6 / 11.5%; λ_q by band 0.95–1.02, flat-λ_q refuted; the user's scoring: raw CV fulls 20–35% missed high, partials 15–30% missed high, measured / predicted within 2 pp of the floor held for partials, held for fulls at 54–72, missed at 84–96, band trend missed.)*
+
+### Step 2: audit items 14 and 15 charged — results (`evolve/s2_accept.py`, `s2_accept.out`, `.json`; `cfrac_accept_s2.out`; `parity_s2.out`)
+
+- *Acceptance:*
+  1. against the step-1 build (0876b5c), only word (and ops) change, by the same amount: 12,000 / 12,000;
+  2. the word change equals the formula from the trace (row and combination initialization, pivot clones, the zero-row scan and copies, per dependency tried the member scan, ex[], the member sums and the Y scan; s per kept candidate), and Python = Rust per type: 48 / 48;
+  3. cfrac_accept passes (its solve shares the ledger);
+  4. parity passes (types 7,182 pairs, 0 mismatches; mutations 54 / 54).
+- *Cost per number, before → after* (new reference; ruint, with official and Montgomery in `s2_accept.out`):
+  - off: 2,377.2 → 2,409.7 (+1.36%), 8,791.6 → 8,872.9 (+0.93%), 22,530.6 → 22,667.5 (+0.61%), 58,824.2 → 59,071.4 (+0.42%);
+  - on (p0 200): 2,447.5 → 2,479.9 (+1.33%), 8,131.4 → 8,212.7 (+1.00%), 19,952.8 → 20,089.7 (+0.69%), 54,801.8 → 55,049.1 (+0.45%).
+- **My estimate missed low:** "about 0.1–0.15% at 96, a few tenths at 54" against +0.42% and +1.36% (ruint). The per-dependency charges (rows + 2F + member entries, every dependency tried) and the pivot clones are larger than I sized them. The trace formula matched every case, so the counts are as modelled; only my size estimate was off.
+- P6 and D-P6 (solve under 1.5x under anchor B) are scored at the step-5 wall-clock run.

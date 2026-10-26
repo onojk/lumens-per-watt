@@ -95,6 +95,11 @@ def check(N, tr):
         f["cf_step"] += s; f["cf_td"] += t; f["hash"] += offers[0]; f["word"] += offers[0] + offers[1]
         if at["rows"]:
             f["word"] += sum(len(vec) for _, vec, _ in at["rels"])   # GF(2) rows built from the sparse relations
+            Fa, rows = at["F"], at["rows"]                            # item 14 (step 2)
+            cw, rw = -(-Fa // 64), -(-rows // 64)
+            f["word"] += 2 * rows * cw + rows * rw + at["pivots"] * (cw + rw) + at["ndeps"] * rw
+            for d in at["deps"]:
+                f["word"] += rows + Fa + sum(len(at["rels"][i][1]) for i in d["idx"]) + Fa - 1
         residues_ok &= res == at["residues"]
         if at["rows"]:
             f["la"] += -(-at["rows"] * at["F"] * at["rows"] // 64)

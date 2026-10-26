@@ -395,7 +395,7 @@ def sieve_source(N, k, g, led, ch, at):
                         Tk.append(j)
                     ev[j] += 1
                 vec = [(j, ev[j]) for j in Tk]     # the sparse relation
-                s1w = len(TT) + 2 * len(Tk); charge("word", s1w)    # sets, the sparse copy, the clear
+                s1w = len(TT) + 2 * len(Tk); charge("word", s1w + len(qs_))   # sets, the sparse copy, the clear; item 15: the A-prime adds
                 for j in Tk:
                     ev[j] = 0
                 if at is not None:
