@@ -3580,3 +3580,41 @@ The final Track R genes run as qs alone on the corrected card with kset = sf32. 
 - *My expectation in the cost model* (+80–90% official, +3% ruint, +11% Montgomery): **missed** (×2.34–2.45, +4.5–4.9%, +16.6–18.2%; stage 2's bookkeeping was not in my estimate).
 - **Any Track M budget move (user's question): yes, at every size with p-1, and at 72–96 without it.**
 - **Consequence:** the kc / lc round's Track M (d) budgets, and the final-round Track M budgets, are in the old ECM units and are superseded. A re-solve with the new columns is needed before any further Track M sealed run; the table above is that re-solve.
+
+**Outside context for root-matching** (user, Mathematica; 18-digit N, B = 3000, F = 237; partials = leftover < B^1.8, valued 0.3; prices for update / small-modulus division / word op: 1 / 1 / 1 official, 0.034 / 0.114 / 0.034 ruint, 0.125 / 0.426 / 0.125 Montgomery; best slack per case; sieve + confirm only).
+- Confirmation's share of sieve + confirm, the card as today: 70% official, 89% ruint, 89% Montgomery.
+- Saving against today's card: root-matched alone −1.8% official, 56% ruint, 59% Montgomery; skipping primes < 30 alone 9.2 / 2.6 / 2.7%; both together 7.5 / 59 / 63%.
+- *The user's stated limits:* F here (237) is larger than the card's (57–151), and the card's measured sieve-update share (10–34% of qs cost under the calibrated pricings) means its confirmation share is well below the toy's. The toy's best slack stays ~1.0 (it undervalues partials). Treat it as direction: root-matching is likely the largest calibrated gain available. Size it from the measured confirmation share (measured: 23–33% ruint, 22–31% Montgomery of total qs cost).
+- **Ordering (user, restated):** confirmation is ≥ 20% of qs cost under ruint and Montgomery, so root-matched confirmation is costed and built before pm1 stage 2.
+- *Note:* the toy prices the root test as a word op. Whether the card's root test can be word-level is the design question in the cost model below.
+
+## 2026-10-25 — Root-matched candidate confirmation: cost model (before code; one design decision for the user)
+
+**What it replaces.** Today each candidate costs 2 confirm_full (evaluating v) plus F confirm_td (one division of v by every factor-base prime) plus repeats. Measured: only 5.1–7.0 primes divide a confirmed v, and the F-pass is 10–22% of qs official cost and 21–28% of its ruint and Montgomery cost.
+
+**The design question: how is "does p divide v" decided without dividing v by p?** The fixed classification rule types an operation that reduces modulo a small prime as small-modulus (0.114 ruint, 0.426 Montgomery, the same as a division of v).
+- **(i) Root test by x mod p:** reduces the sieve index modulo p, so it is a small-modulus op by the rule. It costs the same as today's division and saves nothing. *Rejected.*
+- **(ii) Root test by a precomputed reciprocal (Barrett / multiply-high and compare):** physically a word multiply, a shift and a compare, with no division instruction. But it computes x mod p, so the rule as written would type it small-modulus. **The user's decision:** does a reduction done by multiply-high count as "reduces modulo a small prime" (small-modulus), or as word-level arithmetic? If word-level, this is the simplest form: F word-level tests (each ~3 word ops: multiply-high, multiply-subtract, compare against the two roots) plus a division for each matching prime.
+- **(iii) Re-sieving (reduction-free; word-level by the rule as written):** after a polynomial's sieve pass, the candidate positions are marked in a bitmap (1 word op per candidate). For each factor-base prime p ≥ P0, its two root progressions are walked again across the interval, testing the bitmap at each position (2 word ops per position: index step and bitmap test). Primes that hit a candidate are recorded for it (1 word op per hit). v is then divided only by the recorded primes and by the primes below P0 (small-modulus ops, plus repeats).
+  - The walk costs about as many positions as the sieve updates of primes ≥ P0. Primes below 30 give 64–82% of all updates, so with P0 = 30 the re-sieve walks only 18–36% of the update count.
+  - **P0 is a card option** (default 30; P0 = 2 re-sieves every prime).
+
+**Charges, option (iii), per polynomial:**
+- 1 word op per candidate (bitmap set);
+- for each prime p ≥ P0 (not dividing A), for each root, 2 word ops per position visited (positions = (width − 1 − start) // p + 1, as in the sieve);
+- 1 word op per recorded hit;
+- per candidate: 2 confirm_full (unchanged), one confirm_td per prime below P0 plus one per recorded prime, plus repeats as now.
+- The large-prime and ledger steps are unchanged.
+
+**Expected effect, before measurement** (84 bits, new reference genes; shares from `sieveshare.out` and `confirmshare.out`):
+- *The F-pass part:* 93 → ~5 (primes < 30 in the base) + ~6.5 (dividing primes ≥ 30, at most) divisions per candidate. That removes ~88% of confirm_td, i.e. about 0.23 of qs's ruint cost and 0.24 of its Montgomery cost.
+- *The re-sieve:* 2 word ops per position over ~27% of the update count. That adds ~0.54 × sieve_update cost ≈ 0.13 of qs's ruint cost (sieve updates are 0.23) and ~0.16 Montgomery.
+- **Net: roughly 8–12% of qs cost under ruint and Montgomery. Under official it loses** (the re-sieve's word ops count 1 each, like the divisions they replace, and there are more of them).
+- Option (ii), if typed word-level, would save more (~15–20% calibrated), with no re-sieve walk.
+
+**Acceptance (for the code):**
+- the option absent is today's card, op for op;
+- with it on, the relations found are identical to today's on every map number (same candidates, same factorizations; only the charges differ);
+- the word and confirm_td counts equal the formula from a trace;
+- Python = Rust parity, per type.
+- It is then costed together with small-prime variation (DeepSeek's and Grok's predictions are recorded above).
