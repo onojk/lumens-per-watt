@@ -77,3 +77,12 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Idea: confirm whether the evolved pipelines at 72 include a td stage with a free bound, and whether td could replace rho there; an information step from existing results first.
 - Note (Claude Code, from the code): the size-scaling pipelines fix td off (sizescale.pipeline sets td's ob = 0); td's depth was searched only in the 84-bit partition study (turned off there). So td at 72 has not been tested in the current pipelines.
 - Decision: pending.
+
+### I-011 — Use the primehelix theta distribution as the prior for Phase 3 and the dark-mass work
+- Date: 2026-10-26. Source: Claude chat, from the user's primehelix repo (github.com/onojk/primehelix; paper "On the Distribution of Smaller Factors in Semiprimes", submitted to Integers).
+- Trigger: the dark-mass prototype needed a prior over theta = log p / log N and used an improvised 1/(theta(1-theta)).
+- Idea: use the paper's measured P(N, theta0) (exact to 1e8-1e9) and its heuristic P ~ 1 - f(theta0)/log log N, f(theta0) = log(1/theta0) - theta0 - log 2 + 1/2 (density ~ (1/theta + 1)/log log N), as the random-semiprime prior at 72-96 bits. Heuristic values: P(theta <= 0.1 / 0.2 / 0.3 / 0.4) = 0.49 / 0.69 / 0.82 / 0.92 at 72 bits, 0.52 / 0.71 / 0.83 / 0.92 at 96. Conditioned on p >= 2^8 it agrees closely with the improvised prior (96 bits: 9% vs 8% below 0.1; 68% vs 65% below 0.3), so the prototype's conclusions stand.
+- Use: (a) Phase 3 reports per theta band and weights bands by P(N, theta0) when a "random semiprime" summary is wanted; (b) every "best pipeline" claim names its prior (balanced/RSA-style vs random semiprime); (c) the dark-mass DP is re-run with this prior once measured lamp curves exist.
+- Caveat: the constant 1/2 is conjectural in the paper; 72-96 bits is far beyond enumeration, so it is a heuristic prior and is labelled as such.
+- Not useful (recorded so it isn't revisited): primehelix's geometric/spectral embeddings (the paper's own separation result: theta is not recoverable from n alone) and residue labels (they need the factors first).
+- Decision: pending.
