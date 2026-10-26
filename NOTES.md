@@ -4911,3 +4911,15 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
 - *opbench* (the calibration's "sieve update" and the clean one) sieves an i32 array of width 2M + 1 = **1,147** cells (4.6 KB): tuned qs geometry at 84 bits, bc 1.1, M = 0.25 B = 573.
 - *The card* (new reference genes, all map numbers, M = mc · B; lampcore's `arr` is i32): median width 279 / 463 / 1,121 / 2,113 cells at 54 / 72 / 84 / 96 (maximum 297 / 487 / 1,175 / 2,215, i.e. at most 1.2 / 1.9 / 4.7 / 8.9 KB).
 - **The benchmark array is smaller than the card's at 96 bits** (1,147 against ~2,113 cells), about equal at 84, and larger at 54–72. *But both are L1-resident* (≤ 8.9 KB against a 32–48 KB L1 data cache), so the 96-bit difference does not add memory traffic the benchmark omits; the per-update price should carry over. Reported here before the wall-clock run, as asked. The wall-clock check measures it directly.
+
+**Sealed predictions, Oct 26 (W-set: audit re-typing, benchmark array, 2×2 re-sieve)** (labelled by source).
+- *Grok's:*
+  - (W1) ruint cost change from the audit re-typing: −14 to −20 / −12 to −18 / −9 to −14% at 72 / 84 / 96 (official unchanged).
+  - (W2) the sieve_update benchmark array is smaller than the card's sieve at 84 and 96 (borderline or smaller at 72).
+  - (W3) ruint saving from re-sieve at its best p0 at 96: 4–9%.
+  - (W4) the Track R best p0 is higher than the ruint best p0 at every size (about 200–400 / 400–700 / 700–1000).
+  - Its dependencies: W3 is linked to GP3 / GP4; W1 and W2 are independent.
+- *Claude chat's:* (W1) −6 to −15%, the cut shrinking with size. (W2) smaller only at 96. (W3) 3–7%. (W4) higher at every size.
+- **Timing (mine): W2 is post hoc.** The array comparison was measured and committed (b098d6a) before these predictions arrived: the benchmark has 1,147 cells against the card's median 279 / 463 / 1,121 / 2,113 (maximum 297 / 487 / 1,175 / 2,215) at 54 / 72 / 84 / 96.
+  - *Scored post hoc:* Grok's W2 **missed** (at 84 the benchmark is not smaller: 1,147 against a median of 1,121 and a maximum of 1,175, about equal; at 72 it is larger, not borderline). Claude chat's W2 **held** (smaller only at 96).
+- **Plan change (user, Oct 26): p0 = 1,500 is added to the 2×2 sweep,** so the grid is {30, 60, 100, 200, 400, 700, 1000, 1500}. The fitted cost model puts the Track R best p0 at 96 bits near 1,427, beyond the old top of 1,000; without it, W4 and GP3 / GP4 at 96 would be scored at the grid edge.
