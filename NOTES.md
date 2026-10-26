@@ -6861,3 +6861,14 @@ Each cell gives ratio A / ratio B, with the materiality (time share × (ratio_B 
 - The reviewer's hypothesis (the threshold caps the large prime) **held** in mechanism. The Wolfram run's conclusion "a single threshold cap is not the main cause" **missed**: the threshold is essentially the whole loss.
   - Its single deterministic D (4.33 bits) understated the spread. The under-count is broad (p90 ~11–15 bits) and varies by position, so its loss is spread across q rather than only at the top q, which is why the cut-L comparison looked inconsistent with a cap.
 - **Open question for the user:** sieving the prime 2 (and its powers) and odd prime powers, or adding their expected contribution to each position (a constant offset or a lowered threshold), would recover much of the threshold loss. That is a card change with meter consequences (more candidates, more confirm work); a decision, not done.
+
+## Stage C: the step-5 timing check on the committed card after stage A — FAILS (`phasetime_stageC.out`, `.json`; card 06ebcf8)
+
+- Anchor B (time-weighted ns per priced ruint unit), off / on: 45.3 / 52.5 (54), 43.7 / 51.9 (72), 35.0 / 39.5 (84), 31.0 / 31.5 (96). It is lower than at step 5 (48.0 / 56.5 … 34.0 / 35.5), because stage A sped up setup, gray and resieve.
+- Regions still above the 1% bar (ratio_B, materiality):
+  - 54: lp_ledger off 1.55 (8.6%); resieve on 1.55 (6.0%);
+  - 72: setup off 1.69 (21.7%);
+  - 84: lp_ledger 1.90 / 1.66 (7.7% / 5.5%); solve 1.92 / 1.70 (9.4% / 7.0%); confirm with re-sieve 1.85 (12.5%);
+  - 96: lp_ledger 3.10 / 2.99 (21.2% / 19.1%); solve 2.38 / 2.36 (12.0% / 11.6%); confirm with re-sieve 2.25 (11.4%); gray 1.57 / 1.53 (1.4% / 1.3%).
+- **Recorded: fails.** Per the queue, the old stage 2–4 runs are not started.
+- Against step 5: setup at 84 and resieve at 72–96 no longer flag; setup at 72 still does (A selection, untouched); lp_ledger and solve are unchanged in time, and their ratios rose as the anchor fell.

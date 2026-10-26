@@ -1,0 +1,76 @@
+54 bits, new ref: overhead 33.3 ns/region; anchors: (A) median 45.3, (B) time-weighted 45.3, (C) calibrated multiply 27.3 ns per priced ruint unit
+   mult              1,777 ns/number  priced       61.8     28.7 ns/unit  A x0.63  B x0.64  C x1.05  time share 0.016
+   fb                5,266 ns/number  priced      325.3     16.2 ns/unit  A x0.36  B x0.36  C x0.59  time share 0.048
+   setup            28,527 ns/number  priced      478.7     59.6 ns/unit  A x1.31  B x1.32  C x2.18  time share 0.262
+   gray                693 ns/number  priced       16.1     43.0 ns/unit  A x0.95  B x0.95  C x1.58  time share 0.006
+   sieve             7,756 ns/number  priced      306.0     25.3 ns/unit  A x0.56  B x0.56  C x0.93  time share 0.071
+   confirm          30,604 ns/number  priced      642.2     47.7 ns/unit  A x1.05  B x1.05  C x1.75  time share 0.281
+   lp_ledger        17,270 ns/number  priced      246.9     69.9 ns/unit  A x1.54  B x1.55  C x2.56  time share 0.158  FLAG B (8.64% STOP)
+   solve            17,071 ns/number  priced      330.0     51.7 ns/unit  A x1.14  B x1.14  C x1.90  time share 0.157
+54 bits, new ref + re-sieve: overhead 34.5 ns/region; anchors: (A) median 52.5, (B) time-weighted 52.5, (C) calibrated multiply 27.3 ns per priced ruint unit
+   mult              1,802 ns/number  priced       61.8     29.2 ns/unit  A x0.55  B x0.55  C x1.07  time share 0.015
+   fb                5,558 ns/number  priced      325.3     17.1 ns/unit  A x0.33  B x0.33  C x0.63  time share 0.047
+   setup            29,428 ns/number  priced      486.8     60.5 ns/unit  A x1.15  B x1.15  C x2.21  time share 0.248
+   gray                651 ns/number  priced       16.1     40.4 ns/unit  A x0.77  B x0.77  C x1.48  time share 0.005
+   sieve             7,830 ns/number  priced      306.0     25.6 ns/unit  A x0.49  B x0.49  C x0.94  time share 0.066
+   resieve          12,897 ns/number  priced      157.9     81.7 ns/unit  A x1.55  B x1.55  C x2.99  time share 0.109  FLAG B (6.03% STOP)
+   confirm          25,775 ns/number  priced      327.6     78.7 ns/unit  A x1.50  B x1.50  C x2.88  time share 0.217
+   lp_ledger        17,367 ns/number  priced      246.9     70.3 ns/unit  A x1.34  B x1.34  C x2.58  time share 0.146
+   solve            17,333 ns/number  priced      330.0     52.5 ns/unit  A x1.00  B x1.00  C x1.92  time share 0.146
+72 bits, new ref: overhead 33.9 ns/region; anchors: (A) median 44.8, (B) time-weighted 43.7, (C) calibrated multiply 27.3 ns per priced ruint unit
+   mult              1,953 ns/number  priced       61.8     31.6 ns/unit  A x0.71  B x0.72  C x1.16  time share 0.005
+   fb               13,388 ns/number  priced      742.7     18.0 ns/unit  A x0.40  B x0.41  C x0.66  time share 0.035
+   setup           122,036 ns/number  priced    1,653.9     73.8 ns/unit  A x1.65  B x1.69  C x2.70  time share 0.315  FLAG B (21.74% STOP)
+   gray              6,552 ns/number  priced      129.7     50.5 ns/unit  A x1.13  B x1.16  C x1.85  time share 0.017
+   sieve            44,180 ns/number  priced    1,907.4     23.2 ns/unit  A x0.52  B x0.53  C x0.85  time share 0.114
+   confirm         119,790 ns/number  priced    3,066.3     39.1 ns/unit  A x0.87  B x0.89  C x1.43  time share 0.309
+   lp_ledger        40,534 ns/number  priced      627.0     64.7 ns/unit  A x1.44  B x1.48  C x2.37  time share 0.105
+   solve            38,851 ns/number  priced      680.9     57.1 ns/unit  A x1.27  B x1.31  C x2.09  time share 0.100
+72 bits, new ref + re-sieve: overhead 33.4 ns/region; anchors: (A) median 58.1, (B) time-weighted 51.9, (C) calibrated multiply 27.3 ns per priced ruint unit
+   mult              2,037 ns/number  priced       61.8     33.0 ns/unit  A x0.57  B x0.64  C x1.21  time share 0.005
+   fb               13,724 ns/number  priced      742.7     18.5 ns/unit  A x0.32  B x0.36  C x0.68  time share 0.033
+   setup           123,837 ns/number  priced    1,667.4     74.3 ns/unit  A x1.28  B x1.43  C x2.72  time share 0.301
+   gray              6,237 ns/number  priced      129.7     48.1 ns/unit  A x0.83  B x0.93  C x1.76  time share 0.015
+   sieve            43,853 ns/number  priced    1,907.4     23.0 ns/unit  A x0.40  B x0.44  C x0.84  time share 0.107
+   resieve          67,192 ns/number  priced    1,093.9     61.4 ns/unit  A x1.06  B x1.18  C x2.25  time share 0.163
+   confirm          75,944 ns/number  priced    1,008.5     75.3 ns/unit  A x1.30  B x1.45  C x2.76  time share 0.185
+   lp_ledger        38,591 ns/number  priced      627.0     61.6 ns/unit  A x1.06  B x1.19  C x2.25  time share 0.094
+   solve            39,569 ns/number  priced      680.9     58.1 ns/unit  A x1.00  B x1.12  C x2.13  time share 0.096
+84 bits, new ref: overhead 34.0 ns/region; anchors: (A) median 41.7, (B) time-weighted 35.0, (C) calibrated multiply 27.3 ns per priced ruint unit
+   mult              2,103 ns/number  priced       61.8     34.0 ns/unit  A x0.82  B x0.97  C x1.25  time share 0.003
+   fb               25,895 ns/number  priced    1,465.7     17.7 ns/unit  A x0.42  B x0.50  C x0.65  time share 0.033
+   setup           189,217 ns/number  priced    3,930.6     48.1 ns/unit  A x1.16  B x1.38  C x1.76  time share 0.239
+   gray             16,120 ns/number  priced      329.5     48.9 ns/unit  A x1.17  B x1.40  C x1.79  time share 0.020
+   sieve           136,741 ns/number  priced    6,856.3     19.9 ns/unit  A x0.48  B x0.57  C x0.73  time share 0.172
+   confirm         274,327 ns/number  priced    7,798.3     35.2 ns/unit  A x0.84  B x1.01  C x1.29  time share 0.346
+   lp_ledger        68,327 ns/number  priced    1,029.2     66.4 ns/unit  A x1.59  B x1.90  C x2.43  time share 0.086  FLAG B (7.73% STOP)
+   solve            80,288 ns/number  priced    1,192.9     67.3 ns/unit  A x1.62  B x1.92  C x2.47  time share 0.101  FLAG B (9.35% STOP)
+84 bits, new ref + re-sieve: overhead 35.3 ns/region; anchors: (A) median 48.1, (B) time-weighted 39.5, (C) calibrated multiply 27.3 ns per priced ruint unit
+   mult              2,061 ns/number  priced       61.8     33.3 ns/unit  A x0.69  B x0.84  C x1.22  time share 0.003
+   fb               25,785 ns/number  priced    1,465.7     17.6 ns/unit  A x0.37  B x0.44  C x0.64  time share 0.032
+   setup           192,465 ns/number  priced    3,962.1     48.6 ns/unit  A x1.01  B x1.23  C x1.78  time share 0.237
+   gray             15,844 ns/number  priced      329.5     48.1 ns/unit  A x1.00  B x1.22  C x1.76  time share 0.019
+   sieve           142,531 ns/number  priced    6,856.3     20.8 ns/unit  A x0.43  B x0.53  C x0.76  time share 0.175
+   resieve         167,148 ns/number  priced    4,032.1     41.5 ns/unit  A x0.86  B x1.05  C x1.52  time share 0.206
+   confirm         119,640 ns/number  priced    1,636.9     73.1 ns/unit  A x1.52  B x1.85  C x2.68  time share 0.147  FLAG B (12.48% STOP)
+   lp_ledger        67,503 ns/number  priced    1,029.2     65.6 ns/unit  A x1.36  B x1.66  C x2.40  time share 0.083  FLAG B (5.47% STOP)
+   solve            80,350 ns/number  priced    1,192.9     67.4 ns/unit  A x1.40  B x1.70  C x2.47  time share 0.099  FLAG B (6.95% STOP)
+96 bits, new ref: overhead 34.3 ns/region; anchors: (A) median 34.3, (B) time-weighted 31.0, (C) calibrated multiply 27.3 ns per priced ruint unit
+   mult              2,100 ns/number  priced       61.8     34.0 ns/unit  A x0.99  B x1.10  C x1.24  time share 0.001
+   fb               40,348 ns/number  priced    2,414.4     16.7 ns/unit  A x0.49  B x0.54  C x0.61  time share 0.022
+   setup           374,231 ns/number  priced   10,777.8     34.7 ns/unit  A x1.01  B x1.12  C x1.27  time share 0.204
+   gray             45,154 ns/number  priced      926.2     48.8 ns/unit  A x1.42  B x1.57  C x1.79  time share 0.025  FLAG B (1.41% STOP)
+   sieve           487,343 ns/number  priced   24,517.0     19.9 ns/unit  A x0.58  B x0.64  C x0.73  time share 0.266
+   confirm         537,630 ns/number  priced   16,292.2     33.0 ns/unit  A x0.96  B x1.06  C x1.21  time share 0.294
+   lp_ledger       184,748 ns/number  priced    1,919.9     96.2 ns/unit  A x2.80  B x3.10  C x3.52  time share 0.101  FLAG B (21.24% STOP)
+   solve           159,274 ns/number  priced    2,158.7     73.8 ns/unit  A x2.15  B x2.38  C x2.70  time share 0.087  FLAG B (12.01% STOP)
+96 bits, new ref + re-sieve: overhead 39.0 ns/region; anchors: (A) median 35.2, (B) time-weighted 31.5, (C) calibrated multiply 27.3 ns per priced ruint unit
+   mult              2,163 ns/number  priced       61.8     35.0 ns/unit  A x0.99  B x1.11  C x1.28  time share 0.001
+   fb               40,649 ns/number  priced    2,414.4     16.8 ns/unit  A x0.48  B x0.53  C x0.62  time share 0.022
+   setup           381,783 ns/number  priced   10,836.0     35.2 ns/unit  A x1.00  B x1.12  C x1.29  time share 0.202
+   gray             44,747 ns/number  priced      926.2     48.3 ns/unit  A x1.37  B x1.53  C x1.77  time share 0.024  FLAG B (1.27% STOP)
+   sieve           459,978 ns/number  priced   24,517.0     18.8 ns/unit  A x0.53  B x0.60  C x0.69  time share 0.244
+   resieve         445,978 ns/number  priced   14,735.0     30.3 ns/unit  A x0.86  B x0.96  C x1.11  time share 0.236
+   confirm         171,638 ns/number  priced    2,424.1     70.8 ns/unit  A x2.01  B x2.25  C x2.59  time share 0.091  FLAG B (11.35% STOP)
+   lp_ledger       180,940 ns/number  priced    1,919.9     94.2 ns/unit  A x2.67  B x2.99  C x3.45  time share 0.096  FLAG B (19.10% STOP)
+   solve           160,670 ns/number  priced    2,158.7     74.4 ns/unit  A x2.11  B x2.36  C x2.73  time share 0.085  FLAG B (11.61% STOP)
