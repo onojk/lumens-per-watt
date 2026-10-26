@@ -1,0 +1,154 @@
+{
+ "54": {
+  "new ref": {
+   "full pass": {
+    "official": 25933.75,
+    "ruint": 3131.484140937429,
+    "montgomery": 9799.955655425501
+   },
+   "re-sieve": {
+    "official": 26889.20625,
+    "ruint": 2905.554529736971,
+    "montgomery": 8950.794365741513
+   }
+  },
+  "frozen ref (old)": {
+   "full pass": {
+    "official": 30296.55,
+    "ruint": 9519.51727595175,
+    "montgomery": 16173.564163998919
+   },
+   "re-sieve": {
+    "official": 30914.553125,
+    "ruint": 9285.88472139868,
+    "montgomery": 15296.188335199718
+   }
+  },
+  "corrected ref (old genes)": {
+   "full pass": {
+    "official": 25930.30625,
+    "ruint": 3641.0631039470472,
+    "montgomery": 11804.626274641554
+   },
+   "re-sieve": {
+    "official": 26581.11875,
+    "ruint": 3404.850324190766,
+    "montgomery": 10917.508991609015
+   }
+  }
+ },
+ "72": {
+  "new ref": {
+   "full pass": {
+    "official": 133430.45,
+    "ruint": 12106.296205266404,
+    "montgomery": 40597.42844790289
+   },
+   "re-sieve": {
+    "official": 144189.35,
+    "ruint": 10909.204155158612,
+    "montgomery": 36086.78444189823
+   }
+  },
+  "frozen ref (old)": {
+   "full pass": {
+    "official": 151867.01875,
+    "ruint": 22585.602676162707,
+    "montgomery": 57103.94798414575
+   },
+   "re-sieve": {
+    "official": 147732.56041666667,
+    "ruint": 19848.40209293289,
+    "montgomery": 46847.41710701308
+   }
+  },
+  "corrected ref (old genes)": {
+   "full pass": {
+    "official": 145888.23958333334,
+    "ruint": 15085.71639584336,
+    "montgomery": 52051.15622860364
+   },
+   "re-sieve": {
+    "official": 141883.92916666667,
+    "ruint": 12373.72322388042,
+    "montgomery": 41888.896314940604
+   }
+  }
+ },
+ "84": {
+  "new ref": {
+   "full pass": {
+    "official": 428754.79107142857,
+    "ruint": 30086.788105994478,
+    "montgomery": 105227.2089098044
+   },
+   "re-sieve": {
+    "official": 498417.23035714286,
+    "ruint": 27934.24190021145,
+    "montgomery": 97016.17691467903
+   }
+  },
+  "frozen ref (old)": {
+   "full pass": {
+    "official": 559864.6339285715,
+    "ruint": 103496.64699976315,
+    "montgomery": 207600.04224014585
+   },
+   "re-sieve": {
+    "official": 537650.0285714286,
+    "ruint": 92910.7092910927,
+    "montgomery": 167946.00496360395
+   }
+  },
+  "corrected ref (old genes)": {
+   "full pass": {
+    "official": 504317.4910714286,
+    "ruint": 42915.24775594791,
+    "montgomery": 152133.83185433596
+   },
+   "re-sieve": {
+    "official": 482260.33214285714,
+    "ruint": 32322.821652714934,
+    "montgomery": 112455.14881922521
+   }
+  }
+ },
+ "96": {
+  "new ref": {
+   "full pass": {
+    "official": 1380373.3828125,
+    "ruint": 79656.78163136345,
+    "montgomery": 286098.5498856105
+   },
+   "re-sieve": {
+    "official": 1743100.396875,
+    "ruint": 81952.50425971534,
+    "montgomery": 293985.1394059391
+   }
+  },
+  "frozen ref (old)": {
+   "full pass": {
+    "official": 1873183.1296875,
+    "ruint": 231684.3667691796,
+    "montgomery": 555686.2724729702
+   },
+   "re-sieve": {
+    "official": 1751243.85625,
+    "ruint": 191009.5265753461,
+    "montgomery": 403394.60057839716
+   }
+  },
+  "corrected ref (old genes)": {
+   "full pass": {
+    "official": 1771051.2046875,
+    "ruint": 126113.86666580068,
+    "montgomery": 455974.1274179874
+   },
+   "re-sieve": {
+    "official": 1650024.85,
+    "ruint": 85534.0070406486,
+    "montgomery": 304036.8232153699
+   }
+  }
+ }
+}

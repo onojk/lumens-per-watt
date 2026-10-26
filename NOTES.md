@@ -3912,3 +3912,28 @@ Cost per number (op-cost units, absolute), current / re-typed:
   - (b) a histogram of log_B q of filed partials in 0.05-wide bins from 1 to lc, and the share of filed q in (B, 2B];
   - (c) the number of distinct q and the count of q filed 2, 3 and 4+ times.
   - D-cc and G-cc are scored from (a) against this run's residue 1/q arm 1 (0.159 / 0.151 / 0.100). The definition used for the score is stated; the user's choice decides, defaulting to per occurrence (matching the simulation).
+
+### Re-sieve against full-pass confirmation (`evolve/resieve_measure.py`, `resieve_measure.out`, `.json`)
+
+- *Setup:* qs alone on all map numbers, at each genome's own tuned slack, current pricing (the Gray-code re-typing is not applied; it is reported separately), p0 = 30. No misses. Cost per number in op-cost units, full pass → re-sieve (ratio re-sieve / full pass).
+
+| bits | new reference genes: official / ruint / Montgomery | frozen reference (old): official / ruint / Montgomery | old genes on the corrected card: official / ruint / Montgomery |
+|---|---|---|---|
+| 54 | 25,934 → 26,889 (1.037) / 3,131 → 2,906 (0.928) / 9,800 → 8,951 (0.913) | 1.020 / 0.975 / 0.946 | 1.025 / 0.935 / 0.925 |
+| 72 | 133,430 → 144,189 (1.081) / 12,106 → 10,909 (0.901) / 40,597 → 36,087 (0.889) | 0.973 / 0.879 / 0.820 | 0.973 / 0.820 / 0.805 |
+| 84 | 428,755 → 498,417 (1.162) / 30,087 → 27,934 (0.928) / 105,227 → 97,016 (0.922) | 0.960 / 0.898 / 0.809 | 0.956 / 0.753 / 0.739 |
+| 96 | 1,380,373 → 1,743,100 (1.263) / 79,657 → 81,953 (1.029) / 286,099 → 293,985 (1.028) | 0.935 / 0.824 / 0.726 | 0.932 / 0.678 / 0.667 |
+
+- **On the new reference genes, re-sieve saves 7–11% under ruint and Montgomery at 54–84, and loses ~3% at 96. It loses under official at every size (+4% to +26%).**
+- **On the old genes it saves far more:** 25–33% calibrated at 84–96, and it even gains under official (4–7%).
+- *Why:* the walk costs about the update count of primes ≥ p0 across the whole interval (2 word ops per position), while the saving is proportional to candidates × F.
+  - The old genes (kc 32, bc 1.1, mc 0.25) have a large F and a narrow interval: many divisions saved per walked position.
+  - The new genes have a small bc (0.43–0.87) and a wide interval (mc 0.39–0.60): a small F, few candidates per position walked. The walk then outweighs the divisions saved, more so at 96 (bc 0.43, mc 0.60).
+- So **re-sieve's value depends on the genes,** and the genes were tuned for full-pass confirmation. The retune with re-sieve on (next) is where it is judged. The tuned genes should move toward larger F, narrower intervals and a looser slack. These are fixed-gene numbers, not a verdict.
+- *Against my cost model's expectation* (net 8–12% under ruint and Montgomery, a loss under official): held at 54–84 for the new reference genes (7.2–11.1%, with 54 ruint at 7.2% marginally below), missed at 96 (−2.9%). The official loss held.
+- **Predictions, scored as written at the current tuned genes** (none specified a retune):
+  - (D-rm, DeepSeek's) official −2% to +1%, ruint 18–23%, Montgomery 21–26%: **missed** (official +3.7% to +26%; ruint 7.2 / 9.9 / 7.2 / −2.9%).
+  - (D-rm2) 24–30% ruint, 26–33% Montgomery at 84, ±5 points across sizes: **missed** (7.2% / 7.8% at 84).
+  - (G-rm, Grok's) official −1% to +3%, ruint 8–14%, Montgomery 10–16%: **missed.** Ruint is in range only at 72 (9.9%); official is +3.7–26%.
+  - The revisions (G-rm revised 20–32%; D-rm2) are recorded as revisions; the originals are the scored ones.
+  - D-rm+spv and G-rm+spv await small-prime skipping.
