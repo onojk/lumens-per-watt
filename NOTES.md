@@ -2647,7 +2647,7 @@ Mine: Track R 5 held, 2 missed. Track M 0 held, 6 missed.
 | 96 | 1.277 / 2.082 | 1.191 / 2.210 | **1.232 [1.160, 1.310] / 1.541 [1.473, 1.612]** | 0.668 |
 
 - **The lopsidedness shrinks once the budgets are re-solved with tuned genes.** Using Track M's answer under ruint now costs 1.5–2.1x (was 2.2–2.9x at 72–96, 1.9x at 54). Using Track R's answer under Montgomery still costs 1.09–1.36x.
-- **Track M's final answer is no longer conditional at 84:** it passes the ruint per-band gate. At 96 it is BORDERLINE, and at 54 and 72 it still fails ("conditional on a fast multiply").
+- **Track M's final answer is no longer conditional at 84:** it passes the ruint per-band gate (against qs alone), though under ruint it still costs 1.5x Track R's answer. At 96 it is BORDERLINE, and at 54 and 72 it still fails ("conditional on a fast multiply").
 - Its final 84-bit pipeline (rho 3,158, ECM 32,768) has the same ECM budget as allocation A.
 - Under the official count, Track M's answer is 1.3–1.5x cheaper than Track R's (it was 2.3–3.3x in round 1, when its ECM budgets were 3–10x larger).
 
@@ -2677,10 +2677,10 @@ Mine: Track R 5 held, 2 missed. Track M 0 held, 6 missed.
   - (V6) PD_M 1.00–1.20 and PD_R 1.8–3.0 at 72–96: **missed** (PD_M 1.232 at 96; PD_R 1.505 and 1.541).
   - (V7) a final frozen genome still has kc ≥ 29, and no mc lower-bound hit at 72–96: **held.**
   - (V8) Track R PASS everywhere; Track M passes the Montgomery gate at 84–96 and fails the ruint gate everywhere: **missed** (Track M passes the ruint gate at 84 and is BORDERLINE at 96).
-- The user's: 1 held, 3 missed. Mine: 4 held, 4 missed.
+- The user's U1–U4: 1 held (U2), 3 missed. Mine: 4 held, 4 missed.
 
 **Conditions:**
-- The final winners were selected on the sealed numbers among their track's candidates (as in round 1).
+- Winners selected on the sealed numbers (six candidates per track per size); a second fresh set confirms in the replacement test.
 - The Track M budget at 72 had not settled when the cap was reached.
 - kc and lc sit at their upper bounds in several final genomes.
 - 54 bits' Track R round-2 genome is slightly worse than round 1's (row (b) against (a): +0.008, not significant).
