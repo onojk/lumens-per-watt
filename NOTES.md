@@ -4737,3 +4737,41 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
 - **(4) ECM:** Suyama torsion-12 curves' built-in small factors average about 24.5 (its arithmetic: 2^2.5 × 3^1.33), not 12. It then says p/24.5 lowers success.
   - *Claude chat:* reversed. A smaller effective size raises the smoothness chance, so if 24.5 holds, the DP under-lit ECM and the 96-bit ECM gain (4.75–7.35%) is conservative. Unverified; the GMP-ECM check (I-014) measures it.
   - *"Third coordinate":* a curve family shifts the whole speckle denser or sparser for every number alike, so it is not a per-number coordinate; ECM stays a speckle in I-018.
+
+**Real-prime measurement run** (user, Mathematica, Oct 26; information only; no card changes).
+- *Rules:* exact lamp rules. td exact; p-1 powersmooth to B, with one extra prime up to 100 B in stage 2; real Brent rho mod p; stage 2 at 2 multiplies per prime. Primehelix prior, p ≥ 2^8, 800 numbers per size; ruint prices.
+- **p-1 calibration** (1,500 primes per size, 16–44 bits, B 2^8 / 2^10 / 2^12): fitted Dickman size divisor **c = 1.41 (stage 1), 1.83 (stage 1 + 2), not 3.4.**
+  - *Claude chat's side check* (Python, 4,000 numbers per cell): p − 1 is about 1.4–1.6x more often smooth than random integers of the same size (e.g. 24 bits, B 2^8: 0.0725 against 0.0447), matching the c = 3.4 ratio. But Dickman overstates random-integer smoothness at these small bounds by about 15–25% (20 bits, B 2^8: Dickman 0.146 against measured 0.126).
+  - *Net:* Dickman with c ≈ 1.4–1.8 is the right model input, and the DP's c = 1 was nearly right. Powersmoothness costs a further 3–20% at B = 2^8.
+- **Coverage** (fraction lit by td / rho / p-1 stage 1 / p-1 stage 2 / dark):
+
+| size and optimum | td | rho | p-1 s1 | p-1 s2 | dark |
+|---|---|---|---|---|---|
+| 72, stage-1 optimum {td 2^10, rho 2^10, p-1 2^9} | 0.133 | 0.386 | 0.039 | 0 | 0.443 |
+| 72, stage-2 optimum {td 2^12, p-1 2^7 + s2} | 0.244 | 0 | 0.086 | 0.231 | 0.439 |
+| 84, stage-1 optimum | 0 | 0.549 | 0.045 | 0 | 0.406 |
+| 84, stage-2 optimum | 0 | 0.481 | 0.033 | 0.110 | 0.376 |
+| 96, stage-1 optimum | 0 | 0.539 | 0.043 | 0 | 0.419 |
+| 96, stage-2 optimum | 0 | 0.483 | 0.025 | 0.111 | 0.381 |
+
+  The DP's predicted dark fraction (c = 1) is within 0.00–0.02 of measured in all six cells: the coverage model is validated.
+- **Mean cost (s.e.), stage-1 optimum against stage-2 optimum:** 72: 6,390 (229) against 6,929 (225); 84: 13,824 (544) against 14,224 (567); 96: 35,357 (1,384) against 34,727 (1,409).
+  - Paired change of the stage-2 optimum: **+8.4% / +2.9% / −1.8%** (s.e. about 2%), i.e. it costs more at 72 and 84 and saves 1.8% at 96.
+  - At 2 multiplies per stage-2 prime, the stage-2 pipelines chosen by the DP at 1 per prime lose at 72 and 84. Stage 2 pays only if cheap (about 1 per prime via prime pairing, or a shorter B2).
+  - *Note (mine):* the user's text gives "paired saving −8.4% / −2.9% / +1.8%", where negative means the stage-2 optimum is dearer (the mean costs above). The signs are restated here as the change in cost.
+- **Rho, pooled:** measured / model hit rate 0.88 / 0.93 / 0.92 / 0.95 / 0.96 at K = 2^8 … 2^12, equivalent to an effective budget of about K / 1.4 (Brent's detection overhead). Future DP runs use K / 1.4.
+- **Pictures:** p-1's light is a wedge (stage 1 inside the B1 ray, stage 2 out to the 100 B1 ray). The rim is lit by td and rho; the centre (θ near ½) is dark under every pipeline (I-018 confirmed visually).
+- **Scoring** (M1–M6 were sealed in the outside chats; they were not registered in NOTES before this run, so they are recorded here with the user's scores):
+  - M1: Grok failed, Claude chat failed (both said 3–4; DeepSeek also endorsed 3.4).
+  - M2: both failed at every size.
+  - M3: Grok failed all three. Claude chat held at 72 and 84, failed at 96 (0.381). The c = 1 bias claims (Grok "under-predicts", Claude chat "over-predicts") are not supported (within ±0.01).
+  - M4: Grok failed (0.918 > 0.90); Claude chat held.
+  - M5: second half held for both.
+  - M6: pending (one Mathematica cell).
+
+**I-016 next step (1), from the code: the plain stage-2 cost per prime we would get.** The card's p-1 stage-2 cost model (Oct 25) prices:
+- *prime-gap stepping* at 2 multiplies + 3 word ops per prime (the measured run's 2 per prime);
+- *paired BSGS* (f(n) = b^{n²}, D = 210 / 2310) at ~0.8–0.9 multiplies per prime for the pairs, plus ~0.1–0.3 amortized giant steps and babies, plus ~4–5 word ops. That is about 1.1–1.4 multiply-equivalents per prime under ruint and Montgomery.
+- Pairing is therefore what brings stage 2 near the "about 1 per prime" at which the DP found it pays. Its implementation cost is moderate (both methods are in the cost model, and the code is not written). The ECM card already pairs (≤ 3 multiplies per pair, often 2 primes per pair).
+
+**Ideas checkpoint (2026-10-26):** updated I-016 (not sealed; next steps), I-014 (Dickman overstatement offsets the torsion argument), I-018 (confirmed: wedge, dark centre; calibration finding); parked triggers checked (none parked).

@@ -113,6 +113,7 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Cost: small. Timing: with Phase 3.
 - Update (2026-10-26, the user's stage-2 DP): ECM pays at 96 bits only with a cheap stage 2 (2 multiplies per prime: chosen; 6: not chosen), so the GMP-ECM cross-check should cover stage 2 and our stage-2 cost per prime (ours: <= 3 multiplies per prime with pairing, plus giant steps ~0.25 per candidate and ~4-5 word ops; NOTES, "Stage 2 in the cards today").
 - Also measure the effective ECM size divisor (the DP uses 12; DeepSeek's estimate is about 24.5). If it is about 24, the 96-bit ECM gain is understated.
+- Dickman overstates smoothness at small bounds (B 2^8: about 15-25% for random integers); ECM at B1 = 2^8 inherits this, so the 96-bit ECM gain may be overstated; this offsets DeepSeek's torsion-24.5 argument. The GMP-ECM measurement decides.
 - Decision: pending.
 
 ### I-015 — Adaptivity belongs inside qs, not between lamps
@@ -126,6 +127,7 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Date: 2026-10-26. Source: Claude chat, from the user's DP. Trigger: in the model, stage 2 cuts expected cost about 6-7% at every size (up to 12.5% at 96 with ECM), pending the undercharge fix.
 - Idea, information step first (from the code): do lampcore's p-1 and ECM have a stage 2? If not, cost a plain prime-by-prime stage 2 (B2 = 100 B1) as a new lamp option, priced by the op meter's existing types.
 - Update (2026-10-26, the corrected DP): it keeps a 3.9-5.5% saving from p-1 stage 2 at every size. Shape: a short stage 1 (B 2^7-2^9), one stage 2 to about 100 B. Our p-1 has none today (3a7320f; cost model written). Recommended: adopt after the current meter queue, as a lamp change with a sealed prediction and the usual per-band gate.
+- Update (2026-10-26, the real-prime measurement run): not sealed. The measured comparison at 2 multiplies per prime loses at 72 and 84 (+8.4% / +2.9%) and saves 1.8% at 96. Next: (1) from the code, the plain stage-2 cost per prime we would actually get, and whether prime pairing is cheap to add (answered in NOTES: gap stepping 2 mul + 3 word per prime; paired BSGS ~1.1-1.4 multiply-equivalents); (2) a DP rerun at that cost with c = 1.4 / 1.8, rho at K/1.4 and B2/B1 in {20, 30, 50, 100}; seal a prediction only from that.
 - Information step answered (Claude Code, from the code): p-1 has no stage 2; its cost model is already written (NOTES, "pm1 stage 2: cost model", Oct 25; MOVES row "pm1 stage 2 (B2 = c x B)"), with predictions pre-registered. ECM has a baby-step giant-step stage 2 (B2 = 50 B1 by default; NOTES, "Stage 2 in the cards today").
 - Decision: pending.
 
@@ -147,6 +149,7 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Use: (a) Phase 3's light spectrum measured as this 2D map with the real lamps (a batch of random semiprimes per band, recording which lamp cracked each); (b) a direct check of the p-1 model: measured p-1 light against the predicted wedge, calibrating the p-1 smoothness constant c (model input 3.4); (c) the visual for I-012 and the film.
 - Caveat: both coordinates are computed after factoring; it is a map of where lamps work, never an aiming method (the primehelix separation result).
 - Convention: no external standard was found (DeepSeek); the first coordinate follows primehelix's theta plots.
+- Update (2026-10-26, the real-prime measurement run): confirmed visually: p-1's light is a wedge (stage 1 inside the B1 ray, stage 2 out to the 100 B1 ray), the rim is lit by td and rho, and the centre is dark under every pipeline. Calibration: p-1's Dickman size divisor fits c = 1.41 (stage 1) / 1.83 (with stage 2), not 3.4; the DP's coverage (c = 1) matches the measured dark fraction within 0.02.
 - Cost: small (one measurement pass plus a plot). Timing: with Phase 3, or earlier as the p-1 calibration step for I-016.
 - Both views together (user, Oct 26): one number's line, in theta, is one ray of the tower (outer skin to spine at height log N). The number line is the live view of one search (the unlit part of the ray is its dark mass); the tower is the accumulated record of many searches (each find lights its point). Both come from the same per-run log (levels reached, cost at find), aggregated for the tower.
 - Explains p-1's look: on a single ray its light is scattered (it keys on p-1 smoothness, the angle coordinate); on the tower it is a wedge. Rho is the reverse: clean along the ray, fuzzy on the tower.
