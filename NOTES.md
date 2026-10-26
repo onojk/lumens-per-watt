@@ -3798,3 +3798,20 @@ Cost split under ruint (setup = multiplier, factor base and polynomial setup; th
   - A full precompute (P × F) is worse still. **Candidate (c) does not pay at 54–96 bits.** It could pay only with many more A's per run (larger N), or with A's chosen from a small fixed subset of the pool.
 - Euclid takes 4.0–5.8 steps per inverse (not ~29).
 - **(D-pinv, DeepSeek's)** A's per run 10–20 / 20–40 / 30–60 / 50–100 and net saving 0–0.5 / 0.5–1.5 / 1–3 / 2–4%: **missed.** A's per run are 4.2 / 9.0 / 10.5 / 27.2, below every range, and the lazy-cache net is negative everywhere. (Its precompute variant would be worse.)
+
+**Grok's predictions (Oct 25, late), with annotations** (labelled as Grok's; annotations by Claude chat, relayed by the user). Recorded while the full-pass re-pricing (`slackrep.py`) was running, before any of its output was read. *Timing:* G-pinv arrived **after** the A-count result had been committed (642f91d), so it is post hoc.
+1. **(G-gc)** Gray-code re-typing (Grok counts 2 word ops per update; re-sieve off; the current tuned genes). Saving in total qs cost: ruint 4–7% / 5–9% / 6–10% / 6–11% at 54 / 72 / 84 / 96; Montgomery 3–6% / 4–8% / 5–9% / 5–10%. Falsified if any size shows a cost increase, or if the ruint saving falls outside 3–12%.
+   - *Annotation:* at 2 ops (2 × 0.034 against 0.307 ruint; 2 × 0.125 against 1.14 Montgomery) about 78% of the slice disappears. Applied to the measured shares, that implies ruint ~4.5 / 11.0 / 10.0 / 11.4% and Montgomery ~5.4 / 12.1 / 10.6 / 11.7%, above Grok's ranges at 72 and 96 (ruint) and at 72–96 (Montgomery). Its lower ranges hold only if the "Gray-code switching" slice contains charges other than the update. The cost-model entry must list what the slice contains.
+2. **(G-slack2x2)** Best slack at 72 / 84 / 96: off/no 2.00 / 2.05 / 2.10 (baseline; not scored); on/no 2.30 / 2.35 / 2.40; off/yes 1.85 / 1.90 / 1.95; on/yes 2.20 / 2.25 / 2.30.
+   - Effects: re-sieve alone +0.25–0.45; re-typing alone −0.10 to −0.25; combined +0.15–0.35.
+   - Falsified if re-sieve raises the slack by less than 0.15, or if the combined cell lands below 2.0.
+3. **Slack scoring rule (ADOPTED, user, Oct 25, before results).** It applies to G-slack2x2, G-rmslack, D-rmslack and D-gc's slack clauses.
+   - Slack is scored under ruint and Montgomery separately; official is reported but not scored (its curve is flat above ~2.0).
+   - The best slack is the lowest-cost grid point, reported with a paired-bootstrap interval for its shift against off/no.
+   - A shift counts as real only if the interval excludes zero.
+   - The sweep grid step is 0.1 or finer around 1.6–2.8.
+   - A prediction that names no pricing is scored under ruint.
+   - *Note:* the running `slackrep.py` (full pass, coarse grid 1.0 / 1.5 / 2.0 / 2.5 / tuned) is the re-pricing information step, not the scored 2×2. The scored 2×2 retune uses the 0.1 grid.
+4. **(G-pinv; post hoc)** lazy pool-prime inverse cache, net saving of total qs ruint cost at the tuned genes: 1.5–3% / 2–4% / 2.5–4.5% / 3–5% at 54 / 72 / 84 / 96. Falsified if above 7% at any size, or below 1% at 84–96.
+   - Note beside it: DeepSeek's D-pinv is lower. *Scored post hoc against `acount.out`:* **missed (falsified).** The lazy cache's net is −9.2 / −8.9 / −8.6 / −3.9% under ruint, below 1% at 84–96.
+5. **(G-qr)** residue-restricted simulated pairing yield: 0.14–0.20 at 72, 0.11–0.16 at 84, 0.07–0.11 at 96; W-qr holds. Falsified if any size is outside ±30% of the measured 0.17 / 0.13 / 0.08, or if the simulated combined-relation share stays below 35% of F + 10.
