@@ -4923,3 +4923,15 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
 - **Timing (mine): W2 is post hoc.** The array comparison was measured and committed (b098d6a) before these predictions arrived: the benchmark has 1,147 cells against the card's median 279 / 463 / 1,121 / 2,113 (maximum 297 / 487 / 1,175 / 2,215) at 54 / 72 / 84 / 96.
   - *Scored post hoc:* Grok's W2 **missed** (at 84 the benchmark is not smaller: 1,147 against a median of 1,121 and a maximum of 1,175, about equal; at 72 it is larger, not borderline). Claude chat's W2 **held** (smaller only at 96).
 - **Plan change (user, Oct 26): p0 = 1,500 is added to the 2×2 sweep,** so the grid is {30, 60, 100, 200, 400, 700, 1000, 1500}. The fitted cost model puts the Track R best p0 at 96 bits near 1,427, beyond the old top of 1,000; without it, W4 and GP3 / GP4 at 96 would be scored at the grid edge.
+
+**Honest-price ECM DP** (user, Mathematica, Oct 26; information only).
+- *Setup:* ECM at the card's 8,187 ruint per curve (B1 = 2^8; ~4x at 2^10), B2 = 50 B1, success × 0.8; rho at K / 2 (the card's measured overhead); p-1 stage 2 one-shot, plain 2.08 / paired 1.25 multiplies per prime, B2 / B1 ∈ {10, 15, 20, 30, 50}; c = 1.41 / 1.83.
+- *Note:* this run used the old qs costs (10,736 / 26,606 / 69,874), not the new meter's (10,414 / 25,233 / 64,559 after item 10; item 13 adds ≤ 0.2%).
+- *ECM:* never at 72 or 84. At 96 it appears under all 3 priors in every arm: S1 2 curves, gain 4.7 / 7.0 / 8.3%; plain 1 curve, 1.2 / 3.3 / 4.2%; paired 1 curve, 0.3 / 2.0 / 2.8% (uniform / random semiprime / primehelix).
+- *Rho:* in no optimum (0 of 27 cells); only in the S1 no-ECM optimum at 96 (2^11–2^12).
+- *p-1 stage 2:* B2 / B1 plain 10, paired 15 (20 at 84 primehelix). Saving against S1 with ECM: plain 12.6–13.4 / 12.0–13.7 / 7.1–7.2%; paired 18.8–20.7 / 17.0–19.9 / 10.4–10.8%.
+- *Reading (Claude chat):*
+  - p-1 stage 2 takes most of ECM's role at 96 (ECM gains 5–8% without it, 0.3–4% with it).
+  - With the new qs costs (−7.6% at 96), one ECM curve's gross value (about 9,000) falls to about 8,300 against its 8,187 cost: near break-even in the stage-2 arms. The card's 96-bit re-solve (I-017) decides on real costs.
+  - Rho's place depends on its detection overhead: absent from every optimum at K / 2 (the card), present at 2^9–2^10 at 84–96 at K / 1.4 (the real-prime split-half search). Check the card's rho choice at 84–96 in the re-solve before retiring it.
+- *Scoring:* A1 held (Grok, Claude chat). A2 failed for both (3 of 3 priors at 96; the plain gain up to 4.2%, above Grok's 3% and Claude chat's 2%); Claude chat's "at most 1 curve" held. A3: Grok failed (no rho at 72 or 84); Claude chat held (0 of 27 cells).

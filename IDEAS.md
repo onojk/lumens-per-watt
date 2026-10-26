@@ -145,6 +145,7 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Date: 2026-10-26. Source: Claude chat, from the user's DP. Trigger: ECM at B1 2^8 with stage 2 is chosen at 96 under all three priors (gain 4.75-7.35%). Our ECM already has a BSGS stage 2 (B2 = 50 B1).
 - Information step from the code and results: does the current 96-bit card run any ECM, and at what measured cost per curve (stage 1 + stage 2) under ruint pricing? If none, an ECM-at-small-B1 option belongs in the 96-bit re-solve.
 - The DP chooses ECM at 84 and 96 at B1 2^8 even at 1-2 curves; pending the rerun at the card's measured 8,187 per curve and 0.8 x success.
+- Result (2026-10-26, the honest-price ECM DP): ECM never at 72 or 84; at 96 under all 3 priors (S1 2 curves, 4.7-8.3%; with p-1 stage 2, 1 curve, 0.3-4.2%). Near break-even at 96 with the new qs costs; decide in the re-solve.
 - Card ECM cost confirmed: 8,187 ruint per curve at B1 = 257 against the model's ~8,900. Track M's 96-bit card runs ~1 curve at B1 = 2,059 (59,257 ruint, ~85% of qs at 96). The 96-bit re-solve offers ECM B1 down to 2^8 with its existing stage 2.
 - Answered (Claude Code, NOTES "I-017 information step"): Track R's 96-bit pipeline runs no ECM; Track M's runs ~1 curve at the default B1 = 2,059 (59,257 ruint per curve). At b1 = 0.125 (B1 = 257 ~ 2^8, B2 = 12,850) a curve costs 8,187 ruint (~12% of qs at 96), close to the model's ~8,900.
 - Decision: pending.
@@ -167,4 +168,11 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Both views together (user, Oct 26): one number's line, in theta, is one ray of the tower (outer skin to spine at height log N). The number line is the live view of one search (the unlit part of the ray is its dark mass); the tower is the accumulated record of many searches (each find lights its point). Both come from the same per-run log (levels reached, cost at find), aggregated for the tower.
 - Explains p-1's look: on a single ray its light is scattered (it keys on p-1 smoothness, the angle coordinate); on the tower it is a wedge. Rho is the reverse: clean along the ray, fuzzy on the tower.
 - Film: split screen, one ray lighting up live on the left; its find landing on a filling tower on the right.
+- Decision: pending.
+
+### I-019 — Rho's detection overhead decides whether rho survives
+- Date: 2026-10-26. Source: Claude chat, from the user's DP runs. Trigger: rho is in no optimum at the card's measured 2x overhead (K/2), but appears at 2^9-2^10 at 84-96 when it detects at 1.4x.
+- Idea, information step first: from the card's re-solve after p-1 stage 2, does the evolver keep rho at 84-96? If it drops rho, measure where the card's 552-vs-279 overshoot comes from (Brent's power-of-two stepping against the gcd batch of 64) before retiring rho.
+- Note (Claude Code, from NOTES, Oct 24 second outside check): the split is already measured on band-16 primes. Brent with b = 1 (no batching) takes 515 f evaluations to detection (1.85x mu + lambda = 279); the card's batch of 64 adds 7.2% (552). So the overshoot is mostly Brent's power-of-two stepping, not the batch.
+- Cost: small (from existing traces).
 - Decision: pending.
