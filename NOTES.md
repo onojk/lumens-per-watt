@@ -3294,3 +3294,67 @@ The rule recommends; changing the reference is the user's decision.
   - both methods find the same set of factors on the map numbers when given the same B and B2;
   - Python = Rust parity, per type.
 - In pipelines, pm1's ob must cover stage 1 + stage 2; the pipeline sets ob from the formula's upper bound.
+
+### Replacement-rule test: results (`evolve/replace_r.py`; `replace_r.out`, `replace_r.json`)
+
+The final Track R genes run as qs alone on the corrected card with kset = sf32. Fresh sets: 240 balanced numbers per size (9600000) and banded populations (9430000, 80 per band). No misses anywhere (1,920 balanced and 2,000 banded numbers per comparison).
+
+**(2) As-frozen (scored): against the frozen reference (qs + lc 1.4, enumerate), balanced, log₂ [95%]:**
+
+| bits | official | ruint | Montgomery | robust ratio [95%] | per-band gate (banded) |
+|---|---|---|---|---|---|
+| 54 | −0.237 [−0.261, −0.213] | −1.613 [−1.645, −1.582] | −0.738 [−0.764, −0.713] | 0.849 [0.834, 0.863] | PASS (upper 0.93) |
+| 72 | −0.196 [−0.233, −0.161] | −0.908 [−1.027, −0.807] | −0.506 [−0.562, −0.457] | 0.873 [0.851, 0.894] | PASS (0.99) |
+| 84 | −0.394 [−0.427, −0.362] | −1.731 [−1.825, −1.639] | −0.965 [−1.012, −0.918] | 0.761 [0.744, 0.778] | PASS (0.83) |
+| 96 | −0.460 [−0.497, −0.421] | −1.551 [−1.590, −1.506] | −0.967 [−1.004, −0.925] | 0.727 [0.709, 0.747] | PASS (0.79) |
+| pooled (mean of per-size log₂) | −0.322 [−0.339, −0.305] | −1.451 [−1.492, −1.412] | −0.794 [−0.817, −0.772] | | |
+
+**The replacement rule PASSES:** no pricing's interval lies above 0 at any size, there are no misses, all three pooled values are below 0 with intervals excluding 0, and no per-band gate fails. The rule recommends replacing the frozen reference; **changing it is the user's decision.**
+
+**(1) Card-matched (reported beside it): against qs + lc 1.4's genes on the same corrected card (with kset), balanced:**
+
+| bits | official | ruint | Montgomery | robust ratio | per-band gate |
+|---|---|---|---|---|---|
+| 54 | +0.013 [−0.010, +0.035] | −0.175 [−0.204, −0.147] | −0.226 [−0.250, −0.202] | 1.009 [0.993, 1.024] | PASS (1.08) |
+| 72 | −0.139 [−0.167, −0.111] | −0.339 [−0.368, −0.311] | −0.376 [−0.403, −0.348] | 0.908 [0.891, 0.926] | PASS (1.01) |
+| 84 | −0.255 [−0.281, −0.228] | −0.530 [−0.554, −0.506] | −0.549 [−0.573, −0.525] | 0.838 [0.823, 0.854] | PASS (0.91) |
+| 96 | −0.381 [−0.417, −0.344] | −0.669 [−0.704, −0.629] | −0.681 [−0.716, −0.641] | 0.768 [0.749, 0.788] | PASS (0.85) |
+| pooled | −0.191 [−0.205, −0.176] | −0.429 [−0.443, −0.413] | −0.458 [−0.472, −0.443] | | |
+
+- The rule passes on (1) too: the official interval at 54 includes 0, so the genes are not clearly worse there. **The genes' own gain (card held fixed) is 0% official at 54, rising to 9–23% official and 21–38% ruint and Montgomery at 72–96.**
+- The rest of (2)'s gain is the card: on_demand A, the sort charge and kset against the frozen reference's enumerate. The card is most of the calibrated gain at 54 (ruint −1.61 of −1.61 log₂) and about two thirds of it at 84–96 (ruint −1.2 of −1.7).
+- The robust ratio is set by official in every row (official moves least).
+
+**Balanced numbers: the (d) pipeline against the genes as qs alone** (information; same reference, so the ratio is 2^(pipeline log₂ − qs log₂)):
+
+| bits | official | ruint | Montgomery |
+|---|---|---|---|
+| 54 | 0.985 | 1.095 | 1.012 |
+| 72 | 0.997 | 1.123 | 1.031 |
+| 84 | 0.974 | 1.172 | 1.025 |
+| 96 | 0.996 | 1.202 | 1.048 |
+
+- Under ruint, the front end (rho and p-1 multiplies, which ruint prices dearly against its cheap sieve ops) costs balanced numbers 10–20%, growing with size. At 96 that matches the user's toy ~1.20x.
+- Under official it costs nothing or saves a little: p-1 and rho catch a few balanced factors, and qs's official cost is large enough that those catches pay for the front end.
+- Montgomery is in between (1–5%).
+
+**Information: the (d) pipeline on the banded set against the frozen reference alone:** robust 0.725 / 0.684 / 0.532 / 0.449 at 54 / 72 / 84 / 96. All three pricings agree; no misses.
+
+**Predictions, scored as written.**
+- *Mine:*
+  - (X1) card-matched robust 0.85–1.00 / 0.80–0.92 / 0.70–0.85 / 0.65–0.80, all pricings below 1 at 72–96: **missed.** 54 is 1.009, above its range; 72–96 held (0.908, 0.838, 0.768, all pricings below 1).
+  - (X2) as-frozen lower than (1) at 84–96 (held), within 0.05 of (1) at 54–72, robust 0.85–1.02 / 0.75–0.92 / 0.45–0.70: **missed.** At 54, (2) is 0.16 below (1); 54 is 0.849 (just below 0.85); 84–96 are 0.761 and 0.727 (above 0.70).
+  - (X3) the rule passes on (2) and on (1): **held.**
+  - (X4) the per-band gate PASSes everywhere in both: **held.**
+  - (X5) on balanced numbers, the pipeline costs 1–8% more than qs alone, more under ruint than official: **missed.** The direction held (ruint dearest), but ruint is 9.5–20% and official is 0.974–0.997, so it does not cost more there.
+  - Mine: 2 of 5.
+- *DeepSeek's:* (D-rep) FAIL at 54–72; at 84–96 pass only by under 5% robust: **missed** (passes at every size, by 13–27% robust). Scored on (2), as written.
+- *Grok's:*
+  - (G-rep) pass at 84 and 96; borderline or fail at 54 and 72, with balanced numbers losing 5–15% there; by Grok's own threshold, fail if any balanced loss exceeds 10% or any per-band ratio exceeds 1.5x: **missed.** The (d) pipeline on balanced numbers gains against the frozen reference at every size (robust 0.836 / 0.870 / 0.741 / 0.724), and no per-band ratio exceeds 1.08.
+  - (G-rep2) per-cell log₂ ranges: **0 of 24 cells held.** Every as-frozen cell is far below its range (the card effect, as the note beside it anticipated), and every card-matched cell is below its range.
+
+**Conditions.**
+- Genes are as frozen after the kc / lc round, with kc replaced by kset (kc was 23 / 36 / 32 / 60).
+- Corrected card for the candidate; the frozen reference on its old card in (2).
+- One generator fault (a Carmichael "prime") was found by the oracle and fixed before measurement; the affected set is the 54-bit banded one.
+- The rule recommends; the reference stays the frozen one until the user decides.

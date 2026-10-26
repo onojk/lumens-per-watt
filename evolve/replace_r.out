@@ -1,0 +1,37 @@
+54 bits, R-k@54 on the corrected card with kset sf32, qs alone (misses: balanced 0, banded 0)
+   (2) as-frozen     balanced: offi -0.237 [-0.261, -0.213]  ruin -1.613 [-1.645, -1.582]  mont -0.738 [-0.764, -0.713]  robust 0.849 [0.834, 0.863]
+                     balanced, (d) pipeline (information): offi -0.259 [-0.300, -0.222]  ruin -1.482 [-1.524, -1.443]  mont -0.721 [-0.762, -0.683]  robust 0.836 [0.812, 0.858]
+                     banded: 0.863 / 0.332 / 0.611; per-band gate PASS (upper 0.927)
+   (1) card-matched  balanced: offi +0.013 [-0.010, +0.035]  ruin -0.175 [-0.204, -0.147]  mont -0.226 [-0.250, -0.202]  robust 1.009 [0.993, 1.024]
+                     balanced, (d) pipeline (information): offi -0.009 [-0.050, +0.028]  ruin -0.044 [-0.085, -0.006]  mont -0.208 [-0.250, -0.171]  robust 0.994 [0.966, 1.020]
+                     banded: 1.028 / 0.889 / 0.866; per-band gate PASS (upper 1.079)
+   (information) (d) pipeline [0, 256, 0] on the banded set vs frozen ref alone: offi -0.465 [-0.540, -0.395]  ruin -1.665 [-1.733, -1.603]  mont -0.916 [-0.989, -0.849]  robust 0.725 [0.688, 0.760]; misses 0
+72 bits, R-k@72 on the corrected card with kset sf32, qs alone (misses: balanced 0, banded 0)
+   (2) as-frozen     balanced: offi -0.196 [-0.233, -0.161]  ruin -0.908 [-1.027, -0.807]  mont -0.506 [-0.562, -0.457]  robust 0.873 [0.851, 0.894]
+                     balanced, (d) pipeline (information): offi -0.200 [-0.243, -0.160]  ruin -0.741 [-0.860, -0.640]  mont -0.462 [-0.521, -0.410]  robust 0.870 [0.845, 0.895]
+                     banded: 0.894 / 0.546 / 0.722; per-band gate PASS (upper 0.992)
+   (1) card-matched  balanced: offi -0.139 [-0.167, -0.111]  ruin -0.339 [-0.368, -0.311]  mont -0.376 [-0.403, -0.348]  robust 0.908 [0.891, 0.926]
+                     balanced, (d) pipeline (information): offi -0.144 [-0.180, -0.109]  ruin -0.172 [-0.205, -0.142]  mont -0.331 [-0.367, -0.298]  robust 0.905 [0.882, 0.927]
+                     banded: 0.921 / 0.805 / 0.784; per-band gate PASS (upper 1.005)
+   (information) (d) pipeline [790, 512, 0] on the banded set vs frozen ref alone: offi -0.547 [-0.607, -0.491]  ruin -1.065 [-1.165, -0.974]  mont -0.800 [-0.867, -0.738]  robust 0.684 [0.657, 0.712]; misses 0
+84 bits, current final on the corrected card with kset sf32, qs alone (misses: balanced 0, banded 0)
+   (2) as-frozen     balanced: offi -0.394 [-0.427, -0.362]  ruin -1.731 [-1.825, -1.639]  mont -0.965 [-1.012, -0.918]  robust 0.761 [0.744, 0.778]
+                     balanced, (d) pipeline (information): offi -0.432 [-0.484, -0.385]  ruin -1.502 [-1.598, -1.402]  mont -0.929 [-0.990, -0.872]  robust 0.741 [0.715, 0.766]
+                     banded: 0.773 / 0.300 / 0.515; per-band gate PASS (upper 0.827)
+   (1) card-matched  balanced: offi -0.255 [-0.281, -0.228]  ruin -0.530 [-0.554, -0.506]  mont -0.549 [-0.573, -0.525]  robust 0.838 [0.823, 0.854]
+                     balanced, (d) pipeline (information): offi -0.293 [-0.340, -0.250]  ruin -0.300 [-0.338, -0.266]  mont -0.513 [-0.556, -0.475]  robust 0.816 [0.793, 0.841]
+                     banded: 0.852 / 0.701 / 0.692; per-band gate PASS (upper 0.905)
+   (information) (d) pipeline [3158, 2048, 0] on the banded set vs frozen ref alone: offi -0.911 [-0.967, -0.857]  ruin -1.978 [-2.051, -1.903]  mont -1.412 [-1.469, -1.355]  robust 0.532 [0.512, 0.552]; misses 0
+96 bits, R-k@96 on the corrected card with kset sf32, qs alone (misses: balanced 0, banded 0)
+   (2) as-frozen     balanced: offi -0.460 [-0.497, -0.421]  ruin -1.551 [-1.590, -1.506]  mont -0.967 [-1.004, -0.925]  robust 0.727 [0.709, 0.747]
+                     balanced, (d) pipeline (information): offi -0.466 [-0.511, -0.420]  ruin -1.286 [-1.324, -1.244]  mont -0.899 [-0.943, -0.852]  robust 0.724 [0.702, 0.747]
+                     banded: 0.746 / 0.348 / 0.521; per-band gate PASS (upper 0.793)
+   (1) card-matched  balanced: offi -0.381 [-0.417, -0.344]  ruin -0.669 [-0.704, -0.629]  mont -0.681 [-0.716, -0.641]  robust 0.768 [0.749, 0.788]
+                     balanced, (d) pipeline (information): offi -0.387 [-0.431, -0.343]  ruin -0.404 [-0.440, -0.367]  mont -0.613 [-0.655, -0.569]  robust 0.765 [0.742, 0.788]
+                     banded: 0.789 / 0.639 / 0.634; per-band gate PASS (upper 0.853)
+   (information) (d) pipeline [10624, 4096, 0] on the banded set vs frozen ref alone: offi -1.155 [-1.214, -1.098]  ruin -1.942 [-1.990, -1.896]  mont -1.586 [-1.641, -1.533]  robust 0.449 [0.431, 0.467]; misses 0
+(2) as-frozen pooled (mean of per-size log2, 960 balanced): offi -0.322 [-0.339, -0.305]  ruin -1.451 [-1.492, -1.412]  mont -0.794 [-0.817, -0.772]
+(2) as-frozen: never clearly worse True; misses 0; pooled all three below 1 True; per-band gate failed False -> PASSES  [the pre-registered rule scores this comparison]
+(1) card-matched pooled (mean of per-size log2, 960 balanced): offi -0.191 [-0.205, -0.176]  ruin -0.429 [-0.443, -0.413]  mont -0.458 [-0.472, -0.443]
+(1) card-matched: never clearly worse True; misses 0; pooled all three below 1 True; per-band gate failed False -> PASSES  [reported beside it]
+exit 0

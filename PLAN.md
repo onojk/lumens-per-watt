@@ -222,11 +222,12 @@ budgets by size; a selector on charged features is not built.
 **Next, in order:** [done Oct 25: the qs-gene size-scaling test, two tracks, rounds 1-3; the
 per-track p-1 map check (p-1 on in every cell, map-only); the kc/lc bound round with p-1,
 sealed on 9420000] ->
-the replacement-rule test for the final Track R genes against the frozen reference (qs + lc
-1.4, enumerate), on its own fresh seed set (to be checked unused), with the pre-registered
-replacement rule; predictions in NOTES first. The final Track R genes are the kc/lc round's
-(d) winners (R-k@54, R-k@72, the round-3 genome at 84, R-k@96), each in its (d) pipeline and
-as qs alone ->
+[done Oct 25: kc made a constant (kset = sf32, user's decision); the replacement-rule test for
+the final Track R genes: the rule PASSES (as-frozen and card-matched); changing the reference is
+PENDING THE USER'S DECISION] ->
+pm1 stage 2 (cost model written Oct 25; code next, with parity; pre-registered predictions from
+DeepSeek, Grok and the user; ECM's free additions and the uncharged prime list flagged for the
+user) -> [open: the Track M 54-bit retune] ->
 the illumination picture (primes and gaps) -> the variable-length structure test -> Stage 10
 (qs refinements) -> theory checks -> Phase 1 of learning from all algorithms (imported
 moves) -> the code-level pilot (fenced AI proposals).
