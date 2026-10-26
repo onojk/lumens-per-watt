@@ -5547,3 +5547,23 @@ Time shares (new reference, 96): sieve 24%, confirm 29%, setup 24%, solve 8%, lp
 4. cfrac_accept passes with its formula updated.
 5. Parity passes.
 - Report: cost per number before / after (official / ruint / Montgomery; off and on at p0 200; 54–96). P1 and P2 are scored.
+
+**Addendum to step 1 (user, Oct 26; record only):**
+- The report gives the card's measured touched entries per candidate and per kept relation at 54 / 72 / 84 / 96. The Wolfram plain-QS run (Oct 26) found 5.5–6.7 per candidate and 6.9–8.0 per full relation, nearly flat in F. The card is flagged if it is outside 4–10.
+- It gives |cand| / width per polynomial (median and 90th percentile). Wolfram's plain-QS density was 0.11–1.4% (2.8% at 54 bits, F = 96); SIQS is expected to be higher.
+- Item 14: solve's rows stay dense (bit-packed). At F ≤ 400, F/64 words per row is no more than the ~7 entries a sparse row would hold, so a sparse rewrite is not worth it at these sizes.
+  - *Note (mine):* step 1's plan already keeps the GF(2) rows dense and bit-packed. Only the stored relations' exponent lists become sparse, and the rows are built from them (1 word per entry).
+
+**Outside sealed predictions, DeepSeek (Oct 26; recorded before step 1 ran)** (labelled as DeepSeek's; their numbering is mapped to the user's P1–P7):
+- (D-P1) re-sieve against the full pass at 96, p0 200: re-sieve cheaper at 84 and 96, saving 3–7% at 96. Falsified if the saving at 96 is < 2%, or re-sieve is dearer at 84.
+- (D-P3) the median ns per priced unit returns to 55–85, leaning 55–70. Falsified if > 90 or < 45.
+- (D-P4) setup at 72: under 1.5x under both anchors.
+- (D-P5) ledger hash at 96's table size: 1.3–1.8x the clean price, not ≥ 2x (a cache jump is expected only past L2, ~10^5–10^6 entries). It opposes the user's P5; step 3 decides.
+- (D-P6) solve at 84–96: under 1.5x under the weighted anchor.
+- (D-P7) gray after the structure-of-arrays layout: still > 1.5x under the median anchor, passing the 1% bar under the weighted anchor. Speedup estimate 1.3–2.0x (center 1.4–1.7x).
+
+**Extras (user, same message):**
+- *Step 3:* if the hash comes in under 2x but lp_ledger still flags, break lp_ledger's time down (hash, copies, A-prime adds, anything else) and report the entry width in bytes.
+- *Step 5:* add a third anchor column, the calibrated clean multiply (ns per ruint unit), information only. The rule stays on the time-weighted mean, since a uniform scale factor changes no decision.
+- *Step 1 (record only):* for the Wolfram cross-check, also report u = log|Q| / log p_max (median per size). If u stays in a narrow band (about 4.5–6), the flat ~7 touched entries per relation follows from parameter choice.
+- *Timing note (mine):* step 1's code had been drafted, uncompiled into the main build and not run, when this message arrived. No step-1 number exists yet.
