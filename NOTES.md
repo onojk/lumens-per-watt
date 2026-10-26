@@ -3619,3 +3619,12 @@ The final Track R genes run as qs alone on the corrected card with kset = sf32. 
 - Python = Rust parity, per type.
 - It is then costed together with small-prime variation (DeepSeek's and Grok's predictions are recorded above).
 - **Decision (user, Oct 25): re-sieve only.** The classification rule stays strict: any reduction modulo a small prime, including one done by multiply-high (Barrett), is small-modulus. Root-matched confirmation is built as option (iii), re-sieving with cutoff P0 (default 30). Option (ii) is not built.
+
+**DeepSeek, before any root-matching code** (labelled as DeepSeek's; recorded Oct 25, after the confirmation share was measured and committed).
+- **X REVISED:** the card's confirmation share of total qs cost (calibrated) is 40–50% at F 57, 50–62% at F 100 and 60–70% at F 151.
+  - *Note beside it:* its scaling multiplies a confirm / update ratio of 1.9–5.1 by an assumed update share of 20–30%, which gives more than 100% at F 151, so the numbers are internally inconsistent. They are treated as a loose upper range; the measured share decides (measured: 22–33%).
+- **(D-rm2)** Root-matching saves ~0.60 × X: 24–30% ruint, 26–33% Montgomery and −2% to +1% official at 84 bits, ±5 points across sizes. The saving ratio rises with F: ~0.58 at F 57, ~0.63 at F 100, ~0.68 at F 151, because each candidate's few real divisions and repeats are a fixed overhead. So root-matching pays more at larger sizes.
+- **(D-pv)** The card's slack of ~2.0 implies an effective partial value of ~0.75–0.8. Revised slack increments for skipping primes: +0.15 / +0.30 / +0.45 at cutoffs 10 / 20 / 30.
+  - *Note beside it:* in the user's large-prime Mathematica run, ~14,000 partials gave 492 combined relations (~0.04 each), so 0.75 is not supported.
+  - *Alternative mechanism, recorded:* per-polynomial setup cost, which a looser threshold amortizes over more relations per sieve interval (absent in the toy).
+- **Recorded (user):** root-matching is slightly negative under official (−1.8% in the toy; the cost model above expects a loss under official), so it is a **card option each track can take or leave**. The official count would reject it.
