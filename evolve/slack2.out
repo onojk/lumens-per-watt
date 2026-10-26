@@ -1,0 +1,19 @@
+threshold reference vs |Q(x)| = M sqrt(kN/2) |2u^2 - 1| (u = x/M uniform): mean shortfall 1.087 bits, median 0.596 bits, 90th pct 2.826 bits
+72 bits: log2 B ~ 9.26, so 1 slack unit ~ 9.3 bits; mean shortfall 1.09 bits = 0.117 slack units
+   slack 1.000: candidates per relation 1.15; relations 63 per number, of which combined from partials 0.01; pairing yield 0.167 combined per partial filed (2 partials per number)
+   slack 1.500: candidates per relation 1.88; relations 63 per number, of which combined from partials 0.16; pairing yield 0.201 combined per partial filed (50 partials per number)
+   slack 2.000: candidates per relation 4.85; relations 63 per number, of which combined from partials 0.47; pairing yield 0.159 combined per partial filed (186 partials per number)
+   slack 2.500: candidates per relation 11.49; relations 63 per number, of which combined from partials 0.62; pairing yield 0.145 combined per partial filed (271 partials per number)
+   slack 2.226: candidates per relation 6.78; relations 63 per number, of which combined from partials 0.58; pairing yield 0.166 combined per partial filed (223 partials per number)
+84 bits: log2 B ~ 10.03, so 1 slack unit ~ 10.0 bits; mean shortfall 1.09 bits = 0.108 slack units
+   slack 1.000: candidates per relation 1.08; relations 101 per number, of which combined from partials 0.00; pairing yield 0.053 combined per partial filed (6 partials per number)
+   slack 1.500: candidates per relation 2.57; relations 101 per number, of which combined from partials 0.26; pairing yield 0.168 combined per partial filed (157 partials per number)
+   slack 2.000: candidates per relation 6.28; relations 101 per number, of which combined from partials 0.47; pairing yield 0.134 combined per partial filed (357 partials per number)
+   slack 2.500: candidates per relation 16.44; relations 101 per number, of which combined from partials 0.56; pairing yield 0.121 combined per partial filed (464 partials per number)
+   slack 2.098: candidates per relation 7.66; relations 101 per number, of which combined from partials 0.49; pairing yield 0.125 combined per partial filed (394 partials per number)
+96 bits: log2 B ~ 10.84, so 1 slack unit ~ 10.8 bits; mean shortfall 1.09 bits = 0.100 slack units
+   slack 1.000: candidates per relation 1.04; relations 149 per number, of which combined from partials 0.00; pairing yield 0.059 combined per partial filed (6 partials per number)
+   slack 1.500: candidates per relation 2.55; relations 149 per number, of which combined from partials 0.25; pairing yield 0.162 combined per partial filed (231 partials per number)
+   slack 2.000: candidates per relation 6.69; relations 149 per number, of which combined from partials 0.49; pairing yield 0.088 combined per partial filed (834 partials per number)
+   slack 2.500: candidates per relation 18.59; relations 149 per number, of which combined from partials 0.59; pairing yield 0.060 combined per partial filed (1462 partials per number)
+   slack 2.009: candidates per relation 7.19; relations 149 per number, of which combined from partials 0.50; pairing yield 0.082 combined per partial filed (902 partials per number)

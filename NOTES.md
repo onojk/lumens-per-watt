@@ -3665,3 +3665,21 @@ Cost split under ruint (setup = multiplier, factor base and polynomial setup; th
 3. then small-prime skipping (mainly an official gain, ~9%, and 2–4 points calibrated on top of root-matching);
 4. then the threshold reparameterization (search-space cleanup, no cost change).
 - Step 1 already follows from the ordering rule; the rest of the order is pending the user's confirmation.
+
+**Slack, further figures** (user's request, Oct 25; information; `evolve/slack2.py`, `slack2.out`). The cost-per-pricing sweep and split are under "Slack check" above. This adds Python traces on 3 balanced map numbers per size, new reference genes (corrected card, kset), lc fixed, tc adjusted.
+- *Timing:* the user's toy context (slack 1.0 best in the toy unless setup is ≥ 4–16x the sieve; partial values 0.04–0.3) arrived after the cost sweep had run. **The sweep shows cost rising at 1.0–1.5 (×1.3–3.7), so the tuned slack is not drift and there is no free gain there.**
+
+| bits | slack | candidates per relation | share of relations combined from partials | pairing yield (combined per partial filed) | partials filed per number |
+|---|---|---|---|---|---|
+| 72 | 1.0 / 1.5 / 2.0 / 2.5 (tuned 2.23) | 1.15 / 1.88 / 4.85 / 11.49 (6.78) | 0.01 / 0.16 / 0.47 / 0.62 (0.58) | 0.17 / 0.20 / 0.16 / 0.15 (0.17) | 2 / 50 / 186 / 271 (223) |
+| 84 | same (tuned 2.10) | 1.08 / 2.57 / 6.28 / 16.44 (7.66) | 0.00 / 0.26 / 0.47 / 0.56 (0.49) | 0.05 / 0.17 / 0.13 / 0.12 (0.13) | 6 / 157 / 357 / 464 (394) |
+| 96 | same (tuned 2.01) | 1.04 / 2.55 / 6.69 / 18.59 (7.19) | 0.00 / 0.25 / 0.49 / 0.59 (0.50) | 0.06 / 0.16 / 0.09 / 0.06 (0.08) | 6 / 231 / 834 / 1,462 (902) |
+
+- **Why the card's optimum is ~2.0 and the toy's is ~1.0:**
+  - At the tuned slack, **about half of the card's relations come from combined partials.** Its pairing yield is 0.08–0.17 combined relations per partial filed, 2–4x the 0.04 of the user's large-prime run, because the card needs only F + 10 relations (F = 50–150) from a small large-prime range.
+  - The **per-polynomial setup** is 35–40% of ruint cost at the optimum and 53–75% at slack 1.0. A looser threshold amortizes it over more relations per polynomial.
+  - The toy has neither a setup cost of that size nor partials worth that much, so its optimum stays near 1.0.
+- **Threshold reference against each position's own size.** The card's threshold uses one reference per polynomial, log₂(M√(kN/2)), the largest |Q(x)| on the interval, since |Q(x)| = M√(kN/2) · |2u² − 1| with u = x / M.
+  - Over uniform positions the true |Q(x)| is smaller than the reference by **1.09 bits on average** (median 0.60 bits, 90th percentile 2.83). That is **~0.10–0.12 slack units** (one unit = log₂ B ≈ 9.3 / 10.0 / 10.8 bits at 72 / 84 / 96).
+  - So the effective looseness at typical positions is the stated slack plus ~0.1, and more near the roots of Q.
+  - Two things push the other way: the card does not sieve 2 or prime powers, so a position's sieve sum understates its smooth part.
