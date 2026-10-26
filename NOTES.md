@@ -3766,3 +3766,19 @@ Cost split under ruint (setup = multiplier, factor base and polynomial setup; th
   - Admitting them would need a much looser threshold, where candidates per relation are already 11–19 at slack 2.5.
 - **The 2LP MOVES row stays "marginal; revisit after re-sieve and small-prime skipping".** Cheaper confirmation lowers the cost of a looser threshold, which is the only way 2LP cofactors would reach confirmation.
 - *Recorded for the Gray-code cost-model entry (user, Oct 25):* it states the word ops per update (add; compare; conditional subtract) and the update count per switch, and derives the expected cut of the slice from those (one op: ~89%; two: ~78% under ruint). The same goes for any audit item. Before / after qs cost per pricing is reported in absolute terms (op cost per number), with shares secondary.
+
+**DeepSeek's reply (Oct 25, late), with annotations** (labelled as DeepSeek's; the annotations are Claude chat's, relayed by the user).
+1. **Beside D-setup:** DeepSeek acknowledges that D-setup was wrong by 4–5x (and that the earlier batch-inversion suggestion did not apply), and lowers its confidence on setup predictions.
+2. **Pre-registered as given:**
+   - **(D-gc)** Gray-code re-typing: official 0% (exact); ruint 9–11%; Montgomery 9–11%; falsified outside 7–13%. Slack: re-typing alone lowers the tuned slack by 0.1–0.3; with re-sieve on, the net slack rises 0.1–0.4.
+     - *Annotation:* D-gc assumed the small-modulus price 0.114 (ruint), but the card charges setup_small at 0.307 (ruint) and 1.14 (Montgomery). At the charged price, one word op per update gives 11.6–13.4%, and two ops give 10.1–11.7%. So its test "above 13% means more than one op was counted" is reversed: more ops per update means a smaller saving. The headline is scored against the stated range regardless.
+   - **(D-pinv)** Precomputed pool-prime inverses: break-even at ~0.32 P A's; A's per run 10–20 / 20–40 / 30–60 / 50–100 at 54 / 72 / 84 / 96; net saving 0–0.5 / 0.5–1.5 / 1–3 / 2–4% of qs cost; falsified above 6%.
+     - *Annotation:* its break-even prices the precompute's Euclid runs at word level and the per-A Euclid runs at small-modulus. Priced consistently, the break-even is ~P A's. Its 29 Euclid steps per inverse is high for p < ~2000 (typically ~6–7 steps); the card's measured setup_euclid share is used instead.
+     - A lazily filled cache (compute a pool prime's inverses mod every factor-base prime the first time it appears in an A) costs at most (distinct pool primes used) × F Euclid runs, so it never costs more than today. This is noted on the MOVES row, candidate (c).
+   - **(D-qr, on W-qr)** the restricted simulated yield is 0.07–0.09 at every size; W-qr misses at 72–84 and holds at 96.
+     - *Annotation:* it doubled a baseline of 0.04, but the simulated yields were 0.076 / 0.064 / 0.051. Doubling those gives ~0.15 / 0.13 / 0.10, within W-qr's ±25% at all three sizes. Both are scored as written when the user's Mathematica run arrives.
+   - *DeepSeek on 2LP:* it stays marginal regardless of W-qr (scarcity: 0–3 candidates per number). Reopen it only if a looser threshold (+0.5–1.0 slack) pays after re-sieve. This is added to the 2LP MOVES row.
+3. **Confounding guard (adopted as a rule, user, Oct 25):** the Gray-code re-typing changes prices only, not op counts.
+   - For the re-sieve slack retune, op counts by type are logged per run, and every sweep is priced both ways (current and re-typed).
+   - The existing full-pass slack sweep is re-priced both ways if its by-type counts are recoverable; if not, this says so.
+   - The report gives the 2×2 (re-sieve off / on × re-typed no / yes): best slack and qs cost per pricing, per size. D-rmslack, G-rmslack and D-gc's slack clauses are scored from that table.
