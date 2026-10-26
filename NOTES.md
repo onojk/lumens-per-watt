@@ -3683,3 +3683,14 @@ Cost split under ruint (setup = multiplier, factor base and polynomial setup; th
   - Over uniform positions the true |Q(x)| is smaller than the reference by **1.09 bits on average** (median 0.60 bits, 90th percentile 2.83). That is **~0.10–0.12 slack units** (one unit = log₂ B ≈ 9.3 / 10.0 / 10.8 bits at 72 / 84 / 96).
   - So the effective looseness at typical positions is the stated slack plus ~0.1, and more near the roots of Q.
   - Two things push the other way: the card does not sieve 2 or prime powers, so a position's sieve sum understates its smooth part.
+
+**Slack-sweep predictions and context** (user and DeepSeek; recorded Oct 25). *Timing:* these arrived **after the slack sweep had run and been committed** (a20bb11, 8d49d2f), so the sweep predictions are **post hoc**, recorded and scored only for the record. D-rmslack is pre-registered: no re-sieve measurement has run.
+- *Null (the user's toy):* best slack ~1.0 under every pricing (full-pass confirmation, partials ~0.04–0.3, setup up to 16x the sieve).
+  - *The user's note:* the toy expressed setup as a multiple of each pricing's sieve cost. Under ruint and Montgomery, sieve updates are very cheap (0.034, 0.125) while setup is priced at small-modulus or full-multiply rates, so the card's setup / sieve ratio there may far exceed 16, and the toy undersold setup amortization.
+  - *The sweep:* at the tuned slack, ruint setup is 0.35–0.48 of qs cost against sieve 0.22–0.37. That is setup / sieve ≈ 1–2 in cost, i.e. roughly 30–60 sieve updates' worth of price per unit of sieve cost, far beyond the toy's 16. The null is rejected.
+- **(D-sweep, DeepSeek's; post hoc)** minimum at 1.5 under official (0–4% below the tuned ~2.0); at 1.0–1.5 under ruint (8–18% saving) and Montgomery (6–15%): **missed.** Cost at 1.5 is ×1.3–1.7 the tuned cost under every pricing, and ×2.2–3.7 at 1.0.
+- **(D-tcfloor, DeepSeek's)** the tc lower bound (1.0) forces slack ≥ lc, so tc should sit at the floor in most cells; test by lowering the bound.
+  - *Note beside it:* the kc / lc round's frozen tc is 1.27–1.54 in 7 of 8 cells (only R@96 at 1.035), so the floor was not binding there, and lc could also have been lowered. Recorded as given; refuted by the existing data.
+- *DeepSeek's linear-algebra counter-mechanism*, recorded with a note: the relations needed (F + 10) do not depend on slack, so linear-algebra cost cannot favour a looser threshold. The sweep's la + sqrt share is 0.01–0.05 at every slack.
+- **(D-rmslack, DeepSeek's; pre-registered)** after root-matched confirmation, the best slack rises 0.3–0.6 under ruint and Montgomery and stays flat under official.
+- **X REVISED again (DeepSeek's):** confirmation 25–50% of total qs cost; D-rm2's saving 15–30% ruint and 16–33% Montgomery. **D-pv is withdrawn by DeepSeek.**
