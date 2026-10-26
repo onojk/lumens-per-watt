@@ -4743,6 +4743,11 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
 - **p-1 calibration** (1,500 primes per size, 16–44 bits, B 2^8 / 2^10 / 2^12): fitted Dickman size divisor **c = 1.41 (stage 1), 1.83 (stage 1 + 2), not 3.4.**
   - *Claude chat's side check* (Python, 4,000 numbers per cell): p − 1 is about 1.4–1.6x more often smooth than random integers of the same size (e.g. 24 bits, B 2^8: 0.0725 against 0.0447), matching the c = 3.4 ratio. But Dickman overstates random-integer smoothness at these small bounds by about 15–25% (20 bits, B 2^8: Dickman 0.146 against measured 0.126).
   - *Net:* Dickman with c ≈ 1.4–1.8 is the right model input, and the DP's c = 1 was nearly right. Powersmoothness costs a further 3–20% at B = 2^8.
+  - *Independent replication* (user's tentimesdemo data, Oct 26; information only):
+    - data: 4,500 fresh samples from the same prior (density 1/θ + 1, p ≥ 2^8, 1,500 each at 72 / 84 / 96 bits), with B1 = 2^9 / 2^9 / 2^10;
+    - test: the exact B1-powersmooth p-1 stage-1 test (`tentimesdemo/data/make_tower.py`, seed 20261026);
+    - fit: maximum-likelihood Dickman size divisor over u = ln p / ln B1 > 1, giving **c = 1.46 (95% interval 1.29–1.65)**, consistent with 1.41;
+    - c = 3.4 is rejected (log-likelihood 349 worse).
 - **Coverage** (fraction lit by td / rho / p-1 stage 1 / p-1 stage 2 / dark):
 
 | size and optimum | td | rho | p-1 s1 | p-1 s2 | dark |
