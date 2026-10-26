@@ -4767,7 +4767,14 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
   - M3: Grok failed all three. Claude chat held at 72 and 84, failed at 96 (0.381). The c = 1 bias claims (Grok "under-predicts", Claude chat "over-predicts") are not supported (within ±0.01).
   - M4: Grok failed (0.918 > 0.90); Claude chat held.
   - M5: second half held for both.
-  - M6: pending (one Mathematica cell).
+  - M6: pending (one Mathematica cell). [Scored below.]
+- **M6** (the share of stage-1-optimum-dark numbers lit by the stage-2 optimum): 0.127 / 0.126 / 0.152 at 72 / 84 / 96 (354 / 325 / 335 dark of 800). Reverse (stage-2-dark lit by the stage-1 optimum): 0.120 / 0.057 / 0.069. The two pipelines light largely the same numbers, plus small, mostly disjoint fringes (rho lights by size, p-1 stage 2 by smoothness).
+  - *Scoring M6:* Grok failed at all sizes (0.18–0.35). Claude chat failed at 72 and 84 and held at 96 (0.152 against 0.15–0.30).
+- *Claude chat's arithmetic for "the stage-1 optimum plus stage 2 appended":*
+  - value about (0.13 × 0.42) × qs, i.e. about 600 at 72 and 4,200 at 96;
+  - against stage 2 at B1 2^9 and 2 per prime: about 10,000 multiplies, paid by about 42% of numbers, so about 4,200.
+  - Hopeless at 72, break-even at 96. Rule: stage 2 pays only where qs costs far more than stage 2 itself; it needs a cheaper stage 2 (pairing, shorter B2) and a larger N.
+- The 3D tower render is a storyboard frame for I-012.
 
 **I-016 next step (1), from the code: the plain stage-2 cost per prime we would get.** The card's p-1 stage-2 cost model (Oct 25) prices:
 - *prime-gap stepping* at 2 multiplies + 3 word ops per prime (the measured run's 2 per prime);
