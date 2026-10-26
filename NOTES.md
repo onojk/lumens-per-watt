@@ -3502,3 +3502,16 @@ The final Track R genes run as qs alone on the corrected card with kset = sf32. 
 - **Stopping at ≥ 10 dependencies** (failure chance ~0.1%) saves only 1–8 relations: 0–4.4% of sieve ops (≤ ~2% of qs's official ops, less under the calibrated pricings, where sieve updates are cheap).
 - **Stopping at ≥ 5 dependencies** saves 7–24 relations: 2.5–29% of sieve ops, typically 3–11%, i.e. ~1–5% of qs's official cost. A ~3% failure chance per number costs a full retry with the next multiplier, so most of that would be given back.
 - **Not a large saving, so no MOVES row is added.** It is recorded here in case the factor base grows (larger N or larger bc), where inactive primes become common.
+
+**Root-matched confirmation: sizing** (information; `evolve/confirmshare.py`, `confirmshare.out`). New reference genes as qs alone, corrected card with kset. Shares come from lampcore types on all map numbers; per-candidate counts from Python traces on 8 map numbers per size.
+
+| bits | confirmation share of qs cost: official / ruint / Montgomery | of which the F-prime trial-division pass (confirm_td) | F | primes dividing a confirmed v | repeat divisions |
+|---|---|---|---|---|---|
+| 54 | 0.232 / 0.313 / 0.281 | 0.219 / 0.207 / 0.247 | 35 | 5.06 | 0.88 |
+| 72 | 0.209 / 0.330 / 0.306 | 0.202 / 0.255 / 0.283 | 58 | 5.39 | 1.38 |
+| 84 | 0.163 / 0.307 / 0.291 | 0.160 / 0.260 / 0.278 | 93 | 6.46 | 1.33 |
+| 96 | 0.105 / 0.230 / 0.220 | 0.104 / 0.205 / 0.213 | 135 | 6.95 | 1.10 |
+
+- Confirmation is 23–33% of qs's calibrated cost, almost all of it the trial-division pass. Only 5–7 of the F primes divide a typical confirmed candidate.
+- A MOVES row "Root-matched candidate confirmation" is added, untested and sized from this. *Caveat (fixed classification rule):* a root test that computes x mod p reduces modulo a small prime, so it is small-modulus. Only a reduction-free form (e.g. re-sieving) would be word-level. The cost model must say which, and it is costed together with small-prime variation.
+- **Correction recorded:** the earlier claim (outside context, the user's) that the card must confirm candidates more cheaply than a full pass was wrong. The card charges a full F-division pass per candidate. The slack gap between the toy (~1.0) and the card (~2.0) comes from the large-prime variation, as recorded above.
