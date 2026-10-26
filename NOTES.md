@@ -5378,3 +5378,82 @@ Time shares (new reference, 96): sieve 24%, confirm 29%, setup 24%, solve 8%, lp
   - A sequential fill runs nearer 0.05–0.1 ns per element, so this charge likely overprices re-sieve's initialization by several times.
   - It is what the decision specified ("as word ops"). The wall-clock re-run will show whether the resieve region falls well below the median.
   - Alternatives for a decision: a measured "fill" type, or a code change (a reused slot array cleared only at the candidates' positions, |cand| writes instead of width) that would make most of this charge vanish.
+
+## 2026-10-26 overnight run — MORNING REPORT (read this first), and the stage-1 stop
+
+**Summary (two minutes).**
+- **Finished: stage 1's three meter steps.** Each has acceptance, parity and its own commit:
+  - gray (a), the Gray-code update without a reduction: counts identical;
+  - I-021, KS scoring by Legendre multiplicativity: rankings identical, −36 ruint / −133 Montgomery per number;
+  - the zero-fill and re-sieve initialization charges: ruint +6–8% with re-sieve off, +13–26% with re-sieve on.
+- **Stopped: the full wall-clock re-run (stage 1's last step) failed the materiality rule.**
+  - gray, lp_ledger and solve are above 1.5x the median at 84–96 (and gray at every size, setup at 72).
+  - Each is far over the 1% threshold, up to 14% (lp_ledger at 96).
+  - Per the overnight go, the report is written and the run stopped. **Stages 2–4 (the 2×2, p-1 stage 2, the re-solve) did not run.**
+- **Why the re-run flags more than the first check did:**
+  - The median region fell from 71–90 to 38–69 ns per priced unit. The new zero-fill and initialization charges price fills (memsets) at the random-access word price, so confirm and resieve now run below their priced cost and pull the median down.
+  - gray's, lp_ledger's and solve's own ns per unit did not change: lp_ledger at 96 was 128 before and 130 now; solve 94 → 98; gray 115 → 118.
+  - So part of the new flagging comes from the median moving, not from these regions getting worse. lp_ledger and solve at 84–96 and gray were already high before.
+- **Headline numbers.**
+  - Final qs reference per number, the new reference genes, all map numbers (official / ruint / Montgomery):
+    - re-sieve off: 32,973 / 2,407.1 / 8,214.1 (54); 166,829 / 9,184.4 / 32,740.1 (72); 512,336 / 23,828.1 / 86,446.0 (84); 1,565,126 / 61,757.5 / 226,321.3 (96);
+    - re-sieve on (p0 200): 43,433 / 2,595.5 / 8,903.5; 215,965 / 9,274.4 / 33,000.8; 664,970 / 23,828.4 / 86,209.9; 2,127,729 / 66,717.0 / 244,027.0.
+  - 2×2 winner: not run. Re-solve cost change: not run.
+- **Scoreboard tonight** (all mine; no outside prediction was answered, since the 2×2 and the re-solve did not run):
+  - gray region within 0.6–1.2x of the median after (a): **missed** (1.3–1.86x right after; 1.84–3.14x at the final re-run against the lower median);
+  - I-021 size, about −36 ruint and −133 Montgomery per number: **held** (−35.7 / −132.8);
+  - I-021, mult region under 1.2x: **held** (0.43–1.00);
+  - zero-fill, confirm +23%: **held** (6–8% of the total on a ~30% confirm share);
+  - re-sieve initialization "small next to the walk at 84–96": **missed** (+13–26% of the total);
+  - resieve at 54 under 1.5x: **held** (1.20);
+  - confirm falling toward 0.4–0.9x: **held without re-sieve** (0.63–0.80), **missed with re-sieve** (0.91–1.00);
+  - lp_ledger at 96 still flags: **held** (3.03x).
+- **Commits tonight:**
+  - 97058c8 instrumentation;
+  - 9ad0323 gray (a), with the 2×2 protocol;
+  - b45b574 I-021, with the p-1 stage-2 cost model and the cfrac_accept fix;
+  - c13019b zero-fill and initialization;
+  - this report.
+  - Earlier in the evening: b1d80fa, fde3287, ea7509b (decisions, cost models, IDEAS).
+- **Parked, not committed:** the stage-3 code (p-1 stage 2, both cores, parity cases), written while parity jobs ran and before the stop fired.
+  - Its acceptance passed every check: exact predicate 3,360 / 3,360; Python = Rust 3,960 / 3,960; formula 2,892 / 2,892; c = 0 identical 12,000 / 12,000; forced backtrack 1 / 1. Parity was not run.
+  - Patch, script and result: `/tmp/claude-1000/-home-onojk123-lumens-per-watt/6b43d4e3-ac8d-4dd8-9daa-6fbf6fa8d6b5/scratchpad/parked_stage3/` (stage3_pm1s2.patch, pm1s2_accept.py, acceptance_result.txt).
+  - `evolve/slack2x2.py` (the 2×2, prepared, not run) is committed with this report.
+
+**Final wall-clock re-run** (`phasetime_final.out`, `phasetime.json`; committed card c13019b; same protocol). Each cell is ns per priced ruint unit ÷ the median region, without / with re-sieve. Flags (> 1.5x) carry the materiality figure, time share × (ratio − 1):
+
+| region | 54 | 72 | 84 | 96 |
+|---|---|---|---|---|
+| mult | 0.52 / 0.43 | 0.59 / 0.58 | 0.73 / 0.82 | 0.86 / 1.00 |
+| fb | 0.31 / 0.27 | 0.35 / 0.34 | 0.40 / 0.46 | 0.43 / 0.49 |
+| setup | 1.26 / 1.05 | **1.51 (16.8%)** / 1.44 | 1.27 / 1.41 | 1.14 / 1.29 |
+| gray | **2.28 (2.2%)** / **1.90 (1.3%)** | **1.89 (2.9%)** / **1.84 (2.4%)** | **2.32 (5.2%)** / **2.57 (5.5%)** | **2.75 (8.6%)** / **3.14 (8.9%)** |
+| sieve | 0.49 / 0.41 | 0.46 / 0.44 | 0.49 / 0.55 | 0.55 / 0.62 |
+| resieve | — / 1.20 | — / 1.00 | — / 0.99 | — / 0.93 |
+| confirm | 0.80 / 0.98 | 0.63 / 0.91 | 0.68 / 1.00 | 0.71 / 0.95 |
+| lp_ledger | 1.48 / 1.36 | 1.37 / 1.36 | **1.93 (5.3%)** / **2.05 (5.1%)** | **3.03 (13.8%)** / **3.47 (14.1%)** |
+| solve | 1.20 / 1.00 | 1.37 / 1.29 | **1.87 (8.9%)** / **2.06 (9.6%)** | **2.28 (11.1%)** / **2.57 (11.3%)** |
+
+- Median region (ns per priced ruint unit), without / with re-sieve: 57.3 / 69.0 (54), 57.8 / 60.5 (72), 48.3 / 44.1 (84), 42.8 / 37.6 (96).
+- **Every flagged region is above the 1% materiality threshold, so none is recorded-and-passed.** setup at 72 (1.51x, 16.8%) sits at the threshold of the 1.5x flag; its ns per unit is unchanged since the first check (84 → 87).
+
+**Diagnosis from the code, for the user's decisions** (nothing changed; each would be its own entry):
+1. *Fills priced as word ops* (the zero-fill, re-sieve's slot array and flags): likely several times overpriced (a memset runs ~0.05–0.1 ns per element against 0.71 ns for a random-access update). This moves the median and every ratio. Options:
+   - (a) a measured "fill" type from an opbench fill loop;
+   - (b) a code change: reuse one slot array and clear only the candidates' positions (|cand| writes, not width), and keep exponent vectors sparse (I-020).
+2. *gray:* the update loop walks a Vec of per-prime entries, each with two heap vectors (1–2 roots each). A flat layout (contiguous roots and B-inverses) is a code change with identical counts.
+3. *solve (linear algebra and square root), uncharged work found reading `Ledger::solve`* (an audit finding, item 14):
+   - building the bit matrix reads each relation's F exponents (rows × F, uncharged);
+   - the combination matrix is initialized (rows × rows/64 words);
+   - every pivot clones its row pair (cw + rw words per pivot);
+   - the square root sums each dependency's member vectors (members × F adds).
+   - Only the elimination XORs (rows · F · rows / 64) and the multiplies are charged. At 84–96 these copies plausibly explain the 1.9–2.6x.
+4. *lp_ledger at 84–96:*
+   - the large-prime table holds an F-entry vector per partial, on cold memory, so a combination reads a vector last touched many polynomials earlier;
+   - the s word ops per relation that add the A-primes into the vector (`for ql in qs_: vec[idx[ql]] += 1`) are also uncharged (an audit finding, item 15; small).
+   - I-020 (sparse relations) addresses the memory side.
+- **Next experiments, by information per compute:**
+  1. an opbench fill benchmark (minutes), deciding 1(a);
+  2. the item 14 and 15 cost models and charges (an hour, with parity);
+  3. the gray flat layout (an hour, identical counts);
+  4. then the wall-clock re-run again. The 2×2, p-1 stage 2 (parked, accepted) and the re-solve follow unchanged.
