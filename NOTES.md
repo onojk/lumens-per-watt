@@ -3774,7 +3774,7 @@ Cost split under ruint (setup = multiplier, factor base and polynomial setup; th
      - *Annotation:* D-gc assumed the small-modulus price 0.114 (ruint), but the card charges setup_small at 0.307 (ruint) and 1.14 (Montgomery). At the charged price, one word op per update gives 11.6–13.4%, and two ops give 10.1–11.7%. So its test "above 13% means more than one op was counted" is reversed: more ops per update means a smaller saving. The headline is scored against the stated range regardless.
    - **(D-pinv)** Precomputed pool-prime inverses: break-even at ~0.32 P A's; A's per run 10–20 / 20–40 / 30–60 / 50–100 at 54 / 72 / 84 / 96; net saving 0–0.5 / 0.5–1.5 / 1–3 / 2–4% of qs cost; falsified above 6%.
      - *Annotation:* its break-even prices the precompute's Euclid runs at word level and the per-A Euclid runs at small-modulus. Priced consistently, the break-even is ~P A's. Its 29 Euclid steps per inverse is high for p < ~2000 (typically ~6–7 steps); the card's measured setup_euclid share is used instead.
-     - A lazily filled cache (compute a pool prime's inverses mod every factor-base prime the first time it appears in an A) costs at most (distinct pool primes used) × F Euclid runs, so it never costs more than today. This is noted on the MOVES row, candidate (c).
+     - A lazily filled cache (compute a pool prime's inverses mod every factor-base prime the first time it appears in an A) costs at most (distinct pool primes used) × F Euclid runs, so it never costs more than today. This is noted on the MOVES row, candidate (c). [Wrong, Claude chat's error: it assumed distinct pool primes ≤ A's per run; measured 9–29 distinct against 4–27 A's. See the A-count step.]
    - **(D-qr, on W-qr)** the restricted simulated yield is 0.07–0.09 at every size; W-qr misses at 72–84 and holds at 96.
      - *Annotation:* it doubled a baseline of 0.04, but the simulated yields were 0.076 / 0.064 / 0.051. Doubling those gives ~0.15 / 0.13 / 0.10, within W-qr's ±25% at all three sizes. Both are scored as written when the user's Mathematica run arrives.
    - *DeepSeek on 2LP:* it stays marginal regardless of W-qr (scarcity: 0–3 candidates per number). Reopen it only if a looser threshold (+0.5–1.0 slack) pays after re-sieve. This is added to the 2LP MOVES row.
@@ -3841,5 +3841,13 @@ Cost per number (op-cost units, absolute), current / re-typed:
 | 96 | 2.009 (tuned) | 1,799,926 | 99,037 / 86,151 | 358,425 / 310,576 | 47,288 |
 
 - **Re-typing cuts qs cost at the tuned slack by 12.6 / 11.4 / 13.0% (ruint) and 13.8 / 12.1 / 13.3% (Montgomery) at 72 / 84 / 96; official 0% (exact).** This is with one charged op per update, as today. If the cost model counts two word ops per update, the cut is smaller (≈ 78% of the slice instead of ≈ 89%).
-- **The best slack barely moves on this coarse grid:** 72 stays at the tuned 2.23; 84 goes from 2.10 to 2.0 under ruint and Montgomery (re-typed 25,565 against 25,780); 96 stays at 2.0 (official's best is 2.5 at 96).
+- **The best slack barely moves on this coarse grid:** 72 stays at the tuned 2.23. 84: 2.0 and the tuned 2.10 are within 1% under both pricings (6 numbers, no interval); under the adopted slack rule this is not a shift. 96 stays at 2.0 (official's best is 2.5 at 96).
 - The scored 2×2 retune uses the 0.1 grid and paired intervals, per the adopted rule. This table is information.
+
+**Decisions (user, Oct 25), for the Gray-code cost-model entry and scoring:**
+1. **Op count: ONE word-level op per root update** (the add and conditional subtract as a single word op), priced at the word-level (sieve_update) price.
+   - Reasons: it keeps the op counts unchanged, so this stays a pure pricing change with official exactly 0%; and it matches the current count and the ECM modular-additions precedent.
+   - *What the slice contains (answers the open point in the G-gc annotation):* the slice is essentially all updates. Two independent measurements agree: setupshare's "Gray-code switching" slice, attributed by call site, is 0.141 / 0.128 / 0.146 of qs's ruint cost at 72 / 84 / 96, and slackrep's exact update count priced at setup_small gives 0.141 / 0.128 / 0.146.
+   - (slackrep's cut / Gray-share ratio of 0.889 is 1 − 0.034 / 0.307 by construction, since it re-priced exactly the counted updates. The evidence is the equality of the two shares.)
+2. G-gc and D-gc are **not** scored from slackrep (a 6-number information sample, 72–96 only). They are scored from the formal before / after on all map numbers, including 54, after the cost-model entry and parity.
+3. The order is unchanged: re-sieve parity, commit, re-sieve measurement, Gray-code cost model and audit list, formal before / after, the scored 2×2 retune.
