@@ -72,6 +72,7 @@ fn stage_types(t: &str, d_ops: u64, d_tests: u64, ph: &[u64; 16], ev: &[u64; 7])
             o[12] = e(EV_LP_FULL);
             o[13] = p(qs::LP) - e(EV_LP_FULL);
             o[14] = p(qs::CHECK);
+            o[23] = p(PH_WORD); // re-sieve word ops (zero unless confirm = resieve)
         }
         "ecm" => {
             o[15] = p(ecm::ECM_SETUP) - e(EV_ECM_EUCLID);

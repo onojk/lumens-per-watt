@@ -609,6 +609,8 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
         - (gene(g, "tc", 2.0) + (lc - 1.0)) * (bnd as f64).log2();
     let width = (2 * mm_ + 1) as usize;
     let chk = gene(g, "check", 0.0) != 0.0; // ledger check: qs's acceptance test only
+    let rs_on = g.get("confirm").and_then(|v| v.as_str()) == Some("resieve"); // root-matched confirmation
+    let p0 = gene(g, "p0", 30.0) as i128;
     let mut partials: std::collections::HashMap<i128, (i128, Vec<u32>)> =
         std::collections::HashMap::new();
     let mut arr = vec![0i32; width];
@@ -708,15 +710,57 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
             m.charge(SIEVE, upd)?;
             m.charge(SIEVE, width as u64)?;
             m.ev(crate::EV_SIEVE_SCAN, width as u64); // at["polys"] append
-            // 5. confirm
-            for i0 in 0..width {
-                if !((arr[i0] as f64) >= thr) {
-                    continue;
+            let cand: Vec<usize> = (0..width).filter(|&i0| (arr[i0] as f64) >= thr).collect();
+            // re-sieve (NOTES.md, "Root-matched candidate confirmation"): primes >= p0 matched over a
+            // candidate bitmap; v divided only by the matched primes and the direct ones
+            let mut rec: Vec<Vec<usize>> = Vec::new();
+            let mut direct: Vec<usize> = Vec::new();
+            if rs_on {
+                let mut slot = vec![usize::MAX; width];
+                for (k, &i0) in cand.iter().enumerate() {
+                    slot[i0] = k;
                 }
+                rec = vec![Vec::new(); cand.len()];
+                let (mut walk, mut nhit) = (0u64, 0u64);
+                let mut sieved_j = vec![false; f];
+                for (p, rs, _, j) in &st {
+                    sieved_j[*j] = true;
+                    if *p < p0 {
+                        continue;
+                    }
+                    let pu = *p as usize;
+                    for &r in rs {
+                        let start = ((r + mm_ as i128) % *p) as usize;
+                        if start >= width {
+                            continue;
+                        }
+                        walk += 2 * ((width - 1 - start) / pu + 1) as u64; // index step + bitmap test
+                        let mut i0 = start;
+                        while i0 < width {
+                            if slot[i0] != usize::MAX {
+                                rec[slot[i0]].push(*j);
+                                nhit += 1;
+                            }
+                            i0 += pu;
+                        }
+                    }
+                }
+                m.charge(crate::PH_WORD, cand.len() as u64 + walk + nhit)?;
+                direct = (1..f).filter(|&j| (base[j] as i128) < p0 || !sieved_j[j]).collect();
+            }
+            // 5. confirm
+            for (ci, &i0) in cand.iter().enumerate() {
                 let x = i0 as i128 - mm_ as i128;
                 let mut v = (a * x + 2 * bv) * x + c;
                 m.charge(CONFIRM, 2)?;
-                m.charge(CONFIRM, f as u64)?;
+                let plist: Vec<usize> = if rs_on {
+                    let mut l: Vec<usize> = direct.iter().copied().chain(rec[ci].iter().copied()).collect();
+                    l.sort_unstable();
+                    l
+                } else {
+                    (1..f).collect()
+                };
+                m.charge(CONFIRM, if rs_on { 1 + plist.len() as u64 } else { f as u64 })?;
                 m.ev(crate::EV_CONFIRM_FULL, 2); // at["cands"] append
                 let mut vec_ = vec![0u32; f];
                 if v < 0 {
@@ -727,7 +771,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                     m.test(false);
                     continue;
                 }
-                for j in 1..f {
+                for &j in &plist {
                     let p = base[j] as i128;
                     if v % p == 0 {
                         v /= p;

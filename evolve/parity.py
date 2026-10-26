@@ -166,6 +166,17 @@ def qs_pairs():
         yield "qs kset low cap", [dict(TUNED, lc=1.4, a_mode="on_demand", sort_charge=1, kset="sf32")], nums, 2 ** 13, False
     for seed, b, i in RETRY[:4]:
         yield "qs kset retry", [dict(QS, a_mode="on_demand", sort_charge=1, kset="sf32")], semiprimes_pq(b, i + 1, seed)[i:], 2 ** 29, False
+    # confirm = resieve (NOTES.md, "Root-matched candidate confirmation"): p0 30 / 2 / 1000, both a_modes,
+    # with lc, a low cap that stops inside the re-sieve or confirmation, a retry
+    for b in (48, 60, 72, 84, 96):
+        nums = semiprimes_pq(b, 4, 2800000 + b)
+        for p0 in (30, 2, 1000):
+            yield f"qs resieve p0 {p0}", [dict(TUNED, lc=1.4, a_mode="on_demand", sort_charge=1, kset="sf32", confirm="resieve", p0=p0)], nums, 2 ** 29, False
+        yield "qs resieve enumerate", [dict(TUNED, lc=1.8, confirm="resieve")], nums, 2 ** 29, False
+        for cap in (2 ** 12, 2 ** 15):
+            yield "qs resieve low cap", [dict(TUNED, lc=1.4, a_mode="on_demand", confirm="resieve")], nums, cap, False
+    for seed, b, i in RETRY[:4]:
+        yield "qs resieve retry", [dict(QS, a_mode="on_demand", confirm="resieve")], semiprimes_pq(b, i + 1, seed)[i:], 2 ** 29, False
     yield from lp_pairs()
     yield from check_pairs()
     yield from cfrac_pairs()

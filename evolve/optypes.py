@@ -32,7 +32,8 @@ def qs_counts(tr):
             "sieve_update": o.get("sieve", 0) - scans, "sieve_scan": scans,
             "confirm_full": confirm_full, "confirm_td": o.get("confirm", 0) - confirm_full,
             "la": o.get("la", 0), "sqrt_mul": o.get("sqrt", 0) - sqrt_gcd, "sqrt_gcd": sqrt_gcd,
-            "lp_full": lp_full, "lp_small": o.get("lp", 0) - lp_full, "check": o.get("check", 0)}
+            "lp_full": lp_full, "lp_small": o.get("lp", 0) - lp_full, "check": o.get("check", 0),
+            "word": o.get("word", 0)}
 
 def ecm_setup_steps(N, sigma):
     """(Euclid steps of den^-1 mod N, whether den is invertible) for a Suyama curve."""

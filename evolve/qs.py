@@ -33,7 +33,10 @@ acceptance test only; mutation never sets it, and absent it is off.
 Not a gene: "a_mode": "enumerate" (default: every candidate A formed and charged up front, as
 always) or "on_demand" (A's formed one at a time, charged as formed; NOTES.md, "On-demand A
 selection"). Set by hand, never mutated. "kset": "sf32" scores only the squarefree k <= 32 (kc ignored; NOTES.md, "kc becomes a
-constant"). "sort_charge": 1 charges every sort in the card (NOTES.md,
+constant"). "confirm": "resieve" confirms each candidate by re-sieving: primes >= "p0" (default 30) are
+matched by walking their roots over a candidate bitmap (word-level ops), and v is divided only by the
+matched primes and the primes below p0 or not sieved (NOTES.md, "Root-matched candidate confirmation").
+"sort_charge": 1 charges every sort in the card (NOTES.md,
 "The sort_charge option"); 0 or absent: today's counts. "a_given": a list of A's (prime tuples) used in order
 with no selection charge, for the identity test only.
 
@@ -210,6 +213,8 @@ def sieve_source(N, k, g, led, ch, at):
     T = math.log2(M * math.sqrt(kN / 2)) - (g.get("tc", 2.0) + (lc - 1.0)) * math.log2(B)
     width = 2 * M + 1
     chk = bool(g.get("check", 0))              # ledger check: qs's acceptance test only
+    RS = g.get("confirm") == "resieve"         # root-matched confirmation by re-sieving; P0: below it, divide directly
+    P0 = int(g.get("p0", 30))
     partials = {}                              # q -> (u, vec)
     if at is not None:
         at["lp"] = dict(cof=0, lt=0, inserts=0, combos=0, dup=0, F=F)
@@ -278,11 +283,30 @@ def sieve_source(N, k, g, led, ch, at):
                 at["polys"].append({"M": M, "roots": hits, "upd": upd,
                                     "sieved": [p for p, _, _ in st_],
                                     "rp": {p: len(rs) for p, rs, _ in st_}})
+            cand = np.nonzero(arr >= T)[0].tolist()
+            if RS:                                 # re-sieve (NOTES.md, "Root-matched candidate confirmation")
+                rec = {i0: [] for i0 in cand}
+                walk = nhit = 0
+                for p, rs, _ in st_:
+                    if p < P0:
+                        continue
+                    for r in rs:
+                        start = (r + M) % p
+                        if start >= width:
+                            continue
+                        walk += 2 * ((width - 1 - start) // p + 1)   # index step + bitmap test per position
+                        for i0 in range(start, width, p):
+                            if i0 in rec:
+                                rec[i0].append(idx[p]); nhit += 1
+                charge("word", len(cand) + walk + nhit)     # bitmap set per candidate, the walk, one per hit
+                sieved_j = {idx[p] for p, _, _ in st_}
+                direct = [j for j in range(1, F) if base[j] < P0 or j not in sieved_j]
             # 5. confirm
-            for i0 in np.nonzero(arr >= T)[0].tolist():
+            for i0 in cand:
                 x = i0 - M
                 v = (A * x + 2 * Bv) * x + C; charge("confirm", 2)
-                charge("confirm", F)
+                plist = sorted(direct + rec[i0]) if RS else range(1, F)
+                charge("confirm", 1 + len(plist) if RS else F)
                 if at is not None:
                     at["cands"].append(v)
                 vec = [0] * F
@@ -291,7 +315,7 @@ def sieve_source(N, k, g, led, ch, at):
                 if v == 0:
                     ch.m.test(False)
                     continue
-                for j in range(1, F):
+                for j in plist:
                     p = base[j]
                     if v % p == 0:
                         v //= p; vec[j] += 1
