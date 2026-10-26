@@ -234,7 +234,13 @@ def sieve_source(N, k, g, led, ch, at):
     chk = bool(g.get("check", 0))              # ledger check: qs's acceptance test only
     RS = g.get("confirm") == "resieve"         # root-matched confirmation by re-sieving; P0: below it, divide directly
     P0 = int(g.get("p0", 30))
-    partials = {}                              # q -> (u, vec)
+    partials = {}                              # q -> (u, sparse exponent list)
+    # step 1 (NOTES.md, "Step 1: delete the fills"): one exponent vector per attempt, reused (F word); with
+    # re-sieve, the slot array (width) and the generation stamps (F) once per attempt
+    ev = [0] * F
+    charge("word", F + (width + F if RS else 0))
+    if at is not None:
+        at["s1"] = dict(attempt=F + (width + F if RS else 0), cand=0, comb=0, T=0, Tk=0, kept=0)
     if at is not None:
         at["lp"] = dict(cof=0, lt=0, inserts=0, combos=0, dup=0, F=F)
         at["rels"] = led.rels                  # for the acceptance relation check
@@ -310,6 +316,8 @@ def sieve_source(N, k, g, led, ch, at):
                                     "sieved": [p for p, _, _ in st_],
                                     "rp": {p: len(rs) for p, rs, _ in st_}})
             cand = np.nonzero(arr >= T)[0].tolist()
+            if at is not None:
+                at["polys"][-1]["nc"] = len(cand)   # trace only: candidates of this polynomial (all, processed or not)
             if RS:                                 # re-sieve (NOTES.md, "Root-matched candidate confirmation")
                 rec = {i0: [] for i0 in cand}
                 walk = nhit = 0
@@ -330,11 +338,9 @@ def sieve_source(N, k, g, led, ch, at):
                 charge("word", len(cand) + walk + nhit)     # bitmap set per candidate, the walk, one per hit
                 sieved_j = {idx[p] for p, _, _ in st_}
                 direct = [j for j in range(1, F) if base[j] < P0 or j not in sieved_j]
-                # per-polynomial initialization, counted as lampcore does it: the slot array (width), the sieved
-                # flags' fill (F) and setting (|st|), the direct list's pass (F - 1), the record lists (|cand|)
-                charge("word", width + 2 * F - 1 + len(st_) + len(cand))
-                if at is not None:
-                    at["polys"][-1]["nc"] = len(cand)   # trace only: candidates of this polynomial (all, processed or not)
+                # per polynomial, counted as lampcore does it: the slots cleared after the walk (|cand|), the
+                # generation stamps written (|st|), the direct list's pass (F - 1), the record lists (|cand|)
+                charge("word", 2 * len(cand) + len(st_) + F - 1)
             # 5. confirm
             for i0 in cand:
                 x = i0 - M
@@ -347,19 +353,23 @@ def sieve_source(N, k, g, led, ch, at):
                 charge("confirm", len(plist) if RS else F - 1)
                 if at is not None:
                     at["cands"].append(v)
-                charge("word", F)                  # the exponent vector's zero-fill (NOTES.md, "Meter correction: exponent-vector ...")
-                vec = [0] * F
+                TT = []                             # entries touched in the reused vector (step 1)
                 if v < 0:
-                    vec[0] = 1; v = -v
+                    ev[0] = 1; TT.append(0); v = -v
                 if v == 0:
+                    s1w = 2 * len(TT); charge("word", s1w)      # sets + clear
+                    for j in TT:
+                        ev[j] = 0
+                    if at is not None:
+                        at["s1"]["cand"] += s1w; at["s1"]["T"] += len(TT)
                     ch.m.test(False)
                     continue
                 for j in plist:
                     p = base[j]
                     if v % p == 0:
-                        v //= p; vec[j] += 1
+                        v //= p; ev[j] += 1; TT.append(j)
                         while v % p == 0:
-                            v //= p; vec[j] += 1; charge("confirm", 1)
+                            v //= p; ev[j] += 1; charge("confirm", 1)
                             if at is not None:
                                 at["extra_div"] += 1
                 smooth = v == 1
@@ -371,10 +381,27 @@ def sieve_source(N, k, g, led, ch, at):
                         at["lp"]["cof"] += 1; at["lp"]["lt"] += partial
                 ch.m.test(smooth or partial)
                 if not (smooth or partial):
+                    s1w = 2 * len(TT); charge("word", s1w)      # sets + clear
+                    for j in TT:
+                        ev[j] = 0
+                    if at is not None:
+                        at["s1"]["cand"] += s1w; at["s1"]["T"] += len(TT)
                     continue
                 u = A * x + Bv
-                for ql in qs_:
-                    vec[idx[ql]] += 1
+                Tk = list(TT)
+                for ql in qs_:                     # the A-primes (uncharged until item 15)
+                    j = idx[ql]
+                    if ev[j] == 0:
+                        Tk.append(j)
+                    ev[j] += 1
+                vec = [(j, ev[j]) for j in Tk]     # the sparse relation
+                s1w = len(TT) + 2 * len(Tk); charge("word", s1w)    # sets, the sparse copy, the clear
+                for j in Tk:
+                    ev[j] = 0
+                if at is not None:
+                    at["s1"]["cand"] += s1w; at["s1"]["T"] += len(TT); at["s1"]["Tk"] += len(Tk); at["s1"]["kept"] += 1
+                    if smooth:
+                        at["s1"]["Tf"] = at["s1"].get("Tf", 0) + len(Tk); at["s1"]["nf"] = at["s1"].get("nf", 0) + 1
                 if smooth:
                     if led.add(u, vec, 1, chk):
                         return None
@@ -391,7 +418,17 @@ def sieve_source(N, k, g, led, ch, at):
                         at["lp"]["inserts"] += 1
                     continue
                 cu = other[0] * u % N; charge("lp", 1)
-                cvec = [a + b for a, b in zip(other[1], vec)]; charge("word", F)   # vector add (audit item 7)
+                out = []                           # sparse combination through the clean vector (step 1)
+                for j, e in other[1] + vec:
+                    if ev[j] == 0:
+                        out.append(j)
+                    ev[j] += e
+                cvec = [(j, ev[j]) for j in out]
+                for j in out:
+                    ev[j] = 0
+                s1c = len(other[1]) + len(vec) + 2 * len(out); charge("word", s1c)
+                if at is not None:
+                    at["s1"]["comb"] += s1c
                 if at is not None:
                     at["lp"]["combos"] += 1
                 if led.add(cu, cvec, v, chk):

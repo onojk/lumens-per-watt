@@ -101,17 +101,20 @@ def cf_source(N, k, g, led, ch, at, until=None):
         charge("cf_td", F)
         if at is not None:
             at["residues"].append(Q1)
-        vec = [0] * F
+        vec = [0] * F                          # cfrac's own per-residue vector (its fill: audit item 16, uncharged)
         vec[0] = (i + 1) & 1
+        T = [0] if vec[0] else []              # entries touched, for the ledger's sparse relation (step 1)
         v = Q1
         for j in range(1, F):
             p = base[j]
             if v % p == 0:
-                v //= p; vec[j] += 1
+                v //= p; vec[j] += 1; T.append(j)
                 while v % p == 0:
                     v //= p; vec[j] += 1; charge("cf_td", 1)
         ch.m.test(v == 1)
-        if v == 1 and (led.add(A, vec, 1, chk) or (until is not None and len(led.rels) >= until)):
+        if v == 1:
+            charge("word", len(T))             # the sparse copy handed to the ledger (step 1)
+        if v == 1 and (led.add(A, [(j, vec[j]) for j in T], 1, chk) or (until is not None and len(led.rels) >= until)):
             return None
         P, Qp, Q, a = P1, Q, Q1, a1
         Ap, A = A, An

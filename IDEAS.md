@@ -197,3 +197,10 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Cost: moderate (solve in both cores).
 - Decision: pending (not at today's sizes).
 
+### I-023 — Multiplier selection by a tilted smooth-probability score (the user's "I-022")
+- Date: 2026-10-26. Source: the user (Wolfram), with DeepSeek's rounds 5-6. Numbering: the user called this I-022; IDEAS' I-022 was already the sparse-rows entry, so it is filed here as I-023 until the user renumbers.
+- Idea: choose the multiplier k by the tilted saddle-point estimate of the smooth probability of kN's residues, instead of the Knuth-Schroeppel expected-log score.
+- Evidence: KS pays ~2.1x in relation yield for the N whose best k is not 1 (measured), more than the standard KS logic or exact rho predicts (~1.40x). The first test read "refuted as built" (the tilted choice yielded 0.85x KS's), but a bug in the tilted estimate's 2-adic law for kN = 1 mod 8 (P(v = j) for j >= 3 coded 2^(2-j), correct 2^(1-j)) overvalued that class (NOTES, "Correction ... I-022 is UNTESTED").
+- Cost: a Wolfram re-run with the fix; no card change unless it holds (then a scoring change in both cores, with KS kept as the control).
+- Decision: UNTESTED (corrected from "refuted as built"). Standard KS stays meanwhile.
+

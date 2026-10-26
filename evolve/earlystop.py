@@ -56,12 +56,12 @@ for bits in SS.SIZES:
         rels = at["rels"]
         F = at["F"] if "F" in at else len(rels) - 10
         led_marks = [s for lid, s in marks][-len(rels):]
-        masks = [sum(1 << j for j, e in enumerate(vec) if e & 1) for _, vec, _ in rels]
+        masks = [sum(1 << j for j, e in vec if e & 1) for _, vec, _ in rels]   # sparse relations (step 1)
         rk = rank_curve(masks)
         n = len(rels)
-        cnt = np.zeros(max(len(rels[0][1]), 1), dtype=int)
+        cnt = np.zeros(max(F, 1), dtype=int)
         for _, vec, _ in rels:
-            for j, e in enumerate(vec):
+            for j, e in vec:
                 if e & 1:
                     cnt[j] += 1
         act1, act2 = int((cnt >= 1).sum()), int((cnt >= 2).sum())

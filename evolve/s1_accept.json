@@ -1,0 +1,166 @@
+{
+ "cost": {
+  "54": {
+   "new ref": {
+    "official": {
+     "before": 32973.428125,
+     "after": 31816.2
+    },
+    "ruint": {
+     "before": 2407.078240098533,
+     "after": 2377.221754473533
+    },
+    "montgomery": {
+     "before": 8214.075144722072,
+     "after": 8104.02275003457
+    }
+   },
+   "new ref + re-sieve p0 200": {
+    "official": {
+     "before": 43433.259375,
+     "after": 37696.775
+    },
+    "ruint": {
+     "before": 2595.4590109273313,
+     "after": 2447.4577140523315
+    },
+    "montgomery": {
+     "before": 8903.549711429481,
+     "after": 8358.010047366983
+    }
+   }
+  },
+  "72": {
+   "new ref": {
+    "official": {
+     "before": 166829.01875,
+     "after": 151604.56875
+    },
+    "ruint": {
+     "before": 9184.393205239128,
+     "after": 8791.60239523913
+    },
+    "montgomery": {
+     "before": 32740.075072388725,
+     "after": 31292.229877388723
+    }
+   },
+   "new ref + re-sieve p0 200": {
+    "official": {
+     "before": 215964.85,
+     "after": 171664.01041666666
+    },
+    "ruint": {
+     "before": 9274.354371025836,
+     "after": 8131.392709775838
+    },
+    "montgomery": {
+     "before": 33000.76950209888,
+     "after": 28787.75965772388
+    }
+   }
+  },
+  "84": {
+   "new ref": {
+    "official": {
+     "before": 512335.5125,
+     "after": 462047.1732142857
+    },
+    "ruint": {
+     "before": 23828.08196100371,
+     "after": 22530.642807432276
+    },
+    "montgomery": {
+     "before": 86446.00039407893,
+     "after": 81663.5793280075
+    }
+   },
+   "new ref + re-sieve p0 200": {
+    "official": {
+     "before": 664970.0642857143,
+     "after": 514756.4517857143
+    },
+    "ruint": {
+     "before": 23828.351646088915,
+     "after": 19952.840443588917
+    },
+    "montgomery": {
+     "before": 86209.92320136652,
+     "after": 71924.6086526165
+    }
+   }
+  },
+  "96": {
+   "new ref": {
+    "official": {
+     "before": 1565126.334375,
+     "after": 1451431.7640625
+    },
+    "ruint": {
+     "before": 61757.51635795333,
+     "after": 58824.196443890825
+    },
+    "montgomery": {
+     "before": 226321.28305282947,
+     "after": 215508.92941611065
+    }
+   },
+   "new ref + re-sieve p0 200": {
+    "official": {
+     "before": 2127728.9265625,
+     "after": 1665899.6515625
+    },
+    "ruint": {
+     "before": 66717.0437696433,
+     "after": 54801.84847464329
+    },
+    "montgomery": {
+     "before": 244027.03101312285,
+     "after": 200107.06696062285
+    }
+   }
+  }
+ },
+ "stats": {
+  "54": {
+   "touched_per_candidate": 5.80033698399326,
+   "touched_per_kept": 8.895959595959596,
+   "touched_per_full": 9.924418604651162,
+   "cand_per_width_median": 0.04428044280442804,
+   "cand_per_width_p90": 0.07636363636363637,
+   "u_median": 4.112056638884176,
+   "numbers": 6,
+   "flag_outside_4_10": false
+  },
+  "72": {
+   "touched_per_candidate": 6.07915758896151,
+   "touched_per_kept": 10.302566903331513,
+   "touched_per_full": 11.472361809045227,
+   "cand_per_width_median": 0.01312910284463895,
+   "cand_per_width_p90": 0.024742268041237112,
+   "u_median": 4.640944778200206,
+   "numbers": 6,
+   "flag_outside_4_10": true
+  },
+  "84": {
+   "touched_per_candidate": 7.160160870593802,
+   "touched_per_kept": 11.402917679749914,
+   "touched_per_full": 12.615141955835963,
+   "cand_per_width_median": 0.007226738934056007,
+   "cand_per_width_p90": 0.013071895424836602,
+   "u_median": 4.972163787202716,
+   "numbers": 6,
+   "flag_outside_4_10": true
+  },
+  "96": {
+   "touched_per_candidate": 7.574568288854003,
+   "touched_per_kept": 11.58204433104768,
+   "touched_per_full": 13.104477611940299,
+   "cand_per_width_median": 0.0018770530267480056,
+   "cand_per_width_p90": 0.004223369310183012,
+   "u_median": 5.281833217214046,
+   "numbers": 6,
+   "flag_outside_4_10": true
+  }
+ }
+}

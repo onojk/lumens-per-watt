@@ -1,0 +1,14 @@
+54 bits, new ref: cost per number before / after: offi 32,973.4 / 31,816.2 (-3.51%)  ruin 2,407.1 / 2,377.2 (-1.24%)  mont 8,214.1 / 8,104.0 (-1.34%)
+54 bits, new ref + re-sieve p0 200: cost per number before / after: offi 43,433.3 / 37,696.8 (-13.21%)  ruin 2,595.5 / 2,447.5 (-5.70%)  mont 8,903.5 / 8,358.0 (-6.13%)
+54 bits, new reference (6 numbers): touched per candidate 5.80, per kept relation 8.90, per full relation 9.92; |cand| / width median 4.43%, 90th pct 7.64%; u median 4.11
+72 bits, new ref: cost per number before / after: offi 166,829.0 / 151,604.6 (-9.13%)  ruin 9,184.4 / 8,791.6 (-4.28%)  mont 32,740.1 / 31,292.2 (-4.42%)
+72 bits, new ref + re-sieve p0 200: cost per number before / after: offi 215,964.9 / 171,664.0 (-20.51%)  ruin 9,274.4 / 8,131.4 (-12.32%)  mont 33,000.8 / 28,787.8 (-12.77%)
+72 bits, new reference (6 numbers): touched per candidate 6.08, per kept relation 10.30, per full relation 11.47; |cand| / width median 1.31%, 90th pct 2.47%; u median 4.64  FLAG (outside 4-10)
+84 bits, new ref: cost per number before / after: offi 512,335.5 / 462,047.2 (-9.82%)  ruin 23,828.1 / 22,530.6 (-5.45%)  mont 86,446.0 / 81,663.6 (-5.53%)
+84 bits, new ref + re-sieve p0 200: cost per number before / after: offi 664,970.1 / 514,756.5 (-22.59%)  ruin 23,828.4 / 19,952.8 (-16.26%)  mont 86,209.9 / 71,924.6 (-16.57%)
+84 bits, new reference (6 numbers): touched per candidate 7.16, per kept relation 11.40, per full relation 12.62; |cand| / width median 0.72%, 90th pct 1.31%; u median 4.97  FLAG (outside 4-10)
+96 bits, new ref: cost per number before / after: offi 1,565,126.3 / 1,451,431.8 (-7.26%)  ruin 61,757.5 / 58,824.2 (-4.75%)  mont 226,321.3 / 215,508.9 (-4.78%)
+96 bits, new ref + re-sieve p0 200: cost per number before / after: offi 2,127,728.9 / 1,665,899.7 (-21.71%)  ruin 66,717.0 / 54,801.8 (-17.86%)  mont 244,027.0 / 200,107.1 (-18.00%)
+96 bits, new reference (6 numbers): touched per candidate 7.57, per kept relation 11.58, per full relation 13.10; |cand| / width median 0.19%, 90th pct 0.42%; u median 5.28  FLAG (outside 4-10)
+1. only word (and ops) change, by the same amount: 12000/12000
+2-3. word change = formula (trace), Python = Rust per type: 48/48

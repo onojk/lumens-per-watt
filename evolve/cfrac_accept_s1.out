@@ -1,0 +1,55 @@
+40 bits: solved 40/40, exact 40/40, relations 1386, bad 0, dependencies 311, bad 0, residues 16216 (smooth rate 0.0855), retries 8, period ends 0, mean 2^13.56  PASS
+    mult     measured        36464  formula        36464
+    fb       measured        21194  formula        21194
+    cf_step  measured        66844  formula        66844
+    cf_td    measured       319165  formula       319165
+    la       measured        12134  formula        12134
+    sqrt     measured        10160  formula        10160
+    hash     measured         1386  formula         1386
+    word     measured        14084  formula        14084
+44 bits: solved 40/40, exact 40/40, relations 1597, bad 0, dependencies 306, bad 0, residues 23538 (smooth rate 0.0678), retries 8, period ends 0, mean 2^14.24  PASS
+    mult     measured        36468  formula        36468
+    fb       measured        28124  formula        28124
+    cf_step  measured        96344  formula        96344
+    cf_td    measured       559593  formula       559593
+    la       measured        19964  formula        19964
+    sqrt     measured        11837  formula        11837
+    hash     measured         1597  formula         1597
+    word     measured        17417  formula        17417
+48 bits: solved 40/40, exact 40/40, relations 1827, bad 0, dependencies 361, bad 0, residues 33047 (smooth rate 0.0553), retries 7, period ends 0, mean 2^14.93  PASS
+    mult     measured        36462  formula        36462
+    fb       measured        38996  formula        38996
+    cf_step  measured       134536  formula       134536
+    cf_td    measured       971393  formula       971393
+    la       measured        33164  formula        33164
+    sqrt     measured        15186  formula        15186
+    hash     measured         1827  formula         1827
+    word     measured        20769  formula        20769
+52 bits: solved 40/40, exact 40/40, relations 1929, bad 0, dependencies 299, bad 0, residues 43100 (smooth rate 0.0448), retries 3, period ends 0, mean 2^15.50  PASS
+    mult     measured        36428  formula        36428
+    fb       measured        49901  formula        49901
+    cf_step  measured       174699  formula       174699
+    cf_td    measured      1509085  formula      1509085
+    la       measured        48274  formula        48274
+    sqrt     measured        14722  formula        14722
+    hash     measured         1929  formula         1929
+    word     measured        22841  formula        22841
+56 bits: solved 40/40, exact 40/40, relations 2455, bad 0, dependencies 308, bad 0, residues 71200 (smooth rate 0.0345), retries 6, period ends 0, mean 2^16.47  PASS
+    mult     measured        36464  formula        36464
+    fb       measured        74063  formula        74063
+    cf_step  measured       287454  formula       287454
+    cf_td    measured      3101418  formula      3101418
+    la       measured        91037  formula        91037
+    sqrt     measured        16667  formula        16667
+    hash     measured         2455  formula         2455
+    word     measured        29735  formula        29735
+60 bits: solved 40/40, exact 40/40, relations 2585, bad 0, dependencies 223, bad 0, residues 83917 (smooth rate 0.0308), retries 1, period ends 0, mean 2^16.97  PASS
+    mult     measured        36475  formula        36475
+    fb       measured        88595  formula        88595
+    cf_step  measured       338196  formula       338196
+    cf_td    measured      4496170  formula      4496170
+    la       measured       137313  formula       137313
+    sqrt     measured        13691  formula        13691
+    hash     measured         2585  formula         2585
+    word     measured        32539  formula        32539
+ACCEPTANCE PASS

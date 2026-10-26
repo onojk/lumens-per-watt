@@ -72,14 +72,16 @@ fn cf_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -> R
         }
         // residue: A^2 = (-1)^(i+1) Q1 (mod N)
         m.charge(CF_TD, f as u64)?;
-        let mut vec_ = vec![0u32; f];
+        let mut vec_ = vec![0u32; f]; // cfrac's own per-residue vector (its fill: audit item 16, uncharged)
         vec_[0] = ((i + 1) & 1) as u32;
+        let mut tt: Vec<u32> = if vec_[0] != 0 { vec![0] } else { Vec::new() }; // touched entries (step 1)
         let mut v = q1;
         for j in 1..f {
             let pj = base[j] as i128;
             if v % pj == 0 {
                 v /= pj;
                 vec_[j] += 1;
+                tt.push(j as u32);
                 while v % pj == 0 {
                     v /= pj;
                     vec_[j] += 1;
@@ -88,7 +90,10 @@ fn cf_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -> R
             }
         }
         m.test(v == 1);
-        if v == 1 && led.add(aa.to::<u128>() as i128, vec_, 1, chk, m)? {
+        if v == 1 {
+            m.charge(crate::PH_WORD, tt.len() as u64)?; // the sparse copy handed to the ledger (step 1)
+        }
+        if v == 1 && led.add(aa.to::<u128>() as i128, tt.iter().map(|&j| (j, vec_[j as usize])).collect(), 1, chk, m)? {
             return Ok(());
         }
         p = p1;

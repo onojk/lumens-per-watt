@@ -83,9 +83,8 @@ def relation_check(N, at, base):
     bad_rel = bad_dep = 0
     for u, vec, y in at["rels"]:
         rhs = y * y % N
-        for j, e in enumerate(vec):
-            if e:
-                rhs = rhs * pow(base[j] % N, e, N) % N
+        for j, e in vec:                           # sparse relations (step 1)
+            rhs = rhs * pow(base[j] % N, e, N) % N
         bad_rel += u * u % N != rhs
     for d in at["deps"]:
         bad_dep += d["X"] * d["X"] % N != d["Y"] * d["Y"] % N

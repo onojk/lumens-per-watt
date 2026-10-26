@@ -241,7 +241,7 @@ pub(crate) struct Ledger {
     pub(crate) f: usize,
     need: usize,
     // relations (u, vec, y): u^2 = y^2 prod p^e (mod N); y = 1 for a full relation
-    rels: Vec<(i128, Vec<u32>, i128)>,
+    rels: Vec<(i128, Vec<(u32, u32)>, i128)>, // (u, sparse [(j, e)], y) (step 1)
     seen: std::collections::HashSet<i128>,   // full |u|'s
     seen_c: std::collections::HashSet<i128>, // combined u's, up to sign
 }
@@ -294,10 +294,11 @@ impl Ledger {
 
     /// y^(1 or 2) * prod p^(e_p or e_p/2) mod N over entries p >= 2, charged to CHECK:
     /// square-and-multiply per factor, 1 op per multiply joining it after the first.
-    fn product(&self, v: &[u32], y: i128, half: bool, m: &mut Meter) -> Result<U256, Budget> {
-        let mut factors: Vec<(u64, u64)> = (1..self.f)
-            .filter(|&j| v[j] != 0)
-            .map(|j| (self.base[j] as u64, if half { v[j] as u64 / 2 } else { v[j] as u64 }))
+    fn product(&self, v: &[(u32, u32)], y: i128, half: bool, m: &mut Meter) -> Result<U256, Budget> {
+        let mut factors: Vec<(u64, u64)> = v
+            .iter()
+            .filter(|&&(j, _)| j >= 1)
+            .map(|&(j, e)| (self.base[j as usize] as u64, if half { e as u64 / 2 } else { e as u64 }))
             .collect();
         if y != 1 {
             factors.push((y as u64, if half { 1 } else { 2 }));
@@ -319,14 +320,14 @@ impl Ledger {
 
     /// Phase 9 (NOTES.md, "Ledger: the charged relation check"): is u^2 = y^2 prod p^e
     /// (mod N), and not a trivial all-even relation?
-    fn check(&self, u: i128, v: &[u32], y: i128, m: &mut Meter) -> Result<bool, Budget> {
+    fn check(&self, u: i128, v: &[(u32, u32)], y: i128, m: &mut Meter) -> Result<bool, Budget> {
         let n = self.n;
         let ur = U256::from(u.rem_euclid(self.n_i) as u128);
         m.charge(CHECK, 1)?; // u reduced mod N (cpow's first op)
         let lhs = ur.mul_mod(ur, n);
         m.charge(CHECK, 1)?; // the square
         let mut rhs = self.product(v, y, false, m)?;
-        if v[0] & 1 == 1 {
+        if v.iter().any(|&(j, e)| j == 0 && e & 1 == 1) {
             rhs = (n - rhs) % n;
             m.charge(CHECK, 1)?;
         }
@@ -335,7 +336,7 @@ impl Ledger {
             return Ok(false);
         }
         m.charge(CHECK, ((self.f + 63) / 64) as u64)?; // parity scan
-        if v.iter().any(|&e| e & 1 == 1) {
+        if v.iter().any(|&(_, e)| e & 1 == 1) {
             return Ok(true);
         }
         let yy = self.product(v, y, true, m)?; // all even: a one-row dependency
@@ -345,7 +346,7 @@ impl Ledger {
 
     /// Keep the relation unless it fails the check (when on) or repeats one already kept.
     /// True once full.
-    pub(crate) fn add(&mut self, u: i128, v: Vec<u32>, y: i128, chk: bool, m: &mut Meter) -> Result<bool, Budget> {
+    pub(crate) fn add(&mut self, u: i128, v: Vec<(u32, u32)>, y: i128, chk: bool, m: &mut Meter) -> Result<bool, Budget> {
         if chk && !self.check(u, &v, y, m)? {
             return Ok(false);
         }
@@ -368,13 +369,15 @@ impl Ledger {
         m.charge(LA, ((rows * f * rows + 63) / 64) as u64)?;
         let cw = (f + 63) / 64;
         let rw = (rows + 63) / 64;
+        // GF(2) rows (bit-packed) built from the sparse relations, 1 word per entry (step 1)
+        m.charge(crate::PH_WORD, rels.iter().map(|r| r.1.len() as u64).sum())?;
         let mut mat: Vec<Vec<u64>> = rels
             .iter()
             .map(|(_, v, _)| {
                 let mut w = vec![0u64; cw];
-                for j in 0..f {
-                    if v[j] & 1 == 1 {
-                        w[j / 64] |= 1 << (j % 64);
+                for &(j, e) in v {
+                    if e & 1 == 1 {
+                        w[j as usize / 64] |= 1 << (j as usize % 64);
                     }
                 }
                 w
@@ -423,8 +426,8 @@ impl Ledger {
             }
             let mut ex = vec![0u64; f];
             for &i in &members {
-                for (j, &e) in rels[i].1.iter().enumerate() {
-                    ex[j] += e as u64;
+                for &(j, e) in &rels[i].1 {
+                    ex[j as usize] += e as u64;
                 }
             }
             let mut y: Option<U256> = None;
@@ -629,9 +632,16 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
     let chk = gene(g, "check", 0.0) != 0.0; // ledger check: qs's acceptance test only
     let rs_on = g.get("confirm").and_then(|v| v.as_str()) == Some("resieve"); // root-matched confirmation
     let p0 = gene(g, "p0", 30.0) as i128;
-    let mut partials: std::collections::HashMap<i128, (i128, Vec<u32>)> =
+    let mut partials: std::collections::HashMap<i128, (i128, Vec<(u32, u32)>)> =
         std::collections::HashMap::new();
     let mut arr = vec![0i32; width];
+    // step 1 (NOTES.md, "Step 1: delete the fills"): one exponent vector per attempt, reused (F word); with
+    // re-sieve, the slot array (width) and the generation stamps (F) once per attempt
+    let mut ev = vec![0u32; f];
+    let mut slot = vec![usize::MAX; if rs_on { width } else { 0 }];
+    let mut stamp = vec![0u32; if rs_on { f } else { 0 }];
+    let mut gen = 0u32;
+    m.charge(crate::PH_WORD, (f + if rs_on { width + f } else { 0 }) as u64)?;
 
     let mut next_i = 0usize;
     crate::pt_end(m, 2, pt_pre);
@@ -759,15 +769,14 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
             let mut rec: Vec<Vec<usize>> = Vec::new();
             let mut direct: Vec<usize> = Vec::new();
             if rs_on {
-                let mut slot = vec![usize::MAX; width];
                 for (k, &i0) in cand.iter().enumerate() {
                     slot[i0] = k;
                 }
                 rec = vec![Vec::new(); cand.len()];
                 let (mut walk, mut nhit) = (0u64, 0u64);
-                let mut sieved_j = vec![false; f];
+                gen += 1;
                 for (p, rs, _, j) in &st {
-                    sieved_j[*j] = true;
+                    stamp[*j] = gen;
                     if *p < p0 {
                         continue;
                     }
@@ -794,10 +803,13 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                     }
                 }
                 m.charge(crate::PH_WORD, cand.len() as u64 + walk + nhit)?;
-                direct = (1..f).filter(|&j| (base[j] as i128) < p0 || !sieved_j[j]).collect();
-                // per-polynomial initialization: the slot array (width), the sieved flags' fill (F) and setting
-                // (|st|), the direct list's pass (F - 1), the record lists (|cand|)
-                m.charge(crate::PH_WORD, (width + 2 * f - 1 + st.len() + cand.len()) as u64)?;
+                for &i0 in &cand {
+                    slot[i0] = usize::MAX; // cleared after the walk, only the set slots
+                }
+                direct = (1..f).filter(|&j| (base[j] as i128) < p0 || stamp[j] != gen).collect();
+                // per polynomial: the slots cleared (|cand|), the generation stamps written (|st|), the direct
+                // list's pass (F - 1), the record lists (|cand|)
+                m.charge(crate::PH_WORD, (2 * cand.len() + st.len() + f - 1) as u64)?;
             }
             crate::pt_end(m, 6, pt);
             // 5. confirm
@@ -829,15 +841,17 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 };
                 m.charge(crate::PH_WORD, 1)?; // the sign check (audit 8)
                 m.charge(CONFIRM, if rs_on { plist.len() as u64 } else { f as u64 - 1 })?;
-                // the exponent vector's zero-fill, F word ops (NOTES.md, "Meter correction: exponent-vector and
-                // per-polynomial initializations")
-                m.charge(crate::PH_WORD, f as u64)?;
-                let mut vec_ = vec![0u32; f];
+                let mut tt: Vec<u32> = Vec::new(); // entries touched in the reused vector (step 1)
                 if v < 0 {
-                    vec_[0] = 1;
+                    ev[0] = 1;
+                    tt.push(0);
                     v = -v;
                 }
                 if v == 0 {
+                    m.charge(crate::PH_WORD, 2 * tt.len() as u64)?; // sets + clear
+                    for &j in &tt {
+                        ev[j as usize] = 0;
+                    }
                     m.test(false);
                     continue;
                 }
@@ -847,10 +861,11 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                     let p = base[j] as i128;
                     if v % p == 0 {
                         v /= p;
-                        vec_[j] += 1;
+                        ev[j] += 1;
+                        tt.push(j as u32);
                         while v % p == 0 {
                             v /= p;
-                            vec_[j] += 1;
+                            ev[j] += 1;
                             m.charge(CONFIRM, 1)?;
                         }
                     }
@@ -866,12 +881,27 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 }
                 m.test(smooth || partial);
                 if !(smooth || partial) {
+                    m.charge(crate::PH_WORD, 2 * tt.len() as u64)?; // sets + clear
+                    for &j in &tt {
+                        ev[j as usize] = 0;
+                    }
                     crate::pt_end(m, 8, pt);
                     continue;
                 }
                 let u = a * x + bv;
+                let nt = tt.len();
                 for &ql in qs_ {
-                    vec_[pos(ql)] += 1;
+                    // the A-primes (uncharged until item 15)
+                    let j = pos(ql);
+                    if ev[j] == 0 {
+                        tt.push(j as u32);
+                    }
+                    ev[j] += 1;
+                }
+                let vec_: Vec<(u32, u32)> = tt.iter().map(|&j| (j, ev[j as usize])).collect(); // the sparse relation
+                m.charge(crate::PH_WORD, (nt + 2 * tt.len()) as u64)?; // sets, the sparse copy, the clear
+                for &j in &tt {
+                    ev[j as usize] = 0;
                 }
                 if smooth {
                     if led.add(u, vec_, 1, chk, m)? {
@@ -895,8 +925,19 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                     .mul_mod(U256::from(u.rem_euclid(n_i) as u128), n)
                     .to::<u128>() as i128;
                 m.charge(LP, 1)?;
-                let cvec: Vec<u32> = v1.iter().zip(&vec_).map(|(a, b)| a + b).collect();
-                m.charge(crate::PH_WORD, f as u64)?; // vector add (audit 7)
+                // sparse combination through the clean vector (step 1)
+                let mut out: Vec<u32> = Vec::new();
+                for &(j, e) in v1.iter().chain(vec_.iter()) {
+                    if ev[j as usize] == 0 {
+                        out.push(j);
+                    }
+                    ev[j as usize] += e;
+                }
+                let cvec: Vec<(u32, u32)> = out.iter().map(|&j| (j, ev[j as usize])).collect();
+                for &j in &out {
+                    ev[j as usize] = 0;
+                }
+                m.charge(crate::PH_WORD, (v1.len() + vec_.len() + 2 * out.len()) as u64)?;
                 m.ev(crate::EV_LP_FULL, 1); // at["lp"]["combos"] += 1
                 if led.add(cu, cvec, v, chk, m)? {
                     return Ok(None);

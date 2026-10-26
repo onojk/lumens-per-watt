@@ -5653,3 +5653,120 @@ Time shares (new reference, 96): sieve 24%, confirm 29%, setup 24%, solve 8%, lp
   4. c absent or 0 identical to the pre-change build, 12,000 / 12,000;
   5. forced backtrack 1 / 1.
 - Parity passes with the stage-2 genomes: types 7,182 pairs, 0 mismatches; mutations 54 / 54.
+
+### Step 3: the hash price's size dependence — table sizes, and the benchmark protocol (written before the benchmark ran)
+
+**Table sizes** (`evolve/hashsize.py`, `hashsize.out`, `.json`). Python traces, new reference, qs alone, re-sieve off, 8–12 map numbers per size (two per band). The size is the one each hash op sees:
+- **large-prime table at lookup** (the order of hits and misses within an attempt is not traced; lookups are spread evenly over the growth): median / 90th pct / max **53 / 114 / 147 (54), 110 / 205 / 276 (72), 197 / 366 / 463 (84), 395 / 732 / 929 (96)**; final table median 95 / 224 / 406 / 812;
+- **ledger duplicate sets at probe:** median / 90th pct 11 / 26, 16 / 31, 25 / 47, 36 / 69.
+- These are small tables. The calibration's hashset benchmark (audit item 0 / 6) grew its set to ≤ 512 entries, between 96's median and 90th percentile. A large size effect is not expected from size alone. What differs is the value (a 24-byte Vec header pointing to the sparse list) and the cache state between ops.
+
+**Benchmark** (`opbench --hashsize`, new; HASH_SIZES = 53, 114, 110, 205, 197, 366, 395, 732, 512):
+- the large-prime table's op mix on HashMap<i128, (i128, Vec<(u32, u32)>)> (values of 12 sparse pairs): a lookup of a 24-bit key (about half present), an insert on a miss. The table is held near the size and rebuilt untimed when it has grown by an eighth;
+- three cache states: warm; L1-evicted (a 64 KB sweep between ops); L2-evicted (a 4 MB sweep). The sweep (and timer) cost is measured alone and subtracted. Best of 5 repeats per cell;
+- the run's own 84-bit ruint multiply chain gives the price ratio: price = ns per hash / ns per multiply.
+- **Decision state, fixed before measuring:** the bar (price > 1.5 × 0.3638 = 0.546 at 96's sizes) is applied to the **L1-evicted** state.
+  - Between two large-prime ops the card runs sieving and trial division over a few KB to tens of KB (L1-sized), not over megabytes, so the table is out of L1 but plausibly in L2.
+  - Warm and L2-evicted are reported as bounds. If L1-evicted clears the bar only at 96's 90th percentile, the banding is proposed, not adopted.
+- Pinned to one P-core (taskset -c 2), run once the parity job has finished.
+
+**I-022 (the user's numbering: multiplier selection by a tilted smooth-probability score) — DeepSeek, Oct 26, round 5** (recorded as given; no code change).
+- **Number clash, flagged:** IDEAS.md's I-022, added earlier today at the user's request, is "Sparse GF(2) rows from F ~ 1,000". This entry is the user's I-022 for the tilted multiplier score, which has no IDEAS row yet. The user decides the renumbering; nothing is renumbered here.
+- *Accepted by DeepSeek:* H1 right (k = 1 wins when the small-prime pattern is already near-optimal); H3's density reason wrong; H2's 12–30% matched all N but not the movers.
+- *I1:* DeepSeek says no QS implementation scores multipliers by smooth probability (unverified; the literature is to be checked before calling the idea new).
+  - Its Murphy-α comparison is off. Murphy α is an expected-log correction, the NFS analogue of the KS score, and the Murphy E-score's α-shifted ρ is the same linearization that under-predicted KS yield here. If the idea holds, it corrects that family too.
+- *I2:* the √k size penalty cannot explain measured > predicted (if anything it makes the prediction too high); fixed-count base effects are second order; the sample should grow to 30–50 movers before the ~2x is trusted.
+- **Sealed for the I-022 test (DeepSeek):**
+  - (a) the tilted score predicts the movers' yield ratio within ±15%; falsified if the mean error is > 15% or any size is > 20%; a slight under-prediction expected;
+  - (b) the tilted best k differs from the KS best k for 15–30% of N; falsified if < 10% or > 40%;
+  - (c) for those N the tilted choice yields +5–15% (leaning +5–10%); falsified if < 2% or > 25%.
+  - *The user's:* (a) yes; (b) 15–30%; (c) +5–15%.
+  - *Note (user's):* DeepSeek wrote the predictor as exp(d_tilted / ξ). The tilted log-probability difference is already the log yield ratio, so the test uses exp(d_tilted) directly.
+
+**I-022 (the user's numbering; IDEAS row I-023) — Wolfram test, Oct 26** (recorded as given; superseded in part by the correction two entries below).
+- *Setup:* 40 N per size, 160 N, 109 movers; the base includes the prime 2; the tilted score on the top-10 standard-KS multipliers plus k = 1.
+- *Movers' yield gain, KS-best against k = 1:* measured 2.07x pooled (1.78–2.34 by size).
+  - Standard KS logic predicted 1.40x (per-N mean log error +0.43); the tilted saddle-point score predicted 3.55x (−0.37).
+  - Measured log gain ~0.73, against 0.34 (standard) and 1.27 (tilted).
+- The tilted best k differed from the KS best k for 56 of 160 N (35%). On those N the tilted choice yielded 0.85x the KS choice's relations (0.80–0.90 by size), winning ~13 of 56; it had predicted 1.48x.
+- *Verdict as first given:* refuted as built; standard KS stays. "KS pays ~2x for movers, more than its score predicts" is robust, with no theory yet. No interpolated tilt is fitted (that would be tuning to this data).
+- *Optional diagnostic:* absolute predicted against measured relation counts at k = 1.
+- *Sealed scoring as first given:* (a) missed (the user's and DeepSeek's); (b) 35%, outside both 15–30% ranges (inside DeepSeek's 10–40% falsification bounds); (c) missed, −15% (the user's and DeepSeek's; DeepSeek's falsifier "< 2%" fired).
+
+**DeepSeek, Oct 26, round 6 (on the I-022 miss)** (recorded as given):
+- *J1:* points to the Gaussian width term as the k-dependent error, but the user's estimate already included it.
+  - It cites Lichtman–Pomerance (unverified): the saddle-point main term overestimates absolute smooth probability at small y. That does not by itself explain a k-dependent overshoot, since a uniform error cancels in ratios.
+- *J3:* its "Montgomery α" predictor, Σ (1 − r_p) log p / (p − 1) applied as a size shift inside ρ, is the standard KS-shift predictor already tested. With the exact ρ and the proper slope it should give ~1.5x, short of the measured 2.07x.
+- **Sealed (J4, for the k = 1 calibration check):**
+  - DeepSeek: tilted absolute count / measured, mean 1.15–1.45 (falsified if > 1.6 or < 0.8); the error larger for N ≡ 1 mod 8 (falsified if the gap is < 0.1 nat); an overestimate there, ratio > 1.3.
+  - The user's: within 1.5x on average; the error larger for N ≡ 1 mod 8.
+- Status as then given: the I-022 thread parked; standard KS stays.
+
+**Correction (Wolfram, Oct 26): k = 1 calibration and exact-ρ check — I-022 is UNTESTED, not refuted** (24 N per size; the base includes the prime 2).
+- Tilted absolute count / measured at k = 1: 1.12–1.38 by size. By class: 0.93–1.07 for N ≡ 5 and N ≡ 3, 7 mod 8, but 1.56–1.85 for N ≡ 1 mod 8.
+- **Bug found (the user's):** in the tilted estimate's 2-adic law for kN ≡ 1 mod 8, P(v = j) for j ≥ 3 was coded as 2^(2−j); the correct value is 2^(1−j). That class's probabilities summed to 1.5, overvaluing every multiplier that puts kN in the 1 mod 8 class.
+  - Affects the I-022 test (tilted predictions and choices) and this calibration.
+  - Does not affect the ω model or the α decomposition (no prime 2, or a generic 1/2^j law), or the ρ route (correct expected value 2).
+- **I-022 status: UNTESTED.** Its test is to be re-run with the fix. The "refuted as built" verdict above stands in the record as written, superseded here.
+- *Exact ρ* (the expected-log shift applied inside the exact Dickman ρ): movers' predicted ratio 1.40x (1.36–1.48) against measured 2.11x (5,431 / 2,578). The standard family cannot reach the measured gain. ρ over-predicts absolute counts by 10–33%.
+- *Sealed scoring (the user's):*
+  - DeepSeek's J4a held (1.12–1.38; 72 bits marginally under), J4b held, J4c held (1.56–1.85);
+  - the user's: within 1.5x held; the N ≡ 1 mod 8 error larger held; ρ under-predicting absolute counts missed; ρ movers ~1.5x held; tilted ~3.5x roughly held (3.03).
+  - DeepSeek's J4 reasoning pointed at the 2-adic factor for N ≡ 1 mod 8, which is where the bug was.
+
+**Sealed for the fixed I-022 (IDEAS I-023) re-run** (recorded before the re-run; seed 2029: the same 160 N, 109 movers, measured movers' ratio 2.07x):
+- *K1, the fixed tilted predicted movers' ratio:* DeepSeek central 2.00x, 1.85–2.15x, falsified if < 1.76 or > 2.38. The user's: within ±15% of 2.07x, central ~2.0x.
+- *K2, the share of N where the tilted best k differs from the KS best k:* DeepSeek 12–22%, central 16%, falsified if < 8% or > 28%. The user's: 10–20%.
+- *K3, where they differ, tilted's measured yield / KS's:* DeepSeek 1.00–1.12x, central 1.05x, falsified if < 0.95 or > 1.20. The user's: 1.00–1.10x.
+- *K4, k = 1 calibration for N ≡ 1 mod 8 after the fix:*
+  - DeepSeek: not in 0.9–1.1 at 54 / 72 / 84 (1.15–1.25); 96 maybe 1.00–1.10.
+  - The user's: in 0.9–1.1 at all sizes. The bug inflated the tilted 2-adic factor by ~1.74 at α ~ 0.65, not 1.5 (0.5 + 2.86 against 0.5 + 1.43), which matches the observed 1.56–1.85. That gives ~1.02 / 1.03 / 1.06 / 0.90 after the fix.
+
+### Step 1: fills deleted — results (`evolve/s1_accept.py`, `s1_accept.out`, `.json`; `cfrac_accept_s1.out`; `parity_s1.out`; `omega_model.py`, `omega_model.out`, `.json`)
+
+- *Acceptance:*
+  1. against the pre-step build (8207851), only word (and ops) change, by the same amount: 12,000 / 12,000;
+  2. the word change equals the formula from the trace, and Python = Rust per type: 48 / 48;
+  3. cfrac_accept passes, with its formula for the sparse copy and the row build;
+  4. parity passes (types 7,182 pairs, 0 mismatches; mutations 54 / 54).
+  - The first trial run tripped on a name clash in qs.py (`T`, the sieve threshold, reused for the touched list); it was renamed before any result.
+  - stage7_accept.py and earlystop.py were updated to read sparse relations. ledger_accept.py builds its own dense vectors and is unchanged.
+- *Cost per number, ruint* (official and Montgomery in `s1_accept.out`):
+
+| size | off: c13019b → step 1 | on (p0 200): c13019b → step 1 | on against off after step 1 |
+|---|---|---|---|
+| 54 | 2,407.1 → **2,377.2** (−1.2%) | 2,595.5 → **2,447.5** (−5.7%) | +3.0% |
+| 72 | 9,184.4 → **8,791.6** (−4.3%) | 9,274.4 → **8,131.4** (−12.3%) | **−7.5%** |
+| 84 | 23,828.1 → **22,530.6** (−5.4%) | 23,828.4 → **19,952.8** (−16.3%) | **−11.4%** |
+| 96 | 61,757.5 → **58,824.2** (−4.7%) | 66,717.0 → **54,801.8** (−17.9%) | **−6.8%** |
+
+- How much of the c13019b rise is left (ruint, against b45b574, before c13019b):
+  - off: 79% / 42% / 26% / 20% of the rise left (+4.9 / +3.4 / +2.0 / +1.25% over b45b574);
+  - on: 51% / 30% / 19% / 14% left (+6.6 / +6.3 / +4.8 / +3.6%).
+  - The remainder is real work now charged: the touched-entry sets, copies and clears, the sparse combination, the row build, the direct-list pass and the record lists.
+- **Scored:**
+  - **(P1, the user's)** re-sieve at p0 200 cheaper than the full pass at 84 and 96 (ruint), by ≥ 5% at 96: **held** (−11.4%, −6.8%).
+  - **(D-P1, DeepSeek's)** cheaper at 84 and 96, saving at 96 3–7%: **held** (6.8%).
+  - **(P2, the user's)** the step cuts the c13019b rise by ≥ 70% with re-sieve on, and leaves ≤ 2% with it off: **missed.**
+    - On: cuts of 49 / 70.2 / 81 / 86%, so 54 is short.
+    - Off: +4.9 / +3.4 / +2.03 / +1.25% left over b45b574, so 54, 72 and (marginally) 84 exceed 2%.
+  - *My cost model:*
+    - "the rise without re-sieve shrinks 50–85% at 72–96 and 0–40% at 54": **held** (58 / 74 / 80%; 21%);
+    - "with re-sieve about 80–90% at 72–96": **missed at 72** (70%), held at 84–96.
+- **The addendum's statistics** (new reference, 6 numbers per size, KS on):
+
+| size | touched per candidate | per kept relation | per full relation, incl. A-primes | per full relation, excl. A-primes (distinct primes of \|v\| + sign) | \|cand\| / width, median (90th pct) | u median (candidates) |
+|---|---|---|---|---|---|---|
+| 54 | 5.80 | 8.90 | 9.92 | 7.03 | 4.43% (7.64%) | 4.11 |
+| 72 | 6.08 | 10.30 | 11.47 | 7.65 | 1.31% (2.47%) | 4.64 |
+| 84 | 7.16 | 11.40 | 12.62 | 8.70 | 0.72% (1.31%) | 4.97 |
+| 96 | 7.57 | 11.58 | 13.10 | 9.16 | 0.19% (0.42%) | 5.28 |
+
+- **Flag (the user's 4–10 rule):** per kept and per full relation are outside 4–10 at 72–96. That is because the card's relation includes the A-primes' entries (s = 4 at 72–96, 3 at 54). Without them, a full relation touches 7.0–9.2 entries, inside the band and close to Wolfram's 6.9–8.0 (plain QS, no multiplier). Per candidate it is 5.8–7.6, inside the band.
+- u (log |v| / log p_max, median over candidates) is 4.11 / 4.64 / 4.97 / 5.28, against Wolfram's mid-F 4.35 / 4.65 / 4.96 / 5.10: the same narrow band.
+- |cand| / width runs from 4.4% (54) down to 0.19% (96).
+- **omega_model.py (optional cross-check; the tilted saddle-point model on the card's full relations, KS on):** measured distinct primes of |v| against the model 6.35 / 6.18, 6.93 / 6.78, 7.96 / 7.92, 8.49 / 8.41 (mean miss +0.03 to +0.17); median α 0.61–0.63; per-relation R² 0.11–0.25.
+  - With the sign (0.67–0.74) and the A-primes (3 or 4), the touched entries per full relation are measured 10.03 / 11.66 / 12.70 / 13.17 against the model's 9.86 / 11.50 / 12.67 / 13.08. That adds the A-primes as if disjoint from |v|'s primes, so it is an upper bound. s1_accept's exact union is 9.92 / 11.47 / 12.62 / 13.10.
+- **Touched-entry predictions, scored post hoc** (the measurement existed before G4 was recorded; see above):
+  - **(G4, DeepSeek's)** 7.3–7.6 / 7.6–7.9 / 7.9–8.2 at 72 / 84 / 96, falsified if > 8.5 at 96: **falsified** on either definition (with the A-primes 13.10 at 96; without them 9.16).
+  - **(the user's 7.5–9.0 at each size):** with the A-primes, **missed at every size**. Without them: held at 72 and 84 (7.65, 8.70), missed at 54 (7.03) and 96 (9.16).

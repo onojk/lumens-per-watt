@@ -69,7 +69,7 @@ class Ledger:
     def __init__(self, N, k, B, ch, at=None):
         self.N, self.k, self.kN, self.B = N, k, k * N, B
         self.ch, self.at = ch, at
-        self.rels = []                             # (u, vec, y): u^2 = y^2 prod p^e (mod N)
+        self.rels = []                             # (u, sparse [(j, e)], y): u^2 = y^2 prod p_j^e (mod N)
         self.seen, self.seen_c = set(), set()      # full |u|'s; combined u's up to sign
 
     def build_base(self):
@@ -109,7 +109,7 @@ class Ledger:
         square-and-multiply per factor, 1 op per multiply joining it after the first."""
         ch, N, base = self.ch, self.N, self.base
         r = None
-        factors = [(base[j], vec[j] // 2 if half else vec[j]) for j in range(1, self.F) if vec[j]]
+        factors = [(base[j], e // 2 if half else e) for j, e in vec if j >= 1]
         if y != 1:
             factors.append((y, 1 if half else 2))
         for b, e in factors:
@@ -125,13 +125,13 @@ class Ledger:
         ch, N = self.ch, self.N
         lhs, _ = ch.cpow(u, 2, N, "check")
         rhs = self._product(vec, y, False)
-        if vec[0] & 1:
+        if any(j == 0 and e & 1 for j, e in vec):
             rhs = (N - rhs) % N; ch.charge("check", 1)
         ch.charge("check", 1)                      # compare
         if lhs != rhs:
             return False
         ch.charge("check", -(-self.F // 64))       # parity scan
-        if any(e & 1 for e in vec):
+        if any(e & 1 for _, e in vec):
             return True
         Y = self._product(vec, y, True)            # all even: a one-row dependency
         ch.charge("check", 2)                      # u = Y, u = N - Y
@@ -171,7 +171,11 @@ class Ledger:
         ch.charge("la", -(-rows * F * rows // 64))
         if at is not None:
             at["rows"] = rows
-        mat = [sum(1 << j for j in range(F) if vec[j] & 1) for _, vec, _ in rels]
+        # GF(2) rows (bit-packed) built from the sparse relations, 1 word per entry (step 1)
+        nnz = sum(len(vec) for _, vec, _ in rels); ch.charge("word", nnz)
+        if at is not None:
+            at["s1_bits"] = at.get("s1_bits", 0) + nnz
+        mat = [sum(1 << j for j, e in vec if e & 1) for _, vec, _ in rels]
         comb = [1 << i for i in range(rows)]
         used = [False] * rows
         for col in range(F):
@@ -196,7 +200,7 @@ class Ledger:
                     X = rels[i][0] % N
             ex = [0] * F
             for i in members:
-                for j, e in enumerate(rels[i][1]):
+                for j, e in rels[i][1]:
                     ex[j] += e
             Y, hs = None, []
             for j in range(1, F):

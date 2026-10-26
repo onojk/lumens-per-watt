@@ -43,9 +43,9 @@ def replay(N, k, base):
     """(cf_step ops, cf_td ops, residues, rows, smooth relations offered to the ledger) for one attempt."""
     kN, F = k * N, len(base)
     g = math.isqrt(kN)
-    step, td, residues, seen, rows, offers = kN.bit_length(), 0, [], set(), 0, 0
+    step, td, residues, seen, rows, offers, tsum = kN.bit_length(), 0, [], set(), 0, 0, 0
     if g * g == kN:
-        return step, td, residues, rows, offers
+        return step, td, residues, rows, (offers, tsum)
     # the convergent recurrence written out again: x_i = (sqrt(kN) + P_i) / Q_i
     Ps, Qs, As = [0], [1], [g % N]
     Qm1, Am1 = kN, 1
@@ -57,21 +57,24 @@ def replay(N, k, base):
         assert Q == (Qs[i - 1] if i else Qm1) + a * (Ps[i] - P)
         step += 4
         if Q == 1:
-            return step, td, residues, rows, offers
+            return step, td, residues, rows, (offers, tsum)
         residues.append(Q)
         td += F
         v, smooth = Q, True
+        touched = (i + 1) & 1                      # the sign entry, then each dividing prime (step 1)
         for p in base[1:]:
             e = 0
             while v % p == 0:
                 v //= p; e += 1
             td += max(0, e - 1)
+            touched += e > 0
         u = As[i]
         offers += v == 1                           # each smooth residue: 1 hash + 1 word (duplicate check)
+        tsum += (v == 1) * touched                 # and |T| word for its sparse copy (step 1)
         if v == 1 and u not in seen:
             seen.add(u); rows += 1
             if rows >= F + ledger.DELTA:
-                return step, td, residues, rows, offers
+                return step, td, residues, rows, (offers, tsum)
         a1 = (g + P) // Q
         As.append((a1 * As[i] + (As[i - 1] if i else Am1)) % N)
         Ps.append(P); Qs.append(Q)
@@ -89,7 +92,9 @@ def check(N, tr):
         base = base_of(N, at["k"])
         assert len(base) == at["F"], "factor base rebuilt differently"
         s, t, res, rows, offers = replay(N, at["k"], base)
-        f["cf_step"] += s; f["cf_td"] += t; f["hash"] += offers; f["word"] += offers
+        f["cf_step"] += s; f["cf_td"] += t; f["hash"] += offers[0]; f["word"] += offers[0] + offers[1]
+        if at["rows"]:
+            f["word"] += sum(len(vec) for _, vec, _ in at["rels"])   # GF(2) rows built from the sparse relations
         residues_ok &= res == at["residues"]
         if at["rows"]:
             f["la"] += -(-at["rows"] * at["F"] * at["rows"] // 64)
@@ -101,9 +106,8 @@ def check(N, tr):
         for u, vec, y in at["rels"]:
             rels += 1
             rhs = y * y % N
-            for j, e in enumerate(vec):
-                if e:
-                    rhs = rhs * pow(base[j] % N, e, N) % N
+            for j, e in vec:                       # sparse (step 1)
+                rhs = rhs * pow(base[j] % N, e, N) % N
             bad_rel += u * u % N != rhs
     measured = {ph: tr["ops"].get(ph, 0) for ph in PHASES}
     return dict(measured=measured, formula=f, exact=measured == f and residues_ok,
