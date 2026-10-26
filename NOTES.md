@@ -4942,3 +4942,19 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
   - B2 / B1 at 96 lengthened slightly (plain 10 → 15; paired uniform 15 → 20) as ECM's role shrank. So the B2-against-qs-cost rule holds with the other lamps fixed, not when they trade off.
 - *Correction:* Claude chat's "near break-even at 96 with the new qs" estimate was too pessimistic. ECM keeps 0.6–3.6% in the stage-2 arms and drops only in paired-uniform.
 - Scoring stays on the run as sealed (old qs costs); this is a sensitivity record. Under it, Grok's A2 paired arm would hold on priors (2 of 3) and partly on gain (1.3% just under its 1.5% floor, 2.1% inside); its plain arm still fails.
+
+**DeepSeek's reply (Oct 26, eighth), with Claude chat's review** (labelled as DeepSeek's).
+- **(1) Rho's detection overhead:** it agrees that the gcd batch of 64 explains about 32 steps of the 552-against-279 excess, and Brent's power-of-two blocks the rest.
+  - It says the card already uses Brent's factoring variant (comparing only in the second half of each block). Unverified when written; answered below from the code.
+  - Its proposed fix (an extra early check at a quarter of each block, "almost free") is not costed correctly: in rho for factoring, each comparison is one multiply into the running product. Its 1.6–1.8x estimate is unmeasured.
+  - Teske's r-adding walk: agreed, not for factoring at 64–128-bit moduli.
+- **(2)** Keeping a small rho (2^8) as a "blind-spot probe" for coverage: not adopted.
+- **(3) ECM:** Edwards curves or a better stage-1 chain might save 10–30% per curve; not enough to change the 96-bit picture.
+
+**Principle (Claude chat; recorded so it is not re-argued): small lamps are judged on expected cost only.** qs always finishes, so no number or band is ever left dark: td, rho, p-1 and ECM never decide whether a number is factored, only how cheaply. "Coverage" or "insurance" arguments for keeping a lamp do not apply. The per-band gate guards against any band getting dearer when a lamp is dropped (I-016's sealed prediction 3).
+
+**Information step: the card's rho comparison rule and gcd batch** (from the code: lamps.py `lamp_rho`, its lampcore twin; input to I-019).
+- **Yes, it is Brent's factoring variant.** For each block length r = 1, 2, 4, …: save x = y, advance y r steps **with no comparison** (1 multiply per step for x² + c), then take r more steps in which each step multiplies |x − y| into the running product q (one more multiply per step).
+- A gcd(q, N) is taken every **b** compared steps; b is a gene, **64** in the pipelines' rho card (`P.PRE["rho"]`). r doubles after each block.
+- If a gcd returns N, it backtracks from the batch's start (`ys`), one step and one gcd at a time.
+- So comparisons happen only in the second half of each 2r-step window, as DeepSeek said. This matches the measured split: 44% of f evaluations carry a product, and Brent with b = 1 already needs 515 evaluations against μ + λ = 279.
