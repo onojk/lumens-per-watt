@@ -2730,8 +2730,8 @@ Mine: Track R 5 held, 2 missed. Track M 0 held, 6 missed.
 - Track M's B is 2^10–2^13, one octave above Track R's at the same size.
 - The per-B profiles are shallow near the optimum. At 84, Track R's best at 2^10 is 0.5797 against 0.5794 at 2^11; at 96, Track M's 2^12 is 0.3514 against 0.3496 at 2^13. Map-only, the chosen B is uncertain by about an octave.
 - **Per-pricing joint optima** (each track's genes, with p-1 against without):
-  - official: p-1 on at every size, with B 2^10 / 2^11 / 2^12 / 2^14 at 54 / 72 / 84 / 96. Official's ECM budget (60,097–2,719,670) solves every number, so qs genes do not matter and both tracks give the same optimum. Gain 2.8–16.5%.
-  - ruint: p-1 on at every size, B 2^8 / 2^9 / 2^10 / 2^12, ECM off; gain 2.7–5.4%.
+  - official: p-1 on at every size, with B 2^10 / 2^11 / 2^12 / 2^14 at 54 / 72 / 84 / 96. Official's ECM budget (60,097–2,719,670) solves every number, so qs genes do not matter and both tracks give the same optimum. Gain 1.9–11.7%.
+  - ruint: p-1 on at every size, B 2^8 / 2^9 / 2^10 / 2^12, ECM off; gain 2.6–5.5%.
   - Montgomery (Track R's genes): p-1 on at every size, B 2^10 / 2^11 / 2^12 / 2^13; gain 3.9–13.8%.
 - **Caveats.** In-sample on the map: nine B options per cell are chosen on the same numbers that score them. No gate was run. Sealed scoring comes with step 2 (the kc / lc round), which tunes in these p-1-inclusive budgets.
 
