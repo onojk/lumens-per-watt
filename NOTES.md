@@ -6904,3 +6904,34 @@ Each cell gives ratio A / ratio B, with the materiality (time share × (ratio_B 
   - Official and wall-clock disagree: official +4.3%; wall-clock +9.8% against the reference (2,095.6 against 1,909.2 µs), +4.3% against re-sieve on at the reference F.
   - In wall-clock, re-sieve itself costs more than it saves at 96 on this card (+5.2% at the reference F): re-sieve's walk (331–358 µs) exceeds confirm's saving (539 → 286 µs) plus nothing elsewhere.
   - The priced and wall-clock answers point in opposite directions, so **the meter's prices for re-sieve's word ops and confirm's divisions are what decide this cell.** Stage C shows confirm with re-sieve at ~2.6–2.7x the calibrated multiply per priced unit.
+
+## Stage F: step 6, the yield model against the card (read-only; `evolve/yieldmodel.py`, `stagef.py`, `stagef.out`, `.json`)
+
+- *Port:* the tilted saddle-point model exactly as recorded (the morning entry A.3), per residue size: bisection for α, local factors Z_p with root counts (2; 1 for p | k and for A's primes), the 2-adic law by kN mod 8, the normalizing Σ_{p ≤ p_max} −log(1 − 1/p), the Gaussian width term, capped at 0. Partials by the t-integral; λ_q = (2 / q) Σ_x P_smooth(ln|g(x)| − ln q) per eligible prime.
+  - *Sanity check against Dickman ρ* (plain integers, y = 1,000; u = 2 / 3 / 4): the model gives 0.910 / 0.883 / 0.875 of ρ(u). With an extra 1/α factor it would give 1.12–1.32, so the formula is kept as recorded.
+- *Inputs:* the card's own polynomials (stage B's 8 map numbers per size: every polynomial's A, B, C, its base and root counts, L).
+  - **Capture is stage B's measured threshold-pass rate** (fulls overall; partials by log2(q/B) band), not a fit.
+  - Combinations: Poisson per eligible q (x − 1 + e^−x); never-combined: Σ x e^−x / Σ x.
+  - Polynomials to completion: solve P · fulls captured + combinations(P) = F + 10 (the card's DELTA).
+
+| quantity (means over 8 numbers) | 84: model / card | 96: model / card |
+|---|---|---|
+| true fulls per polynomial | 0.912 / 0.776 | 0.620 / 0.515 |
+| true partials per polynomial | 11.76 / 10.62 | 19.80 / 17.13 |
+| captured fulls per polynomial | 0.894 / 0.750 | 0.603 / 0.495 |
+| captured partials per polynomial | 6.35 / 5.73 | 6.33 / 5.41 |
+| combinations at the card's own polynomials | 47.7 / 47.2 | 73.4 / 69.5 |
+| never-combined share | 0.797 / 0.788 | 0.852 / 0.853 |
+| polynomials to completion | 72.4 / 73.0 | 150.9 / 160.6 |
+| L/B 12, slack kept: polynomials | +5.6% / +5.9% (map, step 7) | +5.5% / +7.0% |
+| L/B 12: stored partials | −51.2% / −49.9% | −65.3% / −66.2% |
+| L/B 12: combinations | −6.8% / −6.4% | −6.2% / −6.4% |
+
+- **Reading:** with the measured capture as input, the model reproduces the card's completion behaviour closely: combinations within 1–6%, the never-combined share within 0.01, polynomials to completion −1% / −6%, and the L/B 12 effects within ~1.5 points.
+  - The model over-predicts the raw true counts on the card's polynomials (fulls +18–20%, partials +11–16%). In completion the two over-predictions partly offset: a higher full rate needs fewer polynomials, which compensates for the higher λ_q.
+  - The light meter (I-023) works as a forecast of the card once the card's threshold capture is known. The threshold capture itself is what the model does not contain.
+- **(M3, sealed: the card's fulls / the model's fulls per polynomial)**, scored on the ratio of means per polynomial (the per-polynomial median is ill-defined with ~0.5 fulls per polynomial; stated as a deviation). The ratio is **0.851 at 84 and 0.831 at 96** (72 not measured).
+  - DeepSeek's 0.88–1.00 (84) / 0.90–1.00 (96): **missed at both**; falsified at 96 (< 0.86), not at 84 (≥ 0.84).
+  - The user's 0.85–1.00: **held at 84** (0.851, at the edge), **missed at 96**.
+- *Not computed here (open):* N2 and S3 (CV across N of polynomials to completion) need ≥ 20 N per size, and these are 8; inconclusive, not run. R-E1 / R-E2 (e_F, e_M at the card's point) are not computed. Step 6d's measured combinations against the Poisson prediction is the row above. 6c and 6e–6g remain.
+- *Parity with qs.py's trace-only TRACE_ARR (stage B) in place:* passes (types 7,182 pairs, 0 mismatches; mutations 54 / 54; `parity_traceflag.out`). The flag is inert by default.

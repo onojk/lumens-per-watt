@@ -1,0 +1,12 @@
+
+84 bits (8 numbers):
+  true per polynomial: fulls model 0.912 / card 0.776; partials model 11.76 / card 10.62
+  captured per polynomial: fulls model 0.894 / card 0.750; partials model 6.35 / card 5.73
+  at the card's own polynomials: combinations model 47.7 / card 47.2; partials looked up model 434; never-combined model 0.797 / card 0.788
+  polynomials to completion: model 72.4 / card 73.0; L/B 12 (slack kept): model polynomials +5.6%, stored partials -51.2%, combinations -6.8%
+
+96 bits (8 numbers):
+  true per polynomial: fulls model 0.620 / card 0.515; partials model 19.80 / card 17.13
+  captured per polynomial: fulls model 0.603 / card 0.495; partials model 6.33 / card 5.41
+  at the card's own polynomials: combinations model 73.4 / card 69.5; partials looked up model 904; never-combined model 0.852 / card 0.853
+  polynomials to completion: model 150.9 / card 160.6; L/B 12 (slack kept): model polynomials +5.5%, stored partials -65.3%, combinations -6.2%
