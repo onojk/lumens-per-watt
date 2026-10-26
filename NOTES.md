@@ -6266,3 +6266,31 @@ The estimate is unchanged in scale: about 0.1–0.15% of qs's cost at 96 and a f
 - *Shares at 96* (re-sieve off; of the inflated lp_ledger): lp:copy 35.5%, lp:hash 12.4%, lp:comb 4.0%, lp:add 2.5%; the rest (bound check, N mod q, the test, the loop, the nested timers' own cost) ~46%.
   - Per call: lp:copy ~100 ns for ~25 ns priced (the heap allocation of each kept relation's sparse list dominates); lp:hash ~38 ns per call, ~54 ns per priced unit.
 - **These shares are approximate (timer-inflated) and are used for ranking only. Any fix is judged by a before / after run without the sub-timers, as in step 1b.**
+
+**DeepSeek, Oct 26, round 31 (I-028 / I-027; recorded as given)**. It changes step 7 only in the lc values for 7c and one extra read-only check in 7a.
+- *Parameter correction annotated:* DeepSeek will use only the card's F, M, L/B and reference costs. U3 (84 held, 96 missed) and V3 (held, on the card's actual M) are acknowledged, with no rescore.
+- **Sealed (DeepSeek's; the card at 96 bits, L/B = 12 against the reference, the same numbers, all else fixed):**
+  - *R-L1, polynomials to completion:* +3% to +14% (central +8%). Falsified if ≤ 0% or ≥ +18%.
+  - *R-L2, stored partials per number:* −60% to −80% (central −70%). Falsified if the reduction is < 45% or > 90%.
+  - *R-L3, priced qs ruint per number, mean:* −4% to +10% (central +3%). Falsified if < −8% or > +15%.
+  - *R-L4, wall-clock per number:* total −5% to −18% (central −10%); lp_ledger −45% to −80% (central −65%). Falsified if the total is ≥ 0% or ≤ −25%, or if the lp_ledger reduction is < 35% or > 90%.
+  - It expects its sealed X3 (62–86%) to miss high without triggering its > 95% falsifier. X3 stands as sealed.
+- *Errors noted (the reviewer's):*
+  - It used B = 1,993 at 96 and 1,171 at 84 (not given; invented). The card's B is 1,841 / 1,151. Use lc = 1 + ln 12 / ln B with the card's B: **1.3305 at 96, 1.3526 at 84.**
+  - Its R-L2 estimate scales partials like ln(L/B). The measured growth is ~22–25% per doubling (~L^0.3), which gives ~−75% to −79% for 1,511 → 12 (an extrapolation past Wolfram's 16–512). The sealed range still covers it; only the reasoning is wrong.
+  - "lp_ledger's wall-clock share above its priced share" is already known (the step-5 materiality failure). It shows that mispricing exists, not that it set the gene.
+- *Separators adopted for drift against mispricing (read-only, step 7a):*
+  - lc's trajectory at 96 across generations, and its correlation with priced fitness;
+  - a controlled down-mutation of lc (a priced penalty means mispricing, flat means drift; this is R-L3's sign);
+  - the reviewer's addition: lc is 1.64–1.74 at 54–84 and 1.974 only at 96. Report whether earlier 96-bit generations sat near ~1.7, and whether lc moved in steps without priced-fitness gains (drift) or rose steadily with them (mispricing).
+- *e_F, e_M at the card's operating point:* DeepSeek expects e_F "modestly lower" than 0.45 and e_M "more materially lower" than 0.71 (direction only, no derivation).
+  - The reviewer: theory points the other way for e_F.
+    - The card's smaller p_max (ln 7.52 against ~8.6) raises ξ(u) u c / ln p_max by ~15%.
+    - u is about the same (~5.3 against ~5.0; the smaller M offsets the smaller p_max).
+    - F / (F + 12) = 0.91 against 0.97 subtracts less.
+  - e_M ~ 1 − ξ / ln p_max ~ 0.67: lower, but only slightly. So the M rule's target moves from ~41% to ~49%, and the card's 29% still points to a lower M.
+- **Sealed (the reviewer's; the model at the card's F and M, 96 bits, KS on; scored in step 6c):**
+  - *R-E1, e_F (all usable):* 0.48–0.70 (above 0.45).
+  - *R-E2, e_M:* 0.63–0.70.
+- *V1 at L ~1,511 B:* the closed form still applies with measured inputs. κ_eff should be at or slightly above 1.87 (x → 0 gives 2), not reused blindly; recompute κ_eff from the card's x = P λ_q in step 6.
+  - The reviewer: the effect is probably small (the extra high-q partials have tiny x and add little to Comb).
