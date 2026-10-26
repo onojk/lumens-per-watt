@@ -3401,3 +3401,12 @@ The final Track R genes run as qs alone on the corrected card with kset = sf32. 
   - Track M winners cannot change: each is one Montgomery ratio over a fixed per-size reference, so the ordering is unchanged.
   - Track R winners can change, because the robust max weighs each pricing by its reference cost. The per-band gates change too.
   - *Task:* with the new reference, re-run winner selection and gates for the last sealed round (the kc / lc round, 9420000), on the lampcore build before the ECM change (kset included, saved), and report any change. PD values stand only where the winners are unchanged.
+
+**Grok, before any small-prime-variation or ECM-addition result** (labelled as Grok's; recorded Oct 25).
+- *Timing disclosure:* when this arrived, the ECM-addition code was being written (uncommitted, not yet built or run), and the reference re-selection (`reselect.py`) was running with none of its output read. No small-prime code exists.
+- **(G-spv)** Small-prime variation at 84–96 bits: official cutoff 20, gain 4–9%; ruint cutoff 30, gain 8–15%; Montgomery cutoff 20–25, gain 6–12%.
+  - *Notes beside it:* (a) Grok says the slack should be REDUCED by 0.15–0.40. But skipping small primes lowers the sieve estimate, so the slack must rise (~+0.5 in the user's Mathematica threshold run). The cutoff and gain clauses are scored; the slack clause is recorded as direction-wrong. (b) This predicts that ruint gains most and official least, the opposite of DeepSeek's D-spv (official 18–28%, ruint 3–8%). The measured ceilings (22–40% official, 6–25% calibrated) favour DeepSeek's direction; the result will report which holds.
+- **(G-reref)** Re-selecting winners under the new per-size reference: no Track R winner changes at 84–96, and at most a swap among near-ties at 54–72.
+- **(G-ecmadd)** Charging ECM additions: Track M's ECM cost rises 12–18%; budgets possibly one step lower at 84–96, unlikely at 54–72; PD_M up 0.05–0.12.
+  - *Notes beside it:* the user's arithmetic note (4 additions × 0.125 on ~10 multiplies ≈ +5% Montgomery, +1.4% ruint) assumes 4 per step. The counted sites are 10 per ladder step (4 per xDBL + 6 per xADD) beside 11 multiplies, which gives ≈ +11% Montgomery and +3% ruint on stage 1.
+  - Track R has no ECM at 72–96, so a costlier Track M lowers PD_M (Montgomery cost of R / Montgomery cost of M). Both outside reviewers predicted that PD_M rises; the direction is recorded.
