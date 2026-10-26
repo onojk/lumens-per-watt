@@ -2854,3 +2854,5 @@ Mine: Track R 5 held, 2 missed. Track M 0 held, 6 missed.
 - This is consistent with the hypothesis but does not test it. A test would re-solve 84 with an s = 3 genome, or 72 with an s = 4 genome. Step 2's re-solve reports the s of the new genomes beside the budgets.
 
 **Reporting rule (adopted from Grok, Oct 25).** Every cross-pricing table carries the gate status on the same row as PD_M and PD_R. Examples: "M: conditional on a fast multiply"; "M: passes ruint gate against qs alone; 1.5x Track R under ruint".
+
+**pm1 stage 2 (information, Oct 25).** The pm1 card has **no stage 2**: it runs stage 1 to the bound B (one modular exponentiation per prime power, charged bit_length(p^e)), then takes one gcd, with no B2 bound like the ECM card's b2. A MOVES row "pm1 stage 2 (B2 = c x B)" is added, untested, with the user's outside estimate: for 32-bit factors at B = 1024, the catch rate rises from 3.8% to 22.8% with B2 = 50B (Mathematica, 3,000 primes; stage-2 cost not included, roughly 3x stage 1). The running round is unchanged.
