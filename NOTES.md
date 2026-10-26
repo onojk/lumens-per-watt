@@ -4682,3 +4682,49 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
   - *Claude chat:* not adopted. Track R's worst-of-three is over price tables, not hard instances, and rho and p-1 are both generic multiplies, so it buys no pricing insurance. The blind spot it names (p in about 2^12–2^18 with a non-smooth p − 1) is real but already priced by the DP. Whether rho pays in some band is left to the evolver and the per-band gate.
 - **(4) Suyama's torsion 12** (Dickman on p/12) is adequate as a scheduler input. The 96-bit ECM gain is reported as conditional on it, and the GMP-ECM check (I-014) measures the error. Its claim that the true torsion-16 advantage over torsion 12 is only ~1.018 is recorded, unverified.
 - *Effect on I-016's sealed 4–5.5%:* two adjustments pull opposite ways: 2 multiplies per prime (down) and a p-1 smoothness c ≈ 3.4 (up). A rerun with both, plus the B2 / B1 sweep, sets the number to seal.
+
+## 2026-10-26 — Audit re-typing, items 0–8: cost model (before code; a pricing correction, op counts unchanged)
+
+**Rule** (user's decision; prices from "Word-price calibration and the audit ops"): each charge is re-typed by what it physically is. An op above 3x the clean sieve update gets its own type at its measured price; the rest take the word price.
+- *New types:* **hash** (one hash-set probe-and-insert call: ruint 0.3638 / Montgomery 1.3427), **sort_cmp** (one comparison inside a sort: 0.1169 / 0.4315), **f64_log** (a floating log of a ratio: 0.1063 / 0.3923), **f64_div** (a floating divide: 0.1900 / 0.7011).
+- word: 0.0258 / 0.0951. Official stays 1 per op, so **official cost and every op count are unchanged.**
+
+**Charge sites** (qs.py / qs.rs, and ledger.py / qs.rs Ledger; each keeps its count):
+
+| item | site | old type | new type |
+|---|---|---|---|
+| 1 | on-demand: prefix-overlap check, (s − 1) × \|used\| per prefix | setup_small | word |
+| 1 | on-demand: t′ = target / A′, 1 per prefix | setup_full | f64_div |
+| 1 | on-demand: closeness scan, \|rest\| per last-prime pick (each computes \|log(p / t′)\|) | setup_small | f64_log |
+| 1 | on-demand: target check \|log₂(A / target)\| ≤ 0.25, 1 per candidate | setup_full | f64_log |
+| 1 | on-demand: overlap compare against used A's, s × \|used\| per key | setup_small | word |
+| 2 | multiplier ranking sort, sort_cost(kc) (sort_charge) | mult | sort_cmp |
+| 2 | pool selection: \|pool_all\| keys (each \|log(p / q)\|) | setup_small | f64_log |
+| 2 | pool selection: sort_cost(\|pool_all\|) + sort_cost(P) comparisons | setup_small | sort_cmp |
+| 2 | on-demand key sort, sort_cost(s) per key (sort_charge) | setup_small | sort_cmp |
+| 2 | enumerate candidate sort: \|combos\| keys (each a log) and sort_cost(\|combos\|) (sort_charge) | setup_small | f64_log / sort_cmp |
+| 3 | on-demand A′ = product of the prefix, s − 2 per prefix | setup_full | word |
+| 3 | on-demand A = A′ · last, 1 per candidate | setup_full | word |
+| 3 | enumerate: forming each A, (s − 1) × \|combos\| | setup_full | word |
+| 4 | A / q, 1 per prime of A | setup_full | setup_small (a division by the small prime q) |
+| 4 | B_l = (A / q) · γ, 1 per prime of A | setup_full | word |
+| 5 | v = (A x + 2B) x + C, 2 per candidate | confirm_full | word |
+| 6 | large primes: bound check v < L, 1 per cofactor | lp_small | word |
+| 6 | large primes: table lookup, 1 per partial; insert, 1 per new q (two separate hash-map calls) | lp_small | hash, hash |
+| 7 | large primes: F-entry exponent-vector add, F per combination | lp_small | word |
+| 8 | sign check, 1 per candidate (inside the full pass's F, or re-sieve's "1 +") | confirm_td | word |
+| 0 | ledger duplicate check: of its 2 ops (full) / 3 (combined), the first | word | hash (the rest stay word) |
+
+- **Unchanged** (they really reduce modulo a small prime, or multiply mod N): KS scores, the factor base, γ = t · inv mod q, the Euclid inverses, the per-A roots and 2 B_l A⁻¹ mod p, trial divisions and repeats, N mod q, the u₁u₂ mod N combination, the square root and the gcds.
+- **After the re-typing nothing is typed setup_full or confirm_full** in the qs card; both columns go to zero, with their charges in word, f64_div, f64_log and setup_small.
+- *Implementation:* new type columns and phases in both cores, as with setup_gray, so every sweep can still be priced old / Gray-only / fully corrected. Python's setup_full and confirm_full formulas in optypes are retired in favour of phase counts.
+- *Acceptance:*
+  - op counts identical per number (official identical), with only the moved charges changing type;
+  - each new type's count equals its formula from the trace;
+  - Python = Rust parity, per type.
+- *Report:* absolute before / after per pricing per size for the three references, with the bases stated (audit-table base and post-Gray / post-meter base); W-audit, D-audit and G-audit scored as registered.
+
+**Two new meter holes found while writing this (audit items 12 and 13; uncharged, not part of this re-typing; for the user's decision):**
+- **Item 12:** on-demand selection's `by_q = sorted(pool, key = |log(p / q)|)`, once per attempt, is uncharged: P log keys and ~P log₂ P comparisons. It recomputes an ordering the pool-selection sort already produced, so physically it is avoidable by keeping that order. The fix is either to keep the order (no new charge) or to charge it.
+- **Item 13:** building `rest` for each prefix (a filtered copy of the P pool primes) and `rest.remove(last)` are uncharged word-level list operations, ~P per prefix.
+- Both are meter corrections (they change official counts), each needing its own entry. Sizes: P ≈ 28–32 primes; prefixes per run 15–215 (A-count step), so item 13 is ~0.5–7k word ops per run and item 12 ~0.3–1k ops per run. That is small next to qs's totals (≤ ~1% official), but they are holes.
