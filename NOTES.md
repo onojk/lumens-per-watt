@@ -6080,3 +6080,65 @@ The estimate is unchanged in scale: about 0.1–0.15% of qs's cost at 96 and a f
 - *Counts:* identical (the same loops, the same charges). Python is unchanged.
 - *Acceptance:* every run identical to the step-4 build per number and per type, Python = Rust per type, and parity.
 - *Expected wall-clock effect:* confirm (with re-sieve) and lp_ledger fall back toward their c13019b-era time per number. They are measured in the step-5 run, and the comparison is reported there.
+
+**DeepSeek, Oct 26, round 17 (I-026; recorded as given):**
+- *M1 annotation:* the 2LP double integral is validated (counts within 0–5%); E − V + C is the right cycle base.
+- *T1 (estimated):* admitting cofactors up to L² adds ~8–12 wasted candidates per useful 2LP candidate at p_max ~3,500–6,000, L = 64 p_max. The ratio worsens as L / p_max grows. Predictable with one more integral (the density of base-free leftovers at each size).
+- *T2 (unverified citations):* 2LP crossovers in the literature are ~110 digits (YAFU), ~86 digits (msieve), ~80 digits (the MPQS three-large-primes paper), set by mean cost. 96 bits is ~29 digits. The Wolfram test (k = 1, a generous L) overstates the benefit.
+- **Sealed T3** (96 bits, KS on, the card's F, M, threshold, A-primes and stopping rule; total ruint per number with 2LP against 1LP only, all costs included: ~37-bit cofactor factoring, cycle finding, ledger):
+  - DeepSeek: mean +3% to +18% (central +9%); median 0% to +12% (central +5%); slowest decile −15% to +5% (central −5%). Falsified if the mean is < −5% or > +30%; if the median is < −5% while the mean is > +10%; or if the slowest decile is > +10%. Fewer than 20 N is inconclusive; one statistic only means scoring on the mean.
+  - The user's: mean −10% to +10%.
+- *I-026 status:* LOW PRIORITY. Expected not to pay at 96 bits once candidate and factoring costs are counted. Priced once with the light meter and the card's meter after step 6, mainly to confirm the crossover in our units.
+
+**I-023 / I-027 — model scan of F and M (Wolfram, Oct 26; recorded as given)** (F 0.5–2x the reference, M 10k / 20k / 40k, 5 N per size, KS on; proxy cost P × (2M (1 + 2 Σ 1/p) + 4F) + F³/64, with guessed weights, NOT card prices):
+- The proxy's minimum sits at the grid corner (F 0.5x, M 10k) at 72–96, the reference F costing 1.7–1.8x.
+  - This is driven by the guessed weights: at the reference F, linear algebra is ~50% of the proxy cost, against ~6–15% for solve in the card's wall-clock data, and per-polynomial setup is priced nearly free.
+  - Not a finding about the card.
+- Model P (weight-free) at 96 bits:
+  - P ~ F^−0.43 (M = 10k: F 200 / 400 / 800 → P 18.6 / 12.4 / 10.2);
+  - P ~ M^−0.73 (F = 400: M 10k / 20k / 40k → P 12.4 / 7.4 / 4.5), so sieve work P × M ~ M^+0.27.
+- *The user's scoring:* best F 0.7–1.4x and flat within 10% missed (proxy-driven); best M at 54 smallest held; best M at 96 larger missed; linear algebra < 15% at the minimum held (9%, 13–15%); fast growth at 2x held.
+- IDEAS I-027 added (a balancing rule for F and M).
+- **Step 6c (revised):** instead of a priced grid, report per size:
+  - (i) the card's ruint cost shares by phase: sieve (incl. re-sieve), polynomial setup (incl. Gray code and A / b generation), candidate confirm, ledger, solve;
+  - (ii) the model's e_F and e_M at the card's F and M (finite differences of predicted P at ±15%);
+  - (iii) the weighted sums for F and M, and the direction each says to move.
+  - Report only.
+
+**DeepSeek, Oct 26, round 19 (I-027; recorded as given):**
+- *U1 (checked, adopted):* with a confirm term ~F^(1 − e_F + γ), the envelope gives l* = (e_F − u − (1 + γ) c) / (e_F + p).
+  - Confirm pulls the LA threshold down (~8–10% at c = 0.05–0.10). The margin in F + 12 weakens e_F at small F.
+  - An LA exponent p < 3 pushes it up (~15% at p ~ 2.4; weakly supported, since singleton removal shrinks the matrix by a ~constant fraction).
+  - Use the rule directionally: threshold range ~8–15%; act only when the card is clearly outside it.
+- *U2 (DeepSeek wrong, the user's correction):* standard smoothness theory does give e_F ~ 0.4.
+  - Yield ~ρ(u), with d log ρ / d log p_max ~ ξ u / log p_max ~ 2.4 × 4.5 / 8 ~ 1.35, and relations needed ~F, so P ~ F^−0.35 from fulls alone, slightly steeper with partials (model 0.43).
+  - Not "−2 to −3", and not a large-prime-window artefact.
+- **Sealed U3** (solve ruint / total qs ruint per number; KS on; the card's F, M, threshold, A-primes and stopping rule; solve including singleton removal and dense elimination):
+  - DeepSeek: 5–14% at 84 (central 9%); 6–16% at 96 (central 10%). Falsified if > 25% or < 2% at either size, or if 96 is below 84 by > 3 pp. Fewer than 5 N per size is inconclusive.
+    - Its further clause, "inconclusive if the card's F differs from 96 / 151 by > 20%", uses F values the user never gave; recorded as given, noted. The card's F is ~82 at 84 and ~122 at 96 (new reference).
+  - The user's: 4–12% at both sizes.
+  - **Timing (mine):** solve's priced ruint per number by region is already in committed phasetime outputs (e.g. `phasetime_s4after.json`, 56a6d44, before U3 arrived). Nobody computed U3's ratio from them before it was recorded, but the data existed. U3 is scored post hoc against the step-5 run, with that stated. Also, the card has no singleton removal; its solve is dense elimination plus the square root.
+
+**I-027 — elasticities by finite difference (Wolfram, Oct 26; corrects the user's U2 rebuttal numbers; recorded as given)** (±15% around F_ref and M = 20,000; 6 N per size, KS on):
+- e_F, fulls only (model): 1.03 / 0.59 / 0.73 / 0.73 at 54 / 72 / 84 / 96.
+  - Theory ξ(u) u c / ln p_max − F / (F + 12), with yield-weighted u and c = d ln p_max / d ln F: 1.14 / 0.74 / 0.73 / 0.72. Within 0.01 at 84–96; 0.1–0.15 high at 54–72 (P < 1 there).
+  - Median-residue u overshoots (0.76–1.24).
+- e_F, all usable (fulls + combined 1LP): 0.55 / 0.29 / 0.44 / 0.45. **Partials flatten the response to F.** Per-N sd 0.05–0.12, so one value per size suffices.
+- e_M, all usable: 0.65 / 0.71 / 0.71 / 0.72; theory 1 − ξ / ln p_max within 0.03 at every size.
+- *Correction to the user's U2 rebuttal:* the conclusion (e_F of order 1, not 2–3) stands, and DeepSeek's U2 is falsified at every size. But the rebuttal's numbers were wrong: fulls-only e_F is ~0.73 (not ~0.35; c ~ 1.15 was omitted and a rough ξ used), and partials flatten it to ~0.45 (they do not steepen it).
+- *For the I-027 rule:* at 84–96, e_F ~ 0.45, so the LA share at the optimum is ~13% (before DeepSeek's confirm / exponent adjustments; range ~8–15%); at 72, e_F ~ 0.29, so ~9%. e_M ~ 0.71 at all sizes, so at the best M, per-polynomial setup ~ 40% of sieve cost.
+- *The user's scoring:* fulls e_F 0.25–0.5 missed (0.59–1.03); theory within 0.1 held at 84–96, missed at 54 / 72; median overshoot held; "all usable steeper" missed (wrong direction); e_M held; DeepSeek's U2 falsified.
+
+**DeepSeek, Oct 26, round 21 (I-027; recorded as given):**
+- *U2:* DeepSeek records its "−2 to −3" claim as falsified (fulls-only e_F 0.6–1.0), an un-derived order claim. The user's rebuttal numbers are recorded as corrected too (fulls ~0.73; partials flatten to ~0.45).
+- *V1 (checked):* with C_q = x − 1 + e^−x, x = P λ_q, and κ_q = x (1 − e^−x) / (x − 1 + e^−x) going from 2 (sparse) to 1 (dense), implicit differentiation of usable = F + m gives e_F = (e_f Fulls + e_C Comb − F) / (Fulls + κ_eff Comb).
+  - κ_eff ~ 1.3–1.7 at 84–96 explains all-usable e_F (~0.45) between fulls-only (~0.73) and half of it. Verifiable from the model output (optional).
+- *V2:* with e_F = 0.45, l* ~ 13% at p = 3, ~16% at p = 2.4, ~9% with confirm c = 0.05, γ = 1; the 8–15% directional range stands.
+  - Confirm scales with M like sieving (~P M), so the M rule is setup / (sieve + confirm) ~ (1 − e_M) / e_M ~ 41%. Step 6c reports it on that base.
+- **Sealed V3** (per-polynomial setup ruint / (sieve + confirm) ruint, averaged; KS on; the card's current M, F, A-primes):
+  - DeepSeek: 18–55% at 84 (central 32%), 16–50% at 96 (central 30%). Falsified if > 80% or < 8% at either size, or if 96 is below 84 by > 15 pp. Fewer than 5 N is inconclusive.
+    - Its clause "inconclusive if the card's M differs from 20,000 by > 30%" uses Wolfram's M, not the card's; recorded as given, noted. The card's M is mc · B: a few hundred to ~1,000, so the clause as written would make V3 inconclusive.
+  - The user's: 15–60%, same base.
+  - **Timing (mine):** as for U3, the card's priced setup, sieve and confirm per region are already in committed phasetime outputs (`phasetime_s4after.json`, `phasetime_s1b.json`). Nobody computed the ratio before V3 arrived; it is scored post hoc against the step-5 run, with that stated.
+
+**User's instructions for the lp_ledger sub-timers (recorded):** (1) read-only: op counts, results and parity identical with the variable set or unset, confirmed by running the ledger acceptance and a parity subset both ways; (2) report their own overhead (the region's ns with timers on against off). Documentation addenda go in their own commits (NOTES.md / IDEAS.md only), separate from step commits.

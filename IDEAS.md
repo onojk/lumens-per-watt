@@ -229,5 +229,13 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Yield: up to ~35-40% fewer polynomials for slow N at 96 (k = 1, Wolfram F and M); little at 84. 2LP partials ~2.5x 1LP; usable relations at 20 polynomials 4-5x with 2LP (a giant component in the large-prime graph); the gain concentrates on the slowest N.
 - Cost to price first, with the light meter (I-023) and the card's meter: extra candidates per polynomial from the looser threshold, cofactor factoring (~37-bit), cycle finding, ledger size.
 - Timing: evaluate after STEP 6 validates the model in the card.
+- Update (2026-10-26, DeepSeek round 17 and the user): LOW PRIORITY. Expected not to pay at 96 bits once candidate and factoring costs are counted (literature crossovers ~80-110 digits; 96 bits is ~29); priced once after STEP 6, mainly to confirm the crossover in our units. Sealed T3 (NOTES).
 - Decision: the user's.
+
+### I-027 — Balancing rule for F and M (envelope condition)
+- Date: 2026-10-26. Source: the user (Wolfram F / M scan), with DeepSeek round 19 (U1).
+- Idea: with phase costs scaling as powers of F (sieve ~ F^-e_F, e_F ~ 0.4; setup ~ P F ~ F^(1-e_F); linear algebra ~ F^3), the cheapest F satisfies -e_F x sieve share + (1 - e_F) x setup share + 3 x LA share ~ 0. With setup small, the LA share at the optimum is ~ e_F / (3 + e_F) ~ 12-13% (with confirm and an LA exponent below 3, ~8-15%; use directionally, act only when the card is clearly outside). For M: sieve ~ M^(1 - e_M), setup ~ M^-e_M with e_M ~ 0.7, so at the best M setup ~ (1 - e_M) / e_M ~ 37% of sieve cost.
+- Use: the card's phase ledger gives real cost shares; the yield model (I-023) gives e_F and e_M at the card's real F and M. The sign of the weighted sum says which way to move F (and M), with no grid search.
+- Timing: STEP 6c (revised).
+- Decision: pending.
 
