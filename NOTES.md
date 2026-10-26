@@ -3706,3 +3706,28 @@ Cost split under ruint (setup = multiplier, factor base and polynomial setup; th
 - If a lower (or different) slack wins in a sweep, run one sealed check on fresh numbers (per-band gate, paired intervals, all three pricings).
 - Because it changes the reference genes, adoption goes through the pre-registered replacement rule. Dropping tc's lower bound and retuning come after.
 - For this sweep, no slack beat the tuned one, so nothing is adopted.
+
+**Decisions (user, Oct 25):**
+1. Order after root-matched confirmation: pm1 stage 2, then small-prime skipping, then the threshold reparameterization.
+2. After re-sieve passes parity: measure it against full-pass confirmation on the map numbers per pricing; then retune slack with re-sieve on (D-rmslack and G-rmslack predict that the best slack rises); then a sealed check before any reference change.
+3. A MOVES row "Cheaper polynomial setup", untested, with the setup breakdown as a first information step (below).
+4. Commits use explicit `git add` only (no `commit -a`).
+- *Disclosure:* commit 783e885 (a NOTES correction made with `commit -a`) swept in the re-sieve code (qs.py, qs.rs, main.rs, optypes.py, parity.py) before the parity suite finished. Acceptance had passed (`resieve_accept.out`), and the parity suite is running on exactly that code. This is the second such slip (the first was bb89d20), and decision 4 rules it out from here on.
+
+**Setup breakdown** (information; `evolve/setupshare.py`, `setupshare.out`). New reference genes as qs alone (corrected card, kset), Python traces on 3 balanced and 3 band-24 map numbers per size. Each charge is attributed to its call site; counts are unchanged. Shares of total qs cost, official / ruint / Montgomery:
+
+| part | 54 | 72 | 84 | 96 |
+|---|---|---|---|---|
+| Gray-code switching (root updates per polynomial) | 0.023 / 0.058 / 0.069 | 0.042 / 0.141 / 0.155 | 0.029 / 0.128 / 0.136 | 0.026 / 0.146 / 0.150 |
+| A selection (on-demand search, pool sort, forming A) | 0.030 / 0.089 / 0.090 | 0.030 / 0.113 / 0.108 | 0.012 / 0.059 / 0.056 | 0.012 / 0.072 / 0.068 |
+| per-A roots (r1, r2, 2 B_l A⁻¹ per sieved prime) | 0.022 / 0.055 / 0.065 | 0.019 / 0.064 / 0.070 | 0.013 / 0.057 / 0.060 | 0.011 / 0.064 / 0.066 |
+| inverse of A mod each sieved prime | 0.017 / 0.046 / 0.055 | 0.015 / 0.053 / 0.059 | 0.011 / 0.052 / 0.056 | 0.011 / 0.063 / 0.066 |
+| factor base (Legendre, Tonelli–Shanks) | 0.040 / 0.102 / 0.121 | 0.017 / 0.058 / 0.063 | 0.011 / 0.049 / 0.052 | 0.004 / 0.024 / 0.025 |
+| multiplier scoring (KS) and ranking | 0.014 / 0.035 / 0.042 | 0.003 / 0.009 / 0.010 | 0.001 / 0.004 / 0.004 | 0.000 / 0.001 / 0.001 |
+| inverses for B_l and B_l per A | 0.003 / 0.009 / 0.011 | 0.002 / 0.007 / 0.008 | 0.001 / 0.003 / 0.004 | 0.000 / 0.003 / 0.003 |
+| **setup, all parts** | 0.150 / 0.393 / 0.452 | 0.128 / 0.444 / 0.472 | 0.077 / 0.354 / 0.368 | 0.066 / 0.374 / 0.379 |
+
+- **Gray-code switching is the largest part at 72–96 (13–15% of qs's calibrated cost):** one small-modulus op per root per polynomial switch, over every sieved prime.
+- Next, per A: A selection (6–11%), the inverse of A mod each sieved prime (5–6%) and the roots (6%). Those are paid once per A, so they shrink with more polynomials per A (larger s).
+- The factor base and the multiplier matter only at 54–72.
+- The per-root, per-polynomial update (r ± 2B_l A⁻¹ mod p) is an addition followed by a conditional subtraction, not a reduction. It is charged as setup_small (0.307 ruint), the small-modulus price. *Under the fixed classification rule, an add-and-conditional-subtract is word-level arithmetic, not a reduction modulo p.* Re-typing it would be a pricing change with its own cost-model entry, not a new algorithm; it is recorded on the MOVES row as the first candidate.
