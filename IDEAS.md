@@ -75,6 +75,7 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 ### I-010 — Check the card's small-factor end at 72 bits
 - Date: 2026-10-26. Source: Claude chat. Trigger: the DP optimum uses trial division to ~2^15-2^16 instead of rho at 72.
 - Idea: confirm whether the evolved pipelines at 72 include a td stage with a free bound, and whether td could replace rho there; an information step from existing results first.
+- Update (2026-10-26, the corrected DP): with stage 2, td to 2^12 is in the optimum at 72 under every prior and at 84 and 96 under several. Strengthens the td re-solve.
 - Note (Claude Code, from the code): the size-scaling pipelines fix td off (sizescale.pipeline sets td's ob = 0); td's depth was searched only in the 84-bit partition study (turned off there). So td at 72 has not been tested in the current pipelines.
 - Decision: pending.
 
@@ -123,5 +124,12 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 ### I-016 — Stage 2 for p-1 (and ECM)
 - Date: 2026-10-26. Source: Claude chat, from the user's DP. Trigger: in the model, stage 2 cuts expected cost about 6-7% at every size (up to 12.5% at 96 with ECM), pending the undercharge fix.
 - Idea, information step first (from the code): do lampcore's p-1 and ECM have a stage 2? If not, cost a plain prime-by-prime stage 2 (B2 = 100 B1) as a new lamp option, priced by the op meter's existing types.
+- Update (2026-10-26, the corrected DP): it keeps a 3.9-5.5% saving from p-1 stage 2 at every size. Shape: a short stage 1 (B 2^7-2^9), one stage 2 to about 100 B. Our p-1 has none today (3a7320f; cost model written). Recommended: adopt after the current meter queue, as a lamp change with a sealed prediction and the usual per-band gate.
 - Information step answered (Claude Code, from the code): p-1 has no stage 2; its cost model is already written (NOTES, "pm1 stage 2: cost model", Oct 25; MOVES row "pm1 stage 2 (B2 = c x B)"), with predictions pre-registered. ECM has a baby-step giant-step stage 2 (B2 = 50 B1 by default; NOTES, "Stage 2 in the cards today").
+- Decision: pending.
+
+### I-017 — 1-2 small ECM curves at 96 bits
+- Date: 2026-10-26. Source: Claude chat, from the user's DP. Trigger: ECM at B1 2^8 with stage 2 is chosen at 96 under all three priors (gain 4.75-7.35%). Our ECM already has a BSGS stage 2 (B2 = 50 B1).
+- Information step from the code and results: does the current 96-bit card run any ECM, and at what measured cost per curve (stage 1 + stage 2) under ruint pricing? If none, an ECM-at-small-B1 option belongs in the 96-bit re-solve.
+- Answered (Claude Code, NOTES "I-017 information step"): Track R's 96-bit pipeline runs no ECM; Track M's runs ~1 curve at the default B1 = 2,059 (59,257 ruint per curve). At b1 = 0.125 (B1 = 257 ~ 2^8, B2 = 12,850) a curve costs 8,187 ruint (~12% of qs at 96), close to the model's ~8,900.
 - Decision: pending.

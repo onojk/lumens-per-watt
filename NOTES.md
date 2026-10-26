@@ -4604,3 +4604,27 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
 - **Re-sieve (p0 30) against the full pass, restated on the current meter** (Gray-code re-typed, ledger charged, merge charged; new reference genes; cost ratio re-sieve / full pass): official 1.116 / 1.129 / 1.187 / 1.274, ruint 0.947 / 0.909 / 0.933 / 1.040, Montgomery 0.936 / 0.896 / 0.925 / 1.039 at 54 / 72 / 84 / 96.
   - *Before* the merge charge (772632a, also before the Gray-code re-typing and the ledger charge), ruint was 0.928 / 0.901 / 0.928 / 1.029.
   - The uncharged sort had flattered re-sieve by 0.5–2 points under ruint and 1–9 points under official. The fixed-gene verdicts of D-rm, D-rm2 and G-rm (missed) do not change; their after-retune clauses wait for the 2×2.
+
+**Corrected stage-2 DP** (user, Mathematica, Oct 26; information only) — as "ECM stage-2 DP", but p-1's stage 2 is one-shot and closes p-1; the rho grid runs to 2^16; ECM B1 ∈ {2^8, 2^10, 2^12}, up to 8 curves.
+- *Stage-2 saving, no ECM (S1 → S2):* 72: 5.54 / 4.74 / 3.92%; 84: 5.36 / 4.51 / 4.39%; 96: 5.15 / 4.85 / 4.90% (uniform / random semiprime / primehelix). The undercharge had inflated it from about 4–5.5% to 6–7%.
+- *S2 optima:* one short p-1 stage 1 (B 2^7 at 72; 2^8 at 84; 2^8–2^9 at 96), then one stage 2 to 100 B.
+  - 72: td 2^12, no rho.
+  - 84: td 2^12 (uniform), or rho 2^9–2^10 (random semiprime, primehelix).
+  - 96 with ECM: td 2^12–2^14, no rho, 1–2 ECM curves at B1 2^8 (gain 4.75 / 5.98 / 7.35%).
+  - 96 without ECM: rho 2^10–2^11.
+- *ECM chosen:* S1 0 of 9; S2 3 of 9 (all at 96); S2pess 0 of 9.
+- *Fixed rho → p-1 (+ stage 2) over the optimum:* S1 1.025–1.072 (interleaving); S2 1.004–1.016 where the optimum uses the same lamps, up to 1.102 at 96 where it adds td and ECM; S2pess 1.004–1.026. So with stage 2 the interleaving gap returns to about 1–1.6%; the larger gaps come from missing lamps, not order.
+- **Scoring (sealed Oct 26):**
+  - *Grok's:* Q1 failed. Q2 held under its falsifier, but its ranges missed at 72 and 84 uniform (5.54, 5.36). Q3 failed (3 of 3 priors, 4.75–7.35%). Q4 held. Q6 failed (2^7–2^9, below its 2^9 floor at 72 and 84). Q5 is scored on measured curves later.
+  - *Claude chat's:* Q1 partial (72 held; 84 at 2^9–2^10 under 2 of 3 priors; 96 failed with ECM, held without). Q2 held in 6 of 9 cells (uniform 5.15–5.54% is above 5%). Q3 held. Q4 held. Q6 held at 84 and 96, missed at 72 (2^7).
+- *Caveats:* analytic curves. Dickman on p for p-1 understates p-1's real smoothness, and 9 multiplies per bit for ECM is on the high side; both make the real case for stage 2 and ECM stronger. td is priced at the small-modulus op.
+
+**I-017 information step (from the code and results):**
+- *Does the current 96-bit card run any ECM?* Track R's 96-bit pipeline runs none (rho 10,624, p-1 2^12, ECM 0). Track M's does: 120,194 ops in the kc / lc round's (d) budgets, old ECM units. After the ECM-additions change its re-solve with p-1 gives 142,935 ops, about one curve at the card's default B1.
+- *Measured cost per curve* (lampcore, 1 curve, 20 balanced 96-bit map numbers, curves that fail, so the full stage 1 + stage 2; prices as in calibrate.json):
+  - default b1 = 1.0, so B1 = 2,059 and B2 = 102,950: **140,081 official, 59,257 ruint, 66,962 Montgomery per curve** (~0.85x qs's ruint cost at 96).
+  - **b1 = 0.125, so B1 = 257 ≈ 2^8 and B2 = 12,850: 18,818 official, 8,187 ruint, 9,249 Montgomery per curve** (~12% of qs's ruint cost).
+  - The model's B1 = 2^8 curve (9 × 1.44 × 256 + 28 stage-1 multiplies plus 2 per prime to 100 B1) is ~8,900, close to the measured 8,187 ruint.
+- So the card's ECM runs at a much larger B1 than the DP's choice. **An ECM-at-small-B1 option (b1 ≈ 0.125) belongs in the 96-bit re-solve** (Track R has no ECM at all today). Note that our B2 is 50 B1, not the DP's 100 B1.
+
+**Ideas checkpoint (2026-10-26):** added I-017; updated I-016 and I-010; parked triggers checked (none parked).
