@@ -6784,3 +6784,80 @@ Each cell gives ratio A / ratio B, with the materiality (time share × (ratio_B 
 - lp_ledger 2.67 / 2.39 / 2.59 / 3.64;
 - confirm off 1.78 / 1.50 / 1.34 / 1.26, on 2.90 / 2.86 / 2.81 / 2.73;
 - resieve 3.00 / 2.34 / 1.58 / 1.14.
+
+## Stage B: step 9 — where the card's missing partials and fulls go (`evolve/step9.py`, `step9.out`, `.json`; `step9u.py`, `step9u.out`, `.json`; qs.py's trace-only TRACE_ARR)
+
+**9a — the sieve and confirm, from the code** (both cores do the same):
+- *Sieve values:* each odd factor-base prime p adds round(log2 p) (an integer, at least 1) at each of its roots' positions, once per hit.
+  - Not sieved: the −1 and 2 entries; A's own primes (skipped when A ≡ 0 mod p); prime powers (no extra hits for p², p³ …).
+  - Primes dividing k are sieved with one root. There is no correction for any skipped contribution.
+- *Threshold:* one fixed value per attempt, T = log2(M √(kN/2)) − (tc + lc − 1) log2 B, the same for every polynomial and position (not adjusted by position or polynomial). A candidate is a position with arr[x] ≥ T.
+- *Confirm (re-sieve off, the reference):* per candidate, v = (A x + 2B) x + C as an i128 (this is g(x) = Q(x)/A; A's primes can still divide it). The sign is recorded. Then **every** base prime j = 1 … F − 1 (2 and A's primes included) is tested by v % p and divided out while it divides.
+  - No early abort. After the pass: v = 1 is a full; otherwise, if large primes are on, v < L (a float compare) is a partial. There is no primality test, since L = B^lc < B² for lc < 2.
+  - *Places a candidate can be dropped before the ledger lookup:*
+    - v = 0 (skipped);
+    - a cofactor ≥ L (not kept);
+    - N mod q = 0 (the run returns q as the factor);
+    - the ledger filling up (the rest of that polynomial's candidates are never processed);
+    - for a full, the ledger's duplicate check (|u| already seen).
+  - A partial is always looked up. A repeat q is combined; a combined relation can be rejected as a duplicate at the ledger (the normal path, not a loss).
+- *A against its target* (on-demand selection keeps |log2(A / target)| ≤ 0.25): realized log2(|A| / (√(2kN)/M)) has mean −0.074, sd 0.104 (range −0.24 … +0.21) at 84, and mean −0.036, sd 0.060 (−0.20 … +0.10) at 96.
+- *Realized max |g(x)| against M √(kN/2):* log2 ratio mean +0.14, max +0.55 (84); mean +0.075, max +0.29 (96). The residues are as large as designed, not much larger.
+
+**9b — the funnel on the card's own polynomials** (8 map numbers per size, all of their polynomials: 584 at 84, 1,285 at 96; exact factoring of every sieve position):
+
+| size | class | true per polynomial (model) | passed threshold | processed, given passed | filed, given processed | end to end |
+|---|---|---|---|---|---|---|
+| 84 | full | 0.78 (0.74) | 0.980 | 0.995 | 0.991 | **0.967** |
+| 84 | partial | 10.62 (9.9) | **0.541** | 0.996 | 1.000 | **0.539** |
+| 96 | full | 0.52 (0.60) | 0.973 | 0.995 | 0.992 | **0.961** |
+| 96 | partial | 17.13 (19.2) | **0.316** | 0.998 | 1.000 | **0.316** |
+
+- *Partials by log2(q/B)*, passed threshold (≈ end to end):
+  - 84: 0–2 0.687, 2–4 0.586, 4–6 0.477, 6–8 0.385 (L/B is ~89 at 84, so there is no 8+ band);
+  - 96: 0–2 0.717, 2–4 0.596, 4–6 0.445, 6–8 0.273, 8+ 0.118.
+  - log2(q/B) < 3: 0.663 (84), 0.679 (96). Below 4: 0.626 (84), 0.646 (96).
+- *Capture against u = log2(Qmax / |g|)*, 1-bit bands, partials passed:
+  - 96: 0.39, 0.31, 0.25, 0.20, 0.14, 0.12, 0.09, 0.03, 0.02, 0.00 … (u = 0 → 9+);
+  - 84: 0.62, 0.54, 0.53, 0.44, 0.30, 0.17, 0.13, 0.10, 0.10, 0.09.
+  - Fulls stay at 0.92–1.00 in every band. The decline is smooth in both q and u: the signature of the threshold, not of a hard cap in code.
+- *The sieve's under-count* (true log2 of the smooth part minus the sieve's value), mean / median / 90th percentile:
+  - fulls 7.14 / 6.29 / 14.61 (84), 7.44 / 6.50 / 14.98 (96);
+  - partials 5.60 / 4.90 / 11.74 (84), 5.34 / 4.58 / 11.44 (96).
+  - **Its sources** (`step9u`, 3 numbers per size, mean / median bits; partials at 96):
+    - the prime 2, never sieved: 2.50 / 3.00;
+    - prime powers, never sieved: 2.63 / 1.58;
+    - A's primes: 0.27 / 0;
+    - rounding: 0.00.
+    - For fulls the same two dominate: 2.63–3.86 (prime 2) and 3.56–4.12 (powers).
+- *Per-polynomial spread of partial capture* (p10 / median / p90): 0.33 / 0.55 / 0.78 (84), 0.13 / 0.30 / 0.48 (96).
+
+**Where the missing partials and fulls go, stated plainly:**
+- *Partials:*
+  - The card's polynomials contain about what the model predicts: 89% of the model's 19.2 at 96, 107% of its 9.9 at 84.
+  - **The loss is at the sieve threshold**: 68% of true partials at 96 and 46% at 84 never become candidates.
+  - After the threshold almost nothing is lost (processed 0.996–0.998, filed 1.000; the ledger filling up costs ~0.5%).
+  - The threshold loses them because the sieve under-counts each position's smooth part by ~4.6 bits (median), mainly the unsieved prime 2 and prime powers. With slack × log2 B ≈ 21.6 bits at 96 and log2 L ≈ 21.3, the room for q is consumed, and capture falls smoothly with q and with how small |g(x)| is.
+  - At 84 the slack has ~4.6 more bits of room than log2 L, so more partials pass.
+- *Fulls:* the threshold passes ~97% of true fulls; the end-to-end loss is ~4% (threshold, completion, duplicates).
+  - The card's lower fulls per polynomial than the model's at 96 (0.52 against 0.60) is in the true counts on the card's polynomials (A slightly below target, KS-chosen multipliers, and so on), not in the sieve.
+
+**Predictions scored:**
+
+| prediction | measured | the reviewer's | DeepSeek's (falsifiers) |
+|---|---|---|---|
+| S9-1 true-full capture at 96 (passed threshold) | 0.973 | 0.85–0.95: **missed** (high) | falsified if > 0.98: **not falsified** |
+| S9-2 true-partial capture at 96 | 0.316 | 0.25–0.45: **held** | 0.12–0.55: **held** |
+| S9-3 low band (log2(q/B) < 3) at 96 | 0.679 | 0.75–0.95: **missed** | falsified if < 0.60: **not falsified** |
+| S9-3 high band (≥ 8) at 96 | 0.118 | < 0.20: **held** | falsified if > 0.35: **not falsified** |
+| S9-4 true-partial capture at 84 | 0.541 | 0.45–0.65: **held** | 0.30–0.75: **held** |
+| S9-5 median under-count at fulls, 96 | 6.50 bits | 1.5–5: **missed** | falsified if > 8: **not falsified** |
+| S9-6 end to end, partials log2(q/B) < 3, 96 | 0.679 | 0.45–0.70: **held** | 0.50–0.68: **held** (at the edge) |
+| S9-7 end to end, fulls, 96 | 0.961 | 0.78–0.90: **missed** | 0.79–0.91, falsified if > 0.95: **falsified** |
+| S9-8 the largest partial loss is not the threshold | the threshold is ~99% of the loss | **missed** | **falsified** (the threshold is the largest stage, > 50% of the loss; top band loss 0.882 > 2 × low band's 0.286) |
+| S9-9 84 against 96, partials log2(q/B) < 4 | 0.626 against 0.646 (−0.02) | within 0.15: **held** | 84 higher by +0.01 to +0.14: **missed** (84 lower by 0.02; not falsified, which needs > 0.05) |
+
+- S9-1–S9-5 are DeepSeek's agreement with the reviewer's ranges, so only its falsifiers are scored.
+- The reviewer's hypothesis (the threshold caps the large prime) **held** in mechanism. The Wolfram run's conclusion "a single threshold cap is not the main cause" **missed**: the threshold is essentially the whole loss.
+  - Its single deterministic D (4.33 bits) understated the spread. The under-count is broad (p90 ~11–15 bits) and varies by position, so its loss is spread across q rather than only at the top q, which is why the cut-L comparison looked inconsistent with a cap.
+- **Open question for the user:** sieving the prime 2 (and its powers) and odd prime powers, or adding their expected contribution to each position (a constant offset or a lowered threshold), would recover much of the threshold loss. That is a card change with meter consequences (more candidates, more confirm work); a decision, not done.

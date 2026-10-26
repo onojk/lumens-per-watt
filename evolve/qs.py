@@ -52,6 +52,7 @@ from itertools import combinations
 from ledger import Charger, Ledger, DELTA, _primes
 
 TRACE = None
+TRACE_ARR = False    # trace only (step 9): also keep each polynomial's A, B, C, sieve array and threshold
 
 def lamp_qs(N, g, m):
     tr = TRACE
@@ -341,6 +342,8 @@ def sieve_source(N, k, g, led, ch, at):
                 # per polynomial, counted as lampcore does it: the slots cleared after the walk (|cand|), the
                 # generation stamps written (|st|), the direct list's pass (F - 1), the record lists (|cand|)
                 charge("word", 2 * len(cand) + len(st_) + F - 1)
+            if at is not None and TRACE_ARR:      # step 9 (read-only): the polynomial, its sieve array, where confirm starts
+                at["polys"][-1].update(A=A, B=Bv, C=C, arr=arr.copy(), T=T, Mw=M, c0=len(at["cands"]), cand_pos=list(cand))
             # 5. confirm
             for i0 in cand:
                 x = i0 - M

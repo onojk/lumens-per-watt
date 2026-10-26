@@ -1,0 +1,4 @@
+84 bits, true full (n 183): under-count mean / median, bits: prime 2 3.86 / 4.00; A-primes 0.59 / 0.00; prime powers 3.56 / 2.32; rounding +0.03 / +0.06; total 8.03 / 7.20
+84 bits, true part (n 2400): under-count mean / median, bits: prime 2 3.27 / 3.00; A-primes 0.46 / 0.00; prime powers 2.70 / 1.58; rounding -0.05 / -0.05; total 6.38 / 5.75
+96 bits, true full (n 278): under-count mean / median, bits: prime 2 2.63 / 3.00; A-primes 0.63 / 0.00; prime powers 4.12 / 3.31; rounding -0.06 / -0.05; total 7.32 / 6.18
+96 bits, true part (n 7915): under-count mean / median, bits: prime 2 2.50 / 3.00; A-primes 0.27 / 0.00; prime powers 2.63 / 1.58; rounding +0.00 / -0.00; total 5.40 / 4.60
