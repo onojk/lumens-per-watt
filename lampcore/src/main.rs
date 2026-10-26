@@ -252,7 +252,9 @@ fn powmod_small(mut b: u64, mut e: u64, m: u64) -> u64 {
 
 fn sq_one_k(num: &Num, g: &Value, k: u64, m: &mut Meter) -> R {
     let mut kn = U256::from(k) * num.n;
-    if g["ksq"].as_bool().unwrap() {
+    // truthiness as in lamps.py (bool, or a number != 0; NOTES.md, "sq ksq parsing")
+    let ksq = g["ksq"].as_bool().or_else(|| g["ksq"].as_f64().map(|v| v != 0.0)).unwrap_or(false);
+    if ksq {
         kn *= U256::from(4u64);
     }
     // Same window as lamps.py: x0 ..= s + floor(f + width), with sqrt(kN) ~ s + f.

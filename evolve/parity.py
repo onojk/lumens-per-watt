@@ -93,6 +93,10 @@ def genomes():
     for B in (256, 2048, 32768):
         gs[f"pm1 B {B}"] = [{"t": "pm1", "b": 0.2, "B": B}]
         gs[f"rho then pm1 B {B}"] = [{"t": "rho", "c": 1, "b": 64, "ob": 300}, {"t": "pm1", "b": 0.2, "B": B}]
+    # sq's ksq as 0 / 1 (Python truthiness) as well as false / true (NOTES.md, "sq ksq parsing"); smooth mode
+    # also exercises the charged tried-multiplier set (NOTES.md, "Meter correction")
+    for ksq in (0, 1, False, True):
+        gs[f"sq smooth ksq {ksq!r}"] = [{"t": "sq", "k": 0.34, "mode": "smooth", "c": 1.0, "w": 0.17, "ksq": ksq}]
     return gs
 
 QS = {"t": "qs", "kc": 16, "bc": 1.5, "mc": 4.0, "tc": 2.0}
