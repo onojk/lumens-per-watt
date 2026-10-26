@@ -4827,3 +4827,15 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
   - For each last-prime pick, `rest.remove(last)` removes one entry: **1 word op per pick**, charged with the pick.
   - Type: word. *Size:* P ≈ 28–32, prefixes 15–215 per run, so ~0.5–7k word ops per run.
   - *Acceptance:* only word (and ops) rise, by P × prefixes + picks from the trace (od_prefixes, od_cands); Python = Rust per type.
+
+**Measured-c stage-2 DP** (user, Mathematica, Oct 26; information only; no card changes) — c = 1.41 / 1.83, rho at K / 1.4, p-1 stage 2 one-shot with B2 / B1 ∈ {10, 15, 20, 30, 50, 100}; arms S1 (no stage 2), plain (2 multiplies per prime) and paired (1); ECM B1 2^8 / 2^10, B2 = 50 B1, up to 4 curves, 9 multiplies per bit, raw Dickman on p/12.
+- *Stage 2 in the optimum:* 9 of 9 cells in both arms. B2 / B1: plain 10 everywhere; paired 15–20 (72), 20 (84), 15 (96).
+- *Stage-2 saving, no ECM:* plain 13.1–14.0 / 10.4–10.9 / 8.4–8.7%; paired 21.6–24.0 / 17.8–18.9 / 14.6–14.8% (72 / 84 / 96).
+- *Optima:* 72: td 2^12 (2^16 in S1), p-1 B1 2^9 with a short stage 2; no rho in any optimum with ECM. Rho appears only in the 96 plain no-ECM optimum (random semiprime and primehelix: 2^11).
+- *ECM:* chosen in 6 of 9 cells per stage-2 arm. 84: 1 curve, gain 1.7–6.1% (plain) / 4.4–8.5% (paired). 96: 2–3 / 3–4 curves, gain 9.0–14.3% / 10.7–17.9%.
+- *Same-lamps fixed / optimum:* S1 1.023 at most (2 cells), paired 1.016 (1 cell), plain 1.012 (1 cell).
+- **Scoring:** R1: Grok failed at 72 and 84, held at 96; Claude chat held. R2: partial for both (Grok: 72 random semiprime and primehelix chose 20, above its 10–15; Claude chat: 72 uniform and 96 chose 15, below its 20–50). R3: both failed (far above). R4: both failed. R5: Grok failed; Claude chat's priors held, its gain failed. R6: both failed narrowly (1.023 in S1).
+- *Caveats (Claude chat), so not sealed:*
+  1. The DP charges ECM about 4,800 (paired) / 6,300 (plain) per curve at B1 = 2^8; the card measures 8,187 ruint (I-017). Raw Dickman overstates ECM success at B1 = 2^8 (15–25% for random integers). Both flatter ECM, so 9–18% at 96 is an upper bound. A rerun with 8,187 per curve and 0.8 × success is queued.
+  2. The DP's stage-2 saving falls with N (14 → 9% plain), while the real-prime run's rose with N (−8.4 → +1.8%, on other pipelines). The S1 baseline also shifted (rho at K / 1.4 drops out at 72 in favour of td 2^16). The real-prime split-half search (no Dickman) is the deciding test for I-016.
+  3. Rho at K / 1.4 is generous to the card (measured about K / 2); that only weakens rho further.

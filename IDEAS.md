@@ -131,12 +131,14 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Rho overhead: the card's measured Brent overhead is ~2x the collision point (552 vs 279, Oct 24), against 1.4x in the user's Mathematica Brent (no gcd batching). Future DP runs model the card's rho at K/2; the measured-c rerun used K/1.4, so rho in its optimum is read as slightly favoured.
 - Candidate shape to price in the rerun: the stage-1 optimum with a short stage 2 appended (B2/B1 20-50), 96 bits first; at 72-84 the arithmetic says no.
 - The rerun sweeps B2/B1 in {10, 15, 20, 30, 50, 100} at 1 and 2 multiplies per prime (pairing against plain), with c = 1.41 / 1.83 and rho at K/1.4.
+- Result (2026-10-26, the measured-c DP): stage 2 in the optimum in 9 of 9 cells, both arms (plain B2/B1 10; paired 15-20); saving without ECM plain 8.4-14.0%, paired 14.6-24.0%, falling with N. Caveats: ECM is flattered (DP per-curve cost 4,800-6,300 against the card's 8,187; raw Dickman), the saving's trend with N is opposite to the real-prime run's, and rho at K/1.4 is generous. Seal only after the real-prime split-half search.
 - Information step answered (Claude Code, from the code): p-1 has no stage 2; its cost model is already written (NOTES, "pm1 stage 2: cost model", Oct 25; MOVES row "pm1 stage 2 (B2 = c x B)"), with predictions pre-registered. ECM has a baby-step giant-step stage 2 (B2 = 50 B1 by default; NOTES, "Stage 2 in the cards today").
 - Decision: pending.
 
 ### I-017 — 1-2 small ECM curves at 96 bits
 - Date: 2026-10-26. Source: Claude chat, from the user's DP. Trigger: ECM at B1 2^8 with stage 2 is chosen at 96 under all three priors (gain 4.75-7.35%). Our ECM already has a BSGS stage 2 (B2 = 50 B1).
 - Information step from the code and results: does the current 96-bit card run any ECM, and at what measured cost per curve (stage 1 + stage 2) under ruint pricing? If none, an ECM-at-small-B1 option belongs in the 96-bit re-solve.
+- The DP chooses ECM at 84 and 96 at B1 2^8 even at 1-2 curves; pending the rerun at the card's measured 8,187 per curve and 0.8 x success.
 - Card ECM cost confirmed: 8,187 ruint per curve at B1 = 257 against the model's ~8,900. Track M's 96-bit card runs ~1 curve at B1 = 2,059 (59,257 ruint, ~85% of qs at 96). The 96-bit re-solve offers ECM B1 down to 2^8 with its existing stage 2.
 - Answered (Claude Code, NOTES "I-017 information step"): Track R's 96-bit pipeline runs no ECM; Track M's runs ~1 curve at the default B1 = 2,059 (59,257 ruint per curve). At b1 = 0.125 (B1 = 257 ~ 2^8, B2 = 12,850) a curve costs 8,187 ruint (~12% of qs at 96), close to the model's ~8,900.
 - Decision: pending.
