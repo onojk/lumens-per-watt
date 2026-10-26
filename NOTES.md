@@ -6461,3 +6461,44 @@ Each cell gives ratio A / ratio B, with the materiality (time share × (ratio_B 
      - Next: a benchmark of the card's own elimination loop (ns per charged la unit), then a decision (re-price la, or charge the pivot search as word).
   5. **gray at 96 (1.3%, just over):** no action. Near the bar, after the 1.9x speed-up.
 - The I-027 direction (priced against wall, step 5) should be re-read after fixes 1–3, because they move setup's and confirm's wall-clock shares.
+
+**I-023 / I-027 / I-028 — the light meter at the card's operating point (Wolfram, Oct 26; model only; recorded as given)** (6 N per size, KS odd k ≤ 43, p_max = B (1,841 at 96, 1,151 at 84), A-primes ignored, M = 300 and 1,000 since the card's M was not given; F varied ±15% with L/B fixed; reference L/B 1,511 at 96, 92 at 84; means over N):
+- *96 bits (M 300 / 1,000):*
+  - model F ~141; P 250 / 112; fulls per polynomial 0.27 / 0.57; partials per polynomial 8.0 / 18.7;
+  - combined share of usable 0.59 / 0.61; never-combined 1LP 0.91 / 0.91; κ_eff 1.89;
+  - e_F all usable 0.74 / 0.83; e_F fulls 1.17 / 1.27; e_M 0.67 / 0.67;
+  - L/B 1,511 → 12: polynomials +15% / +16%; stored partials −78% / −79%; never-combined 0.64.
+- *84 bits (M 300 / 1,000):*
+  - model F ~102; P 68 / 31; combined share 0.56 / 0.58; never-combined 0.80; κ_eff 1.87;
+  - e_F 0.70 / 0.80; e_F fulls 1.11 / 1.23; e_M 0.67 / 0.67;
+  - L/B 92 → 12: polynomials +10% / +11%; stored partials −52%.
+- The model's F ran ~15–20% above the card's figures as given (~141 against ~122 at 96; ~102 against ~82 at 84). Question for Claude Code: how does the card define F, and is its p_max exactly B? (Answered below.)
+- *Scoring (the user's sealed predictions, model analogs at 96):*
+  - R-E1 e_F all usable 0.48–0.70: missed (0.74 / 0.83; direction right, magnitude too low);
+  - R-E2 e_M 0.63–0.70: held (0.67);
+  - W-6 e_F fulls 0.80–1.10: missed (1.17 / 1.27);
+  - W-1 model polynomials +5% to +12%: missed (+15% / +16%);
+  - W-2 model stored partials −72% to −82%: held (−78% / −79%);
+  - W-3a never-combined at the reference L 0.86–0.94: held (0.91);
+  - W-3b never-combined at L/B 12 0.60–0.78: held (0.64);
+  - W-4 κ_eff 1.85–1.95: held (1.89);
+  - W-5 combined share 0.40–0.60: held at M 300 (0.59), missed at M 1,000 (0.61);
+  - DeepSeek's round-31 directions: e_F "modestly lower" than 0.45 wrong (0.74–0.83); e_M "materially lower" than 0.71 (read as < 0.66) wrong (0.67, slightly lower).
+- *The model's view of the open card predictions (no revision; card scores decide):* R-L1 (the user's +5 to +12%, DeepSeek's +3 to +14%) likely to miss (model +15–16%, under DeepSeek's ≥ 18% falsifier); R-L2 both ranges cover the model's −79%; X3: the model's 0.91 is inside R-X3 (0.86–0.94) and above DeepSeek's sealed 62–86%.
+- *Readings (directional, report only):*
+  - *I-027 F rule:* with e_F ~0.75–0.8 at the card's point, the LA share at the optimum is ~e_F / (3 + e_F) ~ 20% (a few points lower after DeepSeek's confirm / exponent adjustments). The card's priced share is 3.7–5.3%: a strong signal to raise F. Caveats: wall-clock solve is dearer than priced, and a larger F also raises setup per polynomial.
+  - *I-027 M rule:* e_M ~0.67 gives setup / (sieve + confirm) ~0.49 at the optimum; the card's ~0.29 still points to a lower M. Insensitive to the unknown M (300 and 1,000 give the same e_M).
+  - *I-028 L break-even* (estimated with Wolfram's proxy base cost per polynomial, 2M (1 + 2 Σ 1/p) + 4F): cutting L/B 1,511 → 12 at 96 pays if the card's price per accepted partial exceeds ~60 sieve positions (M 300) to ~80 (M 1,000). Step 7c is to report the card's measured per-partial price first and set it against this.
+
+**Answers and corrections (Claude Code), against step 7's data:**
+- **How the card defines F:** F = the factor base's length: the entries −1 and 2, then every odd prime p ≤ B with (kN / p) = 1, plus the primes dividing k (ledger.py `build_base`; lampcore's Ledger::build).
+  - p_max is the largest such prime, **not exactly B**: means 1,085 against B = 1,093 at 84, and 1,744 against 1,752 at 96 (the map numbers, the k each one's KS ranking picks).
+- **Correction: the card figures I gave earlier were rough estimates, not the card's values.**
+  - "B 1,151 / 1,841" took ln N as bits × ln 2. "F ≈ 82 / 122" (and 26 / 48 at 54 / 72) took F ≈ B / (2 ln B).
+  - **Measured on the map numbers, the card's means are B 1,093 / 1,752 and F 93.3 (range 85–111) / 138.0 (121–150) at 84 / 96**, with M = mc · B ≈ 560 / 1,056.
+  - So the model's F (~102 / ~141) runs ~3–9% above the card's, not 15–20%.
+  - The rough F estimates also entered my step-1 and round-19 notes; they changed no count or result (the card computes F itself). The step-7 lc values used the first map number's B (lc 1.3569 / 1.3328), so L/B = 12 holds for that number and drifts slightly across the set.
+- **Step 7c against the break-even, the card's measured per-partial price first:** priced **28–33** sieve positions, wall-clock **114–143**, against the model's break-even of ~60–80 for 1,511 → 12 at 96.
+  - On priced cost the card is below the break-even (cutting L should not pay), and the card agrees: the L-only variant costs +4.9% priced.
+  - On wall-clock the card is above the break-even (cutting L should pay), but the card's own L-only run is +1.5% in wall-clock, not a saving.
+  - The model's break-even uses Wolfram's proxy base cost per polynomial and its larger polynomial increase (+15–16% against the card's measured +7%). The card's smaller increase moves the real break-even up, beyond its measured wall-clock price.
