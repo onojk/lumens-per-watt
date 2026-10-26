@@ -2862,3 +2862,10 @@ Mine: Track R 5 held, 2 missed. Track M 0 held, 6 missed.
   - (D-s3) c = B2 / B: about 10 wins in Track R, 20–50 in Track M.
   - *Note:* DeepSeek's cost model charged one gcd per stage-2 candidate. The standard method accumulates a product and takes one gcd at the end, so its Track R cost estimate is high.
 - *DeepSeek's kc test, recorded for the kc / lc report (information only):* how often Knuth–Schroeppel's top-ranked multiplier matches the best-observed multiplier on the sealed numbers. Not run yet. It needs qs run with each multiplier forced, which is a separate information-only pass; its definition (which k's, which genome, which pricing defines "best") is fixed before it runs.
+- *Grok's predictions for a future pm1 stage-2 test* (labelled as Grok's; written before any stage-2 code; pre-registered for any future stage-2 test):
+  - (G-s1) Track R: with a pm1 stage 2 (B2 ~ 50B), B stays 2^11–2^13. Robust gain 2–6% over stage-1-only p-1, concentrated on the 28–36-bit factor bands. ECM stays off; rho keeps rising with size.
+  - (G-s2) Track M: B 2^10–2^12, B2 ~ 50B; Montgomery gain 4–9% over stage-1-only at 72–96; ECM falls about one grid step at 84 and 96.
+- *Grok's prediction on stage-1 p-1, scored in the kc / lc sealed run* (pre-registered; that run has not started):
+  - (G-p1) Stage-1 p-1's catches come mostly from the 24–36-bit factor bands.
+  - *Scoring (mine):* held if, in the (c+p) rows, at least half of p-1's catches (pooled over the four sizes, per track) are numbers whose smaller factor is in bands 24–36.
+- *Reporting addition for the kc / lc sealed run* (information only): for the without-p-1 row (c) and the with-p-1 rows (c+p) and (d), the catches per band for each stage (rho, p-1, ECM, qs). This shows which bands p-1 takes over, and from which stage.
