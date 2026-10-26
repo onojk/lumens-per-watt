@@ -4332,3 +4332,19 @@ Not candidates, because they really reduce modulo a small prime: the factor-base
    - D-audit is scored on the post-ledger base it named and W-audit on the audit-table base; both are reported.
    - *Note (mine):* the start-offset meter correction (audit item 10, decided after these predictions) also lands before the audit re-typing. D-audit's "after the ledger correction" base is computed both with and without it, and both are reported.
 - *Note for the start-offset correction (found reading `opbench.rs`):* the calibration's "sieve update" benchmark computes each root's start (r + mm) % p inside its timed loop. So the calibrated sieve_update price already carries the start computations, spread over the updates; official counted 1 per update and never charged them. Charging the start offsets as separate ops therefore double-counts that work slightly under the calibrated pricings, by about the ratio of roots to updates. The start-offset report quantifies it.
+
+**Grok's reply (Oct 26, 00:52), with annotations** (labelled as Grok's; annotations by Claude chat, relayed by the user).
+1. Grok accepts: G-rm scored on the NOTES ranges (missed); G-dup2 as given; G-ledger2's ratio clause self-falsified, with its share ranges scored separately.
+2. **(G-audit)** items 1–8 re-typed together (base: qs cost after the ledger and multiplier-set correction, before the 2×2; new reference genes): ruint 18–26 / 16–23 / 9–14 / 7–12%; Montgomery 12–18 / 10–15 / 6–10 / 4–8% at 54 / 72 / 84 / 96. Grok expects only the double divide above 3x sieve_update (the others ≤ 2x). Falsified if any ruint cut falls outside 5–35%, or if 96's cut exceeds 54's.
+   - *Annotations:*
+     - On the base it names (after the Gray-code re-typing; total ~12% lower at 72–96), the item-by-item expectation is roughly ruint ~25 / ~15 / ~12.6% and Montgomery ~19 / ~11 / ~10.6% at 72 / 84 / 96. That is above its ruint ranges at 72 and 96, and above its Montgomery ranges at 72–96.
+     - Its stated old prices differ from the card's: item 5 was charged at 1.0 (not 1.0–1.5), and items 6–8 at 0.114 (not 0.2–0.4).
+     - The falsifier (outside 5–35%, or 96 > 54) is very loose. The ranges are scored separately, and both are reported.
+   - *Note (mine):* the start-offset correction also precedes the audit re-typing; the base is reported with and without it.
+3. **(G-p0)** best p0 on {30, 60, 100, 200, 400, 700, 1000} at the best slack under the fully corrected pricing, against the full pass, new reference genes, all map numbers:
+   - 72: Track R p0 100–200 (ruint / Montgomery saving 6–12%), Track M p0 80–150 (8–14%);
+   - 84: Track R 200–400 (5–11%), Track M 180–300 (7–13%);
+   - 96: Track R 400–1000 or none (2–8%), Track M 420–700 (4–10%).
+   - Falsified if the Track M best p0 at 96 is ≤ 200, or if re-sieve at its Track M optimum loses under Montgomery at 72, 84 or 96.
+   - *Annotation:* Track R picks p0 by worst-of-three. The user's cost model puts official's break-even / optimum at p0 ~270–310 (72) and ~560–640 (84), so Track R's p0 is likely above Grok's 100–200 at 72 and at or above 200–400 at 84. Its Track R savings are quoted under ruint / Montgomery, not the worst-of-three objective; both are reported. The Track M ranges agree with the model and with W-p0.
+4. **(G-pool)** the old figures are pooled; the cv of partials per number is 0.35–0.55 / 0.40–0.60 / 0.45–0.70 at 72 / 84 / 96. Falsified if the per-number mean yield is within 5% of pooled at two or more sizes, or if the cv is < 0.25 at every size.
