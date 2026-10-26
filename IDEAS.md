@@ -133,3 +133,20 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Information step from the code and results: does the current 96-bit card run any ECM, and at what measured cost per curve (stage 1 + stage 2) under ruint pricing? If none, an ECM-at-small-B1 option belongs in the 96-bit re-solve.
 - Answered (Claude Code, NOTES "I-017 information step"): Track R's 96-bit pipeline runs no ECM; Track M's runs ~1 curve at the default B1 = 2,059 (59,257 ruint per curve). At b1 = 0.125 (B1 = 257 ~ 2^8, B2 = 12,850) a curve costs 8,187 ruint (~12% of qs at 96), close to the model's ~8,900.
 - Decision: pending.
+
+### I-018 — Illuminate the helix, not the number line (two-coordinate light map)
+- Date: 2026-10-26. Source: the user's question ("what if we were illuminating the helix instead of the number line?"), developed in Claude chat.
+- Idea: each point of the theta tower is a whole semiprime (height log N, radius proportional to 1/2 - theta). A lamp lights the numbers it would crack; "lumens per watt" = population lit per unit cost. This is the quantity the dark-mass DP already computes.
+- Second coordinate: angle = smoothness of p-1 (log of the largest prime factor of p-1 / log p). Then:
+  - td lights a solid outer skin; rho the same with a soft inner edge;
+  - p-1 lights a wedge of angle; stage 2 widens it (p-1 with one large prime <= B2);
+  - ECM is a re-rollable speckle (no fixed region);
+  - qs floods the whole cross-section.
+  The dark mass is a visible region: the spine plus the non-smooth-p-1 wedge at mid theta.
+- Use: (a) Phase 3's light spectrum measured as this 2D map with the real lamps (a batch of random semiprimes per band, recording which lamp cracked each); (b) a direct check of the p-1 model: measured p-1 light against the predicted wedge, calibrating the p-1 smoothness constant c (model input 3.4); (c) the visual for I-012 and the film.
+- Caveat: both coordinates are computed after factoring; it is a map of where lamps work, never an aiming method (the primehelix separation result).
+- Cost: small (one measurement pass plus a plot). Timing: with Phase 3, or earlier as the p-1 calibration step for I-016.
+- Both views together (user, Oct 26): one number's line, in theta, is one ray of the tower (outer skin to spine at height log N). The number line is the live view of one search (the unlit part of the ray is its dark mass); the tower is the accumulated record of many searches (each find lights its point). Both come from the same per-run log (levels reached, cost at find), aggregated for the tower.
+- Explains p-1's look: on a single ray its light is scattered (it keys on p-1 smoothness, the angle coordinate); on the tower it is a wedge. Rho is the reverse: clean along the ray, fuzzy on the tower.
+- Film: split screen, one ray lighting up live on the left; its find landing on a filling tower on the right.
+- Decision: pending.
