@@ -6760,3 +6760,10 @@ Each cell gives ratio A / ratio B, with the materiality (time share × (ratio_B 
   - The timer-inflated breakdown overstated the allocation's share: lp:copy's ~100 ns per call included the cost of the timers around it, and a heap allocation of a small Vec is cheaper than that suggested.
   - **What makes lp_ledger at 96 slow is still open.** Remaining candidates: the large-prime table's hash ops at 1.4–1.7x their price (step 3); the cold reads of earlier partials in combinations; the bound check and N mod q; and the loop around them.
   - Kept: the change is counts-identical and slightly faster.
+
+### Fix C.3 (stage A3): re-sieve's record lists in per-attempt buffers (code only, counts identical; before code)
+
+- *Change (Rust):* the per-polynomial `rec` (one Vec per candidate), the direct list and the candidate list become per-attempt buffers, cleared per polynomial (inner Vecs keep their capacity).
+- *Counts:* identical. Python unchanged.
+- *Acceptance and timing:* as for A1 / A2.
+- *Estimate:* resieve at 54 (C 3.85) and confirm with re-sieve (C 2.7–2.9) should fall noticeably at 54–72, where per-polynomial allocations are a larger share; little at 96.
