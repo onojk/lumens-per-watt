@@ -1,0 +1,4 @@
+54 2'b vs 2'a: opclass 0.9348 [0.9322, 0.9374] ruint 0.9410 [0.9390, 0.9430] montgomery 0.9337 [0.9315, 0.9359] official 1.0599 [1.0587, 1.0610]; robust (op-class, ruint, Montgomery) 0.9410; (e) better
+     (a) sieve_update ops 2'a 2,823,415 / 2'b 2,823,415: break-even sieve_update weight none (equal counts: the weight cancels); information: break-even root_test weight 76.62 (v1 52.29, x1.47)
+54 2'b+pp3 vs 2'a: opclass 1.0065 [0.9904, 1.0206] ruint 0.9609 [0.9431, 0.9771] montgomery 0.9524 [0.9379, 0.9644] official 1.1067 [1.0878, 1.1223]; robust (op-class, ruint, Montgomery) 1.0065; (e) undecided
+     (a) sieve_update ops 2'a 2,823,415 / 2'b+pp3 2,370,446: break-even sieve_update weight 19.050 (v1 11.087); information: break-even root_test weight 50.26 (v1 52.29, x0.96)

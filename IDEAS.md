@@ -380,3 +380,9 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
   - the old root-confirm pass, as a second sweep per polynomial.
 - **Prototype:** Python card only, `evolve/worktrace.py` with the read-only hook `qs.WORKTRACE`, three images (`evolve/worktrace_*.png`). Later versions could trace rho (the Wander) and ECM.
 - Decision: pending (the user's).
+
+### I-045 — Unattributed-instruction guard for op-class
+- Date: 2026-10-27. Source: the user.
+- **Idea:** every op-class comparison reports, per cell, the uncharged (uncharged:card) and unattributed Ir, as v1's derivations do per run. A change that raises either by more than a stated tolerance is flagged. This is the op-class version of an uncharged op: work that runs but that no charged class pays for.
+- Pairs with I-042: I-042 finds time without price, this finds instructions without price. It would also expose growth in v1's known gap (line-0 code counted as uncharged).
+- Decision: pending (the user's).

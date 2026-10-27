@@ -9643,3 +9643,27 @@ The library-bound classes have no single static body and are dynamic only.
 - **Checks:** `ci_quick` passes (0 failures). The full parity result is recorded below when it finishes.
 - **Updated:** `reviews/card_params.md` (the new reference genes and the evidence) and MOVES ("Root-matched candidate confirmation" → ADOPTED).
 - **What this changes for later work:** the base of every later comparison is the 2′b reference. Earlier results against 2′a stay valid as recorded; they were not re-based.
+
+### DeepSeek on step 3 (received 07:49 Oct 27 PT; information only; verbatim)
+
+<!-- verbatim begin -->
+[PLACEHOLDER: DeepSeek's reply was not included in the brief that recorded it; to be pasted verbatim.]
+<!-- verbatim end -->
+
+**The reviewer's notes:**
+- **Q1 is already answered**, two ways:
+  - by ruint, which is machine-time calibrated, is in the robust track, and is the pricing that set the robust ratio;
+  - by measured wall-clock: −9.6% / −12.9% / −11.2%.
+
+  DeepSeek's own ns figures make a root test 0.41 of a trial division, against v1's 0.48: that favours 2′b more.
+- **Q2 accepted:** op-class is blind to latency and memory, and to unattributed code.
+
+### 2′b against 2′a at 54 bits (before scoping the adoption by size; `evolve/step3_sizes.py 54`, `step3_54.out`, `step3_54.json`; computation only, no timing)
+
+| bits | op-class | ruint | Montgomery | robust (b) | (e) | official (no veto) |
+|---|---|---|---|---|---|---|
+| 54 | 0.9348 [0.9322, 0.9374] | 0.9410 [0.9390, 0.9430] | 0.9337 [0.9315, 0.9359] | **0.9410** | **better** | 1.0599 [1.0587, 1.0610] |
+
+- **54 bits:** all 320 map numbers, the same computation as step 3. The break-even root_test weight is 76.6, 1.47 times v1's. The gain is smaller than at 72–96 (robust 0.941 against 0.870–0.890), but every interval excludes 1. For information, 2′b+pp3 at 54 is undecided (robust 1.0065).
+- **60 and 66 bits: not computed.** The repo has map numbers and reference genes (the sealed per-size genes, `sizescale_k_sealed.json`) only at 54, 72, 84 and 96. A 60- or 66-bit comparison needs a number set and genes for those sizes, which would define a new reference: the user's choice (e.g. the nearest sealed size's genes on a new banded population).
+- **The order of events:** the adoption was committed (fc3bf0c) before this brief arrived. That record names the reference genes without limiting them by size. Its scope is the user's call, as the brief says.
