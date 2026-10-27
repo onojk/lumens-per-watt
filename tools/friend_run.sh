@@ -19,7 +19,7 @@ if [ -n "$(git status --porcelain --untracked-files=no)" ]; then
 fi
 [ -x lampcore/target/release/lampcore ] || { echo "REFUSED: lampcore is not built; run tools/friend_setup.sh first" >&2; exit 1; }
 
-host=$(hostname | tr -c 'A-Za-z0-9._-\n' '_')
+host=$(hostname | tr -c 'A-Za-z0-9._\n-' '_')
 out=results_${run}_${host}_$(date -u +%Y%m%dT%H%M%SZ).json
 case "$(uname -s)" in
     Darwin) echo "NOTE: macOS has no taskset, so the run is not pinned to one core; timings will be noisier." ;;
