@@ -9411,3 +9411,31 @@ Model: `wolfram/2026-10-27_meter_open.wl`, `.out`.
 **How weak this is.** With three points, a line keeps one residual degree of freedom, so its 95% band uses t = 12.7, and any three-parameter curve fits them exactly. The data cannot pick a shape, and the forecasts span **107 bits to never**. The straight-line 107 bits is the optimistic end, not a central estimate. Measuring official at 108 or 120 bits, a count pass with no timing, would separate the shapes. Both sizes are above the project's 40–100-bit scope, so that is the user's call.
 
 **What it does not establish.** This is a model, not a verdict. It says nothing about the robust-rule decision, and it computes no op-class figure.
+
+## W2: kept-relation copies, growth with size (model, not a verdict; information only; `wolfram/2026-10-27_w2_copies.wl`, `.out`)
+
+**What it computed.** The copies' (lp:copy) wall excess over price for 2′a at 72 / 84 / 96 bits, from the overnight meter-health pass. Each factor (copies per number, ns per copy, ruint per copy, the cell's rate, total wall) is extrapolated log-linearly in bits. lp:copy's wall agrees with the shift runs' breakdowns to within 1–5 µs.
+
+| bits | copies / number | ns / copy | wall ÷ price | excess µs / number | excess share of wall | copies' whole share |
+|---|---|---|---|---|---|---|
+| 72 | 303 | 43 | 0.57 | −9.7 | −1.2% | 1.6% |
+| 84 | 489 | 76 | 1.18 | +5.7 | +0.3% | 2.3% |
+| 96 | 994 | 158 | 2.71 | +99.3 | +2.65% | 4.2% |
+
+- **This pass gives 2.71× and +99.3 µs at 96;** stage 5's 2.59× and +93.9 µs came from a different cell and run. The per-copy time grows ×1.93 per 12 bits, faster than the list length (ns per copy ∝ F^1.46), which points at memory (allocation and cold cache) rather than the words copied. The price per copy grows only ×1.05 per 12 bits.
+
+**Forecast, as a share of total wall:**
+
+| bits | model A (ns per copy keeps growing) | model B (ns per copy stays at 96's 158 ns) |
+|---|---|---|
+| 100 | +159 µs, 3.3% | +120 µs, 2.5% |
+| 108 | +427 µs, 5.3% | +185 µs, 2.3% |
+| 116 | +1,066 µs, 7.9% | +286 µs, 2.1% |
+| 128 | +3,953 µs, 13.3% | +543 µs, 1.8% |
+
+**Urgency, as a model reading:**
+- Inside the project's scope (≤ 100 bits), the copies' excess is 2.5–3.3% of wall: real, but about the size of the ±1.5-point cross-run drift. It does not move a within-run verdict on its own.
+- It matters before any scale-up past ~100 bits only if per-copy time keeps growing (model A). Model B, where per-copy time stops growing, keeps it near 2%.
+- The data cannot tell A from B: the 95% band on ns per copy at 128 bits is 111–7,118 ns. What would separate them is a microbenchmark of one copy at the list lengths of 108 and 120 bits, the measurement stage 5 already proposed.
+
+**What it does not establish.** Each fit rests on three points with one residual degree of freedom, from one information-only pass on one machine. The breakdown's sub-timer overhead sits inside lp:copy's wall and was not measured separately, and that overhead may be part of the "excess". Sizes above 100 bits are outside the project's scope. No re-price is implied; that is the user's decision, after the measurement.
