@@ -1,0 +1,357 @@
+# op-class v1 line map (reviews/opclass_procedure.md, section 4; step 2.1). Written and committed before any count.
+# Source: lampcore/src at the commit that adds this file. Format: file <TAB> first line <TAB> last line <TAB> class <TAB> note.
+# The ranges tile every line of every file in lampcore/src exactly once (opclass/check_map.py checks this).
+#
+# CLASSES
+#   a type of evolve/optypes.TYPE_ORDER - the line's work is paid by a charge of that type;
+#   meter              - the meter and its read-only instrumentation (charges, ticks, tests, event counters, the per-type
+#                        split, the --phasetime / LPBREAK / SIEVEBREAK snaps, charge amounts computed only to be charged);
+#   uncharged:card     - card work the meter's cost model does not charge (prime generation, parameter computation,
+#                        constant tables, per-attempt allocations, the polynomial's c, genome reading);
+#   uncharged:harness  - the driver: input parsing, the stage loop, output;
+#   @caller            - a helper shared by callers of different classes: its cost belongs to the calling line;
+#   decl               - declarations and comments (no instructions expected; any Ir landing here is reported, not dropped).
+#
+# RULES (both derivations apply exactly these)
+#   R1 Meter override: a line whose text, stripped, starts with "m.charge(", "m.tick(", "m.test(", "m.ev(", "crate::pt_",
+#      "crate::sv_units(", or "let pt", "let ps", "let ptl", "let pt_a", "let pt_pre" followed by " = crate::pt_snap", is
+#      class meter whatever its range says.
+#   R2 Inlined code: an instruction is credited to the innermost frame of its DWARF inline chain whose file is in
+#      lampcore/src. If that line's class is @caller, move outward to the next lampcore/src frame, and so on.
+#   R3 Code with no resolvable lampcore/src line (library code not inlined - malloc, memcpy, __divti3, __udivti3,
+#      libm log, ruint or std functions kept out of line - or a non-inlined @caller function): its cost goes to the
+#      lampcore line that called it, through callgrind's call edges: an edge's share of the callee's unresolved cost is
+#      its share of the callee's inclusive Ir. Recursively, until a resolved line is reached.
+#   R4 Cost that reaches no lampcore line (process start-up, the C main shim, exit) is "unattributed" and reported.
+#   R5 Lump mode: in a run whose genome is a single cfrac, sq or ps stage (inputs.json "lump"), every class other
+#      than meter, uncharged:harness and decl counts as that run's lump class (cfrac_ops, sq_ops or ps_ops): the
+#      meter types every op of those lamps as the lump, including the shared ledger and ks_rank code.
+#   R6 Weight per class = the Ir attributed to the class over all runs / the class's op count over all runs, the
+#      counts summed from lampcore --types on the same inputs (the T columns).
+#
+# JUDGEMENT CALLS (stated so they can be reviewed)
+#   - Loop control, index arithmetic, loads, stores and buffer pushes that exist only to carry out a charged piece of
+#     work go with that work's type (e.g. the sieve walk's loop with sieve_update, the root storage with setup_small).
+#   - Lines mixing two types take the dominant one: ecm.rs 48, 55, 57, 232 (a multiply with an add/sub inside) are
+#     mul; pm1 stage 2's acc line (673) is mul; qs confirm's "v /= p" lines are confirm_td, its "ev[j] += 1 / tt.push"
+#     lines are word (the "sets" charged as word).
+#   - The kept relation's storage in the ledger (Ledger::add, qs.rs 387-390) is word (the charged sparse copy). The
+#     partial's storage in the partial table (qs.rs 1272-1274) is hash (the charged insert).
+#   - ks_rank / ks_eval / ks_prep are mapped for their qs meaning (mult, word, f64_log). In sq's "ks" mode they would
+#     be sq_ops (R5 covers this: the sq supplementary run is in lump mode).
+#   - The A-primes' extra exponent adds (qs.rs 1236-1243) are word (item 15 charges them as word).
+#   - race.rs: not exercised by the input set; mapped uncharged:card except the hook (meter).
+#
+lampcore/src/cfrac.rs	1	13	decl	header, uses, consts
+lampcore/src/cfrac.rs	14	107	cfrac_ops	cfrac lamp and source; lump (R5); meter lines by R1
+lampcore/src/ecm.rs	1	23	decl	header, consts, Ctx struct
+lampcore/src/ecm.rs	24	24	decl	impl Ctx
+lampcore/src/ecm.rs	25	33	@caller	Ctx::mul / add / sub: shared by setup (setup_mul), stages 1-2 (mul) and the word adds
+lampcore/src/ecm.rs	34	34	decl	blank
+lampcore/src/ecm.rs	35	35	mul	xdbl entry
+lampcore/src/ecm.rs	36	36	meter	word charge
+lampcore/src/ecm.rs	37	37	word	X + Z
+lampcore/src/ecm.rs	38	39	mul	square (39 meter by R1)
+lampcore/src/ecm.rs	40	40	word	X - Z
+lampcore/src/ecm.rs	41	44	mul	squares and products (meter lines by R1)
+lampcore/src/ecm.rs	45	45	word	t1 - t2
+lampcore/src/ecm.rs	46	51	mul	a24 t3, z2 (48 mixed: mul dominant)
+lampcore/src/ecm.rs	52	52	decl	blank
+lampcore/src/ecm.rs	53	53	mul	xadd entry
+lampcore/src/ecm.rs	54	54	meter	word charge
+lampcore/src/ecm.rs	55	58	mul	uu, vv (mixed: mul dominant)
+lampcore/src/ecm.rs	59	59	word	uu + vv
+lampcore/src/ecm.rs	60	61	mul	square
+lampcore/src/ecm.rs	62	62	word	uu - vv
+lampcore/src/ecm.rs	63	70	mul	square, x3, z3
+lampcore/src/ecm.rs	71	72	decl	blank, doc
+lampcore/src/ecm.rs	73	87	mul	ladder: control of the curve arithmetic
+lampcore/src/ecm.rs	88	89	decl	blank, doc
+lampcore/src/ecm.rs	90	95	uncharged:card	bounds
+lampcore/src/ecm.rs	96	96	decl	blank
+lampcore/src/ecm.rs	97	131	uncharged:card	entry, bounds, primes, prime powers, prime table, baby steps (uncharged precompute)
+lampcore/src/ecm.rs	132	132	decl	blank
+lampcore/src/ecm.rs	133	136	setup_mul	curve loop, sigma, sigma^2
+lampcore/src/ecm.rs	137	137	meter	R1
+lampcore/src/ecm.rs	138	138	word	u = s^2 - 5
+lampcore/src/ecm.rs	139	139	meter	R1
+lampcore/src/ecm.rs	140	140	word	v = 4 sigma (word-level, as charged)
+lampcore/src/ecm.rs	141	149	setup_mul	u^2, u^3, v^2, v^3 (meter lines by R1)
+lampcore/src/ecm.rs	150	150	word	t = v - u
+lampcore/src/ecm.rs	151	155	setup_mul	t^2, t^3 (151 meter by R1)
+lampcore/src/ecm.rs	156	156	word	3u + v
+lampcore/src/ecm.rs	157	163	setup_mul	num, den, 16 den (meter lines by R1)
+lampcore/src/ecm.rs	164	174	setup_euclid_N	extended Euclid for den^-1 mod N
+lampcore/src/ecm.rs	175	176	meter	R1
+lampcore/src/ecm.rs	177	184	setup_euclid_N	the Euclid result's check (meter lines by R1)
+lampcore/src/ecm.rs	185	186	setup_mul	a24
+lampcore/src/ecm.rs	187	192	mul	stage 1
+lampcore/src/ecm.rs	193	193	gcd	stage 1 gcd
+lampcore/src/ecm.rs	194	203	uncharged:card	result checks (meter lines by R1)
+lampcore/src/ecm.rs	204	218	mul	stage 2 baby steps, giant step, ladders
+lampcore/src/ecm.rs	219	226	word	index loop, the two indices, the prime-table tests
+lampcore/src/ecm.rs	227	241	mul	the products and the giant-step xadd (232 mixed: mul dominant)
+lampcore/src/ecm.rs	242	242	gcd	stage 2 gcd
+lampcore/src/ecm.rs	243	252	uncharged:card	result checks (meter lines by R1)
+lampcore/src/ecm.rs	253	260	uncharged:card	gcd_u64 (baby-step table, uncharged)
+lampcore/src/main.rs	1	68	decl	header, uses, mods, consts
+lampcore/src/main.rs	69	123	meter	stage_types: the per-type split
+lampcore/src/main.rs	124	125	decl	type R, blank
+lampcore/src/main.rs	126	265	meter	--phasetime instrumentation, Meter
+lampcore/src/main.rs	266	273	decl	Num
+lampcore/src/main.rs	274	279	uncharged:card	gf, gi: genome reading
+lampcore/src/main.rs	280	292	@caller	bit_length, isqrt, absdiff
+lampcore/src/main.rs	293	295	decl	blank, section comment
+lampcore/src/main.rs	296	302	uncharged:card	td: limit, n, even check
+lampcore/src/main.rs	303	311	td_mod	the division loop (meter lines by R1)
+lampcore/src/main.rs	312	313	uncharged:card	td end
+lampcore/src/main.rs	314	335	decl	section, consts, KsTab
+lampcore/src/main.rs	336	350	uncharged:card	ks_tab: the constant table, once per process
+lampcore/src/main.rs	351	352	decl	blank, doc
+lampcore/src/main.rs	353	359	mult	ks_prep: N mod p and the Legendre powers of N
+lampcore/src/main.rs	360	362	decl	blank, doc
+lampcore/src/main.rs	363	366	mult	ks_eval entry, k N, kN mod 8
+lampcore/src/main.rs	367	367	word	the r8 test
+lampcore/src/main.rs	368	368	f64_log	ln k
+lampcore/src/main.rs	369	383	word	table lookups and the added terms
+lampcore/src/main.rs	384	384	meter	the charge counts
+lampcore/src/main.rs	385	387	decl	end, blank, doc
+lampcore/src/main.rs	388	389	mult	ks_rank entry, ks_prep
+lampcore/src/main.rs	390	390	meter	charge counts
+lampcore/src/main.rs	391	394	word	the per-k loop and score collection (ks_eval's own lines resolve by R2)
+lampcore/src/main.rs	395	397	meter	charge counts
+lampcore/src/main.rs	398	402	word	score collection
+lampcore/src/main.rs	403	404	decl	blank, doc
+lampcore/src/main.rs	405	407	meter	ks_prep_mult: a charge amount
+lampcore/src/main.rs	408	408	decl	blank
+lampcore/src/main.rs	409	420	@caller	powmod_small: ks_tab (uncharged) and ks_prep (mult)
+lampcore/src/main.rs	421	421	decl	blank
+lampcore/src/main.rs	422	520	sq_ops	square search (lump, R5; meter lines by R1)
+lampcore/src/main.rs	521	523	decl	blank, section
+lampcore/src/main.rs	524	530	uncharged:card	rho setup
+lampcore/src/main.rs	531	534	mul	f(v) = v^2 + c
+lampcore/src/main.rs	535	540	uncharged:card	rho state
+lampcore/src/main.rs	541	553	mul	the walk and the q products (meter lines by R1)
+lampcore/src/main.rs	554	554	gcd	gcd
+lampcore/src/main.rs	555	556	meter	R1
+lampcore/src/main.rs	557	565	mul	loop control, backtrack loop entry
+lampcore/src/main.rs	566	567	mul	backtrack step (567 meter by R1)
+lampcore/src/main.rs	568	568	gcd	backtrack gcd
+lampcore/src/main.rs	569	570	meter	R1
+lampcore/src/main.rs	571	575	gcd	backtrack exit test
+lampcore/src/main.rs	576	580	uncharged:card	rho result
+lampcore/src/main.rs	581	610	uncharged:card	p-1 bound, precheck, prime sieve (uncharged: its prime generation)
+lampcore/src/main.rs	611	620	mul	stage 1: prime powers and a^pk (pk's loop is the exponent's construction)
+lampcore/src/main.rs	621	621	meter	R1
+lampcore/src/main.rs	622	622	mul	loop end
+lampcore/src/main.rs	623	623	gcd	stage 1 gcd
+lampcore/src/main.rs	624	625	meter	R1
+lampcore/src/main.rs	626	636	uncharged:card	stage 2 switch, result, doc
+lampcore/src/main.rs	637	643	uncharged:card	stage 2 primes, gap table allocation
+lampcore/src/main.rs	644	662	mul	gap table, X = a^q1 (meter lines by R1)
+lampcore/src/main.rs	663	665	uncharged:card	accumulator state
+lampcore/src/main.rs	666	667	word	prime loop, the gap step's condition
+lampcore/src/main.rs	668	668	meter	R1
+lampcore/src/main.rs	669	669	mul	X step
+lampcore/src/main.rs	670	672	meter	R1 (671 brace)
+lampcore/src/main.rs	673	673	mul	acc (X - 1 inside: mul dominant)
+lampcore/src/main.rs	674	674	meter	R1
+lampcore/src/main.rs	675	676	gcd	batch gcd
+lampcore/src/main.rs	677	678	meter	R1
+lampcore/src/main.rs	679	692	uncharged:card	batch bookkeeping, result, doc
+lampcore/src/main.rs	693	697	uncharged:card	backtrack entry (697 meter by R1)
+lampcore/src/main.rs	698	698	mul	X step
+lampcore/src/main.rs	699	701	meter	R1 (700 brace)
+lampcore/src/main.rs	702	702	gcd	gcd
+lampcore/src/main.rs	703	711	uncharged:card	backtrack bookkeeping (meter lines by R1)
+lampcore/src/main.rs	712	721	decl	block flash comment
+lampcore/src/main.rs	722	824	ps_ops	block flash replay (lump, R5; meter lines by R1)
+lampcore/src/main.rs	825	834	decl	section, Win
+lampcore/src/main.rs	835	877	uncharged:harness	run_stage, run: the stage loop
+lampcore/src/main.rs	878	884	meter	the per-type split per stage
+lampcore/src/main.rs	885	987	uncharged:harness	stage end, main: input, output
+lampcore/src/qs.rs	1	26	decl	header, consts
+lampcore/src/qs.rs	27	49	uncharged:card	gene; primes_upto (prime generation, uncharged)
+lampcore/src/qs.rs	50	52	decl	blank, doc
+lampcore/src/qs.rs	53	69	fb	cpow_small: called only with FB (Legendre, Tonelli; meter lines by R1)
+lampcore/src/qs.rs	70	71	decl	blank, doc
+lampcore/src/qs.rs	72	86	@caller	cpow_n: CHECK (check) and SQRT (sqrt_mul)
+lampcore/src/qs.rs	87	88	decl	blank, doc
+lampcore/src/qs.rs	89	105	setup_euclid	euclid_inv (SETUP only; meter lines by R1)
+lampcore/src/qs.rs	106	107	decl	blank, doc
+lampcore/src/qs.rs	108	124	setup_euclid	euclid_inv64 (SETUP only)
+lampcore/src/qs.rs	125	126	decl	blank, doc
+lampcore/src/qs.rs	127	165	fb	tonelli
+lampcore/src/qs.rs	166	167	decl	blank, doc
+lampcore/src/qs.rs	168	170	meter	sort_cost: a charge amount
+lampcore/src/qs.rs	171	172	decl	blank, doc
+lampcore/src/qs.rs	173	194	@caller	combinations
+lampcore/src/qs.rs	195	195	decl	blank
+lampcore/src/qs.rs	196	215	uncharged:card	lamp_qs entry, multiplier candidates (214 meter by R1)
+lampcore/src/qs.rs	216	216	mult	ks_rank call
+lampcore/src/qs.rs	217	219	meter	R1
+lampcore/src/qs.rs	220	221	sort_cmp	the multiplier ranking
+lampcore/src/qs.rs	222	222	uncharged:card	gene read
+lampcore/src/qs.rs	223	225	meter	R1 (224 brace)
+lampcore/src/qs.rs	226	230	uncharged:card	the bound, the k loop (230 meter by R1)
+lampcore/src/qs.rs	231	231	fb	Ledger::build call
+lampcore/src/qs.rs	232	250	uncharged:card	the attempt loop (meter lines by R1)
+lampcore/src/qs.rs	251	268	decl	Ledger struct
+lampcore/src/qs.rs	269	271	decl	impl, doc
+lampcore/src/qs.rs	272	295	fb	build: the factor base (primes_upto's own lines are uncharged:card)
+lampcore/src/qs.rs	296	311	uncharged:card	the ledger's construction
+lampcore/src/qs.rs	312	320	@caller	rv, full
+lampcore/src/qs.rs	321	323	decl	blank, doc
+lampcore/src/qs.rs	324	346	check	product (CHECK only)
+lampcore/src/qs.rs	347	349	decl	blank, doc
+lampcore/src/qs.rs	350	372	check	check (meter lines by R1)
+lampcore/src/qs.rs	373	375	decl	blank, doc
+lampcore/src/qs.rs	376	379	check	add: the check's call
+lampcore/src/qs.rs	380	382	meter	comment, R1
+lampcore/src/qs.rs	383	386	hash	the dedupe probe-and-insert
+lampcore/src/qs.rs	387	391	word	the kept relation's storage (judgement call)
+lampcore/src/qs.rs	392	394	decl	blank, doc
+lampcore/src/qs.rs	395	397	la	solve entry
+lampcore/src/qs.rs	398	398	meter	R1
+lampcore/src/qs.rs	399	400	la	widths
+lampcore/src/qs.rs	401	402	meter	comment, R1
+lampcore/src/qs.rs	403	415	word	bit rows from the sparse relations
+lampcore/src/qs.rs	416	417	meter	comment, R1
+lampcore/src/qs.rs	418	424	word	combination matrix
+lampcore/src/qs.rs	425	444	la	the elimination
+lampcore/src/qs.rs	445	445	meter	R1
+lampcore/src/qs.rs	446	447	word	zero-row scan, dependency copies
+lampcore/src/qs.rs	448	449	meter	R1, blank
+lampcore/src/qs.rs	450	454	word	dependency loop, member scan, entry count
+lampcore/src/qs.rs	455	455	meter	R1
+lampcore/src/qs.rs	456	465	sqrt_mul	X (meter lines by R1)
+lampcore/src/qs.rs	466	471	word	exponent sums
+lampcore/src/qs.rs	472	493	sqrt_mul	Y, large primes (cpow_n resolves here by R2/R3; meter lines by R1)
+lampcore/src/qs.rs	494	501	sqrt_gcd	the gcd
+lampcore/src/qs.rs	502	503	meter	R1
+lampcore/src/qs.rs	504	504	sqrt_gcd	result test
+lampcore/src/qs.rs	505	505	meter	R1
+lampcore/src/qs.rs	506	512	uncharged:card	result
+lampcore/src/qs.rs	513	533	decl	OnDemand doc, struct
+lampcore/src/qs.rs	534	540	uncharged:card	OnDemand::new: the prefix list (uncharged)
+lampcore/src/qs.rs	541	561	word	next: pass control, prefix, overlap check, A' (meter lines by R1)
+lampcore/src/qs.rs	562	562	f64_div	t' = target / A'
+lampcore/src/qs.rs	563	565	word	rest (563 meter by R1)
+lampcore/src/qs.rs	566	573	f64_log	the closeness scan (logs)
+lampcore/src/qs.rs	574	579	word	removal, A (meter lines by R1)
+lampcore/src/qs.rs	580	582	f64_log	target check
+lampcore/src/qs.rs	583	585	sort_cmp	the key and its sort
+lampcore/src/qs.rs	586	598	word	overlap compare, accept (meter lines by R1)
+lampcore/src/qs.rs	599	599	decl	blank
+lampcore/src/qs.rs	600	606	uncharged:card	sieve_source entry, per-attempt values (601 meter by R1)
+lampcore/src/qs.rs	607	607	@caller	pos: a base index lookup, used by setup (785) and the A-prime adds (1238)
+lampcore/src/qs.rs	608	622	uncharged:card	logp, target, pool
+lampcore/src/qs.rs	623	623	setup_small	M mod p
+lampcore/src/qs.rs	624	624	meter	R1
+lampcore/src/qs.rs	625	633	uncharged:card	s, q, pool size
+lampcore/src/qs.rs	634	639	sort_cmp	pool selection and sort
+lampcore/src/qs.rs	640	654	uncharged:card	sort_charge gene, a_mode, OnDemand::new call (meter lines by R1)
+lampcore/src/qs.rs	655	655	word	enumerate: combinations
+lampcore/src/qs.rs	656	656	meter	R1
+lampcore/src/qs.rs	657	658	sort_cmp	enumerate: candidate sort
+lampcore/src/qs.rs	659	664	meter	sort_charge amounts (R1)
+lampcore/src/qs.rs	665	679	uncharged:card	lc, L, threshold, width, pp gene, power-entry state
+lampcore/src/qs.rs	680	715	setup_small	power entries (686 and 844-type inverse calls resolve to setup_euclid by R2; meter lines by R1)
+lampcore/src/qs.rs	716	716	meter	R1
+lampcore/src/qs.rs	717	735	uncharged:card	genes, per-attempt buffers
+lampcore/src/qs.rs	736	736	word	the exponent vector (charged F word)
+lampcore/src/qs.rs	737	740	uncharged:card	per-attempt buffers
+lampcore/src/qs.rs	741	742	word	re-sieve slot array and stamps (charged)
+lampcore/src/qs.rs	743	743	uncharged:card	gen
+lampcore/src/qs.rs	744	745	meter	R1, comment
+lampcore/src/qs.rs	746	746	setup_small	reciprocals (charged SETUP f - 2)
+lampcore/src/qs.rs	747	749	meter	R1
+lampcore/src/qs.rs	750	760	uncharged:card	root-confirm buffers, ka, the A loop (759 meter by R1)
+lampcore/src/qs.rs	761	761	meter	R1
+lampcore/src/qs.rs	762	779	uncharged:card	next A (OnDemand::next's lines resolve by themselves), A, B list
+lampcore/src/qs.rs	780	789	setup_small	A/q, gamma (784 euclid_inv resolves to setup_euclid; meter lines by R1)
+lampcore/src/qs.rs	790	790	word	B_l (a word multiply)
+lampcore/src/qs.rs	791	791	meter	R1
+lampcore/src/qs.rs	792	792	setup_small	brace
+lampcore/src/qs.rs	793	803	uncharged:card	per-A arrays, B, the asserts
+lampcore/src/qs.rs	804	831	setup_small	roots per base prime and their storage (810 resolves to setup_euclid by R2; meter lines by R1)
+lampcore/src/qs.rs	832	835	uncharged:card	power-entry arrays
+lampcore/src/qs.rs	836	861	setup_small	power-entry roots (844 resolves to setup_euclid by R2)
+lampcore/src/qs.rs	862	862	word	the parity class
+lampcore/src/qs.rs	863	864	meter	R1
+lampcore/src/qs.rs	865	890	word	2'a offsets, 2'b ka / tm (meter lines by R1)
+lampcore/src/qs.rs	891	893	uncharged:card	signs, the polynomial loop (891 meter by R1)
+lampcore/src/qs.rs	894	894	meter	R1
+lampcore/src/qs.rs	895	922	setup_gray	the Gray switch
+lampcore/src/qs.rs	923	925	meter	R1
+lampcore/src/qs.rs	926	926	uncharged:card	c = (B^2 - kN) / A
+lampcore/src/qs.rs	927	929	meter	R1
+lampcore/src/qs.rs	930	930	sieve_scan	the array clear
+lampcore/src/qs.rs	931	932	meter	R1
+lampcore/src/qs.rs	933	938	sieve_scan	the free 2's writes (934 meter by R1)
+lampcore/src/qs.rs	939	943	meter	R1, update counters
+lampcore/src/qs.rs	944	949	sieve_update	the base-prime walk (offset kept: 2'a)
+lampcore/src/qs.rs	950	955	word	start offset without goff
+lampcore/src/qs.rs	956	962	sieve_update	the walk
+lampcore/src/qs.rs	963	971	meter	the update count, R1
+lampcore/src/qs.rs	972	972	meter	R1
+lampcore/src/qs.rs	973	977	sieve_update	the power walk
+lampcore/src/qs.rs	978	983	word	start offset without goff
+lampcore/src/qs.rs	984	990	sieve_update	the power walk
+lampcore/src/qs.rs	991	1007	meter	update count, charges, the free-2 count (R1)
+lampcore/src/qs.rs	1008	1030	word	root confirm without goff: offsets stored
+lampcore/src/qs.rs	1031	1037	meter	R1
+lampcore/src/qs.rs	1038	1039	sieve_scan	the scan
+lampcore/src/qs.rs	1040	1043	meter	R1, comments
+lampcore/src/qs.rs	1044	1071	word	re-sieve (meter lines by R1)
+lampcore/src/qs.rs	1072	1072	meter	walk count
+lampcore/src/qs.rs	1073	1078	word	re-sieve
+lampcore/src/qs.rs	1079	1079	meter	walk count
+lampcore/src/qs.rs	1080	1099	word	re-sieve walk, clears, direct list (meter lines by R1)
+lampcore/src/qs.rs	1100	1101	meter	R1, comment
+lampcore/src/qs.rs	1102	1102	word	the candidate loop
+lampcore/src/qs.rs	1103	1103	meter	R1
+lampcore/src/qs.rs	1104	1105	word	x, v (two word multiply-adds)
+lampcore/src/qs.rs	1106	1106	meter	R1
+lampcore/src/qs.rs	1107	1125	word	plist, re-sieve merge, sign (meter lines by R1)
+lampcore/src/qs.rs	1126	1130	meter	R1
+lampcore/src/qs.rs	1131	1144	word	the sign, v = 0 (meter lines by R1)
+lampcore/src/qs.rs	1145	1170	root_test	the root test
+lampcore/src/qs.rs	1171	1171	meter	R1
+lampcore/src/qs.rs	1172	1176	word	the prime 2's low-bit test
+lampcore/src/qs.rs	1177	1182	confirm_td	A's primes, v mod p (1178 meter by R1)
+lampcore/src/qs.rs	1183	1183	meter	R1
+lampcore/src/qs.rs	1184	1199	word	the hit-list merge (1198 meter by R1)
+lampcore/src/qs.rs	1200	1205	confirm_td	trial division
+lampcore/src/qs.rs	1206	1207	word	ev, tt: the sets
+lampcore/src/qs.rs	1208	1209	confirm_td	repeated division
+lampcore/src/qs.rs	1210	1210	word	ev
+lampcore/src/qs.rs	1211	1214	confirm_td	division loop end (1211 meter by R1)
+lampcore/src/qs.rs	1215	1216	meter	R1
+lampcore/src/qs.rs	1217	1223	word	smooth test, the bound check (1221 meter by R1)
+lampcore/src/qs.rs	1224	1224	meter	R1
+lampcore/src/qs.rs	1225	1232	word	not a relation: the clear (meter lines by R1)
+lampcore/src/qs.rs	1233	1233	word	u
+lampcore/src/qs.rs	1234	1234	meter	R1
+lampcore/src/qs.rs	1235	1250	word	the A-primes, the sparse copy, the clear (1247 meter by R1)
+lampcore/src/qs.rs	1251	1253	meter	R1
+lampcore/src/qs.rs	1254	1254	word	led.add call (Ledger::add's lines resolve by themselves)
+lampcore/src/qs.rs	1255	1262	word	control after a full relation (meter lines by R1)
+lampcore/src/qs.rs	1263	1263	meter	R1
+lampcore/src/qs.rs	1264	1264	lp_small	N mod q
+lampcore/src/qs.rs	1265	1267	lp_small	q divides N (1265 meter by R1)
+lampcore/src/qs.rs	1268	1269	meter	R1
+lampcore/src/qs.rs	1270	1270	hash	lookup
+lampcore/src/qs.rs	1271	1271	meter	R1
+lampcore/src/qs.rs	1272	1274	hash	insert and the partial's storage (judgement call)
+lampcore/src/qs.rs	1275	1279	hash	insert path end (meter lines by R1)
+lampcore/src/qs.rs	1280	1280	meter	R1
+lampcore/src/qs.rs	1281	1283	lp_full	u1 u mod N
+lampcore/src/qs.rs	1284	1285	meter	R1, comment
+lampcore/src/qs.rs	1286	1298	word	the combination
+lampcore/src/qs.rs	1299	1302	meter	R1
+lampcore/src/qs.rs	1303	1303	word	led.add call
+lampcore/src/qs.rs	1304	1314	word	control after the combination's add, end (meter lines by R1)
+lampcore/src/race.rs	1	42	uncharged:card	race (not exercised by the input set)
+lampcore/src/race.rs	43	62	meter	the hook (called from Meter::tick)
+lampcore/src/race.rs	63	175	uncharged:card	race (not exercised by the input set)

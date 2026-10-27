@@ -1,0 +1,439 @@
+{
+ "runs": [
+  {
+   "run": "A_ref_72",
+   "genome": [
+    {
+     "t": "qs",
+     "kc": 36,
+     "bc": 0.5756142014438969,
+     "mc": 0.39311215850603015,
+     "tc": 1.5279853943858501,
+     "lc": 1.6980366036702557,
+     "a_mode": "on_demand",
+     "sort_charge": 1,
+     "kset": "sf32",
+     "goff": 1
+    }
+   ],
+   "cap": 268435456,
+   "numbers": 480,
+   "lump": null,
+   "why": "qs reference (2'a), all map numbers",
+   "sha256": "51b6964e45d7c7d6d5dc9d3ab1db00f1ce04233fd0ccd2102f4a06dc329cddeb"
+  },
+  {
+   "run": "A_2b_72",
+   "genome": [
+    {
+     "t": "qs",
+     "kc": 36,
+     "bc": 0.5756142014438969,
+     "mc": 0.39311215850603015,
+     "tc": 1.5279853943858501,
+     "lc": 1.6980366036702557,
+     "a_mode": "on_demand",
+     "sort_charge": 1,
+     "kset": "sf32",
+     "goff": 1,
+     "confirm": "root"
+    }
+   ],
+   "cap": 268435456,
+   "numbers": 480,
+   "lump": null,
+   "why": "2'b, all map numbers",
+   "sha256": "ca9adfa1a06649286986016b2779625a181dc59a7c2931a422c9c55276568e67"
+  },
+  {
+   "run": "A_ref_84",
+   "genome": [
+    {
+     "t": "qs",
+     "kc": 32,
+     "bc": 0.5258029693118351,
+     "mc": 0.5118651317214798,
+     "tc": 1.456939234548333,
+     "lc": 1.6411709038747615,
+     "a_mode": "on_demand",
+     "sort_charge": 1,
+     "kset": "sf32",
+     "goff": 1
+    }
+   ],
+   "cap": 268435456,
+   "numbers": 560,
+   "lump": null,
+   "why": "qs reference (2'a), all map numbers",
+   "sha256": "059cd7544e014d0cfdaaf40c590023903f961d409886e7c7bfc5be25945a84d2"
+  },
+  {
+   "run": "A_2b_84",
+   "genome": [
+    {
+     "t": "qs",
+     "kc": 32,
+     "bc": 0.5258029693118351,
+     "mc": 0.5118651317214798,
+     "tc": 1.456939234548333,
+     "lc": 1.6411709038747615,
+     "a_mode": "on_demand",
+     "sort_charge": 1,
+     "kset": "sf32",
+     "goff": 1,
+     "confirm": "root"
+    }
+   ],
+   "cap": 268435456,
+   "numbers": 560,
+   "lump": null,
+   "why": "2'b, all map numbers",
+   "sha256": "59403fa44ddebce70d6ffaa7648e6fb2490970d443ac8cf823bc86f1a43f78c2"
+  },
+  {
+   "run": "A_ref_96",
+   "genome": [
+    {
+     "t": "qs",
+     "kc": 60,
+     "bc": 0.43245193099307744,
+     "mc": 0.6023151214915646,
+     "tc": 1.035307067324659,
+     "lc": 1.9736809858022166,
+     "a_mode": "on_demand",
+     "sort_charge": 1,
+     "kset": "sf32",
+     "goff": 1
+    }
+   ],
+   "cap": 268435456,
+   "numbers": 640,
+   "lump": null,
+   "why": "qs reference (2'a), all map numbers",
+   "sha256": "cba335bd3d6173d9c647bb49e0d98ef16e6ce6cc5277498232b1cf90f68c0e6b"
+  },
+  {
+   "run": "A_2b_96",
+   "genome": [
+    {
+     "t": "qs",
+     "kc": 60,
+     "bc": 0.43245193099307744,
+     "mc": 0.6023151214915646,
+     "tc": 1.035307067324659,
+     "lc": 1.9736809858022166,
+     "a_mode": "on_demand",
+     "sort_charge": 1,
+     "kset": "sf32",
+     "goff": 1,
+     "confirm": "root"
+    }
+   ],
+   "cap": 268435456,
+   "numbers": 640,
+   "lump": null,
+   "why": "2'b, all map numbers",
+   "sha256": "6e7c9b050209ffbbda8adb12e8d1137377ccba2906e788fc7a565205393fd935"
+  },
+  {
+   "run": "B_pipe_54",
+   "genome": [
+    {
+     "t": "td",
+     "a": 0.5,
+     "ob": 0
+    },
+    {
+     "t": "rho",
+     "c": 1,
+     "b": 64,
+     "ob": 0
+    },
+    {
+     "t": "pm1",
+     "b": 0.19911571277067214,
+     "B": 256,
+     "ob": 512
+    },
+    {
+     "t": "ecm",
+     "b1": 1.0,
+     "b2": 50,
+     "ob": 0
+    },
+    {
+     "t": "qs",
+     "kc": 23,
+     "bc": 0.8696729773490585,
+     "mc": 0.5070692870014963,
+     "tc": 1.3178893128940554,
+     "lc": 1.7412579015711334,
+     "a_mode": "on_demand",
+     "sort_charge": 1,
+     "kset": "sf32",
+     "goff": 1
+    }
+   ],
+   "cap": 268435456,
+   "numbers": 320,
+   "lump": null,
+   "why": "reference pipeline (td, rho, p-1, ecm, qs; budgets (d)), all map numbers",
+   "sha256": "27daebd6a88c9756e8f4f69e4a883644773f877340b0e585db6b4569927369c8"
+  },
+  {
+   "run": "B_pipe_72",
+   "genome": [
+    {
+     "t": "td",
+     "a": 0.5,
+     "ob": 0
+    },
+    {
+     "t": "rho",
+     "c": 1,
+     "b": 64,
+     "ob": 790
+    },
+    {
+     "t": "pm1",
+     "b": 0.19911571277067214,
+     "B": 512,
+     "ob": 1024
+    },
+    {
+     "t": "ecm",
+     "b1": 1.0,
+     "b2": 50,
+     "ob": 0
+    },
+    {
+     "t": "qs",
+     "kc": 36,
+     "bc": 0.5756142014438969,
+     "mc": 0.39311215850603015,
+     "tc": 1.5279853943858501,
+     "lc": 1.6980366036702557,
+     "a_mode": "on_demand",
+     "sort_charge": 1,
+     "kset": "sf32",
+     "goff": 1
+    }
+   ],
+   "cap": 268435456,
+   "numbers": 480,
+   "lump": null,
+   "why": "reference pipeline (td, rho, p-1, ecm, qs; budgets (d)), all map numbers",
+   "sha256": "9cdc0f21b02b754ee8c138776584e8b2b2d9232ecb2d3f62e2f66dda20b6a06c"
+  },
+  {
+   "run": "B_pipe_84",
+   "genome": [
+    {
+     "t": "td",
+     "a": 0.5,
+     "ob": 0
+    },
+    {
+     "t": "rho",
+     "c": 1,
+     "b": 64,
+     "ob": 3158
+    },
+    {
+     "t": "pm1",
+     "b": 0.19911571277067214,
+     "B": 2048,
+     "ob": 4096
+    },
+    {
+     "t": "ecm",
+     "b1": 1.0,
+     "b2": 50,
+     "ob": 0
+    },
+    {
+     "t": "qs",
+     "kc": 32,
+     "bc": 0.5258029693118351,
+     "mc": 0.5118651317214798,
+     "tc": 1.456939234548333,
+     "lc": 1.6411709038747615,
+     "a_mode": "on_demand",
+     "sort_charge": 1,
+     "kset": "sf32",
+     "goff": 1
+    }
+   ],
+   "cap": 268435456,
+   "numbers": 560,
+   "lump": null,
+   "why": "reference pipeline (td, rho, p-1, ecm, qs; budgets (d)), all map numbers",
+   "sha256": "b2d3104a2abfdffd44345e3c434903c81ed5f41613a58d98072adff9c36ae368"
+  },
+  {
+   "run": "B_pipe_96",
+   "genome": [
+    {
+     "t": "td",
+     "a": 0.5,
+     "ob": 0
+    },
+    {
+     "t": "rho",
+     "c": 1,
+     "b": 64,
+     "ob": 10624
+    },
+    {
+     "t": "pm1",
+     "b": 0.19911571277067214,
+     "B": 4096,
+     "ob": 8192
+    },
+    {
+     "t": "ecm",
+     "b1": 1.0,
+     "b2": 50,
+     "ob": 0
+    },
+    {
+     "t": "qs",
+     "kc": 60,
+     "bc": 0.43245193099307744,
+     "mc": 0.6023151214915646,
+     "tc": 1.035307067324659,
+     "lc": 1.9736809858022166,
+     "a_mode": "on_demand",
+     "sort_charge": 1,
+     "kset": "sf32",
+     "goff": 1
+    }
+   ],
+   "cap": 268435456,
+   "numbers": 640,
+   "lump": null,
+   "why": "reference pipeline (td, rho, p-1, ecm, qs; budgets (d)), all map numbers",
+   "sha256": "67aa7e5b45c6356de9d9de2192509003240d4007559bc93425ee0e8fb8358a03"
+  },
+  {
+   "run": "C_ecm",
+   "genome": [
+    {
+     "t": "ecm",
+     "b1": 1.0,
+     "b2": 50
+    }
+   ],
+   "cap": 2097152,
+   "numbers": 96,
+   "lump": null,
+   "why": "ecm alone: the reference pipelines give ecm a budget of 0 (setup_mul, setup_euclid_N, and ecm's mul / gcd / word)",
+   "sha256": "170d0af0c7718d0ee89e60e430797047560e84db5dcb217687441d3cedd49b2d"
+  },
+  {
+   "run": "C_pm1s2",
+   "genome": [
+    {
+     "t": "pm1",
+     "b": 0.2,
+     "B": 2048,
+     "c": 20
+    }
+   ],
+   "cap": 2097152,
+   "numbers": 96,
+   "lump": null,
+   "why": "p-1 with stage 2 (gene c): the reference pipelines run stage 1 only",
+   "sha256": "160c9e58d7d5368fc84eb8a3d9d616f8d80ef69d0a0bec51684bd1eb630ba7ad"
+  },
+  {
+   "run": "C_sq",
+   "genome": [
+    {
+     "t": "sq",
+     "mode": "seqm",
+     "mult": 60,
+     "k": 0.3,
+     "w": 0.25,
+     "c": 1.2,
+     "ksq": false,
+     "r": 64
+    }
+   ],
+   "cap": 2097152,
+   "numbers": 48,
+   "lump": "sq_ops",
+   "why": "sq (parity's genome): no reference pipeline runs it",
+   "sha256": "e1bd5a34774bb2abd5a880ebddba3bc1a117032aceb1fd16b9a13c086e8d96bf"
+  },
+  {
+   "run": "C_ps",
+   "genome": [
+    {
+     "t": "ps",
+     "a": 0.5,
+     "s": 0.25,
+     "c": 1.0
+    }
+   ],
+   "cap": 2097152,
+   "numbers": 48,
+   "lump": "ps_ops",
+   "why": "ps (parity's genome): no reference pipeline runs it",
+   "sha256": "f4e38813812ca11543dedfc1d99d7be5e8b4dee8e5b522bb2b925a7ba7995192"
+  },
+  {
+   "run": "C_cfrac",
+   "genome": [
+    {
+     "t": "cfrac",
+     "kc": 32,
+     "bc": 1.1
+    }
+   ],
+   "cap": 268435456,
+   "numbers": 24,
+   "lump": "cfrac_ops",
+   "why": "cfrac (parity's genome): no reference pipeline runs it",
+   "sha256": "8e2a77004ea82f79dbd3ac9efe2fd1ed52804a8da983ffa92df06cf7e6eb1546"
+  },
+  {
+   "run": "C_td",
+   "genome": [
+    {
+     "t": "td",
+     "a": 0.5
+    }
+   ],
+   "cap": 2097152,
+   "numbers": 16,
+   "lump": null,
+   "why": "td alone: the reference pipelines give td a budget of 0 (td_mod)",
+   "sha256": "cd5dec108084d4075a674cc4170ffd421a1d0b43b18ce7b823230c0fc7841b18"
+  },
+  {
+   "run": "C_check",
+   "genome": [
+    {
+     "t": "qs",
+     "kc": 36,
+     "bc": 0.5756142014438969,
+     "mc": 0.39311215850603015,
+     "tc": 1.5279853943858501,
+     "lc": 1.6980366036702557,
+     "a_mode": "on_demand",
+     "sort_charge": 1,
+     "kset": "sf32",
+     "goff": 1,
+     "check": 1
+    }
+   ],
+   "cap": 268435456,
+   "numbers": 48,
+   "lump": null,
+   "why": "the ledger check (gene check, off by default): no reference run charges it",
+   "sha256": "d44784aaa26c73dd8e7b0807ab8c14cefa9a2b6ce2727d930b02af58c00aebb1"
+  }
+ ],
+ "note": "op-class v1 input set; committed before any count (step 2.1)"
+}

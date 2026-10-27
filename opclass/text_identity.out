@@ -1,0 +1,39 @@
+functions: release 1144, debug = 1 1144
+bodies only in release: 1 ['main']
+bodies only in debug = 1: 1 ['main']
+release main 
+  push   %rax
+  mov    %rsi,%rcx
+  movslq %edi,%rdx
+  lea    -H(%rip),%rax
+  mov    %rax,(%rsp)
+  lea    H(%rip),%rsi
+  mov    %rsp,%rdi
+  xor    %r8d,%r8d
+  call   *H(%rip)
+  pop    %rcx
+  ret
+  int3
+  int3
+  int3
+  int3
+  int3
+  int3
+  int3
+  int3
+  int3
+debug = 1 main 
+  push   %rax
+  mov    %rsi,%rcx
+  movzbl -H(%rip),%eax
+  movslq %edi,%rdx
+  lea    -H(%rip),%rax
+  mov    %rax,(%rsp)
+  lea    H(%rip),%rsi
+  mov    %rsp,%rdi
+  xor    %r8d,%r8d
+  call   *H(%rip)
+  pop    %rcx
+  ret
+  int3
+  int3
