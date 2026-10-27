@@ -9,7 +9,7 @@
 
 Written by Claude Code, Oct 27 (overnight stage 6), from the reviewer's notes and DeepSeek's and Grok's second views (NOTES).
 
-**Revised Oct 27 after the reviewer's review** (NOTES, "Reviewer's review of the draft"): the rule options (sections 1 and 7), the counting method (section 4: whole-run dynamic count primary, static bodies secondary), publication per class (section 4), and independent derivation (section 6). Checked against requirements 1–6 and scope (NOTES, "Requirements for the op-class procedure", "Requirement 6").
+**Revised Oct 27 after the reviewer's review** (NOTES, "Reviewer's review of the draft"): the rule options (sections 1 and 7), the counting method (section 4: whole-run dynamic count primary, static bodies secondary), publication per class (section 4), and independent derivation (section 6). Checked against requirements 1–6 and scope (NOTES, "Requirements for the op-class procedure", "Requirement 6"). **Revised again Oct 27 for scope:** every type any card charges (section 2), and an input set that exercises every class (section 4).
 
 ## 1. What the fraction is for
 
@@ -25,25 +25,36 @@ Written by Claude Code, Oct 27 (overnight stage 6), from the reviewer's notes an
 
 ## 2. The op classes
 
-Every type in `evolve/optypes.TYPE_ORDER` that the qs card charges gets a weight. Each class is represented by **the card's own code that performs one charged op of that class**, at the commit where the procedure is adopted:
+**Scope: every type in `evolve/optypes.TYPE_ORDER` that any card charges**, not only qs's: qs, ecm, p−1 (stage 1 and stage 2), rho, cfrac and sq, td, and the pipeline glue. Every one gets a weight. The line map (section 4) assigns every line of every card's charged code to one of these classes, or to "meter" or "uncharged".
 
-| class | what one charged op is (as charged today) | representative sequence (lampcore) |
+The card list per type below is from `evolve/optypes.py` (its docstring, `qs_counts`, `ecm_counts`, `rho_counts`). It is confirmed against every charge site in lampcore when the line map is written, and any difference is recorded there.
+
+| class | cards that charge it | what one charged op is (as charged today) |
 |---|---|---|
-| sieve_update | one `arr[i] += logp` at a prime stride | the inner `while i0 < width` loop of the base-prime walk (`qs.rs`, sieve) |
-| sieve_scan | one cell of the per-polynomial width charge (clear and scan), and one free-2 write | the array clear, the scan's compare, the free-2 store, per cell |
-| word | one word-level add, compare or store (start offsets, Gray steps, ka / tm builds, confirm's per-candidate words) | each charged site's statement |
-| setup_gray | one root update in the Gray switch | the per-root update loop |
-| root_test | one root test of a candidate against a prime | the branch-free test in the root-confirm loop |
-| confirm_td | one trial division (i128 v mod p) | the confirm loop body |
-| setup_small, fb, mult | one small-modulus reduction (i64 or i128) | the setup and factor-base loops |
-| setup_euclid | one Euclid division step | `euclid_inv64`'s loop body |
-| la | one 64-bit XOR of the dense elimination | the elimination's row XOR |
-| hash | one large-prime table lookup or insert | the HashMap call site in lp_ledger |
-| lp_small, lp_full | the ledger's small-modulus and full ops | their sites |
-| sort_cmp, f64_log, f64_div | one comparison, one log, one division | their sites |
-| sqrt_mul, sqrt_gcd | one full multiply, one gcd step | the square-root stage |
+| sieve_update | qs | one `arr[i] += logp` at a prime stride (base primes; prime powers with pp) |
+| sieve_scan | qs | one cell of the per-polynomial width charge (clear and scan), and one free-2 write |
+| root_test | qs (confirm = root) | one root test of a candidate against a prime |
+| confirm_td | qs | one trial division (i128 v mod p) |
+| setup_small, fb, mult | qs | one small-modulus reduction (i64 or i128) in setup, the factor base, the multiplier choice |
+| setup_euclid | qs | one Euclid division step (`euclid_inv64`) |
+| setup_gray | qs | one root update in the Gray switch |
+| la | qs | one 64-bit XOR of the dense elimination |
+| sqrt_mul, sqrt_gcd | qs | one full multiply; one gcd step (the square-root stage) |
+| lp_small, lp_full | qs | the ledger's small-modulus and full ops |
+| check | qs (gene `check`, off by default) | the ledger's charged relation check |
+| hash | qs | one large-prime table lookup or insert |
+| sort_cmp | qs (and any card that sorts under `sort_charge`) | one comparison |
+| f64_log, f64_div | qs (and the multiplier ranking, I-021) | one log; one division |
+| setup_mul, setup_euclid_N | ecm | one curve-setup multiply mod N; one Euclid step of the curve's inverse mod N |
+| mul | ecm (stages 1 and 2), p−1 (stages 1 and 2), rho | one multiply mod N |
+| gcd | ecm, p−1, rho | one gcd with N (rho: one luck-meter test) |
+| td_mod | td | one N mod d |
+| cfrac_ops, sq_ops, ps_ops | cfrac, sq, ps | one op of the lamp's single untyped lump |
+| word | qs, ecm, and the pipeline glue | one word-level add, compare or store at a charged site |
 
-- **Where one charged op covers a variable amount of work** (a Euclid step, an i128 division whose instruction count depends on operand size, a HashMap call): the representative is the steady-state path that the charge describes. Its instruction count is taken as written below, without guessing branches.
+- **Charged by no card today:** setup_full and confirm_full. Since the audit re-typing their counts are always 0 (`qs_counts`), so they get no weight; they are listed so the table covers TYPE_ORDER in full.
+- **Untyped lumps** (cfrac_ops, sq_ops, ps_ops): one charged "op" covers different work at different sites, so a weight per lump op is an average over the input set's mix. It is published with the mix it was measured on. Splitting the lumps into typed ops would be a meter change (cost model first), not part of this procedure.
+- **Where one charged op covers a variable amount of work** (a Euclid step, an i128 division whose instruction count depends on operand size, a multiply mod N whose limb count depends on N, a HashMap call): the whole-run count averages it over the input set. That is why the input set is committed with the weights. The static cross-check takes the steady-state path the charge describes.
 
 ## 3. ISA, compiler, settings (fixed)
 
@@ -56,7 +67,11 @@ Every type in `evolve/optypes.TYPE_ORDER` that the qs card charges gets a weight
 
 **Primary: a whole-run dynamic count** (requirement 6: no hand-picked sequences).
 - **Binary:** the frozen release binary of section 3, with its sha256 recorded.
-- **Input set:** fixed and committed before counting. It is the map numbers at 72, 84 and 96 bits, run with the reference genome and with 2′b.
+- **Input set:** fixed and committed before counting. It must exercise every class of section 2:
+  - the map numbers at 72, 84 and 96 bits, run with the qs reference genome and with 2′b;
+  - the reference **pipelines** (all lamps: td, rho, p−1 with stage 2, ecm, cfrac/sq and qs, with the pipeline glue) on the map numbers at 54–96 bits;
+  - for a class no reference pipeline charges (e.g. `check`, a gene off by default), a committed supplementary run with the gene or lamp that charges it, named in the input set.
+- **Coverage requirement:** every class in section 2's scope must end with a nonzero op count and nonzero attributed Ir. Some classes may have too few ops for a stable weight; for example, with `--types` split by number, the weight's spread across numbers is wider than 2%. Such classes are listed, with their counts, and resolved in writing before step 3 (of the order at the top of this file): more inputs, merged into a named class, or left unweighted with the reason.
 - **Tool:** the whole run executes under callgrind, and its Ir (instructions retired, counted deterministically, not timed) is attributed to source lines. The line info comes from a `debug = 1` build, whose `.text` is checked identical to the release build.
 - **Line map:** a source-line → op-class map covers **every line in the card's charged code**. The classes are those of section 2, plus "meter" (the charge calls' own bookkeeping) and "uncharged" (code the meter does not charge, e.g. setup that is not counted). The map is written and committed before any count is taken.
 - **Weight per class** = the Ir attributed to that class ÷ the meter's charged op count for that class in the same run, read from the card's own per-type counters (`--types`) on the same inputs.
