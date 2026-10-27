@@ -243,3 +243,23 @@ It needs no kernel or privilege changes and immediately places the current SIQS 
 - **Grok's G-1..G-6 and "Optional" are on file verbatim** (received 20:54 Oct 26 PT; filed late).
 - **Still placeholders:** DeepSeek's full first reply (D-1..D-7 are on file as transcribed) and DeepSeek's third reply (D-10, information only).
 - **2′b is built, in commit 5f0007a** (cost model 18efd55). With goff = 1 and confirm = root, root confirm's per-polynomial pass is removed, and the root test reads the kept offsets in place through the per-A `ka` index. The runner's 2′b cells now take this path. The earlier line "2′b is not built" is superseded.
+
+### Conditions for the run (recorded before launch, Oct 26 ~22:00 PT)
+
+**As the user states them:**
+- Laptop on a fan cooling pad, plugged in, untouched during the run.
+- Desk or lap: **not specified** (the user's brief listed both options).
+- Charger: **not specified** (the brief listed both the original Dell charger and a non-original ~49 W USB-C charger at 15 V).
+- Desktop Mathematica: exited by the user.
+- Chrome and Firefox: **left open** by the user's choice.
+- Frequency cap set by the user to 2.4 GHz.
+
+**Machine-read** just before the launch (Claude Code changed nothing):
+- **Frequency limits:** scaling_max_freq 2,400 MHz on all 8 cores; scaling_min_freq 400 MHz; turbo enabled (no_turbo 0); max_perf_pct 100; governor powersave.
+- **Power:** AC online (USB-C port 1); battery 100%, not charging. TCPU 44 °C.
+- **Mathematica:** no WolframNB, WolframKernel or XML.exe processes.
+- **Browsers:** 26 Chrome/Firefox processes running. In a 1 s sample several Chrome processes used ~1–7% CPU each.
+
+**Earlier timed runs** (root-confirm, root-confirm-2), per the user: the laptop was on the user's lap without a pad, with video playback and desktop Mathematica open at times. These are recorded as likely causes of the 99–100 °C throttling and the wide intervals.
+
+**Scoring note:** R2-8, D-7 and G-5 (interval widths) were sealed assuming no cap. They are scored as written, with the 2.4 GHz cap noted.
