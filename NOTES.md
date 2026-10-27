@@ -8936,6 +8936,25 @@ Yes, substantially. Against 2'b directly, pp3 is +0.7% wall at +1 and −0.9% at
 
 **Use:** this list (DeepSeek's requirements, with the two notes above) is the checklist when the draft (`reviews/opclass_procedure_DRAFT.md`) is reviewed. Not yet applied to the draft; the draft is unchanged.
 
+### Grok on the op-class requirements (received 05:19 Oct 27 PT; information only; verbatim)
+
+<!-- verbatim begin -->
+[PLACEHOLDER: Grok's reply was not included in the brief that recorded it; to be pasted verbatim.]
+<!-- verbatim end -->
+
+**The reviewer's notes:**
+- **Q1 is correct:** the checklist does not constrain which sequences are chosen. A cherry-picked pair could pass every item.
+- **Q2:** the G-8 84-bit miss came from a range too narrow on the large side (it underestimated the effect), not from caution. Grok's low falsification count more likely reflects fewer predictions and two-condition falsifiers.
+
+### Requirement 6 (the reviewer, answering Grok): no hand-picked sequences
+
+- **Each op class's weight = retired instructions per op**, measured over a whole run of the frozen binary. The compiler, its version and its flags are named and frozen first.
+- **Attributed to op types across all call sites:** for example an instructions-retired counter per op region, or static instruction counts of every site weighted by its execution count.
+- **If both methods are used,** report both and their difference.
+- **State with every figure:** retired-instruction counts are fixed by the binary, not by clock speed; memory cost is excluded.
+
+**Use:** when the draft (`reviews/opclass_procedure_DRAFT.md`) is reviewed, it is checked against requirements 1–6 and the scope requirement (above). Not yet applied; the draft is unchanged.
+
 ## Withdrawn (the user's, Oct 27): the provisional choice 2′b+pp3 at +1
 
 - **The user withdraws the provisional +1.** It fails the robust rule at 72 and 84: robust 1.0171 and 0.9987, both undecided (be7579b). **Nothing adopted;** the reference stays 2′a (goff = 1).
