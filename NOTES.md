@@ -8052,3 +8052,56 @@ F: median MHz more than 10% off the reference's (flagged by the helper). Each ce
 - **Wall-clock verdicts at 96 bits here are clock-confounded** at the size of the effects predicted. A retime on a fixed clock (performance governor, or a frequency cap below the throttle point) would separate the sieve rise from the clock; that is the user's call.
 
 **Report only.** Nothing adopted; the option stays off by default.
+
+## Root confirm: the sieve region's +19% (code inspection) and root alone's official +3.8% by type (no timing; documentation only)
+
+### Correction to "Root confirm (I-029): the sealed timed run, scored" (b1e5ed7)
+
+That entry says the sieve region rose "with identical counts" ("the same polynomials and sieve ops"). **That was wrong for the region as a whole.** The polynomials and the sieve-update ops are identical, but in root mode the timed "sieve" region also does a charged per-polynomial pass, `word` × (sieved roots), that the full pass does not have. Acceptance item 3 excluded `word` from the types it required to be equal, so this was never claimed by acceptance. The scored results and their scores are not affected; only the explanation changes. The entry is left as written, per the append-only rule.
+
+### A. What root mode adds inside the "sieve" timer (`lampcore/src/qs.rs`, card e13603a)
+
+The "sieve" region runs from `pt_snap` ("sieve", qs.rs:894) to `pt_end(m, 4, …)`. In both modes it clears the array, writes the free 2 (pp), and runs the two sieve loops: over `sr` (the base primes' roots) and over `qr`. Each root's start offset `s0 = sr[k] + mp[j]` (mod p) is computed in a local and discarded.
+
+With `confirm = root`, the same region then runs a **second pass over every root in `sr`** (qs.rs:945–967):
+- recompute `s0 = sr[k] + mp[j]`, with a conditional subtract (a gather from `mp[j]`, and loads of `sp[k]`, `sj[k]`, `sr[k]`);
+- compare `j` with `tj.last()`. On a prime's first root, push five structure-of-arrays vectors: `tp` (p), `tm` (the reciprocal, a gather from `recip[j]`), `ta`, `tb` (both roots, = s0) and `tj` (the base index). Each push carries a length/capacity check. On a prime's second root, overwrite `tb.last()`.
+- The five vectors are cleared first, every polynomial.
+- It is charged `word` × `sr.len()` per polynomial (qs.rs:966). The charge is in place; this is not an uncharged op.
+
+**What is per polynomial and what is per A:** `sr`, `sp` and `sj` are built per A (qs.rs:~789–820, the primes not dividing A). So `tp`, `tm` and `tj` are the same for every polynomial of one A and are rebuilt 2^(s−1) times for no change. Only `ta` and `tb` (the start offsets) change per polynomial.
+
+**Size, from the counts** (all 640 numbers at 96 bits, means per number; below):
+- root_test per candidate = 135,730.6 / 1,012.7 = **134.0 sieved odd primes** (the length of `tp`).
+- `word` rises 49,221 per number. Per candidate, root mode adds 1 + |plist| (the low-bit test and the merged list, ~6–8 entries), which is ~7,000–9,000 per number. That leaves ~40,000–42,000 per number for the per-polynomial pass: **~257–270 roots per polynomial** over 156.04 polynomials, consistent with ~2 × 134 less the single-root primes.
+- **Estimated cost per polynomial:** ~265 iterations. Each is ~4 loads (two of them gathers), an add, a compare and conditional subtract, and the `tj.last()` compare. Half of them also do 5 pushes with capacity checks (~15–25 instructions); the other half do one store. That is ~4,000–6,000 instructions, or ~1,300–4,000 cycles at IPC 1.5–3. At the clocks seen (2.5–4.4 GHz medians) that is **~0.3–1.6 µs per polynomial**.
+- **The measured excess is ~0.65 µs per polynomial** (633.1 − 532.1 = 101.0 µs per number over 156.0 polynomials; 2.4 ns per root). It sits inside the estimate.
+- **Reading:** this extra pass by itself can account for the measured rise, without any clock effect. This is an inspection estimate, not a measurement. The retime (root-confirm-2) and the user's RC2-2 test it.
+
+**Can the root pass read the sieve's start offsets in place?** Yes. Two changes, both counts-identical if the store charge is kept:
+1. **Per A** (in "setup", after `sr`/`sp`/`sj` are built): build `tp`, `tm` and `tj` once, plus a per-root slot index `slot[k]` = 2t or 2t + 1 into an interleaved offset array, with single-root primes writing both slots.
+2. **Per polynomial,** inside the existing first sieve loop, which already computes `s0`: one store `off[slot[k]] = s0` (and for single-root primes the second slot too). The root test then reads `off[2t]` and `off[2t + 1]`.
+
+This removes the second loop, the recompute, the gathers from `mp`/`recip`, the five pushes and the per-polynomial rebuild of `tp`, `tm` and `tj`. What remains is one scattered store per root inside a loop that already touches that root.
+- **Meter:** the work is still one word op per root per polynomial (a store), so the charge `word × sr.len()` can stay as it is and the counts stay identical. The per-A build of `tp`/`tm`/`tj` would be newly done per A; it is a copy of what `sr` construction already pays for. Whether it needs its own charge goes in the cost note before code.
+- **Ruint view of the same pass:** ~41,000 word × 0.0258 = ~1,060 ruint per number, **~1.8% of the reference's 59,071**. Moving the per-A part out does not change this charge, because the store per root remains.
+- No code change made.
+
+### B. Root alone's official +3.8%, by op type (`run_many` per-type counts, all 640 numbers at 96 bits, mean per number)
+
+| type | reference | root | change | share of the reference's official 1,461,014 |
+|---|---|---|---|---|
+| root_test (new) | 0 | 135,730.6 | +135,730.6 | **+9.29%** |
+| confirm_td | 142,064.3 | 12,363.0 | −129,701.3 | **−8.88%** |
+| word | 103,029.0 | 152,250.3 | +49,221.3 | **+3.37%** |
+| setup_small (reciprocals, f − 2 per attempt) | 16,125.9 | 16,263.7 | +137.8 | +0.01% |
+| **total** | 1,461,014 | 1,516,403 | **+55,388** | **+3.79%** |
+
+All other types are identical.
+- **Root tests against the divisions removed:** 134.0 root tests per candidate replace 140.3 − 12.2 = 128.1 divisions per candidate. Under official, where every op costs 1, that is about a wash: +6,029 per number, **+0.41%**.
+  - root's 12.2 confirm_td per candidate are A's primes, the first division by each hit and an even v, and repeat divisions.
+- **What drives the robust ratio is the `word` charges: +3.37% of the +3.79%.**
+  - The per-polynomial offset pass (A above) accounts for ~+2.8%.
+  - The per-candidate low-bit test and merged list account for ~+0.5–0.6%.
+- **Under ruint and Montgomery** the same counts are a saving, because a root test is priced at 0.51× confirm_td (ruint) or 0.50× (Montgomery), while `word` is priced at 0.23× and 0.22×. Under official the per-polynomial pass alone outweighs the root tests' advantage.
+- **Implication (not a proposal):** the in-place change in A keeps the word charge, so it would not move the official figure. Root alone stays above 1 under official as long as one word per root per polynomial is charged. At +0 bits with pp 3, the official ratio (0.9824) is below 1 because pp 3's other savings outweigh this.
