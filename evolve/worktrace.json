@@ -49,6 +49,22 @@
    "candidates": 12,
    "width": 2109,
    "run_ops_unchanged": true
+  },
+  "reference_2b": {
+   "ops_traced": 12151,
+   "by_type": {
+    "setup_gray": 285,
+    "sieve_scan": 4218,
+    "sieve_update": 5590,
+    "word": 474,
+    "root_test": 1430,
+    "confirm_td": 131,
+    "lp_small": 7,
+    "hash": 16
+   },
+   "candidates": 10,
+   "width": 2109,
+   "run_ops_unchanged": true
   }
  }
 }

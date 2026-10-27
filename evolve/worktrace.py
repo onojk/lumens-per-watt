@@ -3,6 +3,7 @@ of one 96-bit map number, as motion on the sieve line. x = sieve position (or th
 per-candidate work), y = op order (time runs down). Each op is a mark coloured by its charged type; uncharged work grey.
 Cells: the reference (2'a), 2'b, and 2'b+pp3 (+0) drawn under the uncorrected meter (the free 2's writes uncharged,
 as before 6031239). Checks that the run's op count is identical with the hook on and off.
+  Also the reference since Oct 27 (2'b; no pp, so the corrected meter changes nothing in it). All pictures share one y axis.
   python3 worktrace.py -> worktrace_<cell>.png, worktrace.json (event counts), stdout"""
 import json
 import matplotlib
@@ -16,11 +17,13 @@ N = S2.map_nums(96)[0][0]
 g0 = dict(ref(96), goff=1)
 CELLS = [("2'a (reference)", "2a", dict(g0), "corrected"),
          ("2'b", "2b", dict(g0, confirm="root"), "corrected"),
-         ("2'b+pp3 +0, uncorrected meter", "2b_pp3_uncorrected", dict(g0, confirm="root", pp=3), "uncorrected")]
+         ("2'b+pp3 +0, uncorrected meter", "2b_pp3_uncorrected", dict(g0, confirm="root", pp=3), "uncorrected"),
+         ("the reference since Oct 27 (2'b), corrected meter", "reference_2b", dict(g0, confirm="root"), "corrected")]
 COL = {"setup_gray": "#8c6bb1", "sieve_scan": "#4daf4a", "sieve_update": "#1f78b4", "word": "#ff7f00",
        "root_test": "#e31a1c", "confirm_td": "#a6761d", "hash": "#f781bf", "lp_small": "#66c2a5", "lp_full": "#1b9e77",
        "sieve_scan:free2": "#4daf4a"}
 summary = {}
+traces = []
 for title, tag, g, meter in CELLS:
     qs.WORKTRACE = None
     ops0, f0 = lamps.run([g], N, P.QS_CAP)
@@ -28,6 +31,9 @@ for title, tag, g, meter in CELLS:
     ops1, f1 = lamps.run([g], N, P.QS_CAP)
     wt = qs.WORKTRACE; qs.WORKTRACE = None
     assert (ops0, f0) == (ops1, f1), "the hook changed the run"
+    traces.append((title, tag, wt))
+YMAX = max(len(wt["events"]) for _, _, wt in traces)     # one y axis for every picture
+for title, tag, wt in traces:
     ev = wt["events"]
     fig, ax = plt.subplots(figsize=(11.5, 11), dpi=110)
     groups = {}
@@ -43,7 +49,7 @@ for title, tag, g, meter in CELLS:
             ax.scatter(xs, ys, s=1.2, c="#9e9e9e" if k == "uncharged" else COL[k], linewidths=0,
                        label=f"{'uncharged (free-2 writes)' if k == 'uncharged' else k} ({len(xs):,})")
     ax.set_xlim(-10, wt["width"] + 10)
-    ax.set_ylim(len(ev) * 1.01, -len(ev) * 0.01)
+    ax.set_ylim(YMAX * 1.01, -YMAX * 0.01)
     ax.set_xlabel(f"sieve position (width {wt['width']:,}; candidates at x = their position)")
     ax.set_ylabel("op order (time runs down)")
     ax.set_title(f"{title}: one polynomial, 96-bit map number 0, polynomial {TARGET}\n{len(ev):,} ops; F = {wt['F']}; "
