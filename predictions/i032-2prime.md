@@ -82,3 +82,20 @@ Same cell and base as D-8: 2′b + pp 3 at +0 bits against 2′a, 96 bits, 640 m
             Falsifier: official > 1.000.
 
 **Conditions of these filings:** the user's desktop Mathematica was open (WolframNB and WolframKernel processes running). No timed run was in progress; 2′a acceptance and parity (no timing) were running.
+
+## Grok
+
+G-1..G-5: **not received** (as of the runner's commit, 3f4034e). If they arrive before the run, they are filed here as sealed; after the run, as information only.
+
+## State before the run (recorded Oct 26, after 3f4034e)
+
+- **Sealed sets present:**
+  - the reviewer's R2-1..R2-10 (verbatim);
+  - DeepSeek's D-1..D-7 and three falsifiers (as transcribed in the user's brief).
+- **Not present as text:**
+  - DeepSeek's full first reply;
+  - DeepSeek's second reply with D-8, D-9 and the D-9 falsifier. Only the reviewer's annotations quote their ranges in part ("D-8 … seals 0.975–0.990" for ruint).
+  - Unless the text is pasted before the run, D-8 and D-9 cannot be scored as written.
+- **2′b is not built.** The code's goff + root still runs root confirm's per-polynomial pass, reading the kept offsets instead of recomputing them. The design's 2′b removes that pass by reading the offsets in place (per-A `ka`). The runner's "2′b" cells (`goff=1, confirm="root"`) measure whatever is built at the run's commit.
+- **Frequency cap:** none (scaling_max_freq 5,000 MHz, no_turbo 0, max_perf_pct 100); governor powersave.
+- **Desktop Mathematica:** running (WolframNB front end and 3 WolframKernel processes). Not changed.
