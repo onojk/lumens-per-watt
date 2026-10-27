@@ -1,0 +1,77 @@
+# The card's parameters — measured values only
+
+This sheet is prepended to every DeepSeek prompt (`tools/ask_deepseek.py`). It holds values measured on the committed card, each with its source. **Use these values; do not assume others.** If a value you need is not here, say so and ask, rather than estimating it.
+
+Maintained by Claude. Card commit: b2bade2 (stage H's `pp` option built, off by default). Last updated 2026-10-26.
+
+## The card at 96 bits (the reference)
+
+- **Method:** SIQS with single large primes. Lampcore (Rust), with a Python twin kept in lockstep.
+- **Reference genes:** bc 0.4325, mc 0.6023, tc 1.0353, lc 1.9737, kc 60, multiplier set sf32, A chosen on demand. Re-sieve is off: confirm divides by every base prime.
+- **Formulas:**
+  - B = bc · exp(½ √(ln N ln ln N));
+  - M = max(64, mc · B), with the sieve interval [−M, M] (width 2M + 1);
+  - L = B^lc;
+  - threshold T = log2(M √(kN/2)) − (tc + lc − 1) · log2 B;
+  - slack = tc + lc − 1.
+- **Means over the 640 map numbers:**
+  - B 1,752 (log2 B 10.775); F (factor-base size) 138; M 1,056 (width ~2,113);
+  - L/B 1,440 (log2 L ≈ 21.3); slack 2.009 (21.65 bits).
+- **The sieve:** adds round(log2 p) per odd base prime per root hit. It does not sieve the prime 2, A's primes or prime powers (unless `pp` is set). The threshold is one value per attempt.
+- **Confirm:** for each candidate, tests v mod p for all F − 1 base primes (i128), dividing out repeats. A cofactor below L is a partial.
+- **Multipliers (32 map numbers):** kN mod 8 is 1 in 50% of attempts, 3 or 7 in 22%, 5 in 12%, and even in 16%.
+
+## Measured per number at 96 bits (stage G reference, a82b6bd; all 640 map numbers)
+
+- Candidates: 1,013 per number, 6.5 per polynomial.
+- Polynomials to completion: 156.0 (median 151). Combinations: 71.9.
+- Priced cost: ruint 59,071 (mean), 58,514 (median), 80,787 (slowest-decile mean); Montgomery 216,420; official 1,461,014.
+- Wall-clock: 1,898 µs per number. By region: setup 374, gray 45, sieve 456, scan 107, confirm 536, lp_ledger 184, solve 156 µs.
+- Sieve updates per sieve position: 2.28.
+- Priced shares (ruint): sieve_update 32.8%, confirm_td 27.5%, setup_small 8.4%, sieve_scan 6.9%, word 4.5%, setup_gray 1.6%.
+
+## Capture and yield at 96 bits (stage B, 1f45169; 8 map numbers, 1,285 polynomials)
+
+- **True relations per polynomial:** fulls 0.52, partials 17.1.
+- **Passing the threshold:** fulls 0.973, partials 0.316. End to end: fulls 0.961, partials 0.316.
+- **Partials passing, by log2(q/B):** 0–2 0.717; 2–4 0.596; 4–6 0.445; 6–8 0.273; 8+ 0.118.
+- **The sieve's under-count** (true log2 of the smooth part minus the sieve value):
+  - at partials: mean 5.34, median 4.58, p90 11.4 bits;
+  - at fulls: mean 7.44, median 6.50, p90 15.0 bits.
+  - Its parts at partials (mean / median): prime 2 2.50 / 3.00; prime powers 2.63 / 1.58; A's primes 0.27 / 0; rounding 0.
+- **Never-combined share of partials:** 0.852.
+
+## Threshold scan at 96 bits (stage G, a82b6bd; tc only, L unchanged; against the reference)
+
+| shift | candidates / number | candidates / polynomial | polynomials | partial capture | ruint | wall-clock |
+|---|---|---|---|---|---|---|
+| −2 bits | +41.7% | +59.3% | −11.0% | 0.474 | +5.7% | +9.8% |
+| −4 bits | +103.3% | +148.3% | −18.1% | 0.622 | +19.3% | +29.4% |
+| −6 bits | +197.4% | +284.1% | −22.6% | 0.752 | +43.6% | +55.7% |
+
+## Op prices (per op, ruint / Montgomery; calibrate.json)
+
+| op | ruint | Montgomery |
+|---|---|---|
+| word (also sieve_update, setup_gray) | 0.0258 | 0.0951 |
+| sieve_scan | 0.01235 | 0.0466 |
+| confirm_td (one i128 test v mod p) | 0.1141 | 0.4260 |
+| setup_small | 0.3065 | 1.137 |
+| setup_euclid | 0.3164 | 1.190 |
+| hash | 0.3638 | 1.343 |
+| la | 0.01673 | 0.0629 |
+
+Official pricing counts every op as 1.
+
+## Wall-clock against price (stage C, 9402b8b)
+
+- **Anchor B** (time-weighted ns per priced ruint unit) at 96: 31.0 (re-sieve off).
+- **Over-priced or under-timed regions at 96, by ratio to anchor B:** lp_ledger 3.10, solve 2.38, confirm with re-sieve 2.25, gray 1.57.
+- The large-prime table's hash runs at 1.4–1.7x its price (step 3).
+- **The confirm test:** ~3.9 ns per prime tested (i128 v mod p). About 137 primes are tested per candidate, and about 7.6 of them divide (stage D).
+
+## Stage H (b2bade2): built, comparisons not yet run
+
+- **Gene `pp`:** prime powers q = p^j < 2^pp are sieved like base primes (odd p not dividing k or A; 2^j for 4 ≤ j < pp when kN ≡ 1 mod 8). The prime 2's fixed part is added on one parity class by a second threshold: 1 bit for kN ≡ 3 mod 4, 2 for 5 mod 8, 3 for 1 mod 8; for even k, 1 bit on the even-y class.
+  - pp = 3 is "2 free": the parity add only.
+- **Matched candidate count with pp = 10:** tc 0.7623, a threshold +2.94 bits higher (32-number search).
