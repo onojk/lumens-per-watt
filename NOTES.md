@@ -9588,3 +9588,36 @@ The library-bound classes have no single static body and are dynamic only.
   4. ps_ops is not meaningful.
 - **Any v2 is prospective** (a line-0 rule, per-card weights, map fixes). It applies only to tests started after it is committed, never to re-decide 2′b.
 - **The reviewer's forecast** (information only): 2′b against 2′a under op-class, 0.70–0.95; better under all three robust pricings (op-class, ruint, Montgomery), 90%.
+
+## Step 3: 2′b against 2′a under op-class v1 (`evolve/step3.py`, `step3.out`, `step3.json`; report only, nothing adopted)
+
+**Pricing:** op-class v1 (df5a0e3), frozen before this computation; the ruling and the known v1 issues were committed first (0b012d3).
+**Rule:** option (b), robust = worst of op-class, ruint and Montgomery. Official is reported, with no veto.
+**Data:** all map numbers at each size (480 / 560 / 640), lampcore `--types` from the frozen release binary (sha256 checked), ratio of means. Intervals: paired bootstrap, 10,000 resamples, `random.Random(2026)`.
+
+| bits | op-class | ruint | Montgomery | **robust (b)** | (e) | official (no veto) |
+|---|---|---|---|---|---|---|
+| 72 | 0.8657 [0.8630, 0.8684] | 0.8896 [0.8872, 0.8919] | 0.8820 [0.8795, 0.8845] | **0.8896** | **better** | 1.0403 [1.0396, 1.0411] |
+| 84 | 0.8293 [0.8269, 0.8318] | 0.8699 [0.8677, 0.8721] | 0.8638 [0.8615, 0.8661] | **0.8699** | **better** | 1.0242 [1.0239, 1.0246] |
+| 96 | 0.8436 [0.8411, 0.8460] | 0.8877 [0.8856, 0.8897] | 0.8838 [0.8816, 0.8859] | **0.8877** | **better** | 1.0137 [1.0135, 1.0139] |
+
+- **(a) Break-even sieve_update weight: none.** 2′b and 2′a perform exactly the same sieve updates (26.5M / 115.4M / 480.8M), so the sieve_update weight cancels from the ratio: no value of it makes 2′b's op-class ratio 1. The question the break-even was meant to answer, whether a sieve update is cheap relative to a root test, does not decide this comparison. **What does decide it is the root_test weight** (information): the op-class ratio reaches 1 at a root_test weight of 89.2 / 95.5 / 98.0 Ir per op, 1.71 / 1.83 / 1.87 times v1's 52.3. Known v1 issue 1 (line-0 code) would raise root_test by about 4%, far short of that.
+- **(b) The op-class ratio** is 0.866 / 0.829 / 0.844: below ruint's at every size. Official's +1.4–4.0% comes from pricing a root test like a 128-bit trial division; op-class prices a root test at about half of one (fraction 1 against confirm_td's 2.07).
+- **(c) Robust ratio under the adopted rule:** 0.8896 / 0.8699 / 0.8877, set by ruint at every size. **(e) better at all three sizes:** every interval of all three pricings excludes 1.
+- **(d) Official, for the record:** 1.0403 / 1.0242 / 1.0137, worse; the same values as before (2b-sizes, i032-2prime). No veto under the adopted rule.
+- **The intervals** reflect the sampling of numbers only. The v1 weights are fixed, with no uncertainty attached.
+
+**Information: 2′b+pp3 (+0, the corrected meter) against 2′a.** pp 3 was retired by the user; this is shown as asked.
+
+| bits | op-class | ruint | Montgomery | robust (b) | (e) | official |
+|---|---|---|---|---|---|---|
+| 72 | 0.9448 [0.9320, 0.9556] | 0.9212 | 0.9149 | 0.9448 | better | 1.1085 |
+| 84 | 0.9154 [0.9092, 0.9215] | 0.9040 | 0.8985 | 0.9154 | better | 1.0955 |
+| 96 | 0.9174 [0.9143, 0.9204] | 0.9018 | 0.8981 | 0.9174 | better | 1.0659 |
+
+- It is worse than 2′b alone under every pricing at every size: the free-2 writes cost what pp 3 saves.
+- Its break-even sieve_update weight is negative (−50 / −59 / −33), so it beats 2′a at any non-negative sieve weight. The robust ratio is set by op-class.
+
+**The reviewer's information-only forecast** (0b012d3): "2′b vs 2′a op-class 0.70–0.95" — inside, at all three sizes (0.829–0.866). "Better under all three robust pricings, 90%" — it happened. Information only, not scored.
+
+**Not done:** nothing is adopted. Adopting 2′b is the user's decision. The wall-clock evidence is already on record (2b-sizes: −9.6% / −12.9% at 72 / 84; −11.2% at 96 in i032-2prime).
