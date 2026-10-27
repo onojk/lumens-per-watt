@@ -7038,3 +7038,82 @@ Against the reference, in percent:
 - **G-3** candidates +80% to +250%: +103.3%, **held**.
 - **G-4** priced ruint mean −10% to +5%: +19.3%, **missed** (high).
 - **G-5** wall-clock −5% to +12%: +29.4%, **missed** (high).
+
+## Stage H: "sieve 2 and small prime powers" — design note and cost model (written before any code; STOP here for sealed predictions)
+
+**What it fixes.** Stage B's under-count at true partials, 96 bits (`step9u`, mean / median bits): the prime 2 2.50 / 3.00; prime powers 2.63 / 1.58; A's primes 0.27 / 0; rounding 0.00. Total 5.40 / 4.60, p90 ~11.4. The design adds the first two components and leaves A's primes and rounding as they are.
+
+**The gene.** `pp`: the bound on sieved prime powers, as bits (q = p^j < 2^pp). Absent or 0 means off, so today's card is unchanged. The design point is **pp = 10** (q < 1,024). Both cores read the same gene; the threshold formula is unchanged.
+
+**1. The prime 2, by the 2-adic law and the parity of the position.**
+- g(x) = A x² + 2 B x + C, with A g(x) = t² − kN and t = A x + B. A is odd (A's primes are odd), so v2(g(x)) = v2(t² − kN).
+- B's parity is fixed for a given A, because a Gray switch changes B by ±2 B_l. t is odd exactly when x ≡ B + 1 (mod 2), so in array index terms i0 ≡ B + 1 + M (mod 2): every other position, the same parity for every polynomial of that A.
+- The amount, by kN mod 8 (k is squarefree and N odd):
+  - kN ≡ 3 (mod 4): v = 1 on odd-t positions, 0 otherwise. Add w2 = 1.
+  - kN ≡ 5 (mod 8): v = 2 exactly on odd-t positions. Add w2 = 2.
+  - kN ≡ 1 (mod 8): v ≥ 3 on odd-t positions. Add w2 = 3, the exact floor; higher powers come from step 2.
+  - kN ≡ 2 (mod 4), k even: v = 1 on **even**-t positions (t² ≡ 0, kN ≡ 2 mod 4), 0 on odd. Add w2 = 1 there.
+- **How it is added: as a parity-dependent threshold at the scan, not a walk.** arr[i0] + w2 ≥ T is the same test as arr[i0] ≥ T − w2, so the scan compares each position against one of two thresholds by i0's parity. This costs no sieve updates.
+  - The candidates are identical to walking a stride-2 entry that adds w2. A walk would cost width / 2 updates per polynomial, about +22% of sieve_update, for nothing.
+- Mix of attempts (32 map numbers at 96, Python traces): kN ≡ 1 mod 8 in 50%, 3 or 7 mod 8 in 22%, 5 mod 8 in 12%, even in 16%.
+
+**2. Prime powers q = p^j < 2^pp, walked like base primes.** They are kept in a separate list, so neither the base entries nor re-sieve change.
+- *Odd p:* a base prime with two roots (p ∤ k, p ∤ A), for each j ≥ 2 with p^j < 2^pp.
+  - Roots: t_j = sqrt(kN) mod p^j by Hensel lifting from roots_t[p], once per attempt. Per A, x ≡ (±t_j − B) · A⁻¹ (mod p^j): two roots.
+  - Each hit adds logp[p] = round(log2 p) again. A position divisible by p^e then receives e · logp[p], so prime powers are under-counted only by rounding.
+  - p | k has no solutions mod p² (N coprime to p, k squarefree), so it is skipped; for p | A, g is linear mod p, so it is skipped, as base sieving already does.
+  - At pp = 10 the candidates are 9, 27, 81, 243, 729; 25, 125, 625; 49, 343; 121, 169, 289, 361, 529, 841, 961. Only the powers of base primes are used, roughly half of these.
+- *Powers of 2,* only when kN ≡ 1 (mod 8): q = 2^j for 4 ≤ j < pp (16 … 512).
+  - t² ≡ kN (mod 2^j) has four roots: ±s, ±s + 2^(j−1). s is lifted once per attempt (s ← s + 2^(j−2) when s² ≢ kN mod 2^j), starting from 1 or 3 mod 8.
+  - Per A, x ≡ (t − B) · A⁻¹ (mod 2^j): four roots. Each hit adds 1.
+  - Together with w2 = 3 this counts v2 exactly up to 9; the residual is below 0.01 bit (P(v ≥ 10 | t odd) = 2⁻⁷).
+- *Gray switches:* every power root moves by ∓2 B_l A⁻¹ mod q, exactly like a base root, with one conditional correction.
+- *Sieve:* the start offset is (r + M mod q) reduced once, as for base primes, followed by a stride-q walk. The log value per entry is logp[p], or 1 for powers of 2.
+- *Confirm is unchanged:* the full pass already divides out 2 and all powers.
+
+**3. Charges (the cost model; option on only, nothing changes when off).** Each new op uses the type of its existing analogue.
+
+| when | op | type | count |
+|---|---|---|---|
+| per attempt | M mod q, per power entry | setup_small | 1 per entry |
+| per attempt | kN mod q and the Hensel lift of the root, per power entry | setup_small | 3 per odd entry (square-reduce, times the inverse, update); 1 per 2-power entry (square, compare) |
+| per attempt | the inverse of 2 t mod p, per odd prime with powers | setup (via euclid_inv, charged as today) | as today's euclid_inv |
+| per attempt | M mod 2, w2 from kN mod 8 | word | 2 |
+| per A | A mod q, per entry | setup_small | 1 per entry |
+| per A | A⁻¹ mod q, per entry | via euclid_inv (as charged today) | as charged |
+| per A | the roots | setup_small | 2 per odd entry, 4 per 2-power entry |
+| per A | 2 B_l A⁻¹ mod q, per entry | setup_small | s per entry |
+| per A | B mod 2, which parity gets T − w2 | word | 1 |
+| per Gray switch | power roots updated | setup_gray | 1 per root (added to n_roots) |
+| per polynomial | start offsets | word | 1 per power root |
+| per polynomial | the walk | sieve_update | 1 per hit, exactly as base primes |
+| per polynomial | the parity threshold at the scan | — | no extra per position (the scan already compares each position once, under the existing width charge) |
+
+- A mod q is charged here, unlike today's A mod p for base primes. Audit item 17 stays open, and only new code is fully charged.
+
+**4. Expected effect (my estimate, labelled as an estimate, from stage B's breakdown and stage G's slopes; not computed by running the design):**
+- *Under-count at true partials, 96:* about 0.45 bits mean (A's primes 0.27, powers above the bound ~0.15, 2-adic residual < 0.01, rounding ~0), median ~0, p90 ~1–2 bits (from 5.34 / 4.58 / 11.4). At fulls, ~0.6 mean (larger powers).
+- *Extra sieve work:* about 0.5 updates per position (powers of 3 ~0.33 when 3 is in the base, of 5 ~0.10, of 7 ~0.05, the rest ~0.04, about half of these in the base; 2^4 … 2^9 ~0.49 in the kN ≡ 1 mod 8 half). Against today's 2.28 per position that is ~+22% sieve_update, about +7% priced per polynomial. Setup and gray add < 1%.
+- *Candidates per polynomial, option on at the reference threshold:* the added value D is independent of the old sieve value, at about 1.26x candidates per bit (stage G). Then E[1.26^D] ≈ 1.51 for the 2-adic part over the kN mix, and ~1.2 for the odd powers, about **1.8x** per polynomial (range 1.5–2.1).
+- **Option on, reference threshold (estimate):**
+  - partial capture ~0.85 (0.75–0.92), fulls ~1.0;
+  - polynomials −25% (−20% to −30%);
+  - candidates per number ~1,370 (+35%; range +10% to +60%);
+  - priced ruint −2% to +8%;
+  - wall −5% to +10%. The new walks have small strides and are cheap per update; confirm grows with candidates.
+- **Option on, threshold raised to match the reference's candidate count (~1,013 per number; estimate):**
+  - a raise of ~1.5–2 bits (tc lowered by ~0.15–0.19);
+  - partial capture ~0.70 (0.60–0.80), against 0.316 for the reference at the same count;
+  - polynomials −20% (−14% to −26%);
+  - priced ruint −5% (−12% to +2%);
+  - wall −3% (−10% to +5%).
+- *Matched-count comparisons with stage G:* option on at the reference threshold against G's −2-bit cell (1,435 candidates, capture 0.474); the matched variant against the reference (1,013, 0.316). If my estimates hold, the option beats a plain threshold drop at equal candidate counts by ~0.3–0.4 in capture.
+
+**Acceptance (before the comparison):**
+- With the option off: identical to today's card (8,000 / 8,000, Python = Rust 32 / 32, parity).
+- With the option on: Python = Rust per type on the acceptance numbers, and parity coverage of its own: pp cases in parity.py and mutations that drop each new charge.
+- The trace (TRACE_ARR) records the parity threshold pair, so stage B's funnel scores the option exactly.
+
+**Comparison runs (after the reviewer seals predictions):** at 96 on all 640 map numbers, (i) the option on with the reference threshold and (ii) the option on with tc set so candidates per number match the reference. tc is found on a few map numbers first; the search runs are reported. Each run reports the same quantities as stage G, plus the new under-count distribution and capture on stage B's 8-number subset.
+
+**STOP.** Nothing is built yet. The build and acceptance can go first if the reviewer prefers, since neither scores a prediction.
