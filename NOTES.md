@@ -9621,3 +9621,25 @@ The library-bound classes have no single static body and are dynamic only.
 **The reviewer's information-only forecast** (0b012d3): "2′b vs 2′a op-class 0.70–0.95" — inside, at all three sizes (0.829–0.866). "Better under all three robust pricings, 90%" — it happened. Information only, not scored.
 
 **Not done:** nothing is adopted. Adopting 2′b is the user's decision. The wall-clock evidence is already on record (2b-sizes: −9.6% / −12.9% at 72 / 84; −11.2% at 96 in i032-2prime).
+
+## Adopted: root confirm (2′b), Oct 27 (the user's decision)
+
+- **The new reference genes:** goff = 1 (already the reference since Oct 26) and **confirm = root**, i.e. the sealed genes with kset sf32 (`lctest.ref(bits)`) plus `goff=1, confirm="root"`.
+  - As with 2′a, runners pass the genes explicitly. `lctest.ref()` and the gene's code default (confirm off) are unchanged, so every earlier script reproduces as committed.
+  - Making them the code default would change what earlier scripts compute on a rerun. It can be a separate commit if the user wants it.
+- **The evidence:**
+  - **Step 3** (79680de), op-class v1 under rule (b): robust 0.890 / 0.870 / 0.888 at 72 / 84 / 96; op-class, ruint and Montgomery all better, every interval excluding 1.
+  - **Wall-clock:** −9.6% / −12.9% (2b-sizes) and −11.2% (i032-2prime).
+  - **Meter-health:** the differential check (I-042 (b)) found no hidden cost in 2′b against 2′a at any size (stage 4b).
+  - **Break-even:** the op-class ratio would reach 1 only with a root_test weight 71–87% above v1's.
+  - **Official:** 1.0403 / 1.0242 / 1.0137, for the record, with no veto.
+- **Acceptance** (`evolve/adopt2b_accept.py`, `.out`; all map numbers, 480 / 560 / 640):
+  - the new reference matches the 2′b runs on every number (ops and all 30 types);
+  - factor, tests, hits and polynomials are identical to 2′a on every number;
+  - every type outside confirm_td, root_test, word and setup_small is identical;
+  - relations and candidate values are identical to 2′a on 4 / 4 traced numbers per size.
+
+  **Relations are unchanged.**
+- **Checks:** `ci_quick` passes (0 failures). The full parity result is recorded below when it finishes.
+- **Updated:** `reviews/card_params.md` (the new reference genes and the evidence) and MOVES ("Root-matched candidate confirmation" → ADOPTED).
+- **What this changes for later work:** the base of every later comparison is the 2′b reference. Earlier results against 2′a stay valid as recorded; they were not re-based.

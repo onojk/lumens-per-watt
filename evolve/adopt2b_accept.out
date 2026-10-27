@@ -1,0 +1,4 @@
+72 bits: (1) identical to the 2'b runs (ops and all 30 types) 480/480; (2) factor, tests, hits and polynomials identical to 2'a 480/480; types outside ['confirm_td', 'root_test', 'setup_small', 'word'] identical 480/480; (3) relations and candidate values identical to 2'a on 4/4 traced numbers
+84 bits: (1) identical to the 2'b runs (ops and all 30 types) 560/560; (2) factor, tests, hits and polynomials identical to 2'a 560/560; types outside ['confirm_td', 'root_test', 'setup_small', 'word'] identical 560/560; (3) relations and candidate values identical to 2'a on 4/4 traced numbers
+96 bits: (1) identical to the 2'b runs (ops and all 30 types) 640/640; (2) factor, tests, hits and polynomials identical to 2'a 640/640; types outside ['confirm_td', 'root_test', 'setup_small', 'word'] identical 640/640; (3) relations and candidate values identical to 2'a on 4/4 traced numbers
+failures: 0

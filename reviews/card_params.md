@@ -4,11 +4,22 @@ This sheet is prepended to every DeepSeek prompt (`tools/ask_deepseek.py`). It h
 
 Maintained by Claude.
 
-**Last updated:** 2026-10-27, overnight (free-2 meter correction 6031239; pp 3 retired; 2′b at 72 and 84; the open robust-rule decision). **Card commit:** 6031239 (the free-2 meter correction). Earlier: 5f0007a (2′a and 2′b built); d269cc8 (`--phasetime` sieve breakdown, counts unchanged).
+**Last updated:** 2026-10-27, root confirm (2′b) adopted as the reference (the user's decision); op-class v1 and robust-rule option (b). Earlier the same day: the free-2 meter correction 6031239; pp 3 retired; 2′b at 72 and 84. **Card commit:** 6031239 (the free-2 meter correction). Earlier: 5f0007a (2′a and 2′b built); d269cc8 (`--phasetime` sieve breakdown, counts unchanged).
 
 ## State as of Oct 27 (read first)
 
-- **Reference genes: goff = 1** (2′a, adopted by the user Oct 26). Relations, factors, candidates and polynomials are identical to goff = 0; only the word count changes (−setup_gray).
+- **Reference genes: goff = 1 and confirm = root (2′b), adopted by the user Oct 27** (NOTES, "Adopted: root confirm (2′b), Oct 27").
+  - **The genes:** the sealed genes with kset sf32 (`lctest.ref(bits)`), plus `goff=1`, plus `confirm="root"`. Runners pass both explicitly; `lctest.ref()` itself is unchanged, so earlier scripts reproduce exactly.
+  - **Relations, factors, candidates, hits and polynomials are identical to 2′a** (and so to goff = 0). Only confirm_td, root_test, word and setup_small change (`evolve/adopt2b_accept.out`).
+  - **The evidence:**
+    - Step 3, under op-class v1 and rule (b): robust 0.890 / 0.870 / 0.888 at 72 / 84 / 96; every interval of op-class, ruint and Montgomery excludes 1.
+    - Wall-clock −9.6% / −12.9% / −11.2%.
+    - Meter-health: no hidden cost.
+    - Official 1.0403 / 1.0242 / 1.0137, for the record, with no veto.
+    - Break-even needs the root_test weight 71–87% above v1's.
+  - **Measured per-number values further down this sheet are for the earlier references** unless marked; each says which.
+- **Robust rule (the user, Oct 27, option (b)):** robust = worst of **op-class v1** (`opclass/opclass_v1.json`, df5a0e3), ruint and Montgomery. Official is computed and reported, with no veto. Any op-class v2 is prospective only.
+- **2′a (goff = 1 alone)** was the reference from Oct 26 to Oct 27. Against goff = 0 only the word count changes (−setup_gray).
 - **The free-2 meter correction (6031239, the user's decision):**
   - With `pp` on, each polynomial is now charged ⌈(width − par) / 2⌉ sieve ops typed sieve_scan, one per cell the free-2 initialisation writes. Before 6031239 these writes were uncharged.
   - Genomes without pp (the reference, 2′a, 2′b, root confirm) are unchanged.
@@ -22,12 +33,10 @@ Maintained by Claude.
   | 84 | −12.9% | 1.0242 | 0.8699 | 0.8638 |
   | 96 | −11.2% | 1.0137 | 0.8877 | 0.8838 |
 
-  - 2b-sizes (5d8e1c9) and run A (3816bb4). Not adopted.
-  - Its robust ratio is official's at every size, so it is "undecided" under the current rule.
+  - 2b-sizes (5d8e1c9) and run A (3816bb4).
+  - Under op-class v1 (step 3, 79680de): op-class 0.8657 / 0.8293 / 0.8436. Robust under rule (b) 0.8896 / 0.8699 / 0.8877, all "better". **Adopted Oct 27.**
 - **Standing 2.4 GHz cap** (the user's, PROTOCOL.md): runs from i032-2prime on are at the cap and comparable with each other only. Claude Code never sets it.
-- **Open decision (the user's): the robust rule's veto by official pricing.**
-  - Options: (1) keep the rule; (2) a prospective op-class pricing, worst-of-four, and a sealed 2′b test; (3) energy (RAPL) arbitration.
-  - Nothing changed; see NOTES, "Open decision".
+- **The robust-rule decision is made:** option (b), op-class replaces official in the robust track (NOTES, "Decision: robust-rule option (b)").
 
 ## The card at 96 bits (the reference)
 
@@ -37,7 +46,7 @@ Maintained by Claude.
   - The reference genes change only by goff = 1. Relations, factors, candidates and polynomials are identical, so earlier results stay valid.
   - Only the word count changes, by exactly −setup_gray: about −35,897 word per number at 96 bits.
   - Priced against the old reference: official 0.9754, ruint 0.9843, Montgomery 0.9842 (i032-2prime, 9b94247).
-- **Root confirm** (gene confirm = root; off by default; not adopted): with goff = 1 it reads the kept offsets in place (2′b). Against the goff = 1 reference: official 1.0137, ruint 0.8877, Montgomery 0.8838. With pp 3 at +0 bits: 0.9618 / 0.8703 / 0.8656 under the uncorrected meter; **1.0659 / 0.9018 / 0.8981 corrected** (6031239).
+- **Root confirm** (gene confirm = root; **in the reference since Oct 27**; the gene's code default stays off): with goff = 1 it reads the kept offsets in place (2′b). Against the goff = 1 reference: official 1.0137, ruint 0.8877, Montgomery 0.8838. With pp 3 at +0 bits: 0.9618 / 0.8703 / 0.8656 under the uncorrected meter; **1.0659 / 0.9018 / 0.8981 corrected** (6031239).
 - **Formulas:**
   - B = bc · exp(½ √(ln N ln ln N));
   - M = max(64, mc · B), with the sieve interval [−M, M] (width 2M + 1);
