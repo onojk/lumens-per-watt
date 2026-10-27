@@ -7985,3 +7985,16 @@ H2 (and stages G and H) timed the cells one after another, with the reference fi
 - **Decision for this run:** keep the cost-note price (0.0581). R-2 (both sources) is defined "as in the cost note", and DeepSeek's working uses 0.0582, so changing it now would move a sealed target.
 - **For information only,** the root-confirm report will also state what R-2 would read at the ratio price (expected ~−15.7%, against ~−12% at the cost-note price).
 - **For the user's later decision:** re-price root_test (and re-check confirm_td) at the next meter calibration, on a fixed clock.
+
+### DeepSeek, Oct 27, round 59 (hand-relayed; recorded as given; documentation only; before the root-confirm timed run)
+
+- **R-1 … R-4 remain sealed** (grid 0 … +4 noted). The loop-bottleneck and threshold-shift corrections are accepted, and the benchmark-clock caveat is recorded. R-2 is scored at the cost-note price (0.0581).
+- **R-2 at the ratio price** (information only; checked): 0.114 × (1.59 / 4.21) = 0.04305 ruint per prime tested.
+  - Per candidate: 138 × 0.04305 + 7.06 × 0.114 = 6.75 against 15.73 ruint (ratio 0.429).
+  - Saving: 0.571 × 27.5% of 59,071 = 9,279 ruint, **−15.7%** (against −12.0% at the cost-note price).
+- **Meter pricing** (its view, recorded for the user's later decision):
+  - Price a new op by its ratio to an existing op measured in the same benchmark. That cancels clock and thermal drift, but inherits any error in the base op's price, so the dependence must be written down (for example, root_test = confirm_td × the measured ratio).
+  - Use a fixed-rate conversion only with a stable per-machine calibration.
+- **R-5** ("the '2 free' shift with candidates per number closest to the reference's 1,013 is +1 bit"): recorded as **information only, not sealed**.
+  - The reviewer's error in asking: the root confirm does not change candidates (acceptance: identical to the full pass), and H2 already measured them (a31d75b / 5ae47ae): +1 bit +2.0%, +2 bits −14.3%, +3 bits −28.6%.
+  - Its reasoning (on average 1.06 free bits per position, so +1 is about neutral) is sound and matches the data.
