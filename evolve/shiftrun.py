@@ -1,6 +1,6 @@
 """2'b+pp3 threshold shifts, follow-ups to pp3-gap-and-shift (same design as i032shift.py, which stays as committed).
   python3 shiftrun.py A -> shiftrun_A.json, stdout   (predictions/shift-past-2.md; tools/sealed_run.sh shift-past-2)
-      96 bits, 640 map numbers. Cells: 2'a (base), 2'b, 2'b+pp3 at +1 and +3 bits (tc -= d / log2 1,752, as
+      96 bits, 640 map numbers. Cells: 2'a (base), 2'b, 2'b+pp3 at +1, +2 and +3 bits (+2 added before the run, at the reviewer's request) (tc -= d / log2 1,752, as
       i032shift.py). Region excess over own-rate price against 2'b (and 2'a for information).
   python3 shiftrun.py B -> shiftrun_B.json, stdout   (predictions/shift-72-84.md; tools/sealed_run.sh shift-72-84)
       72 and 84 bits, all map numbers (480, 560). Cells per size: 2'a (base), 2'b+pp3 at +0, +1, +2 bits
@@ -158,7 +158,7 @@ def shift_cells(bits, ds, lb, with_2b):
     return cells
 
 if MODE == "A":
-    cells = shift_cells(96, (1, 3), math.log2(1752.0), True)
+    cells = shift_cells(96, (1, 2, 3), math.log2(1752.0), True)
     pp = [n for n in cells if "pp3" in n]
     out = size_run(96, cells, [(n, "2'a") for n in cells if n != "2'a"] + [(n, "2'b") for n in pp],
                    [(n, "2'a") for n in cells if n != "2'a"] + [(n, "2'b") for n in pp],

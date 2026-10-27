@@ -13,7 +13,7 @@
             is better than 2'a under all three pricings. 60% for all three holding at both
             sizes.
 
-### Claude Code's notes on scoring (before the run)
+### Claude Code's notes on scoring (before the run; accepted by the reviewer as Claude Code's definitions)
 
 - **"Official is best at +0":** the lowest official ratio against 2′a of the three shifts, on the point estimate. **"Wall is best at +1 or +2":** the lowest wall ratio, point estimate.
 - **"+1 is better than 2′a under all three pricings":** all three ratios below 1. The (e) call (all three 95% intervals below 1) is reported next to it.
@@ -22,3 +22,8 @@
 ## The user's provisional choice (recorded before the run)
 
 - **2′b+pp3 at +1, provisional; not adopted; pending runs A and B** (NOTES, "Provisional choice (the user's, Oct 27)").
+
+## Before the run
+
+- **DeepSeek and Grok have no sealed predictions for A or B** (the user, at "go").
+- **The user's conditions:** laptop on the fan cooling pad, plugged in, untouched during the runs.
