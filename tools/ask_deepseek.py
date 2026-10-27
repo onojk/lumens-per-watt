@@ -5,8 +5,8 @@
 
 The prompt sent is the card's parameter sheet (reviews/card_params.md) followed by PROMPT_FILE. A system line asks
 for English replies with the working shown. The prompt as sent is saved to reviews/deepseek_rNN.prompt.md and the
-reply to reviews/deepseek_rNN.md (NN: --round, or the next free number above the existing files and above 49, the
-last round recorded in NOTES before this tool), and the reply is printed. Nothing is committed here.
+reply to reviews/deepseek_rNN.md (NN: --round, or the next free number above the existing files and above 53, the
+last hand-relayed round), and the reply is printed. Nothing is committed here.
 
 Environment: DEEPSEEK_API_KEY (required; never written anywhere), DEEPSEEK_MODEL (default deepseek-v4-pro),
 DEEPSEEK_BASE_URL (default https://api.deepseek.com; the request goes to <base>/chat/completions).
@@ -16,7 +16,7 @@ import argparse, datetime, json, os, re, sys, urllib.request, urllib.error
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REV = os.path.join(ROOT, "reviews")
-FLOOR = 49                     # DeepSeek rounds up to 49 were relayed by hand and are recorded in NOTES.md
+FLOOR = 53                     # DeepSeek rounds up to 53 were relayed by hand (NOTES.md); the first automated round is 54
 SYSTEM = ("Reply in English. Show your working: state every input you use and where it comes from (the parameter "
           "sheet, the prompt, or your own assumption, labelled as such), and the arithmetic step by step. Use the "
           "card's measured parameters from the sheet; do not invent parameters. If a needed value is missing, say "
