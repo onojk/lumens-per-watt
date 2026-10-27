@@ -9111,3 +9111,74 @@ Yes, substantially. Against 2'b directly, pp3 is +0.7% wall at +1 and −0.9% at
   - Sieve breakdown units still equal the sieve region's sieve_update + sieve_scan + word (84 / 84; 72 and 96 bits, 3 genomes).
 - **Parity passes** (`evolve/parity_free2.out`): qs 5,214 and types 7,986 pairs, mismatches 0, sum-identity failures 0; race 653, ob 369, guards 54; mutations 56 / 56.
 - **From this commit on, every priced figure of a pp cell is under the corrected meter.** Earlier results keep their scores. The affected outcomes (the "meter-invalidated" table above) get a second score under the corrected meter, side by side, by the adopted rule. **The second scores are not yet computed.**
+
+## Second scores under the corrected meter (overnight stage 1; computation only, no timing; the adopted rule)
+
+**Label on every row below: "meter-invalidated: original scored under the uncorrected meter".** Original scores are kept; the second score is beside them. No score is replaced.
+
+**Method** (`evolve/second_scores.py`, `second_scores.out`, `second_scores.json`):
+- Every affected comparison is priced twice: with the uncorrected binary (built at d269cc8) and with the corrected binary (6031239). Mean per number over all map numbers; paired 95% bootstrap with the runners' exact resamples (10,000, random.Random(2026)); robust ratio and the (e) call.
+- **The uncorrected column reproduces the recorded originals exactly:** for example 0.9618 / 0.8703 / 0.8656 (i032-2prime), root + pp 3 +0 0.9824 / 0.8849 (root-confirm), and H2 (iv) official +4.9%, ruint −2.5%.
+- **The corrected column matches the Wolfram cost model to 4 digits** (2026-10-27_free2_charge: 96 +0 1.0659 / 0.9018 / 0.8981).
+- **Stage H is not recomputed:** its code had no free-2 write. **root-confirm-2** has no priced items.
+
+**Priced readings (official / ruint / Montgomery; robust; (e)):**
+
+| run | cell vs base | original (uncorrected meter) | corrected |
+|---|---|---|---|
+| H2 | (iii) pp 10 +5 vs reference | 1.0819 / 0.9924 / 0.9922; 1.0819; undecided | 1.1911 / 1.0258 / 1.0266; 1.1911; **worse** |
+| H2 | (iv) pp 3 +3 vs reference | 1.0493 / 0.9750 / 0.9747; 1.0493; undecided | 1.1736 / 1.0129 / 1.0138; 1.1736; **worse** |
+| H2 | pp 3 +1 vs reference | 0.9665 / 0.9812 / 0.9801; 0.9812; **better** | 1.0743 / 1.0141 / 1.0140; 1.0743; **worse** |
+| H2 | pp 3 +2 vs reference | 1.0017 / 0.9711 / 0.9706; 1.0017; undecided | 1.1170 / 1.0063 / 1.0069; 1.1170; **worse** |
+| root-confirm | root + pp 3 +0 vs reference | 0.9824 / 0.8849 / 0.8804; 0.9824; **better** | 1.0840 / 0.9159 / 0.9124; 1.0840; undecided |
+| root-confirm | root + pp 3 +1 / +2 / +3 / +4 | robust 1.0035 / 1.0391 / 1.0876 / 1.1590; undecided | robust 1.1112 / 1.1544 / 1.2119 / 1.2948; undecided |
+| i032-2prime | 2′b+pp3 vs 2′a | 0.9618 / 0.8703 / 0.8656; 0.9618; **better** | 1.0659 / 0.9018 / 0.8981; 1.0659; undecided |
+| i032-2prime | 2′b+pp3 vs REF (information) | 0.9381 / 0.8566 / 0.8520; **better** | 1.0397 / 0.8877 / 0.8839; undecided |
+| shift | +0 vs 2′a | as i032-2prime: **better** | 1.0659 / 0.9018 / 0.8981; undecided |
+| shift, A | +1 vs 2′a | 0.9807 / 0.8671 / 0.8620; 0.9807; **better** | 1.0911 / 0.9005 / 0.8965; 1.0911; undecided |
+| shift, A | +2 vs 2′a | 1.0138 / 0.8748 / 0.8710; undecided | 1.1320 / 0.9106 / 0.9079; undecided |
+| A | +3 vs 2′a | 1.0595 / 0.8943 / 0.8913; undecided | 1.1869 / 0.9329 / 0.9310; undecided |
+| A | +1 vs 2′b (information) | 0.9674 / 0.9768 / 0.9754; **better** | 1.0764 / 1.0145 / 1.0144; **worse** |
+| A | +2 vs 2′b (information) | 1.0001 / 0.9855 / 0.9855; undecided | 1.1167 / 1.0258 / 1.0273; **worse** |
+| A | +3 vs 2′b (information) | 1.0452 / 1.0075 / 1.0085; worse | 1.1709 / 1.0510 / 1.0534; worse |
+| B, 72 | +0 / +1 / +2 vs 2′a | robust 1.0289 / 1.0171 / 1.0186; undecided | robust 1.1085 / 1.1023 / 1.1103; undecided (ruint 0.9212 / 0.8959 / 0.8784) |
+| B, 84 | +0 / +1 / +2 vs 2′a | robust 1.0020 / 0.9987 / 1.0108; undecided | robust 1.0955 / 1.0973 / 1.1160; undecided (ruint 0.9040 / 0.8815 / 0.8753) |
+| 2b-sizes | +0 vs 2′b | 0.9488 / 0.9804 / 0.9794; 0.9804; **better** | 1.0515 / 1.0159 / 1.0162; 1.0515; **worse** |
+
+**Scored predictions, second scores** (ranges as sealed):
+
+| prediction | sealed | original measured → result | corrected measured → second score |
+|---|---|---|---|
+| R2-9 official / ruint / Montgomery | 0.95–0.99 / 0.84–0.90 / 0.84–0.90 | 0.9618 / 0.8703 / 0.8656 → held | 1.0659 / 0.9018 / 0.8981 → **missed / missed / held** |
+| R2-10 better than 2′a under all three | YES; falsifier official > 1.000 | yes → held | no (official 1.0659) → **missed; falsifier triggered** |
+| D-8 official | 0.995–1.010; falsified < 0.975 | 0.9618 → missed, falsified | 1.0659 → **missed (above); falsifier not triggered** |
+| D-8 ruint | 0.975–0.990; falsified < 0.955 | 0.8703 → missed, falsified | 0.9018 → **missed, falsified** |
+| D-8 Montgomery | 0.970–0.988; falsified < 0.950 | 0.8656 → missed, falsified | 0.8981 → **missed, falsified** |
+| D-9 better under all three | No (65%); falsified if ≤ 1.000 under all three | yes → missed, falsified | no → **held** |
+| G-3 official / ruint / Montgomery | 0.990–1.005 / 0.860–0.890 / 0.855–0.885 | missed / held / held | 1.0659 / 0.9018 / 0.8981 → **missed / missed / missed** |
+| G-4 better under all three | No (~65%) | missed | **held** |
+| R2-12 +0 priced reproduce 0.9618 / 0.8703 / 0.8656 | exactly | held | 1.0659 / 0.9018 / 0.8981 → **missed as written** (the quoted values are the uncorrected ones; the +0 cell still reproduces i032-2prime's corrected values exactly) |
+| R2-12 +1 official / ruint / Montgomery | 0.962–0.985 / 0.855–0.880 / 0.850–0.875 | held | 1.0911 / 0.9005 / 0.8965 → **missed ×3** |
+| R2-12 +2 official / ruint / Montgomery | 0.968–0.995 / 0.850–0.880 / 0.845–0.875 | missed / held / held | 1.1320 / 0.9106 / 0.9079 → **missed ×3** |
+| R2-14 best robust ratio +0 | +0; falsifier +1 or +2 official < 0.9618 | held | +0 (1.0659 < 1.0911 < 1.1320) → **held** |
+| DeepSeek table, +0 / +1 / +2 priced (9 ranges) | e.g. +0 0.955–0.970 / 0.862–0.880 / 0.858–0.875 | 7 held, 2 missed (official +1, +2) | **all 9 missed** (every corrected value above its range) |
+| D-13 best robust +1 | falsified if +0 or +2 > 0.005 lower | missed, falsified | +0 lower by 0.0252 → **missed, falsified** |
+| Grok table, +0 / +1 / +2 priced (9 ranges) | e.g. +0 0.955–0.970 / 0.865–0.880 / 0.860–0.875 | 7 held, 2 missed | **all 9 missed** |
+| Grok best robust ratio +0 | +0 | held | **held** |
+| R2-15 +3 official / ruint / Montgomery | 1.035–1.075 / 0.870–0.895 / 0.865–0.890 | held / held / missed | 1.1869 / 0.9329 / 0.9310 → **missed ×3** |
+| R2-17 official best at +0, 72 | +0 | missed (+1) | +1 (1.1023) → **missed** |
+| R2-17 official best at +0, 84 | +0 | missed (+1) | +0 (1.0955 < 1.0973) → **held** |
+| R2-17 +1 better under all three, 72 / 84 | yes | missed / held | official 1.1023 / 1.0973 → **missed / missed** |
+| R2-17 conjunction (60%) | all six clauses | missed | **missed** |
+
+**In plain English:**
+- **Every "better" call a pp cell ever earned disappears once the free-2 writes are charged:**
+  - stage H2's pp 3 +1;
+  - root-confirm's root + pp 3 +0;
+  - 2′b+pp3 against 2′a and against REF (i032-2prime);
+  - +0 and +1 in the shift run and run A;
+  - pp 3 against 2′b (run A +1, 2b-sizes +0), which turns to **worse**.
+- **No call moves the other way.** Against 2′a, 2′b+pp3 is still cheaper under ruint and Montgomery (root confirm's saving is larger than the write's cost), but official goes from 0.96–0.98 to 1.07–1.19.
+- **Against 2′b, pp 3 is worse under all three pricings at every shift measured,** which is what wall-clock showed (+3.5% at +0 in 2b-sizes).
+- **Which forecasts the correction helps:** the outside predictions that expected a small or no official saving from pp 3 (D-8 official, D-9, G-4) now hold or move toward their ranges. The ranges centred on the uncorrected pp 3 saving (the reviewer's R2-9, R2-10, R2-12, R2-15; both outside shift tables) now miss.
+- **None of this changes 2′b alone or 2′a,** which have no pp.
