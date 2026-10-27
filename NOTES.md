@@ -9389,3 +9389,25 @@ Model: `wolfram/2026-10-27_meter_open.wl`, `.out`.
 - **Reading:** DeepSeek and Grok are over-confident in range width, driven by tails. The reviewer is close to a ~90% interval.
 
 **What it does not establish.** Five confidence rows cannot calibrate anything (1 hit in 5: 95% interval 4–62%). Ranges within a run share anchors, so they are not independent. The µs misses largely repeat one error (the "241 µs" anchor). The extraction was delegated and spot-checked on 8 rows. The new PROTOCOL prediction guards (arithmetic bands; transfers widened by drift) address the narrow-range pattern prospectively; nothing is re-scored here.
+
+## W1: where root confirm would cross 1.000 on official (model, not a verdict; information only; `wolfram/2026-10-27_w1_crossover.wl`, `.out`)
+
+**What it computed.** Fits of 2′b against 2′a priced ratios at 72 / 84 / 96 bits: official 1.0403 / 1.0242 / 1.0137; ruint 0.8896 / 0.8699 / 0.8877; Montgomery 0.8820 / 0.8638 / 0.8838. The 72/84 ratios come from 2b-sizes and the 96 ratio from i032-2prime; the free-2 correction does not touch either cell. The fits are against bits and against log F. F, the mean factor-base size over all map numbers, is 57.5 / 95.3 / 139.8, from Python traces of the reference genes with goff = 1 (no timing, no priced totals; 96 matches card_params' 138).
+
+**Official, where it reaches 1.000:**
+
+| shape | crossing | 95% range | residual df |
+|---|---|---|---|
+| straight line in bits | **107.5 bits** | from 90 bits; the band's upper edge never reaches 1.000 | 1 (t = 12.7) |
+| straight line in log F | F ≈ 218, **≈ 107 bits** | 98–134 bits (F→bits by the fitted log F–bits line, itself an extrapolation) | 1 |
+| exponential decay to 0 in bits | never (official stays above 1.000) | | 1 |
+| power law in F | never (e ∝ F^−1.14) | | 1 |
+| exact 3-point exponential with offset | 128.6 bits | | 0 |
+| exact quadratic in bits | never (minimum excess +0.8% at 113 bits) | | 0 |
+
+- **Official's excess shrinks more slowly with size:** it falls 1.61 points from 72 to 84 and 1.06 from 84 to 96 (ratio 0.66). Straight lines ignore that slowdown, and the curved shapes that follow it level off above 1.000 or cross only past 128 bits.
+- **ruint and Montgomery show no trend:** slopes −0.00008 and +0.00008 per bit, R² < 0.01. Both stay at 0.86–0.89, with 84 lowest at both.
+
+**How weak this is.** With three points, a line keeps one residual degree of freedom, so its 95% band uses t = 12.7, and any three-parameter curve fits them exactly. The data cannot pick a shape, and the forecasts span **107 bits to never**. The straight-line 107 bits is the optimistic end, not a central estimate. Measuring official at 108 or 120 bits, a count pass with no timing, would separate the shapes. Both sizes are above the project's 40–100-bit scope, so that is the user's call.
+
+**What it does not establish.** This is a model, not a verdict. It says nothing about the robust-rule decision, and it computes no op-class figure.

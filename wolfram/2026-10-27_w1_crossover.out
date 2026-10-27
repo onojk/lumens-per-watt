@@ -1,0 +1,20 @@
+== Linear in bits
+  official vs bits: intercept 1.11941, slope -0.001111, residual sd 0.00227, R^2 0.9857
+    official reaches 1.000 at bits = 107.48; where the line's 95% band (t on 1 df = 12.71) reaches 1.000: 89.95 (lower edge) to none (upper edge)
+  ruint vs bits: intercept 0.88897, slope -0.000078, residual sd 0.01529, R^2 0.0075
+  montgomery vs bits: intercept 0.87020, slope 0.000075, residual sd 0.01558, R^2 0.0067
+
+== Linear in log F (natural log)
+  official vs log F: intercept 1.16206, slope -0.030107, residual sd 0.00077, R^2 0.9983
+    official reaches 1.000 at log F = 5.38; where the line's 95% band (t on 1 df = 12.71) reaches 1.000: 5.05 (lower edge) to 6.35 (upper edge)
+  ruint vs log F: intercept 0.90055, slope -0.004024, residual sd 0.01514, R^2 0.0273
+  montgomery vs log F: intercept 0.87623, slope 0.000063, residual sd 0.01563, R^2 0.0000
+    log F against bits on these three points: slope 0.0370 per bit, R^2 0.9937 (an extrapolation of F, itself a model)
+    so the log-F crossing, F = 218., sits at about 107.4 bits (band 98.4 to 133.5 bits)
+
+== Other shapes for official's excess e = ratio - 1 (exact or near-exact through the three points)
+  excess {0.0403, 0.0242, 0.0137} at {72, 84, 96} bits; drops {0.0161, 0.0106} per 12 bits (ratio of drops 0.655)
+  power law in F, e = c F^-p: p = 1.135, residual sd 0.00178; e > 0 for every F: never crosses
+  exponential in bits, e = c exp(-k (bits - 72)): k = 0.0441 per bit, residual sd 0.00055; never crosses
+  exact 3-point exponential with offset, e = c0 + c1 q^((bits - 72)/12): q = 0.655, c0 = -0.0063 < 0: crosses at 128.6 bits
+  quadratic in bits (exact): no crossing after 96; minimum e = 0.0083 at 112.8 bits
