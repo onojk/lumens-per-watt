@@ -1,0 +1,48 @@
+reference (pp 0, tc 1.0353, confirm full): candidates 1,012.7 per number; polynomials 156.0; priced mean official 1,461,014 ruint 59,071 montgomery 216,420; wall 2,014.2 us (1,959.7 / 2,068.8), +0.0% vs reference (replicates +0.0% / +0.0%): setup 389.5 gray 44.5 sieve 532.1 scan 116.0 confirm 547.5 lp_ledger 180.8 solve 163.6; core 2 MHz 400-4630, median 4268 (n 4)
+root (pp 0, tc 1.0353, confirm root): candidates 1,012.7 per number; polynomials 156.0; priced mean official 1,516,403 ruint 53,467 montgomery 195,078; wall 1,865.7 us (1,875.7 / 1,855.8), -7.4% vs reference (replicates -4.3% / -10.3%): setup 390.3 gray 46.1 sieve 633.1 scan 115.4 confirm 288.8 lp_ledger 187.4 solve 162.6; core 2 MHz 399-4720, median 2509 (n 4) FLAGGED (>10% off the reference); vs reference official 1.0379 [1.0377, 1.0381] ruint 0.9051 [0.9029, 0.9073] montgomery 0.9014 [0.8991, 0.9036]; robust ratio (c) 1.0379; (e) undecided; information only: ruint at root_test 0.043 0.8704 [0.8676, 0.8732]
+root + pp 3, +0 bits (pp 3, tc 1.0353, confirm root): candidates 1,227.4 per number; polynomials 140.5; priced mean official 1,435,274 ruint 52,270 montgomery 190,530; wall 1,883.0 us (1,883.8 / 1,882.3), -6.5% vs reference (replicates -3.9% / -9.0%): setup 357.3 gray 41.7 sieve 581.8 scan 107.6 confirm 354.2 lp_ledger 234.9 solve 163.5; core 2 MHz 400-4686, median 2766 (n 4) FLAGGED (>10% off the reference); vs reference official 0.9824 [0.9776, 0.9869] ruint 0.8849 [0.8819, 0.8877] montgomery 0.8804 [0.8777, 0.8828]; robust ratio (c) 0.9824; (e) better; information only: ruint at root_test 0.043 0.8428 [0.8399, 0.8456]
+root + pp 3, +1 bits (pp 3, tc 0.9425, confirm root): candidates 1,033.0 per number; polynomials 148.9; priced mean official 1,466,113 ruint 52,187 montgomery 190,134; wall 1,848.6 us (1,845.5 / 1,851.8), -8.2% vs reference (replicates -5.8% / -10.5%): setup 374.6 gray 44.3 sieve 616.9 scan 111.7 confirm 299.3 lp_ledger 194.4 solve 165.3; core 2 MHz 399-4686, median 2466 (n 4) FLAGGED (>10% off the reference); vs reference official 1.0035 [0.9992, 1.0075] ruint 0.8835 [0.8804, 0.8864] montgomery 0.8785 [0.8758, 0.8812]; robust ratio (c) 1.0035; (e) undecided; information only: ruint at root_test 0.043 0.8481 [0.8449, 0.8512]
+root + pp 3, +2 bits (pp 3, tc 0.8497, confirm root): candidates 868.2 per number; polynomials 159.4; priced mean official 1,518,112 ruint 52,761 montgomery 192,507; wall 1,843.5 us (1,846.5 / 1,840.5), -8.5% vs reference (replicates -5.8% / -11.0%): setup 396.1 gray 47.4 sieve 665.6 scan 116.8 confirm 252.9 lp_ledger 158.8 solve 164.0; core 2 MHz 400-4683, median 4369 (n 4); vs reference official 1.0391 [1.0347, 1.0443] ruint 0.8932 [0.8890, 0.8983] montgomery 0.8895 [0.8855, 0.8945]; robust ratio (c) 1.0391; (e) undecided; information only: ruint at root_test 0.043 0.8634 [0.8590, 0.8687]
+root + pp 3, +3 bits (pp 3, tc 0.7569, confirm root): candidates 723.3 per number; polynomials 171.8; priced mean official 1,588,943 ruint 54,042 montgomery 197,366; wall 1,860.6 us (1,856.3 / 1,864.9), -7.6% vs reference (replicates -5.3% / -9.9%): setup 422.5 gray 50.9 sieve 712.2 scan 124.0 confirm 212.2 lp_ledger 134.6 solve 162.5; core 2 MHz 400-4646, median 2584 (n 4) FLAGGED (>10% off the reference); vs reference official 1.0876 [1.0837, 1.0916] ruint 0.9149 [0.9103, 0.9194] montgomery 0.9120 [0.9076, 0.9163]; robust ratio (c) 1.0876; (e) undecided; information only: ruint at root_test 0.043 0.8901 [0.8853, 0.8949]
+root + pp 3, +4 bits (pp 3, tc 0.6641, confirm root): candidates 601.6 per number; polynomials 187.7; priced mean official 1,693,302 ruint 56,467 montgomery 206,402; wall 1,926.4 us (1,925.4 / 1,927.3), -4.4% vs reference (replicates -1.7% / -6.8%): setup 455.5 gray 53.2 sieve 806.1 scan 131.2 confirm 171.6 lp_ledger 107.8 solve 161.3; core 2 MHz 400-4644, median 2682 (n 4) FLAGGED (>10% off the reference); vs reference official 1.1590 [1.1528, 1.1661] ruint 0.9559 [0.9493, 0.9627] montgomery 0.9537 [0.9471, 0.9605]; robust ratio (c) 1.1590; (e) undecided; information only: ruint at root_test 0.043 0.9353 [0.9285, 0.9423]
+order timed: r1 reference, r1 root, r1 root + pp 3, +0 bits, r1 root + pp 3, +1 bits, r1 root + pp 3, +2 bits, r1 root + pp 3, +3 bits, r1 root + pp 3, +4 bits, r2 root + pp 3, +4 bits, r2 root + pp 3, +3 bits, r2 root + pp 3, +2 bits, r2 root + pp 3, +1 bits, r2 root + pp 3, +0 bits, r2 root, r2 reference
+## machine state before replicate 1
+time: 2026-10-26T19:38:54-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 766; max MHz: 5000
+load average: 1.23 1.34 1.41
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+power supply ucsi-source-psy-USBC000:001 online: 1
+power supply ucsi-source-psy-USBC000:002 online: 0
+temperature TCPU: 94 C
+temperature x86_pkg_temp: 57 C
+sensors: Package id 0:  +57.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  9.9% xfce4-terminal
+  8.9% Xorg
+  6.9% claude
+  5.9% chrome
+  3.0% chrome
+## machine state before replicate 2
+time: 2026-10-26T19:39:05-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 4173; max MHz: 5000
+load average: 1.35 1.36 1.42
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+power supply ucsi-source-psy-USBC000:001 online: 1
+power supply ucsi-source-psy-USBC000:002 online: 0
+temperature TCPU: 98 C
+temperature x86_pkg_temp: 59 C
+sensors: Package id 0:  +57.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  10.9% Xorg
+  10.9% claude
+  6.9% xfce4-terminal
+  3.0% htop
+  2.0% chrome
