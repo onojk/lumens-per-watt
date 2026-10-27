@@ -6,7 +6,8 @@
 #       content is exactly what an earlier commit recorded;
 #   (b) with --deepseek: some reviews/deepseek_r*.md that mentions EXPERIMENT is committed and clean.
 # Then it runs COMMAND from the repo root, saves stdout and stderr to results/EXPERIMENT_<UTC time>.out, and commits
-# that file alone (explicit git add), naming the prediction commit (and the DeepSeek commit). A failing command is
+# that file and the machine state before and after (results/EXPERIMENT_<UTC time>.machine.txt, tools/machine_state.sh)
+# alone (explicit git add), naming the prediction commit (and the DeepSeek commit). A failing command is
 # committed too, with its exit code in the message: failures are results. Never pushes.
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
@@ -47,18 +48,23 @@ mkdir -p results
 out=results/${exp}_$(date -u +%Y%m%dT%H%M%SZ).out
 i=1
 while [ -e "$out" ]; do out=results/${exp}_$(date -u +%Y%m%dT%H%M%SZ)_$i.out; i=$((i + 1)); done   # never overwrite a result
+ms=${out%.out}.machine.txt
+{ echo "## before"; tools/machine_state.sh; } > "$ms"      # the machine's state, saved beside the result
+grep -q "governor: powersave" "$ms" && echo "NOTE: the CPU governor is powersave (not changed; the user's call)"
 echo "running: $*  ->  $out"
 set +e
 "$@" > "$out" 2>&1
 rc=$?
 set -e
+{ echo; echo "## after"; tools/machine_state.sh; } >> "$ms"
 status="ok"; [ $rc = 0 ] || status="FAILED (exit $rc)"
-git add -f -- "$out"
+git add -f -- "$out" "$ms"
 git commit -q -m "Sealed run $exp: $status; predictions $pc$dsnote
 
 Command: $*
 Output: $out
+Machine state: $ms
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" -- "$out"
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" -- "$out" "$ms"
 echo "$status; committed $(git log -1 --format=%h) ($out)"
 exit $rc

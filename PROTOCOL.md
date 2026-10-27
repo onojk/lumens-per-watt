@@ -33,6 +33,13 @@ Scores go in NOTES.md, each prediction as written ("under X, Y will be Z × base
 - **Card-changing options** are genes, off by default until the user adopts them.
 - **Experiments are report-only.**
 
+## Timed runs
+
+- `tools/sealed_run.sh` saves the machine's state before and after each run beside its result (`results/<id>_<time>.machine.txt`, from `tools/machine_state.sh`): date and time; CPU governor; current and max MHz of the pinned core (core 2); load average; AC power; CPU temperature; and the top 5 processes by current CPU.
+- **Noise:** wall-clock differences within ~2% (the replicate spread seen in H2) are treated as noise.
+- **Comparisons are only within one run.** The same reference has taken 1,898 / 2,015 / 2,100 µs in different sessions.
+- If the governor is "powersave", the report says so. Changing it is the user's call.
+
 ## Model against card
 
 - Wolfram and other model outputs are forecasts, recorded as "model" and never scored as predictions.
