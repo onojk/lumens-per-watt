@@ -8536,3 +8536,14 @@ The Gray code maintains `sr`: the roots in x-coordinates, in [0, p). The sieve's
 - **D-11:** its falsifier would trigger. The whole "rest" (lp_ledger included) totals ~81 µs above price, under D-11's 120 µs floor for lp_ledger.
 - **R2-11:** its first half (mostly outside the sieve) would hold, since the sieve shows +33 µs and the rest +81 µs. Its ledger claim would fail: the hash explains 4–7 µs at most, and lp_ledger's share is not measured.
 - **The reviewer's correction (recorded as given):** the "241 µs / 7-point gap" given to the outside reviewers took official's ratio as the priced expectation. Official prices a sieve update like a root test, so most of official's −5.1% is sieve savings. Against ruint the gap is about 4 points, 109 µs. **This error was the reviewer's.**
+
+### lampcore `--phasetime` instrumentation fix (tooling only; the meter and `--types` unchanged)
+
+- **(1) root_test now counted in its region.** `pt_end` copied type columns `0..29` only, so root_test (column 29, added with root confirm, e13603a) was attributed to no region. It now loops `0..N_TY`.
+- **(2) lp_ledger region closed on all exits.** The region was not closed on three early returns: the ledger full after a direct add, the ledger full after a combination, and a factor found as a large prime. The last relation's ops and ns per attempt fell outside every region (~3.5 ruint per number at 96). It is now closed on those paths.
+- **Checks:**
+  - Per-region type counts sum exactly to the `--types` totals on every map number at 96 (640) and 72 (480) bits, for REF, 2′a, 2′b and 2′b+pp3.
+  - `--types` and every result are identical to the pre-fix binary on all map numbers 54–96, for 7 genomes (14,000 / 14,000).
+  - Parity passes: qs 5,214 and types 7,986 pairs, mismatches 0; mutations 56 / 56. Output in `parity_ptfix.out`.
+- **Python** has no `--phasetime` equivalent, so it is unaffected.
+- **Effect on earlier results:** none on counts or priced totals. Earlier per-region priced figures from `--phasetime` lacked root_test in confirm (the pp 3 breakdown, 8d5ef90, added it by hand) and lacked the ~3.5 ruint residue. Region ns are unchanged except that lp_ledger now includes the last relation's time (one per attempt).

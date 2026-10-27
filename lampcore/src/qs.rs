@@ -1232,6 +1232,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                     let full = led.add(u, vec_, 1, chk, m)?;
                     crate::pt_end(m, 13, ptl);
                     if full {
+                        crate::pt_end(m, 8, pt); // the region closed on the early return too (instrumentation)
                         return Ok(None);
                     }
                     crate::pt_end(m, 8, pt);
@@ -1239,6 +1240,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 }
                 m.charge(LP, 1)?; // N mod q
                 if n_i % v == 0 {
+                    crate::pt_end(m, 8, pt);
                     return Ok(Some(U256::from(v as u128)));
                 }
                 let ptl = crate::pt_snap_lp(m); // "lp:hash"
@@ -1279,6 +1281,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 let full = led.add(cu, &cbuf, v, chk, m)?;
                 crate::pt_end(m, 13, ptl);
                 if full {
+                    crate::pt_end(m, 8, pt);
                     return Ok(None);
                 }
                 crate::pt_end(m, 8, pt);

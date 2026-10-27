@@ -163,7 +163,7 @@ fn pt_end(m: &Meter, r: usize, s: Snap) {
             let mut p = p.borrow_mut();
             p.0[r] += dt;
             p.1[r] += 1;
-            for k in 0..29 {
+            for k in 0..N_TY {
                 p.2[r][k] += ty[k];
             }
         });

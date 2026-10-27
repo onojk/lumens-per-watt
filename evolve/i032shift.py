@@ -11,8 +11,9 @@ tc -= d / log2 1,752; L unchanged).
   2. Wall-clock: 8 replicates, each in its own random cell order (timing.shuffled, seed 2028), lampcore --phasetime on
      core 2. Per cell, EVERY region per replicate is saved (setup, gray, sieve, scan, confirm, lp_ledger, solve, ...),
      mean / sd / min / max; ratios to 2'a with 95% t intervals over the 8 replicate pairs for wall and each region;
-     core 2's MHz per cell (flagged if the median is > 10% off 2'a's); the machine state before each replicate (the
-     frequency limits included).
+     each region's ruint (its own priced counts, so wall and price can be compared region by region: setup, gray,
+     sieve, scan, confirm, lp_ledger, solve); core 2's MHz per cell (flagged if the median is > 10% off 2'a's); the
+     machine state before each replicate (the frequency limits included).
   3. After the timed replicates, one LAMPCORE_LPBREAK=1 pass per cell (information: lp:copy, lp:hash, lp:comb and
      lp:add ns and calls; the sub-timers add overhead, so these ns are not compared with the timed regions).
   python3 i032shift.py -> i032shift.json, stdout
@@ -91,7 +92,10 @@ for n in cells:
     for part in ("wall",) + tuple(k for k in REGIONS if k in res[n][0]):
         x = series(n, part)
         rec[part] = {"mean": statistics.mean(x), "sd": statistics.stdev(x), "min": min(x), "max": max(x), "per_replicate": x}
-        line += f" {part} {rec[part]['mean']:,.1f} us (sd {rec[part]['sd']:.1f}, {rec[part]['min']:,.1f}-{rec[part]['max']:,.1f});"
+        if part != "wall":   # the region's priced counts (ruint, deterministic; lampcore --phasetime per-region types)
+            rec[part]["ruint"] = float(res[n][0][part]["priced"])
+        line += (f" {part} {rec[part]['mean']:,.1f} us (sd {rec[part]['sd']:.1f}, {rec[part]['min']:,.1f}-{rec[part]['max']:,.1f})"
+                 + (f" ruint {rec[part]['ruint']:,.1f}" if part != "wall" else "") + ";")
     m = clock[n]
     line += (f" core 2 MHz {m['min']:.0f}-{m['max']:.0f}, median {m['median']:.0f} (n {m['n']})" + (" FLAGGED (>10% off 2'a)" if m["flag"] else "")
              if m["n"] else " core 2 MHz: no samples")
