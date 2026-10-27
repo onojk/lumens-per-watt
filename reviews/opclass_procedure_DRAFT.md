@@ -9,11 +9,18 @@
 
 Written by Claude Code, Oct 27 (overnight stage 6), from the reviewer's notes and DeepSeek's and Grok's second views (NOTES).
 
+**Revised Oct 27 after the reviewer's review** (NOTES, "Reviewer's review of the draft"): the rule options (sections 1 and 7), the counting method (section 4: whole-run dynamic count primary, static bodies secondary), publication per class (section 4), and independent derivation (section 6). Checked against requirements 1–6 and scope (NOTES, "Requirements for the op-class procedure", "Requirement 6").
+
 ## 1. What the fraction is for
 
 - **Official prices every counted op at 1.** Option (2) adds a **fourth pricing** ("op-class") that keeps official's hardware-neutral spirit but weights each op class by the number of ISA-level instructions in one fixed compiled sequence that performs it.
 - Official itself is unchanged. ruint and Montgomery are unchanged.
-- The robust ratio would become the worst of four: a proposal for the rule, decided separately by the user.
+- **"Worst of four" with official kept cannot change any adoption.** The worst of four is never below the worst of three, so adding the op-class pricing beside official can never lower a robust ratio. Official's veto stays exactly where it is. That option is dropped.
+- **The live options for the robust rule:**
+  - **(a) Keep the rule:** official stays in the robust track (worst of official, ruint, Montgomery). The op-class pricing, if derived, is reported only.
+  - **(b) Op-class replaces official in the robust track:** worst of op-class, ruint, Montgomery. Official is still computed and reported beside every result, with no veto.
+  - **(c) Energy arbitration** (RAPL, I-039) once it is readable.
+- **The user decides between (a), (b) and (c) before step 2**, before any count is taken. That decision is committed with this procedure.
 - **The weight must come from instruction definitions, never from timing on any machine.** A weight fitted to this laptop's wall-clock would be a second ruint (the reviewer's note) and would remove the hardware-neutral member of the robust track.
 
 ## 2. The op classes
@@ -47,14 +54,30 @@ Every type in `evolve/optypes.TYPE_ORDER` that the qs card charges gets a weight
 
 ## 4. How instructions are counted
 
-- **Static count, ISA level, from the fixed binary:** disassemble with `objdump -d --no-show-raw-insn` and identify each class's representative loop or block by its source location (`-l` line info from a build with `debug = 1`, which does not change codegen at opt-level 3; this is checked by comparing the `.text` of both builds).
-- **Per op:** the instructions in the steady-state body that perform one charged op, divided by the ops that body performs per iteration (for an unrolled or vectorised loop, the body's instructions ÷ its ops).
-- **Counted:** every ISA instruction in that body, including loads, stores, address arithmetic, compares and the loop's own branch. A memory-operand instruction counts as one instruction.
-- **Not counted:** instructions outside the body (call setup, loop entry and exit), amortised over many ops.
-- **Calls into the standard library** (HashMap, Vec growth, i128 division helpers): counted through the callee's steady-state path in the same binary, by the same rule.
-- **Cross-check, still ISA level:** a dynamic instruction count of a single-class microloop with an instruction-counting tool that counts retired ISA instructions deterministically (e.g. valgrind's `--tool=callgrind` Ir counts, or `perf stat -e instructions:u` used only as a count, never as time). If static and dynamic per-op counts differ by more than 10% for a class, the static body choice is reviewed and the reason recorded before any fraction is computed.
-- **The fraction for each class** = its instructions per op ÷ the reference class's instructions per op. The reference class is proposed as **root_test** (the op official's veto turned on: sieve update against root test). Equivalently, all weights could be expressed per instruction; the ratios are the same.
-- **Mechanical computation:** a committed script reads the disassembly and the committed list of source locations and prints the weights. No hand-edited numbers.
+**Primary: a whole-run dynamic count** (requirement 6: no hand-picked sequences).
+- **Binary:** the frozen release binary of section 3, with its sha256 recorded.
+- **Input set:** fixed and committed before counting. It is the map numbers at 72, 84 and 96 bits, run with the reference genome and with 2′b.
+- **Tool:** the whole run executes under callgrind, and its Ir (instructions retired, counted deterministically, not timed) is attributed to source lines. The line info comes from a `debug = 1` build, whose `.text` is checked identical to the release build.
+- **Line map:** a source-line → op-class map covers **every line in the card's charged code**. The classes are those of section 2, plus "meter" (the charge calls' own bookkeeping) and "uncharged" (code the meter does not charge, e.g. setup that is not counted). The map is written and committed before any count is taken.
+- **Weight per class** = the Ir attributed to that class ÷ the meter's charged op count for that class in the same run, read from the card's own per-type counters (`--types`) on the same inputs.
+- **Unattributed Ir**, and the "meter" and "uncharged" totals, are reported separately and never dropped.
+- **The fraction for each class** = its weight ÷ the reference class's weight. The reference class is proposed as **root_test** (see section 7). Expressed per instruction, the ratios are the same.
+- **Mechanical computation:** a committed script reads the callgrind output, the line map and the op counts, and prints the weights. No numbers are edited by hand.
+
+**Secondary: the static body counts, as a cross-check.**
+- Disassemble with `objdump -d --no-show-raw-insn -l` and identify each class's steady-state loop or block by its source location.
+- **Per op:** the instructions in the body that performs one charged op, divided by the ops that body performs per iteration (for an unrolled or vectorised loop, the body's instructions ÷ its ops).
+- **Counted:** every ISA instruction in that body, including loads, stores, address arithmetic, compares and the loop's own branch. A memory-operand instruction counts as one. Instructions outside the body (call setup, loop entry and exit) are not counted.
+- **Calls into the standard library** (HashMap, Vec growth, i128 division helpers) are counted through the callee's steady-state path in the same binary.
+- **A class whose static and dynamic weights differ by more than 10%** is explained in writing before step 3.
+
+**Published per class** (requirement 4, not just the ratios):
+- the Ir total;
+- the charged op count;
+- the weight and the fraction;
+- for the cross-check, the static listing (addresses, instructions, source lines) of its body.
+
+The unattributed, "meter" and "uncharged" Ir are published too.
 
 ## 5. What is excluded, and why
 
@@ -65,14 +88,15 @@ Every type in `evolve/optypes.TYPE_ORDER` that the qs card charges gets a weight
 
 ## 6. Safeguards (order and freezing)
 
-1. This procedure is committed, reviewed and adopted by the user **before** any count is taken.
+1. This procedure, the line map, the input set and the user's choice of rule option (section 1: (a), (b) or (c)) are committed, reviewed and adopted by the user **before** any count is taken.
 2. The fraction is computed by the committed script from the fixed binary, committed, and **frozen**: the same weights for every cell, every size and every later test, never re-tuned after results.
-3. Only after (2): the break-even fraction for 2′b (the weight at which 2′b's op-class ratio against 2′a equals 1) and 2′b's op-class ratio are computed and published, side by side.
-4. Any later change (toolchain, ISA, a new op class) re-derives under this same procedure, with a new commit and the old weights kept on record. Earlier figures keep their weights.
-5. **Sealed tests do not test a pricing.** Priced outcomes are deterministic from counts already measured, so the safeguard is on the derivation, not on a run (the reviewer's note). The wall-clock of 2′b at 72 and 84 was measured separately (2b-sizes, 5d8e1c9).
+3. **Independent derivation:** step 2 is done twice, by two separate agents. Each is given only the committed procedure, line map, input set and binary, and is shown no break-even or priced figure. Their weights must agree within 2% per class, or the disagreement is resolved in writing before step 3 (of the order at the top of this file).
+4. Only after (2) and (3): the break-even fraction for 2′b (the weight at which 2′b's op-class ratio against 2′a equals 1) and 2′b's op-class ratio are computed and published, side by side.
+5. Any later change (toolchain, ISA, a new op class) re-derives under this same procedure, with a new commit and the old weights kept on record. Earlier figures keep their weights.
+6. **Sealed tests do not test a pricing.** Priced outcomes are deterministic from counts already measured, so the safeguard is on the derivation, not on a run (the reviewer's note). The wall-clock of 2′b at 72 and 84 was measured separately (2b-sizes, 5d8e1c9).
 
 ## 7. Open points for the user
 
 - **Reference class:** root_test, or per instruction (the same ratios)?
-- **Static body selection:** this is where judgement enters, so the list of source locations is part of the procedure's commit.
-- **Whether official stays in the robust track beside the op-class pricing** (worst of four), or the op-class pricing replaces official in it: the rule decision itself, not part of this procedure.
+- **The line map:** this is where judgement enters (which lines belong to which class), so the map is part of the procedure's commit and both independent derivations use the same map.
+- **The rule option, (a), (b) or (c) of section 1:** chosen by the user before step 2 and committed with the procedure. "Worst of four" with official kept is not an option: it cannot lower any robust ratio.
