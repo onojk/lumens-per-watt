@@ -1,0 +1,22 @@
+== 1. audit item 17: A mod p per base prime per A, uncharged; typed setup_small (a small-modulus reduction) ==
+72 bits: 386. reductions per number (lower: once per prime; upper x2: Rust reduces twice for non-A primes)
+   added share of the total, official / ruint / Montgomery: lower 0.26% / 1.35% / 1.41%; upper 0.52% / 2.71% / 2.82%
+84 bits: 1000.9000000000001 reductions per number (lower: once per prime; upper x2: Rust reduces twice for non-A primes)
+   added share of the total, official / ruint / Montgomery: lower 0.22% / 1.37% / 1.41%; upper 0.44% / 2.75% / 2.81%
+96 bits: 2707.1000000000004 reductions per number (lower: once per prime; upper x2: Rust reduces twice for non-A primes)
+   added share of the total, official / ruint / Montgomery: lower 0.19% / 1.43% / 1.45%; upper 0.38% / 2.85% / 2.89%
+== 2. the large-prime hash: measured against its price; and the 1.4-1.7x of step 3 ==
+72 bits: cell rate 90. ns per ruint; lp:hash 24.34 us measured (sub-timers on) against 16.400000000000002 us priced = 1.48x; 90.80000000000001 ns per lookup against 61.400000000000006 priced
+   at 1.4-1.7x: unpriced 83.10000000000001..145.4 ruint = 0.9500000000000001..1.6600000000000001% of ruint; at the measured ratio: 7.9 us = 1.% of wall
+84 bits: cell rate 73.9 ns per ruint; lp:hash 38.71 us measured (sub-timers on) against 21.900000000000002 us priced = 1.77x; 89.5 ns per lookup against 50.7 priced
+   at 1.4-1.7x: unpriced 134...234.5 ruint = 0.6..1.05% of ruint; at the measured ratio: 16.8 us = 1.02% of wall
+96 bits: cell rate 65.8 ns per ruint; lp:hash 109.94 us measured (sub-timers on) against 42.1 us priced = 2.61x; 120. ns per lookup against 46. priced
+   at 1.4-1.7x: unpriced 278...486.5 ruint = 0.48..0.84% of ruint; at the measured ratio: 67.8 us = 1.77% of wall
+== 3. kept-relation copies ==
+72 bits: 302.91 copies per number; 43.7 ns per copy measured (sub-timers on) against 74.4 ns priced (0.8270000000000001 ruint each) = 0.59x; excess -9.3 us = -1.18% of wall
+84 bits: 488.47 copies per number; 85.9 ns per copy measured (sub-timers on) against 64.7 ns priced (0.876 ruint each) = 1.33x; excess 10.3 us = 0.63% of wall
+96 bits: 993.97 copies per number; 154. ns per copy measured (sub-timers on) against 59.5 ns priced (0.905 ruint each) = 2.59x; excess 93.9 us = 2.45% of wall
+== 4. re-sieve: the priced cost of the walk region (confirm = resieve), for the measurement to come ==
+72 bits: resieve region 947.36 ruint (10.84% of 2'a's ruint), confirm with re-sieve 1000.09 ruint; at 2'a's cell rate the walk would be priced at 85.30000000000001 us
+84 bits: resieve region 3616.96 ruint (16.19% of 2'a's ruint), confirm with re-sieve 1644.94 ruint; at 2'a's cell rate the walk would be priced at 267.2 us
+96 bits: resieve region 13849.39 ruint (23.82% of 2'a's ruint), confirm with re-sieve 2426.8 ruint; at 2'a's cell rate the walk would be priced at 911.3000000000001 us

@@ -9182,3 +9182,65 @@ Yes, substantially. Against 2'b directly, pp3 is +0.7% wall at +1 and −0.9% at
 - **Against 2′b, pp 3 is worse under all three pricings at every shift measured,** which is what wall-clock showed (+3.5% at +0 in 2b-sizes).
 - **Which forecasts the correction helps:** the outside predictions that expected a small or no official saving from pp 3 (D-8 official, D-9, G-4) now hold or move toward their ranges. The ranges centred on the uncorrected pp 3 saving (the reviewer's R2-9, R2-10, R2-12, R2-15; both outside shift tables) now miss.
 - **None of this changes 2′b alone or 2′a,** which have no pp.
+
+## Open meter questions: cost notes (overnight stage 5; documentation and Wolfram; no code changed)
+
+Model: `wolfram/2026-10-27_meter_open.wl`, `.out`.
+- **Inputs:**
+  - card counts of the 2′a reference (`--types`, card 6031239, all map numbers);
+  - Python traces, 40 numbers per size (A's per number, F);
+  - `--phasetime` with confirm = resieve, every 8th number (priced counts only);
+  - the LPBREAK passes of runs B (72, 84) and A (96), sub-timers on.
+- **Model, not a verdict; nothing applied.** Each proposed charge or re-price is the user's decision and would need its own cost note, acceptance and parity before code.
+
+### 1. Audit item 17: A mod p per base prime per A is uncharged (both cores)
+
+- **Facts** (NOTES, "Audit item 17", fix C.1): for each base prime and each A, Rust computes `a % p` to skip A's own primes, then again as the Euclid input; Python computes `A % p` in the `sieved` list and in `euclid_inv`. The Euclid charge counts only its division steps; the reduction itself is uncharged.
+- **Proposed charge:** one setup_small op per base prime per A, A × (F − 2) per number, typed setup_small (a small-modulus reduction), matching how the power entries' A mod q is already charged (stage H).
+  - The second Rust reduction is the same value. **Proposed code alongside:** reduce once and reuse, so the charge stays one per prime.
+- **Expected size** (A × (F − 2) per number: 386 / 1,001 / 2,707 at 72 / 84 / 96):
+
+  | size | official | ruint | Montgomery |
+  |---|---|---|---|
+  | 72 | +0.26% | +1.35% | +1.41% |
+  | 84 | +0.22% | +1.37% | +1.41% |
+  | 96 | +0.19% | +1.43% | +1.45% |
+
+  - Twice that if both Rust reductions were charged. The earlier ~1.9% estimate assumed ~27 A's per number; the current reference uses 19.9 at 96.
+- **Effect on comparisons:** it scales with A's, which 2′a, 2′b and root confirm share. It shifts every cell's total about equally, so ratios between relation-identical cells barely move.
+
+### 2. The large-prime table's hash
+
+- **Facts:** step 3 measured the like-for-like op mix at 1.4–1.7× the calibrated hash price at every size.
+  - **Tonight's LPBREAK data** (sub-timers on, so an upper bound) give lp:hash at **1.48× (72), 1.77× (84), 2.61× (96)** of its price at each cell's mean µs per ruint: 91 / 90 / 120 ns per lookup against 61 / 51 / 46 ns priced.
+- **Expected size:**
+  - at 1.4–1.7×, the unpriced part is 0.95–1.66% (72), 0.60–1.05% (84), 0.48–0.84% (96) of ruint;
+  - at the measured ratio it is 7.9 / 16.8 / 67.8 µs, i.e. 1.0 / 1.0 / 1.8% of wall.
+- **Proposed measurement first:** the meter-health check's (a) on lp:hash with the sub-timers' own overhead measured, then a microbenchmark of the card's table (insert and lookup at the card's sizes), before any re-price. This is a price question, not a missing charge.
+
+### 3. Kept-relation copies
+
+- **Facts:** each kept relation's sparse list is copied into the ledger (lp:copy), charged as word ops: 0.83 / 0.88 / 0.91 ruint per copy. Copies per number: 303 / 488 / 994.
+- **Measured** (sub-timers on): **44 / 86 / 154 ns per copy** against 74 / 65 / 60 ns priced, i.e. **0.59× / 1.33× / 2.59×**.
+  - At 72 the copies run under their price; at 96, 2.6× over: an excess of +93.9 µs per number, 2.45% of wall.
+  - The per-copy time grows with size while the price per copy is nearly flat. That suggests memory (larger lists, colder ledger) rather than op count. Not established.
+- **Proposed measurement:** the meter-health check (a) and (b) on lp:copy across sizes with the sub-timers' overhead measured; then a microbenchmark of the copy at each size's list length. A re-price would follow only if the per-copy time tracks list length (a word-per-entry charge already does) or memory (outside an op count, like the sieve's memory cost; see the op-class draft's exclusions).
+
+### 4. Re-sieve's walk against its word price
+
+- **Facts:** stage E found re-sieve −10% priced but +10% wall at 96 (F × 1.3). The walk was never checked against its word price.
+- **Priced now** (confirm = resieve, 2′a): the resieve region is 947 / 3,617 / 13,849 ruint per number, 10.8% / 16.2% / 23.8% of 2′a's ruint.
+  - At 2′a's cell rate that is ~85 / 267 / 911 µs.
+  - **Stage E's measured walk at 96 was 331–358 µs** (older reference, uncapped clock). Against that, the walk looks **over-priced, not under-priced**: the opposite of what stage E's sign suggested. The comparison crosses runs and clocks, so it is not established.
+- **Proposed measurement:** one capped timed pass of 2′a with confirm = resieve through `evolve/meterhealth.py` (a), which prices the resieve region at its own counts. Not run tonight (no sealed predictions; it is information only and can wait for the user's order).
+
+### 5. solve: the elimination benchmark
+
+- **Still HELD per the user's earlier order** (the card's elimination loop against la's price; solve at 84–96 runs ~2.5–2.7× anchor C). Listed only.
+
+### Do stage 4's flags point at any of these?
+
+- **Yes, at 2 and 3:** on every existing output, the meter-health check (a) flags lp:copy (+73 to +112 µs per number at 96) and lp:hash (+34 to +108 µs) in every cell (`evolve/meterhealth_existing.out`).
+- **Item 17 is not separately visible:** it sits inside setup, which (a) flags as slower per ruint than the cell mean at every size. Setup also includes A selection and the per-A roots, so the flag does not single out A mod p.
+- **Re-sieve was not in any timed run tonight.**
+- **The sieve's free-2 excess** is the one stage 4 confirmed on the uncorrected data; it is now charged (6031239).
