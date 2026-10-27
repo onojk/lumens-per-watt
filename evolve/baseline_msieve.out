@@ -1,0 +1,39 @@
+72 bits (480 numbers; balanced band 80, smaller factor 36-36 bits): us per number card 845.6, msieve 2,832.7, pipeline 737.0, card_bal 883.4, msieve_bal 4,763.8
+    card / msieve (sealed): 0.299 [0.294, 0.303]
+    pipeline / msieve: 0.260 [0.254, 0.267]
+    card / msieve, balanced band: 0.185 [0.179, 0.192]
+    core 2 median MHz: card 2400.0, msieve 2400.0, pipeline 2400.0, card_bal 2400.0, msieve_bal 2400.0; factor checks failed: {'card': 0, 'pipeline': 0, 'balanced': 0}
+    msieve -march=x86-64 (one replicate): 3,439.6 us per number against native 2,832.7 (x1.21)
+    band 0 (smaller factor 16-16 bits): card 858.5 us, msieve 384.6 us, ratio 2.23 (one pass, information)
+    band 1 (smaller factor 20-20 bits): card 873.3 us, msieve 692.1 us, ratio 1.26 (one pass, information)
+    band 2 (smaller factor 24-24 bits): card 957.4 us, msieve 2,187.3 us, ratio 0.44 (one pass, information)
+    band 3 (smaller factor 28-28 bits): card 872.3 us, msieve 4,326.7 us, ratio 0.20 (one pass, information)
+    band 4 (smaller factor 32-32 bits): card 873.9 us, msieve 4,633.2 us, ratio 0.19 (one pass, information)
+    band 5 (smaller factor 36-36 bits): card 897.7 us, msieve 4,908.0 us, ratio 0.18 (one pass, information)
+84 bits (560 numbers; balanced band 80, smaller factor 42-42 bits): us per number card 1,594.4, msieve 4,089.1, pipeline 1,413.3, card_bal 1,590.5, msieve_bal 6,213.1
+    card / msieve (sealed): 0.390 [0.385, 0.395]
+    pipeline / msieve: 0.346 [0.339, 0.352]
+    card / msieve, balanced band: 0.256 [0.252, 0.260]
+    core 2 median MHz: card 2400.0, msieve 2400.0, pipeline 2400.0, card_bal 2400.0, msieve_bal 2400.0; factor checks failed: {'card': 0, 'pipeline': 0, 'balanced': 0}
+    msieve -march=x86-64 (one replicate): 4,760.8 us per number against native 4,089.1 (x1.16)
+    band 0 (smaller factor 16-16 bits): card 1,606.6 us, msieve 646.7 us, ratio 2.48 (one pass, information)
+    band 1 (smaller factor 20-20 bits): card 1,640.1 us, msieve 889.3 us, ratio 1.84 (one pass, information)
+    band 2 (smaller factor 24-24 bits): card 1,576.9 us, msieve 2,449.3 us, ratio 0.64 (one pass, information)
+    band 3 (smaller factor 28-28 bits): card 1,618.2 us, msieve 5,692.1 us, ratio 0.28 (one pass, information)
+    band 4 (smaller factor 32-32 bits): card 1,673.5 us, msieve 6,095.4 us, ratio 0.27 (one pass, information)
+    band 5 (smaller factor 36-36 bits): card 1,614.5 us, msieve 6,292.3 us, ratio 0.26 (one pass, information)
+    band 6 (smaller factor 42-42 bits): card 1,593.7 us, msieve 6,842.1 us, ratio 0.23 (one pass, information)
+96 bits (640 numbers; balanced band 80, smaller factor 48-48 bits): us per number card 3,539.6, msieve 11,096.1, pipeline 2,939.3, card_bal 3,570.3, msieve_bal 17,004.9
+    card / msieve (sealed): 0.319 [0.310, 0.328]
+    pipeline / msieve: 0.265 [0.258, 0.272]
+    card / msieve, balanced band: 0.210 [0.207, 0.213]
+    core 2 median MHz: card 2400.0, msieve 2400.0, pipeline 2400.0, card_bal 2400.0, msieve_bal 2400.0; factor checks failed: {'card': 0, 'pipeline': 0, 'balanced': 0}
+    msieve -march=x86-64 (one replicate): 11,656.3 us per number against native 11,096.1 (x1.05)
+    band 0 (smaller factor 16-16 bits): card 3,451.9 us, msieve 916.8 us, ratio 3.77 (one pass, information)
+    band 1 (smaller factor 20-20 bits): card 3,614.4 us, msieve 1,114.0 us, ratio 3.24 (one pass, information)
+    band 2 (smaller factor 24-24 bits): card 3,648.4 us, msieve 4,735.8 us, ratio 0.77 (one pass, information)
+    band 3 (smaller factor 28-28 bits): card 3,550.1 us, msieve 15,662.8 us, ratio 0.23 (one pass, information)
+    band 4 (smaller factor 32-32 bits): card 3,588.5 us, msieve 16,712.6 us, ratio 0.21 (one pass, information)
+    band 5 (smaller factor 36-36 bits): card 3,645.5 us, msieve 17,129.8 us, ratio 0.21 (one pass, information)
+    band 6 (smaller factor 42-42 bits): card 3,565.1 us, msieve 16,797.6 us, ratio 0.21 (one pass, information)
+    band 7 (smaller factor 48-48 bits): card 3,564.6 us, msieve 16,643.7 us, ratio 0.21 (one pass, information)

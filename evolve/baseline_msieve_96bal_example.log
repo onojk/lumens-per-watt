@@ -1,0 +1,38 @@
+Tue Oct 27 08:39:11 2026  
+Tue Oct 27 08:39:11 2026  
+Tue Oct 27 08:39:11 2026  Msieve v. 1.53 (SVN Unversioned directory)
+Tue Oct 27 08:39:11 2026  random seeds: 9988a999 4ddf0a20
+Tue Oct 27 08:39:11 2026  factoring 38534743958783378229821656333 (29 digits)
+Tue Oct 27 08:39:11 2026  no P-1/P+1/ECM available, skipping
+Tue Oct 27 08:39:11 2026  commencing quadratic sieve (29-digit input)
+Tue Oct 27 08:39:11 2026  using multiplier of 1
+Tue Oct 27 08:39:11 2026  using generic 32kb sieve core
+Tue Oct 27 08:39:11 2026  sieve interval: 4 blocks of size 32768
+Tue Oct 27 08:39:11 2026  processing polynomials in batches of 51
+Tue Oct 27 08:39:11 2026  using a sieve bound of 4021 (270 primes)
+Tue Oct 27 08:39:11 2026  using large prime bound of 160840 (17 bits)
+Tue Oct 27 08:39:11 2026  polynomial 'A' values have 3 factors
+Tue Oct 27 08:39:11 2026  713 relations (231 full + 482 combined from 2245 partial), need 366
+Tue Oct 27 08:39:11 2026  begin with 2476 relations
+Tue Oct 27 08:39:11 2026  reduce to 1088 relations in 2 passes
+Tue Oct 27 08:39:11 2026  attempting to read 1088 relations
+Tue Oct 27 08:39:11 2026  recovered 1088 relations
+Tue Oct 27 08:39:11 2026  recovered 12 polynomials
+Tue Oct 27 08:39:11 2026  attempting to build 713 cycles
+Tue Oct 27 08:39:11 2026  found 713 cycles in 1 passes
+Tue Oct 27 08:39:11 2026  distribution of cycle lengths:
+Tue Oct 27 08:39:11 2026     length 1 : 231
+Tue Oct 27 08:39:11 2026     length 2 : 482
+Tue Oct 27 08:39:11 2026  largest cycle: 2 relations
+Tue Oct 27 08:39:11 2026  matrix is 270 x 713 (0.1 MB) with weight 9560 (13.41/col)
+Tue Oct 27 08:39:11 2026  sparse part has weight 9560 (13.41/col)
+Tue Oct 27 08:39:11 2026  filtering completed in 1 passes
+Tue Oct 27 08:39:11 2026  matrix is 269 x 333 (0.0 MB) with weight 3468 (10.41/col)
+Tue Oct 27 08:39:11 2026  sparse part has weight 3468 (10.41/col)
+Tue Oct 27 08:39:11 2026  commencing Lanczos iteration
+Tue Oct 27 08:39:11 2026  memory use: 0.0 MB
+Tue Oct 27 08:39:11 2026  lanczos halted after 6 iterations (dim = 264)
+Tue Oct 27 08:39:11 2026  recovered 63 nontrivial dependencies
+Tue Oct 27 08:39:11 2026  p15 factor: 141317511914101
+Tue Oct 27 08:39:11 2026  p15 factor: 272682015391033
+Tue Oct 27 08:39:11 2026  elapsed time 00:00:00

@@ -9725,3 +9725,53 @@ The library-bound classes have no single static body and are dynamic only.
 - **The refusal checks:** all yes. Exit 0.
 
 The adoption's checks are complete: acceptance, ci_quick and parity.
+
+## Stage 2: external baseline, msieve 1.53 (I-038; information only, never fitness; `evolve/baseline_msieve.py`, `.out`, `.json`; predictions `predictions/baseline-msieve.md`, filed before timing)
+
+**In plain English first: sieve against sieve, the balanced band (both factors half of N), our card is about 4–5 times faster than msieve as shipped:**
+
+| bits | card (2′b) µs per number | msieve µs per number | **card / msieve, balanced band** |
+|---|---|---|---|
+| 72 | 883 | 4,764 | **0.185** [0.179, 0.192] |
+| 84 | 1,591 | 6,213 | **0.256** [0.252, 0.260] |
+| 96 | 3,570 | 17,005 | **0.210** [0.207, 0.213] |
+
+**Why, and the main caveat.** At 29 digits msieve runs its generic QS (`evolve/baseline_msieve_96bal_example.log`, one balanced 96-bit number):
+- a sieve interval of 4 × 32 KB blocks (our card: 2,109 positions);
+- 270 factor-base primes;
+- 713 relations collected where 366 are needed;
+- every relation written to `msieve.dat` (about 100 KB per number) and read back for filtering.
+
+msieve's small-number path is not tuned for 29-digit inputs. This compares the card against **msieve as shipped**, not against the best possible small-number SIQS. Its 17 ms per 96-bit number matches the usual msieve heuristic, exp(0.22 n − 10.7) s ≈ 13 ms at 29 digits, so it was not mis-run.
+
+**Conditions:**
+- AC online; the cap 2,400 MHz on every core; core 2 at a median of 2,400 MHz in every cell; no Wolfram kernel; TCPU below 70 °C at the start.
+- Both tools in batch (one process per file), pinned to core 2, 4 replicates in a rotating order.
+- **Factors identical on every number:** msieve's prime factors equal {p, q}, and the card's and the pipeline's factor is p or q, with 0 failures at every size.
+
+**The sealed comparison** (the qs card, 2′b, against msieve; all map numbers; as filed):
+
+| bits | card µs | msieve µs | **card / msieve** |
+|---|---|---|---|
+| 72 | 846 | 2,833 | **0.299** [0.294, 0.303] |
+| 84 | 1,594 | 4,089 | **0.390** [0.385, 0.395] |
+| 96 | 3,540 | 11,096 | **0.319** [0.310, 0.328] |
+
+**Scored as filed:**
+- **The reviewer's 96 claim** (0.7–6, central 2: msieve faster, by less than 10×; 65%): **missed.** 0.319 is below the range: the card is faster.
+- **The reviewer's 72 claim** (closer to 1 than at 96; 60%): **missed.** |0.299 − 1| = 0.701 against |0.319 − 1| = 0.681; the intervals do not overlap.
+- **D-18** (0.35–1.05, central 0.60; falsified if > 1.15 or < 0.20): **missed**, below the range. Not falsified (0.319 > 0.20).
+- **D-19** (yes, 72 closer to 1; 75%): **falsified.** Its falsifier, |r72 − 1| ≥ |r96 − 1|, holds.
+- **G-11** (0.6–2.5; 60%): **falsified.** Its falsifier is a ratio outside 0.6–2.5.
+- **G-12** (yes, 72 closer to 1; 55%): **falsified.** Its falsifier, |r72 − 1| ≥ |r96 − 1|, holds.
+
+**Reading the scores.** All three forecasters had msieve faster or level. The reviewer's annotation on D-18, computed from the heuristic D-18 rejected, gave about 0.26: the closest figure on file, though not a sealed prediction. The ordering questions failed narrowly but cleanly: the 72-bit ratio sits slightly further from 1 than the 96-bit one, because msieve's per-number cost at 72 bits is already dominated by its fixed QS set-up.
+
+**Information cells** (same conditions and replicates):
+- **The full reference pipeline** (td, rho, p−1, ecm, then the 2′b qs) against msieve, all map numbers: 0.260 [0.254, 0.267] / 0.346 [0.339, 0.352] / 0.265 [0.258, 0.272]. The pipeline is 13–17% faster than the qs card alone, because it takes the small factors cheaply.
+- **Per band** (one pass each): msieve is faster where the smaller factor is 16–20 bits; it finds those by trial division or rho in under a millisecond. The ratio there is 2.2–3.8 (card slower), since the qs card runs full SIQS on every number. From 24 bits up the card is faster: 0.44–0.77 at 24 bits, about 0.2–0.28 above.
+- **The build difference:** msieve's Makefile builds `-O3 -march=native`; lampcore is the baseline x86-64 target. msieve rebuilt `-march=x86-64` (`~/opt/msieve-src/msieve-1.53-x86-64`, sha256 2a9fc91d…) is 1.21× / 1.16× / 1.05× slower than native at 72 / 84 / 96 (one replicate). So the native build favours msieve, and like for like the card's lead would be slightly larger.
+
+**Builds:** msieve 1.53 source tarball sha256 c5fcbaaf…4d93bb4 (Nov 2016). Native binary sha256 437f5da3…7d10eb, `make all NO_ZLIB=1`, no sudo; GMP from the system.
+
+**Not established:** a comparison with a small-number-tuned SIQS (e.g. YAFU's tiny-SIQS path). Energy was not measured. One machine.
