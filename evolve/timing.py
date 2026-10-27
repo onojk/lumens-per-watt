@@ -16,10 +16,14 @@ def machine_state():
 
 FREQ = "/sys/devices/system/cpu/cpu2/cpufreq/scaling_cur_freq"   # core 2, as lctest.phasetime pins it
 
-def timed_with_clock(fn, period=1.0):
-    """Run fn() while sampling the pinned core's MHz every `period` seconds; returns (fn's result, [MHz samples])."""
+def timed_with_clock(fn, period=1.0, skip_launch=False):
+    """Run fn() while sampling the pinned core's MHz every `period` seconds; returns (fn's result, [MHz samples]).
+    By default the first sample is read at launch, before the core has ramped; with skip_launch it is read after
+    the first period (for short cells: NOTES.md, "Clock samples in short cells")."""
     samples, stop = [], threading.Event()
     def sample():
+        if skip_launch and stop.wait(period):
+            return
         while True:
             try:
                 samples.append(int(open(FREQ).read()) / 1000)
@@ -56,10 +60,21 @@ def counterbalanced(cells, nums, reps=2, lpb=False):
         clock[n]["flag"] = bool(ref and med and abs(med / ref - 1) > 0.10)
     return res, order, states, clock
 
-def shuffled(cells, nums, reps=8, seed=2026):
+def mean_passes(ps):
+    """Several phasetime passes of one cell as one: ns averaged per region; priced, calls and units are deterministic."""
+    out = {k: dict(v) for k, v in ps[0].items()}
+    for k in out:
+        out[k]["ns"] = sum(p[k]["ns"] for p in ps) / len(ps)
+    return out
+
+def shuffled(cells, nums, reps=8, seed=2026, period=1.0, skip_launch=False, inner=1, svb=False, min_per_pass=3):
     """As counterbalanced, but each replicate times the cells in its own random order (random.Random(seed), one
     shuffle per replicate), so heat build-up is spread over the cells. The cells are the reference first; the
-    orders, the per-replicate machine states and the clock summary are returned as by counterbalanced."""
+    orders, the per-replicate machine states and the clock summary are returned as by counterbalanced.
+    Short cells (NOTES.md, "Clock samples in short cells"): period (s) between core-2 MHz samples; skip_launch drops
+    the launch sample; inner > 1 times each cell inner times back to back per replicate (ns averaged); svb times the
+    sieve sub-regions. Each cell's clock summary also gives "per_pass" (samples per timed pass) and "valid" (per_pass
+    >= min_per_pass): a flag on a cell that is not valid rests on too few samples to mean anything."""
     names = list(cells)
     rng = random.Random(seed)
     res = {n: [None] * reps for n in names}
@@ -70,12 +85,18 @@ def shuffled(cells, nums, reps=8, seed=2026):
         perm = names[:]
         rng.shuffle(perm)
         for n in perm:
-            res[n][r], smp = timed_with_clock(lambda: phasetime(cells[n], nums, False))
-            mhz[n] += smp
+            ps = []
+            for _ in range(inner):
+                p, smp = timed_with_clock(lambda: phasetime(cells[n], nums, False, svb), period, skip_launch)
+                ps.append(p)
+                mhz[n] += smp
+            res[n][r] = ps[0] if inner == 1 else mean_passes(ps)
             order.append((r + 1, n))
     clock = {n: {"min": min(v), "median": statistics.median(v), "max": max(v), "n": len(v)} if v else {"n": 0} for n, v in mhz.items()}
     ref = clock[names[0]].get("median")
     for n in names:
         med = clock[n].get("median")
         clock[n]["flag"] = bool(ref and med and abs(med / ref - 1) > 0.10)
+        clock[n]["per_pass"] = clock[n]["n"] / (reps * inner)
+        clock[n]["valid"] = clock[n]["per_pass"] >= min_per_pass
     return res, order, states, clock

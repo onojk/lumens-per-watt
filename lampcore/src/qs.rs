@@ -926,13 +926,19 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
             let c = (bv * bv - kn) / a;
             let pt = crate::pt_snap(m); // "sieve"
             // 4. sieve
+            let ps = crate::pt_snap_sv(m); // "sv:zero"
             arr.iter_mut().for_each(|x| *x = 0);
+            crate::pt_end(m, 14, ps);
+            crate::sv_units(0, width as u64); // the width charge
             if par != usize::MAX {
+                let ps = crate::pt_snap_sv(m); // "sv:free2"
                 // stage H: the free 2 by initialisation (the scan fix), under the width charge
                 for x in arr[par..].iter_mut().step_by(2) {
                     *x = w2;
                 }
+                crate::pt_end(m, 15, ps);
             }
+            let ps = crate::pt_snap_sv(m); // "sv:prime"
             let mut upd = 0u64;
             let mut nr = 0u64; // start offsets, one word op per root
             for k in 0..sr.len() {
@@ -960,6 +966,10 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                     upd += ((width - 1 - start) / pu + 1) as u64;
                 }
             }
+            crate::pt_end(m, 16, ps);
+            crate::sv_units(2, upd + nr);
+            let (upd_p, nr_p) = (upd, nr);
+            let ps = crate::pt_snap_sv(m); // "sv:power"
             for t in 0..qr.len() {
                 let q = qp[t];
                 let s0 = if goff {
@@ -982,6 +992,9 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                     upd += ((width - 1 - start) / qu + 1) as u64;
                 }
             }
+            crate::pt_end(m, 17, ps);
+            crate::sv_units(3, (upd - upd_p) + (nr - nr_p));
+            let ps = crate::pt_snap_sv(m); // "sv:tail"
             m.charge(crate::PH_WORD, nr)?;
             m.charge(SIEVE, upd)?;
             m.charge(SIEVE, width as u64)?;
@@ -1009,8 +1022,10 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                     }
                 }
                 m.charge(crate::PH_WORD, sr.len() as u64)?;
+                crate::sv_units(4, sr.len() as u64);
             }
             m.ev(crate::EV_SIEVE_SCAN, width as u64); // at["polys"] append
+            crate::pt_end(m, 18, ps);
             crate::pt_end(m, 4, pt);
             let pt = crate::pt_snap(m); // "scan"
             cand.clear();

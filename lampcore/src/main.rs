@@ -124,11 +124,29 @@ type R = Result<Option<U256>, Budget>;
 // ---- phase-level wall-clock timing (NOTES.md, "Phase-level wall-clock check"; --phasetime, off by default;
 // read-only instrumentation: no charge or count depends on it) ------------------------------------------
 pub static PT_ON: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
-pub const PT_N: usize = 14;
-// the last four are sub-regions inside lp_ledger, timed only with LAMPCORE_LPBREAK=1 (NOTES.md, "lp_ledger breakdown")
+pub const PT_N: usize = 19;
+// 10..13 are sub-regions inside lp_ledger, timed only with LAMPCORE_LPBREAK=1 (NOTES.md, "lp_ledger breakdown");
+// 14..18 are sub-regions inside sieve, timed only with LAMPCORE_SIEVEBREAK=1 (NOTES.md, "Sieve breakdown"): the array
+// cleared, the free 2 initialisation (pp), the base-prime walks, the power-entry walks (pp), the tail (charges, root pass)
 pub const PT_NAMES: [&str; PT_N] = ["mult", "fb", "setup", "gray", "sieve", "scan", "resieve", "confirm", "lp_ledger", "solve",
-                                    "lp:copy", "lp:hash", "lp:comb", "lp:add"];
+                                    "lp:copy", "lp:hash", "lp:comb", "lp:add",
+                                    "sv:zero", "sv:free2", "sv:prime", "sv:power", "sv:tail"];
 pub static LPB_ON: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+pub static SVB_ON: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+// the sieve sub-regions' op units (sieve_update and word ops each sub-region would carry; the sieve region charges them
+// once at its end, so the meter's per-region types cannot split them): counted only with LAMPCORE_SIEVEBREAK=1
+thread_local! {
+    static SVU: std::cell::RefCell<[u64; 5]> = std::cell::RefCell::new([0; 5]);
+}
+#[inline]
+pub fn sv_units(i: usize, n: u64) {
+    if SVB_ON.load(std::sync::atomic::Ordering::Relaxed) {
+        SVU.with(|u| u.borrow_mut()[i] += n);
+    }
+}
+fn sv_take() -> [u64; 5] {
+    SVU.with(|u| std::mem::replace(&mut *u.borrow_mut(), [0; 5]))
+}
 type PtAcc = ([u64; PT_N], [u64; PT_N], [[i64; N_TY]; PT_N]);
 thread_local! {
     static PT: std::cell::RefCell<PtAcc> = std::cell::RefCell::new(([0; PT_N], [0; PT_N], [[0; N_TY]; PT_N]));
@@ -146,6 +164,15 @@ fn pt_snap(m: &Meter) -> Snap {
 #[inline]
 fn pt_snap_lp(m: &Meter) -> Snap {
     if LPB_ON.load(std::sync::atomic::Ordering::Relaxed) {
+        pt_snap(m)
+    } else {
+        None
+    }
+}
+/// A sub-region snap inside sieve: only with --phasetime and LAMPCORE_SIEVEBREAK=1 (read-only, like pt_snap).
+#[inline]
+fn pt_snap_sv(m: &Meter) -> Snap {
+    if SVB_ON.load(std::sync::atomic::Ordering::Relaxed) {
         pt_snap(m)
     } else {
         None
@@ -890,6 +917,9 @@ fn main() {
         if std::env::var("LAMPCORE_LPBREAK").map(|v| v == "1").unwrap_or(false) {
             LPB_ON.store(true, std::sync::atomic::Ordering::Relaxed);
         }
+        if std::env::var("LAMPCORE_SIEVEBREAK").map(|v| v == "1").unwrap_or(false) {
+            SVB_ON.store(true, std::sync::atomic::Ordering::Relaxed);
+        }
         // the per-region overhead: an empty snap / end pair on a dummy meter, timed in a loop
         let dm = Meter { ops: 0, cap: u64::MAX, tests: 0, hits: 0, k: None, phases: [0; N_PH], hook: None, race: None,
                          ob: None, ob_spent: 0, ob_hit: false, ev: [0; 7], types: [0; N_TY] };
@@ -900,6 +930,7 @@ fn main() {
         }
         let per = t0.elapsed().as_nanos() as f64 / reps as f64;
         pt_take();
+        sv_take();
         eprintln!("{{\"overhead_ns_per_region\": {per:.2}}}");
     }
     // test hook for the per-type mutation check: "<type>:drop" or "<type>:double", applied
@@ -924,7 +955,8 @@ fn main() {
         if PT_ON.load(std::sync::atomic::Ordering::Relaxed) {
             let (ns, calls, tys) = pt_take();
             let tyj: Vec<String> = tys.iter().map(|r| format!("[{}]", r.iter().map(|x| x.to_string()).collect::<Vec<_>>().join(","))).collect();
-            eprintln!("{{\"N\": \"{n}\", \"regions\": {:?}, \"ns\": {:?}, \"calls\": {:?}, \"types\": [{}]}}", PT_NAMES, ns, calls, tyj.join(","));
+            let svu = sv_take();
+            eprintln!("{{\"N\": \"{n}\", \"regions\": {:?}, \"ns\": {:?}, \"calls\": {:?}, \"types\": [{}], \"sv_units\": {:?}}}", PT_NAMES, ns, calls, tyj.join(","), svu);
         }
         let mut tail = if has_qs {
             ph.iter().map(|x| format!(" {x}")).collect::<String>()

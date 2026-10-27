@@ -1,0 +1,7 @@
+54 bits done 1:2240/2240 2:280/280 3:280/280
+72 bits done 1:5600/5600 2:700/700 3:700/700
+84 bits done 1:9520/9520 2:1190/1190 3:1190/1190
+96 bits done 1:14000/14000 2:1750/1750 3:1750/1750
+1. --types and results identical to the pre-change lampcore, per number and per type: 14000/14000
+2. SIEVEBREAK on: units = sieve region's sieve_update + sieve_scan + word; no types in the four walk sub-regions; regions sum to --types: 1750/1750
+3. SIEVEBREAK off: sub-regions empty; regions sum to --types: 1750/1750

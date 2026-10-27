@@ -49,9 +49,16 @@ def cost(t, Pn):
     t = {k: v for k, v in t.items() if v}
     return float(sum(t.values())) if Pn == "official" else float(sum(PR[Pn][k] * v for k, v in t.items()))
 
-def phasetime(g, nums, lpb):
+def phasetime(g, nums, lpb, svb=False):
+    """lampcore --phasetime on core 2, means per number per region: ns (less the per-region overhead), ruint, calls.
+    lpb: the lp_ledger sub-regions (LAMPCORE_LPBREAK=1); svb: the sieve sub-regions (LAMPCORE_SIEVEBREAK=1), each
+    with "units", the sieve_update and word ops it would carry (the sieve region charges them once at its end)."""
     text = json.dumps([g]) + "\n" + str(P.QS_CAP) + "\n" + "".join(f"{N} {p} {q}\n" for N, p, q in nums)
-    env = dict(os.environ, LAMPCORE_LPBREAK="1") if lpb else {k: v for k, v in os.environ.items() if k != "LAMPCORE_LPBREAK"}
+    env = {k: v for k, v in os.environ.items() if k not in ("LAMPCORE_LPBREAK", "LAMPCORE_SIEVEBREAK")}
+    if lpb:
+        env["LAMPCORE_LPBREAK"] = "1"
+    if svb:
+        env["LAMPCORE_SIEVEBREAK"] = "1"
     res = subprocess.run(["taskset", "-c", "2", fastlamps.BIN, "--phasetime"], input=text, capture_output=True, text=True, check=True, env=env)
     lines = [json.loads(l) for l in res.stderr.splitlines() if l.startswith("{")]
     over = lines[0]["overhead_ns_per_region"]
@@ -63,7 +70,12 @@ def phasetime(g, nums, lpb):
     ns_c = ns - calls * over
     pr = np.array([sum(PR["ruint"].get(t, 0) * types[i][j] for j, t in enumerate(optypes.TYPE_ORDER) if types[i][j]) for i in range(len(names))])
     n = len(nums)
-    return {nm: {"ns": ns_c[i] / n, "priced": pr[i] / n, "calls": calls[i] / n} for i, nm in enumerate(names)}
+    out = {nm: {"ns": ns_c[i] / n, "priced": pr[i] / n, "calls": calls[i] / n} for i, nm in enumerate(names)}
+    if svb:
+        su = np.sum([r["sv_units"] for r in recs], axis=0)
+        for i, nm in enumerate(("sv:zero", "sv:free2", "sv:prime", "sv:power", "sv:tail")):
+            out[nm]["units"] = su[i] / n
+    return out
 
 def x3(bits, g, sample):
     """Share of partials whose q is seen once by completion, and partials / stored per number (Python traces)."""

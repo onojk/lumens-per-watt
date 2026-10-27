@@ -8875,3 +8875,41 @@ Yes, substantially. Against 2'b directly, pp3 is +0.7% wall at +1 and −0.9% at
   - pp 3 mainly offsets root confirm's official cost. 2′b alone: official 1.0137, wall −11.2%. 2′b+pp3 +1 against 2′b: wall +0.7%.
   - So the adoption question for root confirm reduces to the open robust-rule decision (above, "Open decision (the user's): the robust rule's veto by official pricing").
 - **Cross-run drift:** +2's wall was −13.5% in pp3-gap-and-shift and −12.0% in shift-past-2, about 1.5 points, more than the within-run intervals (±1.0 to ±1.3). **Cross-run comparisons carry about ±1.5 points.**
+
+## Sieve breakdown and clock samples in short cells (tooling only; no charge changes; no timed run)
+
+### Sieve breakdown (lampcore `--phasetime`, `LAMPCORE_SIEVEBREAK=1`)
+
+- **Five sub-regions inside the sieve region,** timed only with `LAMPCORE_SIEVEBREAK=1` (like `LAMPCORE_LPBREAK=1` for lp_ledger):
+  - `sv:zero`: the array cleared;
+  - `sv:free2`: pp's free-2 initialisation (stage H; one stride-2 write over half the interval);
+  - `sv:prime`: the base-prime walks (ordinary updates);
+  - `sv:power`: the power-entry walks (pp);
+  - `sv:tail`: the charges, the root pass (root confirm without goff) and the scan event.
+- **Op units per sub-region.** The sieve region charges its updates once, at its end, so the meter's per-region types cannot split them. Each sub-region therefore gets "units": the sieve_update, sieve_scan and word ops it would carry (zero: the width charge; prime and power: updates plus start-offset words; tail: the root pass's words; free2: none, since it is under the width charge). The units are counted only with the flag on and are never charged.
+- **pp 3 has no power entries at 54–96 bits:** powers must be below 2³ = 8, which admits no odd prime power (9 > 8) and no 2^j with j ≥ 4. **pp 3's only sieve work is the free-2 initialisation** (and the second threshold at the scan). `sv:power` is exercised by pp 10 in the acceptance.
+- **Acceptance** (`evolve/svbreak_accept.py`, `svbreak_accept.out`; 7 genomes: the reference, + goff, + goff + root, + goff + root + pp 3, + pp 10, + root + pp 10, + goff + pp 10):
+  1. `--types` and every result identical to the pre-change binary on all map numbers 54–96: **14,000 / 14,000**.
+  2. With the flag on (every 8th map number): units sum to the sieve region's sieve_update + sieve_scan + word; the four walk sub-regions carry no types; the top-level regions' types sum to the `--types` totals: **1,750 / 1,750**.
+  3. With the flag off: the sub-regions have no calls, ns or units; the regions sum to the totals: **1,750 / 1,750**.
+- **Parity:** passes (`evolve/parity_svbreak.out`): qs 5,214 and types 7,986 pairs, mismatches 0, sum-identity failures 0; race 653, ob 369, guards 54; mutations caught 56 / 56.
+- **Overhead:** with the flag on, the sieve region's ns rises (~5 snaps per polynomial). Sub-region ns are therefore information, like the lp: ones; a timed run that uses them should time the wall-clock replicates with the flag off and run one breakdown pass per cell, as with LPBREAK.
+- **Smoke observation (information only; 10 numbers at 96, one pass, sub-timers on, not a timed run):** `sv:free2` took ~40 µs per number in 2′b+pp3 with zero units. That is the size of the sieve excess against 2′b in run A (+58 to +69 µs), but nothing is established until a timed run measures it.
+- **Python** has no `--phasetime`, so it is unaffected. `lctest.phasetime(g, nums, lpb, svb=False)` passes the flag and returns each sub-region's units.
+
+### Clock samples in short cells (`evolve/timing.py`)
+
+- **The problem (be7579b):** the sampler read core 2's MHz at each cell's launch and then every 1 s. A 72-bit cell takes ~0.35 s, so each had one sample, read before the core ramped. The flags at 72 rested on that.
+- **New options, opt-in** (the defaults are unchanged, so earlier runners reproduce as committed):
+  - `period`: seconds between samples (0.05 for short cells);
+  - `skip_launch`: the first sample is read after one period, not at launch;
+  - `inner`: each cell timed `inner` times back to back per replicate, ns averaged (`mean_passes`);
+  - `svb`: the sieve sub-regions timed;
+  - every cell's clock summary now also gives `per_pass` (samples per timed pass) and `valid` (`per_pass` ≥ 3). A flag on a cell that is not valid rests on too few samples.
+- **Check (2 replicates, 72 bits, 2′a and 2′b+pp3; information):**
+  - Defaults: 1 sample per pass; medians 400 and 1,460 MHz; one cell flagged; neither valid.
+  - `period=0.05, skip_launch=True`: 11 samples per pass; **both medians 2,400 MHz; no flag; both valid.**
+  - The same with `inner=3`: 10–11 per pass; 2,400 MHz.
+  - So the 72-bit flags in shift-72-84 most likely came from the launch sample. This check is not a re-run of those cells.
+
+**Not done:** no timed run (as briefed). No charge, count or price changed.
