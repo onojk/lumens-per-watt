@@ -7468,3 +7468,47 @@ STOP after this for DeepSeek's (iii) predictions, then "go".
 - (It is one already: pp is read as the bound in bits, and pp = 6 and 12 are in the acceptance and parity cases.)
 
 With both sets of (iii) predictions on file, stage H is ready for "go" once the build is committed.
+
+### Stage H addendum: Wolfram, Oct 27 — which parts of the better sieve pay (recorded as given; documentation only)
+
+Same simulation and cost model, with each variant's extra sieve hits counted from its own hits. Wall-clock in % against today's card at c = 0.53 / 0.177 µs per candidate, with the best shift in brackets.
+
+| variant | extra sieve hits | c = 0.53 | c = 0.177 |
+|---|---|---|---|
+| A, today | 0 | −2.0% (+2) | −20.0% (−1) |
+| B, "2 free": min(v2, cap), cap 1 / 2 / 3 for kN ≡ 3 mod 4 / 5 mod 8 / 1 mod 8; no sieve work | 0 | −6.6% (+3) | −21.5% (+2) |
+| C, "2 full": min(v2, 10), walks 2^j for kN ≡ 1 mod 8 | 14.4% | −3.4% (+3) | −19.2% (+2) |
+| D, 2 free + odd powers ≤ 2^4 | 5.9% | −6.1% (+3) | −21.1% (+2) |
+| E, 2 free + odd powers ≤ 2^6 | 12.6% | −6.5% (+4) | −21.4% (+2) |
+| F, 2 free + odd powers ≤ 2^8 | 14.8% | −7.3% (+5) | −22.5% (+2) |
+| G, stage H's option (2 full + powers ≤ 2^10) | 30.0% | −8.3% (+6) | −22.5% (+4) |
+
+**The user's sealed Y1–Y6:**
+- Y1 held (B today −6.63%); Y2 held (B cheap −21.52%).
+- Y3 missed (the best today is G, not D, E or F).
+- Y4 held (−8.28%).
+- Y5 missed narrowly (E is 1.10 points behind G at cheap confirm).
+- Y6 held (B's best shift +3).
+
+**Reading (model only):**
+- "2 free" gets ~80% of the full option's gain at today's confirm, and nearly all of it with a cheap confirm, at zero sieve cost.
+- G's extra edge rests on the estimated sieve cost: at 1.5x that cost G drops to ~−4.9% (DeepSeek round 47), below B.
+- Walking powers of 2 (C) is worse than B.
+- B is the robust choice. It amounts to a per-parity threshold: one parity class of positions gets 1 / 2 / 3 extra bits by kN mod 8.
+
+### Stage H: can the built option express "2 free"? Yes, by setting: pp = 3 (any of 1–3). Cell (iv) added, with its sealed predictions (the user's; recorded before any comparison run)
+
+**Why pp = 3 is exactly "2 free"** (read from the code as built per 3caf8df; both cores):
+- *No odd powers:* an odd power entry needs p² < 2^pp, and 9 > 8.
+- *No 2^j walk:* the powers of 2 are walked for 4 ≤ j < pp, which is empty for pp ≤ 4.
+- *The parity add:* w2 is set whenever pp > 0. It is 1 for kN ≡ 3 mod 4, 2 for 5 mod 8 and 3 for 1 mod 8, on the odd-t class; for even k (kN ≡ 2 mod 4) it is 1 on the even-t class, the design's own rule.
+- *What remains charged:* the parity add itself costs 2 word ops per attempt and 1 per A, with no sieve updates. The other per-attempt and per-A charges are per power entry, and there are no entries.
+- pp = 1, 2 and 3 are identical. pp = 3 is the stated setting.
+- *Acceptance:* pp = 3 was not among the cases checked (pp 6 / 10 / 12). It is added to `pp_accept.py` (Python = Rust per type, and the exact sieve value check with the 2-adic cap max(3, pp − 1)) before any (iv) run.
+
+**Cell (iv):** "2 free" (pp = 3) at +3 bits, tc only (tc = 1.0353 − 3 / 10.775 = 0.7569; L unchanged). All 640 numbers, same reporting.
+- **H-16** (iv) wall-clock: −2% to −10% (model −6.6%).
+- **H-17** (iv) priced ruint: −2% to −12% (no added sieve work and fewer candidates, so priced should not lag wall-clock as it may for G).
+- **H-18** (iv) extra sieve hits / sieve wall-clock: ~0 (the sieve region within ±3% of the reference per polynomial).
+
+STOP after this for DeepSeek's predictions for (iii) and (iv), then "go".
