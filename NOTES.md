@@ -9503,3 +9503,11 @@ Model: `wolfram/2026-10-27_meter_open.wl`, `.out`.
 **Reviewer's scope check was wrong (marked passed for a qs-only table); corrected on Claude Code's flag.** (Oct 27.)
 - The draft now covers every type in `optypes.TYPE_ORDER` that any card charges: qs, ecm, p−1 including stage 2, rho, cfrac/sq, td and the pipeline glue.
 - The input set adds the reference pipelines on the map numbers at 54–96, so that every class ends with a nonzero op count and attributed Ir. Classes with too few ops for a stable weight are resolved in writing before step 3.
+
+## Decision: robust-rule option (b) (the user's, Oct 27, before any count)
+
+- **The op-class pricing replaces official in the robust track:** robust = worst of op-class, ruint, Montgomery. Official is still computed and reported everywhere, with no veto.
+- **The procedure is adopted** as revised: `reviews/opclass_procedure.md` (renamed from the draft; status ADOPTED, with this decision recorded in it).
+- **Step 2 is authorised:** the counts and the frozen weights, "op-class v1". No break-even, no op-class ratio for any cell and no robust ratio under the new rule are computed until the user says "step 3".
+- *Open (not decided here):* whether earlier verdicts are re-reported under the new rule is the user's call, at step 3 or later.
+- valgrind 3.25.1 was installed by the user.

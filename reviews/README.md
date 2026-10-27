@@ -8,7 +8,7 @@ This folder holds outside review rounds (DeepSeek; Grok when available) and the 
 - `deepseek_rNN.md`: the reply as returned (with the model's reasoning, when the API returns it).
 - `card_params.md`: the card's parameter sheet, prepended to every prompt.
 - `scorecard.md`: the reviewer scorecard (I-002): every scored prediction of the reviewer, DeepSeek and Grok, held / missed / falsified / information only by category, with recurring error types and the second scores under the corrected meter.
-- `opclass_procedure_DRAFT.md`: a draft (not adopted) of the derivation procedure for an op-class fraction (robust-rule option 2, step i).
+- `opclass_procedure.md`: the derivation procedure for the op-class pricing, ADOPTED Oct 27 with robust-rule option (b) (op-class replaces official in the robust track).
 
 ## Usage
 

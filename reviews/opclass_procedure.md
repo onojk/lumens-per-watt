@@ -1,11 +1,15 @@
-# Op-class fraction: derivation procedure (DRAFT, a proposal)
+# Op-class pricing: derivation procedure (ADOPTED)
 
-**Status: DRAFT. Not adopted.** The user has not chosen option (2) of the open robust-rule decision (NOTES, "Open decision (the user's): the robust rule's veto by official pricing"). This file is step (i) of that option's order:
+**Status: ADOPTED by the user, Oct 27, before any count.** Revised from the draft (`reviews/opclass_procedure_DRAFT.md`, renamed here).
+
+**The user's decision (Oct 27), robust-rule option (b):** the op-class pricing **replaces official in the robust track**: robust = worst of op-class, ruint, Montgomery. Official is still computed and reported everywhere, with no veto. Recorded in NOTES ("Decision: robust-rule option (b)").
+
+The order below is unchanged:
 1. commit the derivation procedure;
 2. compute the fraction mechanically and commit it;
 3. only then compute and publish the break-even fraction for 2′b and 2′b's ratio.
 
-**Nothing here computes a fraction, a break-even or a priced figure, and nothing may be priced with it until the user adopts the procedure.**
+**Step 2 (the counts and weights) is authorised. No break-even, no op-class ratio for any cell and no robust ratio under the new rule are computed until the user says "step 3".**
 
 Written by Claude Code, Oct 27 (overnight stage 6), from the reviewer's notes and DeepSeek's and Grok's second views (NOTES).
 
