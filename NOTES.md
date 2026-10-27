@@ -7436,3 +7436,35 @@ Same simulation. Confirm cost c ∈ {0.53, 0.30, 0.177, 0.10} µs per candidate;
 - **H-15** (iii) never-combined share: 0.70–0.82 (model 0.769).
 
 STOP after this for DeepSeek's (iii) predictions, then "go".
+
+### Stage H addendum: DeepSeek, Oct 27, round 47 (recorded as given; filed before any stage H comparison run, so sealed; documentation only)
+
+**Accepted:**
+- the quality-effect correction (+23%);
+- its +6 / +7 optimum held by coincidence;
+- the matched shift of +3.67 bits (annotation);
+- the I-029 predictions as sealed: its 0.9–1.7 ns / 150–240 ns; the user's 0.3–1.2 ns / 80–200 ns.
+
+**SEALED, cell (iii)** (option on, threshold +5 bits, tc only, all 640 numbers):
+- **H-11** polynomials −3% to −12% (−7%). Falsified if > +2% or < −18%.
+- **H-12** candidates per number −18% to −38% (−28%); per polynomial −15% to −32% (−23%). Falsified (per number) if > −8% or < −48%.
+- **H-13** wall-clock −3% to −14% (−8%). Falsified if > +3% or < −20%.
+- **H-14** priced ruint −10% to +2% (−4%). Falsified if < −18% or > +8%.
+- **H-15** never-combined 0.72–0.81 (0.77). Falsified if < 0.65 or > 0.86.
+
+**Priced against wall-clock for (iii):** it expects priced to be less favourable than wall-clock (~−4% against ~−8%).
+- Reviewer: its arithmetic used a confirm-test price of 0.0258 ruint (a word op; it had not been given the price). The card's confirm_td is 0.114 ruint (stage D), so the confirm saving is ~24.5 ruint per polynomial, not ~5.5. It also used the wall-clock sieve share as the priced share.
+- The direction may still hold, for a different reason. Stage C has the sieve priced above its wall-clock cost (anchor C ~0.74) and the full-pass confirm priced about right (~1.26). So adding sieve hits and removing confirm work should look somewhat less favourable priced than in wall-clock. The size is unknown; the card measures it.
+
+**Robustness** (checked; it divides by the card's 1,909 µs while the table's percentages are relative to the model's 1,851 µs, an immaterial inconsistency):
+- With the option's extra sieve cost at 1.5x or 2x the +30% estimate, the best shift stays at ~+5 bits.
+- The best wall-clock at today's confirm becomes −4.9% / −1.6% (from −8.3%).
+- So the option's value without a cheap confirm depends on the sieve cost the card measures.
+
+**Reviewer's note for the retune:**
+- Most of the option's extra sieve hits come from powers of the smallest primes (9, 25, 27, 49 …).
+- The factor of 2 is nearly free: a parity add for kN ≡ 3 mod 4 and 5 mod 8.
+- If the measured extra sieve cost is high, a lower power bound may keep most of the gain for less work. The power bound (pp) should be a gene alongside slack and confirm mode.
+- (It is one already: pp is read as the bound in bits, and pp = 6 and 12 are in the acceptance and parity cases.)
+
+With both sets of (iii) predictions on file, stage H is ready for "go" once the build is committed.
