@@ -1,0 +1,7 @@
+54 bits done
+72 bits done
+84 bits done
+96 bits done
+1. vs pre-change lampcore: identical per number and per type: 8000/8000
+2. Python = Rust per type: 32/32
+exit 0

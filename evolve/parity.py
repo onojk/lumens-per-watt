@@ -188,6 +188,20 @@ def qs_pairs():
             yield "qs resieve low cap", [dict(TUNED, lc=1.4, a_mode="on_demand", confirm="resieve")], nums, cap, False
     for seed, b, i in RETRY[:4]:
         yield "qs resieve retry", [dict(QS, a_mode="on_demand", confirm="resieve")], semiprimes_pq(b, i + 1, seed)[i:], 2 ** 29, False
+    # pp (NOTES.md, "Stage H: sieve 2 and small prime powers"): prime powers q < 2^pp and the 2-adic parity
+    # threshold; pp 10 / 6 / 12, both a_modes, with re-sieve, low caps that stop inside the power setup or the
+    # sieve, a retry
+    for b in (40, 48, 60, 72, 84, 96):
+        nums = semiprimes_pq(b, 4, 3000000 + b)
+        for ppv in (10, 6, 12):
+            yield f"qs pp {ppv}", [dict(TUNED, lc=1.4, a_mode="on_demand", sort_charge=1, kset="sf32", pp=ppv)], nums, 2 ** 29, False
+        yield "qs pp enumerate", [dict(TUNED, lc=1.8, pp=10)], nums, 2 ** 29, False
+        yield "qs pp default genes", [dict(QS, pp=10)], nums, 2 ** 29, False
+        yield "qs pp resieve", [dict(TUNED, lc=1.4, a_mode="on_demand", kset="sf32", confirm="resieve", pp=10)], nums, 2 ** 29, False
+        for cap in (2 ** 11, 2 ** 13, 2 ** 15):
+            yield "qs pp low cap", [dict(TUNED, lc=1.4, a_mode="on_demand", kset="sf32", pp=10)], nums, cap, False
+    for seed, b, i in RETRY[:4]:
+        yield "qs pp retry", [dict(QS, a_mode="on_demand", pp=10)], semiprimes_pq(b, i + 1, seed)[i:], 2 ** 29, False
     yield from lp_pairs()
     yield from check_pairs()
     yield from cfrac_pairs()

@@ -668,6 +668,54 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
     let thr = (mm_ as f64 * (kn_u.to::<u128>() as f64 / 2.0).sqrt()).log2()
         - (gene(g, "tc", 2.0) + (lc - 1.0)) * (bnd as f64).log2();
     let width = (2 * mm_ + 1) as usize;
+    // stage H (NOTES.md, "Stage H: sieve 2 and small prime powers"): gene pp, prime powers q = p^j < 2^pp walked
+    // like base primes (odd p with two roots, p not dividing k; 2^j, 4 <= j, only when kN = 1 mod 8), and the
+    // prime 2's fixed part w2 added on one parity class by a second threshold at the scan; pp absent or 0: off
+    let ppb = gene(g, "pp", 0.0) as u32;
+    // per power entry: (q, p, the roots of t^2 = kN mod q, log value, M mod q)
+    let mut ppe: Vec<(i64, i64, Vec<i64>, i32, i64)> = Vec::new();
+    let mut w2 = 0i32;
+    if ppb > 0 {
+        let lim = 1i64 << ppb;
+        for j in 2..f {
+            let p = base[j];
+            let t = roots_t[j] as i64;
+            if k as i64 % p == 0 || p * p >= lim {
+                continue;
+            }
+            let inv = euclid_inv64((2 * t).rem_euclid(p), p, SETUP, m)?; // (2t)^-1 mod p, for the Hensel lifts
+            let (mut q, mut tq) = (p, t);
+            while q * p < lim {
+                let d = ((tq as i128) * (tq as i128) - kn).rem_euclid((q * p) as i128) as i64; // a multiple of q
+                tq += q * (-(d / q) * inv).rem_euclid(p);
+                q *= p;
+                m.charge(SETUP, 3)?; // kN mod q with the square, times the inverse, the update
+                ppe.push((q, p, vec![tq, q - tq], logp[j], mm_.rem_euclid(q)));
+                m.charge(SETUP, 1)?; // M mod q
+            }
+        }
+        if kn.rem_euclid(8) == 1 {
+            let mut s2 = 1i64;
+            let mut jj = 4u32;
+            while jj < ppb {
+                let q = 1i64 << jj;
+                if ((s2 as i128) * (s2 as i128) - kn).rem_euclid(q as i128) != 0 {
+                    s2 += 1i64 << (jj - 2);
+                }
+                m.charge(SETUP, 1)?; // the square and compare
+                ppe.push((q, 2, vec![s2, q - s2, (s2 + q / 2) % q, (q - s2 + q / 2) % q], 1, mm_.rem_euclid(q)));
+                m.charge(SETUP, 1)?;
+                jj += 1;
+            }
+        }
+        w2 = match (kn.rem_euclid(4), kn.rem_euclid(8)) {
+            (2, _) | (3, _) => 1,
+            (_, 5) => 2,
+            _ => 3,
+        };
+        m.charge(crate::PH_WORD, 2)?; // M mod 2, w2 from kN mod 8
+    }
+    let thr_w2 = thr - w2 as f64;
     let chk = gene(g, "check", 0.0) != 0.0; // ledger check: qs's acceptance test only
     let rs_on = g.get("confirm").and_then(|v| v.as_str()) == Some("resieve"); // root-matched confirmation
     let p0 = gene(g, "p0", 30.0) as i128;
@@ -761,6 +809,39 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 }
             }
         }
+        // stage H: the power entries, structure of arrays like the base roots (modulus, root, log, M mod q, 2 B_l A^-1)
+        let (mut qp, mut qr, mut ql_, mut qm): (Vec<i64>, Vec<i64>, Vec<i32>, Vec<i64>) = (Vec::new(), Vec::new(), Vec::new(), Vec::new());
+        let mut qbi: Vec<Vec<i64>> = vec![Vec::new(); s];
+        let mut par = usize::MAX;
+        if ppb > 0 {
+            for (q, p, ts, lv, mq) in &ppe {
+                let (q, p) = (*q, *p);
+                if a64.rem_euclid(p) == 0 {
+                    continue;
+                }
+                let ar = a64.rem_euclid(q);
+                m.charge(SETUP, 1)?;
+                let ainv = euclid_inv64(ar, q, SETUP, m)?;
+                let rts: Vec<i64> = ts.iter().map(|&t| (ainv * (t - bv64).rem_euclid(q)).rem_euclid(q)).collect();
+                m.charge(SETUP, ts.len() as u64)?;
+                let mut bainv = Vec::with_capacity(s);
+                for &b in &bl64 {
+                    bainv.push(((2 * b).rem_euclid(q) * ainv).rem_euclid(q));
+                    m.charge(SETUP, 1)?;
+                }
+                for &r in &rts {
+                    qp.push(q);
+                    qr.push(r);
+                    ql_.push(*lv);
+                    qm.push(*mq);
+                    for l in 0..s {
+                        qbi[l].push(bainv[l]);
+                    }
+                }
+            }
+            par = (bv64 + mm_ + kn.rem_euclid(2) as i64).rem_euclid(2) as usize; // the parity class whose threshold is T - w2
+            m.charge(crate::PH_WORD, 1)?;
+        }
         crate::pt_end(m, 2, pt_a);
         let mut signs = vec![1i128; s];
         for i in 0..(1usize << (s - 1)) {
@@ -771,7 +852,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 let d = signs[v];
                 signs[v] = -d;
                 bv -= 2 * d * bl[v];
-                let n_roots = sr.len() as u64;
+                let n_roots = (sr.len() + qr.len()) as u64;
                 let bi = &sbi[v];
                 // r, bi in [0, p): one add or subtract and one conditional correction, no reduction
                 if d > 0 {
@@ -779,7 +860,15 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                         let x = *r + b;
                         *r = if x >= p { x - p } else { x };
                     }
+                    for ((r, &b), &q) in qr.iter_mut().zip(qbi[v].iter()).zip(qp.iter()) {
+                        let x = *r + b;
+                        *r = if x >= q { x - q } else { x };
+                    }
                 } else {
+                    for ((r, &b), &q) in qr.iter_mut().zip(qbi[v].iter()).zip(qp.iter()) {
+                        let x = *r - b;
+                        *r = if x < 0 { x + q } else { x };
+                    }
                     for ((r, &b), &p) in sr.iter_mut().zip(bi.iter()).zip(sp.iter()) {
                         let x = *r - b;
                         *r = if x < 0 { x + p } else { x };
@@ -814,6 +903,23 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                     upd += ((width - 1 - start) / pu + 1) as u64;
                 }
             }
+            for t in 0..qr.len() {
+                let q = qp[t];
+                let mut s0 = qr[t] + qm[t];
+                if s0 >= q {
+                    s0 -= q;
+                }
+                nr += 1;
+                let (start, qu) = (s0 as usize, q as usize);
+                let mut i0 = start;
+                while i0 < width {
+                    arr[i0] += ql_[t];
+                    i0 += qu;
+                }
+                if start < width {
+                    upd += ((width - 1 - start) / qu + 1) as u64;
+                }
+            }
             m.charge(crate::PH_WORD, nr)?;
             m.charge(SIEVE, upd)?;
             m.charge(SIEVE, width as u64)?;
@@ -821,7 +927,11 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
             crate::pt_end(m, 4, pt);
             let pt = crate::pt_snap(m); // "scan"
             cand.clear();
-            cand.extend((0..width).filter(|&i0| (arr[i0] as f64) >= thr));
+            if par == usize::MAX {
+                cand.extend((0..width).filter(|&i0| (arr[i0] as f64) >= thr));
+            } else {
+                cand.extend((0..width).filter(|&i0| (arr[i0] as f64) >= if i0 % 2 == par { thr_w2 } else { thr }));
+            }
             crate::pt_end(m, 5, pt);
             let pt = crate::pt_snap(m); // "resieve"
             // re-sieve (NOTES.md, "Root-matched candidate confirmation"): primes >= p0 matched over a

@@ -7568,3 +7568,33 @@ STOP after this for DeepSeek's predictions for (iii) and (iv), then "go".
 - A per-parity threshold split is not worth a card test (≤ 0.4 points).
 - The optimum is flat. "2 free" at +3 bits is within ~0.5 point of the best at today's confirm, and +2 to +3 is right for a cheaper confirm. Stage H's cell (iv) at +3 bits tests the right setting.
 - DeepSeek round 49's per-parity proposal is answered: second-order, as it suggested.
+
+### Stage H: the option built — acceptance, parity and the tc search for (ii) (`evolve/pp_accept.py`, `pp_accept.out`; `h_off_accept.out`; `parity_pp.out`; `hsearch.py`, `hsearch.out`, `.json`)
+
+**Code:** per the design note (3caf8df), in both cores (`lampcore/src/qs.rs` and `evolve/qs.py`), gene `pp`, off when absent or 0.
+- Per attempt: the power entries (odd base primes not dividing k, with p^j < 2^pp, roots by Hensel lifting; 2^j for 4 ≤ j < pp when kN ≡ 1 mod 8) and w2.
+- Per A: the entries' roots and their 2 B_l A⁻¹, and the parity class.
+- The power roots move with the Gray switches; they are walked in the sieve after the base primes; the scan uses T − w2 on the parity class.
+- Charges exactly as the cost-model table. The power entries are kept apart from the base entries, so re-sieve and the confirm are untouched.
+- The trace (TRACE_ARR) records `par` and `w2`. step9.py's funnel uses the per-position threshold and adds w2 to the sieve value for the under-count, which is unchanged when the option is off.
+
+**Acceptance:**
+- *Option off:* identical to the pre-change lampcore per number and per type, 8,000 / 8,000. Python = Rust per type, 32 / 32 (`gray_a_accept.py` against a build of 7cae56e's lampcore; `h_off_accept.out`).
+- *Option on:* Python = Rust per type and in total ops, 48 / 48 (new reference + pp 10, + pp 10 with re-sieve, + pp 6, + pp 3 "2 free", + pp 12, corrected reference + pp 10; 2 numbers per size, 54–96).
+- *The sieve value is exact:* at all 123,526 positions of every polynomial of 2 numbers at 54 and 72 bits (pp 10, 6 and 3), arr + w2 on the parity class equals the designed capped valuation sum. pp = 3 was added on Oct 27 for cell (iv); the first run, without it, passed 40 / 40 and 79,923 / 79,923.
+- *Parity:* passes, with pp cases added to qs_pairs: pp 10 / 6 / 12 (on_demand, sort_charge, kset), enumerate with lc 1.8, default genes, re-sieve, caps 2^11 / 2^13 / 2^15, and retry numbers, at 40–96 bits.
+  - qs 4,630 pairs (from 4,410), mismatches 0; types 7,402 pairs (from 7,182), mismatches 0; mutations 54 / 54.
+  - pp = 3 is covered by `pp_accept.py`, not by the parity run.
+
+**tc for cell (ii), matched candidates** (32 map numbers at 96, every 20th; candidates by the luck meter's tests; reported in full in `hsearch.out`):
+- Reference: 1,022.9 per number. Option on (pp 10) at the reference tc: 1,718.2 (+68.0%; a search figure, not an H score).
+- Bisection: tc 0.7353 (+3.23 bits) −6.5%; 0.8853 (+1.62) +25.6%; 0.8103 (+2.42) +8.8%; 0.7728 (+2.83) +1.6%; 0.7541 (+3.03) −1.2%; 0.7634 (+2.93) +0.6%; 0.7587 (+2.98) −0.5%; 0.7611 (+2.95) −0.5%; 0.7623 (+2.94) +0.1%.
+- **Chosen: tc 0.7623**, the threshold +2.94 bits (Wolfram's model: +3.67).
+
+**The four comparison cells, ready for "go"** (96 bits, all 640 map numbers, against the reference):
+- (i) pp 10, tc 1.0353;
+- (ii) pp 10, tc 0.7623;
+- (iii) pp 10, tc 0.5713 (+5 bits);
+- (iv) pp 3, tc 0.7569 (+3 bits).
+
+Each reports the stage G quantities, with candidates per number and per polynomial, plus the under-count and capture on stage B's subset and the never-combined share (X3 method, Python traces).

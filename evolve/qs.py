@@ -232,6 +232,38 @@ def sieve_source(N, k, g, led, ch, at):
     L = B ** lc                                # lc <= 2: a cofactor below L is prime; above, filed the same way
     T = math.log2(M * math.sqrt(kN / 2)) - (g.get("tc", 2.0) + (lc - 1.0)) * math.log2(B)
     width = 2 * M + 1
+    # stage H (NOTES.md, "Stage H: sieve 2 and small prime powers"): gene pp, prime powers q = p^j < 2^pp walked
+    # like base primes (odd p with two roots, p not dividing k; 2^j, 4 <= j, only when kN = 1 mod 8), and the
+    # prime 2's fixed part w2 added on one parity class by a second threshold at the scan; pp absent or 0: off
+    PPB = int(g.get("pp", 0))
+    ppe = []                                   # per power entry: [q, p, the roots of t^2 = kN mod q, log value, M mod q]
+    w2 = 0
+    if PPB:
+        for p in base[2:]:
+            t = roots_t[p]
+            if k % p == 0 or p * p >= 1 << PPB:
+                continue
+            inv, st = ch.euclid_inv(2 * t % p, p, "setup")     # (2t)^-1 mod p, for the Hensel lifts
+            if at is not None:
+                at["inv"].append((2 * t % p, p, st))
+            q, tq = p, t
+            while q * p < 1 << PPB:
+                d = (tq * tq - kN) % (q * p)       # a multiple of q
+                tq += q * (-(d // q) * inv % p)
+                q *= p
+                charge("setup", 3)                 # kN mod q with the square, times the inverse, the update
+                ppe.append([q, p, [tq, q - tq], logp[p], M % q]); charge("setup", 1)    # M mod q
+        if kN % 8 == 1:
+            s2, j = 1, 4
+            while 1 << j < 1 << PPB:
+                q = 1 << j
+                if (s2 * s2 - kN) % q:
+                    s2 += 1 << (j - 2)
+                charge("setup", 1)                 # the square and compare
+                ppe.append([q, 2, [s2, q - s2, (s2 + q // 2) % q, (q - s2 + q // 2) % q], 1, M % q]); charge("setup", 1)
+                j += 1
+        w2 = 1 if kN % 4 in (2, 3) else (2 if kN % 8 == 5 else 3)
+        charge("word", 2)                          # M mod 2, w2 from kN mod 8
     chk = bool(g.get("check", 0))              # ledger check: qs's acceptance test only
     RS = g.get("confirm") == "resieve"         # root-matched confirmation by re-sieving; P0: below it, divide directly
     P0 = int(g.get("p0", 30))
@@ -277,6 +309,22 @@ def sieve_source(N, k, g, led, ch, at):
             st_.append([p, [r1] if t == 0 else [r1, r2], bainv])
         if at is not None:
             at["n_sieved_setup"] += len(sieved)
+        qe = []                                # stage H: per power entry [q, roots, 2 B_l A^-1 mod q, log value, M mod q]
+        par = None
+        if PPB:
+            for q, p, ts, lv, mq in ppe:
+                if A % p == 0:
+                    continue
+                ar = A % q; charge("setup", 1)
+                ainv, st = ch.euclid_inv(ar, q, "setup")
+                if at is not None:
+                    at["inv"].append((ar, q, st))
+                rs = [ainv * ((t - Bv) % q) % q for t in ts]; charge("setup", len(ts))
+                bainv = []
+                for b in Bl:
+                    bainv.append(2 * b * ainv % q); charge("setup", 1)
+                qe.append([q, rs, bainv, lv, mq])
+            par = (Bv + M + kN % 2) % 2; charge("word", 1)    # the parity class whose threshold is T - w2
         signs = [1] * s
         for i in range(1 << (s - 1)):
             if i:                              # Gray code: flip one B_l, update every root
@@ -290,6 +338,12 @@ def sieve_source(N, k, g, led, ch, at):
                     bi = bainv[v]              # r, bi in [0, p): add or subtract, one conditional correction
                     ent[1] = [r + bi - p if r + bi >= p else r + bi for r in rs] if d > 0 else \
                              [r - bi + p if r < bi else r - bi for r in rs]
+                    n_roots += len(rs)
+                for ent in qe:
+                    q, rs, bainv = ent[0], ent[1], ent[2]
+                    bi = bainv[v]
+                    ent[1] = [r + bi - q if r + bi >= q else r + bi for r in rs] if d > 0 else \
+                             [r - bi + q if r < bi else r - bi for r in rs]
                     n_roots += len(rs)
                 charge("gray", n_roots)            # word-level type setup_gray (NOTES.md, "Gray-code root update re-typed")
                 if at is not None:
@@ -309,6 +363,14 @@ def sieve_source(N, k, g, led, ch, at):
                     arr[start::p] += logp[p]
                     upd += (width - 1 - start) // p + 1
                     hits.append((p, r))
+            for q, rs, _, lv, mq in qe:
+                for r in rs:
+                    start = r + mq
+                    if start >= q:
+                        start -= q
+                    nr += 1
+                    arr[start::q] += lv
+                    upd += (width - 1 - start) // q + 1
             charge("word", nr)                     # start offsets, one word op per root
             charge("sieve", upd)
             charge("sieve", width)
@@ -316,7 +378,11 @@ def sieve_source(N, k, g, led, ch, at):
                 at["polys"].append({"M": M, "roots": hits, "upd": upd,
                                     "sieved": [p for p, _, _ in st_],
                                     "rp": {p: len(rs) for p, rs, _ in st_}})
-            cand = np.nonzero(arr >= T)[0].tolist()
+            if par is None:
+                cand = np.nonzero(arr >= T)[0].tolist()
+            else:
+                Tp = np.full(width, T); Tp[par::2] = T - w2
+                cand = np.nonzero(arr >= Tp)[0].tolist()
             if at is not None:
                 at["polys"][-1]["nc"] = len(cand)   # trace only: candidates of this polynomial (all, processed or not)
             if RS:                                 # re-sieve (NOTES.md, "Root-matched candidate confirmation")
@@ -343,7 +409,7 @@ def sieve_source(N, k, g, led, ch, at):
                 # generation stamps written (|st|), the direct list's pass (F - 1), the record lists (|cand|)
                 charge("word", 2 * len(cand) + len(st_) + F - 1)
             if at is not None and TRACE_ARR:      # step 9 (read-only): the polynomial, its sieve array, where confirm starts
-                at["polys"][-1].update(A=A, B=Bv, C=C, arr=arr.copy(), T=T, Mw=M, c0=len(at["cands"]), cand_pos=list(cand))
+                at["polys"][-1].update(A=A, B=Bv, C=C, arr=arr.copy(), T=T, par=par, w2=w2, Mw=M, c0=len(at["cands"]), cand_pos=list(cand))
             # 5. confirm
             for i0 in cand:
                 x = i0 - M

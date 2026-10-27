@@ -88,7 +88,8 @@ def run_size(bits, g=None):
                         cls = "part"
                     else:
                         continue
-                    passed = float(arr[i0]) >= T
+                    w2x = po["w2"] if po.get("par") is not None and i0 % 2 == po["par"] else 0   # stage H: the 2-adic add
+                    passed = float(arr[i0]) >= T - w2x
                     proc = passed and i0 in processed
                     u = A * (i0 - M) + Bv
                     filed = proc
@@ -97,7 +98,7 @@ def run_size(bits, g=None):
                             filed = False
                         seen_u.add(abs(u))
                     r = {"passed": passed, "proc": proc, "filed": filed,
-                         "under": logs[i0] - float(arr[i0]), "uq": math.log2(Qmax / abs(v))}
+                         "under": logs[i0] - float(arr[i0]) - w2x, "uq": math.log2(Qmax / abs(v))}
                     if cls == "part":
                         r["qb"] = math.log2(cof / B)
                         n_ok += 1; n_cap += filed

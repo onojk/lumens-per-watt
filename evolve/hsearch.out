@@ -1,0 +1,12 @@
+reference (tc 1.0353): 1022.9 candidates per number (32 numbers)
+pp 10, reference tc: 1718.2 (+68.0%)
+pp 10, tc 0.7353 (threshold +3.23 bits): 956.6 (-6.5%)
+pp 10, tc 0.8853 (threshold +1.62 bits): 1284.7 (+25.6%)
+pp 10, tc 0.8103 (threshold +2.42 bits): 1112.5 (+8.8%)
+pp 10, tc 0.7728 (threshold +2.83 bits): 1039.1 (+1.6%)
+pp 10, tc 0.7541 (threshold +3.03 bits): 1010.7 (-1.2%)
+pp 10, tc 0.7634 (threshold +2.93 bits): 1029.1 (+0.6%)
+pp 10, tc 0.7587 (threshold +2.98 bits): 1017.2 (-0.5%)
+pp 10, tc 0.7611 (threshold +2.95 bits): 1017.2 (-0.5%)
+pp 10, tc 0.7623 (threshold +2.94 bits): 1023.5 (+0.1%)
+chosen tc 0.7623: 1023.5 against 1022.9
