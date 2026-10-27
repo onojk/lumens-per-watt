@@ -7343,3 +7343,33 @@ Against the reference, in percent:
 **Next after stage H** (unchanged, now higher priority): the I-029 microbenchmark of the reciprocal root test's ns per prime.
 
 **Note (mine, a fact from the tc search, `hsearch.out`):** on the card, the matched count with pp = 10 needs the threshold raised by ~2.94 bits (tc 0.7623), beyond the model grid's +2.
+
+### Stage H / I-029 addendum: DeepSeek, Oct 27, round 45 (recorded as given; documentation only)
+
+(Item 1 of this addendum, the Wolfram cost forecast and the supersession line, was already recorded: 05f6cff and c34f869.)
+
+**H-1 … H-10 sealed** (neither side saw the 32-number +68% search figure). Its −4.5-bit estimate is annotated wrong (it ignored the ledger term), as was the reviewer's −2 to −3.
+
+**The quality effect in H(ii):** combinations per prime, x − 1 + e^−x, are convex in x, so concentrating partials on smaller q raises combinations per stored partial. Its figure: +24% (0.0778 → 0.0965).
+- Reviewer: it mixed the card's F (138) and full rate (0.52) with the model's P. With the model's own numbers (target 158.7, fulls 0.552 per polynomial): 76.7 / 909 = 0.084 against 86.2 / 827 = 0.104, +23%.
+- The conclusion stands: the quality shift explains the ~11% polynomial saving.
+- Its never-combined expectation for H(ii): ~0.78–0.82 (from 0.852), direction only.
+
+**The option-on optimum threshold** (with the ledger term l a(t)): its estimate is today's confirm +6 to +7 bits, cheap confirm +5 to +6.
+- Reviewer: its +6 and +7 inputs are extrapolations, not grid values.
+  - With today's confirm, its own numbers still say raising pays at +7 (LHS −0.53 < RHS −0.41), so they put the optimum **above** +7, not at +6 to +7.
+  - With the cheap confirm, it reused today's cost per polynomial on the RHS (the slip from round 43). Redone with the cheap-confirm cost, the crossing is between the matched shift and +6, at ~+5.
+- **Adopted:** extra grid points +5, +6, +7 and +8 bits, both confirms (a Wolfram rerun).
+- (Fact from the card's tc search: the matched shift with pp = 10 is ~+2.94 bits.)
+
+**SEALED, I-029 microbenchmark** (Rust release, this laptop, 96 bits, 137 primes tested, ~7.6 dividing):
+- DeepSeek:
+  - **I-029a** root test 0.9–1.7 ns per prime tested (central 1.25). Falsified if > 2.4 or < 0.45.
+  - **I-029b** confirm per candidate 150–240 ns (central 185). Falsified if > 320 or < 85.
+- The user's (the reviewer's):
+  - **I-029a** 0.3–1.2 ns (central 0.7);
+  - **I-029b** 80–200 ns (central 130).
+- *The reviewer's reasoning:*
+  - |x| ≤ M (~1,056), and most base primes exceed M (B ~1,752). For those primes x mod p is x (or x + p), and the test is a comparison with the two roots, with no reduction. Only primes below M need a real reduction.
+  - The ~7.6 dividing primes cost ~3.9 ns each (the card's measured i128 test): ~30 ns, not DeepSeek's ~14 ns.
+- *Note for the benchmark design:* the sieve already maintains the polynomial's roots mod p (Gray-code updates), so the root test reuses them.
