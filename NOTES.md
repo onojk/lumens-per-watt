@@ -8674,3 +8674,92 @@ Per sub-region, wall above price at each region's own µs per ruint (excess = (w
 - **2′b+pp3 at +1 bit is the user's provisional choice. Not adopted;** the reference stays 2′a (goff = 1).
 - **Pending:** run A (shift-past-2: 96 bits, 2′a, 2′b, 2′b+pp3 at +1 and +3; scores the rest split against 2′b and checks wall past +2) and run B (shift-72-84: 2′a against 2′b+pp3 at +0, +1, +2 at 72 and 84 bits). Predictions R2-15..R2-17 in `predictions/shift-past-2.md` and `predictions/shift-72-84.md`.
 - Runner: `evolve/shiftrun.py` (mode A or B; i032shift.py stays as committed).
+
+## Runs A (shift-past-2) and B (shift-72-84), scored (`evolve/shiftrun.py`, a83439f; `results/shift-past-2_20261027T073041Z.out`, guard commit 3816bb4; `results/shift-72-84_20261027T073400Z.out`, guard commit 6810e24; `evolve/shiftrun_A.json`, `shiftrun_B.json`; predictions sealed in a83439f)
+
+**Conditions:**
+- **Cap 2,400 MHz on all 8 cores,** read at go, between A and B, and in every replicate's state (8 in A, 16 in B).
+- TCPU 49–54 °C during A, 53–56 °C during B. Governor powersave; AC online. The user's line: cooling pad, plugged in, untouched. 26 browser processes at go; no Wolfram processes.
+- A ran 00:30:41–00:34:00 PT, B 00:34:00–00:36:09.
+- **Clock flags at 72 bits:** core 2's median MHz is flagged (> 10% off 2′a's) in all three 2′b+pp3 cells at 72 (2′a 400, cells 579–975 MHz, n 8 each). The sampler reads once at each cell's start and then every 1 s (`timing.timed_with_clock`). A 72-bit cell takes ~0.35 s, so **each cell has one sample, taken at launch before the core ramps.** The flags do not show a lower clock during the work, but the clock during the 72-bit cells was not measured either. At 84 (2 samples per cell) the medians are 1,849–2,103 MHz, unflagged. At 96, 2,400 in every cell.
+- DeepSeek and Grok had no sealed predictions for A or B.
+
+**Identity:** 2′b against 2′a, and each 2′b+pp3 cell against the same genes with goff off: the same factor, candidates, hits and polynomials on every number (640, 480, 560), relations identical on the 2 traced numbers per comparison.
+
+### A: 96 bits (base 2′a)
+
+| cell | robust (c) | official [95%] | ruint [95%] | Montgomery [95%] | (e) | wall [95%] |
+|---|---|---|---|---|---|---|
+| 2′b | 1.0137 | 1.0137 [1.0135, 1.0139] | 0.8877 [0.8856, 0.8897] | 0.8838 [0.8816, 0.8859] | undecided | 0.8877 [0.8811, 0.8943] (−11.2%) |
+| 2′b+pp3 +1 | **0.9807** | 0.9807 [0.9764, 0.9846] | 0.8671 [0.8642, 0.8700] | 0.8620 [0.8593, 0.8645] | better | 0.8941 [0.8830, 0.9052] (−10.6%) |
+| 2′b+pp3 +2 | 1.0138 | 1.0138 [1.0095, 1.0188] | 0.8748 [0.8708, 0.8798] | 0.8710 [0.8672, 0.8758] | undecided | 0.8801 [0.8701, 0.8901] (−12.0%) |
+| 2′b+pp3 +3 | 1.0595 | 1.0595 [1.0557, 1.0634] | 0.8943 [0.8899, 0.8987] | 0.8913 [0.8870, 0.8955] | undecided | 0.8799 [0.8716, 0.8882] (−12.0%) |
+
+- **Wall-clock (µs at 2.4 GHz):** 2′a 3,825.8 (sd 20.7); 2′b 3,396.1 (25.0); +1 3,420.5 (46.4); +2 3,366.9 (34.1); +3 3,366.0 (30.7).
+- **Against 2′b (information):** +1 wall +0.7% [−0.3, +1.7]; +2 −0.9% [−2.1, +0.4]; +3 −0.9% [−1.7, −0.0]. Priced +1 0.9674 / 0.9768 / 0.9754 (better); +2 1.0001 / 0.9855 / 0.9855; +3 1.0452 / 1.0075 / 1.0085 (worse).
+- **Wall stops falling at +2:** +2 and +3 are equal (0.8801, 0.8799). Past +2, sieve (+17.6% at +3) and setup (+10.4%) rise as fast as confirm (−58.0%) and lp_ledger (−29.4%) fall.
+- **Run-to-run against pp3-gap-and-shift (9ed805a):** priced ratios identical. Wall +1 −10.6% against −10.8%; **+2 −12.0% against −13.5%** (1.5 points; this run's value sits just outside that run's interval [−14.8, −12.2]). 2′a 3,825.8 against 3,854.8 µs.
+
+**Region excess over own-rate price, 2′b+pp3 against 2′b** (µs per number [95%]; scan by calls):
+
+| region | +1 | +2 | +3 |
+|---|---|---|---|
+| setup | +9.0 [+6.5, +11.4] | −0.9 | −12.8 |
+| gray | −0.6 | −0.2 | −0.2 |
+| scan | +2.1 [−0.5, +4.7] | −2.8 | −8.3 |
+| lp_ledger | +4.6 [−8.0, +17.2] | −17.6 | −11.8 |
+| solve | −7.6 [−10.5, −4.6] | +1.1 | +3.6 |
+| *sum of the rest* | *+7.5* | *−20.4* | *−29.5* |
+| sieve | **+64.3 [+35.8, +92.8]** | **+68.5** | **+58.4** |
+| confirm | +4.6 [−5.1, +14.3] | +6.3 | +7.0 |
+
+- **pp 3's wall excess is in the sieve region, not the rest.** Against 2′b, at its own price, the sieve runs +58 to +69 µs above price at every shift. The rest sums to +7.5 µs at +1 and is negative at +2 and +3.
+- This settles the question the pp 3 breakdown left open (8d5ef90: "rest +81 µs", which the pp3-gap-and-shift scoring showed was mostly the one-bucket artefact). The large-prime table carries no measurable excess. The candidate is the sieve's pp 3 work (the free-2 initialisation and the power-entry walks, priced as ordinary sieve work; 8d5ef90's reading). That is not established: the sieve region is not split.
+
+**Scored as written:**
+
+| | measured | sealed | result |
+|---|---|---|---|
+| R2-15 +3 official | 1.0595 | 1.035–1.075 | **held** |
+| R2-15 +3 ruint | 0.8943 | 0.870–0.895 | **held** |
+| R2-15 +3 Montgomery | 0.8913 | 0.865–0.890 | **missed** (above by 0.0013) |
+| R2-15 +3 wall | −12.0% | −11% to −15% | **held** |
+| R2-15 "+2 stays the best wall shift (+3 no better than +2 by more than 0.5 points)" | +3 0.8799 against +2 0.8801: +3 better by 0.02 points | ≤ 0.5 points | **held** by its stated condition (the point estimates are tied; +3's is lower by 0.02 points) |
+| R2-16 no rest sub-region above 25 µs against 2′b at +1 | largest setup +9.0 [+6.5, +11.4]; lp_ledger +4.6 [−8.0, +17.2] | none above 25 | **held** (no interval reaches 25 either) |
+
+### B: 72 and 84 bits (base 2′a; shift by each size's mean B: 588.5 at 72, 1,094.5 at 84)
+
+| size, cell | robust (c) | official [95%] | ruint | Montgomery | (e) | wall [95%] |
+|---|---|---|---|---|---|---|
+| 72, +0 | 1.0289 | 1.0289 [1.0144, 1.0408] | 0.9043 | 0.8971 | undecided | 0.9138 [0.8840, 0.9436] (−8.6%) |
+| 72, +1 | **1.0171** | 1.0171 [1.0033, 1.0288] | 0.8779 | 0.8698 | undecided | 0.9072 [0.8919, 0.9226] (−9.3%) |
+| 72, +2 | 1.0186 | 1.0186 [1.0032, 1.0327] | 0.8590 | 0.8533 | undecided | 0.8954 [0.8818, 0.9090] (−10.5%) |
+| 84, +0 | 1.0020 | 1.0020 [0.9948, 1.0093] | 0.8805 | 0.8740 | undecided | 0.9039 [0.8765, 0.9313] (−9.6%) |
+| 84, +1 | **0.9987** | 0.9987 [0.9922, 1.0052] | 0.8567 | 0.8505 | undecided | 0.8742 [0.8547, 0.8936] (−12.6%) |
+| 84, +2 | 1.0108 | 1.0108 [1.0048, 1.0156] | 0.8488 | 0.8412 | undecided | 0.8696 [0.8541, 0.8850] (−13.0%) |
+
+- ruint and Montgomery intervals all exclude 1 (below); official's do not at 84 +0 and +1.
+- **Wall-clock (µs at 2.4 GHz):** 72: 2′a 787.0, +0 718.8, +1 713.8, +2 704.5. 84: 2′a 1,650.2, +0 1,490.8, +1 1,442.0, +2 1,434.5. The 72-bit cells carry the clock flags above.
+- **At 72 and 84, no shift is better than 2′a under all three pricings at once.** Official is ≥ 1 everywhere except 84 +1 (0.9987, interval [0.9922, 1.0052]). ruint and Montgomery fall with the shift at both sizes (best at +2); wall-clock is best at +2.
+- **Official is best at +1 at both sizes,** not at +0 as at 96.
+
+**Region excess against 2′a (information):** at 72 and 84 the largest is the sieve at 84 (+12.7 to +14.7 µs) and setup at +0 (+11 to +12 µs). No region exceeds +15 µs.
+
+**Scored as written** (Claude Code's definitions, accepted before the run):
+
+| clause | 72 | 84 |
+|---|---|---|
+| official best at +0 | +1 (1.0171; +0 1.0289, +2 1.0186): **missed** | +1 (0.9987; +0 1.0020, +2 1.0108): **missed** |
+| wall best at +1 or +2 | +2 (−10.5%; flagged clocks): **held** | +2 (−13.0%; +1 −12.6%): **held** |
+| +1 better than 2′a under all three (all three < 1) | official 1.0171: **missed** | 0.9987 / 0.8567 / 0.8505: **held** on the point estimates; (e) undecided (official's interval includes 1) |
+
+- **R2-17 (the conjunction, 60%): missed.** 3 of 6 clauses held.
+
+### Tally and limits
+
+- The reviewer: R2-15 held except +3 Montgomery (by 0.0013); R2-16 held; R2-17 missed (official best at +1, not +0, at both sizes; +1 not better under official at 72).
+- **The provisional choice (2′b+pp3 at +1) across sizes:** robust 1.0171 at 72 (undecided), 0.9987 at 84 (undecided), 0.9807 at 96 (better). It is the official optimum at all three sizes, but beats 2′a under all three pricings only at 96.
+- **2′b alone is within ~1 point of the best pp 3 shift on wall at 96** (−11.2% against −12.0%), and +1 is slower than 2′b (+0.7%, interval includes 0). pp 3's wall gain at 96 is small. Its official gain is real (2′b+pp3 +1 against 2′b: official 0.9674).
+- **Not measured:** the sieve region's split (where pp 3's +60 µs goes); clocks during the 72-bit cells; other sizes; energy.
+
+**Report only.** Nothing adopted; the provisional choice stays provisional (the user's).
