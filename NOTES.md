@@ -7598,3 +7598,135 @@ STOP after this for DeepSeek's predictions for (iii) and (iv), then "go".
 - (iv) pp 3, tc 0.7569 (+3 bits).
 
 Each reports the stage G quantities, with candidates per number and per polynomial, plus the under-count and capture on stage B's subset and the never-combined share (X3 method, Python traces).
+
+## Stage H: results (`evolve/stageh.py`, e484fff; `results/stage-h_20261027T010333Z.out`, committed by `tools/sealed_run.sh` as 8cc9d79; `stageh.json`; predictions `predictions/stage-h.md`, a855550)
+
+96 bits, all 640 map numbers, re-sieve off, card b2bade2. Wall-clock is the mean of two replicates. Capture, under-count and never-combined are from stage B's 8-number subset.
+
+| cell (pp, tc) | candidates / number (/ polynomial) | polynomials (median) | combinations | looked up | partial capture, passed (end) | full capture, passed (end) | under-count at partials, median / mean / p90 | never-combined | ruint mean / median / slowest decile | Montgomery / official | wall (replicates) |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| reference (0, 1.0353) | 1,013 (6.49) | 156.0 (151) | 71.9 | 916 | 0.316 (0.316) | 0.973 (0.961) | 4.58 / 5.34 / 11.44 | 0.853 | 59,071 / 58,514 / 80,787 | 216,420 / 1,461,014 | 2,015.3 µs (1,998 / 2,033) |
+| (i) (10, 1.0353) | 1,699 (14.05) | 121.0 (117) | 87.2 | 1,510 | 0.717 (0.712) | 1.000 (0.989) | −0.01 / 0.72 / 4.72 | 0.897 | 68,657 / 67,913 / 88,728 | 252,015 / 1,488,371 | 2,599.8 µs (2,583 / 2,617) |
+| (ii) (10, 0.7623) | 999 (7.43) | 134.4 (127.5) | 81.4 | 931 | 0.407 (0.405) | 0.995 (0.987) | −0.02 / 0.70 / 4.57 | 0.839 | 59,956 / 58,851 / 81,226 | 219,480 / 1,487,371 | 2,197.0 µs (2,193 / 2,201) |
+| (iii) (10, 0.5713) | 680 (4.50) | 151.0 (144) | 73.9 | 604 | 0.225 (0.224) | 0.986 (0.973) | −0.01 / 0.71 / 4.59 | 0.774 | 58,625 / 57,431 / 82,493 | 214,734 / 1,580,662 | 2,092.2 µs (2,088 / 2,096) |
+| (iv) (3, 0.7569) | 723 (4.21) | 171.8 (165.5) | 65.0 | 639 | 0.203 (0.203) | 0.962 (0.954) | 2.68 / 3.69 / 9.46 | 0.806 | 57,592 / 57,118 / 81,770 | 210,939 / 1,532,993 | 2,077.9 µs (2,091 / 2,064) |
+
+Under-count at fulls (median): reference 6.50; (i) 0.31; (ii) 0.30; (iii) 0.30; (iv) 4.54.
+
+**Against the reference, in percent:**
+
+| cell | candidates / number | / polynomial | polynomials | combinations | looked up | ruint mean / median / slowest decile | Montgomery | official | wall (replicate 1 / 2) |
+|---|---|---|---|---|---|---|---|---|---|
+| (i) | +67.8 | +116.5 | −22.5 | +21.2 | +64.8 | +16.2 / +16.1 / +9.8 | +16.5 | +1.9 | +29.0 (+29.3 / +28.7) |
+| (ii) | −1.4 | +14.5 | −13.9 | +13.1 | +1.6 | +1.5 / +0.6 / +0.5 | +1.4 | +1.8 | +9.0 (+9.8 / +8.3) |
+| (iii) | −32.9 | −30.7 | −3.2 | +2.8 | −34.1 | −0.8 / −1.9 / +2.1 | −0.8 | +8.2 | +3.8 (+4.5 / +3.1) |
+| (iv) | −28.6 | −35.1 | +10.1 | −9.7 | −30.3 | −2.5 / −2.4 / +1.2 | −2.5 | +4.9 | +3.1 (+4.7 / +1.6) |
+
+**Wall-clock by region, µs per number (change against the reference):**
+
+| cell | setup | gray | sieve | scan | confirm | lp_ledger | solve |
+|---|---|---|---|---|---|---|---|
+| reference | 382.0 | 44.6 | 532.8 | 114.6 | 546.7 | 190.2 | 162.6 |
+| (i) | −21.3 | −2.1 | +8.9 | +60.0 | +399.7 | +135.1 | +1.9 |
+| (ii) | +14.9 | +2.7 | +54.9 | +73.2 | +23.9 | +5.9 | +4.3 |
+| (iii) | +55.6 | +7.9 | +124.6 | +89.9 | −157.7 | −46.8 | +1.4 |
+| (iv) | +47.2 | +6.3 | +74.5 | +120.3 | −138.1 | −52.4 | +2.5 |
+
+**Per polynomial:**
+
+| cell | sieve µs | sieve updates | scan µs | setup µs |
+|---|---|---|---|---|
+| reference | 3.414 | 4,814 | 0.734 | 2.448 |
+| (i) | 4.479 (+31.2%) | 6,177 (+28.3%) | 1.443 | 2.982 |
+| (ii) | 4.373 (+28.1%) | 6,173 (+28.2%) | 1.397 | 2.953 |
+| (iii) | 4.353 (+27.5%) | 6,168 (+28.1%) | 1.354 | 2.898 |
+| (iv) | 3.534 (+3.5%) | 4,822 (+0.2%) | 1.367 | 2.497 |
+
+**Findings, stated plainly:**
+- **The scan's wall-clock nearly doubles per polynomial with the option on** (0.734 → 1.35–1.44 µs, ~+0.3 ns per position), in every cell including (iv), which has no sieve work added.
+  - The cause is the implementation of the parity threshold: Rust's scan filter picks the threshold by `i0 % 2 == par` at every position.
+  - As designed, this costs no ops, and none are charged. It is slow code, not a meter change: two strided passes, or adding w2 into the array on the parity class, would avoid it.
+  - It is uncounted in the model, and it costs +60 to +120 µs per number (3–6 points of wall-clock).
+  - **Estimate, not a score:** with the scan at the reference's rate per polynomial, wall-clock would be (i) +24.7%, (ii) +4.6%, (iii) −0.8%, (iv) −2.3%.
+- **Setup per polynomial rises 18–22% with pp = 10:** the per-A power entries (A mod q, inverse, roots, 2 B_l A⁻¹ for ~17 entries). Wolfram's model counts no setup cost for them. With pp = 3 setup per polynomial is +2%, and the region rises only because there are more polynomials.
+- **Sieve:** with pp = 10, updates per polynomial are +28% and sieve wall-clock per polynomial +27.5–31%, matching the model's +30%. With pp = 3, updates are +0.2% and sieve wall-clock per polynomial +3.5%.
+- **The sieve is now accurate:** the median under-count at true partials falls from 4.58 to −0.01 bits with pp = 10, and to 2.68 with pp = 3. The p90 falls from 11.4 to ~4.6 bits; the residual is A's primes and powers above the bound.
+- **(ii) shows the quality effect on the card:** at the reference's candidate count, polynomials are −13.9%, combinations +13.1% and capture 0.407 (from 0.316). But wall-clock is +9.0% (scan +73, sieve +55, setup +15 µs) and priced ruint is +1.5%.
+- **(iii) and (iv) cut confirm and the ledger** (−25% to −34% candidates). Priced ruint is −0.8% / −2.5% and Montgomery −0.8% / −2.5%, but official is +8.2% / +4.9% and wall-clock +3.8% / +3.1%.
+  - The pricings disagree, so no cell is called a gain under the three-pricings rule.
+  - (iv) needs +10.1% more polynomials, where the model expected fewer.
+- *This session's reference is slower than stage G's* (2,015 against 1,898 µs; sieve 533 against 456 µs, the same genes and code path). The machine ran slower tonight. Comparisons are within this run.
+
+**Scored, the user's (the reviewer's):**
+
+| prediction | measured | range | result |
+|---|---|---|---|
+| H-1 (i) partial capture | 0.717 | 0.60–0.80 | **held** |
+| H-2 (i) candidates per number | +67.8% | +35% to +120% | **held** |
+| H-3 (i) polynomials | −22.5% | −15% to −27% | **held** |
+| H-4 (i) ruint mean | +16.2% | −3% to +15% | **missed** (high) |
+| H-5 (i) selectivity / G's −4-bit cell | 0.865 / 0.489 = 1.77x | 1.3x–3x | **held** |
+| H-6 (i) median under-count at partials | −0.01 bits | 0.5–2.0 | **missed** (low) |
+| H-7 (ii) partial capture | 0.407 | 0.40–0.58 | **held** (at the edge) |
+| H-8 (ii) polynomials | −13.9% | −6% to −16% | **held** |
+| H-9 (ii) ruint mean | +1.5% | −12% to −2% | **missed** |
+| H-10 (ii) wall-clock | +9.0% | −12% to +2% | **missed** |
+| H-11 (iii) polynomials | −3.2% | −2% to −11% | **held** |
+| H-12 (iii) candidates per number; per polynomial | −32.9%; −30.7% | −18% to −38%; −15% to −32% | **held**; **held** |
+| H-13 (iii) wall-clock | +3.8% | −3% to −13% | **missed** |
+| H-14 (iii) ruint | −0.8% | −14% to +4% | **held** |
+| H-15 (iii) never-combined | 0.774 | 0.70–0.82 | **held** |
+| H-16 (iv) wall-clock | +3.1% | −2% to −10% | **missed** |
+| H-17 (iv) ruint | −2.5% | −2% to −12% | **held** (at the edge) |
+| H-18 (iv) sieve wall-clock per polynomial | +3.5% (updates +0.2%) | within ±3% | **missed** (narrowly) |
+
+**Scored, DeepSeek's (rounds 43, 47, 49):**
+
+| prediction | measured | range; falsifier | result |
+|---|---|---|---|
+| H-1 | 0.717 | 0.62–0.82; < 0.55 or > 0.90 | **held** |
+| H-2 per polynomial; per number | +116.5%; +67.8% | +115% to +145%; +45% to +110% (falsified < +20% or > +150%) | **held** (at the edge); **held** |
+| H-3 | −22.5% | −18% to −30% | **held** |
+| H-4 | +16.2% | −3% to +15%; > +22% | **missed**, not falsified |
+| H-5 | 1.77x | 1.25x–1.85x | **held** |
+| H-6 | −0.01 bits | 0.0–1.5; < −0.5 | **missed** (just below), not falsified |
+| H-7 | 0.407 | 0.33–0.48 | **held** |
+| H-8 | −13.9% | −1% to −12%; < −18% | **missed**, not falsified |
+| H-9 | +1.5% | −8% to +2% | **held** |
+| H-10 | +9.0% | −8% to +4%; > +12% | **missed**, not falsified |
+| H-11 | −3.2% | −3% to −12% | **held** (at the edge) |
+| H-12 per number; per polynomial | −32.9%; −30.7% | −18% to −38%; −15% to −32% | **held**; **held** |
+| H-13 | +3.8% | −3% to −14%; > +3% | **missed, falsified** |
+| H-14 | −0.8% | −10% to +2% | **held** |
+| H-15 | 0.774 | 0.72–0.81 | **held** |
+| H-16 | +3.1% | −3% to −11%; > +2% | **missed, falsified** |
+| H-17 | −2.5% | −3% to −13%; > +3% | **missed** (just above), not falsified |
+| H-18 | +3.5% | −1% to +1%; > +3% | **missed, falsified** |
+
+- *Note on H-13, H-16 and H-18:* the scan's slow parity branch (above) accounts for 90–120 µs of the wall-clock in (iii) and (iv). It is in the card as built, so the scores stand as measured. H-18 is measured on the sieve region, which excludes the scan.
+
+**Against Wolfram's model forecasts (model, not predictions):**
+
+| quantity | model | card |
+|---|---|---|
+| (i) candidates per polynomial | 15.71 (+130%) | 14.05 (+116.5%) |
+| (i) capture | 0.756 | 0.717 |
+| (i) polynomials | −22.3% | −22.5% |
+| (i) wall-clock today | +22.4% | +29.0% |
+| matched shift | +3.67 bits | +2.94 bits (tc search) |
+| (ii) capture | 0.345 | 0.407 |
+| (ii) polynomials | −11.7% | −13.9% |
+| (ii) never-combined | 0.807 | 0.839 |
+| (ii) wall-clock | −5.0% | +9.0% |
+| (iii) candidates per polynomial | −23% | −30.7% |
+| (iii) polynomials | −6.5% | −3.2% |
+| (iii) never-combined | 0.769 | 0.774 |
+| (iii) wall-clock | −8.3% | +3.8% |
+| (iv) ("B" at +3) wall-clock | −6.6% | +3.1% |
+| (iv) polynomials | fewer (implied) | +10.1% |
+| option's extra sieve hits | +30% | +28% updates, +27.5–31% sieve wall-clock |
+
+- **Reading:** the model gets the yield side right: capture, polynomials, never-combined, and the sieve's extra work for pp = 10. Its wall-clock forecasts miss by 10–14 points.
+  - Most of the gap is cost the model does not contain: the scan's parity branch (+60 to +120 µs) and, for pp = 10, the per-A power setup (+15 to +56 µs).
+  - For (iv) it also misses the polynomial count: +10.1% on the card at +3 bits.
+- **Report only.** Nothing is adopted, and the reference genes are unchanged. The scan implementation and the setup cost of the power entries are for the user to decide on.
