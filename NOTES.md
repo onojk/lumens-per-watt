@@ -7744,3 +7744,16 @@ Under-count at fulls (median): reference 6.50; (i) 0.31; (ii) 0.30; (iii) 0.30; 
 "DeepSeek, Oct 27, round 51 (hand-relayed): RT-1, the retuned card's wall-clock at 96 bits vs today's (mean per number): -15% to -33% (central -24%); falsified if the improvement is < 8% or > 40%. Gene expected to move furthest: the sieve option's 2 setting (off -> '2 free'). Even-k free-2 rule derived: kN = 2 mod 4: v2 = 1 on the y-even class, 0 on the y-odd class (both 2 and 6 mod 8); matches the design note. Per-parity direction claim over-read (see round 53)."
 
 **Timing note:** this was stated in conversation before DeepSeek saw stage H. It is first committed now, after stage H's results exist in the repo (06483b7). RT-1 scores the eventual retune, not stage H, so it stands as sealed from this commit.
+
+### Stage H, scan fix: the free 2 by initialisation (code only, counts identical; before code)
+
+- **Change:** the sieve array is initialised per polynomial with w2 on the parity class and 0 elsewhere, instead of all zeros. The scan then compares arr[x] ≥ T exactly as in the reference, with no per-position parity check.
+- **Equivalence:** arr + w2 ≥ T is the same test as arr ≥ T − w2 for integer arr and small integer w2 (T − w2 is exact in f64). So the candidates, and every count, are identical to b2bade2's.
+- **Charges:** none change. The initialisation is the existing per-polynomial width charge (sieve_scan), which today covers the zero-fill and the scan. The per-A parity word stays.
+- **Trace:** TRACE_ARR stores the array without w2 (w2 is subtracted on the parity class in the trace copy, trace only), so step9.py's funnel and pp_accept.py's exact check are unchanged.
+- **Rust:** a zero-fill, then w2 written with a stride-2 pass when the option is on.
+- **Acceptance:**
+  - every pp cell (pp 10 at tc 1.0353 / 0.7623 / 0.5713; pp 3 at +1 / +2 / +3 bits) identical per number and per type to b2bade2's lampcore on all map numbers 54–96;
+  - option off identical (gray_a_accept.py, 8,000 / 8,000, 32 / 32);
+  - pp_accept.py (Python = Rust, exact sieve values);
+  - parity.
