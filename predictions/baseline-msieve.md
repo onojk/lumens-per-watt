@@ -35,3 +35,26 @@ Reasoning: the card's wall grows sub-exponentially while msieve's QS wall grows 
 - **The guard:** external numbers were used despite it. They are labelled information only.
 - **D-19:** both tools are QS-class with the same growth form; the ordering claim stands as sealed.
 - **The same uncertainty affects the reviewer's prediction** (0.7–6, msieve faster): neither forecaster knew msieve's small-number path.
+
+## Grok's G-11 / G-12 (received 08:00 Oct 27 PT; sealed; verbatim)
+
+<!-- verbatim begin -->
+**Sealed predictions (Grok, 27 Oct 2026 ~08:05 PT)**
+Using only the numbers supplied. Absolute msieve wall times on this machine are missing.
+
+### G-11 — At 96 bits: (card wall per number) / (msieve wall per number)
+**Range:** 0.6–2.5 (confidence 60 % that the true value falls inside).
+Below 1 = card faster.
+
+(Information only, not used for the range: public literature quotes for msieve SIQS on ~30-decimal-digit numbers are typically several milliseconds on modern CPUs; the card's ~3.4 ms for 2'b at 2.4 GHz is in the same order of magnitude, but machine, pinning, and batch overhead differ. Those figures are in decimal digits, not bits.)
+
+**Falsifier:** the measured ratio lies outside 0.6–2.5.
+
+### G-12 — At 72 bits vs 96: is the ratio closer to 1 at 72?
+**Definition of "closer to 1":** the absolute value |ratio − 1| is smaller at 72 bits than at 96 bits.
+**Answer:** yes (confidence 55 %).
+
+**Falsifier:** |ratio_72 − 1| ≥ |ratio_96 − 1|.
+<!-- verbatim end -->
+
+**The reviewer's note:** units handled correctly (decimal digits against bits); single-condition falsifiers.
