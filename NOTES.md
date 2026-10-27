@@ -8230,3 +8230,35 @@ The Gray code maintains `sr`: the roots in x-coordinates, in [0, p). The sieve's
   - the share of candidates with x < 0 (assumed 0.5);
   - relation identity, which is a code property, argued in the design note and checked only by acceptance.
 - **Machine:** no timed run in progress (root-confirm-2 finished, c5d1034). Three desktop WolframKernel processes were running; wolframscript ran without a license error.
+
+## I-032 option 2′a: start offsets kept by the Gray code — cost model (before code; gene off by default; predictions/i032-2prime.md, 7ebf20b)
+
+**Gene:** `goff` (0 = today; 1 = the Gray code keeps the start offsets). Off by default, so the reference is unchanged until the user adopts it. Both cores, Python in lockstep.
+
+**What changes, per A** (after the sieved primes' roots r1, r2 and the power entries' roots are computed, in "setup"):
+- Each root is converted once to its start offset in sieve coordinates: s0 = r + (M mod p), less p if s0 ≥ p. Power entries use (M mod q).
+- This is the same add and conditional subtract the sieve loop performs today per root per polynomial.
+- **Charged as `word`, 1 per root** (base roots and power-entry roots), in the setup region (Rust PH_WORD, Python "word").
+- `sr` and `qr` then hold offsets instead of x-coordinate roots.
+
+**What changes, per polynomial:**
+- **Gray update:** the same arithmetic on the offsets. (s0 ± b) mod p equals ((r ± b) mod p + M mod p) mod p, so the offsets after each switch are identical to what the sieve loop computes today. The charge `setup_gray` × roots is unchanged.
+- **Sieve loop:** reads s0 = sr[k] (and qr[t]) directly. **Today's charge "start offsets, one word op per root" (`word` × nr) is not made,** because the add is no longer done. The sieve updates and the width charge are unchanged.
+- **Re-sieve** (confirm = resieve): the walk reads s0 directly, so the walk's "+1, the start offset, one word op per root walked" is not made. Every other re-sieve charge is unchanged.
+- **Root pass** (confirm = root): reads s0 directly in place of recomputing it. Its store charge (`word` × sr.len) is unchanged; removing that pass is 2′b, not built here.
+- **Python traces:** keep recording x-coordinate roots `(p, r)` in `at["polys"][...]["roots"]` (qs_accept, parity, sieveshare and startoff_accept read them). In goff mode the trace recovers r = s0 − (M mod p) mod p **for the trace only**. That is trace bookkeeping, not card work, and is not charged, as the trace's other fields are not.
+
+**Expected counts at 96** (from the I-032 model's measured inputs, f12ae23; reference genes + goff):
+- `word` −263.8 × 156.04 + 263.8 × 19.955 ≈ **−35,900 per number**. Every other type is unchanged.
+- Official, ruint and Montgomery totals are not computed or compared here (predictions/i032-2prime.md, R2-1/R2-2, D-1/D-2). Acceptance compares counts by type and identity only.
+
+**Identity:**
+- Same offsets, so the same sieve array, the same candidates, the same divisions, relations and factor.
+- **Acceptance** (`evolve/goff_accept.py`), all map numbers 54–96, for the new reference, + re-sieve, + root, + pp 3 and + pp 10:
+  1. goff off against the pre-change binary: identical per number and per type.
+  2. goff on against goff off: identical factor, candidates, hits, polynomials (sieve_scan), sieve_update and every type except `word`. The `word` difference equals −(roots per polynomial × polynomials) + (roots per A × A's), plus, under re-sieve, −(roots walked).
+  3. Relations (u, sparse vector, y) and every candidate value identical, from Python traces, 2 numbers per size.
+  4. Python = Rust per type, on and off.
+- **Parity:** goff cases added.
+
+**Not an uncharged op:** the per-A conversion is charged. The removed charges correspond to work that is no longer done.
