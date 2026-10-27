@@ -8487,3 +8487,39 @@ The Gray code maintains `sr`: the roots in x-coordinates, in [0, p). The sieve's
 - **Not measured:** the threshold shift for 2′b+pp3 (only +0 bits ran), other sizes, and energy.
 
 **Report only.** Nothing adopted. goff stays off by default; adopting 2′a, 2′b or 2′b+pp3 into the reference is the user's decision.
+
+## pp 3 on 2′b: the meter against wall-clock (post hoc, read-only; `wolfram/2026-10-27_pp3_gap.wl`, `.out`; no new timing; no meter change)
+
+**Question:** 2′b+pp3 against 2′b is −5.1% official (−2.0% ruint, −2.1% Montgomery), but wall-clock is +2.0% (3,475.3 against 3,407.9 µs at 2.4 GHz, i032-2prime, 9b94247). Where does wall-clock rise while price falls or holds?
+
+**Inputs:**
+- **Wall-clock:** the sealed run's `i032time.json`. **Only wall, sieve and confirm were saved per cell;** setup, gray, scan, lp_ledger and solve are one remainder ("rest").
+- **Priced per region (ruint):** lampcore `--phasetime`'s per-region type counts, counts only, with the ns discarded.
+- **Instrumentation bug, found here:** `pt_end` (`lampcore/src/main.rs`) copies type columns `0..29` only, so **root_test (column 29) is attributed to no region** in `--phasetime`'s per-region types.
+  - The meter, `--types` and the region ns are unaffected.
+  - Here root_test is added to confirm by hand (all of it is charged there). With that, the regions sum to the total within 3.5 ruint.
+  - Not fixed (a lampcore change; the user's call).
+
+| region | wall 2′b → 2′b+pp3 (µs) | ruint 2′b → 2′b+pp3 | µs per ruint (2′b, pp3) | wall change if it tracked price | wall above price |
+|---|---|---|---|---|---|
+| sieve | 968.6 → 906.5 (−6.4%) | 23,455 → 21,152 (−9.8%) | 0.0413, 0.0429 | −95.1 | **+33.0 µs** |
+| confirm (incl. root_test) | 606.3 → 732.0 (+20.7%) | 9,583 → 11,654 (+21.6%) | 0.0633, 0.0628 | +131.0 | −5.3 µs |
+| rest (setup, gray, scan, lp_ledger, solve, mult, fb) | 1,833.0 → 1,836.8 (+0.2%) | 18,573 → 17,792 (−4.2%) | 0.0987, 0.1032 | −77.1 | **+80.9 µs** |
+| total | +2.0% | −2.0% | | | +108.6 µs |
+
+**Readings:**
+- **Confirm tracks its price** (+20.7% wall against +21.6% ruint). It is where pp 3's +21% candidates cost time (1,012.7 → 1,227.4 per number), at the same 0.60 µs per candidate.
+- **Sieve:** price per polynomial is flat (150.3 → 150.6 ruint), but wall per polynomial rises 4.0% (6.21 → 6.45 µs).
+  - pp 3's work per polynomial costs more time than its price. The free-2 initialisation (a stride-2 write over half the interval, charged under the width charge, NOTES "Stage H") and the power-entry walks are priced as ordinary sieve work.
+  - About +33 µs per number.
+- **Rest: the largest gap** (+81 µs). Its price falls 4.2%: fewer A's (20.95 → 19.0 setup entries) and polynomials (156.0 → 140.5) cut setup and gray. Its wall-clock holds.
+  - The run did not save the sub-regions, so how much setup and gray fell, against how much lp_ledger rose, is not measured.
+  - lp_ledger's price rises 19.5% (1,920 → 2,294 ruint): partials looked up +22.4% (916 → 1,121), kept-relation copies +19.9% (994 → 1,192), combinations 71.9 → 78.6.
+- **The hypothesis (the large-prime table's hash at 1.4–1.7× its price, open question 4) explains little:** the hash type rises by +402.7 ops (146.5 ruint), so an excess of 0.4–0.7× is 59–103 ruint, **~4–7 µs** of the ~81 µs.
+  - Step 3 measured the kept-relation copy at ~100 ns per call for ~25 ns priced (the heap allocation of each sparse list). +198 copies would then be ~15–30 µs unpriced, clock-dependent.
+  - **So the large-prime table is a candidate for part of the rest gap, mainly through copies rather than the hash.** That is not established: the ns figures come from earlier runs at an unknown clock, and this run has no lp_ledger wall-clock.
+- **Official's −5.1% is mostly the sieve:** sieve_update −73,497 and sieve_scan −32,926 ops per number (−7.4 points of official), against root_test +28,712 and word +7,302. Official prices a sieve update the same as a root test, and that is where official and wall-clock part most.
+
+**What would settle it** (not run): one capped timed run of 2′b and 2′b+pp3 saving every region per replicate, plus a `LAMPCORE_LPBREAK=1` pass for lp:copy, lp:hash and lp:comb ns. The shift-test runner (below) saves all regions.
+
+**Model, post hoc, not a verdict.**
