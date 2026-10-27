@@ -238,3 +238,4 @@ I assume the kept-relation copies (+198 per number, previously measured at ~4× 
   - AC online, battery 94% and charging; TCPU 46 °C; load 1.2–1.6.
   - No Wolfram processes; 24 browser processes open.
 - **Not stated for this run:** desk or lap, and the charger.
+- **The user's conditions line (with "go", 00:08 Oct 27 PT):** laptop on the fan cooling pad, plugged in, untouched during the run. The desk/lap, charger and browser fields were left as template brackets (not stated); machine-read at go: cap 2,400 MHz on all 8 cores, AC online, no Wolfram processes, 27 browser processes, load 0.77.
