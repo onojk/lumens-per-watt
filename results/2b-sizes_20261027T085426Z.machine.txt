@@ -1,0 +1,43 @@
+## before
+time: 2026-10-27T01:54:26-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 401; max MHz: 5000
+frequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100
+load average: 0.71 0.97 1.37
+power supply AC online: 1
+power supply BAT0 capacity: 86% (Charging)
+power supply ucsi-source-psy-USBC000:001 online: 0
+power supply ucsi-source-psy-USBC000:002 online: 1
+temperature TCPU: 37 C
+temperature x86_pkg_temp: 38 C
+sensors: Package id 0:  +38.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  19.6% claude
+  11.8% Xorg
+  5.9% xfce4-terminal
+  4.9% htop
+  4.9% chrome
+
+## after
+time: 2026-10-27T01:57:22-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 400; max MHz: 5000
+frequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100
+load average: 1.96 1.37 1.45
+power supply AC online: 1
+power supply BAT0 capacity: 88% (Charging)
+power supply ucsi-source-psy-USBC000:001 online: 0
+power supply ucsi-source-psy-USBC000:002 online: 1
+temperature TCPU: 48 C
+temperature x86_pkg_temp: 43 C
+sensors: Package id 0:  +46.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  6.9% chrome
+  5.9% irq/9-acpi
+  5.9% htop
+  4.9% firefox
+  2.9% chrome
