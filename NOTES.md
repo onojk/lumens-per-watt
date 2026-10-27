@@ -7738,3 +7738,9 @@ Under-count at fulls (median): reference 6.50; (i) 0.31; (ii) 0.30; (iii) 0.30; 
   - *Repo note:* round 51 and RT-1 were never relayed to this repo; NOTES has no entry for either. If RT-1 is to be scored here, its text and the commit or date where it was sealed are needed.
 - **Restates the even-k free-2 rule with working:** correct, and it matches the design note (3caf8df): for kN ≡ 2 mod 4, v2 = 1 on the even-y class.
 - **Tooling:** tools/ask_deepseek.py's floor is set to 53 (rounds up to 53 were relayed by hand), so the first automated round is 54.
+
+### DeepSeek, Oct 27, round 51 (hand-relayed; recorded as given, Oct 27; documentation only)
+
+"DeepSeek, Oct 27, round 51 (hand-relayed): RT-1, the retuned card's wall-clock at 96 bits vs today's (mean per number): -15% to -33% (central -24%); falsified if the improvement is < 8% or > 40%. Gene expected to move furthest: the sieve option's 2 setting (off -> '2 free'). Even-k free-2 rule derived: kN = 2 mod 4: v2 = 1 on the y-even class, 0 on the y-odd class (both 2 and 6 mod 8); matches the design note. Per-parity direction claim over-read (see round 53)."
+
+**Timing note:** this was stated in conversation before DeepSeek saw stage H. It is first committed now, after stage H's results exist in the repo (06483b7). RT-1 scores the eventual retune, not stage H, so it stands as sealed from this commit.
