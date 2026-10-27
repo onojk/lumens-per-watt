@@ -344,6 +344,10 @@ def sieve_source(N, k, g, led, ch, at):
                 q, mq = ent[0], ent[4]
                 ent[1] = [r + mq - q if r + mq >= q else r + mq for r in ent[1]]
             charge("word", sum(len(e[1]) for e in st_) + sum(len(e[1]) for e in qe))
+            if RT:                             # 2'b (NOTES.md, "I-032 option 2'b"): per sieved prime its base index and its
+                rtab = [(idx[ent[0]], ent) for ent in st_]   # live entry (offsets read in place); first-root index and reciprocal, 2 word
+                charge("word", 2 * len(rtab))
+                aj = sorted(idx[ql] for ql in qs_)
         signs = [1] * s
         for i in range(1 << (s - 1)):
             if i:                              # Gray code: flip one B_l, update every root
@@ -402,10 +406,10 @@ def sieve_source(N, k, g, led, ch, at):
             charge("word", nr)                     # start offsets, one word op per root
             charge("sieve", upd)
             charge("sieve", width)
-            if RT:                                 # root confirm: the sieved roots' start offsets stored, one word per root
+            if RT and not GOFF:                    # root confirm: the sieved roots' start offsets stored, one word per root
                 rtab = []                          # per sieved base prime, ascending: (base index, p, its start offsets)
                 for p, rs, _ in st_:
-                    st0 = list(rs) if GOFF else [(r + mp[p]) - p if r + mp[p] >= p else r + mp[p] for r in rs]
+                    st0 = [(r + mp[p]) - p if r + mp[p] >= p else r + mp[p] for r in rs]
                     rtab.append((idx[p], p, st0))
                 charge("word", sum(len(e[2]) for e in rtab))
                 aj = sorted(idx[ql] for ql in qs_)
@@ -471,7 +475,8 @@ def sieve_source(N, k, g, led, ch, at):
                     ch.m.test(False)
                     continue
                 if RT:                             # root confirm: hits, the prime 2 by the low bit, A's primes by v mod p
-                    rh = [j for j, p, st0 in rtab if i0 % p in st0]
+                    rh = ([j for j, ent in rtab if i0 % ent[0] in ent[1]] if GOFF else
+                          [j for j, p, st0 in rtab if i0 % p in st0])
                     charge("word", 1)
                     dl = [1] if v % 2 == 0 else []
                     for j in aj:

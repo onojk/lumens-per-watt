@@ -229,6 +229,13 @@ def qs_pairs():
             yield f"qs goff pp {ppv}", [dict(TUNED, lc=1.4, a_mode="on_demand", kset="sf32", pp=ppv, goff=1)], nums, 2 ** 29, False
         for cap in (2 ** 11, 2 ** 13, 2 ** 15):
             yield "qs goff low cap", [dict(TUNED, lc=1.4, a_mode="on_demand", kset="sf32", goff=1)], nums, cap, False
+        # 2'b (NOTES.md, "I-032 option 2'b"): goff with root confirm, the offsets read in place; caps that stop inside
+        # the per-A ka build or the root test, pp 3 / 10, enumerate
+        for cap in (2 ** 11, 2 ** 13, 2 ** 15):
+            yield "qs goff root low cap", [dict(TUNED, lc=1.4, a_mode="on_demand", kset="sf32", confirm="root", goff=1)], nums, cap, False
+        for ppv in (3, 10):
+            yield f"qs goff root pp {ppv}", [dict(TUNED, lc=1.4, a_mode="on_demand", kset="sf32", confirm="root", pp=ppv, goff=1)], nums, 2 ** 29, False
+        yield "qs goff root enumerate", [dict(TUNED, lc=1.8, confirm="root", goff=1)], nums, 2 ** 29, False
     for seed, b, i in RETRY[:4]:
         yield "qs goff retry", [dict(QS, a_mode="on_demand", goff=1)], semiprimes_pq(b, i + 1, seed)[i:], 2 ** 29, False
     yield from lp_pairs()

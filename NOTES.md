@@ -8352,3 +8352,27 @@ The Gray code maintains `sr`: the roots in x-coordinates, in [0, p). The sieve's
 4. Python = Rust per type for 2′b, 2′a and goff off + root.
 
 **Parity:** goff + root cases already run (a6d67a2's parity added `qs goff root`). Low caps inside the per-A build and the root test are added.
+
+### I-032 option 2′b: built — acceptance and parity (`evolve/rootb_accept.py`, `rootb_accept.out`; `parity_rootb.out`)
+
+**Code:** per the cost model (18efd55), in both cores. **No new gene:** with goff = 1 and confirm = root, root confirm's per-polynomial pass is gone.
+- Per A, `ka` (each sieved prime's first-root index in `sr`) and `tm` (its reciprocal) are built, charged `word` × 2 per sieved prime.
+- The root test reads the Gray-kept offsets in place (`sr[ka[t]]`, `sr[last]`; p and the base index through `sp` / `sj`).
+- **Python:** keeps per A (base index, live `st_` entry) at the same charge.
+- **With goff = 0, root confirm runs the old path unchanged.** The runner's 2′b cells (evolve/i032time.py, `goff=1, confirm="root"`) now take the new path.
+
+**Acceptance:** all map numbers 54–96; genomes the new reference, + pp 3, + pp 10, the corrected reference.
+1. goff = 0 + root against the pre-change lampcore (18efd55's binary): identical per number and per type, 8,000 / 8,000.
+2. 2′b against 2′a, 8,000 / 8,000: the same factor, candidates, hits and polynomials.
+   - root_test, confirm_td and setup_small change exactly as today's root mode against the full pass.
+   - Every other type except `word` is identical.
+   - **`word` is exactly** (today's root − full) − (sieved roots summed over polynomials) + 2 × (sieved primes summed over A's), with the structure from a Python trace of every number.
+3. Relations and candidate values identical (2′b, 2′a and full pass), 32 / 32.
+4. Python = Rust per type (2′b, 2′a, goff = 0 + root), 96 / 96.
+
+**Parity** (added: goff + root with caps 2^11 / 2^13 / 2^15, pp 3 / 10, enumerate):
+- qs 5,214 pairs and types 7,986 pairs, mismatches 0;
+- mutations 56 / 56;
+- every other check passes.
+
+**Not done here:** no priced totals were printed or compared against REF or 2′a, and no timing was run.

@@ -751,6 +751,9 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
     let (mut tp, mut tm, mut ta, mut tb, mut tj): (Vec<u32>, Vec<u64>, Vec<u32>, Vec<u32>, Vec<u32>) =
         (Vec::new(), Vec::new(), Vec::new(), Vec::new(), Vec::new());
     let (mut thit, mut dl): (Vec<usize>, Vec<usize>) = (Vec::new(), Vec::new());
+    // 2'b (goff with root confirm; NOTES.md, "I-032 option 2'b"): per A, each sieved prime's first-root index in sr;
+    // the root test reads the Gray-kept offsets in place (no per-polynomial pass)
+    let mut ka: Vec<usize> = Vec::new();
 
     let mut next_i = 0usize;
     crate::pt_end(m, 2, pt_pre);
@@ -871,6 +874,19 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 qr[t] = if s0 >= qp[t] { s0 - qp[t] } else { s0 };
             }
             m.charge(crate::PH_WORD, (sr.len() + qr.len()) as u64)?;
+            if rt_on {
+                // 2'b: per sieved prime its first root's index and its reciprocal, two word ops per prime; its last
+                // root is the next prime's first less one (or sr's end), p and the base index are read through sp / sj
+                ka.clear();
+                tm.clear();
+                for k in 0..sr.len() {
+                    if k == 0 || sj[k] != sj[k - 1] {
+                        ka.push(k);
+                        tm.push(recip[sj[k]]);
+                    }
+                }
+                m.charge(crate::PH_WORD, 2 * ka.len() as u64)?;
+            }
         }
         crate::pt_end(m, 2, pt_a);
         let mut signs = vec![1i128; s];
@@ -969,7 +985,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
             m.charge(crate::PH_WORD, nr)?;
             m.charge(SIEVE, upd)?;
             m.charge(SIEVE, width as u64)?;
-            if rt_on {
+            if rt_on && !goff {
                 // the sieved roots' start offsets stored, one word per root (roots of one prime adjacent, ascending base order)
                 tp.clear();
                 tm.clear();
@@ -978,7 +994,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 tj.clear();
                 for k in 0..sr.len() {
                     let (p, j) = (sp[k] as i64, sj[k]);
-                    let mut s0 = sr[k] as i64 + if goff { 0 } else { mp[j] as i64 };
+                    let mut s0 = sr[k] as i64 + mp[j] as i64;
                     if s0 >= p {
                         s0 -= p;
                     }
@@ -1086,7 +1102,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 } // else: the full pass iterates 1..f directly (no list is built, as in Python)
                 m.charge(crate::PH_WORD, 1)?; // the sign check (audit 8)
                 if rt_on {
-                    m.charge(crate::PH_ROOT, tp.len() as u64)?; // the root test, one per sieved base prime
+                    m.charge(crate::PH_ROOT, if goff { ka.len() } else { tp.len() } as u64)?; // the root test, one per sieved base prime
                 } else {
                     m.charge(CONFIRM, if rs_on { plist.len() as u64 } else { f as u64 - 1 })?;
                 }
@@ -1106,16 +1122,29 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 }
                 if rt_on {
                     // branch-free root test (the benchmark's version (c)): i0 mod p by the reciprocal when i0 >= p
-                    let n = tp.len();
+                    let n = if goff { ka.len() } else { tp.len() };
                     thit.resize(n + 1, 0);
                     let mut cnt = 0usize;
                     let x0 = i0 as u32;
-                    for t in 0..n {
-                        let p = tp[t];
-                        let fm = (((tm[t].wrapping_mul(x0 as u64)) as u128 * p as u128) >> 64) as u32;
-                        let r = if x0 < p { x0 } else { fm };
-                        thit[cnt] = tj[t] as usize;
-                        cnt += ((r == ta[t]) | (r == tb[t])) as usize;
+                    if goff {
+                        // 2'b: the offsets read in place from sr through ka
+                        for t in 0..n {
+                            let k = ka[t];
+                            let last = if t + 1 < n { ka[t + 1] - 1 } else { sr.len() - 1 };
+                            let p = sp[k] as u32;
+                            let fm = (((tm[t].wrapping_mul(x0 as u64)) as u128 * p as u128) >> 64) as u32;
+                            let r = if x0 < p { x0 } else { fm };
+                            thit[cnt] = sj[k];
+                            cnt += ((r == sr[k] as u32) | (r == sr[last] as u32)) as usize;
+                        }
+                    } else {
+                        for t in 0..n {
+                            let p = tp[t];
+                            let fm = (((tm[t].wrapping_mul(x0 as u64)) as u128 * p as u128) >> 64) as u32;
+                            let r = if x0 < p { x0 } else { fm };
+                            thit[cnt] = tj[t] as usize;
+                            cnt += ((r == ta[t]) | (r == tb[t])) as usize;
+                        }
                     }
                     m.charge(crate::PH_WORD, 1)?; // the prime 2's low-bit test
                     let even = v & 1 == 0;

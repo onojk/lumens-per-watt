@@ -1,0 +1,9 @@
+54 bits done 1:1280/1280 2:1280/1280 3:8/8 4:24/24
+72 bits done 1:3200/3200 2:3200/3200 3:16/16 4:48/48
+84 bits done 1:5440/5440 2:5440/5440 3:24/24 4:72/72
+96 bits done 1:8000/8000 2:8000/8000 3:32/32 4:96/96
+1. goff = 0 + root vs pre-change lampcore, per number and per type: 8000/8000
+2. 2'b vs 2'a: factor, candidates, hits, polynomials; root types as today's root mode; word exact (trace structure): 8000/8000
+3. relations and candidate values identical: 2'b, 2'a, full pass (Python traces): 32/32
+4. Python = Rust per type: 2'b, 2'a, goff = 0 + root: 96/96
+exit 0
