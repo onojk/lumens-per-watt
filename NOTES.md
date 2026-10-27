@@ -8924,6 +8924,18 @@ Yes, substantially. Against 2'b directly, pp3 is +0.7% wall at +1 and −0.9% at
   3. Only then compute and publish the break-even fraction for 2′b and 2′b's ratio.
 - **Still unmeasured:** wall-clock for 2′b alone at 72 and 84. That still needs a sealed timed run.
 
+### Requirements for the op-class procedure (DeepSeek, received 05:18 Oct 27 PT; information only; verbatim)
+
+<!-- verbatim begin -->
+[PLACEHOLDER: DeepSeek's reply was not included in the brief that recorded it; to be pasted verbatim.]
+<!-- verbatim end -->
+
+**The reviewer's notes:**
+- **"Frozen before any 2′b run" is already past** (2b-sizes, 5d8e1c9, timed 2′b at 72 and 84). The operative requirement: the procedure and the fraction are frozen **before 2′b's ratio under the new pricing is computed or seen**. Priced outcomes are deterministic from existing counts, so that is the point the freeze protects.
+- **Added requirement (the reviewer): scope.** The op-class weighting covers **every op class official prices at unit cost**, not only sieve updates and root tests.
+
+**Use:** this list (DeepSeek's requirements, with the two notes above) is the checklist when the draft (`reviews/opclass_procedure_DRAFT.md`) is reviewed. Not yet applied to the draft; the draft is unchanged.
+
 ## Withdrawn (the user's, Oct 27): the provisional choice 2′b+pp3 at +1
 
 - **The user withdraws the provisional +1.** It fails the robust rule at 72 and 84: robust 1.0171 and 0.9987, both undecided (be7579b). **Nothing adopted;** the reference stays 2′a (goff = 1).
