@@ -8821,6 +8821,30 @@ Dropping official from the robust track would hide the same mismatch instead of 
 
 **Status: rule unchanged.** The user's decision, to be made before any test it affects.
 
+### DeepSeek's second view (received 00:45 Oct 27 PT; information only; verbatim)
+
+<!-- verbatim begin -->
+## 1. Does my view change?
+
+Partly. The reviewer's point is correct: re-pricing official's sieve update to track wall-clock would make official a second machine-calibrated pricing, and ruint already serves that role; the robust track would then have no hardware-neutral member, and its "worst of three" would be worst of three machine-specific estimates. That is a real loss. But the point cuts both ways: an official pricing that is wrong about which ops matter is not guarding against anything useful—it is vetoing results on a mis-specified cost, which is what happened at +2 (official 1.0138 while wall was −12.0%, best). The cleanest fix is therefore not to mutate official and not to drop it, but to **add a fourth, prospective pricing** that keeps official's op-counting spirit while counting a sieve update as a fraction of a root test, and to decide the robust rule (worst-of-three vs worst-of-four, or a documented exception process) **before** the next test. That preserves a hardware-neutral member, fixes the known mis-specification, and avoids the appearance of rescuing tonight's result. My substantive view is unchanged: keep the rule, fix the pricing prospectively, do not change it after seeing an inconvenient cell.
+
+## 2. Is adopting pp3 overfitting to the meter?
+
+Yes, substantially. Against 2'b directly, pp3 is +0.7% wall at +1 and −0.9% at +2/+3—within cross-run drift of ±1.5 points—and its only clear benefit is pulling official below 1.0 at 96, the very pricing the reviewer argues is mis-specified. Adopting a component whose measured effect is to satisfy one known-questionable pricing, while neutral on wall-clock, is optimizing for the meter rather than for the machine; the honest adoption candidate on wall-clock grounds is **2'b alone** (−11.2%), with pp3 treated as a 96-bit workaround for the official pricing quirk until the pricing is fixed prospectively.
+<!-- verbatim end -->
+
+**The reviewer's notes:**
+- **DeepSeek's fourth pricing is sound only if** the sieve-update fraction comes from op-class instruction counts (byte load / add / store against modular reduction / compare), written down before any test. It must **not** be calibrated to this machine's wall-clock; that would be a second ruint.
+- **Its Q2 comparison** sets within-run differences (+0.7%, −0.9%) against the cross-run drift (±1.5). The within-run intervals are about ±1. The conclusion (pp 3 near-neutral on wall against 2′b) still holds.
+- **Consensus (DeepSeek, the reviewer):** adopting pp 3 now would be optimising for the meter; the honest candidate is 2′b alone.
+
+**The user's options:**
+1. Keep the rule.
+2. A prospective op-class pricing, a worst-of-four rule, and one sealed test of 2′b at 72, 84 and 96.
+3. Energy (RAPL) arbitration.
+
+**The reviewer recommends (2), adding (3) when it is available. Decision pending (the user's).**
+
 ## Withdrawn (the user's, Oct 27): the provisional choice 2′b+pp3 at +1
 
 - **The user withdraws the provisional +1.** It fails the robust rule at 72 and 84: robust 1.0171 and 0.9987, both undecided (be7579b). **Nothing adopted;** the reference stays 2′a (goff = 1).
