@@ -1,0 +1,404 @@
+72 bits: mean B over the map numbers 588.5; shift d bits = tc - d / 9.2010
+identity 72: 2'b+pp3 +0 vs the same genes with goff off: factor, candidates, hits and polynomials identical on 480/480 numbers; relations and candidate values identical on 2 traced numbers: yes
+identity 72: 2'b+pp3 +1 vs the same genes with goff off: factor, candidates, hits and polynomials identical on 480/480 numbers; relations and candidate values identical on 2 traced numbers: yes
+identity 72: 2'b+pp3 +2 vs the same genes with goff off: factor, candidates, hits and polynomials identical on 480/480 numbers; relations and candidate values identical on 2 traced numbers: yes
+priced 72: 2'a: official 149,728.8 ruint 8,743.2 montgomery 31,113.8
+priced 72: 2'b+pp3 +0: official 154,059.5 ruint 7,906.7 montgomery 27,911.5
+priced 72: 2'b+pp3 +1: official 152,291.7 ruint 7,675.5 montgomery 27,061.6
+priced 72: 2'b+pp3 +2: official 152,514.8 ruint 7,510.6 montgomery 26,551.0
+priced 72: 2'b+pp3 +0 vs 2'a: official 1.0289 [1.0144, 1.0408] ruint 0.9043 [0.8922, 0.9145] montgomery 0.8971 [0.8860, 0.9061]; robust 1.0289; (e) undecided
+priced 72: 2'b+pp3 +1 vs 2'a: official 1.0171 [1.0033, 1.0288] ruint 0.8779 [0.8665, 0.8885] montgomery 0.8698 [0.8591, 0.8796]; robust 1.0171; (e) undecided
+priced 72: 2'b+pp3 +2 vs 2'a: official 1.0186 [1.0032, 1.0327] ruint 0.8590 [0.8455, 0.8720] montgomery 0.8533 [0.8409, 0.8652]; robust 1.0186; (e) undecided
+timing 72: 2'a: wall 787.0 us (sd 13.2, 765.8-801.8); setup 244.8 us (sd 1.3, 243.4-247.2) ruint 1,673.7; gray 11.9 us (sd 0.6, 10.8-12.6) ruint 129.7; sieve 87.3 us (sd 1.1, 85.5-88.7) ruint 1,757.8; scan 24.4 us (sd 0.9, 23.1-26.1) ruint 0.0; confirm 234.6 us (sd 4.9, 226.6-239.0) ruint 3,066.3; lp_ledger 75.3 us (sd 5.6, 66.3-82.6) ruint 630.2; solve 79.6 us (sd 0.1, 79.4-79.8) ruint 680.9; mult 4.0 us (sd 0.0, 4.0-4.1) ruint 61.8; fb 27.0 us (sd 0.2, 26.8-27.2) ruint 742.7; resieve -2.0 us (sd 0.7, -3.1--0.9) ruint 0.0; core 2 MHz 400-2035, median 400 (n 8)
+timing 72: 2'b+pp3 +0: wall 718.8 us (sd 17.7, 696.0-745.2); setup 234.7 us (sd 1.8, 232.6-237.8) ruint 1,521.1; gray 10.4 us (sd 0.6, 9.7-11.2) ruint 115.4; sieve 82.3 us (sd 1.0, 80.5-83.4) ruint 1,569.9; scan 24.4 us (sd 0.6, 23.7-25.2) ruint 0.0; confirm 183.8 us (sd 9.6, 175.1-202.4) ruint 2,527.2; lp_ledger 74.4 us (sd 7.1, 66.4-83.1) ruint 698.5; solve 79.9 us (sd 1.1, 79.4-82.7) ruint 676.2; mult 4.2 us (sd 0.4, 3.9-5.1) ruint 61.8; fb 26.8 us (sd 0.6, 26.4-28.2) ruint 736.5; resieve -2.1 us (sd 0.6, -2.8--1.3) ruint 0.0; core 2 MHz 400-1777, median 791 (n 8) FLAGGED (>10% off 2'a)
+timing 72: 2'b+pp3 +1: wall 713.8 us (sd 7.5, 700.2-722.7); setup 243.3 us (sd 1.0, 241.8-245.0) ruint 1,622.9; gray 11.7 us (sd 0.4, 10.9-12.4) ruint 123.5; sieve 88.7 us (sd 0.7, 87.9-89.5) ruint 1,680.4; scan 24.2 us (sd 0.4, 23.4-24.4) ruint 0.0; confirm 159.6 us (sd 4.3, 155.7-169.4) ruint 2,118.8; lp_ledger 77.6 us (sd 2.9, 71.1-79.8) ruint 650.9; solve 79.9 us (sd 0.4, 79.6-80.9) ruint 677.6; mult 4.1 us (sd 0.1, 4.0-4.1) ruint 61.8; fb 26.5 us (sd 0.2, 26.2-26.7) ruint 739.6; resieve -1.7 us (sd 0.3, -2.5--1.5) ruint 0.0; core 2 MHz 400-2057, median 579 (n 8) FLAGGED (>10% off 2'a)
+timing 72: 2'b+pp3 +2: wall 704.5 us (sd 5.4, 697.8-711.8); setup 254.6 us (sd 2.2, 251.5-257.7) ruint 1,745.9; gray 12.6 us (sd 0.1, 12.4-12.9) ruint 132.9; sieve 94.5 us (sd 1.1, 93.2-96.7) ruint 1,807.0; scan 23.8 us (sd 0.1, 23.6-24.0) ruint 0.0; confirm 135.4 us (sd 2.3, 132.2-140.0) ruint 1,778.3; lp_ledger 75.7 us (sd 1.5, 73.6-78.3) ruint 600.5; solve 78.7 us (sd 0.6, 78.3-79.8) ruint 642.8; mult 4.0 us (sd 0.0, 4.0-4.1) ruint 61.8; fb 26.8 us (sd 0.1, 26.6-27.0) ruint 741.5; resieve -1.7 us (sd 0.1, -1.9--1.6) ruint 0.0; core 2 MHz 399-1960, median 975 (n 8) FLAGGED (>10% off 2'a)
+timing 72: 2'b+pp3 +0 vs 2'a: wall 0.9138 [0.8840, 0.9436] (-8.6%, +-3.0 points); setup 0.9585 [0.9521, 0.9649] (-4.1%, +-0.6 points); gray 0.8809 [0.8029, 0.9590] (-11.9%, +-7.8 points); sieve 0.9438 [0.9284, 0.9591] (-5.6%, +-1.5 points); scan 0.9991 [0.9518, 1.0464] (-0.1%, +-4.7 points); confirm 0.7844 [0.7379, 0.8310] (-21.6%, +-4.7 points); lp_ledger 0.9966 [0.8679, 1.1252] (-0.3%, +-12.9 points); solve 1.0041 [0.9918, 1.0164] (+0.4%, +-1.2 points); mult 1.0289 [0.9554, 1.1024] (+2.9%, +-7.3 points); fb 0.9915 [0.9749, 1.0082] (-0.8%, +-1.7 points); resieve 1.3107 [0.6337, 1.9877] (+31.1%, +-67.7 points);
+timing 72: 2'b+pp3 +1 vs 2'a: wall 0.9072 [0.8919, 0.9226] (-9.3%, +-1.5 points); setup 0.9937 [0.9863, 1.0010] (-0.6%, +-0.7 points); gray 0.9838 [0.9268, 1.0407] (-1.6%, +-5.7 points); sieve 1.0167 [1.0049, 1.0284] (+1.7%, +-1.2 points); scan 0.9912 [0.9566, 1.0258] (-0.9%, +-3.5 points); confirm 0.6806 [0.6635, 0.6978] (-31.9%, +-1.7 points); lp_ledger 1.0366 [0.9543, 1.1188] (+3.7%, +-8.2 points); solve 1.0041 [0.9992, 1.0090] (+0.4%, +-0.5 points); mult 1.0054 [0.9910, 1.0198] (+0.5%, +-1.4 points); fb 0.9801 [0.9734, 0.9868] (-2.0%, +-0.7 points); resieve 0.9835 [0.6706, 1.2965] (-1.6%, +-31.3 points);
+timing 72: 2'b+pp3 +2 vs 2'a: wall 0.8954 [0.8818, 0.9090] (-10.5%, +-1.4 points); setup 1.0397 [1.0307, 1.0487] (+4.0%, +-0.9 points); gray 1.0609 [1.0135, 1.1082] (+6.1%, +-4.7 points); sieve 1.0836 [1.0672, 1.1001] (+8.4%, +-1.6 points); scan 0.9770 [0.9480, 1.0060] (-2.3%, +-2.9 points); confirm 0.5773 [0.5662, 0.5883] (-42.3%, +-1.1 points); lp_ledger 1.0106 [0.9428, 1.0784] (+1.1%, +-6.8 points); solve 0.9891 [0.9813, 0.9969] (-1.1%, +-0.8 points); mult 0.9973 [0.9890, 1.0056] (-0.3%, +-0.8 points); fb 0.9928 [0.9884, 0.9971] (-0.7%, +-0.4 points); resieve 0.9762 [0.6428, 1.3096] (-2.4%, +-33.3 points);
+excess 72: 2'b+pp3 +0 vs 2'a (wall above own-rate price, us per number [95%]): setup +12.2 [+10.6, +13.7]; gray -0.1 [-1.0, +0.8]; scan +2.7 [+1.5, +3.8] (calls); lp_ledger -8.4 [-18.1, +1.3]; solve +0.9 [-0.1, +1.9]; mult +0.1 [-0.2, +0.4]; fb -0.0 [-0.5, +0.4]; sieve +4.4 [+3.1, +5.8]; confirm -9.3 [-20.3, +1.6];
+excess 72: 2'b+pp3 +1 vs 2'a (wall above own-rate price, us per number [95%]): setup +5.9 [+4.1, +7.7]; gray +0.4 [-0.3, +1.1]; scan +1.0 [+0.1, +1.8] (calls); lp_ledger +0.3 [-5.9, +6.5]; solve +0.7 [+0.3, +1.1]; mult +0.0 [-0.0, +0.1]; fb -0.4 [-0.6, -0.2]; sieve +5.3 [+4.3, +6.3]; confirm -2.4 [-6.4, +1.6];
+excess 72: 2'b+pp3 +2 vs 2'a (wall above own-rate price, us per number [95%]): setup -0.8 [-3.0, +1.4]; gray +0.4 [-0.1, +1.0]; scan -1.1 [-1.9, -0.4] (calls); lp_ledger +4.3 [-0.8, +9.4]; solve +3.6 [+3.0, +4.2]; mult -0.0 [-0.0, +0.0]; fb -0.2 [-0.3, -0.0]; sieve +4.9 [+3.4, +6.3]; confirm -0.6 [-3.2, +2.0];
+lp break 72: 2'a (information; sub-timers on): lp_ledger 133.2 us / 458.3 calls lp:copy 13.2 us / 302.9 calls lp:hash 24.3 us / 268.0 calls lp:comb 8.5 us / 33.8 calls lp:add 8.0 us / 68.8 calls
+lp break 72: 2'b+pp3 +0 (information; sub-timers on): lp_ledger 141.8 us / 557.9 calls lp:copy 12.7 us / 323.9 calls lp:hash 27.0 us / 292.1 calls lp:comb 8.9 us / 36.3 calls lp:add 7.6 us / 68.0 calls
+lp break 72: 2'b+pp3 +1 (information; sub-timers on): lp_ledger 138.2 us / 465.9 calls lp:copy 12.9 us / 312.6 calls lp:hash 26.1 us / 279.2 calls lp:comb 8.7 us / 34.9 calls lp:add 7.7 us / 68.4 calls
+lp break 72: 2'b+pp3 +2 (information; sub-timers on): lp_ledger 129.3 us / 389.4 calls lp:copy 12.7 us / 297.0 calls lp:hash 23.9 us / 261.5 calls lp:comb 8.4 us / 33.1 calls lp:add 7.7 us / 68.6 calls
+replicate orders 72: (random.Random(2102)):
+  r1: 2'b+pp3 +0, 2'a, 2'b+pp3 +2, 2'b+pp3 +1
+  r2: 2'a, 2'b+pp3 +1, 2'b+pp3 +0, 2'b+pp3 +2
+  r3: 2'b+pp3 +0, 2'b+pp3 +1, 2'a, 2'b+pp3 +2
+  r4: 2'b+pp3 +0, 2'b+pp3 +2, 2'b+pp3 +1, 2'a
+  r5: 2'b+pp3 +1, 2'b+pp3 +0, 2'b+pp3 +2, 2'a
+  r6: 2'b+pp3 +0, 2'b+pp3 +1, 2'a, 2'b+pp3 +2
+  r7: 2'a, 2'b+pp3 +0, 2'b+pp3 +2, 2'b+pp3 +1
+  r8: 2'b+pp3 +0, 2'b+pp3 +1, 2'a, 2'b+pp3 +2
+## 72: machine state before replicate 1
+time: 2026-10-27T00:34:19-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 2400; max MHz: 5000
+frequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100
+load average: 2.15 1.47 1.05
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+power supply ucsi-source-psy-USBC000:001 online: 0
+power supply ucsi-source-psy-USBC000:002 online: 1
+temperature TCPU: 56 C
+temperature x86_pkg_temp: 49 C
+sensors: Package id 0:  +49.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  69.3% chrome
+  4.0% Xorg
+  4.0% chrome
+  2.0% irq/9-acpi
+  2.0% chrome
+## 72: machine state before replicate 2
+time: 2026-10-27T00:34:23-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 1699; max MHz: 5000
+frequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100
+load average: 1.98 1.45 1.04
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+power supply ucsi-source-psy-USBC000:001 online: 0
+power supply ucsi-source-psy-USBC000:002 online: 1
+temperature TCPU: 54 C
+temperature x86_pkg_temp: 49 C
+sensors: Package id 0:  +49.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  5.0% htop
+  4.0% chrome
+  3.0% Xorg
+  3.0% chrome
+  3.0% chrome
+## 72: machine state before replicate 3
+time: 2026-10-27T00:34:26-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 1583; max MHz: 5000
+frequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100
+load average: 2.06 1.47 1.06
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+power supply ucsi-source-psy-USBC000:001 online: 0
+power supply ucsi-source-psy-USBC000:002 online: 1
+temperature TCPU: 54 C
+temperature x86_pkg_temp: 49 C
+sensors: Package id 0:  +55.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  30.7% chrome
+  20.8% chrome
+  5.9% chrome
+  5.0% Xorg
+  4.0% htop
+## 72: machine state before replicate 4
+time: 2026-10-27T00:34:30-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 1983; max MHz: 5000
+frequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100
+load average: 1.97 1.47 1.05
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+power supply ucsi-source-psy-USBC000:001 online: 0
+power supply ucsi-source-psy-USBC000:002 online: 1
+temperature TCPU: 54 C
+temperature x86_pkg_temp: 51 C
+sensors: Package id 0:  +50.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  29.7% firefox
+  16.8% Xorg
+  10.9% Isolated
+  4.0% claude
+  4.0% chrome
+## 72: machine state before replicate 5
+time: 2026-10-27T00:34:33-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 400; max MHz: 5000
+frequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100
+load average: 1.97 1.47 1.05
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+power supply ucsi-source-psy-USBC000:001 online: 0
+power supply ucsi-source-psy-USBC000:002 online: 1
+temperature TCPU: 54 C
+temperature x86_pkg_temp: 49 C
+sensors: Package id 0:  +50.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  23.8% firefox
+  12.9% Xorg
+  12.9% chrome
+  10.9% chrome
+  5.0% chrome
+## 72: machine state before replicate 6
+time: 2026-10-27T00:34:37-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 1716; max MHz: 5000
+frequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100
+load average: 2.30 1.54 1.08
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+power supply ucsi-source-psy-USBC000:001 online: 0
+power supply ucsi-source-psy-USBC000:002 online: 1
+temperature TCPU: 54 C
+temperature x86_pkg_temp: 50 C
+sensors: Package id 0:  +55.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  17.6% chrome
+  14.7% chrome
+  12.7% Xorg
+  3.9% htop
+  2.9% chrome
+## 72: machine state before replicate 7
+time: 2026-10-27T00:34:41-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 400; max MHz: 5000
+frequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100
+load average: 2.19 1.53 1.08
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+power supply ucsi-source-psy-USBC000:001 online: 0
+power supply ucsi-source-psy-USBC000:002 online: 1
+temperature TCPU: 54 C
+temperature x86_pkg_temp: 51 C
+sensors: Package id 0:  +51.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  5.9% chrome
+  1.0% irq/9-acpi
+  1.0% kworker/5:1H-i915_cleanup
+  1.0% thermald
+  1.0% Xorg
+## 72: machine state before replicate 8
+time: 2026-10-27T00:34:44-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 537; max MHz: 5000
+frequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100
+load average: 2.19 1.53 1.08
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+power supply ucsi-source-psy-USBC000:001 online: 0
+power supply ucsi-source-psy-USBC000:002 online: 1
+temperature TCPU: 54 C
+temperature x86_pkg_temp: 50 C
+sensors: Package id 0:  +49.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  29.4% chrome
+  26.5% Xorg
+  13.7% chrome
+  6.9% kworker/6:1H-i915_cleanup
+  4.9% htop
+84 bits: mean B over the map numbers 1094.5; shift d bits = tc - d / 10.0961
+identity 84: 2'b+pp3 +0 vs the same genes with goff off: factor, candidates, hits and polynomials identical on 560/560 numbers; relations and candidate values identical on 2 traced numbers: yes
+identity 84: 2'b+pp3 +1 vs the same genes with goff off: factor, candidates, hits and polynomials identical on 560/560 numbers; relations and candidate values identical on 2 traced numbers: yes
+identity 84: 2'b+pp3 +2 vs the same genes with goff off: factor, candidates, hits and polynomials identical on 560/560 numbers; relations and candidate values identical on 2 traced numbers: yes
+priced 84: 2'a: official 454,579.6 ruint 22,338.0 montgomery 80,953.4
+priced 84: 2'b+pp3 +0: official 455,467.9 ruint 19,669.1 montgomery 70,754.4
+priced 84: 2'b+pp3 +1: official 453,986.8 ruint 19,136.6 montgomery 68,854.0
+priced 84: 2'b+pp3 +2: official 459,492.7 ruint 18,960.9 montgomery 68,097.3
+priced 84: 2'b+pp3 +0 vs 2'a: official 1.0020 [0.9948, 1.0093] ruint 0.8805 [0.8745, 0.8864] montgomery 0.8740 [0.8686, 0.8794]; robust 1.0020; (e) undecided
+priced 84: 2'b+pp3 +1 vs 2'a: official 0.9987 [0.9922, 1.0052] ruint 0.8567 [0.8508, 0.8628] montgomery 0.8505 [0.8451, 0.8561]; robust 0.9987; (e) undecided
+priced 84: 2'b+pp3 +2 vs 2'a: official 1.0108 [1.0048, 1.0156] ruint 0.8488 [0.8432, 0.8542] montgomery 0.8412 [0.8360, 0.8459]; robust 1.0108; (e) undecided
+timing 84: 2'a: wall 1,650.2 us (sd 31.1, 1,595.6-1,680.1); setup 382.5 us (sd 2.9, 378.5-387.3) ruint 3,980.0; gray 30.8 us (sd 1.2, 28.8-31.7) ruint 329.5; sieve 283.7 us (sd 6.3, 276.1-295.6) ruint 6,477.4; scan 68.2 us (sd 1.3, 66.2-69.2) ruint 0.0; confirm 538.7 us (sd 10.1, 518.9-547.6) ruint 7,798.3; lp_ledger 131.6 us (sd 10.2, 114.8-138.8) ruint 1,032.3; solve 162.0 us (sd 2.0, 160.7-166.7) ruint 1,192.9; mult 4.1 us (sd 0.0, 4.1-4.1) ruint 61.8; fb 51.6 us (sd 1.0, 50.7-53.7) ruint 1,465.7; resieve -3.0 us (sd 1.2, -5.0--2.3) ruint 0.0; core 2 MHz 400-2400, median 2038 (n 16)
+timing 84: 2'b+pp3 +0: wall 1,490.8 us (sd 30.0, 1,423.4-1,519.2); setup 365.0 us (sd 1.4, 363.2-367.1) ruint 3,681.5; gray 28.7 us (sd 1.2, 26.3-30.0) ruint 298.0; sieve 269.7 us (sd 4.8, 265.2-278.7) ruint 5,870.8; scan 67.7 us (sd 1.2, 65.1-69.1) ruint 0.0; confirm 402.5 us (sd 12.8, 374.8-417.9) ruint 5,932.4; lp_ledger 143.0 us (sd 10.6, 117.9-152.9) ruint 1,159.9; solve 161.3 us (sd 0.6, 160.6-162.4) ruint 1,198.9; mult 4.1 us (sd 0.0, 4.1-4.2) ruint 61.8; fb 51.0 us (sd 0.6, 50.5-52.3) ruint 1,465.7; resieve -2.2 us (sd 1.1, -4.5--0.5) ruint 0.0; core 2 MHz 400-2400, median 1849 (n 16)
+timing 84: 2'b+pp3 +1: wall 1,442.0 us (sd 19.3, 1,410.1-1,456.7); setup 376.0 us (sd 1.0, 374.1-377.3) ruint 3,876.3; gray 29.6 us (sd 0.9, 28.2-30.3) ruint 314.6; sieve 285.9 us (sd 3.1, 280.9-290.3) ruint 6,196.3; scan 67.2 us (sd 1.1, 65.6-68.7) ruint 0.0; confirm 334.5 us (sd 8.7, 320.3-340.7) ruint 4,971.1; lp_ledger 135.3 us (sd 7.9, 121.7-142.0) ruint 1,073.2; solve 160.9 us (sd 0.4, 160.3-161.6) ruint 1,177.4; mult 4.1 us (sd 0.0, 4.1-4.1) ruint 61.8; fb 51.2 us (sd 1.0, 50.7-53.7) ruint 1,465.9; resieve -2.7 us (sd 0.9, -4.2--2.2) ruint 0.0; core 2 MHz 400-2400, median 2103 (n 16)
+timing 84: 2'b+pp3 +2: wall 1,434.5 us (sd 11.1, 1,421.9-1,457.9); setup 401.6 us (sd 20.8, 392.1-453.1) ruint 4,127.0; gray 31.9 us (sd 0.7, 30.4-32.5) ruint 335.2; sieve 303.6 us (sd 3.4, 298.8-308.0) ruint 6,602.8; scan 68.9 us (sd 1.3, 66.8-71.2) ruint 0.0; confirm 282.5 us (sd 4.7, 272.0-287.7) ruint 4,156.8; lp_ledger 130.4 us (sd 4.2, 120.6-133.3) ruint 983.4; solve 163.0 us (sd 1.2, 162.2-165.8) ruint 1,230.8; mult 4.1 us (sd 0.0, 4.1-4.1) ruint 61.8; fb 51.1 us (sd 0.2, 50.9-51.4) ruint 1,463.0; resieve -2.7 us (sd 0.7, -4.3--2.3) ruint 0.0; core 2 MHz 400-2400, median 1972 (n 16)
+timing 84: 2'b+pp3 +0 vs 2'a: wall 0.9039 [0.8765, 0.9313] (-9.6%, +-2.7 points); setup 0.9544 [0.9472, 0.9616] (-4.6%, +-0.7 points); gray 0.9346 [0.8812, 0.9880] (-6.5%, +-5.3 points); sieve 0.9512 [0.9213, 0.9812] (-4.9%, +-3.0 points); scan 0.9926 [0.9691, 1.0161] (-0.7%, +-2.4 points); confirm 0.7476 [0.7189, 0.7763] (-25.2%, +-2.9 points); lp_ledger 1.0951 [0.9738, 1.2164] (+9.5%, +-12.1 points); solve 0.9954 [0.9842, 1.0066] (-0.5%, +-1.1 points); mult 1.0047 [0.9966, 1.0127] (+0.5%, +-0.8 points); fb 0.9891 [0.9686, 1.0097] (-1.1%, +-2.1 points); resieve 0.8737 [0.4341, 1.3132] (-12.6%, +-44.0 points);
+timing 84: 2'b+pp3 +1 vs 2'a: wall 0.8742 [0.8547, 0.8936] (-12.6%, +-1.9 points); setup 0.9833 [0.9773, 0.9892] (-1.7%, +-0.6 points); gray 0.9632 [0.9160, 1.0105] (-3.7%, +-4.7 points); sieve 1.0083 [0.9834, 1.0332] (+0.8%, +-2.5 points); scan 0.9857 [0.9604, 1.0111] (-1.4%, +-2.5 points); confirm 0.6213 [0.6016, 0.6409] (-37.9%, +-2.0 points); lp_ledger 1.0353 [0.9308, 1.1399] (+3.5%, +-10.5 points); solve 0.9929 [0.9829, 1.0030] (-0.7%, +-1.0 points); mult 1.0007 [0.9946, 1.0069] (+0.1%, +-0.6 points); fb 0.9933 [0.9752, 1.0115] (-0.7%, +-1.8 points); resieve 1.0236 [0.6096, 1.4376] (+2.4%, +-41.4 points);
+timing 84: 2'b+pp3 +2 vs 2'a: wall 0.8696 [0.8541, 0.8850] (-13.0%, +-1.5 points); setup 1.0502 [1.0043, 1.0960] (+5.0%, +-4.6 points); gray 1.0373 [0.9937, 1.0810] (+3.7%, +-4.4 points); sieve 1.0707 [1.0455, 1.0960] (+7.1%, +-2.5 points); scan 1.0114 [0.9904, 1.0324] (+1.1%, +-2.1 points); confirm 0.5246 [0.5118, 0.5374] (-47.5%, +-1.3 points); lp_ledger 0.9970 [0.9114, 1.0826] (-0.3%, +-8.6 points); solve 1.0061 [0.9941, 1.0181] (+0.6%, +-1.2 points); mult 1.0005 [0.9963, 1.0047] (+0.0%, +-0.4 points); fb 0.9912 [0.9740, 1.0084] (-0.9%, +-1.7 points); resieve 1.0109 [0.6564, 1.3653] (+1.1%, +-35.4 points);
+excess 84: 2'b+pp3 +0 vs 2'a (wall above own-rate price, us per number [95%]): setup +11.2 [+8.5, +14.0]; gray +0.9 [-0.7, +2.6]; scan +6.0 [+4.4, +7.6] (calls); lp_ledger -3.8 [-19.7, +12.2]; solve -1.6 [-3.4, +0.3]; mult +0.0 [-0.0, +0.1]; fb -0.6 [-1.6, +0.5]; sieve +12.7 [+4.2, +21.2]; confirm -7.0 [-22.5, +8.4];
+excess 84: 2'b+pp3 +1 vs 2'a (wall above own-rate price, us per number [95%]): setup +3.6 [+1.3, +5.8]; gray +0.3 [-1.2, +1.7]; scan +2.1 [+0.4, +3.9] (calls); lp_ledger -0.6 [-14.3, +13.2]; solve +1.0 [-0.7, +2.6]; mult +0.0 [-0.0, +0.0]; fb -0.3 [-1.3, +0.6]; sieve +14.7 [+7.6, +21.7]; confirm -8.7 [-19.3, +1.9];
+excess 84: 2'b+pp3 +2 vs 2'a (wall above own-rate price, us per number [95%]): setup +5.1 [-12.5, +22.6]; gray +0.6 [-0.7, +2.0]; scan -0.4 [-1.8, +1.0] (calls); lp_ledger +5.8 [-5.4, +17.1]; solve -4.2 [-6.1, -2.2]; mult +0.0 [-0.0, +0.0]; fb -0.4 [-1.2, +0.5]; sieve +14.6 [+7.4, +21.7]; confirm -4.5 [-11.5, +2.4];
+lp break 84: 2'a (information; sub-timers on): lp_ledger 237.4 us / 709.2 calls lp:copy 41.9 us / 488.5 calls lp:hash 38.7 us / 432.3 calls lp:comb 12.9 us / 49.8 calls lp:add 10.8 us / 106.0 calls
+lp break 84: 2'b+pp3 +0 (information; sub-timers on): lp_ledger 240.9 us / 870.2 calls lp:copy 38.7 us / 529.4 calls lp:hash 42.0 us / 477.7 calls lp:comb 13.3 us / 54.2 calls lp:add 10.8 us / 105.8 calls
+lp break 84: 2'b+pp3 +1 (information; sub-timers on): lp_ledger 246.2 us / 727.2 calls lp:copy 42.4 us / 507.2 calls lp:hash 43.0 us / 453.2 calls lp:comb 12.7 us / 51.9 calls lp:add 12.1 us / 105.9 calls
+lp break 84: 2'b+pp3 +2 (information; sub-timers on): lp_ledger 221.3 us / 606.9 calls lp:copy 35.3 us / 478.8 calls lp:hash 36.1 us / 421.9 calls lp:comb 12.2 us / 48.9 calls lp:add 10.6 us / 105.7 calls
+replicate orders 84: (random.Random(2114)):
+  r1: 2'b+pp3 +1, 2'b+pp3 +2, 2'a, 2'b+pp3 +0
+  r2: 2'a, 2'b+pp3 +2, 2'b+pp3 +1, 2'b+pp3 +0
+  r3: 2'b+pp3 +0, 2'b+pp3 +2, 2'a, 2'b+pp3 +1
+  r4: 2'a, 2'b+pp3 +2, 2'b+pp3 +1, 2'b+pp3 +0
+  r5: 2'b+pp3 +1, 2'b+pp3 +2, 2'b+pp3 +0, 2'a
+  r6: 2'b+pp3 +2, 2'b+pp3 +1, 2'a, 2'b+pp3 +0
+  r7: 2'b+pp3 +2, 2'b+pp3 +0, 2'a, 2'b+pp3 +1
+  r8: 2'b+pp3 +0, 2'b+pp3 +1, 2'a, 2'b+pp3 +2
+## 84: machine state before replicate 1
+time: 2026-10-27T00:35:16-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 2399; max MHz: 5000
+frequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100
+load average: 1.94 1.55 1.10
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+power supply ucsi-source-psy-USBC000:001 online: 0
+power supply ucsi-source-psy-USBC000:002 online: 1
+temperature TCPU: 54 C
+temperature x86_pkg_temp: 50 C
+sensors: Package id 0:  +49.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  5.9% irq/9-acpi
+  5.9% chrome
+  5.0% htop
+  3.0% Xorg
+  2.0% chrome
+## 84: machine state before replicate 2
+time: 2026-10-27T00:35:21-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 400; max MHz: 5000
+frequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100
+load average: 1.86 1.54 1.10
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+power supply ucsi-source-psy-USBC000:001 online: 0
+power supply ucsi-source-psy-USBC000:002 online: 1
+temperature TCPU: 54 C
+temperature x86_pkg_temp: 49 C
+sensors: Package id 0:  +55.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  5.0% htop
+  4.0% chrome
+  2.0% Xorg
+  2.0% chrome
+  1.0% rcu_preempt
+## 84: machine state before replicate 3
+time: 2026-10-27T00:35:27-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 699; max MHz: 5000
+frequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100
+load average: 1.79 1.53 1.10
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+power supply ucsi-source-psy-USBC000:001 online: 0
+power supply ucsi-source-psy-USBC000:002 online: 1
+temperature TCPU: 54 C
+temperature x86_pkg_temp: 49 C
+sensors: Package id 0:  +49.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  5.0% chrome
+  4.0% htop
+  2.0% chrome
+  2.0% chrome
+  1.0% irq/9-acpi
+## 84: machine state before replicate 4
+time: 2026-10-27T00:35:33-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 400; max MHz: 5000
+frequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100
+load average: 1.89 1.56 1.11
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+power supply ucsi-source-psy-USBC000:001 online: 0
+power supply ucsi-source-psy-USBC000:002 online: 1
+temperature TCPU: 53 C
+temperature x86_pkg_temp: 49 C
+sensors: Package id 0:  +49.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  16.8% chrome
+  15.8% chrome
+  12.9% Xorg
+  3.0% kworker/6:1H-i915_cleanup
+  3.0% kworker/3:1H-i915_cleanup
+## 84: machine state before replicate 5
+time: 2026-10-27T00:35:39-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 2396; max MHz: 5000
+frequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100
+load average: 1.74 1.53 1.11
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+power supply ucsi-source-psy-USBC000:001 online: 0
+power supply ucsi-source-psy-USBC000:002 online: 1
+temperature TCPU: 54 C
+temperature x86_pkg_temp: 50 C
+sensors: Package id 0:  +50.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  11.9% chrome
+  5.9% htop
+  5.0% Xorg
+  3.0% irq/9-acpi
+  2.0% xfce4-terminal
+## 84: machine state before replicate 6
+time: 2026-10-27T00:35:45-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 400; max MHz: 5000
+frequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100
+load average: 1.55 1.50 1.10
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+power supply ucsi-source-psy-USBC000:001 online: 0
+power supply ucsi-source-psy-USBC000:002 online: 1
+temperature TCPU: 54 C
+temperature x86_pkg_temp: 50 C
+sensors: Package id 0:  +55.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  19.6% claude
+  6.9% htop
+  5.9% Xorg
+  4.9% chrome
+  2.0% top
+## 84: machine state before replicate 7
+time: 2026-10-27T00:35:51-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 2325; max MHz: 5000
+frequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100
+load average: 1.51 1.49 1.10
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+power supply ucsi-source-psy-USBC000:001 online: 0
+power supply ucsi-source-psy-USBC000:002 online: 1
+temperature TCPU: 54 C
+temperature x86_pkg_temp: 50 C
+sensors: Package id 0:  +52.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  11.9% Xorg
+  10.9% claude
+  5.9% htop
+  4.0% xfce4-terminal
+  3.0% chrome
+## 84: machine state before replicate 8
+time: 2026-10-27T00:35:57-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 400; max MHz: 5000
+frequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100
+load average: 1.47 1.48 1.10
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+power supply ucsi-source-psy-USBC000:001 online: 0
+power supply ucsi-source-psy-USBC000:002 online: 1
+temperature TCPU: 54 C
+temperature x86_pkg_temp: 50 C
+sensors: Package id 0:  +48.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  5.0% claude
+  2.0% Xorg
+  2.0% chrome
+  1.0% kworker/3:1H-i915_cleanup
+  1.0% xfce4-terminal
