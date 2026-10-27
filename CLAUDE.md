@@ -14,3 +14,11 @@ Plan: [PLAN.md](PLAN.md). Reasoning, cost models, predictions and results: [NOTE
 - One Claude session owns the repo at a time. Park unfinished work in scratch during long runs. Commit at each step. Never push: the user pushes from his terminal.
 - Register: dry and evidence-first. Lead with the robust ratio, then the mean, then the failure modes. No hype words.
 - Offer next experiments ranked by information per compute.
+
+## Workflow
+
+- How work is done: [PROTOCOL.md](PROTOCOL.md). Wolfram runs: [wolfram/README.md](wolfram/README.md). Outside reviews (DeepSeek): [reviews/README.md](reviews/README.md).
+- Scored runs go only through `tools/sealed_run.sh`, with `predictions/<id>.md` committed first.
+- Explicit `git add` only (never `commit -a`). Never push.
+- Stop and report at decision points: adopting a change, retunes, reference changes and pushes are the user's.
+- Documentation addenda go in their own commits, marked "documentation only".

@@ -34,6 +34,14 @@ Independent research by Jonathan Kendall. Rust ("lampcore") for the fast core, P
 - Root-matched confirmation ("re-sieve") pays only when its prime cutoff p0 is tuned. A cost model puts the best p0 in the hundreds at 84-96 bits, and suggests it matters for Track M but barely for Track R. A scored slack retune with a p0 sweep is next.
 - Large-prime pairing is explained by three things: only quadratic-residue primes can occur (halving the support), the filed size distribution, and pooling across numbers. The double-large-prime variation stays marginal at these sizes.
 
+## How this project works
+
+- **Sealed predictions.** Every scored experiment has its predictions committed in `predictions/` before it runs, including those of outside reviewers (DeepSeek), whose rounds are kept in `reviews/`.
+- **The guard.** Scored runs go through `tools/sealed_run.sh`. It refuses to run unless the predictions are committed and unchanged, and it commits each run's output to `results/`, naming the prediction commit.
+- **Model against card.** Model work (Wolfram, run from the command line in `wolfram/`) produces forecasts, recorded as "model" and never scored. Only the card's measured runs score predictions.
+- **The record.** Results and scores are in `NOTES.md`, which is append-only. The full workflow is in `PROTOCOL.md`.
+- **Decisions.** Nothing is adopted, retuned or pushed without the author's decision.
+
 New ideas and opportunities are logged and evaluated in `IDEAS.md`.
 
 Details, numbers and every prediction with its score are in `NOTES.md`; candidate moves in `MOVES.md`; the plan in `PLAN.md`.
