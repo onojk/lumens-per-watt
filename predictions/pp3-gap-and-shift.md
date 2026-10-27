@@ -229,3 +229,12 @@ I assume the kept-relation copies (+198 per number, previously measured at ~4× 
 - **Runner:** `evolve/i032shift.py`, committed first in ba253c2. Before the run it is amended to also record ruint per region (setup, gray, scan, lp_ledger, solve split out); the commit that does so is named in the run record.
 - **Base:** 2′a (goff = 1, full pass), the reference since the user's adoption (NOTES, "Decision (the user's, Oct 26): goff = 1 adopted").
 - **Instrumentation:** the per-region priced counts use lampcore with the `--phasetime` fix (root_test attributed; the lp_ledger region closed on its early returns). `--types` and every result are identical to the pre-fix binary (14,000 / 14,000).
+
+## State before the shift run (recorded before "go")
+
+- **Runner and instrumentation:** `evolve/i032shift.py` and the `--phasetime` instrumentation fix, both as of **0afa437**. That commit adds ruint per region and attributes root_test and the lp_ledger early returns to their regions; counts are unchanged.
+- **Machine-read:**
+  - scaling_max_freq 2,400 MHz on all 8 cores (the user's standing cap); turbo enabled; governor powersave.
+  - AC online, battery 94% and charging; TCPU 46 °C; load 1.2–1.6.
+  - No Wolfram processes; 24 browser processes open.
+- **Not stated for this run:** desk or lap, and the charger.
