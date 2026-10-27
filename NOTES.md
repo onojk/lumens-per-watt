@@ -8262,3 +8262,26 @@ The Gray code maintains `sr`: the roots in x-coordinates, in [0, p). The sieve's
 - **Parity:** goff cases added.
 
 **Not an uncharged op:** the per-A conversion is charged. The removed charges correspond to work that is no longer done.
+
+### I-032 option 2′a: built — acceptance and parity (`evolve/goff_accept.py`, `goff_accept.out`; `parity_goff.out`)
+
+**Code:** per the cost model (30d3ead), in both cores, with gene `goff` (off by default).
+- **Per A:** each root is converted to its sieve-coordinate start offset in `sr`/`qr` (Rust) or `st_`/`qe` (Python), charged `word` × roots.
+- **Per polynomial:** the sieve loop, re-sieve and the root pass read the kept offsets. The sieve's per-root start-offset `word` and re-sieve's +1 per walked root are dropped with the work.
+- **Gray update:** arithmetic and charge unchanged.
+- **Python traces:** keep the x-coordinate roots, recovered for the trace only, uncharged.
+
+**Acceptance:** all map numbers 54–96, 7 genomes: the new reference, + re-sieve, + root, + pp 3, + pp 10, the frozen and the corrected reference.
+1. goff off against the pre-change lampcore (30d3ead's binary): identical per number and per type, 14,000 / 14,000.
+2. goff on against off: the same factor, candidates, hits and every type except `word`, 14,000 / 14,000.
+   - `word` changes by exactly −setup_gray on every number (re-sieve: by more, the walked roots).
+3. Python traces (2 numbers per size per genome): relations, candidate values and traced x-roots identical, 56 / 56.
+   - Python's `word` change equals −setup_gray − (roots walked) exactly.
+4. Python = Rust per type, goff on and off, 112 / 112.
+
+**Parity** (goff cases added: full pass, re-sieve, root, pp 3 and 10, both a_modes, default genes, caps 2^11 / 2^13 / 2^15, retries, at 40–96 bits):
+- qs 5,070 pairs and types 7,842 pairs, mismatches 0;
+- mutations 56 / 56;
+- every other check unchanged and passing.
+
+**Not done here:** no priced totals were printed or compared, and no timing was run (predictions/i032-2prime.md, 7ebf20b and 33a4efe). 2′b is not built.

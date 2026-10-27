@@ -274,6 +274,7 @@ def sieve_source(N, k, g, led, ch, at):
     chk = bool(g.get("check", 0))              # ledger check: qs's acceptance test only
     RS = g.get("confirm") == "resieve"         # root-matched confirmation by re-sieving; P0: below it, divide directly
     RT = g.get("confirm") == "root"            # I-029 root confirm (NOTES.md, "Root confirm (I-029) as a card option")
+    GOFF = g.get("goff", 0) != 0               # I-032 2'a: start offsets kept by the Gray code (NOTES.md, "I-032 option 2'a")
     P0 = int(g.get("p0", 30))
     partials = {}                              # q -> (u, sparse exponent list)
     # step 1 (NOTES.md, "Step 1: delete the fills"): one exponent vector per attempt, reused (F word); with
@@ -335,6 +336,14 @@ def sieve_source(N, k, g, led, ch, at):
                     bainv.append(2 * b * ainv % q); charge("setup", 1)
                 qe.append([q, rs, bainv, lv, mq])
             par = (Bv + M + kN % 2) % 2; charge("word", 1)    # the parity class whose threshold is T - w2
+        if GOFF:                               # 2'a: each root to its start offset r + M mod p (- p), once per A, one word op per root
+            for ent in st_:
+                p = ent[0]
+                ent[1] = [r + mp[p] - p if r + mp[p] >= p else r + mp[p] for r in ent[1]]
+            for ent in qe:
+                q, mq = ent[0], ent[4]
+                ent[1] = [r + mq - q if r + mq >= q else r + mq for r in ent[1]]
+            charge("word", sum(len(e[1]) for e in st_) + sum(len(e[1]) for e in qe))
         signs = [1] * s
         for i in range(1 << (s - 1)):
             if i:                              # Gray code: flip one B_l, update every root
@@ -368,19 +377,26 @@ def sieve_source(N, k, g, led, ch, at):
             nr = 0
             for p, rs, _ in st_:
                 for r in rs:
-                    start = r + mp[p]
-                    if start >= p:
-                        start -= p
-                    nr += 1
+                    if GOFF:                       # 2'a: the kept offset; the trace keeps the x-root (trace only, uncharged)
+                        start = r
+                        r = (r - mp[p]) % p
+                    else:
+                        start = r + mp[p]
+                        if start >= p:
+                            start -= p
+                        nr += 1
                     arr[start::p] += logp[p]
                     upd += (width - 1 - start) // p + 1
                     hits.append((p, r))
             for q, rs, _, lv, mq in qe:
                 for r in rs:
-                    start = r + mq
-                    if start >= q:
-                        start -= q
-                    nr += 1
+                    if GOFF:
+                        start = r
+                    else:
+                        start = r + mq
+                        if start >= q:
+                            start -= q
+                        nr += 1
                     arr[start::q] += lv
                     upd += (width - 1 - start) // q + 1
             charge("word", nr)                     # start offsets, one word op per root
@@ -389,7 +405,7 @@ def sieve_source(N, k, g, led, ch, at):
             if RT:                                 # root confirm: the sieved roots' start offsets stored, one word per root
                 rtab = []                          # per sieved base prime, ascending: (base index, p, its start offsets)
                 for p, rs, _ in st_:
-                    st0 = [(r + mp[p]) - p if r + mp[p] >= p else r + mp[p] for r in rs]
+                    st0 = list(rs) if GOFF else [(r + mp[p]) - p if r + mp[p] >= p else r + mp[p] for r in rs]
                     rtab.append((idx[p], p, st0))
                 charge("word", sum(len(e[2]) for e in rtab))
                 aj = sorted(idx[ql] for ql in qs_)
@@ -407,10 +423,13 @@ def sieve_source(N, k, g, led, ch, at):
                     if p < P0:
                         continue
                     for r in rs:
-                        start = r + mp[p]
-                        if start >= p:
-                            start -= p
-                        walk += 1                          # the start offset, one word op per root walked
+                        if GOFF:
+                            start = r                      # 2'a: the kept offset, no add
+                        else:
+                            start = r + mp[p]
+                            if start >= p:
+                                start -= p
+                            walk += 1                      # the start offset, one word op per root walked
                         if start >= width:
                             continue
                         walk += 2 * ((width - 1 - start) // p + 1)   # index step + bitmap test per position

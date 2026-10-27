@@ -1,0 +1,9 @@
+54 bits done 1:2240/2240 2:2240/2240 3:14/14 4:28/28
+72 bits done 1:5600/5600 2:5600/5600 3:28/28 4:56/56
+84 bits done 1:9520/9520 2:9520/9520 3:42/42 4:84/84
+96 bits done 1:14000/14000 2:14000/14000 3:56/56 4:112/112
+1. goff off vs pre-change lampcore, per number and per type: 14000/14000
+2. goff on vs off: factor, candidates, hits, every type but word; word -setup_gray (re-sieve: less): 14000/14000
+3. relations, candidate values and traced x-roots identical; Python word change exact (Python traces): 56/56
+4. Python = Rust per type, goff on and off: 112/112
+exit 0

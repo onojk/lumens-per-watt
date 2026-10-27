@@ -720,6 +720,10 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
     // I-029 root confirm (NOTES.md, "Root confirm (I-029) as a card option"): per candidate, a branch-free root test
     // over the sieved base primes (the sieve's start offsets), then v divided only by the hits and the direct primes
     let rt_on = g.get("confirm").and_then(|v| v.as_str()) == Some("root");
+    // I-032 option 2'a (NOTES.md, "I-032 option 2'a: start offsets kept by the Gray code"): per A the roots are
+    // converted once to sieve-coordinate start offsets; the Gray code then updates the offsets, and every reader
+    // takes them directly
+    let goff = gene(g, "goff", 0.0) != 0.0;
     let p0 = gene(g, "p0", 30.0) as i128;
     // fix C.2: q -> (u, offset, length) into `parena`; `kept` and `cbuf` are per-attempt scratch for a kept
     // candidate's list and a combination's union
@@ -855,6 +859,19 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
             par = (bv64 + mm_ + kn.rem_euclid(2) as i64).rem_euclid(2) as usize; // the parity class whose threshold is T - w2
             m.charge(crate::PH_WORD, 1)?;
         }
+        if goff {
+            // 2'a: each root to its start offset s0 = r + M mod p (less p), once per A, one word op per root
+            for k in 0..sr.len() {
+                let (p, j) = (sp[k], sj[k]);
+                let s0 = sr[k] + mp[j] as i32;
+                sr[k] = if s0 >= p { s0 - p } else { s0 };
+            }
+            for t in 0..qr.len() {
+                let s0 = qr[t] + qm[t];
+                qr[t] = if s0 >= qp[t] { s0 - qp[t] } else { s0 };
+            }
+            m.charge(crate::PH_WORD, (sr.len() + qr.len()) as u64)?;
+        }
         crate::pt_end(m, 2, pt_a);
         let mut signs = vec![1i128; s];
         for i in 0..(1usize << (s - 1)) {
@@ -905,11 +922,16 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
             for k in 0..sr.len() {
                 let (p, j) = (sp[k] as i128, sj[k]);
                 let pu = p as usize;
-                let mut s0 = sr[k] as i128 + mp[j];
-                if s0 >= p {
-                    s0 -= p;
-                }
-                nr += 1;
+                let s0 = if goff {
+                    sr[k] as i128 // 2'a: the kept offset
+                } else {
+                    let mut s0 = sr[k] as i128 + mp[j];
+                    if s0 >= p {
+                        s0 -= p;
+                    }
+                    nr += 1;
+                    s0
+                };
                 let start = s0 as usize;
                 let mut i0 = start;
                 while i0 < width {
@@ -924,11 +946,16 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
             }
             for t in 0..qr.len() {
                 let q = qp[t];
-                let mut s0 = qr[t] + qm[t];
-                if s0 >= q {
-                    s0 -= q;
-                }
-                nr += 1;
+                let s0 = if goff {
+                    qr[t]
+                } else {
+                    let mut s0 = qr[t] + qm[t];
+                    if s0 >= q {
+                        s0 -= q;
+                    }
+                    nr += 1;
+                    s0
+                };
                 let (start, qu) = (s0 as usize, q as usize);
                 let mut i0 = start;
                 while i0 < width {
@@ -951,7 +978,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 tj.clear();
                 for k in 0..sr.len() {
                     let (p, j) = (sp[k] as i64, sj[k]);
-                    let mut s0 = sr[k] as i64 + mp[j] as i64;
+                    let mut s0 = sr[k] as i64 + if goff { 0 } else { mp[j] as i64 };
                     if s0 >= p {
                         s0 -= p;
                     }
@@ -997,11 +1024,16 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                     let pu = p as usize;
                     {
                         let r = sr[k] as i128;
-                        let mut s0 = r + mp[j];
-                        if s0 >= p {
-                            s0 -= p;
-                        }
-                        walk += 1; // the start offset, one word op per root walked
+                        let s0 = if goff {
+                            r // 2'a: the kept offset, no add
+                        } else {
+                            let mut s0 = r + mp[j];
+                            if s0 >= p {
+                                s0 -= p;
+                            }
+                            walk += 1; // the start offset, one word op per root walked
+                            s0
+                        };
                         let start = s0 as usize;
                         if start >= width {
                             continue;

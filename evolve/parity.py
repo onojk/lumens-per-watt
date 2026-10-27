@@ -215,6 +215,22 @@ def qs_pairs():
             yield "qs root low cap", [dict(TUNED, lc=1.4, a_mode="on_demand", kset="sf32", confirm="root")], nums, cap, False
     for seed, b, i in RETRY[:4]:
         yield "qs root retry", [dict(QS, a_mode="on_demand", confirm="root")], semiprimes_pq(b, i + 1, seed)[i:], 2 ** 29, False
+    # goff = 1 (NOTES.md, "I-032 option 2'a"): start offsets kept by the Gray code; with the full pass, re-sieve and
+    # root confirm, pp 3 / 10, both a_modes, the default genes, low caps that stop inside the per-A conversion or the
+    # sieve, a retry
+    for b in (40, 48, 60, 72, 84, 96):
+        nums = semiprimes_pq(b, 4, 3400000 + b)
+        yield "qs goff", [dict(TUNED, lc=1.4, a_mode="on_demand", sort_charge=1, kset="sf32", goff=1)], nums, 2 ** 29, False
+        yield "qs goff enumerate", [dict(TUNED, lc=1.8, goff=1)], nums, 2 ** 29, False
+        yield "qs goff default genes", [dict(QS, goff=1)], nums, 2 ** 29, False
+        for conf in ("resieve", "root"):
+            yield f"qs goff {conf}", [dict(TUNED, lc=1.4, a_mode="on_demand", kset="sf32", confirm=conf, goff=1)], nums, 2 ** 29, False
+        for ppv in (3, 10):
+            yield f"qs goff pp {ppv}", [dict(TUNED, lc=1.4, a_mode="on_demand", kset="sf32", pp=ppv, goff=1)], nums, 2 ** 29, False
+        for cap in (2 ** 11, 2 ** 13, 2 ** 15):
+            yield "qs goff low cap", [dict(TUNED, lc=1.4, a_mode="on_demand", kset="sf32", goff=1)], nums, cap, False
+    for seed, b, i in RETRY[:4]:
+        yield "qs goff retry", [dict(QS, a_mode="on_demand", goff=1)], semiprimes_pq(b, i + 1, seed)[i:], 2 ** 29, False
     yield from lp_pairs()
     yield from check_pairs()
     yield from cfrac_pairs()
