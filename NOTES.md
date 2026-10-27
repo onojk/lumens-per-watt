@@ -9007,4 +9007,18 @@ Yes, substantially. Against 2'b directly, pp3 is +0.7% wall at +1 and −0.9% at
 - The label becomes "meter-invalidated: original scored under the uncorrected meter".
 - **No score is replaced.**
 - Background: Grok (01:47 Oct 27, information only; verbatim in `predictions/2b-sizes.md`) argued that re-scoring is justified when the meter broke its own charging rule in a way no participant could anticipate and the sign of the ratio flipped. The reviewer notes that this arguably fits the free-2 case. The proposal answers it by adding a second score rather than replacing the first.
-- **Status: proposed; not decided.**
+- **Status: ADOPTED by the user (Oct 27, ~01:50 PT), before the correction is applied** ("Decisions (the user's, Oct 27, ~01:50 PT)").
+
+## Decisions (the user's, Oct 27, ~01:50 PT)
+
+1. **Free-2 meter correction: APPLY, after the 2b-sizes run,** so that run is scored on the meter its predictions were made against.
+   - The cost note before code is done (489f546, 57cb182). Next: code, then acceptance (counts identical except the new sieve_scan charge with pp on), then parity. STOP after parity.
+   - *Claude Code's note on the count:* the brief says "exactly floor((width − par)/2) per polynomial". The writes are `arr[par..].step_by(2)`, which is **⌈(width − par) / 2⌉** cells; the cost note says the same.
+     - width = 2M + 1 is odd, so for par = 1 the two agree, (width − 1) / 2.
+     - For par = 0 the loop writes (width + 1) / 2 cells, one more than floor gives.
+     - The decision's principle ("one sieve_scan per cell written", the reviewer's recommendation) gives the ceiling. **The ceiling will be implemented and the acceptance checks it exactly,** unless the user says otherwise before the code.
+2. **Scoring rule for affected outcomes: ADOPTED** (decided now, before the correction is applied).
+   - The original score is kept, and a second score under the corrected meter is reported beside it, with the label "meter-invalidated: original scored under the uncorrected meter". No score is replaced.
+3. **pp 3: retired as an adoption candidate.**
+4. **Run condition for 2b-sizes:** charger reconnected (AC online), laptop on the fan pad, untouched.
+   - *At 01:50 PT the machine read AC offline* (both USB-C sources offline too; battery 85%, discharging), so the run was held.
