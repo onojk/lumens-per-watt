@@ -9712,3 +9712,16 @@ The library-bound classes have no single static body and are dynamic only.
 **Recorded (the user, Oct 27): the order of events.** The adoption of 2′b (fc3bf0c) preceded two checks: the 54-bit check and the attribution-free check. Both came back in its favour:
 - 54 bits: robust 0.941, better;
 - total Ir 2′b / 2′a: 0.901 / 0.855 / 0.857 at 72 / 84 / 96.
+
+### Adopted: root confirm (2′b): the full parity suite (stage 0, Oct 27)
+
+`evolve/parity_adopt2b.out`, at fc3bf0c, with no card change since: **clean.**
+- **Lamps:** 1,696 pairs, 0 mismatches.
+- **qs:** 5,214 pairs, 0 mismatches.
+- **Guards:** 54 pairs, 0 mismatches.
+- **race:** 653 pairs, 0 mismatches.
+- **ob:** 369 pairs, 0 mismatches.
+- **types:** 7,986 pairs, 0 mismatches and 0 sum-identity failures; mutations caught 56 / 56.
+- **The refusal checks:** all yes. Exit 0.
+
+The adoption's checks are complete: acceptance, ci_quick and parity.
