@@ -8015,3 +8015,40 @@ H2 (and stages G and H) timed the cells one after another, with the reference fi
 **Parity** (root cases added: on_demand and enumerate, default genes, pp 3 and 10, caps 2^11 / 2^13 / 2^15, retries, at 40–96 bits):
 - qs 4,826 pairs and types 7,598 pairs, mismatches 0;
 - mutations 56 / 56 (root_test now among the types in use).
+
+## Root confirm (I-029): the sealed timed run, scored (`evolve/rootconfirm.py`, 12143ee; `results/root-confirm_20261027T023844Z.out` and `.machine.txt`, committed by the guard as 574f356; `rootconfirm.json`; predictions `predictions/root-confirm.md`, 9301ccd)
+
+96 bits, all 640 map numbers, re-sieve off, card e13603a. Priced on every number (paired 95% bootstrap, 10,000, random.Random(2026)). Wall-clock: two replicates, interleaved and counterbalanced (r1 forward, r2 backward), core 2's MHz sampled every second per cell.
+
+| cell (pp, tc) | candidates / number | polynomials | ruint ratio [95%] | Montgomery ratio | official ratio | robust (c) | (e) | wall µs (r1 / r2) | wall vs reference (r1 / r2) | confirm µs | sieve µs | core 2 MHz median |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| reference (0, 1.0353) | 1,012.7 | 156.0 | 1 | 1 | 1 | 1 | — | 2,014.2 (1,959.7 / 2,068.8) | — | 547.5 | 532.1 | 4,268 |
+| root (0, 1.0353) | 1,012.7 | 156.0 | 0.9051 [0.9029, 0.9073] | 0.9014 | 1.0379 | 1.0379 | undecided | 1,865.7 | **−7.4%** (−4.3 / −10.3) | 288.8 | 633.1 | 2,509 F |
+| root + pp 3, +0 bits (3, 1.0353) | 1,227.4 | 140.5 | 0.8849 [0.8819, 0.8877] | 0.8804 | 0.9824 [0.9776, 0.9869] | **0.9824** | **better** | 1,883.0 | −6.5% (−3.9 / −9.0) | 354.2 | 581.8 | 2,766 F |
+| root + pp 3, +1 bit (3, 0.9425) | 1,033.0 | 148.9 | 0.8835 | 0.8785 | 1.0035 [0.9992, 1.0075] | 1.0035 | undecided | 1,848.6 | −8.2% (−5.8 / −10.5) | 299.3 | 616.9 | 2,466 F |
+| root + pp 3, +2 bits (3, 0.8497) | 868.2 | 159.4 | 0.8932 | 0.8895 | 1.0391 | 1.0391 | undecided | 1,843.5 | **−8.5%** (−5.8 / −11.0) | 252.9 | 665.6 | 4,369 |
+| root + pp 3, +3 bits (3, 0.7569) | 723.3 | 171.8 | 0.9149 | 0.9120 | 1.0876 | 1.0876 | undecided | 1,860.6 | −7.6% (−5.3 / −9.9) | 212.2 | 712.2 | 2,584 F |
+| root + pp 3, +4 bits (3, 0.6641) | 601.6 | 187.7 | 0.9559 | 0.9537 | 1.1590 | 1.1590 | undecided | 1,926.4 | −4.4% (−1.7 / −6.8) | 171.6 | 806.1 | 2,682 F |
+
+F: median MHz more than 10% off the reference's (flagged by the helper). Each cell's timing lasts ~1.3 s, so each median rests on only 4 samples (range 400–4,720 MHz in every cell); the flags are weak evidence either way.
+
+**Scored as written:**
+
+| prediction | measured | the user's range | result | DeepSeek's range; falsifier | result |
+|---|---|---|---|---|---|
+| R-1, root alone, wall-clock | −7.4% | −11% to −19% | **missed** (too small) | −13% to −19%; < −9% or > −23% | **falsified** (saving below 9%) |
+| R-2, root alone, priced ruint (root_test 0.0581) | −9.5% (0.9051) | −8% to −15% | **held** | −8.5% to −14.5%; < −5% or > −17% | **held** (central −12.0%: 2.5 points high) |
+| R-3, best wall-clock shift, grid 0..+4 | +2 bits (−8.5%; +1 −8.2%, +3 −7.6%, 0 −6.5%) | 0, +1 or +2 | **held** | +2 (+1 close); ≤ 0 or ≥ +4 | **held** |
+| R-4, best shift's wall-clock | −8.5% (+2 bits) | −13% to −22% | **missed** (too small) | −14% to −22%; < −10% or > −26% | **falsified** (saving below 10%) |
+
+- **R-3 caveat:** shifts +1, +2 and +3 lie within 0.9 points of each other, inside the ~2% noise band, and each cell's replicates differ by 3–6 points. The best shift is held as written, but the data do not separate +1, +2 and +3.
+- **Information only, ruint at the ratio price** (root_test 0.0430): root alone 0.8704 [0.8676, 0.8732], i.e. −13.0% (expected ~−15.7%); + pp 3 +0 bits 0.8428; +1 bit 0.8481.
+
+**Failure modes and what the run cannot separate:**
+- **Official pricing binds.** Root confirm alone is +3.8% official (the per-type breakdown of that rise is not in this run's output), so its robust ratio is 1.0379 and the (e) call undecided. The only cell better under all three pricings is root + pp 3 at +0 bits: robust ratio 0.9824 (official −1.8%, ruint −11.5%, Montgomery −12.0%).
+- **Confirm fell as the benchmark said; the sieve region rose with identical counts.** Root alone: confirm 547.5 → 288.8 µs (−47%; benchmark (c) −62% per candidate). Sieve 532.1 → 633.1 µs (+19%), with the same polynomials and sieve ops (acceptance: identical counts outside confirm). Had the sieve region stayed at the reference's, root alone would read about −12.4%. This is an observation, not an adjustment: the run cannot tell whether the sieve rise is the clock (5 of the 6 root cells were flagged slow, though the unflagged +2-bit cell, median 4,369 MHz, also shows sieve 665.6 µs against the reference's 532.1), a cache or layout effect of the root pass (it reads the sieve's start offsets per candidate), or something else.
+- **Replicate spread 3–6 points per cell,** against the ~2% noise band. Replicate 2 reads 4–6 points more favourable than replicate 1 in every cell: the reference was timed first in r1 and last in r2, so its two runs are the extremes of the heat curve (1,959.7 / 2,068.8 µs).
+- **Machine:** governor **powersave** (not changed; the user's call); TCPU 51 °C before, **99 °C after** (flagged by the guard); load 1.2–1.4; core 2 at 1,710 MHz before and 400 MHz after.
+- **Wall-clock verdicts at 96 bits here are clock-confounded** at the size of the effects predicted. A retime on a fixed clock (performance governor, or a frequency cap below the throttle point) would separate the sieve rise from the clock; that is the user's call.
+
+**Report only.** Nothing adopted; the option stays off by default.
