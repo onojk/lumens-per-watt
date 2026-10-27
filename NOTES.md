@@ -7730,3 +7730,11 @@ Under-count at fulls (median): reference 6.50; (i) 0.31; (ii) 0.30; (iii) 0.30; 
   - Most of the gap is cost the model does not contain: the scan's parity branch (+60 to +120 µs) and, for pp = 10, the per-A power setup (+15 to +56 µs).
   - For (iv) it also misses the polynomial count: +10.1% on the card at +3 bits.
 - **Report only.** Nothing is adopted, and the reference genes are unchanged. The scan implementation and the setup cost of the power entries are for the user to decide on.
+
+### DeepSeek, Oct 27, round 53 (hand-relayed; recorded as given; acknowledgement only, no new predictions; documentation only)
+
+- **Accepts the per-parity over-read:** its condition is local and can flip sign with c, so there is no stable direction.
+- **Accepts that RT-1 was first recorded in round 51.** Its claim to have filed RT-1 in round 49 is not supported: the relayed round 49 contains H-16 … H-18, the 2-adic mechanism, "2 full" against "2 free" and the per-parity condition, and no RT-1.
+  - *Repo note:* round 51 and RT-1 were never relayed to this repo; NOTES has no entry for either. If RT-1 is to be scored here, its text and the commit or date where it was sealed are needed.
+- **Restates the even-k free-2 rule with working:** correct, and it matches the design note (3caf8df): for kN ≡ 2 mod 4, v2 = 1 on the even-y class.
+- **Tooling:** tools/ask_deepseek.py's floor is set to 53 (rounds up to 53 were relayed by hand), so the first automated round is 54.
