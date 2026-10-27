@@ -85,7 +85,23 @@ Same cell and base as D-8: 2′b + pp 3 at +0 bits against 2′a, 96 bits, 640 m
 
 ## Grok
 
-G-1..G-5: **not received** (as of the runner's commit, 3f4034e). If they arrive before the run, they are filed here as sealed; after the run, as information only.
+Sealed predictions (Grok, received 20:54 Oct 26 PT, labelled ~21:00 by Grok).
+
+- **G-1..G-5: sealed.** The run had not happened when they were received.
+- **G-6: information only, because the model was committed first.** The exact-count 2′b cost model (18efd55) was committed at 20:52:39 PT, before 20:54.
+- **Its "Optional" answer:** information only.
+- *(Until 20:54 this section read "not received", as of the runner's commit, 3f4034e.)*
+
+### Grok's reply (verbatim)
+
+*(placeholder: the text was not included in the brief that asked for it; to be appended verbatim when the user pastes it)*
+
+### The reviewer's annotations (Grok's ranges unchanged)
+
+- **G-1:** the wall reasoning makes the same slip as DeepSeek's D-3. The ~0.5 µs/polynomial pass exists only in root mode; 2′a's saving on the reference is the sieve loop's start-offset recomputation.
+- **G-4:** scored as asked, "better under all three": official, ruint and Montgomery each ≤ 1.000. Grok's stated falsifier (ruint and Montgomery ≤ 0.95, with intervals excluding 1) is stricter than the question; it is recorded but not used to score.
+- **G-5:** a full interval width (Grok reads the last run as "4–8 points wide"), whereas R2-8 and D-7 are half-widths (±). Each is scored in its own form, and both forms are stated.
+- **G-6:** the reasoning misses that the per-A build was already charged in f12ae23 (531.8 word per A for 2′). The direction of the exact-count shift is open.
 
 ## State before the run (recorded Oct 26, after 3f4034e)
 

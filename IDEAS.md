@@ -325,6 +325,7 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Information only: it has no op meter, so it never enters fitness. It answers "how far is the card from a tuned classical tool", which every ratio we publish leaves open.
 - Status (Oct 27): neither `yafu` nor `msieve` is installed (`command -v`). Installing one needs the user's approval (package or build from source).
 - Reuse rule: an external tool is a reference, never in a charged path.
+- Order (reviewer, after Grok's note): I-038 first unless the user makes RAPL readable; I-039 needs that permission.
 - Decision: pending (the user's).
 
 ### I-039 — Energy counters for the watt meter (Phase 1)
@@ -333,6 +334,7 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Status (Oct 27, `ls -l` only): `/sys/class/powercap/intel-rapl:*` exists with domains package-0, core, dram and psys (plus intel-rapl-mmio package-0 and dram). Every `energy_uj` is `-r-------- root root`, so it is not readable without root.
 - Reading needs a permission change (for example a udev rule or group read on energy_uj). That is the user's call and is never changed by Claude Code.
 - Interacts with I-037 (frequency cap) and the thermal throttling seen in root-confirm-2 (TCPU 99 °C).
+- Order (reviewer, after Grok's note): I-038 first unless the user makes RAPL readable; I-039 needs that permission.
 - Decision: pending (the user's).
 
 ### I-040 — Surrogate-first scoring for relation-identical changes
