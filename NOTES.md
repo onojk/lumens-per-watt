@@ -7117,3 +7117,49 @@ Against the reference, in percent:
 **Comparison runs (after the reviewer seals predictions):** at 96 on all 640 map numbers, (i) the option on with the reference threshold and (ii) the option on with tc set so candidates per number match the reference. tc is found on a few map numbers first; the search runs are reported. Each run reports the same quantities as stage G, plus the new under-count distribution and capture on stage B's 8-number subset.
 
 **STOP.** Nothing is built yet. The build and acceptance can go first if the reviewer prefers, since neither scores a prediction.
+
+## DeepSeek, Oct 26 evening, round 41 (recorded as given; documentation only)
+
+**Timing, stated first:** this round reached the repo **after** stage G's results were committed (a82b6bd). Its G predictions are recorded as given, but they were not on file before the run, so they are scored **for information only**, not as sealed predictions. DeepSeek is not known to have seen the results.
+
+- **Accepted by DeepSeek:**
+  - the threshold is nearly the whole partial loss (its round-39 annotation corrected);
+  - fulls pass ~96%;
+  - A off target is ruled out.
+  - Scoring accepted as recorded: S9-6 held at the edge; S9-7 and S9-8 falsified; S9-1, S9-3 low band, S9-5 and S9-9 missed without falsifiers; R-G1 held; R-G2 missed.
+- **"SEALED", stage G** (−4-bit cell, 96 bits, all 640 numbers, tc only, L unchanged):
+  - G-1 partial capture: 0.52–0.72 (central 0.62). Falsified if < 0.45 or > 0.80.
+  - G-2 polynomials: −10% to −24% (central −16%). Falsified if > +2% or < −30%.
+  - G-3 candidates per number: +55% to +180% (central +100%). Falsified if < +25% or > +250%.
+  - G-4 priced ruint mean: −4% to +14% (central +5%). Falsified if < −12% or > +22%.
+  - G-5 wall-clock mean: +6% to +28% (central +16%). Falsified if < 0% or > +40%.
+  - Optional cells:
+    - −2 bits: G-1 0.42–0.58 (0.50), G-2 −5% to −14% (−9%);
+    - −6 bits: G-1 0.64–0.82 (0.73), G-2 −16% to −32% (−23%);
+    - falsified if G-1 is outside its range by more than 0.08, or G-2 by more than 6 points.
+- **Its consistency note on the user's G-3 / G-5:** with confirm at ~28% of wall-clock (539 / 1,909 µs), wall ratio ≈ (1 − p)(1 − 0.282) + (1 + c)(0.282), so candidates +80% to +250% push wall-clock up.
+  - Reviewer: correct in substance, but its "best case" mis-paired the extremes (it used the smallest polynomial drop). The best case within the user's ranges is p = 0.25, c = 0.80, giving a ratio of ~1.05 (+5%).
+  - So the user's G-5 (−5% to +12%) is reachable only at that corner, and the ledger's growth with more partials makes it harder. The user's G-5 was expected to miss; it stands as sealed. (It missed: +29.4%.)
+- **Selectivity (its estimate):** sieving 2 and prime powers adds bits only where those factors are present, while lowering the threshold adds them everywhere. It estimates 2–4x more partials per extra candidate for the targeted sieve. To be measured in stage H.
+- **2-adic law for g = Q/A** (A odd; checked, correct):
+  - y = A x + B, so y ≡ x + B mod 2. One parity class of x (y even) has v2 = 0.
+  - For y odd: kN ≡ 3 mod 4 gives v2 = 1 exactly; kN ≡ 5 mod 8 gives v2 = 2 exactly; kN ≡ 1 mod 8 gives v2 ≥ 3, with P(v ≥ j) = 2^(2−j) overall (4 roots mod 2^j among odd y), so P(v = j) = 2^(1−j) for j ≥ 3.
+  - For stage H: in the 3 mod 4 and 5 mod 8 cases the factor of 2 is a fixed number of bits on one parity class, so it needs no sieving, only an add. Only kN ≡ 1 mod 8 needs roots mod 2^j.
+  - *Against the design note (3caf8df):* consistent. The note adds w2 through a parity-dependent threshold (an add at no sieve cost) and walks 2^j (4 ≤ j < pp) only for kN ≡ 1 mod 8. The note also covers k even (kN ≡ 2 mod 4: v2 = 1 on the even-y class), which the round does not mention.
+- **The model's raw-count over-count (11–20%):** DeepSeek's list of mechanisms: A-primes, k-primes, position correlation, prime powers, root support, and the 2-adic law of Q against g as a null control.
+  - Reviewer: its first suspect is already handled. The port treats A's primes as one-root (c = 1), which is correct since g is linear mod p for them. Stage F used each position's actual |g(x)|, so the position-correlation item is handled too.
+  - **Proposed instead** (read-only, after stage G, low priority; not started): a calibration curve from stage B's data. Bin positions by log2 |g(x)| (1-bit bins) and compare the model's P(smooth) with the empirical smooth fraction per bin, separately for fulls and for partials (by log2(q/B) band). It shows where the over-count lives.
+
+**DeepSeek's G predictions against stage G's measurements** (information only; the predictions postdate the results commit):
+
+| prediction | measured | DeepSeek's range | result |
+|---|---|---|---|
+| G-1, −4 bits | 0.622 | 0.52–0.72 | in range |
+| G-2, −4 bits | −18.1% | −10% to −24% | in range |
+| G-3, −4 bits | +103.3% | +55% to +180% | in range |
+| G-4, −4 bits | +19.3% | −4% to +14% | outside (high); short of its +22% falsifier |
+| G-5, −4 bits | +29.4% | +6% to +28% | outside (high); short of its +40% falsifier |
+| G-1, −2 bits | 0.474 | 0.42–0.58 | in range |
+| G-2, −2 bits | −11.0% | −5% to −14% | in range |
+| G-1, −6 bits | 0.752 | 0.64–0.82 | in range |
+| G-2, −6 bits | −22.6% | −16% to −32% | in range |
