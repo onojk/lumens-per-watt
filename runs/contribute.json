@@ -1,0 +1,2 @@
+{"name": "contribute", "purpose": "a contributor's short timed check: the reference and the current candidate cells, 2 replicates; information only (not a sealed run)", "bits": 96, "numbers": 640, "replicates": 2, "seed": 2026,
+ "cells": {"reference": {}, "root": {"confirm": "root"}, "goff (2'a)": {"goff": 1}, "goff + root (root pass kept; not 2'b)": {"goff": 1, "confirm": "root"}}}

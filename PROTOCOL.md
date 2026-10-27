@@ -62,3 +62,12 @@ Scores go in NOTES.md, each prediction as written ("under X, Y will be Z × base
 - It ran and committed: ed34500 (ok) and 9477742 (a failing command, committed as FAILED).
 - **Bug found:** two runs in the same second shared one output name, so 9477742 overwrote ed34500's output file. Fixed so that a name is never reused (39c838e and 6950a1d ran after the fix).
 - The `--deepseek` path that should pass is untested until a real reply is committed.
+
+## Replications on other machines (friend runs and contributors' timings)
+
+- **Kit:** `tools/friend_setup.sh` (setup and self-test), `tools/friend_run.sh <run-name>` (cells from a committed `runs/<run-name>.json`) and `tools/contribute_timing.sh`. Plain-English guide: FRIEND.md.
+- **A friend run is a replication, labelled by machine** (host, CPU model, cores, OS, taskset or not). It times the same cells, numbers, seed and commit as the run file names. friend_run.sh refuses to run with local changes to tracked files, and the results record the git HEAD.
+- **Ratios are compared within a machine.** Results from different machines are never pooled, averaged or set side by side as one figure without saying so explicitly in the report.
+- **Scoring:** a friend run is scored only against predictions sealed for that run (its own predictions file, committed before the run file is sent out). Otherwise it is information.
+- **The user commits the returned file** (results/, with the machine named in the commit message). Claude Code does not request, fetch or upload results files.
+- A contributor's `tools/contribute_timing.sh` output is information only, never a sealed result.

@@ -8285,3 +8285,12 @@ The Gray code maintains `sr`: the roots in x-coordinates, in [0, p). The sieve's
 - every other check unchanged and passing.
 
 **Not done here:** no priced totals were printed or compared, and no timing was run (predictions/i032-2prime.md, 7ebf20b and 33a4efe). 2′b is not built.
+
+## Results policy for other machines (friend runs and contributors' timings; documentation only)
+
+- **Friend runs are replications labelled by machine** (host, CPU, cores, OS, pinned or not). They are made with the kit (`tools/friend_setup.sh`, `tools/friend_run.sh <run-name>` from a committed `runs/<run-name>.json`, `evolve/friend_timing.py`).
+- **Ratios are compared within a machine.** They are never pooled across machines without saying so.
+- **A friend run is scored only against predictions sealed for that run.** Otherwise it is information.
+- **The user commits the returned file.** Claude Code neither requests nor uploads results files.
+- **Contributors' `tools/contribute_timing.sh` results are information only.**
+- Rules in PROTOCOL.md, "Replications on other machines".

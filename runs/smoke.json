@@ -1,0 +1,2 @@
+{"name": "smoke", "purpose": "kit self-test only: 3 numbers, results not read", "bits": 96, "numbers": 3, "replicates": 2, "seed": 2026,
+ "cells": {"reference": {}, "root": {"confirm": "root"}}}

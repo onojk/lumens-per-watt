@@ -1,0 +1,31 @@
+# Quick parity and acceptance subset on every pull request (CONTRIBUTING.md). No secrets, read-only permissions.
+# The full acceptance and parity (evolve/parity.py, ~30 min) are run by the maintainer before merging.
+name: parity
+on:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  quick:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Python dependencies
+        run: python -m pip install numpy
+      - name: Rust toolchain (stable, preinstalled on the runner)
+        run: cargo --version
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            lampcore/target
+          key: lampcore-${{ runner.os }}-${{ hashFiles('lampcore/Cargo.toml', 'lampcore/Cargo.lock') }}
+      - name: Build lampcore (release)
+        run: cargo build --release --manifest-path lampcore/Cargo.toml
+      - name: Quick parity and acceptance subset
+        working-directory: evolve
+        run: python ci_quick.py
