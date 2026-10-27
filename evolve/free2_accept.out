@@ -1,0 +1,7 @@
+54 bits done 1:1280/1280 2:1920/1920 3:12/12
+72 bits done 1:3200/3200 2:4800/4800 3:24/24
+84 bits done 1:5440/5440 2:8160/8160 3:36/36
+96 bits done 1:8000/8000 2:12000/12000 3:48/48
+1. without pp: identical to the pre-change lampcore, per number and per type: 8000/8000
+2. with pp: only sieve_scan and total ops change, by the same positive amount: 12000/12000
+3. with pp: the increase = cells written, len(range(par, 2M+1, 2)) over traced polynomials; Python = Rust: 48/48

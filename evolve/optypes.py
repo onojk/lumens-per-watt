@@ -22,7 +22,7 @@ def qs_counts(tr):
     ats = tr["attempts"]
     setup_full = 0          # audit re-typing (NOTES.md): no qs charge is a full multiply in setup any more
     setup_euc = sum(st for a in ats for _, _, st in a["inv"])
-    scans = sum(2 * p["M"] + 1 for a in ats for p in a["polys"])
+    scans = sum(2 * p["M"] + 1 + p.get("f2", 0) for a in ats for p in a["polys"])   # the width, and the free 2's writes
     confirm_full = 0        # audit re-typing: the v evaluation is two word multiply-adds
     sqrt_gcd = sum(d["gcd_steps"] for a in ats for d in a["deps"])
     lp_full = sum(a["lp"]["combos"] for a in ats if "lp" in a)

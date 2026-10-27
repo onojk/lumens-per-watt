@@ -374,7 +374,7 @@ def sieve_source(N, k, g, led, ch, at):
             C = (Bv * Bv - kN) // A
             # 4. sieve
             arr = np.zeros(width, dtype=np.int32)
-            if par is not None:                # stage H: the free 2 by initialisation (the scan fix), under the width charge
+            if par is not None:                # stage H: the free 2 by initialisation (the scan fix); its writes charged below
                 arr[par::2] = w2
             upd = 0
             hits = []
@@ -406,6 +406,9 @@ def sieve_source(N, k, g, led, ch, at):
             charge("word", nr)                     # start offsets, one word op per root
             charge("sieve", upd)
             charge("sieve", width)
+            f2 = (width - par + 1) // 2 if par is not None else 0   # meter correction: the free 2's writes, one sieve_scan
+            if f2:                                                   # per cell written (NOTES.md, "Meter correction ... free-2")
+                charge("sieve", f2)
             if RT and not GOFF:                    # root confirm: the sieved roots' start offsets stored, one word per root
                 rtab = []                          # per sieved base prime, ascending: (base index, p, its start offsets)
                 for p, rs, _ in st_:
@@ -414,7 +417,7 @@ def sieve_source(N, k, g, led, ch, at):
                 charge("word", sum(len(e[2]) for e in rtab))
                 aj = sorted(idx[ql] for ql in qs_)
             if at is not None:
-                at["polys"].append({"M": M, "roots": hits, "upd": upd,
+                at["polys"].append({"M": M, "roots": hits, "upd": upd, "f2": f2, "par": par,
                                     "sieved": [p for p, _, _ in st_],
                                     "rp": {p: len(rs) for p, rs, _ in st_}})
             cand = np.nonzero(arr >= T)[0].tolist()

@@ -9096,3 +9096,18 @@ Yes, substantially. Against 2'b directly, pp3 is +0.7% wall at +1 and −0.9% at
 - The breakdown is one pass with sub-timers on: no interval.
 
 **Report only.** Nothing adopted. Next: the free-2 correction (the user's decision, APPLY).
+
+## Free-2 meter correction: applied (the user's decision, APPLY after the 2b-sizes run; code, acceptance, parity)
+
+- **The charge:** with pp on, each polynomial charges `sieve` with ⌈(width − par) / 2⌉, the cells the free-2 initialisation writes, typed **sieve_scan**.
+  - Rust adds the count to the scan event (`EV_SIEVE_SCAN`, beside the width) and to the sieve breakdown's `sv:free2` units.
+  - Python adds it to the trace's per-polynomial "f2", which `optypes.qs_counts` adds to sieve_scan.
+  - The charge comes right after the width charge in both twins. In Rust the event is recorded with the width's, after the root pass, so a run that hits its budget mid-polynomial types the same in both.
+- **Unchanged:** every genome without pp (the reference, 2′a, 2′b, root confirm), and every count, factor, test and hit with pp except sieve_scan and total ops.
+- **Acceptance** (`evolve/free2_accept.py`, `free2_accept.out`; all map numbers 54–96, against the pre-change binary):
+  1. Without pp (4 genomes): identical per number and per type, **8,000 / 8,000**.
+  2. With pp (6 genomes: pp 3 with goff + root at +0 and +2 bits, pp 3, pp 10, root + pp 10, goff + pp 10): only sieve_scan and total ops change, by the same positive amount, **12,000 / 12,000**.
+  3. With pp, 2 numbers per size per genome: the increase equals the cells written, counted independently as `len(range(par, 2M + 1, 2))` over the traced polynomials; Python = Rust per type and in ops: **48 / 48**.
+  - Sieve breakdown units still equal the sieve region's sieve_update + sieve_scan + word (84 / 84; 72 and 96 bits, 3 genomes).
+- **Parity passes** (`evolve/parity_free2.out`): qs 5,214 and types 7,986 pairs, mismatches 0, sum-identity failures 0; race 653, ob 369, guards 54; mutations 56 / 56.
+- **From this commit on, every priced figure of a pp cell is under the corrected meter.** Earlier results keep their scores. The affected outcomes (the "meter-invalidated" table above) get a second score under the corrected meter, side by side, by the adopted rule. **The second scores are not yet computed.**

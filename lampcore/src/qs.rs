@@ -932,7 +932,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
             crate::sv_units(0, width as u64); // the width charge
             if par != usize::MAX {
                 let ps = crate::pt_snap_sv(m); // "sv:free2"
-                // stage H: the free 2 by initialisation (the scan fix), under the width charge
+                // stage H: the free 2 by initialisation (the scan fix); its writes charged below, one sieve_scan per cell
                 for x in arr[par..].iter_mut().step_by(2) {
                     *x = w2;
                 }
@@ -998,6 +998,13 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
             m.charge(crate::PH_WORD, nr)?;
             m.charge(SIEVE, upd)?;
             m.charge(SIEVE, width as u64)?;
+            // meter correction (NOTES.md, "Meter correction (proposed; ...): pp's free-2 initialisation is uncharged"):
+            // the free 2's writes, one sieve_scan per cell written, ceil((width - par) / 2)
+            let f2 = if par != usize::MAX { ((width - par + 1) / 2) as u64 } else { 0 };
+            if f2 > 0 {
+                m.charge(SIEVE, f2)?;
+                crate::sv_units(1, f2);
+            }
             if rt_on && !goff {
                 // the sieved roots' start offsets stored, one word per root (roots of one prime adjacent, ascending base order)
                 tp.clear();
@@ -1024,7 +1031,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 m.charge(crate::PH_WORD, sr.len() as u64)?;
                 crate::sv_units(4, sr.len() as u64);
             }
-            m.ev(crate::EV_SIEVE_SCAN, width as u64); // at["polys"] append
+            m.ev(crate::EV_SIEVE_SCAN, width as u64 + f2); // at["polys"] append (the width and the free 2's writes)
             crate::pt_end(m, 18, ps);
             crate::pt_end(m, 4, pt);
             let pt = crate::pt_snap(m); // "scan"
