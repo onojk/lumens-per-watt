@@ -4,7 +4,7 @@ This sheet is prepended to every DeepSeek prompt (`tools/ask_deepseek.py`). It h
 
 Maintained by Claude.
 
-**Last updated:** 2026-10-26 (stage H facts added). **Card commit:** b2bade2, stage H's `pp` option built and off by default; the scan fix is pending acceptance (see stage H below).
+**Last updated:** 2026-10-26 (stage H2 added). **Card commit:** 373261d, stage H's `pp` option with the scan fix, off by default.
 
 ## The card at 96 bits (the reference)
 
@@ -96,7 +96,16 @@ Official pricing counts every op as 1.
 - **Under-count at true partials, median:** 4.58 bits (reference); −0.01 (pp 10); 2.68 (pp 3).
 - **With pp 10:** sieve updates per polynomial +28%, sieve wall-clock per polynomial +27.5% to +31%, setup per polynomial +18% to +22% (the per-A power entries).
 - **The scan, as built in b2bade2:** a per-position parity check that nearly doubled the scan's wall-clock per polynomial (0.73 → 1.35–1.44 µs), +60 to +120 µs per number. This was slow code, not a charge.
-- **The scan fix** (the free 2 written into the sieve array at initialisation; counts identical): acceptance passed (pp cells against b2bade2 14,000 / 14,000; option off 8,000 / 8,000; Python = Rust 48 / 48), parity running. Its commit is to be added here.
+- **The scan fix** (373261d): the free 2 is written into the sieve array at initialisation, with counts identical (pp cells against b2bade2 14,000 / 14,000; option off 8,000 / 8,000; Python = Rust 48 / 48; parity). The scan per polynomial is back to 0.72–0.75 µs. The fill costs ~0.2–0.5 µs per polynomial, inside the sieve region.
 - **The matched candidate count with pp = 10** is tc 0.7623, a threshold +2.94 bits higher (32-number search, `hsearch.out`).
 
-TODO: stage H2 (the re-time after the scan fix: pp 10 at +5 bits; pp 3 at +1, +2, +3 bits) has not run yet. Add its measured cells here when it has.
+**Measured, stage H2** (the re-time after the scan fix; results 5ae47ae, scored in NOTES; 96 bits, 640 numbers, against the reference in the same run, which took 2,100 µs):
+
+| cell | candidates / number | polynomials | ruint | Montgomery | official | wall-clock |
+|---|---|---|---|---|---|---|
+| (iii) pp 10, +5 bits | −32.9% | −3.2% | −0.8% | −0.8% | +8.2% | +0.2% |
+| (iv) pp 3, +3 bits | −28.6% | +10.1% | −2.5% | −2.5% | +4.9% | −3.8% |
+| pp 3, +1 bit | +2.0% | −4.5% | −1.9% | −2.0% | −3.4% | +0.9% |
+| pp 3, +2 bits | −14.3% | +2.2% | −2.9% | −2.9% | +0.2% | −0.7% |
+
+- The machine's speed drifts between sessions: the same reference took 1,898 / 2,015 / 2,100 µs in stages G / H / H2. Compare only within a run.
