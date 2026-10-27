@@ -4,12 +4,17 @@ This sheet is prepended to every DeepSeek prompt (`tools/ask_deepseek.py`). It h
 
 Maintained by Claude.
 
-**Last updated:** 2026-10-26 (stage H2 added). **Card commit:** 373261d, stage H's `pp` option with the scan fix, off by default.
+**Last updated:** 2026-10-27 (goff = 1 adopted as the reference default; I-032 results added). **Card commit:** 5f0007a (2′a and 2′b built); the phasetime instrumentation fix follows (counts unchanged).
 
 ## The card at 96 bits (the reference)
 
 - **Method:** SIQS with single large primes. Lampcore (Rust), with a Python twin kept in lockstep.
 - **Reference genes:** bc 0.4325, mc 0.6023, tc 1.0353, lc 1.9737, kc 60, multiplier set sf32, A chosen on demand. Re-sieve is off: confirm divides by every base prime.
+- **goff = 1 (adopted by the user, Oct 26, as the reference default; I-032 option 2′a):** the Gray code keeps the sieve's start offsets. Per A, each root is converted once to its offset (1 word per root). The sieve's per-polynomial start-offset add (1 word per root per polynomial) is gone.
+  - The reference genes change only by goff = 1. Relations, factors, candidates and polynomials are identical, so earlier results stay valid.
+  - Only the word count changes, by exactly −setup_gray: about −35,897 word per number at 96 bits.
+  - Priced against the old reference: official 0.9754, ruint 0.9843, Montgomery 0.9842 (i032-2prime, 9b94247).
+- **Root confirm** (gene confirm = root; off by default; not adopted): with goff = 1 it reads the kept offsets in place (2′b). Against the goff = 1 reference: official 1.0137, ruint 0.8877, Montgomery 0.8838. With pp 3 at +0 bits: 0.9618 / 0.8703 / 0.8656.
 - **Formulas:**
   - B = bc · exp(½ √(ln N ln ln N));
   - M = max(64, mc · B), with the sieve interval [−M, M] (width 2M + 1);
@@ -109,3 +114,10 @@ Official pricing counts every op as 1.
 | pp 3, +2 bits | −14.3% | +2.2% | −2.9% | −2.9% | +0.2% | −0.7% |
 
 - The machine's speed drifts between sessions: the same reference took 1,898 / 2,015 / 2,100 µs in stages G / H / H2. Compare only within a run.
+
+## The goff = 1 reference at 96 bits (adopted Oct 26; i032-2prime, 9b94247; 2.4 GHz cap)
+
+- **Priced per number:** official 1,425,117; ruint 58,145; Montgomery 213,006. Candidates and polynomials as above (1,012.7; 156.04).
+- **Wall-clock at the 2.4 GHz cap:** 3,855.7 µs per number (sd 33.4, 8 replicates).
+  - Only runs at the same cap are comparable (PROTOCOL.md, "Frequency cap").
+  - Against the goff = 0 reference: −1.8% [−2.9, −0.6]; sieve region −7.8%.

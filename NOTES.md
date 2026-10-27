@@ -8523,3 +8523,16 @@ The Gray code maintains `sr`: the roots in x-coordinates, in [0, p). The sieve's
 **What would settle it** (not run): one capped timed run of 2′b and 2′b+pp3 saving every region per replicate, plus a `LAMPCORE_LPBREAK=1` pass for lp:copy, lp:hash and lp:comb ns. The shift-test runner (below) saves all regions.
 
 **Model, post hoc, not a verdict.**
+
+## Decision (the user's, Oct 26): goff = 1 adopted as the reference default
+
+- **The reference genes change only by goff = 1** (I-032 option 2′a). Relations, factors, candidates and polynomials are identical (a6d67a2 acceptance; i032-2prime identity 640 / 640), so **earlier results stay valid.** Only the word count differs, by exactly −setup_gray per number.
+- **The shift test's base (2′a) is now the reference.**
+- **reviews/card_params.md updated.**
+- **Code:** runners pass `goff=1` explicitly. The reference helper `lctest.ref()` and the sealed genes file still return goff absent, so the scripts of earlier runs reproduce exactly as committed. Making goff = 1 the code default of `ref()` would change what earlier scripts compute on a rerun, so it is left as is. It can be done as a separate commit if the user wants.
+
+### For the record, unscored (the phase predictions are information only; breakdown seen first)
+
+- **D-11:** its falsifier would trigger. The whole "rest" (lp_ledger included) totals ~81 µs above price, under D-11's 120 µs floor for lp_ledger.
+- **R2-11:** its first half (mostly outside the sieve) would hold, since the sieve shows +33 µs and the rest +81 µs. Its ledger claim would fail: the hash explains 4–7 µs at most, and lp_ledger's share is not measured.
+- **The reviewer's correction (recorded as given):** the "241 µs / 7-point gap" given to the outside reviewers took official's ratio as the priced expectation. Official prices a sieve update like a root test, so most of official's −5.1% is sieve savings. Against ruint the gap is about 4 points, 109 µs. **This error was the reviewer's.**

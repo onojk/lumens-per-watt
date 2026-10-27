@@ -17,7 +17,56 @@
 
 ### Its reply (verbatim)
 
-*(placeholder: the brief said the reply follows it, but no text followed; to be appended verbatim when the user pastes it)*
+*Filed after the breakdown (8d5ef90) and after Grok's round (ae97145); received 22:10 Oct 26 PT, before the shift runner was committed (ba253c2) and before any shift run. Copied verbatim from the user's brief.*
+
+<!-- verbatim begin -->
+
+## 0. Recorded
+
+- **D-1–D-6 held; D-7 missed** (measured ±0.6 to ±2.9 under the 2.4 GHz cap; D-7 was sealed assuming no cap). **D-8 falsified on all three pricings, held on wall.** **D-9 falsified.** No first-round falsifiers triggered. **D-10 information-only: "above 1.0137" missed** — exact model and card both gave 1.0137. Recorded as scored; no rescore.
+- Cause of D-8/D-9 accepted: pp3's official saving was underestimated; the robust-ratio annotation said so before the run. Grok's G-3/G-4 miss noted. Reviewer R2-8 missed; 9/10 held. Recorded.
+- The meter/clock disagreement on pp3 is recorded as a live finding, not a resolved one.
+
+## 1. Sealed phase prediction
+
+Registered before the phase breakdown is read. The gap is **7.1 points** (price −5.1%, wall +2.0%). In wall terms at 2.4 GHz: 3,407.9 µs × 0.071 = **242 µs**.
+
+So the phase carrying the excess should show roughly **240 µs per number** beyond what the meter charges it.
+
+| ID | Prediction | Sealed answer | Falsifier |
+|---|---|---|---|
+| **D-11** | Phase explaining most of the 7-point gap; per-number wall excess in that phase | **lp_ledger** (large-prime table hash + ledger storage), confidence **60%**; excess **180–300 µs** (central **240 µs**) | Falsified if lp_ledger contributes **<120 µs** of the excess, or if sieve or confirm/root_test contributes **more than lp_ledger** |
+
+**Reasoning, one sentence:** pp3 admits more candidates and more partial relations, so the ledger's lookups and storage grow, and the hash is already known to run at 1.4–1.7× its price; that is the one phase with both a measured underpricing and a direct pp3-driven workload increase.
+
+Anchor: 2'b+pp3 confirm ratio 0.679 vs 2'b 0.562 means pp3 **raises** confirm work relative to 2'b, consistent with more candidates admitted, which also means more partials filed and more ledger traffic. The known 1.4–1.7× hash underpricing then converts that traffic into wall excess the meter does not see. I do not have the phase breakdown, so the 240 µs figure is **estimated** from the 7.1-point gap, not computed from per-phase data.
+
+## 2. Sealed predictions for the shift test
+
+Registered before the run. 96 bits, 640 numbers, re-sieve off, cap 2.4 GHz. **Base is 2'a.** Ratios new/old; below 1 = cheaper; robust = worst of the three.
+
+| Shift | Official (range, central) | Ruint (range, central) | Montgomery (range, central) | Wall change (range, central) |
+|---|---|---|---|---|
+| **+0** | 0.955–0.970 (0.962) | 0.862–0.880 (0.870) | 0.858–0.875 (0.866) | −8.5% to −11.5% (−10.0%) |
+| **+1** | 0.950–0.968 (0.959) | 0.855–0.878 (0.866) | 0.850–0.874 (0.861) | −10.0% to −13.5% (−11.8%) |
+| **+2** | 0.952–0.972 (0.962) | 0.855–0.880 (0.868) | 0.850–0.876 (0.863) | −10.5% to −14.5% (−12.5%) |
+
+| ID | Question | Sealed answer | Falsifier |
+|---|---|---|---|
+| **D-12** | Which shift has the **best wall**? | **+2 bits** (central −12.5%), with +1 within ~1 point | Falsified if +0 or +1 beats +2 by **>0.5 points** |
+| **D-13** | Which shift has the **best robust ratio**? | **+1 bit** (official is the worst of three, and +1 gives the lowest official), with +0 close | Falsified if +0 or +2 gives a robust ratio **>0.005 lower** than +1 |
+
+**Computed anchor for D-12.** Old-code wall ratios vs old reference: +0 0.930, +1 0.918, +2 0.911 (best), +3 0.925. New code at +0 is 0.901 vs 2'a, a ~3-point improvement over old +0 (0.930). Carrying that shift forward approximately: +1: 0.918 − 0.030 = 0.888 (−11.2%); +2: 0.911 − 0.030 = 0.881 (−11.9%).
+
+The ledger finding (D-11) pushes the optimum slightly higher because raising the threshold reduces partials and ledger traffic; hence central −12.5% at +2 rather than −11.9%.
+
+**Computed anchor for D-13.** At +0, robust = official = 0.9618. Official falls as the shift rises while confirm-op count falls, then turns up when polynomial word ops dominate. The old confirm ratios fell 0.640 → 0.545 → 0.458 from +0 to +2, while sieve rose 1.073 → 1.147 → 1.226; the official optimum is where those marginal costs balance, which I expect near **+1**. I cannot compute the official per-shift totals from the numbers given; the D-13 answer is **estimated**, and the per-shift official ranges above are centred accordingly.
+
+**Falsifier scope.** D-12 and D-13 are one-shot categorical claims for this grid. If the +0, +1, +2 wall values land within 0.5 points of each other, I will record the "best" as **tied within noise** rather than claim a winner; the falsifiers above still apply.
+
+No sealed prediction is revised. D-11, D-12, D-13 are registered above.
+
+<!-- verbatim end -->
 
 ### The reviewer's annotations (ranges unchanged)
 
@@ -86,3 +135,22 @@ Notes on scoring: interval widths above are full widths. All ranges are sealed b
       confirm/root_test is second. Falsifier: the sieve phase shows a wall excess over
       its priced expectation of more than 60 us, or lp_ledger contributes less than
       confirm/root_test.
+
+## The reviewer's (verbatim; sealed Oct 26, before any shift run; base 2′a, now the reference; cap 2.4 GHz; 8 replicates)
+
+      R2-12 +0 priced ratios reproduce tonight's exactly (0.9618 / 0.8703 / 0.8656);
+            +0 wall -8.5% to -11.5%.
+            +1: official 0.962 to 0.985; ruint 0.855 to 0.880; Montgomery 0.850 to 0.875;
+                wall -10% to -13%.
+            +2: official 0.968 to 0.995; ruint 0.850 to 0.880; Montgomery 0.845 to 0.875;
+                wall -10% to -14%.
+      R2-13 Best wall: +2 (50%); +1 and +2 within 1 point of each other; +0 the slowest.
+      R2-14 Best robust ratio: +0 (70%), because official rises with the shift (official
+            prices sieve updates like root tests, and a higher shift needs more
+            polynomials). Falsifier: +1 or +2 has official below 0.9618.
+
+## Shift run: the runner and its base
+
+- **Runner:** `evolve/i032shift.py`, committed first in ba253c2. Before the run it is amended to also record ruint per region (setup, gray, scan, lp_ledger, solve split out); the commit that does so is named in the run record.
+- **Base:** 2′a (goff = 1, full pass), the reference since the user's adoption (NOTES, "Decision (the user's, Oct 26): goff = 1 adopted").
+- **Instrumentation:** the per-region priced counts use lampcore with the `--phasetime` fix (root_test attributed; the lp_ledger region closed on its early returns). `--types` and every result are identical to the pre-fix binary (14,000 / 14,000).

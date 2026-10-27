@@ -71,3 +71,10 @@ Scores go in NOTES.md, each prediction as written ("under X, Y will be Z × base
 - **Scoring:** a friend run is scored only against predictions sealed for that run (its own predictions file, committed before the run file is sent out). Otherwise it is information.
 - **The user commits the returned file** (results/, with the machine named in the commit message). Claude Code does not request, fetch or upload results files.
 - A contributor's `tools/contribute_timing.sh` output is information only, never a sealed result.
+
+## Frequency cap (standing condition from Oct 26, 2026)
+
+- **The user keeps the CPU capped at 2.4 GHz** (scaling_max_freq). Claude Code never sets, changes or removes it.
+- **Comparability:** timed runs from i032-2prime onward are at 2.4 GHz and comparable across runs. Earlier timed runs (uncapped, throttling at 98–100 °C) are not comparable with them, nor reliably with each other.
+- **Before every timed run** the machine state is checked. If the cap is absent (scaling_max_freq above 2,400 MHz on the pinned core, for example after a reboot), **STOP and tell the user.** The check is made by Claude Code before launching; sealed_run.sh records the limits in the machine state but does not yet enforce the cap.
+- **Interval predictions from now on assume the cap.**
