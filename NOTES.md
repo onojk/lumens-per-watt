@@ -9577,3 +9577,14 @@ The library-bound classes have no single static body and are dynamic only.
 **Lumps** (IDEAS I-043, typing them is a meter change): cfrac_ops 110.1, sq_ops 1,266 and ps_ops 0.283 Ir per op, each an average over its supplementary run. ps is a replay that charges FFT-model ops without doing the arithmetic, so its weight does not measure the charged work.
 
 **What this does not establish:** no pricing has been applied. No break-even, no op-class ratio for any cell and no robust ratio under option (b) have been computed; that is step 3, the user's word. Memory cost is excluded (procedure, section 5): instruction counts are fixed by the binary, not by clock speed.
+
+## Before step 3 (the user's ruling, Oct 27; committed before any op-class v1 ratio is computed)
+
+- **The ruling: op-class v1 (df5a0e3) is the pricing that decides the 2′b adoption question.**
+- **Known v1 issues, recorded now, before any v1 ratio:**
+  1. Line-0 instructions (about 2.5 × 10⁹ Ir) are attributed to the caller's uncharged line, per the committed rule.
+  2. The weights are pooled across lamps (word: 1.3 in p−1 to 71 in qs).
+  3. check is inflated by the map.
+  4. ps_ops is not meaningful.
+- **Any v2 is prospective** (a line-0 rule, per-card weights, map fixes). It applies only to tests started after it is committed, never to re-decide 2′b.
+- **The reviewer's forecast** (information only): 2′b against 2′a under op-class, 0.70–0.95; better under all three robust pricings (op-class, ruint, Montgomery), 90%.
