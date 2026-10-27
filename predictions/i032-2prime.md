@@ -56,3 +56,29 @@ As transcribed in the user's brief (DeepSeek sealed these without the model). **
 
 - New reference (2′a) against today's reference: official / ruint / Montgomery **0.9754 / 0.9843 / 0.9842**.
 - 2′b against 2′a (root alone against the new reference): **1.0137 / 0.8877 / 0.8838**.
+
+## DeepSeek, second round (Oct 26, ~20:14), sealed
+
+Filed before any 2′a or 2′b timing run. 2′a acceptance had run (`evolve/goff_accept.py`; counts by type and identity only; no priced totals printed or compared).
+
+### Its "Recorded" section, D-8, D-9 and the D-9 falsifier (verbatim)
+
+*(placeholder: the text was not included in the brief that asked for it; to be appended verbatim when the user pastes it)*
+
+- Its section 3 references: **information only** (no links given).
+
+### The reviewer's annotations (DeepSeek's ranges unchanged)
+
+- **D-8/D-9 rest on a misreading of the robust ratio.** The robust ratio is the worst of the three pricings, so root + pp 3 at +0 bits (robust 0.982 against today's reference) was ≤ 0.982 under official too. Against root alone (official 1.038), pp 3 saved about 5% official, not the 1–1.5% DeepSeek assumed.
+- **D-8's ruint reasoning is internally inconsistent:** it computes 0.959–0.978, then seals 0.975–0.990.
+
+## The reviewer's (verbatim; sealed Oct 26, after DeepSeek's second round)
+
+Same cell and base as D-8: 2′b + pp 3 at +0 bits against 2′a, 96 bits, 640 map numbers, re-sieve off, 8 random-order replicates.
+
+      R2-9  official 0.95 to 0.99; ruint 0.84 to 0.90; Montgomery 0.84 to 0.90;
+            wall -8% to -16%.
+      R2-10 better than 2'a under all three pricings at once: YES, 75%.
+            Falsifier: official > 1.000.
+
+**Conditions of these filings:** the user's desktop Mathematica was open (WolframNB and WolframKernel processes running). No timed run was in progress; 2′a acceptance and parity (no timing) were running.
