@@ -8105,3 +8105,90 @@ All other types are identical.
   - The per-candidate low-bit test and merged list account for ~+0.5–0.6%.
 - **Under ruint and Montgomery** the same counts are a saving, because a root test is priced at 0.51× confirm_td (ruint) or 0.50× (Montgomery), while `word` is priced at 0.23× and 0.22×. Under official the per-polynomial pass alone outweighs the root tests' advantage.
 - **Implication (not a proposal):** the in-place change in A keeps the word charge, so it would not move the official figure. Root alone stays above 1 under official as long as one word per root per polynomial is charged. At +0 bits with pp 3, the official ratio (0.9824) is below 1 because pp 3's other savings outweigh this.
+
+## Root confirm retime (root-confirm-2), scored (`evolve/rootconfirm2.py`, 6a40164; `results/root-confirm-2_20261027T025159Z.out` and `.machine.txt`, committed by the guard as c5d1034; `rootconfirm2.json`; predictions `predictions/root-confirm-2.md`, 2f9adf0)
+
+96 bits, all 640 map numbers, card e13603a. 8 replicates, each in its own seeded random order (random.Random(2026); orders in the output). Ratios are to the reference within each replicate; intervals are 95% t over the 8 pairs. No frequency cap (limits 400–5,000 MHz, turbo on, max_perf_pct 100). Governor powersave; TCPU 51 °C before, **99 °C after** (flagged by the guard; 95–98 °C at replicates 2–8). **No cell's clock was flagged:** medians 3,749–4,256 MHz against the reference's 3,930, 16 samples each.
+
+| cell | wall µs mean (sd; min–max) | wall ratio [95%] | sieve µs | sieve ratio [95%] | confirm µs | confirm ratio [95%] | MHz median |
+|---|---|---|---|---|---|---|---|
+| reference | 2,051.6 (94.0; 1,902.2–2,135.1) | — | 556.2 | — | 551.9 | — | 3,930 |
+| root | 1,882.3 (44.1) | **0.9193 [0.8767, 0.9620]** (−8.1%, ±4.3) | 636.0 | **1.1446 [1.1019, 1.1873]** | 291.5 | 0.5301 [0.4966, 0.5637] | 3,749 |
+| root + pp 3, +0 bits | 1,903.4 (66.0) | 0.9299 [0.8796, 0.9802] (−7.0%, ±5.0) | 595.8 | 1.0734 [1.0190, 1.1278] | 352.0 | 0.6400 | 4,256 |
+| root + pp 3, +1 bit | 1,878.6 (30.0) | 0.9176 [0.8760, 0.9592] (−8.2%, ±4.2) | 636.1 | 1.1465 | 299.5 | 0.5445 | 4,242 |
+| root + pp 3, +2 bits | 1,865.1 (52.0) | **0.9107 [0.8708, 0.9506]** (−8.9%, ±4.0) | 681.1 | 1.2260 | 252.0 | 0.4580 | 3,899 |
+| root + pp 3, +3 bits | 1,894.8 (44.4) | 0.9250 [0.8903, 0.9598] (−7.5%, ±3.5) | 731.0 | 1.3163 | 215.4 | 0.3912 | 3,948 |
+
+**Scored as written** (RC2-2 on the root-alone cell's sieve ratio, as the user set before the run):
+
+| prediction | measured [95%] | the user's range | result |
+|---|---|---|---|
+| RC2-1, root alone, wall vs the reference | −8.1% [−12.3%, −3.8%] | −6% to −12% | **held** |
+| RC2-2, root alone, sieve region vs the reference | +14.5% [+10.2%, +18.7%] | +8% to +25% | **held** |
+| RC2-3, root + pp 3, best shift among 0..+3, wall | +2 bits, −8.9% [−12.9%, −4.9%] | −7% to −13% | **held** |
+| RC2-4, root alone's wall-ratio interval no wider than ±3 points | ±4.3 points | ≤ ±3 | **missed** |
+
+- **RC2-3 caveat:** the best shift is not separated. The point estimates span −7.0% to −8.9%, and all four intervals overlap root alone's.
+- **The reference is the noisiest cell** (sd 94.0 µs against 30–66 µs for the others). Most of each ratio interval's width comes from it. RC2-4 missed for that reason.
+- **The sieve excess, root alone:** 636.0 − 556.2 = 79.8 µs per number over 156.0 polynomials = **0.51 µs per polynomial** (root-confirm: 0.65). With pp 3, polynomials change (140.5–171.8), so those cells' sieve ratios mix the pass with the extra polynomials.
+- **Root-confirm's wall-clock was clock-confounded; this one is not, by the flag rule.** Root alone reads −8.1% here against −7.4% there. Both are below the −11% to −19% predicted for R-1.
+
+**Hypotheses on the sieve rise, scored by the user (recorded as given):**
+- **The reviewer's:** a code effect of ~0.65 µs per polynomial. **Confirmed** by inspection (d7a1fd0); the mechanism is the per-polynomial recompute/rebuild pass, not array copies. This run's root-alone cell measures 0.51 µs per polynomial, with no clock flags.
+- **Claude Code's** "clock or cache" (b1e5ed7): **a miss.** In this run the clock medians sit within 5% of the reference's, and the rise persists (+14.5%, interval excluding +10%).
+
+## Design note: root confirm without the per-polynomial offset pass (before any code; I-032; documentation only)
+
+Today (card e13603a, root alone, 96 bits, means per number): 156.04 polynomials; s = 4, so 8 polynomials per A and **~20 A's per number** (156 / 8, rounded up for the partial last A; Python trace of one map number: 16 A's for 121 polynomials). Per polynomial there are **~267 sieved roots** (d7a1fd0); per candidate **134.0 sieved odd primes**; 1,012.7 candidates per number.
+
+**Prices** (calibrate.json): word 0.0258 ruint / 0.0951 Montgomery; root_test 0.0581 / 0.2142; confirm_td 0.1141 / 0.4260. **Official** is 1 per op.
+
+**Today's root-alone totals against the reference:** official 1.0379, ruint 0.9051, Montgomery 0.9014. The per-polynomial pass (qs.rs:945–967) is word × 267 × 156.04 = **41,663 word per number**.
+
+### Option 1: in-place store (one store per root per polynomial kept)
+
+- **Per A** (charged; in "setup", after `sp`/`sj`/`sr` are built), 2 × 134 = 268 word per A, ~5,360 word per number:
+  - `ka[t]`: the index in `sr` of sieved prime t's first root. Its last root is `ka[t + 1] − 1`, with a sentinel, so a single-root prime (p | k) needs no special case.
+  - `tm[t]`: the reciprocal, copied from `recip[sj[k]]`.
+  - `tp` and `tj` are not needed: the root test reads `sp[ka[t]]` and `sj[ka[t]]`.
+- **Per polynomial:** inside the existing first sieve loop, which already computes s0 (charged `word × nr`), add one store `off[k] = s0` per root, charged word × 267, the same as today's charge. The second loop, the recompute, the gathers and the five pushes go away.
+- **Per candidate:** unchanged. 134 root_test, reading `off[ka[t]]` and `off[ka[t + 1] − 1]`; 1 + |plist| word; confirm_td as today.
+- **Totals against the reference:** official **1.0416**, ruint 0.9075, Montgomery 0.9037. The meter is slightly worse than today by the per-A build (+0.37% official). The wall-clock should recover most of the ~0.5 µs per polynomial, but that is not measured.
+
+### Option 2: read the roots the polynomial switch already maintains (per-candidate charge, no per-root-per-polynomial work)
+
+The Gray code maintains `sr`: the roots in x-coordinates, in [0, p). The sieve's start offset is s0 = (sr + M mod p) mod p, and the candidate's sieve index is i0 = x + M. So "i0 mod p ∈ {s0}" ⇔ "x mod p ∈ {sr}". The test can use `sr` directly with x = i0 − M (one op per candidate), but x is negative for about half the candidates.
+
+- **2-literal** (the test against `sr` as it stands): for x < 0 the test compares p − (|x| mod p) with the roots, so 1 word per prime per such candidate.
+  - Per number: −41,663 (pass removed), +5,360 (per-A `ka`, `tm`), +0.5 × 1,012.7 × 134 = +67,851 (sign fix): **+31,548 word**.
+  - Official **1.0595**, ruint 0.9189, Montgomery 0.9152. **Worse than today under all three.**
+- **2-fused** (the sign fix folded into the root test as one typed op): per number −41,663 + 5,360 = **−36,303 word**.
+  - Official **1.0131**, ruint 0.8893, Montgomery 0.8854, before any re-price of root_test.
+  - This is a **typing decision under the fixed classification rule** (an add or negate is a word op), and it needs a re-benchmark of the fused test. Every 1% rise in root_test's price costs ~+79 ruint (+0.13%). It is listed so the reviewer's estimate can be checked against it, not as a recommendation.
+  - The reviewer's expected "+0.5 … +1% official" is near this variant: +1.3% by this count. The gap is the per-A build (+0.37%).
+- **2′, offsets maintained by the Gray code** (no sign issue): once per A, convert `sr` to sieve coordinates, sr ← (sr + M mod p) mod p, at 1 word per root. The Gray update (s0 ± b) mod p is the same arithmetic on the offsets, at the same charge (setup_gray, unchanged). The sieve loop then reads s0 = sr[k] directly, and the root test reads `sr[ka[t]]` / `sr[ka[t + 1] − 1]`.
+  - The power entries (`qr`, `qm`) are treated the same way when pp > 0.
+  - Per number: −2 × 41,663 (the root pass and the sieve's own start-offset add) + (267 + 268) × 20 (conversion, `ka`, `tm`) = **−72,625 word**.
+  - Root mode only: official **0.9882**, ruint 0.8734, Montgomery 0.8695.
+  - **Half of that saving is not root confirm's.** The sieve's own start-offset charge (word × nr per polynomial) is paid by the full pass too. Applied card-wide, the reference itself falls by 36,323 word (official 0.9751, ruint 0.9841, Montgomery 0.9840 of today's). Against that new reference, root alone is official **1.0134**, ruint 0.8875, Montgomery 0.8836, the same as 2-fused without the typing question.
+  - A card-wide change moves the reference's counts, which is the user's decision. The fair comparison for root confirm is against the new reference.
+
+**Summary at 96 bits (root alone):**
+
+| option | per polynomial (word) | per A (word) | per candidate | official | ruint | Montgomery | vs |
+|---|---|---|---|---|---|---|---|
+| today | 267 pass | 0 | 134 root_test + 1 + \|plist\| word | 1.0379 | 0.9051 | 0.9014 | reference |
+| 1 in-place store | 267 store (pass removed) | 268 | same | 1.0416 | 0.9075 | 0.9037 | reference |
+| 2-literal | 0 | 268 | + 134 word on x < 0 | 1.0595 | 0.9189 | 0.9152 | reference |
+| 2-fused | 0 | 268 | same (fused, re-price open) | 1.0131 | 0.8893 | 0.8854 | reference |
+| 2′ root mode only | −267 (sieve start add) | 535 | same | 0.9882 | 0.8734 | 0.8695 | reference |
+| 2′ card-wide | — | — | — | 1.0134 | 0.8875 | 0.8836 | new reference (0.9751 / 0.9841 / 0.9840) |
+
+- **Relation identity: none of the options changes it.** Every option computes the same start offsets (modular arithmetic, identical values), so the root test's hits are the same. The merged list (`dl` ∪ hits), the divisions, cofactors and relations are therefore the same. In 2′ the sieve values are also identical. Acceptance would check, per number, the same factor, candidates, hits, polynomials and relations (the item 3 and 4 checks of root_accept.py), with every type outside the changed ones equal.
+- **Arrays the read option needs that do not exist today:**
+  - `ka` (per sieved prime per A: the first root's index in `sr`, with a sentinel). Options 1 and 2 both need it.
+  - `tm` per A is optional (`recip[sj[k]]` exists, at the cost of a gather).
+  - Option 1 needs `off` (per root, per polynomial; replaces `ta`/`tb`).
+  - 2′ needs no new per-root array, but changes what `sr` and `qr` hold (sieve coordinates). Every reader of `sr` must change: the sieve loop, re-sieve (qs.rs ~1000) and the Gray update, whose arithmetic is unchanged. **Python must change in lockstep.**
+- **Uncertain inputs:** ~20 A's per number and 267 roots per polynomial are estimates (d7a1fd0; one trace). The cost note before code must count them exactly. The per-A charges assume 1 word per element written.
+- **Not measured:** wall-clock for every option. Option 1 and 2′ remove the pass the retime measured at ~0.51 µs per polynomial (~80 µs per number, ~4% of wall).

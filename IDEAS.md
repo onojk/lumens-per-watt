@@ -266,3 +266,12 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - DeepSeek's estimate: the loop 1.8–2.6x faster (~0.6–0.9 ns per prime-candidate test); the end-to-end gain is smaller (the divisions and hit writes remain).
 - Status: idea; after the root confirm (I-029) is in the card.
 - Decision: pending.
+
+### I-032 — Root confirm reads the sieve's existing roots per candidate
+- Date: 2026-10-27. Source: the user and the reviewer, from root-confirm-2 and the code inspection (NOTES, d7a1fd0).
+- Today: the qs.rs:945–967 pass rebuilds tp/tm/ta/tb/tj and recomputes start offsets for ~265 roots per polynomial, charged word × roots (~+2.8% official at 96 bits; ~0.51 µs per polynomial measured in root-confirm-2).
+- Idea: drop the per-polynomial pass. At confirm time, for each candidate x (~6.5 per polynomial), test x mod p against roots read from arrays the polynomial switch already maintains (or derivable with O(1) per test from per-A data built once per A). Charge per candidate test, not per root per polynomial.
+- Expected (the reviewer's estimate, to be checked by the cost model): official from +3.8% to about +0.5 … +1%; the sieve region's rise mostly removed; root confirm robust alone.
+- Compare against Claude Code's in-place option (one store per root per polynomial kept).
+- Design note: NOTES, "Design note: root confirm without the per-polynomial offset pass". Options 1 (in-place), 2-literal, 2-fused and 2′ (offsets maintained by the Gray code) are priced there. None changes relation identity.
+- Decision: pending (the user's).
