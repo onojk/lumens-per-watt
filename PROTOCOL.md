@@ -1,17 +1,54 @@
-# Experiment protocol
+# Protocol: how work is done here
 
-1. **Predictions.** Write `predictions/<experiment>.md`: each prediction is "under X, Y will be Z × baseline B on metric M", with ranges and, where useful, falsifiers.
-2. **Commit** the predictions file (documentation only).
-3. **DeepSeek ask.** Run `tools/ask_deepseek.py <prompt>`. It prepends `reviews/card_params.md`, the measured parameter sheet. The reply lands in `reviews/deepseek_rNN.md`, and its sealed predictions must name the experiment ID.
-4. **Commit** the reply and its prompt.
-5. **Run.** Use `tools/sealed_run.sh <experiment> [--deepseek] -- <command>`. It refuses unless step 2 (and step 4 with `--deepseek`) is committed and unchanged, then runs the command, saves `results/<experiment>_<time>.out` and commits it, naming the prediction commit.
-6. **Score** every prediction as written, in NOTES.md, and **commit**. Never restate a prediction afterwards. Failures are results.
+This file is the single source of truth for the workflow. Tool details are in `wolfram/README.md` and `reviews/README.md`.
 
-- **Wolfram runs** follow the same order: `wolfram/<date>_<name>.pred.md` is committed before `wolframscript -file wolfram/<date>_<name>.wl` runs (see `wolfram/README.md`).
-- **Decisions are always the user's:** adopting a change, retuning genes, changing the reference, and every push. Claude reports; it does not adopt, retune or push.
+## Roles
 
-**Guard self-test (2026-10-26):** `predictions/guard-selftest.md` (d7ceaf5).
-- Refused as it should: an uncommitted predictions file, a missing file, a file edited after its commit, and `--deepseek` with no reply on file.
-- Ran and committed: ed34500 (ok) and 9477742 (a failing command, committed as FAILED).
-- **Bug found:** two runs in the same second shared one output name, so 9477742 overwrote ed34500's output file. Fixed so that a name is never reused (39c838e, 6950a1d ran after the fix).
+- **The user** decides: adopting a change, retuning genes, changing the reference, and every push.
+- **Claude Code** builds, runs, records and scores. It does not adopt, retune or push.
+- **The reviewer** (Claude, in chat) checks reports and writes briefs.
+- **DeepSeek** (and Grok when available) gives independent sealed predictions and derivations.
+- **Wolfram** is run from the command line for model work.
+
+## Sealing
+
+- Every scored experiment has `predictions/<id>.md` committed **before** it runs, and runs through `tools/sealed_run.sh <id> [--deepseek] -- <command>`. There are no scored runs outside the guard.
+- Predictions filed after a run, or after its results exist in the repo, are **information-only**, and their record says so.
+- A copied predictions file states that it is a verbatim copy and names each block's first commit.
+- Never re-run an experiment whose predictions are already scored. A new run needs new predictions and a new ID (for example stage H → stage H2).
+
+## Order
+
+predictions → commit → (DeepSeek ask → commit) → run → commit → score → commit → report.
+
+Scores go in NOTES.md, each prediction as written ("under X, Y will be Z × baseline B on metric M"); predictions are never restated afterwards. Failures are results.
+
+## Change types
+
+- **Counts-identical code changes** (slow code, layout, buffers):
+  1. a cost note in NOTES before code;
+  2. acceptance: identical per number and per type against the previous build, and Python = Rust;
+  3. parity.
+- **Meter changes** (charging, op counts, pricing): the cost model is written in NOTES before code. An uncharged op is a critical bug.
+- **Card-changing options** are genes, off by default until the user adopts them.
+- **Experiments are report-only.**
+
+## Model against card
+
+- Wolfram and other model outputs are forecasts, recorded as "model" and never scored as predictions.
+- Sealed predictions about a model run go in `wolfram/<date>_<name>.pred.md`, committed before the run.
+
+## Records
+
+- **NOTES.md is append-only.** Corrections are new entries; superseded items are marked in place, never deleted.
+- **IDEAS.md IDs are fixed:** a new idea takes the next free number, and nothing is renumbered.
+- **Documentation addenda go in their own commits,** separate from step commits, and commit messages say "documentation only" where true.
+- **Git:** explicit `git add` only (never `commit -a`), and never push: the user pushes.
+
+## Guard self-test (2026-10-26)
+
+- Predictions file `predictions/guard-selftest.md` (d7ceaf5).
+- The guard refused, as it should: an uncommitted predictions file, a missing file, a file edited after its commit, and `--deepseek` with no reply on file.
+- It ran and committed: ed34500 (ok) and 9477742 (a failing command, committed as FAILED).
+- **Bug found:** two runs in the same second shared one output name, so 9477742 overwrote ed34500's output file. Fixed so that a name is never reused (39c838e and 6950a1d ran after the fix).
 - The `--deepseek` path that should pass is untested until a real reply is committed.
