@@ -7976,3 +7976,12 @@ H2 (and stages G and H) timed the cells one after another, with the reference fi
 **Changes to the root-confirm plan** (the user's, before `predictions/root-confirm.md` is committed):
 1. **Grid:** root + "2 free" (pp 3) at 0, +1, +2, +3 and +4 bits, so both R-3 predictions are testable. The user's R-3 is recorded as written, with the annotation "on a 0..+2 grid it would hold automatically; the grid was extended to +4 before any run so it can fail".
 2. **Clock:** during every timed run, core 2's MHz is sampled every few seconds and the range per cell is reported. Any cell whose median MHz differs by more than 10% from the reference's is flagged. The guard's machine state already records before and after.
+
+### Meter note on the root_test price (the reviewer's; recorded as given; documentation only; before the root-confirm timed run, which it does not change)
+
+- The cost note (1a7cd8d) prices root_test as benchmark ns / 27.3 ns per ruint unit = 0.0581 ruint per prime tested.
+- The benchmark ran on a throttled clock. In the same benchmark the full pass took 4.21 ns per prime, while the meter charges it confirm_td 0.114 ruint (~3.1 ns at the calibration clock), so the benchmark clock was ~1.35x slower.
+- A price by the within-benchmark ratio would be 0.114 × (1.59 / 4.21) = **~0.043 ruint** per prime tested (0.1141 × 1.587 / 4.212 = 0.0430), and Montgomery scaled the same way (0.4260 × 1.587 / 4.212 = 0.1605).
+- **Decision for this run:** keep the cost-note price (0.0581). R-2 (both sources) is defined "as in the cost note", and DeepSeek's working uses 0.0582, so changing it now would move a sealed target.
+- **For information only,** the root-confirm report will also state what R-2 would read at the ratio price (expected ~−15.7%, against ~−12% at the cost-note price).
+- **For the user's later decision:** re-price root_test (and re-check confirm_td) at the next meter calibration, on a fixed clock.
