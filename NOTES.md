@@ -7163,3 +7163,32 @@ Against the reference, in percent:
 | G-2, −2 bits | −11.0% | −5% to −14% | in range |
 | G-1, −6 bits | 0.752 | 0.64–0.82 | in range |
 | G-2, −6 bits | −22.6% | −16% to −32% | in range |
+
+## Stage G scored (the user's / reviewer's, sealed before the run; recorded as given) and stage H sealed predictions (recorded before any comparison run)
+
+**Stage G scoring:**
+- G-1 held (0.622); G-2 held (−18.1%); G-3 held (+103%).
+- G-4 missed (+19.3% against −10% to +5%); G-5 missed (+29.4% against −5% to +12%).
+- *Reading:* lowering the threshold recovers partials as predicted, but it does not pay, because each extra candidate pays the full confirm pass. The evolved threshold is near-optimal for today's confirm.
+- *Process note (the reviewer's error):* the brief let G run before DeepSeek's predictions were filed. DeepSeek's G numbers stay information-only.
+
+**Stage H, sealed predictions (the reviewer's).** 96 bits, all 640 map numbers, against the reference (re-sieve off).
+
+*(i) option on, reference threshold:*
+- **H-1** partial capture (stage B's 8-number subset): 0.60–0.80.
+- **H-2** candidates per number: +35% to +120%.
+- **H-3** polynomials: −15% to −27%.
+- **H-4** priced ruint mean: −3% to +15%.
+- **H-5** selectivity (extra partials looked up per extra candidate, against the reference): 1.3x to 3x the value of stage G's −4-bit cell.
+- **H-6** median sieve under-count at true partials: 0.5–2.0 bits (from 4.6).
+
+*(ii) option on, tc set so candidates per number match the reference:*
+- **H-7** partial capture: 0.40–0.58 (from 0.316).
+- **H-8** polynomials: −6% to −16%.
+- **H-9** priced ruint mean: −12% to −2%.
+- **H-10** wall-clock mean (two replicates): −12% to +2%.
+
+**Order:**
+1. Record these.
+2. Build the option per the design note (3caf8df), in both cores and off by default, with acceptance; commit.
+3. Find tc for (ii) on a few map numbers and report the search runs. The full comparisons wait for the user's "go", since DeepSeek's predictions are to be filed first.
