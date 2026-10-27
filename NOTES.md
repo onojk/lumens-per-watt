@@ -6990,3 +6990,22 @@ Each cell gives ratio A / ratio B, with the materiality (time share × (ratio_B 
 **Open question kept (low priority):** why the model over-predicts the raw true counts on the card's polynomials by 11–20% (stage F) when it matched Wolfram's generators within 0–5%.
 
 **Queued next:** stage G (a threshold scan at 96, gene change only), then stage H (a "sieve 2 and small prime powers" gene, design note first, STOP before its comparison runs). No primitive benchmarks, I-029 code or retune.
+
+## Stage G: a threshold scan at 96 — protocol and sealed predictions (recorded before anything ran)
+
+**Design (gene change only; no code; report only; reference unchanged):**
+- Cells at 96: the reference genes (bc 0.432, mc 0.602, tc 1.035, lc 1.974, kc 60, sf32; re-sieve off), and the threshold lowered by 2, 4 and 6 bits through tc alone: tc += d / log2 B with B the size's mean 1,752 (log2 B = 10.775), so tc = 1.2206 / 1.4062 / 1.5919. lc is unchanged, so L is unchanged. Per number the drop is d · log2 B_N / log2 1,752, within ~0.05 bit of d on the map.
+- All 640 map numbers per cell, lampcore. Per cell:
+  - candidates per number: the calls of the "confirm" region (one per processed candidate; candidates left when the ledger fills are not counted, ~0.5% in stage B);
+  - polynomials (sieve_scan / width);
+  - combinations (lp:comb calls with LAMPCORE_LPBREAK=1);
+  - priced ruint mean / median / slowest decile; Montgomery and official means;
+  - wall-clock, two replicates (taskset core 2), region breakdown including confirm.
+- Partial (and full) capture: stage B's funnel (step9.py's run_size with the cell's genes) on stage B's 8-number subset, Python traces.
+
+**Sealed predictions (the reviewer's), for the −4-bit cell against the reference:**
+- **G-1** partial capture at 96: 0.50–0.70 (from 0.32).
+- **G-2** polynomials: −12% to −25%.
+- **G-3** candidates per number: +80% to +250%.
+- **G-4** priced ruint mean: −10% to +5%.
+- **G-5** wall-clock: −5% to +12% (confirm grows with candidates; the full pass costs ~F per candidate).
