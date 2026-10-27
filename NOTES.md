@@ -1,5 +1,61 @@
 # Decision log
 
+## MORNING REPORT Oct 27 (read first)
+
+Overnight workload, all stages run in order. Nothing adopted; no reference, price or rule changed; no system setting touched; nothing pushed; nothing of the user's moved or deleted.
+
+**Per stage:**
+
+1. **Second scores under the corrected meter: done** (737294f).
+   - Every affected outcome now has a second score beside its original ("meter-invalidated: original scored under the uncorrected meter"). The uncorrected binary reproduces every recorded original; the corrected values match the Wolfram model.
+   - **Every "better" call a pp cell ever earned disappears:** H2 pp 3 +1, root-confirm root + pp 3 +0, 2′b+pp3 against 2′a and against REF, shift +0 and +1, and run A +1. Against 2′b and in H2 they turn to **worse**; against 2′a and REF to undecided.
+   - The reviewer's R2-9, R2-10, R2-12 and R2-15 and both outside shift tables now miss. D-9 and G-4 now hold. Table: "Second scores under the corrected meter".
+2. **card_params.md refresh: done** (bcc1aed): goff = 1, the free-2 correction, pp 3 retired, 2′b at 72 / 84 / 96, the cap, the open robust-rule decision.
+3. **Reviewer scorecard (I-002): done** (2112a26), `reviews/scorecard.md`.
+   - Of 566 rows: the reviewer 188 held / 135 missed / 3 falsified; DeepSeek 56 / 51 / 33; Grok 24 / 37 / 7.
+   - On card runs alone (lines 6390–9184): the reviewer 62 / 37, DeepSeek 36 / 18 / 20, Grok 13 / 9 / 2. The reviewer's overall totals include many model-scored rows.
+   - Built as a delegated tally, spot-checked.
+4. **Meter-health check (I-042): done.** Tool e2079b0; timed pass 616fe22, **information only.**
+   - On the uncorrected 2b-sizes data **it flags sv:free2** (+39.7 µs, both checks), as required.
+   - **Timed pass, 2′a and 2′b at 72 / 84 / 96:** machine state met every condition (AC, cap, TCPU 52 °C, no Wolfram). **(b) 2′b against 2′a: no flags at any size:** root confirm carries no uncharged work by this check.
+   - **(a) flags common to both cells:** setup, solve, lp_ledger (lp:copy, lp:hash) and gray. At 96 these are +53–58, +176, +244 (lp:copy +100, lp:hash +72–78) and +27 µs per number.
+5. **Open meter questions, cost notes: done** (3a25704; Wolfram `2026-10-27_meter_open`).
+   - **Item 17 (A mod p):** +1.4% ruint, +0.2% official.
+   - **The lp hash:** 1.48× / 1.77× / 2.61× its price with sub-timers on.
+   - **Kept-relation copies:** 0.59× / 1.33× / **2.59×** its price, growing with size: +94 µs at 96.
+   - **Re-sieve's walk:** looks over-priced, not under-priced (911 µs priced against 331–358 µs measured in stage E; cross-run, not established).
+   - **solve benchmark:** held, listed only.
+   - **Stage 4's flags point at the hash and the copies.**
+6. **Op-class procedure, step (i) only: done** (3c79735), `reviews/opclass_procedure_DRAFT.md`, a proposal. No fraction, break-even or pricing computed.
+7. **Baselines and energy, checks only: done.**
+   - **I-038:** neither `yafu` nor `msieve` is installed. Ubuntu 25.10's archive has neither; it has `gmp-ecm` 7.0.6. Install options:
+     - msieve from source (public domain; SourceForge / GitHub; needs GMP);
+     - YAFU from source (github.com/bbuhrow/yafu; needs GMP, GMP-ECM and ytools);
+     - `apt install gmp-ecm` for ECM alone.
+
+     Nothing installed.
+   - **I-039:** RAPL exists (intel-rapl:0 package-0, :0:0 core, :0:1 dram, :1 psys; intel-rapl-mmio:0), but **every `energy_uj` is mode `-r--------` root: not readable by the user.** Making it readable needs root (e.g. a udev rule, or `chmod o+r` at each boot), so the user decides. Nothing changed.
+8. **Housekeeping: done.**
+   - `~/.claude/lpw_status.sh` now keeps one entry per script, the longest elapsed. Before the fix, a wrapped `bash -c "python3 parity.py"` showed 3 entries; after it, 1. The file is outside the repo, so there is no commit; a backup is in scratch.
+   - **Untracked files in the repo root** (the user's; not touched): 17 PDFs, `print*.pdf` (print1519195954944494.pdf … printv151919515519515111.pdf).
+
+**Nothing failed.** One classifier denial (a shell test that used `rm -rf` and `sleep`) was redone in Python without deleting.
+
+**Decisions waiting for the user, in order:**
+1. **The robust rule** ("Open decision": keep; option 2, an op-class pricing with worst of four; option 3, RAPL).
+   - The option-2 procedure draft is ready for review. **Does it look sound?** In particular: the reference class (root_test or per instruction), which static bodies represent each op class, and the stated exclusion of memory cost (a sieve update is mostly memory).
+2. **Whether to adopt 2′b** (root confirm reading the kept offsets), which depends on (1).
+   - Wall: −9.6% / −12.9% / −11.2% at 72 / 84 / 96, with intervals excluding zero.
+   - Official: 1.0403 / 1.0242 / 1.0137, so it is "undecided" under the current rule.
+   - No differential meter-health flags.
+3. **Meter corrections:**
+   - item 17 (A mod p, a missing charge);
+   - the hash and the copies (price questions; measurement first);
+   - re-sieve's walk (a measurement);
+   - the solve benchmark (held).
+4. **YAFU / msieve install** (from source) **and RAPL read permission** (root).
+
+
 ## 2026-10-22 — The cumulative total is the scoreboard
 
 - **Efficiency is judged by cumulative totals.** Watts are counted from the first operation to the last, for every test number, and summed. Lumens are the stations darkened by the end. Cumulative lumens ÷ cumulative watts is the algorithm's efficiency; its inverse is the inefficiency.
