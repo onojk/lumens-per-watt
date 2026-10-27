@@ -22,3 +22,18 @@ Plan: [PLAN.md](PLAN.md). Reasoning, cost models, predictions and results: [NOTE
 - Explicit `git add` only (never `commit -a`). Never push.
 - Stop and report at decision points: adopting a change, retunes, reference changes and pushes are the user's.
 - Documentation addenda go in their own commits, marked "documentation only".
+
+### Wolfram as a research tool
+
+- Use wolframscript (wolfram/ convention, 3ac43ab) on your own initiative whenever a question is a model, forecast or exact computation rather than a code measurement. That covers:
+  - cost models before code (op counts × prices under ruint / Montgomery / official);
+  - yield forecasts from the light meter or the card-sieve simulation;
+  - smoothness probabilities;
+  - parameter scans (F, M, slack, pp, small-prime cutoff);
+  - sanity checks of hand arithmetic in NOTES;
+  - checks of reviewer or DeepSeek numbers.
+- Every run: the input is committed as `wolfram/<topic>.wl` and the output as `wolfram/<topic>.out` (named `<date>_<name>` per wolfram/README.md). A NOTES entry says what the run computed and what it does not establish. Wolfram output is a model, never a verdict: verdicts come only from sealed card runs.
+- **Order with sealing:** a Wolfram forecast meant to inform predictions is run and committed BEFORE the predictions are sealed, and it may not see the sealed run's results. Post-run Wolfram analysis is labelled post hoc.
+- Never run Wolfram (or any heavy job) while a timed run is in progress. Check first that the status line says idle. Note in the run record if the user's desktop Mathematica kernel was running.
+- If wolframscript fails on a license error (desktop Mathematica holding the kernel), say so and continue without it; do not retry in a loop.
+- Reviewer-written Wolfram prompts (with sealed predictions) still come from the user. Run them through wolframscript when the user pastes them, and record them as given.
