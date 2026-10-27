@@ -7373,3 +7373,66 @@ Against the reference, in percent:
   - |x| ≤ M (~1,056), and most base primes exceed M (B ~1,752). For those primes x mod p is x (or x + p), and the test is a comparison with the two roots, with no reduction. Only primes below M need a real reduction.
   - The ~7.6 dividing primes cost ~3.9 ns each (the card's measured i128 test): ~30 ns, not DeepSeek's ~14 ns.
 - *Note for the benchmark design:* the sieve already maintains the polynomial's roots mod p (Gray-code updates), so the root test reuses them.
+
+### Stage H addendum: Wolfram, Oct 27 — cost forecast, wider grid (recorded as given; documentation only)
+
+Same simulation. Confirm cost c ∈ {0.53, 0.30, 0.177, 0.10} µs per candidate; wall-clock in % against the model's reference.
+
+**Matched shift** (option on, candidates = today's): +3.67 bits above today's threshold.
+- The reviewer's earlier "~4.6" was wrong. (NOTES never quoted it as the matched shift; the ~4.6-bit figures in NOTES are the 84-bit headroom and the median under-count, which are unaffected.)
+- The card's own tc search found +2.94 bits (`hsearch.out`).
+- Reference: never-combined 0.844, combinations per stored partial 0.0843.
+
+**Option, shifts 0 … 8:**
+
+| shift | candidates / polynomial | polynomials | never-combined | combinations / partial | wall at c = 0.53 / 0.30 / 0.177 / 0.10 |
+|---|---|---|---|---|---|
+| 0 | 15.71 | −22.3% | 0.889 | 0.060 | +22.3 / −0.3 / −12.3 / −19.9 |
+| 1 | 12.88 | −20.6% | 0.876 | 0.067 | +12.9 / −6.0 / −16.1 / −22.4 |
+| 2 | 10.43 | −18.1% | 0.858 | 0.077 | +5.2 / −10.6 / −19.0 / −24.3 |
+| 3 | 8.25 | −14.4% | 0.832 | 0.090 | −0.9 / −14.0 / −21.0 / −25.3 |
+| 4 | 6.60 | −11.3% | 0.801 | 0.108 | −5.9 / −16.7 / −22.5 / −26.2 |
+| 5 | 5.25 | −6.5% | 0.769 | 0.125 | −8.3 / −17.3 / −22.2 / −25.2 |
+| 6 | 3.92 | +1.6% | 0.729 | 0.148 | −8.3 / −15.6 / −19.6 / −22.0 |
+| 7 | 3.04 | +10.3% | 0.694 | 0.167 | −6.1 / −12.3 / −15.6 / −17.7 |
+| 8 | 2.21 | +24.2% | 0.663 | 0.186 | −0.4 / −5.4 / −8.2 / −9.9 |
+| matched (+3.67) | 6.85 | −11.7% | 0.807 | 0.104 | −5.0 / −16.2 / −22.2 / −25.9 |
+
+**Old sieve, shifts −2 / 0 / +2 / +4:** wall-clock at c = 0.53 is +9.6 / 0 / −2.0 / +2.7%; at c = 0.177 it is −18.3 / −19.3 / −15.9 / −7.1%.
+
+**Best cell per confirm cost:**
+
+| c (µs per candidate) | option on | old sieve |
+|---|---|---|
+| 0.53 | +6: −8.3% (+5 equal) | +2: −2.0% |
+| 0.30 | +5: −17.3% | 0: −12.6% |
+| 0.177 | +4: −22.5% | 0: −19.3% |
+| 0.10 | +4: −26.2% | −2: −24.3% |
+
+**The user's sealed X1–X7:**
+- X1 held (+6), X2 held (−8.3%), X3 held (+4), X4 held (−22.5%).
+- X5 missed by 0.3 point (−17.3% against −10% to −17%).
+- X6 held (0.807), X7 held (1.24x).
+
+**DeepSeek round 45's optimum estimates:**
+- Today's confirm +6 to +7: model +6 (held, though its own arithmetic did not support it, as the reviewer noted).
+- Cheap confirm +5 to +6: model +4 (high by ~1).
+- Its H(ii) never-combined 0.78–0.82: model 0.807 (inside).
+
+**Reading (model only):**
+- With the option on, the best threshold is ~+4 to +6 bits above today's, and the curve is flat there: +5 is within ~1 point of the best at every confirm cost tested.
+- The option alone (today's confirm) is worth ~−8%; a cheap confirm alone ~−19%; both ~−22%.
+- Never-combined falls and combinations per stored partial rise steadily with the shift: the quality effect, confirmed.
+- *Caveats:* the option's extra sieve cost is estimated from hit counts (+30%); priced ruint is not modelled.
+
+### Stage H: cell (iii) added, and its sealed predictions (the user's; recorded before any comparison run)
+
+**Cell (iii):** option on (pp 10), threshold raised by +5 bits relative to today's, through tc only (tc = 1.0353 − 5 / 10.775 = 0.5713; L unchanged). All 640 numbers, reported as (i) and (ii), with candidates both per number and per polynomial.
+
+- **H-11** (iii) polynomials: −2% to −11% (model −6.5%).
+- **H-12** (iii) candidates per number: −18% to −38% (model ~−28%); per polynomial −15% to −32%.
+- **H-13** (iii) wall-clock (two replicates): −3% to −13% (model −8.3%).
+- **H-14** (iii) priced ruint: −14% to +4% (no model value; priced may disagree with wall-clock).
+- **H-15** (iii) never-combined share: 0.70–0.82 (model 0.769).
+
+STOP after this for DeepSeek's (iii) predictions, then "go".
