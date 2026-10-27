@@ -6,7 +6,7 @@ While each cell is timed, the pinned core's clock (cpufreq scaling_cur_freq) is 
 samples' range and median are returned, and a cell whose median differs from the reference's (the first cell) by
 more than 10% is flagged. The order, the states and the clock summary are returned for the results.
 """
-import os, statistics, subprocess, threading
+import os, random, statistics, subprocess, threading
 from lctest import phasetime
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -47,6 +47,30 @@ def counterbalanced(cells, nums, reps=2, lpb=False):
         states.append(machine_state())
         for n in (names if r % 2 == 0 else names[::-1]):
             res[n][r], smp = timed_with_clock(lambda: phasetime(cells[n], nums, lpb))
+            mhz[n] += smp
+            order.append((r + 1, n))
+    clock = {n: {"min": min(v), "median": statistics.median(v), "max": max(v), "n": len(v)} if v else {"n": 0} for n, v in mhz.items()}
+    ref = clock[names[0]].get("median")
+    for n in names:
+        med = clock[n].get("median")
+        clock[n]["flag"] = bool(ref and med and abs(med / ref - 1) > 0.10)
+    return res, order, states, clock
+
+def shuffled(cells, nums, reps=8, seed=2026):
+    """As counterbalanced, but each replicate times the cells in its own random order (random.Random(seed), one
+    shuffle per replicate), so heat build-up is spread over the cells. The cells are the reference first; the
+    orders, the per-replicate machine states and the clock summary are returned as by counterbalanced."""
+    names = list(cells)
+    rng = random.Random(seed)
+    res = {n: [None] * reps for n in names}
+    mhz = {n: [] for n in names}
+    order, states = [], []
+    for r in range(reps):
+        states.append(machine_state())
+        perm = names[:]
+        rng.shuffle(perm)
+        for n in perm:
+            res[n][r], smp = timed_with_clock(lambda: phasetime(cells[n], nums, False))
             mhz[n] += smp
             order.append((r + 1, n))
     clock = {n: {"min": min(v), "median": statistics.median(v), "max": max(v), "n": len(v)} if v else {"n": 0} for n, v in mhz.items()}

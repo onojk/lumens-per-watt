@@ -8,6 +8,7 @@ echo "pinned core: $core"
 echo "governor: $(cat $c/scaling_governor 2>/dev/null || echo unknown)"
 echo "energy_performance_preference: $(cat $c/energy_performance_preference 2>/dev/null || echo unknown)"
 echo "cur MHz: $(( $(cat $c/scaling_cur_freq 2>/dev/null || echo 0) / 1000 )); max MHz: $(( $(cat $c/cpuinfo_max_freq 2>/dev/null || echo 0) / 1000 ))"
+echo "frequency limits: scaling_min_freq $(( $(cat $c/scaling_min_freq 2>/dev/null || echo 0) / 1000 )) MHz; scaling_max_freq $(( $(cat $c/scaling_max_freq 2>/dev/null || echo 0) / 1000 )) MHz; intel_pstate no_turbo $(cat /sys/devices/system/cpu/intel_pstate/no_turbo 2>/dev/null || echo n/a); min_perf_pct $(cat /sys/devices/system/cpu/intel_pstate/min_perf_pct 2>/dev/null || echo n/a); max_perf_pct $(cat /sys/devices/system/cpu/intel_pstate/max_perf_pct 2>/dev/null || echo n/a)"
 echo "load average: $(cut -d' ' -f1-3 /proc/loadavg)"
 for p in /sys/class/power_supply/*; do
     [ -f "$p/online" ] && echo "power supply $(basename "$p") online: $(cat "$p/online")"
