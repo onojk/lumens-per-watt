@@ -7279,3 +7279,62 @@ Against the reference, in percent:
   - even k (k = 2 occurs on the card; the simulation used odd k);
   - the card's under-count at fulls, ~1 bit above the simulation's (6.2–6.5 against 5.5 bits).
 - Low priority. A trace listing the missed fulls' margins, k, B, M and v_p for A's primes would settle it.
+
+### Stage H / I-029 addendum: Wolfram, Oct 27 — cost forecast from the card-sieve simulation (recorded as given; documentation only)
+
+**Method:**
+- Same seed, numbers and polynomials as the simulation above.
+- P to completion comes from fulls plus Poisson combinations per 0.5-bit q bin, against a target of F + 10 = 158.7.
+- Wall-clock per number = P (K + option × sieve extra) + P r c + l P a. The card-calibrated constants:
+  - K = 7.60 µs per polynomial;
+  - c = 0.53 µs per candidate today, 0.177 with a cheap confirm;
+  - l = 0.202 µs per partial looked up;
+  - the option's extra sieve hits, +30.0%.
+- Model reference wall-clock: 1,851 µs (card 1,909).
+
+**Old sieve, shifts +2 / 0 / −2 / −4 / −6 bits:**
+
+| shift | candidates / polynomial | capture | polynomials | wall today | wall, cheap confirm |
+|---|---|---|---|---|---|
+| +2 | 4.26 | 0.203 | 171.0 (+15.1%) | −2.0% | −16.0% |
+| 0 | 6.82 | 0.335 | 148.6 (0) | 0 | −19.4% |
+| −2 | 10.93 | 0.487 | 133.5 (−10.2%) | +9.6% | −18.3% |
+| −4 | 17.11 | 0.647 | 123.2 (−17.1%) | +27.0% | −13.4% |
+| −6 | 26.27 | 0.777 | 116.3 (−21.8%) | +53.4% | −5.1% |
+
+**Option, shifts +2 / 0 / −2 / −4 / −6:**
+
+| shift | candidates / polynomial | capture | polynomials | wall today | wall, cheap confirm |
+|---|---|---|---|---|---|
+| +2 | 10.43 | 0.538 | −18.1% | +5.2% | −19.1% |
+| 0 | 15.71 | 0.756 | −22.3% | +22.4% | −12.4% |
+| −2 | 23.51 | 0.876 | −25.1% | +45.4% | −4.7% |
+| −4 | 34.75 | 0.934 | −26.7% | +78.9% | +6.3% |
+| −6 | 51.15 | 0.966 | −27.4% | +128.6% | +22.9% |
+
+**Option, matched candidates (H(ii)):**
+- 6.85 candidates per polynomial, capture 0.345;
+- polynomials 131.3 (−11.7%);
+- partials looked up 827 per number (reference 909);
+- wall today −5.0%; with a cheap confirm, −22.3%.
+
+**The user's sealed V1–V6:**
+- V1 held (148.6 against the card's 156).
+- V2a/b/c held (−10.2 / −17.1 / −21.8 against the card's −11.0 / −18.1 / −22.6).
+- V3a/b held (+27.0 / +53.4 against +29.4 / +55.7).
+- V4 held (−19.4%).
+- V5 missed: the best shift with a cheap confirm on the old sieve is 0, not −2. The reviewer's hand calculation ignored the ledger's growth.
+- V6 missed: option plus cheap confirm is best at −19.1% at +2 on this grid. The matched cell (−22.3%) lies at a higher shift than the grid covered.
+
+**Reviewer's corrections:**
+1. The earlier reading "H(ii) gains almost nothing" was **wrong**. At a matched candidate count, the option passes about the same *number* of partials, but with smaller q, which combine more: polynomials −11.7% with fewer partials stored. The option improves the quality of what passes, not the count.
+2. The model now puts the reviewer's H-8 and H-10 inside their ranges, not "expected to miss" as stated earlier. H-7 (0.40–0.58) still looks likely to miss (model 0.345). DeepSeek's H-7 (0.33–0.48), H-8 (−1% to −12%) and H-10 (−8% to +4%) are inside on the model too. All stand as sealed.
+
+**Reading (model only):**
+- The cheap confirm is the main lever (~−19% wall-clock at 96). With it, the threshold should stay put on the old sieve.
+- The option pays only with the threshold **raised** (H(ii)): ~−5% with today's confirm, ~−22% with a cheap confirm, and its optimum may lie above the matched shift.
+- Lowering the threshold never pays in this model.
+
+**Next after stage H** (unchanged, now higher priority): the I-029 microbenchmark of the reciprocal root test's ns per prime.
+
+**Note (mine, a fact from the tc search, `hsearch.out`):** on the card, the matched count with pp = 10 needs the threshold raised by ~2.94 bits (tc 0.7623), beyond the model grid's +2.
