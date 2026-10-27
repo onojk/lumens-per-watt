@@ -273,12 +273,15 @@ def sieve_source(N, k, g, led, ch, at):
         charge("word", 2)                          # M mod 2, w2 from kN mod 8
     chk = bool(g.get("check", 0))              # ledger check: qs's acceptance test only
     RS = g.get("confirm") == "resieve"         # root-matched confirmation by re-sieving; P0: below it, divide directly
+    RT = g.get("confirm") == "root"            # I-029 root confirm (NOTES.md, "Root confirm (I-029) as a card option")
     P0 = int(g.get("p0", 30))
     partials = {}                              # q -> (u, sparse exponent list)
     # step 1 (NOTES.md, "Step 1: delete the fills"): one exponent vector per attempt, reused (F word); with
     # re-sieve, the slot array (width) and the generation stamps (F) once per attempt
     ev = [0] * F
     charge("word", F + (width + F if RS else 0))
+    if RT:
+        charge("setup", F - 2)                 # root confirm: each odd base prime's reciprocal (a 64-bit divide)
     if at is not None:
         at["s1"] = dict(attempt=F + (width + F if RS else 0), cand=0, comb=0, T=0, Tk=0, kept=0)
     if at is not None:
@@ -383,6 +386,13 @@ def sieve_source(N, k, g, led, ch, at):
             charge("word", nr)                     # start offsets, one word op per root
             charge("sieve", upd)
             charge("sieve", width)
+            if RT:                                 # root confirm: the sieved roots' start offsets stored, one word per root
+                rtab = []                          # per sieved base prime, ascending: (base index, p, its start offsets)
+                for p, rs, _ in st_:
+                    st0 = [(r + mp[p]) - p if r + mp[p] >= p else r + mp[p] for r in rs]
+                    rtab.append((idx[p], p, st0))
+                charge("word", sum(len(e[2]) for e in rtab))
+                aj = sorted(idx[ql] for ql in qs_)
             if at is not None:
                 at["polys"].append({"M": M, "roots": hits, "upd": upd,
                                     "sieved": [p for p, _, _ in st_],
@@ -424,7 +434,10 @@ def sieve_source(N, k, g, led, ch, at):
                 else:
                     plist = range(1, F)
                 charge("word", 1)                  # the sign check (audit item 8)
-                charge("confirm", len(plist) if RS else F - 1)
+                if RT:
+                    charge("root", len(rtab))      # the root test, one per sieved base prime
+                else:
+                    charge("confirm", len(plist) if RS else F - 1)
                 if at is not None:
                     at["cands"].append(v)
                 TT = []                             # entries touched in the reused vector (step 1)
@@ -438,6 +451,16 @@ def sieve_source(N, k, g, led, ch, at):
                         at["s1"]["cand"] += s1w; at["s1"]["T"] += len(TT)
                     ch.m.test(False)
                     continue
+                if RT:                             # root confirm: hits, the prime 2 by the low bit, A's primes by v mod p
+                    rh = [j for j, p, st0 in rtab if i0 % p in st0]
+                    charge("word", 1)
+                    dl = [1] if v % 2 == 0 else []
+                    for j in aj:
+                        charge("confirm", 1)
+                        if v % base[j] == 0:
+                            dl.append(j)
+                    charge("confirm", len(rh) + (v % 2 == 0))   # the first division by each hit and an even v
+                    plist = merge_asc(dl, rh); charge("word", len(plist))
                 for j in plist:
                     p = base[j]
                     if v % p == 0:

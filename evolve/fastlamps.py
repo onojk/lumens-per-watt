@@ -17,7 +17,7 @@ BIN = os.environ.get("LAMPCORE",
                      os.path.join(HERE, "..", "lampcore", "target", "release", "lampcore"))
 
 PHASES = ["mult", "fb", "setup", "sieve", "confirm", "la", "sqrt", "lp", "check",
-          "cf_step", "cf_td", "ecm_setup", "ecm_s1", "ecm_s2", "ecm_gcd", "word", "gray", "hash", "sortc", "flog", "fdiv"]   # qs's, cfrac's, ecm's; word-level
+          "cf_step", "cf_td", "ecm_setup", "ecm_s1", "ecm_s2", "ecm_gcd", "word", "gray", "hash", "sortc", "flog", "fdiv", "root"]   # qs's, cfrac's, ecm's; word-level
 
 def semiprimes_pq(bits, count, seed):
     """Same numbers as lamps.semiprimes(bits, count, seed), with their factors."""

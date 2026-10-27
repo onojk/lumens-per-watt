@@ -717,6 +717,9 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
     }
     let chk = gene(g, "check", 0.0) != 0.0; // ledger check: qs's acceptance test only
     let rs_on = g.get("confirm").and_then(|v| v.as_str()) == Some("resieve"); // root-matched confirmation
+    // I-029 root confirm (NOTES.md, "Root confirm (I-029) as a card option"): per candidate, a branch-free root test
+    // over the sieved base primes (the sieve's start offsets), then v divided only by the hits and the direct primes
+    let rt_on = g.get("confirm").and_then(|v| v.as_str()) == Some("root");
     let p0 = gene(g, "p0", 30.0) as i128;
     // fix C.2: q -> (u, offset, length) into `parena`; `kept` and `cbuf` are per-attempt scratch for a kept
     // candidate's list and a combination's union
@@ -735,6 +738,15 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
     let mut stamp = vec![0u32; if rs_on { f } else { 0 }];
     let mut gen = 0u32;
     m.charge(crate::PH_WORD, (f + if rs_on { width + f } else { 0 }) as u64)?;
+    // root confirm: each odd base prime's reciprocal for fastmod (a 64-bit divide)
+    let recip: Vec<u64> = if rt_on { base.iter().map(|&p| if p > 2 { u64::MAX / p as u64 + 1 } else { 0 }).collect() } else { Vec::new() };
+    if rt_on {
+        m.charge(SETUP, (f - 2) as u64)?;
+    }
+    // root confirm, per polynomial: per sieved base prime (p, reciprocal, root 1, root 2, base index), and the hit list
+    let (mut tp, mut tm, mut ta, mut tb, mut tj): (Vec<u32>, Vec<u64>, Vec<u32>, Vec<u32>, Vec<u32>) =
+        (Vec::new(), Vec::new(), Vec::new(), Vec::new(), Vec::new());
+    let (mut thit, mut dl): (Vec<usize>, Vec<usize>) = (Vec::new(), Vec::new());
 
     let mut next_i = 0usize;
     crate::pt_end(m, 2, pt_pre);
@@ -754,6 +766,8 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
             }
         };
         let qs_ = &cur;
+        let mut aj: Vec<usize> = if rt_on { qs_.iter().map(|&q| pos(q)).collect() } else { Vec::new() }; // root confirm: A's primes, direct
+        aj.sort();
         let a: i128 = qs_.iter().map(|&x| x as i128).product();
         let mut bl: Vec<i128> = Vec::with_capacity(s);
         for &ql in qs_ {
@@ -928,6 +942,31 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
             m.charge(crate::PH_WORD, nr)?;
             m.charge(SIEVE, upd)?;
             m.charge(SIEVE, width as u64)?;
+            if rt_on {
+                // the sieved roots' start offsets stored, one word per root (roots of one prime adjacent, ascending base order)
+                tp.clear();
+                tm.clear();
+                ta.clear();
+                tb.clear();
+                tj.clear();
+                for k in 0..sr.len() {
+                    let (p, j) = (sp[k] as i64, sj[k]);
+                    let mut s0 = sr[k] as i64 + mp[j] as i64;
+                    if s0 >= p {
+                        s0 -= p;
+                    }
+                    if tj.last() == Some(&(j as u32)) {
+                        *tb.last_mut().unwrap() = s0 as u32;
+                    } else {
+                        tp.push(p as u32);
+                        tm.push(recip[j]);
+                        ta.push(s0 as u32);
+                        tb.push(s0 as u32);
+                        tj.push(j as u32);
+                    }
+                }
+                m.charge(crate::PH_WORD, sr.len() as u64)?;
+            }
             m.ev(crate::EV_SIEVE_SCAN, width as u64); // at["polys"] append
             crate::pt_end(m, 4, pt);
             let pt = crate::pt_snap(m); // "scan"
@@ -1014,7 +1053,11 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                     m.charge(crate::PH_WORD, plist.len() as u64)?;
                 } // else: the full pass iterates 1..f directly (no list is built, as in Python)
                 m.charge(crate::PH_WORD, 1)?; // the sign check (audit 8)
-                m.charge(CONFIRM, if rs_on { plist.len() as u64 } else { f as u64 - 1 })?;
+                if rt_on {
+                    m.charge(crate::PH_ROOT, tp.len() as u64)?; // the root test, one per sieved base prime
+                } else {
+                    m.charge(CONFIRM, if rs_on { plist.len() as u64 } else { f as u64 - 1 })?;
+                }
                 tt.clear(); // entries touched in the reused vector (step 1)
                 if v < 0 {
                     ev[0] = 1;
@@ -1029,9 +1072,51 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                     m.test(false);
                     continue;
                 }
-                let n_pl = if rs_on { plist.len() } else { f - 1 };
+                if rt_on {
+                    // branch-free root test (the benchmark's version (c)): i0 mod p by the reciprocal when i0 >= p
+                    let n = tp.len();
+                    thit.resize(n + 1, 0);
+                    let mut cnt = 0usize;
+                    let x0 = i0 as u32;
+                    for t in 0..n {
+                        let p = tp[t];
+                        let fm = (((tm[t].wrapping_mul(x0 as u64)) as u128 * p as u128) >> 64) as u32;
+                        let r = if x0 < p { x0 } else { fm };
+                        thit[cnt] = tj[t] as usize;
+                        cnt += ((r == ta[t]) | (r == tb[t])) as usize;
+                    }
+                    m.charge(crate::PH_WORD, 1)?; // the prime 2's low-bit test
+                    let even = v & 1 == 0;
+                    dl.clear();
+                    if even {
+                        dl.push(1);
+                    }
+                    for &j in &aj {
+                        m.charge(CONFIRM, 1)?; // A's primes, v mod p
+                        if v % base[j] as i128 == 0 {
+                            dl.push(j);
+                        }
+                    }
+                    m.charge(CONFIRM, (cnt + even as usize) as u64)?; // the first division by each hit and an even v
+                    plist.clear();
+                    let (a_, b_) = (&dl, &thit[..cnt]);
+                    let (mut i, mut j) = (0usize, 0usize);
+                    while i < a_.len() && j < b_.len() {
+                        if a_[i] < b_[j] {
+                            plist.push(a_[i]);
+                            i += 1;
+                        } else {
+                            plist.push(b_[j]);
+                            j += 1;
+                        }
+                    }
+                    plist.extend_from_slice(&a_[i..]);
+                    plist.extend_from_slice(&b_[j..]);
+                    m.charge(crate::PH_WORD, plist.len() as u64)?;
+                }
+                let n_pl = if rs_on || rt_on { plist.len() } else { f - 1 };
                 for t in 0..n_pl {
-                    let j = if rs_on { plist[t] } else { t + 1 };
+                    let j = if rs_on || rt_on { plist[t] } else { t + 1 };
                     let p = base[j] as i128;
                     if v % p == 0 {
                         v /= p;

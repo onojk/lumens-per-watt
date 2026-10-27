@@ -34,7 +34,7 @@ def qs_counts(tr):
             "la": o.get("la", 0), "sqrt_mul": o.get("sqrt", 0) - sqrt_gcd, "sqrt_gcd": sqrt_gcd,
             "lp_full": lp_full, "lp_small": o.get("lp", 0) - lp_full, "check": o.get("check", 0),
             "word": o.get("word", 0), "setup_gray": o.get("gray", 0),
-            "hash": o.get("hash", 0), "sort_cmp": o.get("sortc", 0), "f64_log": o.get("flog", 0), "f64_div": o.get("fdiv", 0)}
+            "hash": o.get("hash", 0), "sort_cmp": o.get("sortc", 0), "f64_log": o.get("flog", 0), "f64_div": o.get("fdiv", 0), "root_test": o.get("root", 0)}
 
 def ecm_setup_steps(N, sigma):
     """(Euclid steps of den^-1 mod N, whether den is invertible) for a Suyama curve."""
@@ -70,7 +70,7 @@ def rho_counts(ops, tests):
 TYPE_ORDER = ["mult", "fb", "setup_full", "setup_euclid", "setup_small", "sieve_update", "sieve_scan",
               "confirm_full", "confirm_td", "la", "sqrt_mul", "sqrt_gcd", "lp_full", "lp_small", "check",
               "setup_mul", "setup_euclid_N", "mul", "gcd", "td_mod", "sq_ops", "ps_ops", "cfrac_ops", "word", "setup_gray",
-              "hash", "sort_cmp", "f64_log", "f64_div"]
+              "hash", "sort_cmp", "f64_log", "f64_div", "root_test"]
 
 def prices(path="calibrate.json"):
     """Per pricing, the price of each type: official 1 for every op; ruint and Montgomery from

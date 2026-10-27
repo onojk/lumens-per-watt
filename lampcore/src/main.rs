@@ -34,12 +34,15 @@ struct Budget;
 
 /// Per-type op counts (NOTES.md, "lampcore per-type op counters"): the types optypes.py
 /// splits, in its TYPE_ORDER.
-pub const TYPE_NAMES: [&str; 29] = [
+pub const TYPE_NAMES: [&str; N_TY] = [
     "mult", "fb", "setup_full", "setup_euclid", "setup_small", "sieve_update", "sieve_scan",
     "confirm_full", "confirm_td", "la", "sqrt_mul", "sqrt_gcd", "lp_full", "lp_small", "check",
     "setup_mul", "setup_euclid_N", "mul", "gcd", "td_mod", "sq_ops", "ps_ops", "cfrac_ops", "word", "setup_gray",
-    "hash", "sort_cmp", "f64_log", "f64_div",
+    "hash", "sort_cmp", "f64_log", "f64_div", "root_test",
 ];
+/// Phase and type counts (the root test, NOTES.md "Root confirm (I-029) as a card option", added phase 21 / type 29).
+pub const N_PH: usize = 22;
+pub const N_TY: usize = 30;
 /// The word-level phase (NOTES.md, "ECM modular additions"): one machine-word op, priced like sieve_update.
 pub const PH_WORD: usize = 15;
 /// The Gray-code root-update phase (NOTES.md, "Gray-code root update re-typed"): word-level, its own type for both-way pricing.
@@ -50,6 +53,8 @@ pub const PH_HASH: usize = 17;
 pub const PH_SORT: usize = 18;
 pub const PH_FLOG: usize = 19;
 pub const PH_FDIV: usize = 20;
+/// The root test (NOTES.md, "Root confirm (I-029) as a card option"): one per sieved base prime tested by its roots.
+pub const PH_ROOT: usize = 21;
 /// Event counters for the full-price parts, at the program points of Python's trace updates.
 pub const EV_SETUP_FULL: usize = 0;
 pub const EV_SETUP_EUCLID: usize = 1;
@@ -58,11 +63,11 @@ pub const EV_CONFIRM_FULL: usize = 3;
 pub const EV_SQRT_GCD: usize = 4;
 pub const EV_LP_FULL: usize = 5;
 pub const EV_ECM_EUCLID: usize = 6;
-pub type Types = [i64; 29];
+pub type Types = [i64; N_TY];
 
 /// One stage's per-type counts from its own deltas (ops, tests, phases, event counters).
-fn stage_types(t: &str, d_ops: u64, d_tests: u64, ph: &[u64; 21], ev: &[u64; 7]) -> Types {
-    let mut o = [0i64; 29];
+fn stage_types(t: &str, d_ops: u64, d_tests: u64, ph: &[u64; N_PH], ev: &[u64; 7]) -> Types {
+    let mut o = [0i64; N_TY];
     let (p, e) = (|i: usize| ph[i] as i64, |i: usize| ev[i] as i64);
     match t {
         "qs" => {
@@ -87,6 +92,7 @@ fn stage_types(t: &str, d_ops: u64, d_tests: u64, ph: &[u64; 21], ev: &[u64; 7])
             o[26] = p(PH_SORT);
             o[27] = p(PH_FLOG);
             o[28] = p(PH_FDIV);
+            o[29] = p(PH_ROOT);
         }
         "ecm" => {
             o[15] = p(ecm::ECM_SETUP) - e(EV_ECM_EUCLID);
@@ -123,11 +129,11 @@ pub const PT_N: usize = 14;
 pub const PT_NAMES: [&str; PT_N] = ["mult", "fb", "setup", "gray", "sieve", "scan", "resieve", "confirm", "lp_ledger", "solve",
                                     "lp:copy", "lp:hash", "lp:comb", "lp:add"];
 pub static LPB_ON: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
-type PtAcc = ([u64; PT_N], [u64; PT_N], [[i64; 29]; PT_N]);
+type PtAcc = ([u64; PT_N], [u64; PT_N], [[i64; N_TY]; PT_N]);
 thread_local! {
-    static PT: std::cell::RefCell<PtAcc> = std::cell::RefCell::new(([0; PT_N], [0; PT_N], [[0; 29]; PT_N]));
+    static PT: std::cell::RefCell<PtAcc> = std::cell::RefCell::new(([0; PT_N], [0; PT_N], [[0; N_TY]; PT_N]));
 }
-pub type Snap = Option<(std::time::Instant, [u64; 21], [u64; 7], u64, u64)>;
+pub type Snap = Option<(std::time::Instant, [u64; N_PH], [u64; 7], u64, u64)>;
 #[inline]
 fn pt_snap(m: &Meter) -> Snap {
     if PT_ON.load(std::sync::atomic::Ordering::Relaxed) {
@@ -150,7 +156,7 @@ fn pt_snap_lp(m: &Meter) -> Snap {
 fn pt_end(m: &Meter, r: usize, s: Snap) {
     if let Some((t0, ph0, ev0, o0, te0)) = s {
         let dt = t0.elapsed().as_nanos() as u64;
-        let ph: [u64; 21] = std::array::from_fn(|i| m.phases[i] - ph0[i]);
+        let ph: [u64; N_PH] = std::array::from_fn(|i| m.phases[i] - ph0[i]);
         let ev: [u64; 7] = std::array::from_fn(|i| m.ev[i] - ev0[i]);
         let ty = stage_types("qs", m.ops - o0, m.tests - te0, &ph, &ev);
         PT.with(|p| {
@@ -164,7 +170,7 @@ fn pt_end(m: &Meter, r: usize, s: Snap) {
     }
 }
 fn pt_take() -> PtAcc {
-    PT.with(|p| std::mem::replace(&mut *p.borrow_mut(), ([0; PT_N], [0; PT_N], [[0; 29]; PT_N])))
+    PT.with(|p| std::mem::replace(&mut *p.borrow_mut(), ([0; PT_N], [0; PT_N], [[0; N_TY]; PT_N])))
 }
 
 struct Meter {
@@ -173,7 +179,7 @@ struct Meter {
     tests: u64,
     hits: u64,
     k: Option<u64>, // instrumentation: the k a square-search win came from
-    phases: [u64; 21], // per-phase ops of qs, cfrac and ecm (see qs.rs, cfrac.rs, ecm.rs)
+    phases: [u64; N_PH], // per-phase ops of qs, cfrac and ecm (see qs.rs, cfrac.rs, ecm.rs)
     hook: Option<Box<race::Hook>>, // set only on a race side's meter (race.rs)
     race: Option<(u64, u64, u64)>, // the last race's side A ops, side B ops, switches
     ob: Option<u64>, // the running stage's op budget ("ob"; NOTES.md, "Per-stage op budget")
@@ -814,7 +820,7 @@ fn run_stage(num: &Num, s: &Value, m: &mut Meter) -> R {
     }
 }
 
-type RunOut = (Option<Win>, u64, u64, [u64; 21], Option<(u64, u64, u64)>, Types);
+type RunOut = (Option<Win>, u64, u64, [u64; N_PH], Option<(u64, u64, u64)>, Types);
 
 fn run(genome: &[Value], num: &Num, cap: u64) -> RunOut {
     for s in genome {
@@ -828,8 +834,8 @@ fn run(genome: &[Value], num: &Num, cap: u64) -> RunOut {
             race::validate(s);
         }
     }
-    let mut m = Meter { ops: 0, cap, tests: 0, hits: 0, k: None, phases: [0; 21], hook: None, race: None,
-                        ob: None, ob_spent: 0, ob_hit: false, ev: [0; 7], types: [0; 29] };
+    let mut m = Meter { ops: 0, cap, tests: 0, hits: 0, k: None, phases: [0; N_PH], hook: None, race: None,
+                        ob: None, ob_spent: 0, ob_hit: false, ev: [0; 7], types: [0; N_TY] };
     for (i, s) in genome.iter().enumerate() {
         let ob = s.get("ob").and_then(|v| v.as_u64());
         if ob == Some(0) {
@@ -842,7 +848,7 @@ fn run(genome: &[Value], num: &Num, cap: u64) -> RunOut {
         let r = run_stage(num, s, &mut m);
         if s["t"] != "race" {
             // a race adds its sides' split itself (race.rs)
-            let ph: [u64; 21] = std::array::from_fn(|i| m.phases[i] - ph0[i]);
+            let ph: [u64; N_PH] = std::array::from_fn(|i| m.phases[i] - ph0[i]);
             let ev: [u64; 7] = std::array::from_fn(|i| m.ev[i] - ev0[i]);
             let st = stage_types(s["t"].as_str().unwrap(), m.ops - start, m.tests - t0, &ph, &ev);
             for (a, b) in m.types.iter_mut().zip(st.iter()) {
@@ -885,8 +891,8 @@ fn main() {
             LPB_ON.store(true, std::sync::atomic::Ordering::Relaxed);
         }
         // the per-region overhead: an empty snap / end pair on a dummy meter, timed in a loop
-        let dm = Meter { ops: 0, cap: u64::MAX, tests: 0, hits: 0, k: None, phases: [0; 21], hook: None, race: None,
-                         ob: None, ob_spent: 0, ob_hit: false, ev: [0; 7], types: [0; 29] };
+        let dm = Meter { ops: 0, cap: u64::MAX, tests: 0, hits: 0, k: None, phases: [0; N_PH], hook: None, race: None,
+                         ob: None, ob_spent: 0, ob_hit: false, ev: [0; 7], types: [0; N_TY] };
         let reps = 200_000u64;
         let t0 = std::time::Instant::now();
         for _ in 0..reps {

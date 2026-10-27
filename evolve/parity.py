@@ -202,6 +202,19 @@ def qs_pairs():
             yield "qs pp low cap", [dict(TUNED, lc=1.4, a_mode="on_demand", kset="sf32", pp=10)], nums, cap, False
     for seed, b, i in RETRY[:4]:
         yield "qs pp retry", [dict(QS, a_mode="on_demand", pp=10)], semiprimes_pq(b, i + 1, seed)[i:], 2 ** 29, False
+    # confirm = root (NOTES.md, "Root confirm (I-029) as a card option"): with lc, both a_modes, with pp 3 / 10,
+    # the default genes, low caps that stop inside the root test or the divisions, a retry
+    for b in (40, 48, 60, 72, 84, 96):
+        nums = semiprimes_pq(b, 4, 3200000 + b)
+        yield "qs root", [dict(TUNED, lc=1.4, a_mode="on_demand", sort_charge=1, kset="sf32", confirm="root")], nums, 2 ** 29, False
+        yield "qs root enumerate", [dict(TUNED, lc=1.8, confirm="root")], nums, 2 ** 29, False
+        yield "qs root default genes", [dict(QS, confirm="root")], nums, 2 ** 29, False
+        for ppv in (3, 10):
+            yield f"qs root pp {ppv}", [dict(TUNED, lc=1.4, a_mode="on_demand", kset="sf32", confirm="root", pp=ppv)], nums, 2 ** 29, False
+        for cap in (2 ** 11, 2 ** 13, 2 ** 15):
+            yield "qs root low cap", [dict(TUNED, lc=1.4, a_mode="on_demand", kset="sf32", confirm="root")], nums, cap, False
+    for seed, b, i in RETRY[:4]:
+        yield "qs root retry", [dict(QS, a_mode="on_demand", confirm="root")], semiprimes_pq(b, i + 1, seed)[i:], 2 ** 29, False
     yield from lp_pairs()
     yield from check_pairs()
     yield from cfrac_pairs()

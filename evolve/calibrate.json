@@ -1701,6 +1701,11 @@
    "f64_div": {
     "ruint": 0.19,
     "montgomery": 0.7011
+   },
+   "root_test": {
+    "ruint": 0.0581,
+    "montgomery": 0.2142,
+    "source": "I-029 microbenchmark (d443357), branch-free root test 1.587 ns per prime tested; ruint unit 27.3 ns (anchor C); Montgomery unit 27.3 / 3.686 = 7.41 ns (the word price's ratio); NOTES.md, 'Root confirm (I-029) as a card option'"
    }
   }
  }

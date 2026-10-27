@@ -7998,3 +7998,20 @@ H2 (and stages G and H) timed the cells one after another, with the reference fi
 - **R-5** ("the '2 free' shift with candidates per number closest to the reference's 1,013 is +1 bit"): recorded as **information only, not sealed**.
   - The reviewer's error in asking: the root confirm does not change candidates (acceptance: identical to the full pass), and H2 already measured them (a31d75b / 5ae47ae): +1 bit +2.0%, +2 bits −14.3%, +3 bits −28.6%.
   - Its reasoning (on average 1.06 free bits per position, so +1 is about neutral) is sound and matches the data.
+
+### Root confirm (I-029) as a card option: built — acceptance and parity (`evolve/root_accept.py`, `root_accept.out`; `parity_root.out`)
+
+**Code:** per the cost model (1a7cd8d), in both cores, with gene confirm = "root" (off by default).
+- New phase PH_ROOT and a 30th type column, root_test (lampcore N_PH 22 / N_TY 30; optypes.TYPE_ORDER and fastlamps.PHASES extended).
+- root_test priced in `evolve/calibrate.json` at 0.0581 ruint / 0.2142 Montgomery (word_price.own_types). No other price changes.
+
+**Acceptance:**
+1. Option off against the pre-change lampcore (373261d, 29 type columns; the new column checked to be 0): identical per number and per type on all map numbers 54–96, 8,000 / 8,000.
+2. Python = Rust per type, option off: 32 / 32.
+3. Option on against the full pass, all map numbers 54–96, for the new reference, + pp 3 and + pp 10: the same factor, candidates, hits and every type outside confirm. 6,000 / 6,000.
+4. Relations and candidate values identical (Python traces, root against full): 24 / 24.
+5. Python = Rust per type, option on (including the corrected reference + root): 32 / 32.
+
+**Parity** (root cases added: on_demand and enumerate, default genes, pp 3 and 10, caps 2^11 / 2^13 / 2^15, retries, at 40–96 bits):
+- qs 4,826 pairs and types 7,598 pairs, mismatches 0;
+- mutations 56 / 56 (root_test now among the types in use).

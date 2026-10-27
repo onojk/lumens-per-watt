@@ -1,0 +1,9 @@
+54 bits done 1:1280/1280 2:8/8 3:960/960 4:6/6 5:8/8
+72 bits done 1:3200/3200 2:16/16 3:2400/2400 4:12/12 5:16/16
+84 bits done 1:5440/5440 2:24/24 3:4080/4080 4:18/18 5:24/24
+96 bits done 1:8000/8000 2:32/32 3:6000/6000 4:24/24 5:32/32
+1. option off vs pre-change lampcore, per number and per type: 8000/8000
+2. Python = Rust per type, option off: 32/32
+3. option on vs full pass: factor, candidates, hits and every non-confirm type: 6000/6000
+4. relations and candidate values identical (Python traces): 24/24
+5. Python = Rust per type, option on: 32/32
