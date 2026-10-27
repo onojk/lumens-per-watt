@@ -7027,7 +7027,7 @@ Against the reference, in percent:
 | −4 bits | +103.3 | −18.1 | +17.4 | +19.3 / +18.5 / +13.7 | +19.7 | −2.9 | +29.4 | +104.7 | +64.5 |
 | −6 bits | +197.4 | −22.6 | +22.0 | +43.6 / +42.6 / +40.2 | +44.4 | +4.0 | +55.7 | +201.4 | +70.5 |
 
-- Candidates per polynomial grow ~1.26x per bit of threshold (6.5 → 10.3 → 16.1 → 24.9). Capture of partials (subset) rises 0.32 → 0.47 → 0.62 → 0.75; fulls are already ~0.97 and go to ~1.0.
+- Candidates per polynomial grow ~1.26x per bit of threshold (6.5 → 10.3 → 16.1 → 24.9). Per polynomial against the reference: +59.3% / +148.3% / +284.1% at −2 / −4 / −6 (per number: +41.7% / +103.3% / +197.4%). The per-polynomial figures were added on the reviewer's request of Oct 27; nothing else in this entry changed. Capture of partials (subset) rises 0.32 → 0.47 → 0.62 → 0.75; fulls are already ~0.97 and go to ~1.0.
 - Confirm wall-clock tracks the candidate count one for one (+41% / +105% / +201%): the full pass costs ~F tests per candidate whether or not the candidate is a relation.
 - **Pricings disagree** at −2 and −4: ruint and Montgomery rise, official falls (official counts confirm's tests at 1 op each, below its ruint weight relative to the sieve), so no cell is called a gain. At −6 all three rise.
 - **Reading:** lowering the threshold recovers partials as intended, but every bit costs ~26% more candidates, each paying a full ~F-prime confirm. The polynomial saving (−11% to −23%) does not cover it on ruint, Montgomery or wall-clock. The baseline for stage H: at a matched candidate count, capture is 0.316 (reference), 0.474 (1,435) and 0.622 (2,059).
@@ -7192,3 +7192,46 @@ Against the reference, in percent:
 1. Record these.
 2. Build the option per the design note (3caf8df), in both cores and off by default, with acceptance; commit.
 3. Find tc for (ii) on a few map numbers and report the search runs. The full comparisons wait for the user's "go", since DeepSeek's predictions are to be filed first.
+
+### Stage H addendum: Wolfram, Oct 27 — card-sieve simulation at 96 bits (recorded as given; documentation only; does not change stage H's order)
+
+**Setup:**
+- real SIQS polynomials at B 1,752, M 1,056, L/B 1,440, slack 2.009;
+- 6 numbers, kN mod 8 = {1, 1, 1, 5, 7, 1}; 96 polynomials, 202,848 positions;
+- S0 = today's sieve: round(log2 p) once per odd base prime; not A's primes, no 2, no powers;
+- S1 = S0 + min(v2, 10) + powers p^j ≤ 2^10 of odd non-A primes;
+- exact factoring for true fulls and partials; odd k only.
+
+**Results:**
+- True per polynomial: fulls 0.552 (card 0.52), partials 18.26 (card 17.1).
+- Median under-count at true partials: today 4.59 bits (card 4.6); with the option −0.02 bits. At true fulls: today 5.47, with the option 0.42.
+- Per polynomial:
+
+| cell | candidates / polynomial | against the reference | partial capture | full capture | extra partials per extra candidate |
+|---|---|---|---|---|---|
+| reference | 6.82 | 0 | 0.335 | 1.000 | — |
+| threshold −2 | 10.93 | +60% | 0.487 | 1.000 | 0.675 |
+| threshold −4 | 17.11 | +151% | 0.647 | 1.000 | 0.555 |
+| threshold −6 | 26.27 | +285% | 0.777 | 1.000 | 0.415 |
+| H(i), option, reference threshold | 15.71 | +130% | 0.756 | 1.000 | 0.865 |
+| H(ii), option, matched candidates | 6.85 | +0.5% | 0.345 | 1.000 | (tiny denominator) |
+
+**The user's simulation predictions:**
+- W1a held (0.335).
+- W1b missed (1.000 against 0.93–0.99; the card's 0.973 loss is not in the simulation).
+- W2a, W2b, W3 (4.59) and W4b (0.647) held.
+- W4a missed as written (+151% against +75% to +135%). It compared per-polynomial candidates (simulation) with the card's per-number +103%. Per polynomial the card's figure is 2.033 / 0.819 = +148%, matching. The reviewer's error is in the prediction's unit.
+
+**Same unit issue in the sealed H-2,** which is stated per number. Every stage H cell reports candidates both per number and per polynomial, and G's per-polynomial figures are now in its entry.
+
+**Reading (model only; the card scores H):**
+- H(i) reaches about the −6-bit cell's capture with under half its extra candidates: ~1.56x the −4-bit cell's partials per extra candidate.
+- At matched candidates (H(ii)) the option gains almost nothing (0.345 against 0.335). With exact sieve sums, the candidates are the positions with the largest smooth part, and what blocks partials is the threshold's height, not the sieve's accuracy.
+- The reviewer's H-7 (0.40–0.58) and H-8 … H-10 are expected to miss, and H-6 likely misses low (simulation ~0 bits). All stand as sealed.
+
+**Implication (the reviewer's):**
+- More partials always require confirming more candidates. The better sieve makes each extra candidate ~1.5x more productive, but confirm's price per candidate decides.
+- The I-029 root test (est. ~170 against ~530 ns per candidate at 96) is the measurement that matters next.
+- Proposed for after stage H (not started): a microbenchmark of the reciprocal root test's ns per prime, then a re-evaluation of the threshold scan with that confirm cost.
+
+**Note from the build (mine):** the card's own exact-value check (`pp_accept.py` part 2) confirms the same design residual as S1 at pp = 10: at every position, the card's sieve value plus w2 equals the capped valuation sum exactly. The two differ at the cap: S1 takes min(v2, 10), the card min(v2, 9) (2^j < 2^10).
