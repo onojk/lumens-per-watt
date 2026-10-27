@@ -7757,3 +7757,21 @@ Under-count at fulls (median): reference 6.50; (i) 0.31; (ii) 0.30; (iii) 0.30; 
   - option off identical (gray_a_accept.py, 8,000 / 8,000, 32 / 32);
   - pp_accept.py (Python = Rust, exact sieve values);
   - parity.
+
+### DeepSeek, Oct 27, round 55 (hand-relayed; recorded as given; documentation only)
+
+- **Stage H scoring accepted** (10 held, 8 missed; H-13, H-16, H-18 falsified). RT-1 stands as sealed (35cf525).
+- **Why "2 free" at +3 bits raised polynomials** (checked, correct):
+  - The shift raises the bar 3 bits on every position. The free bits average 1.06 per position: half the positions get 3 / 1 / 2 / 1 bits for kN ≡ 1 mod 8 / 3 or 7 / 5 / even k, weighted 50 / 22 / 12 / 16% of attempts.
+  - The net bar is therefore ~+1.94 bits stricter on average; the shift that would leave the average bar unchanged is ~+1.06 bits.
+  - Reviewer: this is an average, not an optimum (a stricter bar can pay while confirm is expensive), but it explains the card's +10.1% polynomials.
+- **Missing cost terms (form adopted for the model):** C_poly = K + c r + l a + s_pow n_pow(A) + w_fill N_boost.
+  - s_pow is calibrated by regressing setup per polynomial on the number of power entries per A (check: the 18–22% setup rise with pp 10).
+  - w_fill comes from the fill's timed cost after the scan fix (N_boost ~1,056 at 96).
+- **I-029 on the card** (checked): at 185 ns per candidate (its sealed central), the reference card's confirm goes from 546.7 to 187.4 µs per number, −17.8% wall-clock (2,015 → ~1,656 µs). At the user's central 130 ns it is ~−20.6%.
+  - Its "2 free" +3-bit figure (−10.5% against the reference) used that cell's wall-clock from before the scan fix.
+  - Reviewer: removing the ~120 µs of slow scan gives ~−16.5% against the reference, slightly **worse** than the reference with I-029 alone (−17.8%).
+  - *Reading:* the +3 shift trades polynomials for fewer candidates, which pays only while confirm is expensive. With a cheap confirm, the free 2 needs a lower shift (~+1 to +2; the model said +2).
+  - *Priority:* I-029 first (the largest lever), then the free 2 with its shift retuned for the new confirm cost. The full option with powers is the weakest case once confirm is cheap.
+- **Tooling:** tools/ask_deepseek.py takes the next round as one more than the highest "round NN" in NOTES.md or reviews/, whichever is larger (hand-relayed rounds so far: up to 55). It is committed separately.
+- **Next after H2:** the I-029 microbenchmark, set up as predictions/i029.md (a verbatim copy of the sealed I-029a/b with their first commits) and run through the guard.
