@@ -8547,3 +8547,124 @@ The Gray code maintains `sr`: the roots in x-coordinates, in [0, p). The sieve's
   - Parity passes: qs 5,214 and types 7,986 pairs, mismatches 0; mutations 56 / 56. Output in `parity_ptfix.out`.
 - **Python** has no `--phasetime` equivalent, so it is unaffected.
 - **Effect on earlier results:** none on counts or priced totals. Earlier per-region priced figures from `--phasetime` lacked root_test in confirm (the pp 3 breakdown, 8d5ef90, added it by hand) and lacked the ~3.5 ruint residue. Region ns are unchanged except that lp_ledger now includes the last relation's time (one per attempt).
+
+## The 2′b+pp3 threshold-shift test, scored (`evolve/i032shift.py`, 0afa437; `results/pp3-gap-and-shift_20261027T070842Z.out` and `.machine.txt`, committed by the guard as 9ed805a; `evolve/i032shift.json`; predictions `predictions/pp3-gap-and-shift.md`, edb434c)
+
+**Setup:**
+- 96 bits, all 640 map numbers, re-sieve off; the reference genes of i032-2prime.
+- Cells: 2′a (goff on, full pass; the base, now the reference); 2′b+pp3 (goff on, root, pp 3) at threshold shifts +0, +1, +2 bits (tc − d / log2 1,752).
+- Priced: paired 95% bootstrap (10,000). Wall-clock: 8 replicates in seeded random order (2028); 95% t intervals over replicate pairs; every region saved per replicate with its own ruint; one LPBREAK pass per cell (information).
+
+**Conditions:**
+- **Cap 2,400 MHz on all 8 cores** (read at go and in every replicate's state); core 2's median 2,400 MHz in every cell (24 samples each); no flags.
+- TCPU 37 °C before, 47 °C after; 45–47 °C at every replicate. Governor powersave; AC online; battery 100%, not charging.
+- The user's line: cooling pad, plugged in, untouched. Desk or lap, the charger and the browser field not stated; 27 browser processes at go. No Wolfram processes.
+- The run took 2.5 minutes (00:08:42–00:11:11 PT).
+
+**Identity:** each 2′b+pp3 cell against the same genes with goff off: the same factor, candidates, hits and polynomials on 640 / 640 numbers; relations and candidate values identical on the 2 traced numbers.
+
+**Robust ratio first** (base 2′a; official / ruint / Montgomery):
+
+| cell | robust (c) | official [95%] | ruint [95%] | Montgomery [95%] | (e) | wall [95%] |
+|---|---|---|---|---|---|---|
+| +0 bits | **0.9618** | 0.9618 [0.9571, 0.9662] | 0.8703 [0.8674, 0.8730] | 0.8656 [0.8630, 0.8680] | better | 0.9061 [0.8878, 0.9244] (−9.4%) |
+| +1 bit | **0.9807** | 0.9807 [0.9764, 0.9846] | 0.8671 [0.8642, 0.8700] | 0.8620 [0.8593, 0.8645] | better | 0.8917 [0.8827, 0.9007] (−10.8%) |
+| +2 bits | **1.0138** | 1.0138 [1.0095, 1.0188] | 0.8748 [0.8708, 0.8798] | 0.8710 [0.8672, 0.8758] | undecided (official worse) | 0.8650 [0.8524, 0.8776] (−13.5%) |
+
+**Means per number:**
+- Priced (official / ruint / Montgomery): 2′a 1,425,117 / 58,145 / 213,006; +0 1,370,609 / 50,602 / 184,381; +1 1,397,547 / 50,418 / 183,614; +2 1,444,721 / 50,867 / 185,528.
+- Wall-clock (µs at 2.4 GHz): 2′a 3,854.8 (sd 34.7); +0 3,492.4 (58.8); +1 3,437.2 (31.6); +2 3,334.0 (38.3).
+- **Reproduction of i032-2prime:** the +0 priced ratios are identical to 4 digits (0.9618 / 0.8703 / 0.8656). 2′a's wall is 3,854.8 against 3,855.7 µs; +0's wall ratio is −9.4% against −9.9% (inside each other's intervals).
+
+**Region wall against 2′a** (ratio [95%]): confirm 0.692 / 0.596 / 0.493; sieve 0.947 / 1.008 / 1.056; lp_ledger 1.240 / 1.066 / 0.823; setup 0.940 / 0.984 / 1.039 (+0 / +1 / +2). Raising the threshold trades confirm time (fewer candidates) for sieve and setup time (more polynomials and A's). On wall, the confirm saving wins through +2.
+
+**Scored as written** (misses included; ranges as sealed):
+
+*The reviewer's:*
+
+| | measured | sealed | result |
+|---|---|---|---|
+| R2-12 +0 priced reproduce 0.9618 / 0.8703 / 0.8656 | 0.9618 / 0.8703 / 0.8656 | exactly | **held** |
+| R2-12 +0 wall | −9.4% | −8.5% to −11.5% | **held** |
+| R2-12 +1 official / ruint / Montgomery / wall | 0.9807 / 0.8671 / 0.8620 / −10.8% | 0.962–0.985 / 0.855–0.880 / 0.850–0.875 / −10% to −13% | **held** (all four) |
+| R2-12 +2 official | 1.0138 | 0.968–0.995 | **missed** (above) |
+| R2-12 +2 ruint / Montgomery / wall | 0.8748 / 0.8710 / −13.5% | 0.850–0.880 / 0.845–0.875 / −10% to −14% | **held** |
+| R2-13 best wall +2 | +2 (−13.5%) | +2 (50%) | **held** |
+| R2-13 +1 and +2 within 1 point | 2.7 points apart (intervals [−11.7, −9.9] and [−14.8, −12.2] do not overlap) | within 1 point | **missed** |
+| R2-13 +0 the slowest | +0 (−9.4%) | +0 | **held** |
+| R2-14 best robust ratio +0 | +0 (0.9618; +1 0.9807; +2 1.0138) | +0 (70%); falsifier: +1 or +2 official below 0.9618 | **held** (falsifier not triggered) |
+
+*DeepSeek's:*
+
+| | measured | sealed | result |
+|---|---|---|---|
+| +0 official / ruint / Montgomery / wall | 0.9618 / 0.8703 / 0.8656 / −9.4% | 0.955–0.970 / 0.862–0.880 / 0.858–0.875 / −8.5% to −11.5% | **held** (all four) |
+| +1 official | 0.9807 | 0.950–0.968 | **missed** (above) |
+| +1 ruint / Montgomery / wall | 0.8671 / 0.8620 / −10.8% | 0.855–0.878 / 0.850–0.874 / −10.0% to −13.5% | **held** |
+| +2 official | 1.0138 | 0.952–0.972 | **missed** (above) |
+| +2 ruint / Montgomery / wall | 0.8748 / 0.8710 / −13.5% | 0.855–0.880 / 0.850–0.876 / −10.5% to −14.5% | **held** |
+| D-12 best wall +2 | +2 | +2; falsified if +0 or +1 beats +2 by > 0.5 points | **held** (falsifier not triggered) |
+| D-12 "+1 within ~1 point" | 2.7 points | ~1 point | **missed** |
+| D-13 best robust ratio +1 | +0 (0.9618 against +1's 0.9807) | +1; falsified if +0 or +2 is > 0.005 lower | **missed, falsified** (+0 is 0.0189 lower) |
+
+*Grok's:*
+
+| | measured | sealed | result |
+|---|---|---|---|
+| +0 official / ruint / Montgomery / wall | 0.9618 / 0.8703 / 0.8656 / −9.4% | 0.955–0.970 / 0.865–0.880 / 0.860–0.875 / −8.5 to −11.5 | **held** (all four) |
+| +1 official | 0.9807 | 0.950–0.968 | **missed** (above) |
+| +1 ruint / Montgomery / wall | 0.8671 / 0.8620 / −10.8% | 0.860–0.878 / 0.855–0.873 / −9.0 to −12.5 | **held** |
+| +2 official | 1.0138 | 0.948–0.966 | **missed** (above) |
+| +2 ruint / Montgomery | 0.8748 / 0.8710 | 0.858–0.876 / 0.852–0.872 | **held** |
+| +2 wall | −13.5% | −9.5 to −13.0 | **missed** (larger saving) |
+| Best wall +2 | +2 | +2 | **held** |
+| Best robust ratio +0 | +0 | +0 | **held** (its stated reason, unpriced hash load raising official, is not the mechanism; annotation before the run) |
+
+- **Common miss in all three tables: official at +1 and +2.** Official rises with the shift (0.9618 → 0.9807 → 1.0138) because official prices a sieve update like a root test, and the higher threshold needs more polynomials (sieve ruint 21,152 → 22,425 → 24,001). DeepSeek and Grok put official flat or falling; the reviewer had the direction (R2-14) but not the size at +2.
+
+**D-14 and G-7: the "rest" excess, split by sub-region.**
+
+*Base, flagged:* both were sealed against the ~81 µs "rest" excess of 2′b+pp3 **against 2′b**. This runner has no 2′b cell (an omission in its preparation, mine), so the excess is computed against **2′a**. 2′a and 2′b find the same relations (acceptance; identity 640 / 640), so lp_ledger and solve do the same work in both (lp_ledger ruint 1,923.3 here against 1,919.9 for 2′b in 8d5ef90, before the region fix's ~3.5). Setup differs by 2′b's per-A ka / tm build, which is priced. The proxy is fair for lp_ledger and solve, and close for setup.
+
+Per sub-region, wall above price at each region's own µs per ruint (excess = (wall ratio − ruint ratio) × 2′a's region µs; 95% t over replicates), +0 cell:
+
+| sub-region | wall 2′a → +0 (µs) | ruint ratio | wall ratio | wall above price (µs) [95%] |
+|---|---|---|---|---|
+| setup | 756.4 → 710.6 | 0.9166 | 0.9395 | **+17.3** [+15.1, +19.4] |
+| lp_ledger | 362.6 → 449.1 | 1.1946 | 1.2404 | **+16.6** [−5.6, +38.9] |
+| gray | 88.1 → 79.9 | 0.9008 | 0.9073 | +0.6 [−2.5, +3.7] |
+| solve | 315.1 → 315.5 | 1.0114 | 1.0011 | −3.3 [−5.6, −0.9] |
+| mult, fb | 84.5 → 84.5 | 1.0000 | — | 0.0 |
+| scan (no ops of its own; sieve_scan is charged in the sieve region) | 211.8 → 197.8 | — | 0.9343 | +7.2 against the polynomial ratio 0.9003 (information) |
+| **sum, own rates** | | | | **+31.2** (+38.4 with scan) |
+| *rest as one bucket, at its average rate (the 8d5ef90 method)* | 1,818.5 → 1,837.4 | 0.9672 | | *+78.4* |
+
+- **The ~81 µs "rest" gap was mostly a mixing artefact.** Pricing the rest as one bucket reproduces it here (+78.4 µs against 2′a). Region by region at each region's own rate, it is +31 to +38 µs. Setup's price falls most (−8.3%), and setup has the lowest µs per ruint in the bucket (0.069 against the bucket's 0.099), so the one-bucket method expected too large a wall drop.
+- **No sub-region carries a large excess.** setup (+17.3, tight) and lp_ledger (+16.6, wide) are tied within noise.
+- **LPBREAK (information, sub-timers on):** lp:copy is ~154 ns per call in 2′a and ~156 ns at +0 (153.0 µs / 994.0; 185.8 / 1,191.9); lp:hash 121 → 145 ns per call. These include the sub-timers' overhead and are not compared with the timed regions.
+
+| | measured | sealed | result |
+|---|---|---|---|
+| D-14 most: lp_ledger | setup +17.3, lp_ledger +16.6 (not separable) | lp_ledger (50%) | **missed on the point estimate** (tied within noise) |
+| D-14 size | +16.6 µs | 50–70 µs (central 60) | **missed** |
+| D-14 second solve 10–20 µs; third setup 5–15 µs | solve −3.3; setup +17.3 | | **missed / missed** |
+| D-14 falsifier: lp_ledger < 30 µs, or solve or setup > lp_ledger | lp_ledger 16.6 < 30; setup 17.3 > 16.6 | | **falsified** (the first condition alone suffices) |
+| G-7 most: lp_ledger | as above | lp_ledger (~60%) | **missed on the point estimate** (tied within noise) |
+| G-7 size | +16.6 µs | 45–70 µs | **missed** |
+| G-7 falsifier: lp_ledger ≤ 30 **and** another single sub-region ≥ 45 | 16.6 ≤ 30; largest other is setup, +17.3 | | **not triggered** (second condition fails) |
+
+*Information only, unscored* (breakdown seen first): D-11, Grok's phase pick, R2-11. All three put the excess in the large-prime table, and the measured lp_ledger excess at +0 is +16.6 µs.
+
+**Tally:**
+- The reviewer: R2-12 held except +2 official; R2-13 held on best wall and slowest, missed on "+1 and +2 within 1 point"; R2-14 held.
+- DeepSeek: the table held except official at +1 and +2; D-12 held on +2, missed on its "+1 within ~1 point"; D-13 falsified; D-14 falsified.
+- Grok: the table held except official at +1 and +2 and wall at +2; both best-shift answers held; G-7 missed on answer and size, not falsified (its two-condition falsifier).
+
+**Failure modes and limits:**
+- **The meter and wall-clock pick different shifts.** Robust ratio is best at +0 (0.9618) and worst at +2 (1.0138, undecided: official worse than 2′a). Wall-clock is best at +2 (−13.5%) and worst at +0 (−9.4%). +1 is better than 2′a under all three (robust 0.9807) with wall −10.8%.
+- **Under ruint and Montgomery, +1 is the cheapest** (0.8671 / 0.8620), with +0 and +2 within ~0.005–0.008. Official alone drives the robust ranking.
+- **The sieve region's wall rises faster than its ruint with the shift** (+1: wall +0.8% against ruint −4.4%; +2: +5.6% against +2.3%). The sieve gap of the pp 3 breakdown (+33 µs) appears here as +32 to +51 µs, with wide intervals.
+- **Base of D-14 / G-7:** 2′a, not 2′b (above). A 2′b cell would score them on their stated base. Not run.
+- **Not measured:** shifts beyond +2 (wall still falling at +2), other sizes, energy.
+
+**Report only.** Nothing adopted. Choosing a shift (or adopting 2′b+pp3) is the user's decision.
