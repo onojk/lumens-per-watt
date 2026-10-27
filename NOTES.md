@@ -8976,3 +8976,28 @@ Yes, substantially. Against 2'b directly, pp3 is +0.7% wall at +1 and −0.9% at
     - parity;
     - report corrected priced readings beside the earlier pp 3 results (stage H, H2, root-confirm, the shift runs) without rescoring sealed predictions;
     - pp 3 retired as an adoption candidate.
+
+## "Meter-invalidated" labelling for the uncharged free-2 write (adopted by the user, effective if the free-2 correction is applied; not applied yet)
+
+**The status (DeepSeek's wording, 01:45 Oct 27):** "meter-invalidated: scored under the uncorrected meter; not evidence for adoption". It goes on every scored outcome whose deciding quantity included the uncharged free-2 writes. **Scores are unchanged;** the status annotates their evidential weight.
+
+**Which outcomes, by rule (Claude Code's reading, stated before applying):**
+- **Affected:** priced quantities (official, ruint, Montgomery, robust ratio, the (e) call, and best-shift-by-price) of cells with pp > 0, run on code from 373261d onward. That commit (Oct 26, 18:47 PT) wrote the free 2 into the array.
+- **Not affected:** wall-clock outcomes, which measured the writes' real time, and polynomial and candidate counts, which are identical with or without the write.
+- **Stage H is not affected.** Its sealed run (8cc9d79; results 18:03 PT Oct 26) predates the write. The free 2 was then a parity threshold at the scan, with no per-position stores, so the meter missed nothing in those cells. The brief listed stage H; this is the correction, with the times as evidence.
+- **root-confirm-2 has no affected scored item.** RC2-1..RC2-4 are wall-clock and interval items; its root + pp 3 cells report wall and region ratios only.
+
+| run (guard commit) | scored predictions affected | scored predictions not affected | reported calls affected (not predictions) |
+|---|---|---|---|
+| stage H (8cc9d79) | none (predates the write) | all | none |
+| stage H2 (5ae47ae) | none (H2-1..H2-4 are wall-clock and polynomial counts) | H2-1..H2-4 | priced readings of (iii), (iv) and "2 free" +1 / +2 (e.g. (iv) official +4.9%, ruint and Montgomery −2.5%) |
+| root-confirm (574f356) | none (R-2 is root alone, no pp; R-1, R-3, R-4 are wall-clock) | R-1..R-4 and DeepSeek's | root + pp 3 at +0..+4: priced ratios and calls, including "+0: robust 0.9824, **better** under all three" and the ratio-price information line |
+| root-confirm-2 (c5d1034) | none | RC2-1..RC2-4 | none |
+| i032-2prime (9b94247) | **R2-9** (2′b+pp3 official / ruint / Montgomery; its wall clause is not affected); **R2-10** (better under all three); **D-8** official / ruint / Montgomery (wall not affected); **D-9**; **G-3** official / ruint / Montgomery (wall not affected); **G-4** | R2-1..R2-8, D-1..D-7, G-1, G-2, G-5, G-6, D-10 | "2′b+pp3 is the only 2′ cell better than 2′a under all three (robust 0.9618)"; "better than REF under all three (robust 0.9381)" |
+| pp3-gap-and-shift (9ed805a) | **R2-12** priced clauses at +0, +1, +2 (wall clauses not affected); **R2-14**; DeepSeek's shift table, priced columns; **D-13**; Grok's shift table, priced columns; Grok's "best robust ratio +0" | R2-12 wall, R2-13, D-12, D-14, G-7, both tables' wall columns, Grok's best wall | robust 0.9618 / 0.9807 / 1.0138 and the "better" calls at +0 and +1; "the meter and wall pick opposite shifts" |
+| shift-past-2, run A (3816bb4) | **R2-15** official / ruint / Montgomery at +3 (wall and the best-wall clause not affected) | R2-15 wall and best-wall, R2-16 | 2′b+pp3 +1 / +2 / +3 priced ratios and calls (+1 "better"); the pp3-vs-2′b priced information lines |
+| shift-72-84, run B (6810e24) | **R2-17** "official best at +0" (both sizes) and "+1 better than 2′a under all three" (both sizes); R2-17's conjunction | R2-17 "wall best at +1 or +2" | every pp3 cell's priced ratios and calls at 72 and 84 |
+| 2b-sizes (pending) | the 96-bit cell 2′b+pp3 is timed for the breakdown only; no priced prediction on it | — | its priced ratios, if reported |
+
+- **The priced clauses that were also information only** (D-11, Grok's phase pick, R2-11; R2-18 / D-15 / G-8 priced) are unscored and unaffected by this label.
+- **Status:** the label takes effect when the user applies the free-2 correction. Until then this table is the list it would cover.

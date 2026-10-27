@@ -157,3 +157,21 @@ Using only the numbers supplied. Per-size candidate/polynomial counts, absolute 
 - **PROTOCOL.md (prospective):** a count pass during a cost note hides priced totals for cells with pending predictions.
 - **The free-2 meter correction:** the user's choice between APPLY and HOLD was left unfilled in the brief. The reviewer recommends APPLY after this run (NOTES).
 - **The user's conditions:** laptop on the fan pad, plugged in, untouched; cap 2.4 GHz as recorded.
+
+## DeepSeek, on the free-2 correction (received 01:45 Oct 27 PT; information only; verbatim)
+
+<!-- verbatim begin -->
+## 0. Time-order ruling recorded
+
+Accepted, and consistent with the D-11 ruling. **D-15's priced clauses (official / ruint / Montgomery) are information only**; **D-15 wall, D-16, and D-17 remain sealed** and will be scored as written. My D-15 priced centrals (72: 1.085 / 0.922 / 0.915; 84: 1.055 / 0.898 / 0.891) are recorded as unscored, and the run will separate me from Grok on official at 72/84 as noted. No revision.
+
+**Free-2 correction accepted.** My "split instead" caveat does not apply: the width charge counts width per polynomial whether pp is on or off, and the sieve_scan price predates the Oct 26 change that made the free 2 a write. It is an added charge, not a double count. The size (7.7–12.0% of official per number) and the post-correction readings (2'b+pp3 worse than 2'a under official at every size, robust 1.07–1.19; at 96 +0: 1.0515 / 1.0159 / 1.0162) are recorded.
+
+## 1. Earlier pp3 results: corrected readings beside originals, no rescoring — with one addition
+
+"Corrected readings beside the originals, no rescoring" is the right treatment for the **scores**, because sealed predictions are scored against the meter as it stood, and rescoring after a meter change would let the ground truth move under the prediction. But the scores are now **evidence about a faulty meter, not about the card**, and that distinction should be formal: flag every scored outcome whose deciding quantity was the uncharged op as **"meter-invalidated — scored under the uncorrected meter; not evidence for adoption."** That is not a rescore; it is a status annotation on the score's evidential weight, and it is what prevents a future reader from citing "pp3 was better under all three pricings" as a card result. The reviewer's recommendation to apply the correction and retire pp3 as an adoption candidate is right; the annotation makes the retirement legible in the record rather than only in NOTES.
+
+## 2. The one check most likely to catch the next uncharged op
+
+**Maintain a timer-split × priced-type cross-tab, and flag any sub-region whose wall time exceeds its priced cost by more than a stated tolerance.** That is the check that found free-2: the sieve region's wall/priced ratio was systematically above 1, splitting it exposed sv:free2 at ~40 µs with no price, and the same ratio on other sub-regions would expose the next hole before it biases a result. A narrower complement — a write-count audit of every store in the sieve and confirm loops against charged write ops — would catch store-class holes specifically, but the cross-tab is the general instrument because uncharged work always shows up as wall time with no price.
+<!-- verbatim end -->
