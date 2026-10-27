@@ -7235,3 +7235,47 @@ Against the reference, in percent:
 - Proposed for after stage H (not started): a microbenchmark of the reciprocal root test's ns per prime, then a re-evaluation of the threshold scan with that confirm cost.
 
 **Note from the build (mine):** the card's own exact-value check (`pp_accept.py` part 2) confirms the same design residual as S1 at pp = 10: at every position, the card's sieve value plus w2 equals the capped valuation sum exactly. The two differ at the cap: S1 takes min(v2, 10), the card min(v2, 9) (2^j < 2^10).
+
+### Stage H addendum: DeepSeek, Oct 27, round 43 (recorded as given; documentation only)
+
+**Timing:** the brief says this round was filed before the stage H build. In the repo, the build, its acceptance and the tc search for (ii) had already run in the working tree, uncommitted and unreported. No comparison run (the runs that score H-1 … H-10) has run.
+- The tc search did produce one figure in an H quantity's family: option on at the reference threshold, +68.0% candidates per number on a 32-number subset (`hsearch.out`). It was not reported before this round was filed, so the round is treated as **sealed** for the comparison runs.
+
+**Process note accepted** (its stage G predictions information only).
+
+**SEALED, stage H** (96 bits, all 640 numbers, against the reference, re-sieve off):
+
+*(i) option on, reference threshold:*
+- **H-1** partial capture 0.62–0.82 (0.74). Falsified if < 0.55 or > 0.90.
+- **H-2** candidates per polynomial +115% to +145% (+130%); per number +45% to +110% (+75%). Falsified (per number) if < +20% or > +150%.
+- **H-3** polynomials −18% to −30% (−24%). Falsified if > −10% or < −36%.
+- **H-4** priced ruint −3% to +15% (+5%). Falsified if < −9% or > +22%.
+- **H-5** extra partials per extra candidate, as a ratio to the −4-bit cut: 1.25x–1.85x (1.55x). Falsified if < 1.00x or > 2.20x.
+- **H-6** median under-count at true partials 0.0–1.5 bits (0.4). Falsified if < −0.5 or > 2.5.
+
+*(ii) option on, matched candidates:*
+- **H-7** partial capture 0.33–0.48 (0.39). Falsified if < 0.28 or > 0.55.
+- **H-8** polynomials −1% to −12% (−5%). Falsified if > +2% or < −18%.
+- **H-9** priced ruint −8% to +2% (−3%). Falsified if < −14% or > +10%.
+- **H-10** wall-clock −8% to +4% (−2%). Falsified if < −14% or > +12%.
+
+**H(ii) explanation:** agreed. At a matched count, the threshold's height, not the sieve's accuracy, blocks partials; the small gain comes from slightly better ordering.
+- Optional check it proposes: the under-count against the true smooth part's decile, on stage B's traces.
+
+**Confirm economics:** C(t) = P(t) [K + c r(t)], with the optimum where c r'(t) = −(P'/P)(K + c r).
+- Computed at the reference: wall-clock 1,909 µs / 156 polynomials = 12.24 µs per polynomial; c = 530 ns; confirm 3.62 µs per polynomial; K = 8.62 µs. Today, lowering does not pay (consistent with G).
+- *Reviewer's correction:* for a 3x cheaper confirm (c = 177 ns), DeepSeek kept K + c r at 12.24; it becomes ~9.8. The segment slopes of ln P are −0.058 / −0.042 / −0.028 per bit (0 → −2 → −4 → −6).
+  - Redone: 0 → −2 pays (LHS 0.36 against RHS 0.60 µs per bit); −2 → −4 does not (0.55 against 0.46).
+  - Best shift ~−2 to −3 bits (not −4.5), worth ~−4% on top of the cheaper confirm.
+- *Reviewer's rough wall-clock estimates at 96* (card costs, simulation candidate counts; ledger growth ignored):
+  - cheap confirm alone ~−20%;
+  - plus a 2-bit lower threshold, ~−4% more;
+  - or, instead, plus the H(i) option at the reference threshold, ~−10% more.
+  - With a cheap confirm, the better sieve beats loosening. The root test's real ns per prime decides all of this; the I-029 microbenchmark is the next measurement after stage H.
+
+**Missing fulls (card 0.973 against simulation 1.000):** DeepSeek's first suspect (A's primes dividing g to a power) is refuted by the simulation itself, which also leaves A's primes unsieved and passes 100%.
+- Reviewer's candidates:
+  - per-number variation in B and M (the simulation used fixed means);
+  - even k (k = 2 occurs on the card; the simulation used odd k);
+  - the card's under-count at fulls, ~1 bit above the simulation's (6.2–6.5 against 5.5 bits).
+- Low priority. A trace listing the missed fulls' margins, k, B, M and v_p for A's primes would settle it.
