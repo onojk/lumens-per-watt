@@ -175,3 +175,17 @@ Accepted, and consistent with the D-11 ruling. **D-15's priced clauses (official
 
 **Maintain a timer-split × priced-type cross-tab, and flag any sub-region whose wall time exceeds its priced cost by more than a stated tolerance.** That is the check that found free-2: the sieve region's wall/priced ratio was systematically above 1, splitting it exposed sv:free2 at ~40 µs with no price, and the same ratio on other sub-regions would expose the next hole before it biases a result. A narrower complement — a write-count audit of every store in the sieve and confirm loops against charged write ops — would catch store-class holes specifically, but the cross-tab is the general instrument because uncharged work always shows up as wall time with no price.
 <!-- verbatim end -->
+
+## Grok, on the free-2 correction (received 01:47 Oct 27 PT; information only; verbatim)
+
+<!-- verbatim begin -->
+**Information-only views**
+
+1. The strongest objection to the "meter-invalidated" label plus no-rescoring rule is that a sealed prediction is a claim about the meter as it stood when the prediction was filed; retroactively voiding the score erases the record of what the then-current rules actually rewarded. A case where re-scoring would be justified is when the correction reveals that the original meter charged a negative quantity or double-counted an operation in a way that inverted the sign of the predicted ratio; under those conditions the prediction was not merely optimistic relative to a flawed but consistent card, but was evaluated against an internally inconsistent accounting that no participant could have anticipated from the published rules.
+
+2. The differential check (change in wall versus change in price on a gene toggle) would miss uncharged work that is constant across the toggle and therefore cancels in the difference—for example a fixed per-number setup cost or a ledger scan whose volume does not change when the gene is flipped. A second check for that class is a static cross-tab of absolute wall against absolute priced cost on every timed cell, flagging any sub-region whose absolute wall consistently exceeds its absolute price by more than a pre-declared multiple of the sub-region's own measurement noise.
+<!-- verbatim end -->
+
+**The reviewer's notes:**
+- **Q1 treats "meter-invalidated" as voiding scores; the proposal keeps them.** Its re-scoring criterion (the meter broke its own charging rule, the error could not be anticipated, the sign flipped) arguably fits the free-2 case.
+- **Q2 is correct:** the differential check misses uncharged work that is constant across a toggle. Its absolute check complements it.

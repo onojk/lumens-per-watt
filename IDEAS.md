@@ -350,10 +350,11 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Report only; it never enters fitness. Related MOVES row: "Quality-diversity archive (MAP-Elites)" (untested).
 - Decision: pending (the user's).
 
-### I-042 — Differential meter-health check (report only)
-- Date: 2026-10-27. Source: the user (from DeepSeek's reply of 01:45 Oct 27, "the one check most likely to catch the next uncharged op").
-- Idea: for every gene toggle in a timed comparison, compute per sub-region the change in wall time against the change in priced cost (ruint), and flag any sub-region where the wall change exceeds the priced change by more than a stated tolerance, both absolute (µs per number) and relative.
-- Report only; runs alongside every comparison and never enters fitness.
-- Evidence: it is how the uncharged free-2 write was found (the sieve region's excess over its own-rate price against 2′b, +58 to +69 µs in shift-past-2; `sv:free2` ~40 µs with no price in the smoke breakdown). Tooling exists in part: `--phasetime` per-region ruint, the LPBREAK and SIEVEBREAK sub-regions, and the region-excess computation in `evolve/shiftrun.py`.
+### I-042 — Meter-health check, absolute and differential (report only)
+- Date: 2026-10-27. Sources: DeepSeek (01:45 Oct 27: part a, the cross-tab of sub-region wall against priced cost), the reviewer (part b, per toggle), Grok (01:47 Oct 27: why both are needed); filed by the user.
+- **(a) Absolute:** on every timed cell, per sub-region, wall against priced cost (ruint). Flag a sub-region when its excess exceeds a pre-declared multiple of that sub-region's own measurement noise. **Catches constant holes:** uncharged work present in both arms of a comparison.
+- **(b) Differential:** per gene toggle in a timed comparison, per sub-region, the change in wall against the change in priced cost. Flag when the wall change exceeds the priced change by more than a stated tolerance, both absolute (µs per number) and relative. **Catches holes a change introduces.** A hole constant across the toggle cancels in the difference (Grok's point).
+- Report only; both run alongside every timed comparison and never enter fitness.
+- Evidence: (b) is how the uncharged free-2 write was found. The sieve region ran +58 to +69 µs above its own-rate price against 2′b in shift-past-2, and `sv:free2` took ~40 µs with no price in the smoke breakdown. Tooling exists in part: `--phasetime` per-region ruint, the LPBREAK and SIEVEBREAK sub-regions, and the region-excess computation in `evolve/shiftrun.py`.
 - Complements I-001 (charged types): I-001 audits what is charged; this flags work that shows up in time but not in price.
 - Decision: pending (the user's).

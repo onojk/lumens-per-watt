@@ -9001,3 +9001,10 @@ Yes, substantially. Against 2'b directly, pp3 is +0.7% wall at +1 and −0.9% at
 
 - **The priced clauses that were also information only** (D-11, Grok's phase pick, R2-11; R2-18 / D-15 / G-8 priced) are unscored and unaffected by this label.
 - **Status:** the label takes effect when the user applies the free-2 correction. Until then this table is the list it would cover.
+
+**Proposed rule for scoring the affected outcomes (Oct 27; to be decided BEFORE the free-2 correction is applied; the user's call):**
+- Every affected outcome **keeps its ORIGINAL score** and gets a **SECOND score under the corrected meter,** reported side by side.
+- The label becomes "meter-invalidated: original scored under the uncorrected meter".
+- **No score is replaced.**
+- Background: Grok (01:47 Oct 27, information only; verbatim in `predictions/2b-sizes.md`) argued that re-scoring is justified when the meter broke its own charging rule in a way no participant could anticipate and the sign of the ratio flipped. The reviewer notes that this arguably fits the free-2 case. The proposal answers it by adding a second score rather than replacing the first.
+- **Status: proposed; not decided.**
