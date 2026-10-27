@@ -313,6 +313,35 @@ The free-2 meter correction (6031239) was applied after the 2b-sizes run. NOTES 
   - D-14 and G-7 (pp3-gap-and-shift.md:223).
   - Earlier: G-a and P1-P2 (2820), G2 (2216), M1 3-4 and c ≈ 3.4 (4680, 4770).
 
+## 3a. Calibration (W4, Oct 27; `wolfram/2026-10-27_w4_calibration.wl`, `.out`; a tally, not a verdict)
+
+**Stated confidence against outcome.** Only nine predictions on file state a confidence, and only five have a recorded score. The reviewer states none.
+
+| forecaster | scored | mean stated | hit (as scored) | Brier | hit / Brier under the corrected meter |
+|---|---|---|---|---|---|
+| DeepSeek | 2 (D-9 65%, D-14 50%) | 58% | 0 of 2 | 0.336 | 1 of 2 / 0.186 |
+| Grok | 3 (G-4 65%, G-7 60%, G-9 75%) | 67% | 1 of 3 | 0.282 | 2 of 3 / 0.182 |
+
+- Brier 0.25 is what always saying 50% scores. As scored, both are worse than that; under the corrected meter, both are better (D-9 and G-4 flip to held).
+- Not counted: D-11 (60%) and Grok's phase pick (55%), both information only; GP7 (85%) and Q5 (80%), still pending.
+- **Five rows cannot support a calibration curve** (1 hit in 5: 95% interval 4–62%). The data say nothing yet about over- or under-confidence in stated probabilities.
+
+**Sealed ranges: width against hit rate.** 110 numeric ranges from the five card runs since i032-2prime (i032-2prime, pp3-gap-and-shift, shift-past-2, shift-72-84, 2b-sizes). Hit = held as recorded; information-only rows use "measured inside the range". z = |measured − range midpoint| ÷ half-width, so z ≤ 1 is a hit.
+
+| forecaster | rows | hit | median z (quartiles) | ratio ranges: hit, median width | wall % ranges: hit, median width | µs ranges: hit |
+|---|---|---|---|---|---|---|
+| the reviewer | 35 | 31 (89%) | 0.50 (0.22 / 0.73) | 21 of 25, 3.0 points | 9 of 9, 5.0 points | 1 of 1 |
+| DeepSeek | 38 | 23 (61%) | 0.55 (0.14 / 1.56) | 14 of 25, 2.0 points | 8 of 8, 4.5 points | 1 of 5 |
+| Grok | 37 | 24 (65%) | 0.53 (0.18 / 2.27) | 17 of 25, 1.8 points | 6 of 9, 3.5 points | 1 of 3 |
+
+- **Who is over-confident:** DeepSeek and Grok. Their median miss is no larger than the reviewer's (median z 0.53–0.55 against 0.50), but their ranges are narrower (ratio ranges 1.8–2.0 points against 3.0) and their misses are far outside (upper quartile z 1.6–2.3 against 0.7). The miss rate comes from tails, not a general bias: a few large misses each run (D-8 by 11 points on ruint and Montgomery, the +2 official cells by 5–6 points, the µs phase excesses by 70–120% of the midpoint).
+- **The reviewer** is close to a ~90% interval: 89% hits with median z 0.50. Its wall ranges (9 of 9, z 0.47) are about right, not too wide.
+- **µs phase-excess ranges are the worst calibrated** for both outside forecasters (2 hits in 8, median z above 3). Those predictions inherited the "241 µs" anchor (section 3), so this is one error counted several times.
+- **Direction:** DeepSeek's ratio ranges sit high on average (mean signed error −1.6 points: measured below the range), largely D-8. The others show no consistent direction.
+- **Under the corrected meter** many ratio rows move (the reviewer 12 of 25, DeepSeek 7, Grok 8 hit). The wall rows are unchanged.
+
+**Limits.** Rows within one run share numbers and anchors, so they are not independent, and the intervals in the `.out` are too narrow. Units differ, so z is the comparable measure; widths are per unit. D-14 and G-7 were sealed against 2′b and measured against 2′a (NOTES flags the proxy). Eight ranges were skipped: interval-width ranges (R2-8, D-7, G-5), D-10 (range text not on file), three non-range clauses, and falsifier bands. Extraction was delegated and spot-checked on 8 rows, all of which matched NOTES.
+
 ## 4. Ambiguities resolved, and Unclear items
 
 **Resolved (lines 6390-9184):**

@@ -1,0 +1,71 @@
+== 1. Stated confidence against outcome (Brier score: mean (p - outcome)^2; 0.25 = always saying 50%)
+DeepSeek: 2 scored
+   D-9 (i032-2prime): 2'b+pp3 not better under all three: stated 65%, outcome 0 (second score 1)
+   D-14 (pp3-gap-and-shift): lp_ledger carries most of the rest: stated 50%, outcome 0 (second score 0)
+   mean stated 57.5%, hit rate 0.0% (second scores 50.0%)
+   Brier 0.336 (second scores 0.186)
+Grok: 3 scored
+   G-4 (i032-2prime): 2'b+pp3 not better under all three: stated 65%, outcome 0 (second score 1)
+   G-7 (pp3-gap-and-shift): lp_ledger carries most of the rest: stated 60%, outcome 0 (second score 0)
+   G-9 (2b-sizes): 2'b faster than 2'a on wall at 72 and 84: stated 75%, outcome 1 (second score 1)
+   mean stated 66.7%, hit rate 33.3% (second scores 66.7%)
+   Brier 0.282 (second scores 0.182)
+   reviewer: no stated confidences on file
+   Calibration bins (all stated-confidence rows, pooled): 50-60%: 2 rows, 0 hit; 65-75%: 3 rows, 1 hit.
+   Five rows cannot support a calibration curve: a 95% Wilson interval on 1 hit in 5 is [4%, 62%]
+
+== 2. Sealed ranges: width against hit rate
+ratio ranges (points):
+   reviewer: n 25, hit 21 (84%, 95% [65, 94]); second scores 12; median width 3.00; median |err| 0.82; median z 0.52; mean signed err 0.10
+   DeepSeek: n 25, hit 14 (56%, 95% [37, 73]); second scores 7; median width 2.00; median |err| 0.73; median z 0.58; mean signed err -1.56
+   Grok: n 25, hit 17 (68%, 95% [48, 83]); second scores 8; median width 1.80; median |err| 0.44; median z 0.29; mean signed err -0.32
+pct ranges (% points of wall):
+   reviewer: n 9, hit 9 (100%, 95% [70, 100]); second scores 9; median width 5.00; median |err| 1.10; median z 0.47; mean signed err 0.30
+   DeepSeek: n 8, hit 8 (100%, 95% [68, 100]); second scores 8; median width 4.50; median |err| 0.98; median z 0.52; mean signed err -0.13
+   Grok: n 9, hit 6 (67%, 95% [35, 88]); second scores 6; median width 3.50; median |err| 1.60; median z 0.73; mean signed err -0.57
+us ranges (% of midpoint):
+   reviewer: n 1, hit 1 (100%, 95% [21, 100]); second scores 1; median width 58.82; median |err| 6.59; median z 0.22; mean signed err -6.59
+   DeepSeek: n 5, hit 1 (20%, 95% [4, 62]); second scores 1; median width 58.82; median |err| 73.00; median z 3.66; mean signed err -44.20
+   Grok: n 3, hit 1 (33%, 95% [6, 79]); second scores 1; median width 44.44; median |err| 71.13; median z 3.27; mean signed err -57.90
+All units, z only (unit-free):
+   reviewer: n 35, hit 31 (89%), median z 0.50, z quartiles 0.22 / 0.73; excluding info-only rows: hit 27 of 29
+   DeepSeek: n 38, hit 23 (61%), median z 0.55, z quartiles 0.14 / 1.56; excluding info-only rows: hit 23 of 31
+   Grok: n 37, hit 24 (65%), median z 0.53, z quartiles 0.18 / 2.27; excluding info-only rows: hit 22 of 29
+
+Reading: a range used as a ~90% interval should hit ~90% with median z ~0.4-0.5. Hit rate well below 90% with median z > 1 = over-confident (too narrow);
+hit rate near 100% with median z << 0.5 = under-confident (too wide). Rows within one run share numbers and anchors, so they are not independent;
+the Wilson intervals treat them as independent and are too narrow.
+
+Misses by row (forecaster | id | quantity | width | err):
+   DeepSeek | D-8 | 2'b+pp3 +0 vs 2'a official ratio | width 1.50 | err -4.07
+   DeepSeek | D-8 | 2'b+pp3 +0 vs 2'a ruint ratio | width 1.50 | err -11.22
+   DeepSeek | D-8 | 2'b+pp3 +0 vs 2'a Montgomery ratio | width 1.80 | err -11.34
+   Grok | G-1 | 2'a vs REF wall % change | width 3.00 | err 2.20
+   Grok | G-3 | 2'b+pp3 +0 vs 2'a official ratio | width 1.50 | err -3.57
+   Grok | G-6 | exact-count model 2'b vs 2'a official ratio | width 1.50 | err -0.88 (info only)
+   reviewer | R2-12 | 2'b+pp3 +2 vs 2'a official ratio | width 2.70 | err 3.23
+   DeepSeek | DeepSeek shift table +1 | 2'b+pp3 +1 vs 2'a official ratio | width 1.80 | err 2.17
+   DeepSeek | DeepSeek shift table +2 | 2'b+pp3 +2 vs 2'a official ratio | width 2.00 | err 5.18
+   Grok | Grok shift table +1 | 2'b+pp3 +1 vs 2'a official ratio | width 1.80 | err 2.17
+   Grok | Grok shift table +2 | 2'b+pp3 +2 vs 2'a official ratio | width 1.80 | err 5.68
+   Grok | Grok shift table +2 | 2'b+pp3 +2 vs 2'a wall % change | width 3.50 | err -2.25
+   DeepSeek | D-14 | lp_ledger wall excess over own-rate price ('rest' sub-region), +0 cell | width 33.33 | err -72.33
+   DeepSeek | D-14 | solve wall excess over own-rate price (second), +0 cell | width 66.67 | err -122.00
+   DeepSeek | D-14 | setup wall excess over own-rate price (third), +0 cell | width 100.00 | err 73.00
+   Grok | G-7 | lp_ledger wall excess over own-rate price ('rest' sub-region), +0 cell | width 43.48 | err -71.13
+   DeepSeek | D-11 | lp_ledger per-number wall excess (2'b+pp3 vs 2'b) | width 50.00 | err -93.08 (info only)
+   Grok | Grok phase pick (unnumbered) | large-prime table + lp_ledger per-number wall excess (2'b+pp3 vs 2'b) | width 44.44 | err -90.78 (info only)
+   reviewer | R2-15 | 2'b+pp3 +3 vs 2'a Montgomery ratio | width 2.50 | err 1.38
+   reviewer | R2-18 | 2'b vs 2'a ruint ratio | width 5.00 | err -2.54 (info only)
+   reviewer | R2-18 | 2'b vs 2'a ruint ratio | width 5.00 | err -2.51 (info only)
+   DeepSeek | D-15 | 2'b vs 2'a official ratio | width 6.00 | err -4.47 (info only)
+   DeepSeek | D-15 | 2'b vs 2'a ruint ratio | width 4.50 | err -3.29 (info only)
+   Grok | G-8 | 2'b vs 2'a ruint ratio | width 2.50 | err -3.29 (info only)
+   DeepSeek | D-15 | 2'b vs 2'a Montgomery ratio | width 4.50 | err -3.55 (info only)
+   Grok | G-8 | 2'b vs 2'a Montgomery ratio | width 2.50 | err -3.05 (info only)
+   DeepSeek | D-15 | 2'b vs 2'a official ratio | width 5.50 | err -3.33 (info only)
+   DeepSeek | D-15 | 2'b vs 2'a ruint ratio | width 4.00 | err -3.01 (info only)
+   Grok | G-8 | 2'b vs 2'a ruint ratio | width 2.00 | err -3.01 (info only)
+   DeepSeek | D-15 | 2'b vs 2'a Montgomery ratio | width 4.00 | err -3.12 (info only)
+   Grok | G-8 | 2'b vs 2'a Montgomery ratio | width 2.00 | err -2.62 (info only)
+   Grok | G-8 | 2'b vs 2'a wall % change | width 3.00 | err -3.40

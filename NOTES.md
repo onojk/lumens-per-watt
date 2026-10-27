@@ -9380,3 +9380,12 @@ Model: `wolfram/2026-10-27_meter_open.wl`, `.out`.
 **What it does not establish.** Seven pairs and nine degrees of freedom give a weak bound on τ: the Q-profile upper limit (0.94) is almost five times the point estimate. All runs are one machine on one day with one cap; it says nothing about other days, temperatures or machines. Clock options differ between runs (period, inner, skip_launch at 72 and 84), and are folded into τ.
 
 **Recommendation (the user's to adopt; nothing changed):** keep **±1.5 points** in the PROTOCOL guard for comparisons between two 8-replicate runs: it sits above the point estimate (±1.1–1.3) and below the upper bound (±2.5–2.9). Where either run has 4 replicates, use ±2.0. Revisit when more pairs repeat.
+
+## W4: forecaster calibration (tally, not a verdict; information only; `wolfram/2026-10-27_w4_calibration.wl`, `.out`; section 3a of `reviews/scorecard.md`)
+
+**What it computed.**
+- **Stated confidences:** Brier scores for the five scored predictions that state a confidence (DeepSeek: D-9, D-14; Grok: G-4, G-7, G-9; the reviewer states none). DeepSeek scores 0.336 and Grok 0.282 as scored; under the corrected meter 0.186 and 0.182 (0.25 = always 50%).
+- **Sealed ranges:** width against hit rate for 110 sealed numeric ranges from the five card runs since i032-2prime. The reviewer hit 31 of 35 (89%, median z 0.50); DeepSeek 23 of 38 (61%, 0.55); Grok 24 of 37 (65%, 0.53). DeepSeek's and Grok's ratio ranges are narrower (1.8–2.0 points against the reviewer's 3.0), and their misses are far outside the range (upper-quartile z 1.6–2.3).
+- **Reading:** DeepSeek and Grok are over-confident in range width, driven by tails. The reviewer is close to a ~90% interval.
+
+**What it does not establish.** Five confidence rows cannot calibrate anything (1 hit in 5: 95% interval 4–62%). Ranges within a run share anchors, so they are not independent. The µs misses largely repeat one error (the "241 µs" anchor). The extraction was delegated and spot-checked on 8 rows. The new PROTOCOL prediction guards (arithmetic bands; transfers widened by drift) address the narrow-range pattern prospectively; nothing is re-scored here.
