@@ -7782,3 +7782,65 @@ Under-count at fulls (median): reference 6.50; (i) 0.31; (ii) 0.30; (iii) 0.30; 
 - **Option off** against b2bade2: 8,000 / 8,000; Python = Rust 32 / 32.
 - **Option on:** Python = Rust 48 / 48; sieve values exact at 123,526 / 123,526 positions (the trace stores the array without the free 2).
 - **Parity:** qs 4,630 pairs and types 7,402 pairs, mismatches 0; mutations 54 / 54.
+
+## Stage H2: the re-time after the scan fix (`evolve/stageh2.py`, 373261d; `results/stage-h2_20261027T014802Z.out`, committed by the guard as 5ae47ae; `stageh2.json`; predictions `predictions/stage-h2.md`, 2cc34bf)
+
+96 bits, all 640 map numbers, re-sieve off, card 373261d. Wall-clock is the mean of two replicates. Capture and never-combined are from stage B's subset. The counts and priced totals of (iii) and (iv) are identical to stage H's, as acceptance guarantees; only the wall-clock is new.
+
+| cell (pp, tc) | candidates / number (/ polynomial) | polynomials | combinations | partial capture | never-combined | ruint mean / median / slowest decile | Montgomery | official | wall (replicates) |
+|---|---|---|---|---|---|---|---|---|---|
+| reference (0, 1.0353) | 1,013 (6.49) | 156.0 | 71.9 | 0.316 | 0.853 | 59,071 / 58,514 / 80,787 | 216,420 | 1,461,014 | 2,100.1 µs (2,097 / 2,103) |
+| (iii) (10, 0.5713), +5 bits | 680 (4.50) | 151.0 | 73.9 | 0.225 | 0.774 | 58,625 / 57,431 / 82,493 | 214,734 | 1,580,662 | 2,104.8 µs (2,122 / 2,087) |
+| (iv) (3, 0.7569), +3 bits | 723 (4.21) | 171.8 | 65.0 | 0.203 | 0.806 | 57,592 / 57,118 / 81,770 | 210,939 | 1,532,993 | 2,020.3 µs (2,030 / 2,011) |
+| 2 free (3, 0.9425), +1 bit | 1,033 (6.94) | 148.9 | 74.9 | 0.355 | 0.853 | 57,961 / 57,172 / 78,646 | 212,113 | 1,412,142 | 2,118.4 µs (2,130 / 2,107) |
+| 2 free (3, 0.8497), +2 bits | 868 (5.45) | 159.4 | 70.7 | 0.274 | 0.829 | 57,362 / 56,498 / 80,613 | 210,052 | 1,463,509 | 2,085.0 µs (2,106 / 2,064) |
+
+**Against the reference, in percent:**
+
+| cell | candidates / number | / polynomial | polynomials | ruint mean / median / slowest decile | Montgomery | official | wall (replicate 1 / 2) |
+|---|---|---|---|---|---|---|---|
+| (iii) +5 | −32.9 | −30.7 | −3.2 | −0.8 / −1.9 / +2.1 | −0.8 | +8.2 | +0.2 (+1.2 / −0.8) |
+| (iv) +3 | −28.6 | −35.1 | +10.1 | −2.5 / −2.4 / +1.2 | −2.5 | +4.9 | −3.8 (−3.2 / −4.4) |
+| 2 free +1 | +2.0 | +6.9 | −4.5 | −1.9 / −2.3 / −2.7 | −2.0 | −3.4 | +0.9 (+1.6 / +0.2) |
+| 2 free +2 | −14.3 | −16.1 | +2.2 | −2.9 / −3.4 / −0.2 | −2.9 | +0.2 | −0.7 (+0.4 / −1.9) |
+
+**Wall-clock by region, change in µs per number against the reference** (reference: setup 402.0, gray 47.6, sieve 540.1, scan 115.5, confirm 576.4, lp_ledger 203.9, solve 170.1):
+
+| cell | setup | gray | sieve | scan | confirm | lp_ledger | solve |
+|---|---|---|---|---|---|---|---|
+| (iii) | +51.3 | +6.6 | +176.8 | −6.1 | −171.6 | −50.2 | −2.2 |
+| (iv) | +33.7 | +4.5 | +95.0 | +7.4 | −159.5 | −59.1 | −1.5 |
+| +1 | −12.4 | −1.9 | +12.3 | −3.8 | +19.2 | +2.7 | +1.7 |
+| +2 | +8.6 | +1.1 | +87.3 | +1.0 | −76.7 | −36.0 | −0.2 |
+
+**Per polynomial:**
+
+| cell | scan µs | sieve µs | setup µs |
+|---|---|---|---|
+| reference | 0.740 | 3.462 | 2.576 |
+| (iii) | 0.724 | 4.747 (+37%) | 3.002 |
+| (iv) | 0.715 | 3.696 (+6.8%) | 2.536 |
+| +1 | 0.750 | 3.709 (+7.2%) | 2.616 |
+| +2 | 0.731 | 3.935 (+13.7%) | 2.575 |
+
+**Findings:**
+- **The scan fix works:** scan per polynomial is back at the reference's rate (0.72–0.75 µs, against 1.35–1.44 before the fix).
+- **The fill now shows in the sieve region:** with pp 3, sieve updates per polynomial are +0.2% but sieve wall-clock per polynomial is +0.23 to +0.47 µs (+7% to +14%). That is the stride-2 write of the free 2 (~1,056 positions); the +2-bit cell is the high one, within this run's replicate spread. This is the model's w_fill term.
+- **No cell is called a gain under the three-pricings rule:**
+  - (iv) is −3.8% wall-clock, −2.5% ruint and Montgomery, but official +4.9%.
+  - 2 free at +1 bit is lower on all three pricings (−1.9% / −2.0% / −3.4%), but wall-clock is +0.9%.
+  - 2 free at +2 bits is −2.9% ruint and Montgomery, official +0.2%, wall-clock −0.7%.
+  - (iii) is +0.2% wall-clock, with official +8.2%.
+  - These are map-number comparisons from one run, without bootstrap intervals; report only.
+- *The machine keeps slowing:* the reference took 1,898 µs at stage G, 2,015 at stage H and 2,100 now (the same counts). Comparisons are within this run only.
+
+**Scored (the user's, sealed in 2cc34bf):**
+
+| prediction | measured | range | result |
+|---|---|---|---|
+| H2-1 (iii) pp 10 +5, wall-clock | +0.2% | −4% to +2% | **held** |
+| H2-2 (iv) pp 3 +3, wall-clock | −3.8% | −5% to +1% | **held** |
+| H2-3 2 free +1: polynomials; wall-clock | −4.5%; +0.9% | −6% to +4%; −6% to +2% | **held**; **held** |
+| H2-4 2 free +2: polynomials; wall-clock | +2.2%; −0.7% | −2% to +8%; −6% to +2% | **held**; **held** |
+
+All of H2-1 to H2-4 held. Report only; nothing is adopted. The I-029 microbenchmark is next, when the user says so.
