@@ -5,6 +5,11 @@
   python3 shiftrun.py B -> shiftrun_B.json, stdout   (predictions/shift-72-84.md; tools/sealed_run.sh shift-72-84)
       72 and 84 bits, all map numbers (480, 560). Cells per size: 2'a (base), 2'b+pp3 at +0, +1, +2 bits
       (tc -= d / log2 B, B the mean of the card's B over the size's map numbers, lctest.bnd: 588.5 at 72, 1,094.5 at 84).
+  python3 shiftrun.py C -> shiftrun_C.json, stdout   (predictions/2b-sizes.md; tools/sealed_run.sh 2b-sizes)
+      72 and 84 bits: 2'a (base) against 2'b alone; 96 bits: 2'b (base) against 2'b+pp3 at +0, with one
+      LAMPCORE_SIEVEBREAK=1 pass per cell after the wall replicates (which run with it off). Clock options for short
+      cells: core-2 MHz every 0.05 s, the launch sample skipped; each cell timed 3 / 2 / 1 times back to back per
+      replicate at 72 / 84 / 96 (ns averaged); seeds 2112, 2124, 2136.
 Re-sieve off; the reference genes (lctest.ref) with goff = 1 (the reference since Oct 26).
   0. Identity first (stops with an error if it fails): 2'b against 2'a (A): the same factor, candidates, hits and
      polynomials on every number, relations and candidate values on 2 traced numbers; each 2'b+pp3 cell against the
@@ -57,12 +62,12 @@ def identity(a, ga, gb, ra, rb, nums):
     if bad or not rel:
         sys.exit(f"STOP: identity failed for {a}")
 
-def size_run(bits, cells, pbases, tbases, xbases, seed, tag):
+def size_run(bits, cells, pbases, tbases, xbases, seed, tag, tkw=None, brk="lp", base0="2'a"):
     nums = S2.map_nums(bits)
     out = {"bits": bits, "priced": {}, "timing": {}, "excess": {}}
     # 0. identity
     runs = {n: run_many([g], nums, P.QS_CAP, types=True) for n, g in cells.items()}
-    if "2'b" in cells:
+    if "2'b" in cells and "2'a" in cells:
         identity(f"{tag}2'b vs 2'a", cells["2'b"], cells["2'a"], runs["2'b"], runs["2'a"], nums)
     for n, g in cells.items():
         if "pp3" in n:
@@ -76,13 +81,13 @@ def size_run(bits, cells, pbases, tbases, xbases, seed, tag):
         print(f"priced {tag}{n}: " + " ".join(f"{Pn} {np.mean(c[n][Pn]):,.1f}" for Pn in PT), flush=True)
     for a, b in pbases:
         pr = {Pn: paired(c[a][Pn], c[b][Pn]) for Pn in PT}
-        info = "" if b == "2'a" else " (information)"
+        info = "" if b == base0 else " (information)"
         out["priced"][f"{a} vs {b}"] = {Pn: {"ratio": v[0], "ci95": v[1]} for Pn, v in pr.items()}
         print(f"priced {tag}{a} vs {b}{info}: " + " ".join(f"{Pn} {v[0]:.4f} [{v[1][0]:.4f}, {v[1][1]:.4f}]" for Pn, v in pr.items())
               + f"; robust {max(v[0] for v in pr.values()):.4f}; (e) "
               + ("better" if all(v[1][1] < 1 for v in pr.values()) else "worse" if all(v[1][0] > 1 for v in pr.values()) else "undecided"), flush=True)
     # 2. wall-clock
-    res, order, states, clock = shuffled(cells, nums, reps=REPS, seed=seed)
+    res, order, states, clock = shuffled(cells, nums, reps=REPS, seed=seed, **(tkw or {}))
     def series(n, part):
         if part == "wall":
             return [sum(v["ns"] for k, v in w.items() if not k.startswith("lp:")) / 1e3 for w in res[n]]
@@ -99,12 +104,14 @@ def size_run(bits, cells, pbases, tbases, xbases, seed, tag):
             line += (f" {part} {rec[part]['mean']:,.1f} us (sd {rec[part]['sd']:.1f}, {rec[part]['min']:,.1f}-{rec[part]['max']:,.1f})"
                      + (f" ruint {rec[part]['ruint']:,.1f}" if part != "wall" else "") + ";")
         m = clock[n]
-        line += (f" core 2 MHz {m['min']:.0f}-{m['max']:.0f}, median {m['median']:.0f} (n {m['n']})" + (" FLAGGED (>10% off 2'a)" if m["flag"] else "")
+        line += (f" core 2 MHz {m['min']:.0f}-{m['max']:.0f}, median {m['median']:.0f} (n {m['n']}"
+                 + (f", {m['per_pass']:.1f} per pass, {'valid' if m['valid'] else 'TOO FEW SAMPLES'}" if 'per_pass' in m and tkw else "") + ")"
+                 + (f" FLAGGED (>10% off {list(cells)[0]})" if m["flag"] else "")
                  if m["n"] else " core 2 MHz: no samples")
         out["timing"][n] = rec
         print(line, flush=True)
     for a, b in tbases:
-        info = "" if b == "2'a" else " (information)"
+        info = "" if b == base0 else " (information)"
         line = f"timing {tag}{a} vs {b}{info}:"
         out["timing"][f"{a} vs {b}"] = {}
         for part in ("wall",) + tuple(k for k in REGIONS if k in res[a][0]):
@@ -134,12 +141,26 @@ def size_run(bits, cells, pbases, tbases, xbases, seed, tag):
             line += f" {k} {m:+.1f} [{m - h:+.1f}, {m + h:+.1f}]" + (" (calls)" if key == "calls" else "") + ";"
         out["excess"][f"{a} vs {b}"] = rec
         print(line, flush=True)
-    # 4. LPBREAK
-    out["lpbreak"] = {}
-    for n, g in cells.items():
-        lp = phasetime(g, nums, True)
-        out["lpbreak"][n] = {k: v for k, v in lp.items() if k.startswith("lp:") or k == "lp_ledger"}
-        print(f"lp break {tag}{n} (information; sub-timers on): " + " ".join(f"{k} {v['ns'] / 1e3:,.1f} us / {v['calls']:,.1f} calls" for k, v in out["lpbreak"][n].items()), flush=True)
+    # 4. one breakdown pass per cell, sub-timers on: LPBREAK (A, B) or SIEVEBREAK (C)
+    if brk == "lp":
+        out["lpbreak"] = {}
+        for n, g in cells.items():
+            lp = phasetime(g, nums, True)
+            out["lpbreak"][n] = {k: v for k, v in lp.items() if k.startswith("lp:") or k == "lp_ledger"}
+            print(f"lp break {tag}{n} (information; sub-timers on): " + " ".join(f"{k} {v['ns'] / 1e3:,.1f} us / {v['calls']:,.1f} calls" for k, v in out["lpbreak"][n].items()), flush=True)
+    elif brk == "sv":
+        out["svbreak"] = {}
+        for n, g in cells.items():
+            sv = phasetime(g, nums, False, True)
+            out["svbreak"][n] = {k: v for k, v in sv.items() if k.startswith("sv:") or k == "sieve"}
+            print(f"sieve break {tag}{n} (sub-timers on): " + " ".join(f"{k} {v['ns'] / 1e3:,.1f} us" + (f" / {v['units']:,.1f} units" if "units" in v else "")
+                                                                  for k, v in out["svbreak"][n].items()), flush=True)
+        names = list(cells)
+        for n in names[1:]:
+            dif = {k: (out["svbreak"][n][k]["ns"] - out["svbreak"][names[0]][k]["ns"]) / 1e3 for k in out["svbreak"][n] if k.startswith("sv:")}
+            out["svbreak"][f"{n} - {names[0]}"] = dif
+            print(f"sieve break {tag}{n} - {names[0]} (us per number): " + " ".join(f"{k} {v:+,.1f}" for k, v in dif.items())
+                  + f"; largest: {max(dif, key=lambda k: abs(dif[k]))}", flush=True)
     print(f"replicate orders {tag}(random.Random({seed})):")
     for r in range(1, REPS + 1):
         print(f"  r{r}: " + ", ".join(n for rr, n in order if rr == r))
@@ -174,5 +195,21 @@ elif MODE == "B":
         out[str(bits)] = size_run(bits, cells, base, base, base, 2030 + bits, f"{bits}: ")
         out[str(bits)]["mean_B"] = B
     json.dump(out, open("shiftrun_B.json", "w"), indent=1)
+elif MODE == "C":
+    # 2b-sizes (predictions/2b-sizes.md): 72 and 84, 2'a against 2'b alone; 96, 2'b against 2'b+pp3 at +0 with one
+    # SIEVEBREAK pass per cell (the wall replicates with it off). Clock options for short cells (timing.shuffled).
+    out = {}
+    TK = {72: dict(period=0.05, skip_launch=True, inner=3), 84: dict(period=0.05, skip_launch=True, inner=2),
+          96: dict(period=0.05, skip_launch=True, inner=1)}
+    for bits in (72, 84):
+        g0 = dict(ref(bits), goff=1)
+        cells = {"2'a": g0, "2'b": dict(g0, confirm="root")}
+        b = [("2'b", "2'a")]
+        out[str(bits)] = size_run(bits, cells, b, b, b, 2040 + bits, f"{bits}: ", TK[bits], None)
+    g0 = dict(ref(96), goff=1)
+    cells = {"2'b": dict(g0, confirm="root"), "2'b+pp3 +0": dict(g0, confirm="root", pp=3)}
+    b = [("2'b+pp3 +0", "2'b")]
+    out["96"] = size_run(96, cells, b, b, b, 2136, "96: ", TK[96], "sv", "2'b")
+    json.dump(out, open("shiftrun_C.json", "w"), indent=1)
 else:
-    sys.exit("usage: shiftrun.py A|B")
+    sys.exit("usage: shiftrun.py A|B|C")

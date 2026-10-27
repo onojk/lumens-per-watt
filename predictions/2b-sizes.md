@@ -90,3 +90,61 @@ No sealed prediction is revised. D-15, D-16, D-17 are registered above.
 - **D-15 uses a cross-run wall factor:** −11.2% from run A against −9.4% from the shift run.
 - **D-17 shares the reviewer's anchor** (the ~40 µs quick check), so it is not independent of R2-20.
 - *Claude Code's note:* the time-order record above (2′b's priced totals at 72 and 84 were printed by Claude Code before this file was first committed) applies to D-15's priced clauses as well. DeepSeek had not seen them; they were not relayed.
+
+## Grok (received 01:41 Oct 27 PT)
+
+- **G-8, G-9 and G-10: sealed.** The 2b-sizes run has not started.
+- **Its free-2 answer: information only.**
+
+### Its reply (verbatim)
+
+<!-- verbatim begin -->
+**Sealed predictions (Grok, 27 Oct 2026 ~01:45 PT)**  
+Using only the numbers supplied. Per-size candidate/polynomial counts, absolute wall times, and the exact free-2 contribution on the full 640 numbers are missing.
+
+### G-8 — 2'b alone vs 2'a at 72 and 84 bits
+(Assumption stated: the relative official/ruint movement seen when pp3 was added at 96 is used only as a rough bound; it is not assumed to transfer exactly.)
+
+- **72 bits**  
+  Official: 1.030–1.055  
+  ruint: 0.910–0.935  
+  Montgomery: 0.900–0.925  
+  Wall: −7.0 % to −10.0 %
+
+- **84 bits**  
+  Official: 1.005–1.025  
+  ruint: 0.890–0.910  
+  Montgomery: 0.880–0.900  
+  Wall: −8.0 % to −11.0 %
+
+**Falsifier (single condition):** official ratio at either size falls below 1.000, or wall improvement at either size exceeds −12 %.
+
+### G-9 — Is 2'b faster than 2'a on wall at both sizes, with 95 % intervals excluding zero?
+**Yes** (confidence ~75 %).  
+**Falsifier:** the 95 % interval on wall at either 72 or 84 bits includes zero or is positive.
+
+### G-10 — At 96 bits, how many µs/number of 2'b+pp3's sieve excess over 2'b does sv:free2 account for, and is it the largest sieve sub-region difference?
+**Range:** 35–55 µs/number.  
+**Largest:** yes.  
+**Falsifier:** sv:free2 accounts for ≤25 µs or some other single sub-region (zero, prime, power, or tail) accounts for more µs than free2.
+
+---
+
+**Information only:** Charging the free-2 pass is a meter correction (previously uncharged work that falls under the existing width charge), not a re-pricing of operations the meter already counts.
+<!-- verbatim end -->
+
+### The reviewer's annotations (ranges unchanged)
+
+- **G-8's falsifier is an OR of two conditions, and narrower than its ranges.** The ranges are scored as predictions and the falsifier as written, separately.
+- **G-8's official ranges sit below DeepSeek's D-15 and the reviewer's R2-18 at both sizes.** That is a real disagreement: Grok expects a smaller pp 3 effect at 72 and 84.
+- **G-10 shares the ~40 µs quick-check anchor with D-17 and R2-20,** so it is not independent.
+- *Claude Code's note:* the time-order record above applies to G-8's priced clauses as well. Grok had not seen 2′b's priced totals at 72 and 84, and they were not relayed.
+
+## Runner, and scoring definitions for R2-20, D-17 and G-10 (Claude Code's, before the run)
+
+- **Runner:** `evolve/shiftrun.py` mode C (the commit is named in the run record), smoke-tested on 4 numbers with output discarded.
+  - Clock options: core-2 MHz every 0.05 s, the launch sample skipped; each cell timed 3 / 2 / 1 times back to back per replicate at 72 / 84 / 96 bits (ns averaged); seeds 2112, 2124, 2136.
+  - Identity first. Priced and timed as in runs A and B: 72 and 84 against 2′a, 96 against 2′b.
+- **"sv:free2 accounts for X µs of the sieve excess":** scored as sv:free2's ns per number in 2′b+pp3 minus 2′b's (2′b has no pp, so its sv:free2 is empty), from the one `LAMPCORE_SIEVEBREAK=1` pass per cell after the wall replicates. One pass, so there is no interval.
+- **"The largest single sieve sub-region difference":** the largest absolute difference, 2′b+pp3 minus 2′b, over sv:zero, sv:free2, sv:prime, sv:power and sv:tail, in the same pass.
+- **For context only:** the sieve region's excess over its own-rate price, 2′b+pp3 against 2′b, from the wall replicates (with the flag off), as in run A.
