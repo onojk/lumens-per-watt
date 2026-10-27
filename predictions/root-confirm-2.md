@@ -6,7 +6,7 @@ The user's predictions are given verbatim from the user's brief (Oct 27). They a
 - 96 bits, all 640 map numbers, re-sieve off, card e13603a. The same numbers and genes as root-confirm.
 - Cells: the reference (full pass, pp absent, tc 1.0353); root alone; root + pp 3 ("2 free") at threshold shifts 0, +1, +2 and +3 bits (tc − d / log2 1,752; L unchanged).
 - Wall-clock: 8 replicates. Each replicate times every cell once (lampcore --phasetime, taskset core 2), in its own random order from random.Random(2026), one shuffle per replicate (`evolve/timing.shuffled`).
-  - The orders are fixed by the seed and recorded in the output. The reference falls first in r2, r5 and r8 and last in r1, r3 and r4. A random order does not guarantee balance.
+  - The orders are fixed by the seed and recorded in the output. The reference falls first in r2, r5 and r8 and last in r1 and r4 (5th of 6 in r3, 2nd in r6, 4th in r7). A random order does not guarantee balance.
 - Core 2's MHz is sampled every second per cell. Each cell is flagged if its median is more than 10% off the reference's. The machine state is read before each replicate and before and after the run.
 - **Frequency cap:** if the user sets one before the run, it is recorded from the machine state (frequency limits: scaling_min/max_freq, intel_pstate no_turbo, min/max_perf_pct, added in 6a40164). Claude does not set it.
 - Per cell, the report gives:
