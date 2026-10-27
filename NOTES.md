@@ -7844,3 +7844,29 @@ Under-count at fulls (median): reference 6.50; (i) 0.31; (ii) 0.30; (iii) 0.30; 
 | H2-4 2 free +2: polynomials; wall-clock | +2.2%; −0.7% | −2% to +8%; −6% to +2% | **held**; **held** |
 
 All of H2-1 to H2-4 held. Report only; nothing is adopted. The I-029 microbenchmark is next, when the user says so.
+
+## I-029 microbenchmark: design note (before code; report only, no card change; predictions/i029.md, cbc2220)
+
+**Data:** real 96-bit candidates from the reference card, from Python traces (qs.TRACE_ARR) on stage B's 8-number subset (every polynomial and every candidate confirm processed; ~8,000 candidates). Written to a file (`evolve/i029_capture.py`, not committed data):
+- per polynomial: the base (−1, 2, the odd primes) and, for each odd base prime, its roots in sieve-index coordinates i0 = x + M:
+  - two roots (±t − B) A⁻¹ + M mod p for p ∤ kA;
+  - one root for p | k (t = 0);
+  - one root for A's primes, where g ≡ 2Bx + C is linear mod p, so x ≡ −C (2B)⁻¹;
+  - these are the start offsets the sieve already maintains;
+- per candidate: i0 and v = g(x) as an i128.
+
+**Three versions of confirm per candidate,** each producing the list of (base index, exponent) for v's factors over the base:
+- **(a) today's full pass:** for j = 1 … F − 1, v mod p by i128 remainder, dividing out repeats, exactly as the card does. It should reproduce ~3.9 ns per prime.
+- **(b) the root test:** for each odd base prime, r = i0 if i0 < p, else i0 mod p by a precomputed 64-bit reciprocal (Lemire's fastmod); r is compared with the prime's roots. Only the primes that match divide v (i128), with exponents found by repeated division. The prime 2 is tested by v's low bit.
+- **(c) as (b), branch-free:** one pass over structure-of-arrays (p, reciprocal, root 1, root 2) computes the hit flag without branches and appends j to a hit list unconditionally (index += hit). A second pass divides v by the listed primes. The first pass is written so the compiler can vectorise it.
+
+**Correctness gate:** for every candidate, (b) and (c) produce exactly the same (j, exponent) list and the same cofactor as (a). The run aborts on any difference.
+
+**Timing:** Rust release (`lampcore/src/bin/i029bench.rs`), pinned with `taskset -c 2`.
+- Each timing pass runs one version over all candidates; passes repeat until each version has ≥ 0.5 s, interleaved (a, b, c, a, b, c …).
+- Reported per version: ns per candidate (median and mean over passes) and ns per prime tested (ns per candidate / (F − 1)). Per-candidate timers would cost more than the work, so candidates are not timed individually.
+- Two replicates (the binary run twice), inside one guarded run with its machine state.
+
+**Implied wall-clock for the reference card at 96, all else equal:** Δ = 1,013 candidates per number × (t_b − t_a) (and the same for c), against the reference's wall-clock in the latest run (H2: 2,100 µs, confirm 576 µs). This is a microbenchmark extrapolation: confirm's in-card bookkeeping (exponent vector, touched list) is unchanged and not timed here.
+
+**Scoring:** I-029a against the root test's ns per prime tested, with the user's version (b) and DeepSeek's best of (b) and (c), stating both; I-029b against ns per candidate, the same way. *(Choice stated before the run: the predictions name "the root test" without a variant. Both (b) and (c) are reported, and each prediction is scored on both.)*
