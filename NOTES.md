@@ -9023,3 +9023,76 @@ Yes, substantially. Against 2'b directly, pp3 is +0.7% wall at +1 and −0.9% at
 3. **pp 3: retired as an adoption candidate.**
 4. **Run condition for 2b-sizes:** charger reconnected (AC online), laptop on the fan pad, untouched.
    - *At 01:50 PT the machine read AC offline* (both USB-C sources offline too; battery 85%, discharging), so the run was held.
+
+## 2b-sizes, scored (`evolve/shiftrun.py` mode C, 3320a2d; `results/2b-sizes_20261027T085426Z.out`, guard commit 5d8e1c9; `evolve/shiftrun_C.json`; predictions `predictions/2b-sizes.md`, sealed in 9073cce)
+
+**Conditions:**
+- AC online in every replicate (24 / 24 states), charging at go.
+- Cap 2,400 MHz on all 8 cores. TCPU 40–48 °C. Governor powersave. Laptop on the fan pad, untouched. 27 browser processes; no Wolfram.
+- **Clock, with the new sampling** (every 0.05 s, launch sample skipped): core 2's median was 2,400 MHz in every cell, with 10–52 samples per timed pass, all valid, no flags.
+- Inner repeats: 3 at 72, 2 at 84, 1 at 96.
+- **The meter is the uncorrected one** (free-2 writes uncharged), as the predictions were made against it. The correction is applied after this entry.
+
+**Identity:** 2′b against 2′a at 72 (480 / 480) and 84 (560 / 560), and 2′b+pp3 against goff off at 96 (640 / 640): the same factor, candidates, hits and polynomials, with relations identical on the traced numbers.
+
+**72 and 84 bits, 2′b against 2′a:**
+
+| size | wall [95%] | official | ruint | Montgomery | robust | (e) |
+|---|---|---|---|---|---|---|
+| 72 | **0.9038 [0.8972, 0.9103] (−9.6%, ±0.7)** | 1.0403 | 0.8896 | 0.8820 | 1.0403 | undecided |
+| 84 | **0.8706 [0.8621, 0.8792] (−12.9%, ±0.9)** | 1.0242 | 0.8699 | 0.8638 | 1.0242 | undecided |
+
+- **Wall-clock (µs at 2.4 GHz):** 72: 2′a 786.4 (sd 3.8), 2′b 710.7 (3.9). 84: 2′a 1,640.1 (9.4), 2′b 1,427.9 (11.1).
+- The saving is confirm: −34.1% at 72, −39.6% at 84. The sieve region is flat (+0.3%, +0.2%) because goff removes the per-polynomial pass. No sub-region excess over its own-rate price exceeds 7.2 µs (confirm, negative).
+- **The priced columns are information only** (the time-order ruling).
+
+**96 bits, 2′b+pp3 +0 against 2′b:**
+- **Wall +3.5% [+1.9, +5.2]:** pp 3 is slower than 2′b alone. Priced (uncorrected): 0.9488 / 0.9804 / 0.9794, robust 0.9804, "better".
+- **Sieve region:** wall −3.9% against a ruint change of −9.8%. Its excess over its own-rate price is **+52.4 µs [+44.3, +60.5]** (run A, at +1..+3: +58 to +69).
+- **Other excesses:** lp_ledger +32.9 µs [+12.8, +53.0]; setup +17.8 µs [+11.4, +24.2]; scan +5.0 by calls.
+- **The breakdown pass** (sub-timers on, one pass per cell; µs per number, 2′b+pp3 minus 2′b): sv:zero −0.6, **sv:free2 +39.7** (zero units), **sv:prime −45.4** (fewer polynomials: 140.5 against 156.0), sv:power +0.2, sv:tail −2.0.
+  - sv:free2 is the only positive difference of any size. It is about 76% of the sieve region's excess (39.7 of 52.4 µs).
+
+**Scored as written** (wall clauses and the 96-bit breakdown; scoring definitions committed before the run):
+
+| | measured | sealed | result |
+|---|---|---|---|
+| R2-18 wall 72 | −9.6% | −8% to −13% | **held** |
+| R2-18 wall 84 | −12.9% | −9% to −14% | **held** |
+| R2-19 2′b faster at both sizes, intervals excluding zero | [−10.3%, −9.0%]; [−13.8%, −12.1%] | yes (80%) | **held** |
+| R2-20 sv:free2's share | +39.7 µs | 30–55 µs | **held** |
+| R2-20 the largest single sieve sub-region difference | sv:prime, −45.4 µs (absolute; sv:free2 +39.7) | sv:free2 | **missed** |
+| D-15 wall 72 / 84 | −9.6% / −12.9% | −8% to −13% / −9% to −14% | **held / held** |
+| D-16 faster at both sizes, intervals excluding zero | as R2-19 | Yes (85%) | **held** (falsifier not triggered) |
+| D-17 sv:free2 | +39.7 µs | 30–55 (central 42) | **held** |
+| D-17 the largest | sv:prime (|−45.4| > 39.7) | sv:free2 | **missed;** the falsifier "any other sieve sub-region larger than sv:free2" **triggered** (falsified) |
+| G-8 wall 72 | −9.6% | −7.0% to −10.0% | **held** |
+| G-8 wall 84 | −12.9% | −8.0% to −11.0% | **missed** (larger saving) |
+| G-8 falsifier, wall clause: "wall improvement at either size exceeds −12%" | 84: −12.9% | | **triggered (falsified)** |
+| G-9 faster at both sizes, intervals excluding zero | as R2-19 | Yes (~75%) | **held** |
+| G-10 sv:free2 | +39.7 µs | 35–55 µs | **held** |
+| G-10 the largest | sv:prime | sv:free2 | **missed;** the falsifier "some other single sub-region accounts for more µs than free2" **triggered** (falsified) |
+
+- **The "largest" clauses turn on the definition committed before the run:** the largest *absolute* difference. sv:prime's −45.4 µs is a saving (fewer polynomials), not an excess. **Under a reading of "largest increase", sv:free2 would be the largest,** and R2-20, D-17 and G-10 would hold in full. They are scored on the committed definition; the alternative reading is recorded, not used.
+
+*Information only (priced clauses; time-order ruling):*
+- **R2-18:**
+  - official 72 1.0403 (range 1.04–1.10) and 84 1.0242 (1.02–1.07), both inside;
+  - ruint 72 0.8896 (0.89–0.94) and 84 0.8699 (0.87–0.92), both just below;
+  - Montgomery 0.0076 and 0.0061 below ruint, inside "within 0.01 below".
+- **D-15:** official 1.0403 / 1.0242 against 1.055–1.115 / 1.030–1.085, both below; ruint and Montgomery below their ranges at both sizes.
+- **G-8:** official inside at both sizes (1.030–1.055; 1.005–1.025); ruint and Montgomery below their ranges at both sizes. Its official falsifier clause (below 1.000) is not met.
+
+**Tally:**
+- The reviewer: R2-18 wall held, R2-19 held, R2-20 held on size and missed on "largest".
+- DeepSeek: D-15 wall held, D-16 held, D-17 held on size and falsified on "largest".
+- Grok: G-8 wall held at 72 and missed at 84, falsified by its −12% clause; G-9 held; G-10 held on size and falsified on "largest".
+
+**Readings and limits:**
+- **2′b alone is faster than 2′a at every measured size:** −9.6% (72), −12.9% (84), −11.2% (96, run A).
+- **Its robust ratio is official's at every size** (1.0403, 1.0242, 1.0137), so under the current rule it is "undecided" everywhere. Its fate rests on the open robust-rule decision.
+- **pp 3 costs wall-clock at 96** (+3.5% against 2′b at +0). Its free-2 write accounts for ~40 µs per number, with zero price.
+- The lp_ledger excess at +0 (+32.9 µs) is larger than run A's at +1 (+4.6). The interval is wide ([+12.8, +53.0]); it is not explained here.
+- The breakdown is one pass with sub-timers on: no interval.
+
+**Report only.** Nothing adopted. Next: the free-2 correction (the user's decision, APPLY).
