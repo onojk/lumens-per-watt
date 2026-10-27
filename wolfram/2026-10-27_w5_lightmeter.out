@@ -1,0 +1,16 @@
+== 84 bits (8 numbers)
+  polynomials to completion, model / card per number: {0.849, 0.882, 0.940, 1.135, 0.931, 1.244, 0.929, 0.940}
+  one factor (card = k x model): k = 1.008; residual sd after the factor 13.7% of card; before 13.6%
+  log card on log model: slope 0.752 (95% {0.456, 1.047}); slope 1 = a single factor fits
+  ranking: Spearman rho (model vs card) 0.786; Pearson on logs 0.931
+  combinations, model / card per number: {1.19, 0.82, 0.96, 0.92, 0.91, 0.98, 1.07, 0.83}; Spearman rho 0.476
+  over-count against the card by model-polys rank (rank 1 = fewest predicted polynomials = highest predicted yield):
+    {0.929, 0.940, 0.882, 0.849, 0.940, 0.931, 1.244, 1.135}
+== 96 bits (8 numbers)
+  polynomials to completion, model / card per number: {1.009, 1.050, 0.841, 0.868, 1.231, 0.825, 0.900, 1.187}
+  one factor (card = k x model): k = 1.065; residual sd after the factor 16.7% of card; before 15.7%
+  log card on log model: slope 1.278 (95% {0.908, 1.648}); slope 1 = a single factor fits
+  ranking: Spearman rho (model vs card) 0.929; Pearson on logs 0.960
+  combinations, model / card per number: {1.23, 1.12, 0.88, 0.87, 0.92, 0.99, 1.33, 0.78}; Spearman rho 0.563
+  over-count against the card by model-polys rank (rank 1 = fewest predicted polynomials = highest predicted yield):
+    {1.050, 1.187, 1.009, 0.900, 1.231, 0.868, 0.841, 0.825}

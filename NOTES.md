@@ -9439,3 +9439,25 @@ Model: `wolfram/2026-10-27_meter_open.wl`, `.out`.
 - The data cannot tell A from B: the 95% band on ns per copy at 128 bits is 111–7,118 ns. What would separate them is a microbenchmark of one copy at the list lengths of 108 and 120 bits, the measurement stage 5 already proposed.
 
 **What it does not establish.** Each fit rests on three points with one residual degree of freedom, from one information-only pass on one machine. The breakdown's sub-timer overhead sits inside lp:copy's wall and was not measured separately, and that overhead may be part of the "excess". Sizes above 100 bits are outside the project's scope. No re-price is implied; that is the user's decision, after the measurement.
+
+## W5 (reduced): light-meter per-number check (model, not a verdict; information only; `wolfram/2026-10-27_w5_lightmeter.wl`, `.out`)
+
+**The I-033 decile curve was not possible from repo inputs.** Stage F (`evolve/stagef.json`, 352cfa8) ran the yield model on only 8 map numbers per size, and only at 84 and 96: there is no 72. The measured true fulls and partials (`step9.json`) are pooled per size, not kept per number. Deciles need per-number measured yield on many more numbers; that would be a new trace run, not done.
+
+**What was checked instead.** The quantities stage F does keep per number: polynomials to completion and combinations, model (given stage B's pooled capture) against the card.
+
+| | 84 bits | 96 bits |
+|---|---|---|
+| single factor k (card = k × model) | 1.008 | 1.065 |
+| per-number scatter, before / after the factor | 13.6% / 13.7% | 15.7% / 16.7% |
+| slope of log card on log model (95%) | 0.75 (0.46–1.05) | 1.28 (0.91–1.65) |
+| ranking, Spearman ρ (polynomials) | 0.79 | 0.93 |
+| ranking, Spearman ρ (combinations) | 0.48 | 0.56 |
+
+- **One factor fixes the mean but not the scatter:** after it, single numbers are still off by 14–17%.
+- **The slopes point opposite ways at the two sizes:** at 84, the model's misses are largest on the hardest numbers; at 96, on the easiest. Both intervals include 1. Eight numbers cannot tell a yield-dependent error from noise.
+- **Ranking is good on polynomials** (ρ 0.79 and 0.93) and weak on combinations (0.48 and 0.56).
+
+**For I-024 (per-number budgets):** the model ranks numbers by difficulty well enough to sort them, but a single number's polynomial count is uncertain to about ±15%. Whether the error depends on yield is open.
+
+**What it does not establish.** This is not I-033's curve: 8 numbers per size, no 72. Capture is stage B's pooled rate applied to every number, so per-number capture differences show up as model error. The full curve needs per-number traces (true fulls and partials) on a few hundred map numbers at 72, 84 and 96. That is a trace run, read-only for the card; the user decides whether to run it (I-033 decision pending).
