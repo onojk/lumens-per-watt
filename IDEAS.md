@@ -42,6 +42,7 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Payoff: structural prevention of meter holes and mis-typing (estimated: removes most of the audit's failure classes). Cost: a refactor of lampcore's hot paths plus parity (estimated: large).
 - Interactions: must keep op counts identical (parity) except where it reveals real holes, which are then meter corrections reported separately. Performance of lampcore must not drop materially.
 - Recommended timing: after the 2x2. The Phase 1 watt meter then checks a meter correct by construction.
+- Addendum (the user, 2026-10-27): prerequisite for any automated code evolution: an automatic evolver would exploit uncharged ops (audit item 17, lp_ledger hash price).
 - Decision: pending.
 
 ### I-002 — Score the reviewers, not only their predictions
@@ -316,4 +317,17 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Why: every timed run so far ends at TCPU 98–99 °C under the powersave governor. In root-confirm the clock was flagged in 5 of 6 root cells (each cell's median was taken from only 4 samples); root-confirm-2 had no flags, but its ratio intervals were ±3.5–5 points.
 - Recording: the machine state records the limits (scaling_min/max_freq, intel_pstate no_turbo, min/max_perf_pct; 6a40164), so a cap shows in every guarded run's `.machine.txt`.
 - **A system setting: the user's call. Never applied by Claude Code.**
+- Decision: pending (the user's).
+
+### I-040 — Surrogate-first scoring for relation-identical changes
+- Date: 2026-10-27. Source: the user.
+- Idea: for card changes that pass acceptance with identical relations, compute priced fitness from the wolframscript cost model, with inputs taken from the acceptance trace. Spend sealed runs only on wall-clock and on changes that alter yield.
+- Evidence: the I-032 model reproduced the measured ratios to 4 digits (1.0379 / 0.9051 / 0.9014; f12ae23).
+- Interactions: priced verdicts today come from sealed card runs (CLAUDE.md: Wolfram output is a model, never a verdict). Adopting this changes that rule for relation-identical changes, which is the user's decision.
+- Decision: pending (the user's).
+
+### I-041 — Pricing-niche archive (MAP-Elites style, report only)
+- Date: 2026-10-27. Source: the user.
+- Idea: keep the best cell per pricing (official / ruint / Montgomery, later energy) beside the robust champion, so that specialists such as root confirm (ruint −9.5%, official +3.8%) are kept rather than discarded.
+- Report only; it never enters fitness. Related MOVES row: "Quality-diversity archive (MAP-Elites)" (untested).
 - Decision: pending (the user's).
