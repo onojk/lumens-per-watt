@@ -9483,3 +9483,19 @@ Model: `wolfram/2026-10-27_meter_open.wl`, `.out`.
 - **The reviewer's "cross-run drift ~1.5 points" is not supported by W3.** The claim came from shift-past-2 against pp3-gap-and-shift: +2's wall was −13.5% in one and −12.0% in the other (NOTES, "Withdrawn (the user's, Oct 27)"). Across all seven cell pairs repeated in capped runs, the between-run sd is ~0.2 points, indistinguishable from within-run noise (Q p = 0.26). Recorded as **the reviewer's overstatement**: one pair's gap (2.2 times its own s.e.) was read as a general drift.
   - *For the record (Claude Code):* the PROTOCOL guard's ±1.5 points is unchanged. As a 95% half-width for comparing two runs it sits near W3's ±1.3, which comes from within-run noise, not drift. Changing the guard's wording or number is the user's decision.
 - **The reviewer states a confidence on future categorical predictions** (from W4: the reviewer had none on file, so its categorical calls cannot be calibrated). Prospective, from Oct 27.
+
+## Reviewer's review of the op-class procedure draft (Oct 27)
+
+**Reviewer's review of the draft (Oct 27): passes requirements 1-3 and scope; fixed for 4, 5 and 6; the worst-of-four flaw identified.**
+
+- **The worst-of-four flaw:** with official kept, the worst of four is never below the worst of three, so adding an op-class pricing could never change an adoption. The live options are now:
+  - (a) keep the rule;
+  - (b) the op-class pricing replaces official in the robust track, with official still reported but holding no veto;
+  - (c) energy arbitration once it is readable.
+
+  The user chooses before any count is taken, and the choice is committed with the procedure.
+- **Fixed in the draft** (`reviews/opclass_procedure_DRAFT.md`, still a draft; nothing computed):
+  - **Requirement 4:** per class, the Ir total, the op count, the weight and the static listing are published.
+  - **Requirement 5:** the rule option is fixed before the break-even.
+  - **Requirement 6:** the primary method is a whole-run callgrind Ir count over a committed input set. A committed source-line → op-class map covers every charged line, and unattributed Ir is reported, never dropped. The static body counts become a cross-check: a class differing by more than 10% is explained in writing.
+  - **Independent derivation:** two separate agents derive the weights. They must agree within 2% per class before any break-even is computed.
