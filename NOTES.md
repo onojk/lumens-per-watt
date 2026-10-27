@@ -8964,3 +8964,15 @@ Yes, substantially. Against 2'b directly, pp3 is +0.7% wall at +1 and −0.9% at
 - The scan fix's equivalence argument concerned candidates, not cost. Under the threshold design the per-position cost was a parity selection inside the scan's existing compare; under the write design it is a half pass of stores.
 
 **Not done:** no code changed; nothing rescored. Applying the correction (code, parity, and stating which earlier results it would affect) is the user's decision.
+
+## Decisions (the user's, Oct 27, before the 2b-sizes run)
+
+- **Time order:** consistent with the D-11 ruling, **the priced clauses of R2-18, D-15 and G-8 are information only.** 2′b's priced totals at 72 and 84 were printed by Claude Code's count pass for the free-2 cost note before `predictions/2b-sizes.md` was committed.
+  - **Sealed:** the wall clauses (R2-18 wall, R2-19, D-16, G-9) and the 96-bit breakdown (R2-20, D-17, G-10).
+- **PROTOCOL.md, prospective:** any count pass during a cost note hides priced totals for cells with pending predictions (it prints identity and counts by type only, or hashes the totals).
+- **The free-2 meter correction: the user's choice between APPLY and HOLD was left unfilled in the brief; not decided, not applied.**
+  - **The reviewer recommends APPLY after this run:**
+    - charge one sieve_scan per cell written by the free-2 initialisation;
+    - parity;
+    - report corrected priced readings beside the earlier pp 3 results (stage H, H2, root-confirm, the shift runs) without rescoring sealed predictions;
+    - pp 3 retired as an adoption candidate.

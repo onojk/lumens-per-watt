@@ -16,6 +16,7 @@ This file is the single source of truth for the workflow. Tool details are in `w
 - Predictions filed after a run, or after its results exist in the repo, are **information-only**, and their record says so.
 - A copied predictions file states that it is a verbatim copy and names each block's first commit.
 - Never re-run an experiment whose predictions are already scored. A new run needs new predictions and a new ID (for example stage H → stage H2).
+- **Count passes during a cost note (from Oct 27, prospective):** any count pass made while preparing a cost note or model hides the priced totals of cells that have pending predictions. It prints only identity and counts by type, or a hash of the totals. Priced clauses whose totals were printed before their predictions file was committed are information only (the 2b-sizes ruling, Oct 27, as for D-11).
 
 ## Order
 

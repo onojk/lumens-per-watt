@@ -148,3 +148,12 @@ Using only the numbers supplied. Per-size candidate/polynomial counts, absolute 
 - **"sv:free2 accounts for X µs of the sieve excess":** scored as sv:free2's ns per number in 2′b+pp3 minus 2′b's (2′b has no pp, so its sv:free2 is empty), from the one `LAMPCORE_SIEVEBREAK=1` pass per cell after the wall replicates. One pass, so there is no interval.
 - **"The largest single sieve sub-region difference":** the largest absolute difference, 2′b+pp3 minus 2′b, over sv:zero, sv:free2, sv:prime, sv:power and sv:tail, in the same pass.
 - **For context only:** the sieve region's excess over its own-rate price, 2′b+pp3 against 2′b, from the wall replicates (with the flag off), as in run A.
+
+## Decisions before "go" (the user's, Oct 27)
+
+- **Time order, consistent with the D-11 ruling:**
+  - **The PRICED clauses of R2-18, D-15 and G-8 are information only,** because 2′b's priced totals at 72 and 84 were printed before this file was committed. G-8's falsifier clause "official ratio at either size falls below 1.000" is priced, so it is information only too.
+  - **Sealed:** the wall clauses (R2-18 wall, R2-19, D-16, G-9, and G-8's wall ranges and its wall falsifier clause) and the 96-bit breakdown (R2-20, D-17, G-10).
+- **PROTOCOL.md (prospective):** a count pass during a cost note hides priced totals for cells with pending predictions.
+- **The free-2 meter correction:** the user's choice between APPLY and HOLD was left unfilled in the brief. The reviewer recommends APPLY after this run (NOTES).
+- **The user's conditions:** laptop on the fan pad, plugged in, untouched; cap 2.4 GHz as recorded.
