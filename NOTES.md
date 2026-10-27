@@ -8957,4 +8957,10 @@ Yes, substantially. Against 2'b directly, pp3 is +0.7% wall at +1 and −0.9% at
 - ruint and Montgomery still show 2′b+pp3 below 2′a (0.88–0.93 as sieve_scan), because root confirm's saving is much larger than the write's cost. Against 2′b they show pp 3 a little worse (~+1.5%), consistent with wall-clock (+0.7% at +1, −0.9% at +2, run A).
 - This is consistent with the sieve excess pp 3 showed against 2′b in run A (+58 to +69 µs) and the ~40 µs `sv:free2` smoke figure. R2-20 (2b-sizes) measures that directly.
 
+**Was the width charge calibrated to include initialisation writes?** (DeepSeek's point, 01:39 Oct 27: if it was, split the width charge into clearing and free-2 initialisation instead of adding a second charge, to avoid double-counting.) Checked against the record:
+- **The width charge's count is width per polynomial, the same with pp on or off.** The audit (NOTES, item on re-sieve initialisation) recorded the sieve array's re-zeroing as covered by it, together with the scan: one sieve_scan per cell, for both passes.
+- **sieve_scan's price comes from the Oct 23 opbench microbenchmark** (52e4e53, "2026-10-23 — Op-price calibration"). That was three days before the free-2 write existed: stage H first added the free 2 as a parity-dependent threshold at the scan, with no per-position work, and the scan fix (cad255f, Oct 26) turned it into a stride-2 write with "charges: none change", so that the counts stayed identical to the threshold version.
+- **So neither the count nor the price of the width charge includes the free-2 writes.** Adding a separate charge (⌈(width − par) / 2⌉ per polynomial) does not double-count; splitting the width charge would leave the writes uncounted. **The proposal stays an added charge.**
+- The scan fix's equivalence argument concerned candidates, not cost. Under the threshold design the per-position cost was a parity selection inside the scan's existing compare; under the write design it is a half pass of stores.
+
 **Not done:** no code changed; nothing rescored. Applying the correction (code, parity, and stating which earlier results it would affect) is the user's decision.
