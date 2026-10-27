@@ -9667,3 +9667,26 @@ The library-bound classes have no single static body and are dynamic only.
 - **54 bits:** all 320 map numbers, the same computation as step 3. The break-even root_test weight is 76.6, 1.47 times v1's. The gain is smaller than at 72–96 (robust 0.941 against 0.870–0.890), but every interval excludes 1. For information, 2′b+pp3 at 54 is undecided (robust 1.0065).
 - **60 and 66 bits: not computed.** The repo has map numbers and reference genes (the sealed per-size genes, `sizescale_k_sealed.json`) only at 54, 72, 84 and 96. A 60- or 66-bit comparison needs a number set and genes for those sizes, which would define a new reference: the user's choice (e.g. the nearest sealed size's genes on a new banded population).
 - **The order of events:** the adoption was committed (fc3bf0c) before this brief arrived. That record names the reference genes without limiting them by size. Its scope is the user's call, as the brief says.
+
+### Grok on step 3 (received 07:51 Oct 27 PT; information only; verbatim)
+
+<!-- verbatim begin -->
+[PLACEHOLDER: Grok's reply was not included in the brief that recorded it; to be pasted verbatim.]
+<!-- verbatim end -->
+
+**The reviewer's notes:**
+- **Q1 is partly bounded already:** the nearest-line alternative raised root_test by about 4%, and break-even needs +71%.
+- **Q2's trend reading is reversed:** official worsens as size falls. Expect a smaller margin below 72, not "no reversal". (At 54: robust 0.941 against 0.870–0.890 above 72.)
+
+### Attribution-free check: total Ir, 2′b against 2′a (`evolve/irtotal_2b.py`, `.out`, `.json`; step 2's callgrind runs; computation only)
+
+| bits | total Ir per number, 2′a → 2′b | **total ratio** | op-class ratio (step 3) | charged classes | meter | uncharged (card + harness) | uncharged share | unattributed |
+|---|---|---|---|---|---|---|---|---|
+| 72 | 9.20M → 8.29M | **0.901** | 0.866 | 0.866 | 1.236 | 1.935M → 1.881M (0.972) | 21.0% → 22.7% | 1,016 → 1,016 |
+| 84 | 19.04M → 16.28M | **0.855** | 0.829 | 0.832 | 1.190 | 2.304M → 2.156M (0.936) | 12.1% → 13.2% | 903 → 903 |
+| 96 | 43.65M → 37.43M | **0.857** | 0.844 | 0.846 | 1.126 | 3.178M → 2.835M (0.892) | 7.28% → 7.58% | 818 → 818 |
+
+- **Line-0 concern answered.** With no attribution at all, total Ir falls 10% / 14.5% / 14.3%: roughly the op-class ratio, within 1.3–3.5 points. The total drops slightly less because the uncharged and meter Ir shrink less than the charged work. The uncharged Ir, which holds the line-0 code, **falls** in 2′b at every size (−3% / −6% / −11%). It does not hide new work.
+- **Flag (as the brief asks): the uncharged share rises in 2′b** (21.0 → 22.7%, 12.1 → 13.2%, 7.28 → 7.58%). This is because the total falls faster than the uncharged part, not because uncharged work grows: its absolute Ir falls at every size. The meter's own Ir rises 13–24%, from the root test's extra charge calls. Unattributed Ir is unchanged and negligible (about 0.01%).
+- **Instruction counts only:** this check does not see memory or latency. The wall-clock (−9.6 / −12.9 / −11.2%) is the timed counterpart.
+- **54 / 60 / 66 bits:** 54 is computed (robust 0.941, better; above). 60 and 66 cannot be computed without a reference defined at those sizes (above).
