@@ -10,6 +10,7 @@ replicates) and the ratio to the first cell within each replicate (mean, 95% t i
   python3 friend_timing.py RUNFILE OUTFILE
 """
 import glob, json, math, os, platform, random, shutil, socket, statistics, subprocess, sys, threading, time
+ARGV = sys.argv[1:]                    # captured first: partition / sizescale clear sys.argv on import
 import numpy as np
 import partition as P, sizescale2 as S2, fastlamps
 from lctest import ref
@@ -135,4 +136,4 @@ def main(runfile, outfile):
     print(f"\nThe results are in {outfile}. Please send that one file back; nothing else is needed.")
 
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2])
+    main(ARGV[0], ARGV[1])
