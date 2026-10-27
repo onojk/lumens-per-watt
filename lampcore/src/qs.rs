@@ -715,7 +715,6 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
         };
         m.charge(crate::PH_WORD, 2)?; // M mod 2, w2 from kN mod 8
     }
-    let thr_w2 = thr - w2 as f64;
     let chk = gene(g, "check", 0.0) != 0.0; // ledger check: qs's acceptance test only
     let rs_on = g.get("confirm").and_then(|v| v.as_str()) == Some("resieve"); // root-matched confirmation
     let p0 = gene(g, "p0", 30.0) as i128;
@@ -881,6 +880,12 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
             let pt = crate::pt_snap(m); // "sieve"
             // 4. sieve
             arr.iter_mut().for_each(|x| *x = 0);
+            if par != usize::MAX {
+                // stage H: the free 2 by initialisation (the scan fix), under the width charge
+                for x in arr[par..].iter_mut().step_by(2) {
+                    *x = w2;
+                }
+            }
             let mut upd = 0u64;
             let mut nr = 0u64; // start offsets, one word op per root
             for k in 0..sr.len() {
@@ -927,11 +932,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
             crate::pt_end(m, 4, pt);
             let pt = crate::pt_snap(m); // "scan"
             cand.clear();
-            if par == usize::MAX {
-                cand.extend((0..width).filter(|&i0| (arr[i0] as f64) >= thr));
-            } else {
-                cand.extend((0..width).filter(|&i0| (arr[i0] as f64) >= if i0 % 2 == par { thr_w2 } else { thr }));
-            }
+            cand.extend((0..width).filter(|&i0| (arr[i0] as f64) >= thr));
             crate::pt_end(m, 5, pt);
             let pt = crate::pt_snap(m); // "resieve"
             // re-sieve (NOTES.md, "Root-matched candidate confirmation"): primes >= p0 matched over a

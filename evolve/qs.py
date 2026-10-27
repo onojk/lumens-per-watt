@@ -54,6 +54,13 @@ from ledger import Charger, Ledger, DELTA, _primes
 TRACE = None
 TRACE_ARR = False    # trace only (step 9): also keep each polynomial's A, B, C, sieve array and threshold
 
+def _sieve_sums(arr, par, w2):
+    """Trace only: the sieve array without the free 2 (stage H), as step9.py and pp_accept.py read it."""
+    a = arr.copy()
+    if par is not None:
+        a[par::2] -= w2
+    return a
+
 def lamp_qs(N, g, m):
     tr = TRACE
     if tr is not None:                         # accumulates over every qs stage of the run
@@ -351,6 +358,8 @@ def sieve_source(N, k, g, led, ch, at):
             C = (Bv * Bv - kN) // A
             # 4. sieve
             arr = np.zeros(width, dtype=np.int32)
+            if par is not None:                # stage H: the free 2 by initialisation (the scan fix), under the width charge
+                arr[par::2] = w2
             upd = 0
             hits = []
             nr = 0
@@ -378,11 +387,7 @@ def sieve_source(N, k, g, led, ch, at):
                 at["polys"].append({"M": M, "roots": hits, "upd": upd,
                                     "sieved": [p for p, _, _ in st_],
                                     "rp": {p: len(rs) for p, rs, _ in st_}})
-            if par is None:
-                cand = np.nonzero(arr >= T)[0].tolist()
-            else:
-                Tp = np.full(width, T); Tp[par::2] = T - w2
-                cand = np.nonzero(arr >= Tp)[0].tolist()
+            cand = np.nonzero(arr >= T)[0].tolist()
             if at is not None:
                 at["polys"][-1]["nc"] = len(cand)   # trace only: candidates of this polynomial (all, processed or not)
             if RS:                                 # re-sieve (NOTES.md, "Root-matched candidate confirmation")
@@ -409,7 +414,7 @@ def sieve_source(N, k, g, led, ch, at):
                 # generation stamps written (|st|), the direct list's pass (F - 1), the record lists (|cand|)
                 charge("word", 2 * len(cand) + len(st_) + F - 1)
             if at is not None and TRACE_ARR:      # step 9 (read-only): the polynomial, its sieve array, where confirm starts
-                at["polys"][-1].update(A=A, B=Bv, C=C, arr=arr.copy(), T=T, par=par, w2=w2, Mw=M, c0=len(at["cands"]), cand_pos=list(cand))
+                at["polys"][-1].update(A=A, B=Bv, C=C, arr=_sieve_sums(arr, par, w2), T=T, par=par, w2=w2, Mw=M, c0=len(at["cands"]), cand_pos=list(cand))
             # 5. confirm
             for i0 in cand:
                 x = i0 - M

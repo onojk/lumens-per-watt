@@ -7775,3 +7775,10 @@ Under-count at fulls (median): reference 6.50; (i) 0.31; (ii) 0.30; (iii) 0.30; 
   - *Priority:* I-029 first (the largest lever), then the free 2 with its shift retuned for the new confirm cost. The full option with powers is the weakest case once confirm is cheap.
 - **Tooling:** tools/ask_deepseek.py takes the next round as one more than the highest "round NN" in NOTES.md or reviews/, whichever is larger (hand-relayed rounds so far: up to 55). It is committed separately.
 - **Next after H2:** the I-029 microbenchmark, set up as predictions/i029.md (a verbatim copy of the sealed I-029a/b with their first commits) and run through the guard.
+
+### Stage H, scan fix: results (`evolve/h2_accept.py`, `h2_accept.out`; `h2_off_accept.out`; `pp_accept_h2.out`; `parity_h2.out`)
+
+- **Every pp cell against b2bade2's lampcore** (pp 10 at tc 1.0353 / 0.7623 / 0.5713; pp 3 at +1 / +2 / +3 bits; the reference), all map numbers 54–96: identical per number and per type, 14,000 / 14,000.
+- **Option off** against b2bade2: 8,000 / 8,000; Python = Rust 32 / 32.
+- **Option on:** Python = Rust 48 / 48; sieve values exact at 123,526 / 123,526 positions (the trace stores the array without the free 2).
+- **Parity:** qs 4,630 pairs and types 7,402 pairs, mismatches 0; mutations 54 / 54.
