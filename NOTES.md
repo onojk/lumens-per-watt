@@ -9244,3 +9244,31 @@ Model: `wolfram/2026-10-27_meter_open.wl`, `.out`.
 - **Item 17 is not separately visible:** it sits inside setup, which (a) flags as slower per ruint than the cell mean at every size. Setup also includes A selection and the per-A roots, so the flag does not single out A mod p.
 - **Re-sieve was not in any timed run tonight.**
 - **The sieve's free-2 excess** is the one stage 4 confirmed on the uncorrected data; it is now charged (6031239).
+
+## Meter-health check (I-042) built and run (overnight stage 4; report only; never feeds fitness; INFORMATION ONLY, no sealed predictions)
+
+**Tool:** `evolve/meterhealth.py` (e2079b0). It takes regions from the wall replicates and sub-regions (LPBREAK lp:*, SIEVEBREAK sv:*) from one breakdown pass per cell.
+- **(a) Absolute:** each region's wall against its ruint priced at the cell's own mean rate (cell wall / cell ruint). Flag when the excess is more than **K = 3 × the region's own noise** (its sd over replicates; for a sub-region, the parent's sd scaled by its share of the parent's time) **and more than 1 µs per number.**
+  - A flag means "slower per ruint than the cell's mean", **not necessarily an uncharged op.**
+  - scan's ops are priced in the sieve region, so scan alone is never flagged; combined rows sieve+scan and sv:zero+scan carry that comparison.
+- **(b) Differential:** for a pair (gene toggle), each region's change in wall against its change in ruint priced at the base region's own rate. Flag when the excess is **> 10 µs per number and > 5% of the base region's wall** (and the 95% interval excludes zero, where replicates exist).
+- The sieve sub-regions are priced by their op units (sv:zero and sv:free2 as sieve_scan, sv:prime and sv:power as sieve_update and word); sv:tail keeps the rest.
+
+**Test on existing outputs (no new timing; `evolve/meterhealth_existing.out`):**
+- **It flags sv:free2 on the uncorrected 2b-sizes data** (2′b+pp3 +0, 96): (a) +39.7 µs against noise 0.9, and (b) +39.7 µs as a new cost. That was the test's requirement.
+- **Also flagged:**
+  - (b) the sieve against 2′b, +52.5 µs [+44.3, +60.5] (2b-sizes) and +58 to +68 µs (run A, pp cells);
+  - (b) lp_ledger +32.4 µs (2b-sizes);
+  - (a) lp:copy (+73 to +112 µs at 96) and lp:hash (+34 to +108 µs) in every cell.
+
+**One timed pass (information only; `evolve/meterhealth_run.out`, `meterhealth_run.json`):**
+- **Cells:** 2′a and 2′b at 72, 84 and 96; 4 replicates; flags off for the wall replicates; one pass per cell with both breakdowns on.
+- **Machine:** AC online, cap 2,400 MHz on all cores, TCPU 52 °C before and 55 °C after, no Wolfram kernels, core 2's median 2,400 MHz in every cell (10–55 samples per pass). Load 2.5–3.2: a background agent (the scorecard tally) and Chrome were active; core 2 was pinned.
+- **Wall (µs per number):** 72: 2′a 788.6, 2′b 708.6. 84: 2′a 1,644.3, 2′b 1,433.4. 96: 2′a 3,754.1, 2′b 3,328.7. Within ~1% of 2b-sizes and run A. **Information, not a verdict.**
+- **(b) 2′b against 2′a: no flags at any size.** Every region's wall change tracks its price change. Confirm's wall falls slightly more than its price (excess −5.3 / −7.0 / −11.9 µs); setup at 96 +3.9 µs [+1.5, +6.3]; the sieve at 96 +9.6 [−3.2, +22.5]. **Root confirm carries no uncharged work by this check.**
+- **(a) Flags common to both cells** (relation-identical, so they cancel in (b)):
+  - setup (+53 to +96 µs);
+  - solve (+18 / +73 / +176 µs at 72 / 84 / 96);
+  - lp_ledger (+17 / +57–61 / +244 µs), within it lp:copy (+5 / +100 µs at 84 / 96) and lp:hash (+8 / +16 / +72–78 µs);
+  - gray (+7 / +27 µs at 84 / 96).
+- **These are the open meter questions of stage 5** (the hash, the copies, and solve's elimination benchmark, held) plus setup, whose A mod p (item 17) is inside it. sieve+scan runs *below* its price at the cell rate at every size.

@@ -1,0 +1,280 @@
+time: 2026-10-27T03:11:37-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 680; max MHz: 5000
+frequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100
+load average: 2.23 2.38 2.12
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+power supply ucsi-source-psy-USBC000:001 online: 0
+power supply ucsi-source-psy-USBC000:002 online: 1
+temperature TCPU: 52 C
+temperature x86_pkg_temp: 53 C
+sensors: Package id 0:  +52.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  77.2% chrome
+  31.7% claude
+  13.9% Xorg
+  10.9% chrome
+  4.0% kworker/2:1H-i915_cleanup
+72 bits timed: 2'a 788.6 us (core 2 median 2400.0, 11.0 samples per pass), 2'b 708.6 us (core 2 median 2400.0, 10.0 samples per pass)
+84 bits timed: 2'a 1,644.3 us (core 2 median 2400.0, 23.0 samples per pass), 2'b 1,433.4 us (core 2 median 2400.0, 21.0 samples per pass)
+96 bits timed: 2'a 3,754.1 us (core 2 median 2400.0, 55.0 samples per pass), 2'b 3,328.7 us (core 2 median 2400.0, 49.8 samples per pass)
+=== meterhealth_run.json
+(a) 72 bits: 2'a: cell rate 90.20 ns per ruint; flag when excess > 3 x noise and > 1 us (a flag means the region runs slower per ruint than the cell's mean, not necessarily an uncharged op; scan's ops are priced in sieve, see sieve+scan)
+    mult       wall       4.0 us  priced       5.6 us  excess      -1.5  noise    0.0
+    fb         wall      26.4 us  priced      67.0 us  excess     -40.6  noise    0.0
+    setup      wall     247.0 us  priced     151.0 us  excess     +96.1  noise    0.8  FLAG
+    gray       wall      11.9 us  priced      11.7 us  excess      +0.2  noise    0.1
+    sieve      wall      83.5 us  priced     158.6 us  excess     -75.0  noise    0.6
+    scan       wall      24.2 us  priced       0.0 us  excess     +24.2  noise    0.1
+    resieve    wall      -1.7 us  priced       0.0 us  excess      -1.7  noise    0.3
+    confirm    wall     237.4 us  priced     276.6 us  excess     -39.2  noise    1.6
+    lp_ledger  wall      76.6 us  priced      56.8 us  excess     +19.7  noise    0.6  FLAG
+    solve      wall      79.2 us  priced      61.4 us  excess     +17.8  noise    0.2  FLAG
+    lp:copy    wall      12.9 us  priced      22.6 us  excess      -9.7  noise    0.1 (scaled)
+    lp:hash    wall      25.1 us  priced      16.5 us  excess      +8.6  noise    0.1 (scaled)  FLAG
+    lp:comb    wall       8.2 us  priced       7.3 us  excess      +0.9  noise    0.0 (scaled)
+    lp:add     wall       7.6 us  priced       2.5 us  excess      +5.1  noise    0.0 (scaled)  FLAG
+    sv:zero    wall      -1.1 us  priced      29.9 us  excess     -31.0  noise    0.0 (scaled)
+    sv:free2   wall       0.0 us  priced       0.0 us  excess      +0.0  noise    0.0 (scaled)
+    sv:prime   wall      81.0 us  priced     128.7 us  excess     -47.7  noise    0.5 (scaled)
+    sv:power   wall      -1.6 us  priced       0.0 us  excess      -1.6  noise    0.0 (scaled)
+    sv:tail    wall      -1.5 us  priced       0.0 us  excess      -1.5  noise    0.0 (scaled)
+    sieve+scan wall     107.8 us  priced     158.6 us  excess     -50.8  noise    0.6
+    sv:zero+scan wall      23.1 us  priced      29.9 us  excess      -6.7  noise    0.1 (scaled)
+(a) 72 bits: 2'b: cell rate 91.11 ns per ruint; flag when excess > 3 x noise and > 1 us (a flag means the region runs slower per ruint than the cell's mean, not necessarily an uncharged op; scan's ops are priced in sieve, see sieve+scan)
+    mult       wall       4.3 us  priced       5.6 us  excess      -1.4  noise    0.3
+    fb         wall      26.5 us  priced      67.7 us  excess     -41.2  noise    0.2
+    setup      wall     251.7 us  priced     155.9 us  excess     +95.8  noise    1.8  FLAG
+    gray       wall      12.0 us  priced      11.8 us  excess      +0.2  noise    0.1
+    sieve      wall      82.9 us  priced     160.2 us  excess     -77.3  noise    0.6
+    scan       wall      24.0 us  priced       0.0 us  excess     +24.0  noise    0.1
+    resieve    wall      -1.6 us  priced       0.0 us  excess      -1.6  noise    0.2
+    confirm    wall     154.4 us  priced     188.0 us  excess     -33.6  noise    1.3
+    lp_ledger  wall      74.6 us  priced      57.4 us  excess     +17.2  noise    1.1  FLAG
+    solve      wall      79.8 us  priced      62.0 us  excess     +17.8  noise    0.7  FLAG
+    lp:copy    wall      13.1 us  priced      22.8 us  excess      -9.8  noise    0.1 (scaled)
+    lp:hash    wall      24.9 us  priced      16.6 us  excess      +8.2  noise    0.2 (scaled)  FLAG
+    lp:comb    wall       8.3 us  priced       7.3 us  excess      +1.0  noise    0.1 (scaled)
+    lp:add     wall       8.0 us  priced       2.5 us  excess      +5.5  noise    0.1 (scaled)  FLAG
+    sv:zero    wall      -1.1 us  priced      30.2 us  excess     -31.2  noise    0.0 (scaled)
+    sv:free2   wall       0.0 us  priced       0.0 us  excess      +0.0  noise    0.0 (scaled)
+    sv:prime   wall      80.0 us  priced     130.0 us  excess     -50.0  noise    0.5 (scaled)
+    sv:power   wall      -1.6 us  priced       0.0 us  excess      -1.6  noise    0.0 (scaled)
+    sv:tail    wall      -1.5 us  priced       0.0 us  excess      -1.5  noise    0.0 (scaled)
+    sieve+scan wall     106.9 us  priced     160.2 us  excess     -53.3  noise    0.6
+    sv:zero+scan wall      23.0 us  priced      30.2 us  excess      -7.2  noise    0.1 (scaled)
+(b) 72 bits: 2'b against 2'a: flag when excess > 10 us per number and > 5% of the base region's wall (and the 95% interval excludes zero, where replicates exist)
+    mult       d-wall      +0.2  d-priced      +0.0  excess      +0.2 [-0.1, +0.6]  (+5.7%)
+    fb         d-wall      +0.1  d-priced      +0.0  excess      +0.1 [-0.1, +0.4]  (+0.4%)
+    setup      d-wall      +4.6  d-priced      +5.5  excess      -0.8 [-2.8, +1.2]  (-0.3%)
+    gray       d-wall      +0.1  d-priced      +0.0  excess      +0.1 [-0.0, +0.3]  (+1.2%)
+    sieve      d-wall      -0.7  d-priced      +0.0  excess      -0.7 [-2.0, +0.7]  (-0.8%)
+    scan       d-wall      -0.2  d-priced      +0.0  excess      -0.2  (-0.9%)
+    resieve    d-wall      +0.0  d-priced      +0.0  excess      +0.0  (new)
+    confirm    d-wall     -83.0  d-priced     -77.6  excess      -5.3 [-7.8, -2.9]  (-2.3%)
+    lp_ledger  d-wall      -1.9  d-priced      +0.0  excess      -1.9 [-3.8, -0.1]  (-2.5%)
+    solve      d-wall      +0.6  d-priced      +0.0  excess      +0.6 [-0.2, +1.4]  (+0.8%)
+    lp:copy    d-wall      +0.2  d-priced      +0.0  excess      +0.2  (+1.3%)
+    lp:hash    d-wall      -0.2  d-priced      +0.0  excess      -0.2  (-0.9%)
+    lp:comb    d-wall      +0.2  d-priced      +0.0  excess      +0.2  (+1.9%)
+    lp:add     d-wall      +0.3  d-priced      +0.0  excess      +0.3  (+4.5%)
+    sv:zero    d-wall      +0.1  d-priced      +0.0  excess      +0.1  (new)
+    sv:free2   d-wall      +0.0  d-priced      +0.0  excess      +0.0  (new)
+    sv:prime   d-wall      -1.0  d-priced      +0.0  excess      -1.0  (-1.2%)
+    sv:power   d-wall      +0.1  d-priced      +0.0  excess      +0.1  (new)
+    sv:tail    d-wall      +0.1  d-priced      +0.0  excess      +0.1  (new)
+(a) 84 bits: 2'a: cell rate 73.61 ns per ruint; flag when excess > 3 x noise and > 1 us (a flag means the region runs slower per ruint than the cell's mean, not necessarily an uncharged op; scan's ops are priced in sieve, see sieve+scan)
+    mult       wall       4.1 us  priced       4.6 us  excess      -0.5  noise    0.0
+    fb         wall      50.9 us  priced     107.9 us  excess     -57.0  noise    0.2
+    setup      wall     383.6 us  priced     293.0 us  excess     +90.7  noise    1.0  FLAG
+    gray       wall      31.0 us  priced      24.3 us  excess      +6.7  noise    0.1  FLAG
+    sieve      wall     264.3 us  priced     476.8 us  excess    -212.5  noise    2.8
+    scan       wall      68.7 us  priced       0.0 us  excess     +68.7  noise    0.1
+    resieve    wall      -2.1 us  priced       0.0 us  excess      -2.1  noise    0.6
+    confirm    wall     545.6 us  priced     574.0 us  excess     -28.5  noise    0.7
+    lp_ledger  wall     137.2 us  priced      76.0 us  excess     +61.2  noise    0.4  FLAG
+    solve      wall     161.0 us  priced      87.8 us  excess     +73.2  noise    0.3  FLAG
+    lp:copy    wall      37.2 us  priced      31.5 us  excess      +5.7  noise    0.1 (scaled)  FLAG
+    lp:hash    wall      38.2 us  priced      21.8 us  excess     +16.4  noise    0.1 (scaled)  FLAG
+    lp:comb    wall      12.1 us  priced       9.2 us  excess      +2.9  noise    0.0 (scaled)  FLAG
+    lp:add     wall      10.8 us  priced       3.1 us  excess      +7.6  noise    0.0 (scaled)  FLAG
+    sv:zero    wall       0.4 us  priced      85.5 us  excess     -85.1  noise    0.0 (scaled)
+    sv:free2   wall       0.0 us  priced       0.0 us  excess      +0.0  noise    0.0 (scaled)
+    sv:prime   wall     262.1 us  priced     391.3 us  excess    -129.2  noise    2.5 (scaled)
+    sv:power   wall      -2.3 us  priced       0.0 us  excess      -2.3  noise    0.0 (scaled)
+    sv:tail    wall      -2.1 us  priced       0.0 us  excess      -2.1  noise    0.0 (scaled)
+    sieve+scan wall     333.0 us  priced     476.8 us  excess    -143.8  noise    2.8
+    sv:zero+scan wall      69.1 us  priced      85.5 us  excess     -16.4  noise    0.1 (scaled)
+(a) 84 bits: 2'b: cell rate 73.76 ns per ruint; flag when excess > 3 x noise and > 1 us (a flag means the region runs slower per ruint than the cell's mean, not necessarily an uncharged op; scan's ops are priced in sieve, see sieve+scan)
+    mult       wall       4.1 us  priced       4.6 us  excess      -0.5  noise    0.0
+    fb         wall      50.9 us  priced     108.1 us  excess     -57.3  noise    0.1
+    setup      wall     391.3 us  priced     299.3 us  excess     +91.9  noise    1.3  FLAG
+    gray       wall      30.9 us  priced      24.3 us  excess      +6.6  noise    0.2  FLAG
+    sieve      wall     265.2 us  priced     477.8 us  excess    -212.6  noise    1.7
+    scan       wall      68.8 us  priced       0.0 us  excess     +68.8  noise    0.8
+    resieve    wall      -2.3 us  priced       0.0 us  excess      -2.3  noise    0.6
+    confirm    wall     329.8 us  priced     355.1 us  excess     -25.3  noise    3.0
+    lp_ledger  wall     133.4 us  priced      76.1 us  excess     +57.3  noise    2.9  FLAG
+    solve      wall     161.3 us  priced      88.0 us  excess     +73.4  noise    0.2  FLAG
+    lp:copy    wall      36.9 us  priced      31.6 us  excess      +5.3  noise    0.5 (scaled)  FLAG
+    lp:hash    wall      38.6 us  priced      21.9 us  excess     +16.7  noise    0.5 (scaled)  FLAG
+    lp:comb    wall      12.3 us  priced       9.2 us  excess      +3.2  noise    0.2 (scaled)  FLAG
+    lp:add     wall      10.9 us  priced       3.1 us  excess      +7.7  noise    0.1 (scaled)  FLAG
+    sv:zero    wall       0.6 us  priced      85.6 us  excess     -85.1  noise    0.0 (scaled)
+    sv:free2   wall       0.0 us  priced       0.0 us  excess      +0.0  noise    0.0 (scaled)
+    sv:prime   wall     255.3 us  priced     392.2 us  excess    -136.8  noise    1.4 (scaled)
+    sv:power   wall      -2.2 us  priced       0.0 us  excess      -2.2  noise    0.0 (scaled)
+    sv:tail    wall      -0.6 us  priced       0.0 us  excess      -0.6  noise    0.0 (scaled)
+    sieve+scan wall     334.0 us  priced     477.8 us  excess    -143.8  noise    1.9
+    sv:zero+scan wall      69.4 us  priced      85.6 us  excess     -16.2  noise    0.8 (scaled)
+(b) 84 bits: 2'b against 2'a: flag when excess > 10 us per number and > 5% of the base region's wall (and the 95% interval excludes zero, where replicates exist)
+    mult       d-wall      -0.0  d-priced      +0.0  excess      -0.0 [-0.1, +0.1]  (-0.2%)
+    fb         d-wall      -0.1  d-priced      +0.0  excess      -0.1 [-0.3, +0.2]  (-0.1%)
+    setup      d-wall      +7.6  d-priced      +7.5  excess      +0.1 [-2.5, +2.7]  (+0.0%)
+    gray       d-wall      -0.1  d-priced      +0.0  excess      -0.1 [-0.3, +0.1]  (-0.3%)
+    sieve      d-wall      +0.8  d-priced      +0.0  excess      +0.8 [-3.6, +5.3]  (+0.3%)
+    scan       d-wall      +0.1  d-priced      +0.0  excess      +0.1  (+0.2%)
+    resieve    d-wall      -0.3  d-priced      +0.0  excess      -0.3  (new)
+    confirm    d-wall    -215.8  d-priced    -208.8  excess      -7.0 [-10.5, -3.4]  (-1.3%)
+    lp_ledger  d-wall      -3.7  d-priced      +0.0  excess      -3.7 [-7.3, -0.1]  (-2.7%)
+    solve      d-wall      +0.4  d-priced      +0.0  excess      +0.4 [-0.0, +0.8]  (+0.2%)
+    lp:copy    d-wall      -0.4  d-priced      +0.0  excess      -0.4  (-1.0%)
+    lp:hash    d-wall      +0.4  d-priced      +0.0  excess      +0.4  (+0.9%)
+    lp:comb    d-wall      +0.3  d-priced      +0.0  excess      +0.3  (+2.3%)
+    lp:add     d-wall      +0.1  d-priced      +0.0  excess      +0.1  (+1.2%)
+    sv:zero    d-wall      +0.2  d-priced      +0.0  excess      +0.2  (+55.6%)
+    sv:free2   d-wall      +0.0  d-priced      +0.0  excess      +0.0  (new)
+    sv:prime   d-wall      -6.8  d-priced      +0.0  excess      -6.8  (-2.6%)
+    sv:power   d-wall      +0.1  d-priced      +0.0  excess      +0.1  (new)
+    sv:tail    d-wall      +1.5  d-priced      +0.0  excess      +1.5  (new)
+(a) 96 bits: 2'a: cell rate 64.56 ns per ruint; flag when excess > 3 x noise and > 1 us (a flag means the region runs slower per ruint than the cell's mean, not necessarily an uncharged op; scan's ops are priced in sieve, see sieve+scan)
+    mult       wall       4.2 us  priced       4.0 us  excess      +0.2  noise    0.0
+    fb         wall      80.5 us  priced     155.9 us  excess     -75.4  noise    0.5
+    setup      wall     757.5 us  priced     704.6 us  excess     +52.8  noise    0.8  FLAG
+    gray       wall      87.6 us  priced      59.8 us  excess     +27.8  noise    0.7  FLAG
+    sieve      wall     867.8 us  priced    1514.3 us  excess    -646.5  noise    5.1
+    scan       wall     211.4 us  priced       0.0 us  excess    +211.4  noise    1.2
+    resieve    wall      -5.0 us  priced       0.0 us  excess      -5.0  noise    1.2
+    confirm    wall    1067.2 us  priced    1051.9 us  excess     +15.3  noise    8.4
+    lp_ledger  wall     367.9 us  priced     124.2 us  excess    +243.8  noise    7.2  FLAG
+    solve      wall     314.9 us  priced     139.4 us  excess    +175.5  noise    1.2  FLAG
+    lp:copy    wall     157.4 us  priced      58.1 us  excess     +99.3  noise    1.9 (scaled)  FLAG
+    lp:hash    wall     112.8 us  priced      41.4 us  excess     +71.5  noise    1.4 (scaled)  FLAG
+    lp:comb    wall      18.5 us  priced      12.1 us  excess      +6.4  noise    0.2 (scaled)  FLAG
+    lp:add     wall      15.4 us  priced       3.9 us  excess     +11.5  noise    0.2 (scaled)  FLAG
+    sv:zero    wall       5.4 us  priced     263.1 us  excess    -257.7  noise    0.0 (scaled)
+    sv:free2   wall       0.0 us  priced       0.0 us  excess      +0.0  noise    0.0 (scaled)
+    sv:prime   wall     849.0 us  priced    1251.3 us  excess    -402.2  noise    4.7 (scaled)
+    sv:power   wall      -4.1 us  priced       0.0 us  excess      -4.1  noise    0.0 (scaled)
+    sv:tail    wall      -3.7 us  priced       0.0 us  excess      -3.7  noise    0.0 (scaled)
+    sieve+scan wall    1079.2 us  priced    1514.3 us  excess    -435.1  noise    5.2
+    sv:zero+scan wall     216.8 us  priced     263.1 us  excess     -46.3  noise    1.2 (scaled)
+(a) 96 bits: 2'b: cell rate 64.49 ns per ruint; flag when excess > 3 x noise and > 1 us (a flag means the region runs slower per ruint than the cell's mean, not necessarily an uncharged op; scan's ops are priced in sieve, see sieve+scan)
+    mult       wall       4.2 us  priced       4.0 us  excess      +0.2  noise    0.0
+    fb         wall      79.9 us  priced     155.7 us  excess     -75.8  noise    0.2
+    setup      wall     773.7 us  priced     715.3 us  excess     +58.4  noise    1.4  FLAG
+    gray       wall      87.1 us  priced      59.7 us  excess     +27.4  noise    0.6  FLAG
+    sieve      wall     877.4 us  priced    1512.6 us  excess    -635.2  noise   11.1
+    scan       wall     211.6 us  priced       0.0 us  excess    +211.6  noise    1.0
+    resieve    wall      -5.1 us  priced       0.0 us  excess      -5.1  noise    0.8
+    confirm    wall     615.9 us  priced     618.0 us  excess      -2.2  noise    4.8
+    lp_ledger  wall     368.2 us  priced     124.0 us  excess    +244.1  noise    5.8  FLAG
+    solve      wall     315.7 us  priced     139.2 us  excess    +176.5  noise    0.6  FLAG
+    lp:copy    wall     158.5 us  priced      58.0 us  excess    +100.5  noise    1.6 (scaled)  FLAG
+    lp:hash    wall     119.1 us  priced      41.3 us  excess     +77.8  noise    1.2 (scaled)  FLAG
+    lp:comb    wall      18.5 us  priced      12.1 us  excess      +6.4  noise    0.2 (scaled)  FLAG
+    lp:add     wall      17.4 us  priced       3.9 us  excess     +13.6  noise    0.2 (scaled)  FLAG
+    sv:zero    wall       5.8 us  priced     262.8 us  excess    -257.0  noise    0.1 (scaled)
+    sv:free2   wall       0.0 us  priced       0.0 us  excess      +0.0  noise    0.0 (scaled)
+    sv:prime   wall     853.7 us  priced    1249.9 us  excess    -396.2  noise   10.1 (scaled)
+    sv:power   wall      -2.0 us  priced       0.0 us  excess      -2.0  noise    0.0 (scaled)
+    sv:tail    wall      -1.8 us  priced       0.0 us  excess      -1.8  noise    0.0 (scaled)
+    sieve+scan wall    1089.1 us  priced    1512.6 us  excess    -423.6  noise   11.1
+    sv:zero+scan wall     217.4 us  priced     262.8 us  excess     -45.4  noise    1.0 (scaled)
+(b) 96 bits: 2'b against 2'a: flag when excess > 10 us per number and > 5% of the base region's wall (and the 95% interval excludes zero, where replicates exist)
+    mult       d-wall      +0.0  d-priced      +0.0  excess      +0.0 [-0.0, +0.1]  (+0.9%)
+    fb         d-wall      -0.6  d-priced      +0.0  excess      -0.6 [-1.4, +0.2]  (-0.7%)
+    setup      d-wall     +16.3  d-priced     +12.4  excess      +3.9 [+1.5, +6.3]  (+0.5%)
+    gray       d-wall      -0.5  d-priced      +0.0  excess      -0.5 [-1.9, +0.8]  (-0.6%)
+    sieve      d-wall      +9.6  d-priced      +0.0  excess      +9.6 [-3.2, +22.5]  (+1.1%)
+    scan       d-wall      +0.2  d-priced      +0.0  excess      +0.2  (+0.1%)
+    resieve    d-wall      -0.0  d-priced      +0.0  excess      -0.0  (new)
+    confirm    d-wall    -451.4  d-priced    -439.5  excess     -11.9 [-20.8, -2.9]  (-1.1%)
+    lp_ledger  d-wall      +0.2  d-priced      +0.0  excess      +0.2 [-13.5, +14.3]  (+0.1%)
+    solve      d-wall      +0.8  d-priced      +0.0  excess      +0.8 [+0.1, +1.6]  (+0.3%)
+    lp:copy    d-wall      +1.1  d-priced      +0.0  excess      +1.1  (+0.7%)
+    lp:hash    d-wall      +6.3  d-priced      +0.0  excess      +6.3  (+5.6%)
+    lp:comb    d-wall      -0.0  d-priced      +0.0  excess      -0.0  (-0.3%)
+    lp:add     d-wall      +2.1  d-priced      +0.0  excess      +2.1  (+13.5%)
+    sv:zero    d-wall      +0.4  d-priced      +0.0  excess      +0.4  (+7.0%)
+    sv:free2   d-wall      +0.0  d-priced      +0.0  excess      +0.0  (new)
+    sv:prime   d-wall      +4.7  d-priced      +0.0  excess      +4.7  (+0.5%)
+    sv:power   d-wall      +2.0  d-priced      +0.0  excess      +2.0  (new)
+    sv:tail    d-wall      +1.9  d-priced      +0.0  excess      +1.9  (new)
+=== flags (information only; no sealed predictions)
+  72 bits: 2'a | (a) setup: excess +96.1 us per number
+  72 bits: 2'a | (a) lp_ledger: excess +19.7 us per number
+  72 bits: 2'a | (a) solve: excess +17.8 us per number
+  72 bits: 2'a | (a) lp:hash: excess +8.6 us per number
+  72 bits: 2'a | (a) lp:add: excess +5.1 us per number
+  72 bits: 2'b | (a) setup: excess +95.8 us per number
+  72 bits: 2'b | (a) lp_ledger: excess +17.2 us per number
+  72 bits: 2'b | (a) solve: excess +17.8 us per number
+  72 bits: 2'b | (a) lp:hash: excess +8.2 us per number
+  72 bits: 2'b | (a) lp:add: excess +5.5 us per number
+  84 bits: 2'a | (a) setup: excess +90.7 us per number
+  84 bits: 2'a | (a) gray: excess +6.7 us per number
+  84 bits: 2'a | (a) lp_ledger: excess +61.2 us per number
+  84 bits: 2'a | (a) solve: excess +73.2 us per number
+  84 bits: 2'a | (a) lp:copy: excess +5.7 us per number
+  84 bits: 2'a | (a) lp:hash: excess +16.4 us per number
+  84 bits: 2'a | (a) lp:comb: excess +2.9 us per number
+  84 bits: 2'a | (a) lp:add: excess +7.6 us per number
+  84 bits: 2'b | (a) setup: excess +91.9 us per number
+  84 bits: 2'b | (a) gray: excess +6.6 us per number
+  84 bits: 2'b | (a) lp_ledger: excess +57.3 us per number
+  84 bits: 2'b | (a) solve: excess +73.4 us per number
+  84 bits: 2'b | (a) lp:copy: excess +5.3 us per number
+  84 bits: 2'b | (a) lp:hash: excess +16.7 us per number
+  84 bits: 2'b | (a) lp:comb: excess +3.2 us per number
+  84 bits: 2'b | (a) lp:add: excess +7.7 us per number
+  96 bits: 2'a | (a) setup: excess +52.8 us per number
+  96 bits: 2'a | (a) gray: excess +27.8 us per number
+  96 bits: 2'a | (a) lp_ledger: excess +243.8 us per number
+  96 bits: 2'a | (a) solve: excess +175.5 us per number
+  96 bits: 2'a | (a) lp:copy: excess +99.3 us per number
+  96 bits: 2'a | (a) lp:hash: excess +71.5 us per number
+  96 bits: 2'a | (a) lp:comb: excess +6.4 us per number
+  96 bits: 2'a | (a) lp:add: excess +11.5 us per number
+  96 bits: 2'b | (a) setup: excess +58.4 us per number
+  96 bits: 2'b | (a) gray: excess +27.4 us per number
+  96 bits: 2'b | (a) lp_ledger: excess +244.1 us per number
+  96 bits: 2'b | (a) solve: excess +176.5 us per number
+  96 bits: 2'b | (a) lp:copy: excess +100.5 us per number
+  96 bits: 2'b | (a) lp:hash: excess +77.8 us per number
+  96 bits: 2'b | (a) lp:comb: excess +6.4 us per number
+  96 bits: 2'b | (a) lp:add: excess +13.6 us per number
+exit 0
+time: 2026-10-27T03:12:58-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 398; max MHz: 5000
+frequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100
+load average: 3.22 2.68 2.24
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+power supply ucsi-source-psy-USBC000:001 online: 0
+power supply ucsi-source-psy-USBC000:002 online: 1
+temperature TCPU: 55 C
+temperature x86_pkg_temp: 52 C
+sensors: Package id 0:  +52.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  79.2% chrome
+  17.8% claude
+  10.9% Xorg
+  10.9% chrome
+  3.0% xfce4-terminal
