@@ -259,3 +259,10 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Priority: low (L is a near-neutral lever on the card); recorded for the next gene-set revision.
 - Decision: pending.
 
+
+### I-031 — Batched root test
+- Date: 2026-10-27. Source: DeepSeek, round 57 (hand-relayed; NOTES).
+- Idea: for each sieved prime, test all of one polynomial's candidates at once (~6.5 per polynomial at 96 bits, one vector register), so the prime's data (p, reciprocal, two roots) is loaded once per polynomial instead of once per candidate.
+- DeepSeek's estimate: the loop 1.8–2.6x faster (~0.6–0.9 ns per prime-candidate test); the end-to-end gain is smaller (the divisions and hit writes remain).
+- Status: idea; after the root confirm (I-029) is in the card.
+- Decision: pending.

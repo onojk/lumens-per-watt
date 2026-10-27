@@ -7955,3 +7955,24 @@ H2 (and stages G and H) timed the cells one after another, with the reference fi
 - *Option off:* identical to today's card per number and per type (8,000 / 8,000; Python = Rust 32 / 32). The old binary has no root_test column, and it is compared with that column absent (it must be 0).
 - *Option on:* on all map numbers 54–96, identical relations, factor found, polynomials (sieve_scan), candidates (tests), combinations and stored partials to the full pass. Only the confirm charges differ. Python = Rust per type.
 - *Parity* with root cases added; the mutation check covers the new type.
+
+### DeepSeek, Oct 27, round 57 (hand-relayed; recorded as given; documentation only)
+
+- **Accepts the round-55 correction:** its "2 free" +3 figure used the wall-clock from before the scan fix; it is ~−16.5% against the reference with a cheap confirm, slightly worse than I-029 alone at −17.8%. The I-029 scoring and the thermal note are recorded.
+- **SEALED, before any root-confirm timing:**
+  - **R-1** root confirm alone, wall-clock against the reference: −13% to −19% (central −16%). Falsified if < −9% or > −23%.
+    - Working: confirm is 27.1% of wall-clock × (1 − 219/569) = −16.7% (version c); −14.8% for version b.
+  - **R-2** root confirm alone, priced ruint: −8.5% to −14.5% (central −12.0%). Falsified if < −5% or > −17%.
+    - Working: per candidate 138 × 0.0582 + 7.06 × 0.114 = 8.84 ruint against 138 × 0.114 = 15.73 (ratio 0.562). Confirm is 27.5% of 59,071 ruint, so the saving is 7,115 ruint, −12.0%.
+  - **R-3** root confirm + "2 free": the best wall-clock shift is +2 bits (+1 close). Falsified if ≤ 0 or ≥ +4.
+  - **R-4** root confirm + "2 free" at its best shift: wall-clock −14% to −22% (central −18%). Falsified if < −10% or > −26%.
+- **Loop bottleneck:** its explanation emphasises dependency latency.
+  - Reviewer: the per-prime tests are independent, so the loop is throughput-bound. The work per prime is four loads, a reciprocal multiply, two compares and a hit write.
+  - Reviewer's caveat: the benchmark's clock frequency is unknown (core 2 read 400 MHz before and 1,772 MHz after, powersave, throttling), so absolute ns are uncertain. The ratios root/full (0.45 for b, 0.38 for c) are the robust result, and the implied −15.6% / −17.5% rest on them.
+- **New idea, I-031** (next free ID): a batched root test. Filed in IDEAS.md.
+- **Threshold shift for today's sieve with a ~2.5x cheaper confirm:** it says "down ~1.5–2 bits", measured from the model's old-sieve best (+2).
+  - Reviewer: on the card the reference is shift 0, so the claim amounts to "keep the threshold about where it is, or about 1 bit lower". That is consistent with the model (−1 to 0 at c = 0.177).
+
+**Changes to the root-confirm plan** (the user's, before `predictions/root-confirm.md` is committed):
+1. **Grid:** root + "2 free" (pp 3) at 0, +1, +2, +3 and +4 bits, so both R-3 predictions are testable. The user's R-3 is recorded as written, with the annotation "on a 0..+2 grid it would hold automatically; the grid was extended to +4 before any run so it can fail".
+2. **Clock:** during every timed run, core 2's MHz is sampled every few seconds and the range per cell is reported. Any cell whose median MHz differs by more than 10% from the reference's is flagged. The guard's machine state already records before and after.
