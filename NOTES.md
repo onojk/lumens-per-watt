@@ -9499,3 +9499,7 @@ Model: `wolfram/2026-10-27_meter_open.wl`, `.out`.
   - **Requirement 5:** the rule option is fixed before the break-even.
   - **Requirement 6:** the primary method is a whole-run callgrind Ir count over a committed input set. A committed source-line → op-class map covers every charged line, and unattributed Ir is reported, never dropped. The static body counts become a cross-check: a class differing by more than 10% is explained in writing.
   - **Independent derivation:** two separate agents derive the weights. They must agree within 2% per class before any break-even is computed.
+
+**Reviewer's scope check was wrong (marked passed for a qs-only table); corrected on Claude Code's flag.** (Oct 27.)
+- The draft now covers every type in `optypes.TYPE_ORDER` that any card charges: qs, ecm, p−1 including stage 2, rho, cfrac/sq, td and the pipeline glue.
+- The input set adds the reference pipelines on the map numbers at 54–96, so that every class ends with a nonzero op count and attributed Ir. Classes with too few ops for a stable weight are resolved in writing before step 3.
