@@ -8785,7 +8785,11 @@ Per sub-region, wall above price at each region's own µs per ruint (excess = (w
 ### DeepSeek's view (received 00:32 Oct 27 PT; information only; verbatim)
 
 <!-- verbatim begin -->
-[PLACEHOLDER: DeepSeek's view was not included in the brief; to be filled verbatim when the user pastes it.]
+## My view on the robust rule
+
+The robust rule is doing exactly what it was designed to do: it is a pre-committed safeguard against overfitting to any single measure, and the fact that it vetoes a result the clock likes is evidence it is working, not a bug. The strongest argument for keeping it is that changing the rule after seeing an inconvenient result is the classic path to overfitting; the disagreement between official and wall-clock is real information, and it says the cost models are not yet good enough to settle sieve-versus-confirm trades, which is precisely when the conservative rule should bind. If official is genuinely wrong for this trade—and tonight's 0.9807 and 1.0138 suggest it is—the right fix is to **re-price official's sieve update prospectively and restate the rule prospectively**, not to drop official because a sealed result came out inconvenient. RAPL energy is the right long-term arbiter, but until it is readable the minimax rule should stand; if the user does revisit it, the decision should be committed before the next test and applied to all cells, including the ones that already favour the current rule.
+
+No sealed prediction is revised. D-13 and D-14 are recorded as falsified; D-12 held; the official-climbs-faster miss is shared across all three tables and noted. The shift run and the running A/B runs are noted as unscored for me; anything I send now is information only.
 <!-- verbatim end -->
 
 **The reviewer's note:** the shift results show that official disagrees with wall-clock on this machine, not that it is wrong. Whether a hardware-neutral count should hold a veto is a design choice, not a measurement.
@@ -8793,12 +8797,18 @@ Per sub-region, wall above price at each region's own µs per ruint (excess = (w
 ### DeepSeek's acceptances of its shift-run scores (as given)
 
 - D-12 held; D-13 and D-14 falsified; the official miss shared by all three tables (+1 and +2) accepted.
-- [PLACEHOLDER: DeepSeek's acceptance text was not included in the brief; to be filled as given when the user pastes it.]
+- **As given:** the second paragraph of DeepSeek's view above (verbatim there).
 
 ### Grok's view (received 00:34 Oct 27 PT; information only; verbatim)
 
 <!-- verbatim begin -->
-[PLACEHOLDER: Grok's view was not included in the brief; to be filled verbatim when the user pastes it.]
+**Independent view (not scored)**
+
+Re-price official's sieve update going forward so that it tracks the measured wall cost of a sieve step rather than equating it to a root test. The present rule lets the crudest pricing veto the shift the clock finds fastest (+2 at −13.5 %), and the phase data already show sieve updates are the cheap operation the meter is over-charging.  
+
+The strongest argument for keeping the current robust rule unchanged is that official was deliberately retained as a hardware-agnostic lower bound; changing its sieve price now, after a single run, risks turning the meter into a post-hoc fit to this machine's wall-clock rather than an independent cost model.  
+
+Dropping official from the robust track would hide the same mismatch instead of correcting it, and RAPL energy (still unreadable here) would only replace one external measure with another without fixing the internal inconsistency the official pricing itself created. Any change remains the user's decision before the next test.
 <!-- verbatim end -->
 
 ### The reviewer's notes (as given)
@@ -8810,3 +8820,11 @@ Per sub-region, wall above price at each region's own µs per ruint (excess = (w
 - **All three views (DeepSeek, Grok, the reviewer): no change now.**
 
 **Status: rule unchanged.** The user's decision, to be made before any test it affects.
+
+## Withdrawn (the user's, Oct 27): the provisional choice 2′b+pp3 at +1
+
+- **The user withdraws the provisional +1.** It fails the robust rule at 72 and 84: robust 1.0171 and 0.9987, both undecided (be7579b). **Nothing adopted;** the reference stays 2′a (goff = 1).
+- **The reviewer's reading:**
+  - pp 3 mainly offsets root confirm's official cost. 2′b alone: official 1.0137, wall −11.2%. 2′b+pp3 +1 against 2′b: wall +0.7%.
+  - So the adoption question for root confirm reduces to the open robust-rule decision (above, "Open decision (the user's): the robust rule's veto by official pricing").
+- **Cross-run drift:** +2's wall was −13.5% in pp3-gap-and-shift and −12.0% in shift-past-2, about 1.5 points, more than the within-run intervals (±1.0 to ±1.3). **Cross-run comparisons carry about ±1.5 points.**
