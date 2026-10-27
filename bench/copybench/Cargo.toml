@@ -1,0 +1,9 @@
+[package]
+name = "copybench"
+version = "0.1.0"
+edition = "2021"
+description = "Stage 3 microbenchmark (cost note only): the kept relation's sparse-list copies, as lampcore does them; not part of lampcore"
+license = "MIT"
+
+[profile.release]
+opt-level = 3

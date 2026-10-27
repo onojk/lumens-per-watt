@@ -9775,3 +9775,46 @@ msieve's small-number path is not tuned for 29-digit inputs. This compares the c
 **Builds:** msieve 1.53 source tarball sha256 c5fcbaaf…4d93bb4 (Nov 2016). Native binary sha256 437f5da3…7d10eb, `make all NO_ZLIB=1`, no sudo; GMP from the system.
 
 **Not established:** a comparison with a small-number-tuned SIQS (e.g. YAFU's tiny-SIQS path). Energy was not measured. One machine.
+
+## Stage 3: kept-relation copies, cost note only (no code or meter change; the change is the user's decision)
+
+**Finding: the cost that grows with size is not the copy. It is the A-prime index lookup next to it.** For every kept relation, the card finds each of A's s = 4 primes in the factor base with `pos` (qs.rs 607, used at 1238), a **linear scan** of the base.
+- The A-primes sit at mean base index 21.6 / 38.7 / 79.5 at 72 / 84 / 96 (estimated 2 + π(p)/2, from traces), so a kept relation scans about 87 / 155 / 318 entries: in proportion 1 : 1.8 : 3.7.
+- That is the same proportion as the per-call times measured in the lp:copy region: 43 : 76 : 158 ns (W2, stage 4b). The list copied is about the same length at every size: 10.8 / 11.5 / 11.7 entries.
+- The meter charges these lookups only as the A-prime adds: 4 word per relation, flat, while the scan behind them grows with the A-primes' position in the base.
+
+**Microbenchmark** (`bench/copybench`, a standalone crate mirroring lampcore's path, lampcore untouched; `evolve/copybench_run.py`, `.out`, `.json`):
+- Conditions: capped 2,400 MHz, AC, pinned core 2, 5 replicates, medians.
+- Inputs: from traces of the reference; 100–128 bits are model inputs.
+
+| bits | kept / number | A-prime lookups, ns per kept relation | copy alone, ns |
+|---|---|---|---|
+| 72 | 296 | 46.6 | 22.9 |
+| 84 | 462 | 81.8 | 22.4 |
+| 96 | 927 | 165.1 | 51.9 |
+| 100 (model) | 1,075 | 185 | 88 |
+| 108 (model) | 1,573 | 246 | 78 |
+| 116 (model) | 2,302 | 339 | 86 |
+| 128 (model) | 4,073 | 568 | 70 |
+
+- **The lookups alone reproduce the measured lp:copy times** (46.6 / 81.8 / 165 against 43 / 76 / 158 ns).
+- **The copy is 22–52 ns,** larger at 96 as the arena outgrows the cache.
+- **The "under sieve-sweep pressure" column** in the `.out` is information only: subtracting separately timed passes does not isolate the copy reliably.
+- **The 128-bit model** puts the A-prime index past F; the benchmark clamps it. This is an extrapolation artefact.
+
+**Proposals** (the Wolfram forecast: `wolfram/2026-10-27_copies_cost.wl`, `.out`; model, not a verdict):
+1. **Recommended: a counts-identical code fix, not a re-price.** Look up the A-primes' base indices once per A, instead of a linear scan per kept relation. 2′b already computes them (`aj`); 2′a can do the same.
+   - **No op count changes,** so no priced figure moves.
+   - **Wall saved:** 13.8 / 37.8 / 153 µs per number, 1.6% / 2.4% / 4.3% of the reference's wall at 72 / 84 / 96 (model: 4.2–7.8% at 100–128).
+   - 2′a and 2′b gain alike, so 2′b/2′a moves by under 0.1 point.
+   - **It is a "counts-identical code change"** (PROTOCOL): a cost note before code, then acceptance (identical per number and per type, Python = Rust), then parity.
+2. **The alternative: a meter change** that keeps the code and charges the scan, one word per base entry compared: + 26,758 / 73,366 / 298,494 word per number.
+   - It raises both cells by 8–15% under ruint and Montgomery and by 17–21% under official, for work that is 1.6–4.3% of the wall, so it would **overprice under every pricing**.
+   - Under op-class v1 the overpricing is about 30×: v1's word weight is an average over heterogeneous sites (known issue 2).
+   - 2′b/2′a would move up: ruint 0.8877 → 0.9008 at 96, still better.
+   - **Not recommended.**
+
+**Not established:**
+- The benchmark is a model of the card's path (synthetic primes, the same scan and copy code), not the card itself.
+- The A-prime index is estimated from π(p).
+- The 100–128 rows extrapolate three sizes.
