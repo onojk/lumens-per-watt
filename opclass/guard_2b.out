@@ -1,0 +1,28 @@
+A_2b_72 against A_ref_72 (per number; flag when the rise > 1,000 Ir and > 2% of the base's value):
+    uncharged         1,935,008 ->      1,880,973  change      -54,036 (-2.79%)  share of total 21.022% -> 22.681%
+    unattributed          1,016 ->          1,016  change           +0 (+0.00%)  share of total 0.011% -> 0.012%
+    total             9,204,777 ->      8,293,045  ratio 0.9010
+A_2b_84 against A_ref_84 (per number; flag when the rise > 1,000 Ir and > 2% of the base's value):
+    uncharged         2,303,677 ->      2,156,122  change     -147,556 (-6.41%)  share of total 12.102% -> 13.242%
+    unattributed            903 ->            903  change           +0 (+0.00%)  share of total 0.005% -> 0.006%
+    total            19,035,439 ->     16,282,376  ratio 0.8554
+A_2b_96 against A_ref_96 (per number; flag when the rise > 1,000 Ir and > 2% of the base's value):
+    uncharged         3,178,354 ->      2,835,170  change     -343,185 (-10.80%)  share of total 7.281% -> 7.575%
+    unattributed            818 ->            818  change           +0 (+0.00%)  share of total 0.002% -> 0.002%
+    total            43,650,505 ->     37,426,489  ratio 0.8574
+flags: none
+
+self-test: the reversed pairs (uncharged rises), expected to flag where the rise > 1,000 Ir and > 2%
+A_ref_72 against A_2b_72 (per number; flag when the rise > 1,000 Ir and > 2% of the base's value):
+    uncharged         1,880,973 ->      1,935,008  change      +54,036 (+2.87%)  share of total 22.681% -> 21.022%  FLAG
+    unattributed          1,016 ->          1,016  change           -0 (-0.00%)  share of total 0.012% -> 0.011%
+    total             8,293,045 ->      9,204,777  ratio 1.1099
+A_ref_84 against A_2b_84 (per number; flag when the rise > 1,000 Ir and > 2% of the base's value):
+    uncharged         2,156,122 ->      2,303,677  change     +147,556 (+6.84%)  share of total 13.242% -> 12.102%  FLAG
+    unattributed            903 ->            903  change           -0 (-0.00%)  share of total 0.006% -> 0.005%
+    total            16,282,376 ->     19,035,439  ratio 1.1691
+A_ref_96 against A_2b_96 (per number; flag when the rise > 1,000 Ir and > 2% of the base's value):
+    uncharged         2,835,170 ->      3,178,354  change     +343,185 (+12.10%)  share of total 7.575% -> 7.281%  FLAG
+    unattributed            818 ->            818  change           -0 (-0.00%)  share of total 0.002% -> 0.002%
+    total            37,426,489 ->     43,650,505  ratio 1.1663
+flags: [('A_ref_72', 'A_2b_72', 'uncharged', 54035.674053618684), ('A_ref_84', 'A_2b_84', 'uncharged', 147555.80566349952), ('A_ref_96', 'A_2b_96', 'uncharged', 343184.5111507103)]
