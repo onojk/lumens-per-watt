@@ -57,7 +57,10 @@ set +e
 rc=$?
 set -e
 { echo; echo "## after"; tools/machine_state.sh; } >> "$ms"
+hot=$(awk '/^temperature TCPU:/ {if ($3 + 0 > 90) print $3}' "$ms" | tr '\n' ' ')
+[ -n "$hot" ] && echo "FLAG: TCPU above 90 C during the run (readings: $hot C); see $ms"
 status="ok"; [ $rc = 0 ] || status="FAILED (exit $rc)"
+[ -n "$hot" ] && status="$status; TCPU above 90 C ($hot C)"
 git add -f -- "$out" "$ms"
 git commit -q -m "Sealed run $exp: $status; predictions $pc$dsnote
 
