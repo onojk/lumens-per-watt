@@ -9647,7 +9647,21 @@ The library-bound classes have no single static body and are dynamic only.
 ### DeepSeek on step 3 (received 07:49 Oct 27 PT; information only; verbatim)
 
 <!-- verbatim begin -->
-[PLACEHOLDER: DeepSeek's reply was not included in the brief that recorded it; to be pasted verbatim.]
+## Recorded
+
+- The "worst of four can never lower a worst" flaw is accepted: adding an op-class pricing alongside official could never change an adoption, because the minimum over a larger set can only rise. My round-59 proposal had the same defect. **Option (b), op-class replacing official in the robust track with official reported but not vetoing, is recorded as the user's choice, committed before any count.**
+- Procedure adopted as described: whole-run callgrind Ir over a committed input set, committed source-line→op-class map covering every charged line, divided by the meter's per-type counts; no hand-picked sequences; two independent derivations agreeing to 0.006%. Weights **op-class v1** frozen; known issues (line-0 ~2.5e9 instructions, pooled word weight 1.3–71 across lamps, "check" inflation) recorded before any ratio. Any v2 is prospective only.
+- Step 3 results recorded: 2'b vs 2'a op-class 0.8657 / 0.8293 / 0.8436 at 72/84/96, robust (ruint) 0.8896 / 0.8699 / 0.8877, **better at every size**, intervals excluding 1. Official reported but not vetoing: 1.0403 / 1.0242 / 1.0137. Reviewer's correction accepted: official's veto on 2'b was **not** about sieve updates; it charges a root test like a 128-bit trial division, and a root test is about half (52.3 vs 108.5 instructions).
+
+## 1. Strongest remaining reason not to adopt 2'b now, and the check I want first
+
+**The strongest reason is that op-class v1 has never been shown to track wall time per op class on this machine, and the deciding quantity is exactly the root-test weight.** The break-even is 1.71–1.87× v1, i.e. 89–98 instructions against 52.3; but we already have measured costs of roughly **0.70 ns per word op, 1.59 ns per prime for the branch-free root test, and 3.9 ns per prime divided for trial division**, so a root test costs about **2.4× more per instruction** than a word op and trial division about 2.8×. Instruction weights are therefore **not** wall-proportional, and whether that biases the comparison depends on the op mix; if a wall-proportional re-weighting moves the root-test weight toward the break-even, the 1.7–1.9× margin is overstated.
+
+**Check I want first:** recompute the op-class ratio at 96 bits using **measured ns/op per class on a capped clock** and the actual per-type counts for 2'a and 2'b, and confirm it still clears 1.0 with the same margin. The microbenchmark that produced 1.59 ns was run on a throttled core (400 MHz before, 1,772 MHz after), so the ns/op figures themselves need a steady-clock repeat before they can arbitrate. If the wall-proportional ratio clears 1.0 by the same margin, adoption is on both an instruction and a time footing; if it does not, the adoption is resting on instruction counts rather than on time, and that should be said in the adoption record.
+
+## 2. A future change op-class could wave through that official would rightly block
+
+**The kind of change op-class is structurally unable to veto is one that replaces a charged op with instruction-cheap but latency- or memory-expensive work — a branch chain or lookup table in place of a division, or work moved into library calls and un-attributed lines.** Official's crude unit-cost rule is at least **implementation-blind**: it charges every declared op and so vetoes added work regardless of how clever the code is, whereas op-class's weights are instruction counts taken from **the card's own binary and source map**, and that map already leaves **~2.5×10⁹ instructions unattributed**. A change that trades divisions for branches, or mapped ops for `memcpy`/`malloc` copies like the kept-relation path already measured at **2.6× its price and +94 µs/number at 96 bits**, would read as a win on op-class while losing on wall time; the same hole would cover hash-table growth and any resizing or allocation the line map does not reach.
 <!-- verbatim end -->
 
 **The reviewer's notes:**
@@ -9671,7 +9685,11 @@ The library-bound classes have no single static body and are dynamic only.
 ### Grok on step 3 (received 07:51 Oct 27 PT; information only; verbatim)
 
 <!-- verbatim begin -->
-[PLACEHOLDER: Grok's reply was not included in the brief that recorded it; to be pasted verbatim.]
+**Information-only views**
+
+1. Nobody has checked whether the line-0 unattributed instructions (the ~2.5e9 that the committed rule sends to an uncharged caller) are disproportionately concentrated inside the root-test path that 2'b newly exercises. If those instructions are mostly root-test overhead that callgrind cannot attribute, the published 52.3 weight understates the true instruction cost of the operation 2'b multiplies, and the break-even multiple of 1.71–1.87× could be reached without any change to the attributed code.
+
+2. I expect 2'b to pass at 54, 60 and 66 bits. The official ratios already decline smoothly from 1.0403 at 72 bits to 1.0137 at 96 bits, and the op-class advantage is driven by the same root-test versus trial-division instruction gap (52.3 vs 108.5) that does not depend on size; nothing in the measured trend suggests a reversal below 72 bits.
 <!-- verbatim end -->
 
 **The reviewer's notes:**
@@ -9690,3 +9708,7 @@ The library-bound classes have no single static body and are dynamic only.
 - **Flag (as the brief asks): the uncharged share rises in 2′b** (21.0 → 22.7%, 12.1 → 13.2%, 7.28 → 7.58%). This is because the total falls faster than the uncharged part, not because uncharged work grows: its absolute Ir falls at every size. The meter's own Ir rises 13–24%, from the root test's extra charge calls. Unattributed Ir is unchanged and negligible (about 0.01%).
 - **Instruction counts only:** this check does not see memory or latency. The wall-clock (−9.6 / −12.9 / −11.2%) is the timed counterpart.
 - **54 / 60 / 66 bits:** 54 is computed (robust 0.941, better; above). 60 and 66 cannot be computed without a reference defined at those sizes (above).
+
+**Recorded (the user, Oct 27): the order of events.** The adoption of 2′b (fc3bf0c) preceded two checks: the 54-bit check and the attribution-free check. Both came back in its favour:
+- 54 bits: robust 0.941, better;
+- total Ir 2′b / 2′a: 0.901 / 0.855 / 0.857 at 72 / 84 / 96.
