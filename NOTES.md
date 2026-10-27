@@ -7266,12 +7266,17 @@ Against the reference, in percent:
 - Computed at the reference: wall-clock 1,909 µs / 156 polynomials = 12.24 µs per polynomial; c = 530 ns; confirm 3.62 µs per polynomial; K = 8.62 µs. Today, lowering does not pay (consistent with G).
 - *Reviewer's correction:* for a 3x cheaper confirm (c = 177 ns), DeepSeek kept K + c r at 12.24; it becomes ~9.8. The segment slopes of ln P are −0.058 / −0.042 / −0.028 per bit (0 → −2 → −4 → −6).
   - Redone: 0 → −2 pays (LHS 0.36 against RHS 0.60 µs per bit); −2 → −4 does not (0.55 against 0.46).
-  - Best shift ~−2 to −3 bits (not −4.5), worth ~−4% on top of the cheaper confirm.
+  - ~~Best shift ~−2 to −3 bits (not −4.5), worth ~−4% on top of the cheaper confirm.~~ **SUPERSEDED** by Wolfram's cost forecast (Oct 27, entry below): the best shift is 0 on the old sieve.
 - *Reviewer's rough wall-clock estimates at 96* (card costs, simulation candidate counts; ledger growth ignored):
   - cheap confirm alone ~−20%;
   - plus a 2-bit lower threshold, ~−4% more;
   - or, instead, plus the H(i) option at the reference threshold, ~−10% more.
   - With a cheap confirm, the better sieve beats loosening. The root test's real ns per prime decides all of this; the I-029 microbenchmark is the next measurement after stage H.
+  - **SUPERSEDED** (the user, Oct 27): these hand estimates, the best shift ~−2 to −3 bits with a cheap confirm and H(i) worth ~−10% more on top of it, are superseded by Wolfram's cost forecast (entry below). There:
+    - the best shift is 0 on the old sieve;
+    - H(i) at the reference threshold loses (−12.4% against −19.4% for a cheap confirm alone);
+    - the gain comes from the option with the threshold raised (H(ii), −22.3% with a cheap confirm).
+    The estimates are kept as written.
 
 **Missing fulls (card 0.973 against simulation 1.000):** DeepSeek's first suspect (A's primes dividing g to a power) is refuted by the simulation itself, which also leaves A's primes unsieved and passes 100%.
 - Reviewer's candidates:
