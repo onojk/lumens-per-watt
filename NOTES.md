@@ -7870,3 +7870,40 @@ All of H2-1 to H2-4 held. Report only; nothing is adopted. The I-029 microbenchm
 **Implied wall-clock for the reference card at 96, all else equal:** Δ = 1,013 candidates per number × (t_b − t_a) (and the same for c), against the reference's wall-clock in the latest run (H2: 2,100 µs, confirm 576 µs). This is a microbenchmark extrapolation: confirm's in-card bookkeeping (exponent vector, touched list) is unchanged and not timed here.
 
 **Scoring:** I-029a against the root test's ns per prime tested, with the user's version (b) and DeepSeek's best of (b) and (c), stating both; I-029b against ns per candidate, the same way. *(Choice stated before the run: the predictions name "the root test" without a variant. Both (b) and (c) are reported, and each prediction is scored on both.)*
+
+## I-029 microbenchmark: results (`lampcore/src/bin/i029bench.rs`, `evolve/i029.py`, 531ffb5; `results/i029_20261027T015933Z.out` and `.machine.txt`, committed by the guard as d443357; `i029.json`; predictions `predictions/i029.md`, cbc2220)
+
+**Data:** 7,728 real candidates from the reference card at 96 bits (stage B's 8-number subset, 1,285 polynomials). 137.98 primes are tested per candidate; 7.06 divide (the prime 2 included).
+- Python check: on every candidate, the root hits equal the odd base primes dividing v.
+- **Correctness gate passed:** (b) and (c) give the same factor lists, exponents and cofactors as (a) on every candidate.
+
+| version | ns per candidate, median (replicate 1 / 2) | ns per candidate, mean | ns per prime tested, median |
+|---|---|---|---|
+| (a) full pass (i128 v mod p, all F − 1 primes) | 581.1 (580.0 / 582.3) | 582.9 | 4.212 |
+| (b) root test (i0 mod p by reciprocal when i0 ≥ p; divide only hits) | 258.3 (257.4 / 259.2) | 259.5 | 1.873 |
+| (c) root test, branch-free first pass | 219.0 (220.6 / 217.4) | 220.1 | 1.587 |
+
+Timing: Rust release, `taskset -c 2`, 292–297 interleaved passes per version per replicate, medians and means over passes, the mean of two replicates.
+
+- **(a) reproduces the card:** 4.21 ns per prime (stage D's estimate ~3.9). In the card, confirm at 96 costs 576.4 µs / 1,013 candidates = 569 ns per candidate (H2's reference), against 581 ns here.
+- **Implied wall-clock for the reference card at 96, all else equal** (1,013 candidates per number; H2's reference 2,100.1 µs, confirm 576.4 µs):
+  - (b) −326.9 µs per number, **−15.6%**;
+  - (c) −366.8 µs per number, **−17.5%**.
+  - This is a microbenchmark extrapolation: the card's confirm bookkeeping is unchanged and not timed here, and no priced figure exists until the root test has a cost model and charges.
+- **What remains of confirm's cost:** the root test still spends 1.6–1.9 ns per prime tested on all ~138 primes (the compare against two roots, plus a reciprocal reduction for primes below i0). Dividing the ~7 primes that hit costs the rest.
+- **Machine state** (`results/i029_20261027T015933Z.machine.txt`):
+  - governor **powersave** (not changed; the user's call);
+  - core 2 at 400 MHz before and 1,772 MHz after (max 5,000);
+  - load 0.77 → 0.80;
+  - **TCPU 50 °C before, 98 °C after** (x86_pkg_temp 54 → 59 °C).
+  - The TCPU reading near 100 °C after a ~1-minute single-core run suggests thermal throttling. That would fit the slowing reference across sessions (1,898 / 2,015 / 2,100 µs). Not investigated; the user's call.
+
+**Scored:**
+
+| prediction | measured, (b) / (c) | the user's range | result, (b) / (c) | DeepSeek's range; falsifier | result, (b) / (c) |
+|---|---|---|---|---|---|
+| I-029a, ns per prime tested | 1.873 / 1.587 | 0.3–1.2 | **missed / missed** (high) | 0.9–1.7; > 2.4 or < 0.45 | **missed** (not falsified) **/ held** |
+| I-029b, ns per candidate | 258.3 / 219.0 | 80–200 | **missed / missed** (high) | 150–240; > 320 or < 85 | **missed** (not falsified) **/ held** |
+
+- *The reviewer's reasoning, checked:* for primes above i0 (most of the base) the root test is two compares with no reduction, as reasoned. But the per-prime cost is still ~1.6–1.9 ns, not ~0.3–1.2: the loop over ~138 primes, each with a range check, two compares and a list write, dominates. The dividing primes cost ~4 ns each (i128 remainder and division), ~30 ns per candidate, as the reviewer estimated.
+- **Report only.** The root test is not wired into the card; that is a separate decision, needing a cost model first.

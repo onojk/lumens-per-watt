@@ -1,0 +1,86 @@
+{
+ "replicates": [
+  {
+   "candidates": 7728,
+   "polys": 1285,
+   "primes_tested_per_cand": 137.98,
+   "dividing_primes_per_cand": 7.06,
+   "gate": "passed",
+   "full": {
+    "ns_per_cand_median": 579.99,
+    "ns_per_cand_mean": 581.66,
+    "ns_per_prime_median": 4.204,
+    "ns_per_prime_mean": 4.216,
+    "passes": 292
+   },
+   "root": {
+    "ns_per_cand_median": 257.41,
+    "ns_per_cand_mean": 258.75,
+    "ns_per_prime_median": 1.866,
+    "ns_per_prime_mean": 1.875,
+    "passes": 292
+   },
+   "root_bf": {
+    "ns_per_cand_median": 220.56,
+    "ns_per_cand_mean": 221.58,
+    "ns_per_prime_median": 1.599,
+    "ns_per_prime_mean": 1.606,
+    "passes": 292
+   }
+  },
+  {
+   "candidates": 7728,
+   "polys": 1285,
+   "primes_tested_per_cand": 137.98,
+   "dividing_primes_per_cand": 7.06,
+   "gate": "passed",
+   "full": {
+    "ns_per_cand_median": 582.27,
+    "ns_per_cand_mean": 584.07,
+    "ns_per_prime_median": 4.22,
+    "ns_per_prime_mean": 4.233,
+    "passes": 297
+   },
+   "root": {
+    "ns_per_cand_median": 259.19,
+    "ns_per_cand_mean": 260.18,
+    "ns_per_prime_median": 1.879,
+    "ns_per_prime_mean": 1.886,
+    "passes": 297
+   },
+   "root_bf": {
+    "ns_per_cand_median": 217.42,
+    "ns_per_cand_mean": 218.52,
+    "ns_per_prime_median": 1.576,
+    "ns_per_prime_mean": 1.584,
+    "passes": 297
+   }
+  }
+ ],
+ "h2_reference": {
+  "wall_us": 2100.056113460937,
+  "confirm_us": 576.3680985078125,
+  "candidates": 1012.7484375
+ },
+ "summary": {
+  "full": {
+   "ns_per_cand_median": 581.13,
+   "ns_per_cand_mean": 582.865,
+   "ns_per_prime_median": 4.212
+  },
+  "root": {
+   "ns_per_cand_median": 258.3,
+   "ns_per_cand_mean": 259.46500000000003,
+   "ns_per_prime_median": 1.8725,
+   "implied_delta_us": -326.945578078125,
+   "implied_wall_change_pct": -15.568421052298062
+  },
+  "root_bf": {
+   "ns_per_cand_median": 218.99,
+   "ns_per_cand_mean": 220.05,
+   "ns_per_prime_median": 1.5875,
+   "implied_delta_us": -366.75671915625,
+   "implied_wall_change_pct": -17.464139020162996
+  }
+ }
+}
