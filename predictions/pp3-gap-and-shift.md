@@ -11,6 +11,8 @@
 ## DeepSeek (received 22:10 Oct 26 PT)
 
 - **D-11: information only, because the breakdown was seen first** (8d5ef90, committed before this filing).
+  - **Timing, for the user's decision:** DeepSeek's reply was received at 22:10 PT. The breakdown commit 8d5ef90 is stamped 22:11:26 PT. The Wolfram output was printed a few minutes before that commit, in a local session that was not pushed.
+  - So DeepSeek could not have seen the breakdown. The label follows the brief's rule (printed before filing). Reclassifying D-11 as sealed is the user's call. R2-11 (written after) is unaffected.
 - **D-12, D-13 and the shift table: sealed.** The shift run is not prepared.
 
 ### Its reply (verbatim)
