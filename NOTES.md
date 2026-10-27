@@ -8927,7 +8927,19 @@ Yes, substantially. Against 2'b directly, pp3 is +0.7% wall at +1 and −0.9% at
 ### Requirements for the op-class procedure (DeepSeek, received 05:18 Oct 27 PT; information only; verbatim)
 
 <!-- verbatim begin -->
-[PLACEHOLDER: DeepSeek's reply was not included in the brief that recorded it; to be pasted verbatim.]
+## 1. Requirements the op-class procedure draft must meet
+
+- **Op classes from a public ISA-level taxonomy, not from timing.** The classes (e.g. integer multiply, load, store, compare/branch, reciprocal-style multiply-shift) must be enumerated from the instruction-set description, with the compiler/ISA model and flags named. Any micro-op cross-check is secondary, published with a stated tolerance, and used to flag divergence, not to replace the ISA-level ratio.
+- **Representative sequences chosen and frozen before any 2'b run at any size.** The sieve-update sequence and the root-test sequence should be the card's own kernels, named by commit, with the exact instruction stream or a re-derivable recipe. Two independent readers with the same source description and the same frozen choices must get the same ratio; if they don't, the choices were underspecified.
+- **Mechanical computation, committed, then published.** Procedure first, fraction second, break-even fraction and 2'b's ratio only after the fraction is committed. No re-tuning afterwards; version-named (e.g. `official_v2_sieve_fraction=…`) so any later revision is visibly a new version.
+- **Sub-op counts published, not just the scalar.** The ratio alone hides which sub-op is being re-weighted; the counts let a reader re-derive it and see whether the re-weighting is dominated by one class.
+- **The decision rule fixed before the break-even is published.** Worst-of-four, or an explicit exception process, must be chosen before anyone sees whether 2'b clears it. And the fraction must not be derived from wall-clock; otherwise official becomes a second machine-calibrated pricing and the hardware-neutral member of the robust track is lost.
+
+## 2. My most common error type, and one rule to add
+
+My most common error is **transferring an effect across operating points without a mechanism-derived scaling**: carrying the 96-bit pp3 effect to 72/84 (D-15 priced, above both results), and centering sealed ranges on a single model output rather than on the arithmetic's own band (D-8 ruint sealed 0.975–0.990 after computing 0.959–0.978). A close second is **misreading which comparison a single quoted number describes** — the "robust 0.982" was worst-of-three against today's reference, not the marginal pp3 effect I treated it as — and a third is **definition ambiguity in the prediction itself** (D-17's "largest difference" versus "largest increase").
+
+Rule to add: **every sealed range must be derived from an explicit arithmetic band, and any cross-size or cross-cell transfer must name the scaling assumption and widen the range by the measured cross-run drift (±1.5 points) plus a stated size-transfer allowance; before using a single quoted number, state which comparison, which base, and which pricing it refers to.** That rule would have caught D-15 priced, D-8 ruint, and the D-17 definition ambiguity at seal time rather than at scoring.
 <!-- verbatim end -->
 
 **The reviewer's notes:**
@@ -8939,7 +8951,11 @@ Yes, substantially. Against 2'b directly, pp3 is +0.7% wall at +1 and −0.9% at
 ### Grok on the op-class requirements (received 05:19 Oct 27 PT; information only; verbatim)
 
 <!-- verbatim begin -->
-[PLACEHOLDER: Grok's reply was not included in the brief that recorded it; to be pasted verbatim.]
+**Information-only views**
+
+1. The weakest point is that the checklist never constrains *which* representative sequences are chosen from the card's kernels or how their boundaries are drawn. The procedure can pass every item and still be a rescue if the authors select, from the published commit, a sieve-update sequence that is unusually light and a root-test sequence that is unusually heavy, so the resulting fraction moves 2'b under the new robust threshold on the already-measured counts; because the sequences are "the card's own kernels," two independent readers can still agree on the same cherry-picked pair.
+
+2. Caution: the G-8 wall range at 84 bits stopped at −11.0 % while the measured improvement was −12.9 %, so the miss was produced by a deliberately conservative bound rather than by a tight prediction that was simply wrong.
 <!-- verbatim end -->
 
 **The reviewer's notes:**
@@ -9461,3 +9477,9 @@ Model: `wolfram/2026-10-27_meter_open.wl`, `.out`.
 **For I-024 (per-number budgets):** the model ranks numbers by difficulty well enough to sort them, but a single number's polynomial count is uncertain to about ±15%. Whether the error depends on yield is open.
 
 **What it does not establish.** This is not I-033's curve: 8 numbers per size, no 72. Capture is stage B's pooled rate applied to every number, so per-number capture differences show up as model error. The full curve needs per-number traces (true fulls and partials) on a few hundred map numbers at 72, 84 and 96. That is a trace run, read-only for the card; the user decides whether to run it (I-033 decision pending).
+
+## Recorded (the user, Oct 27, after W3 and W4)
+
+- **The reviewer's "cross-run drift ~1.5 points" is not supported by W3.** The claim came from shift-past-2 against pp3-gap-and-shift: +2's wall was −13.5% in one and −12.0% in the other (NOTES, "Withdrawn (the user's, Oct 27)"). Across all seven cell pairs repeated in capped runs, the between-run sd is ~0.2 points, indistinguishable from within-run noise (Q p = 0.26). Recorded as **the reviewer's overstatement**: one pair's gap (2.2 times its own s.e.) was read as a general drift.
+  - *For the record (Claude Code):* the PROTOCOL guard's ±1.5 points is unchanged. As a 95% half-width for comparing two runs it sits near W3's ±1.3, which comes from within-run noise, not drift. Changing the guard's wording or number is the user's decision.
+- **The reviewer states a confidence on future categorical predictions** (from W4: the reviewer had none on file, so its categorical calls cannot be calibrated). Prospective, from Oct 27.
