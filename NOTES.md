@@ -7009,3 +7009,32 @@ Each cell gives ratio A / ratio B, with the materiality (time share × (ratio_B 
 - **G-3** candidates per number: +80% to +250%.
 - **G-4** priced ruint mean: −10% to +5%.
 - **G-5** wall-clock: −5% to +12% (confirm grows with candidates; the full pass costs ~F per candidate).
+
+### Stage G: results (`evolve/stageg.py`, `stageg.out`, `.json`; card 06ebcf8; all 640 map numbers; wall-clock two replicates; step9.run_size now takes the genes)
+
+| cell (tc) | candidates / number (/ polynomial) | polynomials (median) | combinations | partial capture, subset (fulls) | ruint mean / median / slowest decile | Montgomery / official mean | wall (two replicates) | wall: setup / sieve / scan / confirm / lp_ledger / solve |
+|---|---|---|---|---|---|---|---|---|
+| reference (1.0353) | 1,013 (6.5) | 156.0 (151) | 71.9 | 0.316 (0.973) | 59,071 / 58,514 / 80,787 | 216,420 / 1,461,014 | 1,898.4 µs (1,902 / 1,895) | 374 / 456 / 107 / 536 / 184 / 156 |
+| −2 bits (1.2209) | 1,435 (10.3) | 138.8 (134) | 79.4 | 0.474 (0.992) | 62,467 / 61,639 / 82,792 | 229,078 / 1,400,987 | 2,084.7 µs (2,087 / 2,083) | 339 / 403 / 100 / 756 / 247 / 158 |
+| −4 bits (1.4065) | 2,059 (16.1) | 127.8 (124) | 84.5 | 0.622 (0.994) | 70,453 / 69,358 / 91,860 | 259,037 / 1,419,187 | 2,456.3 µs (2,434 / 2,479) | 325 / 391 / 101 / 1,098 / 303 / 159 |
+| −6 bits (1.5922) | 3,012 (24.9) | 120.8 (116) | 87.7 | 0.752 (1.000) | 84,816 / 83,448 / 113,297 | 312,433 / 1,519,159 | 2,955.9 µs (2,947 / 2,965) | 312 / 364 / 107 / 1,616 / 314 / 164 |
+
+Against the reference, in percent:
+
+| cell | candidates | polynomials | combinations | ruint mean / median / slowest decile | Montgomery | official | wall | confirm wall | lp_ledger wall |
+|---|---|---|---|---|---|---|---|---|---|
+| −2 bits | +41.7 | −11.0 | +10.4 | +5.7 / +5.3 / +2.5 | +5.8 | −4.1 | +9.8 | +41.0 | +34.3 |
+| −4 bits | +103.3 | −18.1 | +17.4 | +19.3 / +18.5 / +13.7 | +19.7 | −2.9 | +29.4 | +104.7 | +64.5 |
+| −6 bits | +197.4 | −22.6 | +22.0 | +43.6 / +42.6 / +40.2 | +44.4 | +4.0 | +55.7 | +201.4 | +70.5 |
+
+- Candidates per polynomial grow ~1.26x per bit of threshold (6.5 → 10.3 → 16.1 → 24.9). Capture of partials (subset) rises 0.32 → 0.47 → 0.62 → 0.75; fulls are already ~0.97 and go to ~1.0.
+- Confirm wall-clock tracks the candidate count one for one (+41% / +105% / +201%): the full pass costs ~F tests per candidate whether or not the candidate is a relation.
+- **Pricings disagree** at −2 and −4: ruint and Montgomery rise, official falls (official counts confirm's tests at 1 op each, below its ruint weight relative to the sieve), so no cell is called a gain. At −6 all three rise.
+- **Reading:** lowering the threshold recovers partials as intended, but every bit costs ~26% more candidates, each paying a full ~F-prime confirm. The polynomial saving (−11% to −23%) does not cover it on ruint, Montgomery or wall-clock. The baseline for stage H: at a matched candidate count, capture is 0.316 (reference), 0.474 (1,435) and 0.622 (2,059).
+
+**Scored (−4-bit cell, the reviewer's):**
+- **G-1** partial capture 0.50–0.70: 0.622, **held**.
+- **G-2** polynomials −12% to −25%: −18.1%, **held**.
+- **G-3** candidates +80% to +250%: +103.3%, **held**.
+- **G-4** priced ruint mean −10% to +5%: +19.3%, **missed** (high).
+- **G-5** wall-clock −5% to +12%: +29.4%, **missed** (high).

@@ -1,0 +1,206 @@
+{
+ "reference": {
+  "tc": 1.035307067324659,
+  "candidates": 1012.7484375,
+  "polys": 156.0421875,
+  "polys_median": 151.0,
+  "combinations": 71.925,
+  "partials_looked_up": 916.3125,
+  "priced": {
+   "official": {
+    "mean": 1461014.453125,
+    "median": 1440545.5,
+    "slowest_decile_mean": 2184632.125
+   },
+   "ruint": {
+    "mean": 59071.42982170333,
+    "median": 58513.83786594034,
+    "slowest_decile_mean": 80786.88970743868
+   },
+   "montgomery": {
+    "mean": 216420.24314595442,
+    "median": 213667.31966003234,
+    "slowest_decile_mean": 296728.0835503156
+   }
+  },
+  "wall_us": [
+   1902.1729500781248,
+   1894.5433309374998
+  ],
+  "wall_regions_us": {
+   "setup": 373.6688148046875,
+   "gray": 45.357597773437504,
+   "sieve": 455.64038449218754,
+   "scan": 106.46875714843749,
+   "confirm": 536.2188480859375,
+   "lp_ledger": 183.9943332421875,
+   "solve": 156.06377125
+  },
+  "capture_subset": {
+   "full": {
+    "true_per_poly": 0.5151750972762645,
+    "passed": 0.972809667673716,
+    "end_to_end": 0.9607250755287009
+   },
+   "part": {
+    "true_per_poly": 17.134630350194552,
+    "passed": 0.31610500499591243,
+    "end_to_end": 0.31555999636660914
+   }
+  },
+  "subset_polys": 1285
+ },
+ "-2 bits": {
+  "tc": 1.2209255847892657,
+  "candidates": 1435.0828125,
+  "polys": 138.8125,
+  "polys_median": 134.0,
+  "combinations": 79.3859375,
+  "partials_looked_up": 1196.9265625,
+  "priced": {
+   "official": {
+    "mean": 1400986.7953125,
+    "median": 1372166.0,
+    "slowest_decile_mean": 2023671.25
+   },
+   "ruint": {
+    "mean": 62466.707845169214,
+    "median": 61638.97798952677,
+    "slowest_decile_mean": 82792.27649985223
+   },
+   "montgomery": {
+    "mean": 229078.2208574416,
+    "median": 227405.7394655053,
+    "slowest_decile_mean": 303717.19039446535
+   }
+  },
+  "wall_us": [
+   2086.56870803125,
+   2082.794670625
+  ],
+  "wall_regions_us": {
+   "setup": 339.3919240234375,
+   "gray": 40.41926453125,
+   "sieve": 402.64321375,
+   "scan": 100.41340046875001,
+   "confirm": 756.0423878671875,
+   "lp_ledger": 247.1381975546875,
+   "solve": 157.7301466015625
+  },
+  "capture_subset": {
+   "full": {
+    "true_per_poly": 0.5202464788732394,
+    "passed": 0.9915397631133672,
+    "end_to_end": 0.9796954314720813
+   },
+   "part": {
+    "true_per_poly": 17.267605633802816,
+    "passed": 0.47440864600326266,
+    "end_to_end": 0.4724204730831974
+   }
+  },
+  "subset_polys": 1136
+ },
+ "-4 bits": {
+  "tc": 1.4065441022538725,
+  "candidates": 2058.971875,
+  "polys": 127.784375,
+  "polys_median": 124.0,
+  "combinations": 84.45,
+  "partials_looked_up": 1428.428125,
+  "priced": {
+   "official": {
+    "mean": 1419187.4390625,
+    "median": 1395984.5,
+    "slowest_decile_mean": 1993791.109375
+   },
+   "ruint": {
+    "mean": 70452.92026933085,
+    "median": 69358.08386923639,
+    "slowest_decile_mean": 91859.94942292274
+   },
+   "montgomery": {
+    "mean": 259037.11150758615,
+    "median": 255464.46973303607,
+    "slowest_decile_mean": 338397.6188030665
+   }
+  },
+  "wall_us": [
+   2434.083756296875,
+   2478.54617428125
+  ],
+  "wall_regions_us": {
+   "setup": 324.998748703125,
+   "gray": 37.938038109375,
+   "sieve": 391.142088109375,
+   "scan": 101.436809203125,
+   "confirm": 1097.506309515625,
+   "lp_ledger": 302.635302796875,
+   "solve": 158.82758058593748
+  },
+  "capture_subset": {
+   "full": {
+    "true_per_poly": 0.5161904761904762,
+    "passed": 0.9944649446494465,
+    "end_to_end": 0.9797047970479705
+   },
+   "part": {
+    "true_per_poly": 17.344761904761906,
+    "passed": 0.6222271030090051,
+    "end_to_end": 0.6194267515923567
+   }
+  },
+  "subset_polys": 1050
+ },
+ "-6 bits": {
+  "tc": 1.5921626197184793,
+  "candidates": 3012.3203125,
+  "polys": 120.8328125,
+  "polys_median": 116.0,
+  "combinations": 87.728125,
+  "partials_looked_up": 1598.03125,
+  "priced": {
+   "official": {
+    "mean": 1519158.96875,
+    "median": 1490053.5,
+    "slowest_decile_mean": 2124646.984375
+   },
+   "ruint": {
+    "mean": 84816.39202213829,
+    "median": 83448.16265680685,
+    "slowest_decile_mean": 113297.09652544244
+   },
+   "montgomery": {
+    "mean": 312433.44827875553,
+    "median": 307156.37967253884,
+    "slowest_decile_mean": 417581.1903519358
+   }
+  },
+  "wall_us": [
+   2946.6594323124996,
+   2965.06124240625
+  ],
+  "wall_regions_us": {
+   "setup": 312.40137225781245,
+   "gray": 36.4307059140625,
+   "sieve": 364.1930231015625,
+   "scan": 106.8253449765625,
+   "confirm": 1616.3288614453124,
+   "lp_ledger": 313.78872793749997,
+   "solve": 163.4556829296875
+  },
+  "capture_subset": {
+   "full": {
+    "true_per_poly": 0.5346432264736298,
+    "passed": 1.0,
+    "end_to_end": 0.9864603481624759
+   },
+   "part": {
+    "true_per_poly": 17.445708376421923,
+    "passed": 0.7521043272080616,
+    "end_to_end": 0.7489033787788975
+   }
+  },
+  "subset_polys": 967
+ }
+}

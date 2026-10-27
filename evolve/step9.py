@@ -31,8 +31,8 @@ def sample(bits):
         out.append(top[i]); i += 1
     return out[:8]
 
-def run_size(bits):
-    g = ref(bits)
+def run_size(bits, g=None):
+    g = g or ref(bits)
     qs.TRACE_ARR = True
     recs = {"full": [], "part": []}       # per true relation: dict of fields
     polys = 0
