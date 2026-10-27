@@ -195,6 +195,35 @@ No sealed prediction is revised. D-14 is registered above.
   - **D-14 is therefore scored on lp_ledger, as sealed.** Its "solve if the copies fall there" branch does not apply.
 - *Claude Code's note:* the ~100 ns per copy for ~25 ns priced (NOTES, step 3) was measured **before** the lp_ledger arena fix (A2, bd89a24), which changed how kept relations are stored. The "~4× price" figure quoted in the breakdown (8d5ef90) may therefore overstate today's per-copy cost. This run's LPBREAK pass measures it again (information).
 
+## Grok (received 22:24 Oct 26 PT)
+
+- **G-7: sealed.** The shift run has not started, and the runner's sub-region split has not been read.
+
+### Its reply (verbatim)
+
+<!-- verbatim begin -->
+
+**Sealed prediction G-7 (Grok, 26 Oct 2026 ~22:30 PT)**  
+Using only the numbers supplied. Absolute per-sub-region times, exact copy costs, and the split of the prior "rest" bucket are missing.
+
+### Of the ~81 µs wall excess in "rest" (2'b+pp3 vs 2'b, +0 cell)
+**lp_ledger** (confidence ~60 %).  
+Expected size: 45–70 µs/number at 2.4 GHz.  
+
+I assume the kept-relation copies (+198 per number, previously measured at ~4× their price) are counted inside **lp_ledger**. That is the only concrete under-priced item named for this bucket; the large-prime hash itself accounts for only 4–7 µs, so the bulk of the residual must be the copy traffic that scales with the extra partials pp3 admits. Setup, gray, and scan have no stated extra work of this magnitude; solve is downstream of the ledger and would see the copies only after they have already been paid for in the ledger phase.
+
+**Falsifier:** the split shows lp_ledger accounts for ≤30 µs of the excess and some other single sub-region (setup, gray, scan, or solve) accounts for ≥45 µs.
+
+(The prediction is sealed before the shift runner's phase split is examined.)
+
+<!-- verbatim end -->
+
+### The reviewer's annotations (range unchanged)
+
+- **Not independent:** the same answer and assumption as DeepSeek's D-14 (lp_ledger, with the copies counted there).
+- **The falsifier needs both conditions:** it was requested as a single condition, but Grok's requires lp_ledger ≤ 30 µs **and** another single sub-region ≥ 45 µs. Recorded and scored as written.
+- **Attribution:** as for D-14, the kept-relation copy is timed inside lp_ledger (sub-timer `lp:copy` within region 8, `lampcore/src/qs.rs`). **G-7 is scored on lp_ledger.**
+
 ## Shift run: the runner and its base
 
 - **Runner:** `evolve/i032shift.py`, committed first in ba253c2. Before the run it is amended to also record ruint per region (setup, gray, scan, lp_ledger, solve split out); the commit that does so is named in the run record.
