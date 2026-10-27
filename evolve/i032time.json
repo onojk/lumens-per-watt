@@ -1,0 +1,798 @@
+{
+ "priced": {
+  "REF": {
+   "mean": {
+    "official": 1461014.453125,
+    "ruint": 59071.42982170333,
+    "montgomery": 216420.24314595442
+   }
+  },
+  "2'a": {
+   "mean": {
+    "official": 1425117.065625,
+    "ruint": 58145.27722420334,
+    "montgomery": 213006.40159470442
+   }
+  },
+  "2'b": {
+   "mean": {
+    "official": 1444618.8984375,
+    "ruint": 51614.636177251035,
+    "montgomery": 188250.97248248913
+   }
+  },
+  "2'b+pp3": {
+   "mean": {
+    "official": 1370608.859375,
+    "ruint": 50601.70857597948,
+    "montgomery": 184380.75252368432
+   }
+  },
+  "2'a vs REF": {
+   "official": {
+    "ratio": 0.9754298204078555,
+    "ci95": [
+     0.975258371961628,
+     0.9756026762779144
+    ]
+   },
+   "ruint": {
+    "ratio": 0.9843214799388567,
+    "ci95": [
+     0.9841518406068192,
+     0.9844900798530923
+    ]
+   },
+   "montgomery": {
+    "ratio": 0.9842258676839778,
+    "ci95": [
+     0.9840581385923841,
+     0.9843929255398921
+    ]
+   }
+  },
+  "2'b vs 2'a": {
+   "official": {
+    "ratio": 1.013684372521318,
+    "ci95": [
+     1.0134872597701226,
+     1.0138828000574072
+    ]
+   },
+   "ruint": {
+    "ratio": 0.8876840672412535,
+    "ci95": [
+     0.8855970132972243,
+     0.889728212527811
+    ]
+   },
+   "montgomery": {
+    "ratio": 0.8837808210134529,
+    "ci95": [
+     0.8816039539306876,
+     0.8858998610368884
+    ]
+   }
+  },
+  "2'b+pp3 vs 2'a": {
+   "official": {
+    "ratio": 0.9617517693354581,
+    "ci95": [
+     0.9570652758767446,
+     0.9662332561212066
+    ]
+   },
+   "ruint": {
+    "ratio": 0.87026343310504,
+    "ci95": [
+     0.8673774387618446,
+     0.873038940359073
+    ]
+   },
+   "montgomery": {
+    "ratio": 0.8656113203325819,
+    "ci95": [
+     0.8630310506209412,
+     0.867959520959884
+    ]
+   }
+  },
+  "2'b vs REF": {
+   "official": {
+    "ratio": 0.9887779654387189,
+    "ci95": [
+     0.9884629475085911,
+     0.9890931189600457
+    ]
+   },
+   "ruint": {
+    "ratio": 0.8737664947850542,
+    "ci95": [
+     0.8718289385257536,
+     0.8756513542883827
+    ]
+   },
+   "montgomery": {
+    "ratio": 0.8698399454044239,
+    "ci95": [
+     0.8678329538606183,
+     0.8717970758594291
+    ]
+   }
+  },
+  "2'b+pp3 vs REF": {
+   "official": {
+    "ratio": 0.9381213556398232,
+    "ci95": [
+     0.9334910232429795,
+     0.9425540535782873
+    ]
+   },
+   "ruint": {
+    "ratio": 0.8566189904106231,
+    "ci95": [
+     0.8537812427929171,
+     0.8593719638654937
+    ]
+   },
+   "montgomery": {
+    "ratio": 0.8519570528314091,
+    "ci95": [
+     0.8494136737593437,
+     0.8542886552807438
+    ]
+   }
+  }
+ },
+ "timing": {
+  "REF": {
+   "mhz": {
+    "min": 400.0,
+    "median": 2400.0,
+    "max": 2400.024,
+    "n": 24,
+    "flag": false
+   },
+   "wall": {
+    "mean": 3925.3187832246094,
+    "sd": 38.59503117954195,
+    "min": 3895.6304772968747,
+    "max": 4017.667002328125,
+    "per_replicate": [
+     3918.9715652187506,
+     3925.61815803125,
+     3911.0925847500002,
+     3902.8526417812504,
+     3895.6304772968747,
+     3909.377317953125,
+     4017.667002328125,
+     3921.3405184375
+    ]
+   },
+   "sieve": {
+    "mean": 1037.4297446660157,
+    "sd": 34.484700600860656,
+    "min": 1015.4175495468751,
+    "max": 1117.368385484375,
+    "per_replicate": [
+     1024.96274915625,
+     1020.4403844687498,
+     1024.6874983750001,
+     1019.1332600937501,
+     1054.6066658281252,
+     1015.4175495468751,
+     1117.368385484375,
+     1022.8214643750001
+    ]
+   },
+   "confirm": {
+    "mean": 1077.5111879160156,
+    "sd": 9.437793110263131,
+    "min": 1055.186032828125,
+    "max": 1084.2545651093749,
+    "per_replicate": [
+     1081.6191850312498,
+     1081.22378690625,
+     1075.617928,
+     1078.97326471875,
+     1055.186032828125,
+     1079.407446359375,
+     1084.2545651093749,
+     1083.807294375
+    ]
+   }
+  },
+  "2'a": {
+   "mhz": {
+    "min": 399.153,
+    "median": 2399.975,
+    "max": 2400.024,
+    "n": 24,
+    "flag": false
+   },
+   "wall": {
+    "mean": 3855.745946433594,
+    "sd": 33.3789265513434,
+    "min": 3813.1175312656246,
+    "max": 3929.2604871250005,
+    "per_replicate": [
+     3842.3146965156247,
+     3848.228695765625,
+     3813.1175312656246,
+     3843.585345609374,
+     3929.2604871250005,
+     3848.9754464375005,
+     3852.9477898437503,
+     3867.5375789062496
+    ]
+   },
+   "sieve": {
+    "mean": 955.8739911054688,
+    "sd": 29.97592970034984,
+    "min": 936.859565296875,
+    "max": 1029.0566938125,
+    "per_replicate": [
+     942.8853387968751,
+     943.124002984375,
+     936.859565296875,
+     945.2092843906249,
+     1029.0566938125,
+     947.3557716874999,
+     948.76829609375,
+     953.73297578125
+    ]
+   },
+   "confirm": {
+    "mean": 1078.7701686367188,
+    "sd": 4.378955731524181,
+    "min": 1068.983787234375,
+    "max": 1083.9584976562498,
+    "per_replicate": [
+     1078.466454546875,
+     1078.9875485468751,
+     1068.983787234375,
+     1079.282382453125,
+     1078.4336032500003,
+     1081.6784715,
+     1080.3706039062502,
+     1083.9584976562498
+    ]
+   }
+  },
+  "2'b": {
+   "mhz": {
+    "min": 400.0,
+    "median": 2400.0,
+    "max": 2400.048,
+    "n": 24,
+    "flag": false
+   },
+   "wall": {
+    "mean": 3407.936338359375,
+    "sd": 31.551663903582437,
+    "min": 3371.2164997812506,
+    "max": 3469.605711390625,
+    "per_replicate": [
+     3388.249603484375,
+     3406.4919668750003,
+     3431.289538140625,
+     3371.2164997812506,
+     3469.605711390625,
+     3378.8581403281255,
+     3413.055530640625,
+     3404.723716234375
+    ]
+   },
+   "sieve": {
+    "mean": 968.5801991406249,
+    "sd": 24.704539590254832,
+    "min": 942.6871405312501,
+    "max": 1015.582546734375,
+    "per_replicate": [
+     982.911381515625,
+     948.9664628125,
+     980.1992099843749,
+     942.6871405312501,
+     1015.582546734375,
+     945.918121859375,
+     974.6273940468751,
+     957.7493356406248
+    ]
+   },
+   "confirm": {
+    "mean": 606.2772902734375,
+    "sd": 6.967587688774883,
+    "min": 595.106811078125,
+    "max": 614.663018859375,
+    "per_replicate": [
+     595.106811078125,
+     609.9791443749999,
+     614.448110984375,
+     600.3448443437501,
+     614.663018859375,
+     602.358508171875,
+     604.0683072343751,
+     609.249577140625
+    ]
+   }
+  },
+  "2'b+pp3": {
+   "mhz": {
+    "min": 399.693,
+    "median": 2400.0,
+    "max": 2400.024,
+    "n": 24,
+    "flag": false
+   },
+   "wall": {
+    "mean": 3475.3078966152343,
+    "sd": 61.06694502084456,
+    "min": 3369.3080423593747,
+    "max": 3530.4114243281247,
+    "per_replicate": [
+     3494.16573271875,
+     3369.3080423593747,
+     3496.66381228125,
+     3525.7438428906253,
+     3519.2521165625003,
+     3530.4114243281247,
+     3472.463067890625,
+     3394.455133890625
+    ]
+   },
+   "sieve": {
+    "mean": 906.5042830117187,
+    "sd": 14.293085678305319,
+    "min": 891.66476896875,
+    "max": 932.5065647187499,
+    "per_replicate": [
+     898.3906869375,
+     895.16946509375,
+     903.6494752499999,
+     924.10967453125,
+     903.72473375,
+     932.5065647187499,
+     902.8188948437501,
+     891.66476896875
+    ]
+   },
+   "confirm": {
+    "mean": 731.9562394179687,
+    "sd": 19.611071912547143,
+    "min": 694.04662040625,
+    "max": 746.2487878437499,
+    "per_replicate": [
+     745.718669125,
+     694.04662040625,
+     743.018094625,
+     743.0006526562499,
+     741.9182306250001,
+     746.2487878437499,
+     732.49054171875,
+     709.20831834375
+    ]
+   }
+  },
+  "2'a vs REF": {
+   "wall": {
+    "mean": 0.9823690459500082,
+    "ci95": [
+     0.970867212113392,
+     0.9938708797866244
+    ],
+    "half_width": 0.01150183383661614,
+    "per_replicate": [
+     0.9804395445520803,
+     0.9802860443501625,
+     0.9749494415278236,
+     0.9848143648731695,
+     1.008632751495327,
+     0.9845494904678964,
+     0.9590012780081265,
+     0.9862794523254795
+    ]
+   },
+   "sieve": {
+    "mean": 0.9220266475253566,
+    "ci95": [
+     0.892838299182519,
+     0.9512149958681941
+    ],
+    "half_width": 0.029188348342837594,
+    "per_replicate": [
+     0.9199215674648262,
+     0.9242323386440391,
+     0.9142880798122286,
+     0.9274638768080978,
+     0.975772984522564,
+     0.9329716352748213,
+     0.8491096655490772,
+     0.9324530321271983
+    ]
+   },
+   "confirm": {
+    "mean": 1.0012285895500588,
+    "ci95": [
+     0.9938756417512706,
+     1.008581537348847
+    ],
+    "half_width": 0.0073529477987881045,
+    "per_replicate": [
+     0.9970851751448142,
+     0.9979317525322176,
+     0.9938322515895953,
+     1.000286492487333,
+     1.0220317268222048,
+     1.0021039554139493,
+     0.9964178511872506,
+     1.0001395112231062
+    ]
+   }
+  },
+  "2'b vs 2'a": {
+   "wall": {
+    "mean": 0.8838802652043545,
+    "ci95": [
+     0.8778781373510873,
+     0.8898823930576216
+    ],
+    "half_width": 0.006002127853267179,
+    "per_replicate": [
+     0.8818251161355899,
+     0.8852103750027416,
+     0.8998646147163826,
+     0.8771020275723231,
+     0.8830174845265348,
+     0.8778591049354441,
+     0.8858296859452216,
+     0.8803337128005981
+    ]
+   },
+   "sieve": {
+    "mean": 1.0136366267212065,
+    "ci95": [
+     0.9951191953932477,
+     1.0321540580491653
+    ],
+    "half_width": 0.018517431327958772,
+    "per_replicate": [
+     1.0424505940137145,
+     1.0061947949682517,
+     1.0462605563233656,
+     0.99733165564386,
+     0.9869063121991799,
+     0.9984824604746282,
+     1.0272554406166308,
+     1.0042111995300202
+    ]
+   },
+   "confirm": {
+    "mean": 0.5620247821066335,
+    "ci95": [
+     0.5556292692968707,
+     0.5684202949163963
+    ],
+    "half_width": 0.006395512809762823,
+    "per_replicate": [
+     0.5518083650809178,
+     0.5653254712684019,
+     0.5747964733628435,
+     0.5562444584513767,
+     0.5699590749092089,
+     0.5568738992619167,
+     0.5591306400324768,
+     0.5620598744859262
+    ]
+   }
+  },
+  "2'b+pp3 vs 2'a": {
+   "wall": {
+    "mean": 0.9013834283212038,
+    "ci95": [
+     0.8869886331803409,
+     0.9157782234620666
+    ],
+    "half_width": 0.014394795140862822,
+    "per_replicate": [
+     0.9093908252458885,
+     0.8755477672277565,
+     0.9170091883112401,
+     0.9173059853915232,
+     0.8956525351510867,
+     0.9172340726662132,
+     0.9012484096057385,
+     0.8776786429701832
+    ]
+   },
+   "sieve": {
+    "mean": 0.9491519241943436,
+    "ci95": [
+     0.9217086941155271,
+     0.97659515427316
+    ],
+    "half_width": 0.027443230078816418,
+    "per_replicate": [
+     0.9528101137767713,
+     0.949153517735865,
+     0.9645516881323069,
+     0.977677314211976,
+     0.8782069434890278,
+     0.984325627802637,
+     0.9515694174866699,
+     0.9349207709194945
+    ]
+   },
+   "confirm": {
+    "mean": 0.6785406284862074,
+    "ci95": [
+     0.6624571776380749,
+     0.69462407933434
+    ],
+    "half_width": 0.01608345084813254,
+    "per_replicate": [
+     0.6914620904349953,
+     0.6432387670654367,
+     0.6950695637277172,
+     0.6884209959653629,
+     0.6879591181034538,
+     0.689898900186949,
+     0.6779993264073597,
+     0.6542762659983847
+    ]
+   }
+  },
+  "2'b vs REF": {
+   "wall": {
+    "mean": 0.8682679643119537,
+    "ci95": [
+     0.8583555304533044,
+     0.8781803981706031
+    ],
+    "half_width": 0.009912433858649369,
+    "per_replicate": [
+     0.8645762152385631,
+     0.8677593769291615,
+     0.8773225035683873,
+     0.8637826762126067,
+     0.8906403550364811,
+     0.8642957344667951,
+     0.8495118009190048,
+     0.86825505212463
+    ]
+   },
+   "sieve": {
+    "mean": 0.9342109781150083,
+    "ci95": [
+     0.9099480468016597,
+     0.9584739094283569
+    ],
+    "half_width": 0.024262931313348515,
+    "per_replicate": [
+     0.9589727844497355,
+     0.9299577684849667,
+     0.9565835550241639,
+     0.9249890838068932,
+     0.962996517698751,
+     0.931555813942241,
+     0.8722525236154572,
+     0.9363797778978583
+    ]
+   },
+   "confirm": {
+    "mean": 0.5627298879950056,
+    "ci95": [
+     0.5542697739404041,
+     0.571190002049607
+    ],
+    "half_width": 0.008460114054601484,
+    "per_replicate": [
+     0.5501999403430805,
+     0.5641562382939782,
+     0.5712512733279536,
+     0.5564038183098435,
+     0.5825162575474452,
+     0.5580455371171559,
+     0.5571277508741126,
+     0.5621382881464747
+    ]
+   }
+  },
+  "2'b+pp3 vs REF": {
+   "wall": {
+    "mean": 0.8854606623793108,
+    "ci95": [
+     0.8692172582539904,
+     0.9017040665046311
+    ],
+    "half_width": 0.01624340412532029,
+    "per_replicate": [
+     0.8916027265239194,
+     0.8582872573753143,
+     0.8940375960199263,
+     0.9033761113977099,
+     0.9033844809132056,
+     0.9030623388833137,
+     0.8642983766146947,
+     0.8656364113064023
+    ]
+   },
+   "sieve": {
+    "mean": 0.8746778062602107,
+    "ci95": [
+     0.8468260269122916,
+     0.9025295856081299
+    ],
+    "half_width": 0.027851779347919187,
+    "per_replicate": [
+     0.8765105733618669,
+     0.8772383754292349,
+     0.8818781108221304,
+     0.906760392106368,
+     0.8569306102767275,
+     0.9183478906139413,
+     0.8079867898288364,
+     0.8717697076425805
+    ]
+   },
+   "confirm": {
+    "mean": 0.6793950501973189,
+    "ci95": [
+     0.661893917786376,
+     0.6968961826082619
+    ],
+    "half_width": 0.017501132410942977,
+    "per_replicate": [
+     0.6894465995473767,
+     0.6419083901142741,
+     0.6907825495309149,
+     0.6886182234088292,
+     0.7031160454583539,
+     0.691350416713075,
+     0.6755706319252246,
+     0.6543675448805035
+    ]
+   }
+  }
+ },
+ "order": [
+  [
+   1,
+   "2'b"
+  ],
+  [
+   1,
+   "2'b+pp3"
+  ],
+  [
+   1,
+   "2'a"
+  ],
+  [
+   1,
+   "REF"
+  ],
+  [
+   2,
+   "2'b+pp3"
+  ],
+  [
+   2,
+   "2'a"
+  ],
+  [
+   2,
+   "2'b"
+  ],
+  [
+   2,
+   "REF"
+  ],
+  [
+   3,
+   "2'a"
+  ],
+  [
+   3,
+   "REF"
+  ],
+  [
+   3,
+   "2'b"
+  ],
+  [
+   3,
+   "2'b+pp3"
+  ],
+  [
+   4,
+   "2'b"
+  ],
+  [
+   4,
+   "2'a"
+  ],
+  [
+   4,
+   "REF"
+  ],
+  [
+   4,
+   "2'b+pp3"
+  ],
+  [
+   5,
+   "REF"
+  ],
+  [
+   5,
+   "2'b"
+  ],
+  [
+   5,
+   "2'b+pp3"
+  ],
+  [
+   5,
+   "2'a"
+  ],
+  [
+   6,
+   "2'b+pp3"
+  ],
+  [
+   6,
+   "2'a"
+  ],
+  [
+   6,
+   "2'b"
+  ],
+  [
+   6,
+   "REF"
+  ],
+  [
+   7,
+   "2'b+pp3"
+  ],
+  [
+   7,
+   "2'a"
+  ],
+  [
+   7,
+   "REF"
+  ],
+  [
+   7,
+   "2'b"
+  ],
+  [
+   8,
+   "2'b+pp3"
+  ],
+  [
+   8,
+   "REF"
+  ],
+  [
+   8,
+   "2'a"
+  ],
+  [
+   8,
+   "2'b"
+  ]
+ ],
+ "states": [
+  "time: 2026-10-26T22:00:17-07:00\npinned core: 2\ngovernor: powersave\nenergy_performance_preference: balance_performance\ncur MHz: 417; max MHz: 5000\nfrequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100\nload average: 1.88 1.36 1.21\npower supply AC online: 1\npower supply BAT0 capacity: 100% (Not charging)\npower supply ucsi-source-psy-USBC000:001 online: 1\npower supply ucsi-source-psy-USBC000:002 online: 0\ntemperature TCPU: 50 C\ntemperature x86_pkg_temp: 46 C\nsensors: Package id 0:  +46.0\u00b0C  (high = +100.0\u00b0C, crit = +100.0\u00b0C)\ntop 5 processes by current CPU (top, a 1 s sample):\n  14.7% claude\n  10.8% Xorg\n  5.9% htop\n  4.9% xfce4-panel\n  2.9% kworker/6:1H-i915_cleanup\n",
+  "time: 2026-10-26T22:00:29-07:00\npinned core: 2\ngovernor: powersave\nenergy_performance_preference: balance_performance\ncur MHz: 399; max MHz: 5000\nfrequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100\nload average: 1.91 1.40 1.22\npower supply AC online: 1\npower supply BAT0 capacity: 100% (Not charging)\npower supply ucsi-source-psy-USBC000:001 online: 1\npower supply ucsi-source-psy-USBC000:002 online: 0\ntemperature TCPU: 52 C\ntemperature x86_pkg_temp: 47 C\nsensors: Package id 0:  +46.0\u00b0C  (high = +100.0\u00b0C, crit = +100.0\u00b0C)\ntop 5 processes by current CPU (top, a 1 s sample):\n  16.8% chrome\n  15.8% chrome\n  12.9% Xorg\n  12.9% chrome\n  10.9% claude\n",
+  "time: 2026-10-26T22:00:41-07:00\npinned core: 2\ngovernor: powersave\nenergy_performance_preference: balance_performance\ncur MHz: 400; max MHz: 5000\nfrequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100\nload average: 2.01 1.43 1.23\npower supply AC online: 1\npower supply BAT0 capacity: 100% (Not charging)\npower supply ucsi-source-psy-USBC000:001 online: 1\npower supply ucsi-source-psy-USBC000:002 online: 0\ntemperature TCPU: 52 C\ntemperature x86_pkg_temp: 47 C\nsensors: Package id 0:  +47.0\u00b0C  (high = +100.0\u00b0C, crit = +100.0\u00b0C)\ntop 5 processes by current CPU (top, a 1 s sample):\n  10.9% claude\n  5.0% Xorg\n  4.0% htop\n  3.0% chrome\n  3.0% chrome\n",
+  "time: 2026-10-26T22:00:54-07:00\npinned core: 2\ngovernor: powersave\nenergy_performance_preference: balance_performance\ncur MHz: 1246; max MHz: 5000\nfrequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100\nload average: 1.80 1.41 1.23\npower supply AC online: 1\npower supply BAT0 capacity: 100% (Not charging)\npower supply ucsi-source-psy-USBC000:001 online: 1\npower supply ucsi-source-psy-USBC000:002 online: 0\ntemperature TCPU: 49 C\ntemperature x86_pkg_temp: 47 C\nsensors: Package id 0:  +52.0\u00b0C  (high = +100.0\u00b0C, crit = +100.0\u00b0C)\ntop 5 processes by current CPU (top, a 1 s sample):\n  10.9% claude\n  5.9% chrome\n  4.0% Xorg\n  4.0% htop\n  3.0% chrome\n",
+  "time: 2026-10-26T22:01:06-07:00\npinned core: 2\ngovernor: powersave\nenergy_performance_preference: balance_performance\ncur MHz: 400; max MHz: 5000\nfrequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100\nload average: 1.67 1.40 1.23\npower supply AC online: 1\npower supply BAT0 capacity: 100% (Not charging)\npower supply ucsi-source-psy-USBC000:001 online: 1\npower supply ucsi-source-psy-USBC000:002 online: 0\ntemperature TCPU: 51 C\ntemperature x86_pkg_temp: 48 C\nsensors: Package id 0:  +48.0\u00b0C  (high = +100.0\u00b0C, crit = +100.0\u00b0C)\ntop 5 processes by current CPU (top, a 1 s sample):\n  107.9% chrome\n  31.7% chrome\n  29.7% Xorg\n  9.9% claude\n  5.0% kworker/7:1H-i915_cleanup\n",
+  "time: 2026-10-26T22:01:19-07:00\npinned core: 2\ngovernor: powersave\nenergy_performance_preference: balance_performance\ncur MHz: 1877; max MHz: 5000\nfrequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100\nload average: 2.47 1.59 1.29\npower supply AC online: 1\npower supply BAT0 capacity: 100% (Not charging)\npower supply ucsi-source-psy-USBC000:001 online: 1\npower supply ucsi-source-psy-USBC000:002 online: 0\ntemperature TCPU: 54 C\ntemperature x86_pkg_temp: 51 C\nsensors: Package id 0:  +50.0\u00b0C  (high = +100.0\u00b0C, crit = +100.0\u00b0C)\ntop 5 processes by current CPU (top, a 1 s sample):\n  112.9% chrome\n  27.7% chrome\n  25.7% Xorg\n  11.9% claude\n  5.0% kworker/3:1H-i915_cleanup\n",
+  "time: 2026-10-26T22:01:31-07:00\npinned core: 2\ngovernor: powersave\nenergy_performance_preference: balance_performance\ncur MHz: 1710; max MHz: 5000\nfrequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100\nload average: 2.47 1.62 1.31\npower supply AC online: 1\npower supply BAT0 capacity: 100% (Not charging)\npower supply ucsi-source-psy-USBC000:001 online: 1\npower supply ucsi-source-psy-USBC000:002 online: 0\ntemperature TCPU: 54 C\ntemperature x86_pkg_temp: 52 C\nsensors: Package id 0:  +51.0\u00b0C  (high = +100.0\u00b0C, crit = +100.0\u00b0C)\ntop 5 processes by current CPU (top, a 1 s sample):\n  72.3% chrome\n  34.7% chrome\n  32.7% Xorg\n  12.9% claude\n  9.9% kworker/6:1H+i915_cleanup\n",
+  "time: 2026-10-26T22:01:44-07:00\npinned core: 2\ngovernor: powersave\nenergy_performance_preference: balance_performance\ncur MHz: 1008; max MHz: 5000\nfrequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100\nload average: 2.64 1.70 1.34\npower supply AC online: 1\npower supply BAT0 capacity: 100% (Not charging)\npower supply ucsi-source-psy-USBC000:001 online: 1\npower supply ucsi-source-psy-USBC000:002 online: 0\ntemperature TCPU: 57 C\ntemperature x86_pkg_temp: 55 C\nsensors: Package id 0:  +53.0\u00b0C  (high = +100.0\u00b0C, crit = +100.0\u00b0C)\ntop 5 processes by current CPU (top, a 1 s sample):\n  11.9% claude\n  5.9% htop\n  4.0% chrome\n  3.0% chrome\n  2.0% Xorg\n"
+ ],
+ "seed": 2027
+}

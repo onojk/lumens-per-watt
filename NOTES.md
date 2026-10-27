@@ -8376,3 +8376,114 @@ The Gray code maintains `sr`: the roots in x-coordinates, in [0, p). The sieve's
 - every other check passes.
 
 **Not done here:** no priced totals were printed or compared against REF or 2′a, and no timing was run.
+
+## I-032 option 2′, the sealed run, scored (`evolve/i032time.py`, 3f4034e; card 5f0007a; `results/i032-2prime_20261027T045931Z.out` and `.machine.txt`, committed by the guard as 9b94247; `i032time.json`; predictions `predictions/i032-2prime.md`, bbf7d84)
+
+**Setup:**
+- 96 bits, all 640 map numbers, re-sieve off; the reference genes of root-confirm-2.
+- Cells: REF (goff off, full pass); 2′a (goff on, full pass); 2′b (goff on, root); 2′b+pp3 (goff on, root, pp 3, +0 bits).
+- Priced: paired 95% bootstrap (10,000). Wall-clock: 8 replicates in seeded random order (2027); 95% t intervals over replicate pairs.
+
+**Conditions** (as recorded before launch in the predictions file):
+- **Frequency cap 2.4 GHz, set by the user.** Core 2's median was 2,400 MHz in every cell (24 samples each); no flags.
+- **TCPU 43 °C before, 55 °C after;** the per-replicate maximum was 57 °C. No throttling: the first run since root-confirm without the 99–100 °C readings.
+- Governor powersave; AC online.
+- Cooling pad; desk or lap and the charger not specified.
+- Mathematica exited; Chrome and Firefox open.
+- Absolute µs are at 2.4 GHz and are **not comparable with earlier runs' µs**; the ratios are within this run.
+
+**Identity:** 2′a against REF and 2′b against 2′a have the same factor, candidates, hits and polynomials on 640 / 640 numbers, with relations and candidate values identical on the traced numbers.
+
+**Robust ratio first** (the sealed bases; official / ruint / Montgomery):
+
+| comparison | robust (c) | official [95%] | ruint [95%] | Montgomery [95%] | (e) | wall [95%] | sieve [95%] | confirm [95%] |
+|---|---|---|---|---|---|---|---|---|
+| 2′a vs REF | **0.9843** | 0.9754 [0.9753, 0.9756] | 0.9843 [0.9842, 0.9845] | 0.9842 [0.9841, 0.9844] | better | 0.9824 [0.9709, 0.9939] (−1.8%) | 0.9220 [0.8928, 0.9512] | 1.0012 [0.9939, 1.0086] |
+| 2′b vs 2′a | **1.0137** | 1.0137 [1.0135, 1.0139] | 0.8877 [0.8856, 0.8897] | 0.8838 [0.8816, 0.8859] | undecided (official worse) | 0.8839 [0.8779, 0.8899] (−11.6%) | 1.0136 [0.9951, 1.0322] | 0.5620 [0.5556, 0.5684] |
+| 2′b+pp3 vs 2′a | **0.9618** | 0.9618 [0.9571, 0.9662] | 0.8703 [0.8674, 0.8730] | 0.8656 [0.8630, 0.8680] | **better** | 0.9014 [0.8870, 0.9158] (−9.9%) | 0.9492 [0.9217, 0.9766] | 0.6785 [0.6625, 0.6946] |
+| 2′b vs REF (information) | 0.9888 | 0.9888 | 0.8738 | 0.8698 | better | 0.8683 [0.8584, 0.8782] (−13.2%) | 0.9342 | 0.5627 |
+| 2′b+pp3 vs REF (information) | 0.9381 | 0.9381 | 0.8566 | 0.8520 | better | 0.8855 [0.8692, 0.9017] (−11.5%) | 0.8747 | 0.6794 |
+
+**Means per number:**
+- Priced (official / ruint / Montgomery): REF 1,461,014 / 59,071 / 216,420; 2′a 1,425,117 / 58,145 / 213,006; 2′b 1,444,619 / 51,615 / 188,251; 2′b+pp3 1,370,609 / 50,602 / 184,381.
+- Wall-clock (µs at 2.4 GHz): REF 3,925.3 (sd 38.6); 2′a 3,855.7 (33.4); 2′b 3,407.9 (31.6); 2′b+pp3 3,475.3 (61.1).
+
+**Interval half-widths** (points; full width = 2 × half):
+
+| comparison | wall | sieve | confirm |
+|---|---|---|---|
+| 2′a vs REF | ±1.15 | ±2.92 | ±0.74 |
+| 2′b vs 2′a | ±0.60 | ±1.85 | ±0.64 |
+| 2′b+pp3 vs 2′a | ±1.44 | ±2.74 | ±1.61 |
+
+**The model against the card:** the priced ratios equal the Wolfram forecasts to 4 digits. The forecasts were 2′a / REF 0.9754 / 0.9843 / 0.9842 (f12ae23) and 2′b / 2′a 1.0137 / 0.8877 / 0.8838 (f12ae23, and the exact-count model 18efd55). That is expected for relation-identical changes whose counts acceptance pinned exactly. The model was not a prediction and is not scored.
+
+**Scored as written** (misses included; ranges as sealed):
+
+*The reviewer's:*
+
+| | measured | sealed | result |
+|---|---|---|---|
+| R2-1 2′a vs REF official | 0.9754 | 0.965–0.985 | **held** |
+| R2-2 2′a vs REF ruint, Montgomery | 0.9843, 0.9842 | each 0.95–0.995 | **held** |
+| R2-3 2′a relations identical per number | identical, 640 / 640 | identical | **held** |
+| R2-4 2′a vs REF wall | 0.9824 | 0.93–1.00 | **held** |
+| R2-5 2′b vs 2′a official / ruint / Montgomery | 1.0137 / 0.8877 / 0.8838 | 1.005–1.020 / 0.875–0.900 / 0.870–0.895 | **held** (all three) |
+| R2-6 2′b vs 2′a wall | −11.6% | −7% to −14% | **held** |
+| R2-7 2′b vs 2′a sieve region | +1.4% | within ±5% | **held** |
+| R2-8 95% intervals | ±0.6 to ±2.9 (all nine below ±3; wall ±0.6–±1.4) | ±3 to ±6, sealed without a cap | **missed** (narrower; the 2.4 GHz cap noted) |
+| R2-9 2′b+pp3 vs 2′a official / ruint / Montgomery / wall | 0.9618 / 0.8703 / 0.8656 / −9.9% | 0.95–0.99 / 0.84–0.90 / 0.84–0.90 / −8% to −16% | **held** (all four) |
+| R2-10 better than 2′a under all three at once | yes (all three < 1, intervals exclude 1) | YES, 75%; falsifier official > 1.000 | **held** |
+
+*DeepSeek's:*
+
+| | measured | sealed | result |
+|---|---|---|---|
+| D-1 2′a vs REF official | 0.9754 | 0.965–0.985 | **held** |
+| D-2 ruint / Montgomery | 0.9843 / 0.9842 | 0.982–0.992 / 0.980–0.990 | **held** |
+| D-3 wall | 0.9824 | 0.975–0.990 | **held** |
+| D-4 2′b vs 2′a official / ruint / Montgomery | 1.0137 / 0.8877 / 0.8838 | 1.008–1.018 / 0.878–0.898 / 0.874–0.894 | **held** (all three) |
+| D-5 2′b vs 2′a wall | −11.6% | −7% to −13% | **held** |
+| D-6 sieve | +1.4% | −2% to +2% | **held** |
+| D-7 interval | ±0.6 to ±1.4 (wall; all nine ±0.6–±2.9) | ±4 to ±6, sealed without a cap | **missed** (narrower; cap noted) |
+| Falsifiers: 2′a official > 1.000; 2′b vs 2′a official > 1.030; 2′b vs 2′a wall > 0% | 0.9754; 1.0137; −11.6% | — | **none triggered** |
+| D-8 2′b+pp3 vs 2′a official | 0.9618 | 0.995–1.010; falsified < 0.975 | **missed, falsified** |
+| D-8 ruint | 0.8703 | 0.975–0.990; falsified < 0.955 | **missed, falsified** |
+| D-8 Montgomery | 0.8656 | 0.970–0.988; falsified < 0.950 | **missed, falsified** |
+| D-8 wall | −9.9% | −6% to −12%; falsified > +2% or < −18% | **held** |
+| D-9 better under all three at once | yes | No, 65%; falsified if ≤ 1.000 under all three | **missed, falsified** |
+
+*Grok's:*
+
+| | measured | sealed | result |
+|---|---|---|---|
+| G-1 2′a vs REF official / ruint / Montgomery | 0.9754 / 0.9843 / 0.9842 | 0.970–0.981 / 0.980–0.988 / 0.980–0.988 | **held** |
+| G-1 wall | −1.8% | −2.5% to −5.5% | **missed** (smaller saving) |
+| G-2 2′b vs 2′a official / ruint / Montgomery | 1.0137 / 0.8877 / 0.8838 | 1.008–1.020 / 0.875–0.900 / 0.870–0.897 | **held** |
+| G-2 wall / sieve | −11.6% / +1.4% | −6% to −12% / −1% to +4% | **held / held** |
+| G-3 2′b+pp3 vs 2′a official | 0.9618 | 0.990–1.005 | **missed** |
+| G-3 ruint / Montgomery / wall | 0.8703 / 0.8656 / −9.9% | 0.860–0.890 / 0.855–0.885 / −8% to −15% | **held** |
+| G-4 better under all three at once | yes | No, ~65% | **missed** |
+| G-5 interval full width, on the G-1..G-3 ratios | wall 2.30 (G-1), 1.20 (G-2), 2.88 (G-3); G-2 sieve 3.70 | 1.5–3.5 points | **missed** (2 of 4 inside: G-2 wall below, G-2 sieve above) |
+
+- **G-4 is scored on its question,** as the user set: all three pricings ≤ 1.000. Grok's stated falsifier (official ≤ 0.995, ruint and Montgomery ≤ 0.95, intervals excluding 1) is also met (0.9618 / 0.8703 / 0.8656); it is recorded but not used to score.
+- **G-5 is a full width; R2-8 and D-7 are ± half-widths.** Each is scored in its own form. In the other form: R2-8 and D-7 as full widths would be 1.2–5.8 points; G-5 as half-widths is ±0.6–±1.85.
+
+*Information only* (the model was committed first; both said "above 1.0137"):
+- **G-6:** 2′b vs 2′a official from the exact-count model, "above 1.0137 (1.015–1.030)". The model gave 1.0137 and the card measured 1.0137: **missed**.
+- **D-10:** the same direction: **missed**.
+
+**Tally:**
+- The reviewer: 10 / 10 items held except R2-8 (interval width).
+- DeepSeek: D-1..D-7 held except D-7. D-8 held only on wall (official, ruint, Montgomery falsified). D-9 falsified.
+- Grok: G-1 held on pricing and missed on wall; G-2 held; G-3 missed on official; G-4 and G-5 missed.
+- **Common failure in the outside predictions:** pp 3's effect on 2′b against 2′a (D-8, D-9, G-3 official, G-4). Against root alone, pp 3 cut official by about 5%, not the 1–1.5% they assumed; the reviewer's annotation on D-8/D-9 said so before the run.
+
+**Failure modes and limits:**
+- **2′b alone is worse than 2′a under official** (1.0137, robust 1.0137): the root tests and the per-candidate words outweigh the divisions removed when every op costs 1. It is better than 2′a under ruint (−11.2%), under Montgomery (−11.6%) and on wall-clock (−11.6%).
+- **2′b+pp3 is the only 2′ cell better than 2′a under all three pricings** (robust 0.9618), and it is better than REF under all three (robust 0.9381). Its wall-clock is −9.9% against 2′a, **less than 2′b's −11.6%**: pp 3's extra candidates cost confirm time (732 against 606 µs).
+- **2′a's sieve saving is −7.8%** [−10.7, −4.9], but its wall-clock saving is only −1.8%. The start-offset add is a small part of a sieve region dominated by the updates.
+- **The cap changed the machine:** clocks were pinned at 2.4 GHz and the temperature stayed below 60 °C. The intervals are 3–7× narrower than in root-confirm-2, which confirms the user's thermal reading.
+- **Not measured:** the threshold shift for 2′b+pp3 (only +0 bits ran), other sizes, and energy.
+
+**Report only.** Nothing adopted. goff stays off by default; adopting 2′a, 2′b or 2′b+pp3 into the reference is the user's decision.
