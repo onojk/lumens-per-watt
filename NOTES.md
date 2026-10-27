@@ -8763,3 +8763,50 @@ Per sub-region, wall above price at each region's own µs per ruint (excess = (w
 - **Not measured:** the sieve region's split (where pp 3's +60 µs goes); clocks during the 72-bit cells; other sizes; energy.
 
 **Report only.** Nothing adopted; the provisional choice stays provisional (the user's).
+
+## Open decision (the user's): the robust rule's veto by official pricing
+
+**Facts (as given):**
+- In the shift run (pp3-gap-and-shift, 9ed805a, 96 bits), official picks +0, ruint and Montgomery pick +1, and wall-clock picks +2.
+- Official prices a sieve update the same as a root test.
+
+*Added by Claude Code from runs A and B (be7579b), for the record:* at 72 and 84 bits official picks +1, ruint and Montgomery +2, wall-clock +2. At 96 (A), +3 adds nothing on wall over +2 and raises official to 1.0595.
+
+**Options:**
+- **(a)** Keep the rule (current).
+- **(b)** Re-price official's sieve update, prospectively.
+- **(c)** Drop official from the robust track.
+- **(d)** Let measured energy (RAPL, I-039) decide once it is readable.
+
+**Rule for any change:** decided and committed before the next test it affects, and applied to all cells.
+
+**Status: rule unchanged.**
+
+### DeepSeek's view (received 00:32 Oct 27 PT; information only; verbatim)
+
+<!-- verbatim begin -->
+[PLACEHOLDER: DeepSeek's view was not included in the brief; to be filled verbatim when the user pastes it.]
+<!-- verbatim end -->
+
+**The reviewer's note:** the shift results show that official disagrees with wall-clock on this machine, not that it is wrong. Whether a hardware-neutral count should hold a veto is a design choice, not a measurement.
+
+### DeepSeek's acceptances of its shift-run scores (as given)
+
+- D-12 held; D-13 and D-14 falsified; the official miss shared by all three tables (+1 and +2) accepted.
+- [PLACEHOLDER: DeepSeek's acceptance text was not included in the brief; to be filled as given when the user pastes it.]
+
+### Grok's view (received 00:34 Oct 27 PT; information only; verbatim)
+
+<!-- verbatim begin -->
+[PLACEHOLDER: Grok's view was not included in the brief; to be filled verbatim when the user pastes it.]
+<!-- verbatim end -->
+
+### The reviewer's notes (as given)
+
+- **On Grok:** "the phase data show sieve updates over-charged" is specific to official. Under ruint, the sieve's wall fell less than its price: +33 µs under-charged for pp 3's prime-power walks. Energy is the quantity the project measures by name, not just another external measure.
+- **Synthesis:**
+  - Re-pricing official to track wall time would make it a second machine-calibrated pricing (ruint already is one). That removes the hardware-neutral member of the robust track, so option (b) is in effect option (c).
+  - The real choice is whether to keep a hardware-neutral veto, or remove it and let measured energy arbitrate once it is readable.
+- **All three views (DeepSeek, Grok, the reviewer): no change now.**
+
+**Status: rule unchanged.** The user's decision, to be made before any test it affects.
