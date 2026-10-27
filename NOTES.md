@@ -7541,3 +7541,30 @@ STOP after this for DeepSeek's predictions for (iii) and (iv), then "go".
 **Per-parity thresholds (its section 4):** "2 free" is equivalent to a lower threshold on the odd-y class.
 - Its first-order condition (one per class, coupled through P) is right in form, with the class labels corrected: the boosted class is odd-y.
 - **Proposed** (not started): a 2D model grid of the two classes' thresholds, then, if it shows a gain beyond ~1 point, a small split test on the card.
+
+### Stage H addendum: Wolfram, Oct 27 — "2 free" with a threshold per parity class (recorded as given; documentation only)
+
+**Setup:** the same simulation and cost model.
+- The class where 2 divides (y odd) is 0.500 of positions.
+- t0 is the y-even shift, t1 the y-odd shift on the boosted sum. The grid runs t0 −1 … 6 and t1 −1 … 7.
+- Model reference wall-clock: 1,849.7 µs.
+
+**Best single shift (the diagonal) against the best pair, wall-clock in % against today:**
+
+| c (µs per candidate) | best single | best pair | gain |
+|---|---|---|---|
+| 0.53 | {3, 3}: −6.63% | {4, 3}: −6.99% (4.36 candidates per polynomial) | 0.36 points |
+| 0.30 | {3, 3}: −15.91% | {2, 3}: −15.96% | 0.04 |
+| 0.177 | {2, 2}: −21.52% | {2, 2}: −21.52% | 0 |
+
+**The user's sealed Z1–Z5 all held:**
+- Z1: 0.36 points (0 to 1.5).
+- Z2: the best pairs are within 1 bit of the diagonal at every c.
+- Z3: −6.99% (−8.5 to −6.5).
+- Z4: −21.52% (−23 to −21.5).
+- Z5: the diagonal reproduces the previous run's "2 free" row (−6.63%, −21.52%).
+
+**Reading (model only):**
+- A per-parity threshold split is not worth a card test (≤ 0.4 points).
+- The optimum is flat. "2 free" at +3 bits is within ~0.5 point of the best at today's confirm, and +2 to +3 is right for a cheaper confirm. Stage H's cell (iv) at +3 bits tests the right setting.
+- DeepSeek round 49's per-parity proposal is answered: second-order, as it suggested.
