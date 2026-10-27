@@ -149,6 +149,52 @@ Notes on scoring: interval widths above are full widths. All ranges are sealed b
             prices sieve updates like root tests, and a higher shift needs more
             polynomials). Falsifier: +1 or +2 has official below 0.9618.
 
+## DeepSeek (received 22:20 Oct 26 PT)
+
+- **D-14: sealed.** The shift run has not started, and the runner's sub-region split has not been read; the smoke checks printed no results.
+- **Its "Note on D-12":** information only. **D-12 stays sealed as written.**
+
+### Its reply (verbatim)
+
+<!-- verbatim begin -->
+
+## 0. Recorded
+
+- **D-11 arithmetic correction accepted.** My 241 µs figure was correct for the number I was given, but the number was wrong: official charges sieve updates and root tests equally, so most of official's −5.1% is sieve savings. Using each phase's own ruint rate, the price gap is **−2.0%** and the wall gap **+2.0%**, for about **4 points, 109 µs per number**. My 241 µs is annotated as based on the wrong price expectation. **D-11 is information only**, with the whole "rest" bucket at 81 µs under my 120 µs floor; the falsifier would trigger, and I record that.
+- Phase breakdown recorded: sieve +33 µs above price, confirm −5 µs (tracks price), rest +81 µs. Confirm is priced honestly at ~0.60 µs/candidate. Hash under-pricing explains only 4–7 µs. Kept-relation copies (+198/number, ~4× price) are the likelier part of the 81 µs but not established.
+- Instrumentation bug noted: `--phasetime` dropped root_test; the meter and `--types` are correct.
+- **D-12, D-13, shift table remain sealed.** The reviewer and Grok both picked +2 for best wall; reviewer and Grok picked +0 for best robust ratio; I picked +1. **D-12 and D-13 are a genuine disagreement** with the reviewer and Grok on the robust-ratio question.
+- 2'a adopted as the reference default; 2.4 GHz cap is standing; earlier uncapped runs are not comparable; interval predictions from now assume the cap. The +0 cell reproduces tonight's priced ratios exactly.
+
+## 1. Sealed D-14
+
+Registered before the shift runner's split is read. **Assumption stated explicitly:** I assume the kept-relation copies are attributed to **lp_ledger**, consistent with the round-29 measurement that placed the copying of each kept relation's sparse list inside lp_ledger. If the shift runner instead attributes those copies to solve, then solve would be my answer by the same reasoning.
+
+| ID | Question | Sealed answer | Falsifier |
+|---|---|---|---|
+| **D-14** | Of the ~81 µs "rest" excess at +0, which sub-region carries most? | **lp_ledger**, confidence **50%**; **50–70 µs** (central **60 µs**). Second: solve, ~10–20 µs. Third: setup, ~5–15 µs. | Falsified if lp_ledger carries **<30 µs**, or if solve or setup carries **more than lp_ledger** |
+
+**Reasoning, one sentence:** pp3 admits about 21% more candidates and correspondingly more partials, so the ledger's hash lookups and kept-relation copies grow, and the hash is already known to run at 1.4–1.7× its price while the copies are uncharged by the meter; that combination is the only sub-region with both a measured underpricing and a direct pp3-driven workload increase.
+
+**Size estimate, showing work:** if the 198 extra kept-relation copies carry ~0.30 µs each in wall (a plausible heap allocation plus sparse-list copy), that is 198 × 0.30 = 59.4 µs. Adding the measured 4–7 µs hash excess gives about 63–66 µs, inside my central 60 µs once some of the copy cost is priced. This is **estimated**, not computed; the per-copy wall cost is not on the parameter sheet and is a **missing parameter** I am flagging rather than assuming as measured.
+
+## 2. Note on D-12 (optional, does not revise it)
+
+The corrected gap is 109 µs, not 241 µs. A smaller wall excess in "rest" means the ledger-related penalty for pp3 is smaller, so raising the threshold (which reduces partials and ledger traffic) has less to gain. That pushes the optimum slightly **lower**, toward +1 rather than +2. **D-12 stays sealed as written** (−12.5% at +2); the note is that if the excess is mostly ledger-driven, I would expect the +1 and +2 wall values to be closer than my sealed table suggests, and the +2 margin over +1 to shrink toward zero. No change to D-12's sealed answer.
+
+No sealed prediction is revised. D-14 is registered above.
+
+<!-- verbatim end -->
+
+### The reviewer's annotations (ranges unchanged)
+
+- **D-14 says the kept-relation copies are "uncharged by the meter".** The breakdown found them charged but measured at ~4× their price: under-priced, not uncharged.
+- **The 0.30 µs per copy is DeepSeek's assumption,** which it flags as a missing parameter.
+- **Attribution (checked against NOTES and the code):**
+  - The kept-relation copy is timed **inside lp_ledger**. Its sub-timer `lp:copy` opens within the lp_ledger region (`lampcore/src/qs.rs`, region 8; NOTES "DeepSeek, Oct 26, round 29 (I-028)": four sub-regions inside lp_ledger: lp:copy, lp:hash, lp:comb, lp:add). The shift runner's lp_ledger region includes it.
+  - **D-14 is therefore scored on lp_ledger, as sealed.** Its "solve if the copies fall there" branch does not apply.
+- *Claude Code's note:* the ~100 ns per copy for ~25 ns priced (NOTES, step 3) was measured **before** the lp_ledger arena fix (A2, bd89a24), which changed how kept relations are stored. The "~4× price" figure quoted in the breakdown (8d5ef90) may therefore overstate today's per-copy cost. This run's LPBREAK pass measures it again (information).
+
 ## Shift run: the runner and its base
 
 - **Runner:** `evolve/i032shift.py`, committed first in ba253c2. Before the run it is amended to also record ruint per region (setup, gray, scan, lp_ledger, solve split out); the commit that does so is named in the run record.
