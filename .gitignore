@@ -4,3 +4,4 @@ evolve/run.out
 evolve/*.out
 lampcore/target/
 .venv/
+evolve/i029_cands.txt
