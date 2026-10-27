@@ -1,0 +1,54 @@
+{
+ "N": "41350025360625309061309069759",
+ "target": 1,
+ "cells": {
+  "2a": {
+   "ops_traced": 11997,
+   "by_type": {
+    "setup_gray": 285,
+    "sieve_scan": 4218,
+    "sieve_update": 5590,
+    "word": 387,
+    "confirm_td": 1494,
+    "lp_small": 7,
+    "hash": 16
+   },
+   "candidates": 10,
+   "width": 2109,
+   "run_ops_unchanged": true
+  },
+  "2b": {
+   "ops_traced": 12151,
+   "by_type": {
+    "setup_gray": 285,
+    "sieve_scan": 4218,
+    "sieve_update": 5590,
+    "word": 474,
+    "root_test": 1430,
+    "confirm_td": 131,
+    "lp_small": 7,
+    "hash": 16
+   },
+   "candidates": 10,
+   "width": 2109,
+   "run_ops_unchanged": true
+  },
+  "2b_pp3_uncorrected": {
+   "ops_traced": 13626,
+   "by_type": {
+    "setup_gray": 285,
+    "sieve_scan": 4218,
+    "uncharged": 1055,
+    "sieve_update": 5590,
+    "word": 566,
+    "root_test": 1716,
+    "confirm_td": 167,
+    "lp_small": 9,
+    "hash": 20
+   },
+   "candidates": 12,
+   "width": 2109,
+   "run_ops_unchanged": true
+  }
+ }
+}

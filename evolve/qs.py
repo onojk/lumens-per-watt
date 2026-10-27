@@ -53,6 +53,16 @@ from ledger import Charger, Ledger, DELTA, _primes
 
 TRACE = None
 TRACE_ARR = False    # trace only (step 9): also keep each polynomial's A, B, C, sieve array and threshold
+# Work trace (IDEAS I-044; read-only, default off; no charge or count depends on it): set
+# WORKTRACE = {"target": n, "meter": "corrected" or "uncorrected"} and the n-th polynomial of the run (0-based, over
+# all attempts) records its work as WORKTRACE["events"]: (x, op type, charged) per op, in the order the card does it.
+# x is the sieve position (0 .. width - 1) the op touches, or the candidate's position for per-candidate work.
+# "meter": "uncorrected" marks the free 2's writes uncharged, as before the free-2 correction (6031239).
+WORKTRACE = None
+
+def _wt(wt, x, typ, n=1, charged=True):
+    for _ in range(n):
+        wt["events"].append((x, typ, charged))
 
 def _sieve_sums(arr, par, w2):
     """Trace only: the sieve array without the free 2 (stage H), as step9.py and pp_accept.py read it."""
@@ -350,6 +360,13 @@ def sieve_source(N, k, g, led, ch, at):
                 aj = sorted(idx[ql] for ql in qs_)
         signs = [1] * s
         for i in range(1 << (s - 1)):
+            wt = None
+            if WORKTRACE is not None:          # work trace (read-only): is this the traced polynomial?
+                n_ = WORKTRACE.setdefault("n", 0)
+                WORKTRACE["n"] = n_ + 1
+                if n_ == WORKTRACE["target"]:
+                    wt = WORKTRACE
+                    wt.update(events=[], width=width, M=M, F=F, goff=GOFF, rt=RT, pp=PPB, i=i)
             if i:                              # Gray code: flip one B_l, update every root
                 v = (i & -i).bit_length()      # flips B_v, v in 1..s-1
                 d = signs[v]
@@ -369,13 +386,23 @@ def sieve_source(N, k, g, led, ch, at):
                              [r - bi + q if r < bi else r - bi for r in rs]
                     n_roots += len(rs)
                 charge("gray", n_roots)            # word-level type setup_gray (NOTES.md, "Gray-code root update re-typed")
+                if wt is not None:
+                    for ent in st_ + qe:
+                        for r in ent[1]:
+                            _wt(wt, r if GOFF else (r + mp.get(ent[0], 0)) % width, "setup_gray")
                 if at is not None:
                     at["switches_roots"].append(n_roots)
             C = (Bv * Bv - kN) // A
             # 4. sieve
             arr = np.zeros(width, dtype=np.int32)
+            if wt is not None:
+                for x_ in range(width):
+                    _wt(wt, x_, "sieve_scan")      # the clear (paid by the width charge)
             if par is not None:                # stage H: the free 2 by initialisation (the scan fix); its writes charged below
                 arr[par::2] = w2
+                if wt is not None:
+                    for x_ in range(par, width, 2):
+                        _wt(wt, x_, "sieve_scan:free2", charged=wt["meter"] == "corrected")
             upd = 0
             hits = []
             nr = 0
@@ -392,6 +419,11 @@ def sieve_source(N, k, g, led, ch, at):
                     arr[start::p] += logp[p]
                     upd += (width - 1 - start) // p + 1
                     hits.append((p, r))
+                    if wt is not None:
+                        if not GOFF:
+                            _wt(wt, start, "word")    # the start offset
+                        for x_ in range(start, width, p):
+                            _wt(wt, x_, "sieve_update")
             for q, rs, _, lv, mq in qe:
                 for r in rs:
                     if GOFF:
@@ -403,6 +435,11 @@ def sieve_source(N, k, g, led, ch, at):
                         nr += 1
                     arr[start::q] += lv
                     upd += (width - 1 - start) // q + 1
+                    if wt is not None:
+                        if not GOFF:
+                            _wt(wt, start, "word")
+                        for x_ in range(start, width, q):
+                            _wt(wt, x_, "sieve_update")
             charge("word", nr)                     # start offsets, one word op per root
             charge("sieve", upd)
             charge("sieve", width)
@@ -421,6 +458,10 @@ def sieve_source(N, k, g, led, ch, at):
                                     "sieved": [p for p, _, _ in st_],
                                     "rp": {p: len(rs) for p, rs, _ in st_}})
             cand = np.nonzero(arr >= T)[0].tolist()
+            if wt is not None:
+                for x_ in range(width):
+                    _wt(wt, x_, "sieve_scan")      # the scan (paid by the width charge)
+                wt["cand"] = list(cand)
             if at is not None:
                 at["polys"][-1]["nc"] = len(cand)   # trace only: candidates of this polynomial (all, processed or not)
             if RS:                                 # re-sieve (NOTES.md, "Root-matched candidate confirmation")
@@ -455,6 +496,10 @@ def sieve_source(N, k, g, led, ch, at):
             for i0 in cand:
                 x = i0 - M
                 v = (A * x + 2 * Bv) * x + C; charge("word", 2)   # two word multiply-adds (audit item 5)
+                if wt is not None:
+                    _wt(wt, i0, "word", 3)                        # v, and the sign check below
+                    if RT:
+                        _wt(wt, i0, "root_test", len(rtab))
                 if RS:                             # merge two ascending lists, |plist| word ops (NOTES.md, item 11)
                     plist = merge_asc(direct, rec[i0]); charge("word", len(plist))
                 else:
@@ -488,12 +533,21 @@ def sieve_source(N, k, g, led, ch, at):
                             dl.append(j)
                     charge("confirm", len(rh) + (v % 2 == 0))   # the first division by each hit and an even v
                     plist = merge_asc(dl, rh); charge("word", len(plist))
+                    if wt is not None:
+                        _wt(wt, i0, "word", 1 + len(plist))
+                        _wt(wt, i0, "confirm_td", len(aj) + len(rh) + (v % 2 == 0))
+                elif wt is not None:
+                    _wt(wt, i0, "confirm_td", F - 1)
                 for j in plist:
                     p = base[j]
                     if v % p == 0:
                         v //= p; ev[j] += 1; TT.append(j)
+                        if wt is not None:
+                            _wt(wt, i0, "word")    # the set
                         while v % p == 0:
                             v //= p; ev[j] += 1; charge("confirm", 1)
+                            if wt is not None:
+                                _wt(wt, i0, "confirm_td")
                             if at is not None:
                                 at["extra_div"] += 1
                 smooth = v == 1
@@ -501,6 +555,8 @@ def sieve_source(N, k, g, led, ch, at):
                 if LP and not smooth:              # 8. large primes
                     charge("word", 1)              # bound check (audit item 6)
                     partial = v < L
+                    if wt is not None:
+                        _wt(wt, i0, "word")
                     if at is not None:
                         at["lp"]["cof"] += 1; at["lp"]["lt"] += partial
                 ch.m.test(smooth or partial)
@@ -510,6 +566,8 @@ def sieve_source(N, k, g, led, ch, at):
                         ev[j] = 0
                     if at is not None:
                         at["s1"]["cand"] += s1w; at["s1"]["T"] += len(TT)
+                    if wt is not None:
+                        _wt(wt, i0, "word", len(TT))           # the clear
                     continue
                 u = A * x + Bv
                 Tk = list(TT)
@@ -520,6 +578,8 @@ def sieve_source(N, k, g, led, ch, at):
                     ev[j] += 1
                 vec = [(j, ev[j]) for j in Tk]     # the sparse relation
                 s1w = len(TT) + 2 * len(Tk); charge("word", s1w + len(qs_))   # sets, the sparse copy, the clear; item 15: the A-prime adds
+                if wt is not None:
+                    _wt(wt, i0, "word", 2 * len(Tk) + len(qs_))   # the sparse copy, the clear, the A-prime adds
                 for j in Tk:
                     ev[j] = 0
                 if at is not None:
@@ -527,16 +587,22 @@ def sieve_source(N, k, g, led, ch, at):
                     if smooth:
                         at["s1"]["Tf"] = at["s1"].get("Tf", 0) + len(Tk); at["s1"]["nf"] = at["s1"].get("nf", 0) + 1
                 if smooth:
+                    if wt is not None:
+                        _wt(wt, i0, "hash"); _wt(wt, i0, "word")   # the ledger's dedupe probe and its word
                     if led.add(u, vec, 1, chk):
                         return None
                     continue
                 charge("lp", 1)                    # N mod q
+                if wt is not None:
+                    _wt(wt, i0, "lp_small"); _wt(wt, i0, "hash")
                 if N % v == 0:
                     return v
                 charge("hash", 1)                  # hash lookup (audit item 6)
                 other = partials.get(v)
                 if other is None:
                     charge("hash", 1)              # insert (audit item 6)
+                    if wt is not None:
+                        _wt(wt, i0, "hash")
                     partials[v] = (u, vec)
                     if at is not None:
                         at["lp"]["inserts"] += 1
@@ -551,6 +617,8 @@ def sieve_source(N, k, g, led, ch, at):
                 for j in out:
                     ev[j] = 0
                 s1c = len(other[1]) + len(vec) + 2 * len(out); charge("word", s1c)
+                if wt is not None:
+                    _wt(wt, i0, "lp_full"); _wt(wt, i0, "word", s1c); _wt(wt, i0, "hash"); _wt(wt, i0, "word", 2)
                 if at is not None:
                     at["s1"]["comb"] += s1c
                 if at is not None:

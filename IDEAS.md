@@ -368,3 +368,15 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - **Why:** op-class v1 can only weight a lump by its average over the committed input mix: cfrac_ops 110.1, sq_ops 1,266.3 and ps_ops 0.283 Ir per op (`opclass/opclass_v1.json`). ps is a replay that charges FFT-model ops without doing the arithmetic, so its Ir per op does not measure the charged work at all.
 - **A meter change:** cost model in NOTES first, then code, acceptance, parity. No lump lamp is in a reference pipeline today.
 - Decision: pending (the user's).
+
+### I-044 — Work traces: the structure of the work as motion on the sieve line
+- Date: 2026-10-27. Source: the user.
+- **Idea:** per polynomial, plot sieve position (x across the interval) against op order (time running down). Each op is a mark coloured by its charged type; uncharged work is grey.
+- **Purposes:**
+  - a visual meter-health check (I-042);
+  - an explanatory picture (Illumination; I-012, I-018).
+- **Evidence:** two past meter holes would both have been visible:
+  - the free-2 write, as a stride-2 band, uncharged;
+  - the old root-confirm pass, as a second sweep per polynomial.
+- **Prototype:** Python card only, `evolve/worktrace.py` with the read-only hook `qs.WORKTRACE`, three images (`evolve/worktrace_*.png`). Later versions could trace rho (the Wander) and ECM.
+- Decision: pending (the user's).
