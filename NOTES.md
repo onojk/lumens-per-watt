@@ -7907,3 +7907,7 @@ Timing: Rust release, `taskset -c 2`, 292–297 interleaved passes per version p
 
 - *The reviewer's reasoning, checked:* for primes above i0 (most of the base) the root test is two compares with no reduction, as reasoned. But the per-prime cost is still ~1.6–1.9 ns, not ~0.3–1.2: the loop over ~138 primes, each with a range check, two compares and a list write, dominates. The dividing primes cost ~4 ns each (i128 remainder and division), ~30 ns per candidate, as the reviewer estimated.
 - **Report only.** The root test is not wired into the card; that is a separate decision, needing a cost model first.
+
+### Note on stage H2's timing order (documentation only)
+
+H2 (and stages G and H) timed the cells one after another, with the reference first and both replicates of a cell back to back. If the machine heated during the run (the I-029 run read TCPU 98 °C at its end), later cells may be biased slow against the reference. H2's scores stand as measured. From now on, comparisons are timed interleaved and counterbalanced (`evolve/timing.py`, PROTOCOL.md).
