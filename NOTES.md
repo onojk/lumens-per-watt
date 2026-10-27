@@ -8845,6 +8845,29 @@ Yes, substantially. Against 2'b directly, pp3 is +0.7% wall at +1 and −0.9% at
 
 **The reviewer recommends (2), adding (3) when it is available. Decision pending (the user's).**
 
+### Grok's second view (received 00:47 Oct 27 PT; information only; verbatim)
+
+<!-- verbatim begin -->
+**Information-only views**
+
+1. The fourth pricing is legitimate if the fraction is fixed from a public, machine-independent instruction taxonomy written before the test and applied uniformly; it becomes rescue-by-redefinition if the fraction is chosen so that 2'b clears the new robust threshold on these particular numbers. Official already treats every counted operation as unit cost; introducing a pre-declared relative weight between two op classes preserves that spirit while removing an arbitrary equality the phase data have shown to be false. The strongest safeguard is that the fraction must be published and frozen before any of the 72/84/96-bit 2'b runs begin, and that the same fraction is then used for every future cell, not re-tuned after the results appear.
+
+2. Count the retired micro-operations (or, on a non-Intel target, the corresponding ISA-level memory and arithmetic instructions) required by a representative sieve-update sequence versus a representative root-test sequence, using only the documented instruction semantics and a single fixed compiler/ISA model; the ratio of those two counts becomes the fraction. Because the counts come from the instruction definitions rather than from timed runs on any particular CPU, the fraction remains hardware-neutral and can be re-derived by anyone from the same source descriptions.
+
+3. Yes: pp3 is neutral-to-slightly-negative on wall-clock against 2'b at 96 bits and fails the existing robust rule at every size tested, so adopting it now would be fitting the pipeline to the current official pricing rather than to measured work.
+<!-- verbatim end -->
+
+**The reviewer's notes:**
+- **Q2:** "retired micro-operations" vary by microarchitecture. The hardware-neutral version counts ISA-level instructions in one fixed compiled sequence per op class.
+  - Op counts ignore memory cost, and a sieve update is mostly memory. That is acceptable for an op-count pricing, but it must be stated.
+- **Q3 misstates the result:** at 96, pp 3 +1 passed the robust rule (robust 0.9807, better). The conclusion (adopting pp 3 now would fit the meter) stands.
+- **A "sealed test" of a new pricing tests nothing:** priced outcomes are deterministic from counts already measured. The safeguard must be on the fraction's derivation.
+- **Order if option (2) is chosen:**
+  1. Commit the derivation procedure.
+  2. Compute the fraction mechanically and commit it.
+  3. Only then compute and publish the break-even fraction for 2′b and 2′b's ratio.
+- **Still unmeasured:** wall-clock for 2′b alone at 72 and 84. That still needs a sealed timed run.
+
 ## Withdrawn (the user's, Oct 27): the provisional choice 2′b+pp3 at +1
 
 - **The user withdraws the provisional +1.** It fails the robust rule at 72 and 84: robust 1.0171 and 0.9987, both undecided (be7579b). **Nothing adopted;** the reference stays 2′a (goff = 1).
