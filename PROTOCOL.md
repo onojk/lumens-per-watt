@@ -40,6 +40,7 @@ Scores go in NOTES.md, each prediction as written ("under X, Y will be Z × base
 - **Comparisons are only within one run.** The same reference has taken 1,898 / 2,015 / 2,100 µs in different sessions.
 - If the governor is "powersave", the report says so. Changing it is the user's call.
 - **Timed comparisons are interleaved and counterbalanced** (`evolve/timing.py`): replicate 1 times the cells forward (reference first), replicate 2 backward, and so on. The order is recorded in the results, and the machine state is read before each replicate as well as before and after the run.
+- **The pinned core's clock is sampled every second while each cell is timed** (`evolve/timing.py`). The report gives each cell's MHz range and median, and flags any cell whose median differs from the reference's by more than 10%.
 - **TCPU above ~90 °C is flagged:** the guard prints a flag and puts it in the commit message, and the report states it. No system setting (governor, cooling) is changed; that is the user's call.
 
 ## Model against card
