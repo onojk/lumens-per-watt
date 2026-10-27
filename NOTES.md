@@ -8668,3 +8668,9 @@ Per sub-region, wall above price at each region's own µs per ruint (excess = (w
 - **Not measured:** shifts beyond +2 (wall still falling at +2), other sizes, energy.
 
 **Report only.** Nothing adopted. Choosing a shift (or adopting 2′b+pp3) is the user's decision.
+
+## Provisional choice (the user's, Oct 27): 2′b+pp3 at +1
+
+- **2′b+pp3 at +1 bit is the user's provisional choice. Not adopted;** the reference stays 2′a (goff = 1).
+- **Pending:** run A (shift-past-2: 96 bits, 2′a, 2′b, 2′b+pp3 at +1 and +3; scores the rest split against 2′b and checks wall past +2) and run B (shift-72-84: 2′a against 2′b+pp3 at +0, +1, +2 at 72 and 84 bits). Predictions R2-15..R2-17 in `predictions/shift-past-2.md` and `predictions/shift-72-84.md`.
+- Runner: `evolve/shiftrun.py` (mode A or B; i032shift.py stays as committed).
