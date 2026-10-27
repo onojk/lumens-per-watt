@@ -1,0 +1,183 @@
+reference (pp 0, tc 1.0353, confirm full): candidates 1,012.7 per number; wall 2,051.6 us (sd 94.0, 1,902.2-2,135.1); sieve 556.2 us (sd 25.9, 525.7-598.8); confirm 551.9 us (sd 31.1, 503.8-586.8); core 2 MHz 399-4704, median 3930 (n 16)
+root (pp 0, tc 1.0353, confirm root): candidates 1,012.7 per number; wall 1,882.3 us (sd 44.1, 1,804.7-1,963.9) ratio 0.9193 [0.8767, 0.9620] (-8.1%, +-4.3 points); sieve 636.0 us (sd 27.1, 619.9-700.2) ratio 1.1446 [1.1019, 1.1873] (+14.5%, +-4.3 points); confirm 291.5 us (sd 8.7, 270.2-296.3) ratio 0.5301 [0.4966, 0.5637] (-47.0%, +-3.4 points); core 2 MHz 399-4668, median 3749 (n 16)
+root + pp 3, +0 bits (pp 3, tc 1.0353, confirm root): candidates 1,227.4 per number; wall 1,903.4 us (sd 66.0, 1,755.4-1,972.4) ratio 0.9299 [0.8796, 0.9802] (-7.0%, +-5.0 points); sieve 595.8 us (sd 17.7, 576.9-633.1) ratio 1.0734 [1.0190, 1.1278] (+7.3%, +-5.4 points); confirm 352.0 us (sd 21.0, 300.8-366.3) ratio 0.6400 [0.5916, 0.6884] (-36.0%, +-4.8 points); core 2 MHz 400-4676, median 4256 (n 16)
+root + pp 3, +1 bits (pp 3, tc 0.9425, confirm root): candidates 1,033.0 per number; wall 1,878.6 us (sd 30.0, 1,845.3-1,934.7) ratio 0.9176 [0.8760, 0.9592] (-8.2%, +-4.2 points); sieve 636.1 us (sd 16.4, 615.4-659.5) ratio 1.1465 [1.0843, 1.2086] (+14.6%, +-6.2 points); confirm 299.5 us (sd 11.6, 273.4-312.2) ratio 0.5445 [0.5101, 0.5788] (-45.6%, +-3.4 points); core 2 MHz 400-4706, median 4242 (n 16)
+root + pp 3, +2 bits (pp 3, tc 0.8497, confirm root): candidates 868.2 per number; wall 1,865.1 us (sd 52.0, 1,765.5-1,921.2) ratio 0.9107 [0.8708, 0.9506] (-8.9%, +-4.0 points); sieve 681.1 us (sd 19.2, 657.2-719.9) ratio 1.2260 [1.1861, 1.2658] (+22.6%, +-4.0 points); confirm 252.0 us (sd 13.4, 222.0-264.1) ratio 0.4580 [0.4267, 0.4894] (-54.2%, +-3.1 points); core 2 MHz 400-4716, median 3899 (n 16)
+root + pp 3, +3 bits (pp 3, tc 0.7569, confirm root): candidates 723.3 per number; wall 1,894.8 us (sd 44.4, 1,854.1-1,988.5) ratio 0.9250 [0.8903, 0.9598] (-7.5%, +-3.5 points); sieve 731.0 us (sd 29.5, 709.3-789.4) ratio 1.3163 [1.2568, 1.3758] (+31.6%, +-6.0 points); confirm 215.4 us (sd 3.6, 211.0-221.8) ratio 0.3912 [0.3737, 0.4087] (-60.9%, +-1.8 points); core 2 MHz 399-4717, median 3948 (n 16)
+replicate orders (random.Random(2026)):
+  r1: root + pp 3, +2 bits, root, root + pp 3, +1 bits, root + pp 3, +3 bits, root + pp 3, +0 bits, reference
+  r2: reference, root, root + pp 3, +0 bits, root + pp 3, +1 bits, root + pp 3, +3 bits, root + pp 3, +2 bits
+  r3: root + pp 3, +0 bits, root + pp 3, +3 bits, root + pp 3, +1 bits, root + pp 3, +2 bits, reference, root
+  r4: root + pp 3, +2 bits, root, root + pp 3, +0 bits, root + pp 3, +3 bits, root + pp 3, +1 bits, reference
+  r5: reference, root + pp 3, +2 bits, root + pp 3, +1 bits, root, root + pp 3, +0 bits, root + pp 3, +3 bits
+  r6: root, reference, root + pp 3, +2 bits, root + pp 3, +1 bits, root + pp 3, +3 bits, root + pp 3, +0 bits
+  r7: root + pp 3, +1 bits, root, root + pp 3, +2 bits, reference, root + pp 3, +0 bits, root + pp 3, +3 bits
+  r8: reference, root + pp 3, +2 bits, root + pp 3, +3 bits, root, root + pp 3, +1 bits, root + pp 3, +0 bits
+## machine state before replicate 1
+time: 2026-10-26T19:52:00-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 1725; max MHz: 5000
+frequency limits: scaling_min_freq 400 MHz; scaling_max_freq 5000 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100
+load average: 1.69 1.41 1.33
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+power supply ucsi-source-psy-USBC000:001 online: 1
+power supply ucsi-source-psy-USBC000:002 online: 0
+temperature TCPU: 53 C
+temperature x86_pkg_temp: 52 C
+sensors: Package id 0:  +53.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  38.6% claude
+  33.7% chrome
+  28.7% chrome
+  22.8% Xorg
+  8.9% chrome
+## machine state before replicate 2
+time: 2026-10-26T19:52:10-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 2319; max MHz: 5000
+frequency limits: scaling_min_freq 400 MHz; scaling_max_freq 5000 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100
+load average: 1.66 1.41 1.33
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+power supply ucsi-source-psy-USBC000:001 online: 1
+power supply ucsi-source-psy-USBC000:002 online: 0
+temperature TCPU: 95 C
+temperature x86_pkg_temp: 57 C
+sensors: Package id 0:  +56.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  10.9% claude
+  7.9% Xorg
+  7.9% xfce4-terminal
+  7.9% chrome
+  5.0% chrome
+## machine state before replicate 3
+time: 2026-10-26T19:52:20-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 401; max MHz: 5000
+frequency limits: scaling_min_freq 400 MHz; scaling_max_freq 5000 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100
+load average: 1.64 1.41 1.33
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+power supply ucsi-source-psy-USBC000:001 online: 1
+power supply ucsi-source-psy-USBC000:002 online: 0
+temperature TCPU: 96 C
+temperature x86_pkg_temp: 60 C
+sensors: Package id 0:  +57.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  16.7% Xorg
+  14.7% claude
+  8.8% xfce4-terminal
+  8.8% chrome
+  5.9% htop
+## machine state before replicate 4
+time: 2026-10-26T19:52:30-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 417; max MHz: 5000
+frequency limits: scaling_min_freq 400 MHz; scaling_max_freq 5000 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100
+load average: 1.55 1.40 1.33
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+power supply ucsi-source-psy-USBC000:001 online: 1
+power supply ucsi-source-psy-USBC000:002 online: 0
+temperature TCPU: 97 C
+temperature x86_pkg_temp: 59 C
+sensors: Package id 0:  +59.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  14.9% chrome
+  12.9% Xorg
+  9.9% chrome
+  8.9% claude
+  5.9% xfce4-terminal
+## machine state before replicate 5
+time: 2026-10-26T19:52:40-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 1167; max MHz: 5000
+frequency limits: scaling_min_freq 400 MHz; scaling_max_freq 5000 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100
+load average: 1.61 1.42 1.34
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+power supply ucsi-source-psy-USBC000:001 online: 1
+power supply ucsi-source-psy-USBC000:002 online: 0
+temperature TCPU: 97 C
+temperature x86_pkg_temp: 59 C
+sensors: Package id 0:  +58.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  15.8% chrome
+  10.9% claude
+  8.9% Xorg
+  5.9% htop
+  5.0% xfce4-terminal
+## machine state before replicate 6
+time: 2026-10-26T19:52:50-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 4161; max MHz: 5000
+frequency limits: scaling_min_freq 400 MHz; scaling_max_freq 5000 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100
+load average: 1.68 1.44 1.34
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+power supply ucsi-source-psy-USBC000:001 online: 1
+power supply ucsi-source-psy-USBC000:002 online: 0
+temperature TCPU: 96 C
+temperature x86_pkg_temp: 64 C
+sensors: Package id 0:  +59.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  11.9% chrome
+  8.9% claude
+  7.9% Xorg
+  7.9% xfce4-terminal
+  3.0% chrome
+## machine state before replicate 7
+time: 2026-10-26T19:53:01-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 2367; max MHz: 5000
+frequency limits: scaling_min_freq 400 MHz; scaling_max_freq 5000 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100
+load average: 1.58 1.42 1.34
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+power supply ucsi-source-psy-USBC000:001 online: 1
+power supply ucsi-source-psy-USBC000:002 online: 0
+temperature TCPU: 96 C
+temperature x86_pkg_temp: 62 C
+sensors: Package id 0:  +63.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  47.5% chrome
+  24.8% Xorg
+  24.8% chrome
+  7.9% chrome
+  6.9% chrome
+## machine state before replicate 8
+time: 2026-10-26T19:53:11-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 400; max MHz: 5000
+frequency limits: scaling_min_freq 400 MHz; scaling_max_freq 5000 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100
+load average: 1.72 1.46 1.35
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+power supply ucsi-source-psy-USBC000:001 online: 1
+power supply ucsi-source-psy-USBC000:002 online: 0
+temperature TCPU: 98 C
+temperature x86_pkg_temp: 61 C
+sensors: Package id 0:  +59.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  8.9% Xorg
+  6.9% xfce4-terminal
+  6.9% chrome
+  5.9% claude
+  4.0% htop
