@@ -6978,3 +6978,15 @@ Each cell gives ratio A / ratio B, with the materiality (time share × (ratio_B 
 - *My own:* A1's estimate held in direction; A2's missed; A3's held for resieve and missed for confirm.
 
 **Commits since the queue was recorded:** f38b454 (C.3 entry), 7f14c07, bd89a24, 06ebcf8, 1f45169, 9402b8b, 1d0c87d, 2bfab28, 352cfa8, and this summary. Earlier tonight's documentation and step commits are listed in `git log`.
+
+## 2026-10-26 (evening): the reviewer's addendum after stages A–F (recorded as given; documentation only)
+
+**Corrections, recorded:**
+1. The Wolfram threshold-cap run's conclusion ("a single cap is not the main cause") **was wrong**. Its deterministic D misrepresented a broad, position-varying under-count, which spreads the loss across q. The threshold-cap mechanism held (stage B).
+2. The earlier reading "the card loses ~10–17% of fulls in its pipeline" **was wrong**. Fulls pass ~96% end to end. The card's polynomials contain fewer true fulls than the model predicts (0.52 against 0.60 at 96): a model over-count (11–20% on raw counts; open).
+
+**Scoring of S9, as recorded in stage B:** the user's S9-2, S9-4, S9-6, S9-9 and S9-3 high band held; S9-1, S9-3 low band, S9-5, S9-7 and S9-8 missed. DeepSeek's S9-7 and S9-8 falsified.
+
+**Open question kept (low priority):** why the model over-predicts the raw true counts on the card's polynomials by 11–20% (stage F) when it matched Wolfram's generators within 0–5%.
+
+**Queued next:** stage G (a threshold scan at 96, gene change only), then stage H (a "sieve 2 and small prime powers" gene, design note first, STOP before its comparison runs). No primitive benchmarks, I-029 code or retune.
