@@ -36,6 +36,7 @@
   - Grok: 10 / 4 / 0 → 2 / 12 / 0.
 
   The forecasts that expected little official saving from pp 3 (D-9, G-4, D-8 official) gain. The ones centred on the uncorrected saving lose. Original scores stand; these are second scores.
+- **Common-question ranking (25 questions): Grok 1.80, DeepSeek 1.92, reviewer 2.28 (last).** The reviewer's coverage came largely from width; reviewer to narrow ranges (especially exact-model priced ratios) and state a confidence on every prediction. (Section 3a, interval score.)
 
 **How this was built, and its limits:**
 - A delegated tally. Lines 6390–9184 and predictions/*.md were read line by line. Lines 700–4300 and 4300–6390 were tallied by sub-agents and spot-checked (~20 rows).
@@ -382,7 +383,11 @@ No sealed prediction is filed from this message.
 ### Grok's range-setting rules (received 05:40 Oct 27 PT; information only; verbatim)
 
 <!-- verbatim begin -->
-[PLACEHOLDER: Grok's reply was not included in the brief that recorded it; to be pasted verbatim.]
+**Information-only views**
+
+1. I would set every wall-clock or transfer range to a minimum full width of 2.5 points plus the observed cross-run scatter (≈ ±1.3 points), and every exact-model priced range to half that floor, then aim for 75–80 % coverage; the present 1.8-point median width produced only 65 % coverage and upper-quartile misses at z 1.6–2.3, so the floor is the smallest change that brings the empirical hit rate inside the target band without reverting to the reviewer's 3.0-point median.
+
+2. The interval score still favours the reviewer's wide ranges because a miss is penalised only by the distance outside, and a 3.0-point interval that is right 89 % of the time accumulates far less total penalty than a 1.8-point interval that is right 65 % of the time; a forecaster can game it by publishing a narrow central interval and a deliberately wide "safety" tail that is never used for the score, or by quoting asymmetric intervals whose unused side is large enough to absorb the typical miss while the scored side stays tight.
 <!-- verbatim end -->
 
 **The reviewer's notes:**
