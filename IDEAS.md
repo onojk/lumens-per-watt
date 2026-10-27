@@ -319,6 +319,22 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - **A system setting: the user's call. Never applied by Claude Code.**
 - Decision: pending (the user's).
 
+### I-038 — External wall-clock baseline
+- Date: 2026-10-27. Source: the user.
+- Idea: time an established hand-tuned factoring tool (YAFU SIQS; msieve if YAFU is unavailable) on the same 96-bit map numbers (and 72/84). Use the same machine, the same core pinning and the same machine-state record as our timed runs, and report wall-clock per number against the reference card.
+- Information only: it has no op meter, so it never enters fitness. It answers "how far is the card from a tuned classical tool", which every ratio we publish leaves open.
+- Status (Oct 27): neither `yafu` nor `msieve` is installed (`command -v`). Installing one needs the user's approval (package or build from source).
+- Reuse rule: an external tool is a reference, never in a charged path.
+- Decision: pending (the user's).
+
+### I-039 — Energy counters for the watt meter (Phase 1)
+- Date: 2026-10-27. Source: the user.
+- Idea: if the RAPL counters are readable, record energy (J) per cell beside wall-clock in timing.py and machine_state.sh, and report J per number.
+- Status (Oct 27, `ls -l` only): `/sys/class/powercap/intel-rapl:*` exists with domains package-0, core, dram and psys (plus intel-rapl-mmio package-0 and dram). Every `energy_uj` is `-r-------- root root`, so it is not readable without root.
+- Reading needs a permission change (for example a udev rule or group read on energy_uj). That is the user's call and is never changed by Claude Code.
+- Interacts with I-037 (frequency cap) and the thermal throttling seen in root-confirm-2 (TCPU 99 °C).
+- Decision: pending (the user's).
+
 ### I-040 — Surrogate-first scoring for relation-identical changes
 - Date: 2026-10-27. Source: the user.
 - Idea: for card changes that pass acceptance with identical relations, compute priced fitness from the wolframscript cost model, with inputs taken from the acceptance trace. Spend sealed runs only on wall-clock and on changes that alter yield.
