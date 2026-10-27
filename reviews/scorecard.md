@@ -342,6 +342,42 @@ The free-2 meter correction (6031239) was applied after the 2b-sizes run. NOTES 
 
 **Limits.** Rows within one run share numbers and anchors, so they are not independent, and the intervals in the `.out` are too narrow. Units differ, so z is the comparable measure; widths are per unit. D-14 and G-7 were sealed against 2′b and measured against 2′a (NOTES flags the proxy). Eight ranges were skipped: interval-width ranges (R2-8, D-7, G-5), D-10 (range text not on file), three non-range clauses, and falsifier bands. Extraction was delegated and spot-checked on 8 rows, all of which matched NOTES.
 
+### DeepSeek's range-setting rules (received 05:39 Oct 27 PT; information only; verbatim)
+
+*Its main section appeared twice in the reply; recorded once.*
+
+<!-- verbatim begin -->
+[PLACEHOLDER: DeepSeek's reply was not included in the brief that recorded it; to be pasted verbatim.]
+<!-- verbatim end -->
+
+**The reviewer's notes:**
+- **Rule 1's flat ±3-point floor should depend on the quantity:**
+  - wall-clock: at least the measured noise (about ±1.3 cross-run, W3);
+  - priced ratios from an exact count model: that model's own uncertainty, often far below 3 points;
+  - transferred quantities, or quantities whose mechanism is unverified: wide.
+- **Rule 2's units:** a miss's z is in units of the range's half-width. So the rule is "scale the next half-width by the median |z| of past misses", not "± 2 × |z|".
+- **Target 80–85% inside range:** agreed.
+
+### Interval score per sealed range (model, not a verdict; `wolfram/2026-10-27_interval_score.wl`, `.out`)
+
+**Definition** (lower is better; in the quantity's own units): width + (2/α) × the distance outside the range when missed, with α = 0.2, so each range is read as an 80% interval. Same 110 ranges as W4. Coverage alone rewards wide ranges; the interval score charges for width as well as for misses.
+
+| forecaster | ratio ranges (points) | wall ranges (% points) | phase-excess ranges (µs per number) |
+|---|---|---|---|
+| the reviewer | n 25, coverage 84%, median width 3.0, **mean score 4.4** (median 3.8) | n 9, 100%, 5.0, **5.4** (5.0) | n 1, 100%, 25, **25** |
+| DeepSeek | n 25, 56%, 2.0, **17.0** (median 2.5) | n 8, 100%, 4.5, **4.6** (4.5) | n 5, 20%, 20, **462** (143) |
+| Grok | n 25, 68%, 1.8, **8.5** (median 2.5) | n 9, 67%, 3.5, **7.6** (6.0) | n 3, 33%, 25, **548** (309) |
+
+- **Ratio ranges:** the reviewer scores best on the mean (4.4). DeepSeek and Grok score better on the median (2.5 against 3.8): their typical range is narrower and right. Their means are driven by a few large misses, mostly as penalties: DeepSeek's D-8 ruint and Montgomery (106 each) and the +2 official cells (44–50).
+- **Wall ranges:** DeepSeek scores best (4.6): full coverage at a narrower width than the reviewer's 5.4. The reviewer's wall ranges were wider than needed. Grok's narrower ranges missed 3 of 9 (7.6).
+- **Phase-excess ranges** (µs): both outside forecasters score badly, from the shared "241 µs" anchor (D-11, Grok's phase pick, D-14, G-7). The reviewer has one such range.
+
+**Limits:**
+- Units differ, so the scores compare only within a column.
+- The means are dominated by single rows, so the medians are given too.
+- Rows within one run share anchors, so they are not independent.
+- No like-for-like subset (the same cells, all three forecasters) was computed, because the extracted quantity labels differ by forecaster.
+
 ## 4. Ambiguities resolved, and Unclear items
 
 **Resolved (lines 6390-9184):**

@@ -1,0 +1,24 @@
+== ratio ranges (points)
+   reviewer: n 25, coverage 21 (84.%), median width 3.00, mean interval score 4.36 (median 3.80; width part 3.54, miss penalty 0.82)
+   DeepSeek: n 25, coverage 14 (56.%), median width 2.00, mean interval score 16.98 (median 2.50; width part 2.50, miss penalty 14.48)
+   Grok: n 25, coverage 17 (68.%), median width 1.80, mean interval score 8.47 (median 2.50; width part 1.88, miss penalty 6.59)
+== pct ranges (% points of wall)
+   reviewer: n 9, coverage 9 (100.%), median width 5.00, mean interval score 5.44 (median 5.00; width part 5.44, miss penalty 0.00)
+   DeepSeek: n 8, coverage 8 (100.%), median width 4.50, mean interval score 4.56 (median 4.50; width part 4.56, miss penalty 0.00)
+   Grok: n 9, coverage 6 (67.%), median width 3.50, mean interval score 7.56 (median 6.00; width part 4.11, miss penalty 3.44)
+== us ranges (us per number)
+   reviewer: n 1, coverage 1 (100.%), median width 25.00, mean interval score 25.00 (median 25.00; width part 25.00, miss penalty 0.00)
+   DeepSeek: n 5, coverage 1 (20.%), median width 20.00, mean interval score 461.80 (median 143.00; width part 37.00, miss penalty 424.80)
+   Grok: n 3, coverage 1 (33.%), median width 25.00, mean interval score 547.67 (median 309.00; width part 41.67, miss penalty 506.00)
+
+Highest single scores (forecaster | range | width | score):
+   DeepSeek | D-11 | lp_ledger per-number wall excess (2'b+pp3 vs 2'b) | 120.00 | 1754.0
+   Grok | Grok phase pick (unnumbered) | large-prime table + lp_ledger per-number wall excess (2'b+pp3 vs 2'b) | 80.00 | 1314.0
+   DeepSeek | D-14 | lp_ledger wall excess over own-rate price ('rest' sub-region), +0 cell | 20.00 | 354.0
+   Grok | G-7 | lp_ledger wall excess over own-rate price ('rest' sub-region), +0 cell | 25.00 | 309.0
+   DeepSeek | D-14 | solve wall excess over own-rate price (second), +0 cell | 10.00 | 143.0
+   DeepSeek | D-8 | 2'b+pp3 +0 vs 2'a ruint ratio | 1.50 | 106.2
+   DeepSeek | D-8 | 2'b+pp3 +0 vs 2'a Montgomery ratio | 1.80 | 106.2
+   Grok | Grok shift table +2 | 2'b+pp3 +2 vs 2'a official ratio | 1.80 | 49.6
+   DeepSeek | DeepSeek shift table +2 | 2'b+pp3 +2 vs 2'a official ratio | 2.00 | 43.8
+   DeepSeek | D-8 | 2'b+pp3 +0 vs 2'a official ratio | 1.50 | 34.7
