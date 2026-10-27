@@ -1,0 +1,34 @@
+op-class v1: derivation A against derivation B (rules R1-R6 as committed, 1035971; line-0 rows read literally by both)
+class                       ops     weight A     weight B   rel diff
+mult                    557,973      64.0437      64.0437   0.00e+00
+fb                   23,725,380      27.2484      27.2484   0.00e+00
+setup_full                    0            -            -   (no ops)
+setup_euclid         36,634,712      39.3782      39.3782   0.00e+00
+setup_small          39,186,619     178.7875     178.7875   3.18e-16
+sieve_update      1,626,892,494      11.0867      11.0867   0.00e+00
+sieve_scan          723,149,499      14.8931      14.8931   0.00e+00
+confirm_full                  0            -            -   (no ops)
+confirm_td          247,015,079     108.4609     108.4609   0.00e+00
+la                  112,361,658      28.3809      28.3809   0.00e+00
+sqrt_mul              3,582,240     299.4758     299.4758   0.00e+00
+sqrt_gcd                431,510     159.6993     159.6993   0.00e+00
+lp_full                 243,424     649.4221     649.4221   0.00e+00
+lp_small              2,553,717      68.2265      68.2265   0.00e+00
+check                   126,365     337.1180     337.1180   1.69e-16
+setup_mul                 1,870     306.3545     306.3545   1.86e-16
+setup_euclid_N            2,775     112.6126     112.6126   0.00e+00
+mul                  13,750,949     554.8616     554.8616   0.00e+00
+gcd                      46,065    1401.7489    1401.7489   1.62e-16
+td_mod               18,552,638      29.0000      29.0000   0.00e+00
+sq_ops               16,641,402    1266.2799    1266.2799   1.80e-16
+ps_ops              101,837,328       0.2829       0.2829   0.00e+00
+cfrac_ops             1,461,751     110.0969     110.0969   3.04e-07
+word                212,321,633      55.5685      55.5685   6.39e-16
+setup_gray           85,403,850       4.8651       4.8651   0.00e+00
+hash                  5,374,375     465.4467     465.4203   5.68e-05
+sort_cmp              7,172,127      67.3987      67.3987   0.00e+00
+f64_log              10,567,762     135.9014     135.9014   0.00e+00
+f64_div                  92,592       6.0000       6.0000   0.00e+00
+root_test           133,723,798      52.2928      52.2928   0.00e+00
+max relative difference 5.68e-05 (tolerance 2e-2): AGREE
+information: the alternative line-0 reading (nearest preceding row; not the rule) differs between A and B by up to 6.72e-02: it is under-specified

@@ -1,0 +1,205 @@
+{
+ "version": "op-class v1",
+ "frozen": "2026-10-27",
+ "procedure": "reviews/opclass_procedure.md (ADOPTED)",
+ "map": "opclass/linemap.tsv (1035971)",
+ "inputs": "opclass/inputs.json (1035971)",
+ "binary_release_sha256": "1505efbffb20002326753d23a668d1c15f77a53d2b5577825a631330ca855a79",
+ "binary_debug1_sha256": "b5b8dc6aad3d24a7a9f55b60bec9cca033852392c3ce781622ae02c3e202f332",
+ "toolchain": "rustc 1.95.0, cargo 1.95.0",
+ "reference_class": "root_test",
+ "line0_reading": "literal R2/R3 (a line-0 frame has no line: move outward; none left: R3)",
+ "derivations": "A and B agree within 5.7e-05 per class (opclass/compare.out)",
+ "classes": {
+  "mult": {
+   "ir": 35734667.0,
+   "ops": 557973,
+   "weight": 64.04372075351316,
+   "fraction": 1.2247148591082346
+  },
+  "fb": {
+   "ir": 646479478.0,
+   "ops": 23725380,
+   "weight": 27.248435135706995,
+   "fraction": 0.5210747127979233
+  },
+  "setup_full": {
+   "ir": 0.0,
+   "ops": 0,
+   "weight": null,
+   "fraction": null
+  },
+  "setup_euclid": {
+   "ir": 1442608598.0,
+   "ops": 36634712,
+   "weight": 39.37818858791629,
+   "fraction": 0.7530332735351244
+  },
+  "setup_small": {
+   "ir": 7006078402.440893,
+   "ops": 39186619,
+   "weight": 178.7875193427862,
+   "fraction": 3.41897267969397
+  },
+  "sieve_update": {
+   "ir": 18036928463.0,
+   "ops": 1626892494,
+   "weight": 11.086736541916826,
+   "fraction": 0.21201283782624308
+  },
+  "sieve_scan": {
+   "ir": 10769934093.0,
+   "ops": 723149499,
+   "weight": 14.893094868893769,
+   "fraction": 0.2848022314981169
+  },
+  "confirm_full": {
+   "ir": 0.0,
+   "ops": 0,
+   "weight": null,
+   "fraction": null
+  },
+  "confirm_td": {
+   "ir": 26791478287.0,
+   "ops": 247015079,
+   "weight": 108.4609020447695,
+   "fraction": 2.0741093241248834
+  },
+  "la": {
+   "ir": 3188919901.0,
+   "ops": 112361658,
+   "weight": 28.380854801911166,
+   "fraction": 0.5427300940847851
+  },
+  "sqrt_mul": {
+   "ir": 1072794341.6808265,
+   "ops": 3582240,
+   "weight": 299.47584240051657,
+   "fraction": 5.726908271670787
+  },
+  "sqrt_gcd": {
+   "ir": 68911845.0,
+   "ops": 431510,
+   "weight": 159.69930013209427,
+   "fraction": 3.053946640822434
+  },
+  "lp_full": {
+   "ir": 158084935.0,
+   "ops": 243424,
+   "weight": 649.4221399697647,
+   "fraction": 12.41896840622285
+  },
+  "lp_small": {
+   "ir": 174231168.0,
+   "ops": 2553717,
+   "weight": 68.22649808103247,
+   "fraction": 1.304702553219104
+  },
+  "check": {
+   "ir": 42599913.302183606,
+   "ops": 126365,
+   "weight": 337.1179780966534,
+   "fraction": 6.446742821775349
+  },
+  "setup_mul": {
+   "ir": 572883.0,
+   "ops": 1870,
+   "weight": 306.3545454545455,
+   "fraction": 5.858450439154869
+  },
+  "setup_euclid_N": {
+   "ir": 312500.0,
+   "ops": 2775,
+   "weight": 112.61261261261261,
+   "fraction": 2.1535029252981133
+  },
+  "mul": {
+   "ir": 7629873833.0,
+   "ops": 13750949,
+   "weight": 554.8616195871282,
+   "fraction": 10.610677553738782
+  },
+  "gcd": {
+   "ir": 64571564.0,
+   "ops": 46065,
+   "weight": 1401.7489200043417,
+   "fraction": 26.80579314989385
+  },
+  "td_mod": {
+   "ir": 538026374.0,
+   "ops": 18552638,
+   "weight": 28.999993100711606,
+   "fraction": 0.554569941386947
+  },
+  "sq_ops": {
+   "ir": 21072673073.0,
+   "ops": 16641402,
+   "weight": 1266.2799127741762,
+   "fraction": 24.215204968080204
+  },
+  "ps_ops": {
+   "ir": 28805320.0,
+   "ops": 101837328,
+   "weight": 0.2828562037684257,
+   "fraction": 0.005409089160815733
+  },
+  "cfrac_ops": {
+   "ir": 160934266.2324267,
+   "ops": 1461751,
+   "weight": 110.09690859279502,
+   "fraction": 2.105394850721264
+  },
+  "word": {
+   "ir": 11798397295.22973,
+   "ops": 212321633,
+   "weight": 55.568512395671576,
+   "fraction": 1.0626425515070637
+  },
+  "setup_gray": {
+   "ir": 415499631.0,
+   "ops": 85403850,
+   "weight": 4.865115928614459,
+   "fraction": 0.09303612749156889
+  },
+  "hash": {
+   "ir": 2501485264.0,
+   "ops": 5374375,
+   "weight": 465.4467289684847,
+   "fraction": 8.900787124548142
+  },
+  "sort_cmp": {
+   "ir": 483391677.7762423,
+   "ops": 7172127,
+   "weight": 67.39865004847827,
+   "fraction": 1.288871527560011
+  },
+  "f64_log": {
+   "ir": 1436173427.0,
+   "ops": 10567762,
+   "weight": 135.9013788349889,
+   "fraction": 2.5988564698339776
+  },
+  "f64_div": {
+   "ir": 555552.0,
+   "ops": 92592,
+   "weight": 6.0,
+   "fraction": 0.11473863585988348
+  },
+  "root_test": {
+   "ir": 6992786536.0,
+   "ops": 133723798,
+   "weight": 52.292760455397776,
+   "fraction": 1.0
+  }
+ },
+ "not_weighted": {
+  "setup_full": "charged by no card",
+  "confirm_full": "charged by no card"
+ },
+ "lumped": {
+  "cfrac_ops": "average over C_cfrac (24 map numbers at 54, parity's genome)",
+  "sq_ops": "average over C_sq (48 at 54, seqm)",
+  "ps_ops": "average over C_ps (48 at 54); ps is a replay that charges FFT-model ops without doing the arithmetic, so its Ir per op does not measure the charged work"
+ },
+ "nothing_priced": "no break-even, no op-class ratio for any cell, no robust ratio computed (step 3 not authorised)"
+}

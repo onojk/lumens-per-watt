@@ -358,3 +358,13 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Evidence: (b) is how the uncharged free-2 write was found. The sieve region ran +58 to +69 µs above its own-rate price against 2′b in shift-past-2, and `sv:free2` took ~40 µs with no price in the smoke breakdown. Tooling exists in part: `--phasetime` per-region ruint, the LPBREAK and SIEVEBREAK sub-regions, and the region-excess computation in `evolve/shiftrun.py`.
 - Complements I-001 (charged types): I-001 audits what is charged; this flags work that shows up in time but not in price.
 - Decision: pending (the user's).
+
+### I-043 — Type the lumped ops (cfrac_ops, sq_ops, ps_ops)
+- Date: 2026-10-27. Source: the user (op-class v1, step 2, item 4); filed by Claude Code.
+- **Idea:** split the three untyped lumps into the TYPE_ORDER types they actually perform:
+  - cfrac: its multiplier ranking (mult, word, f64_log), the CF steps, the trial division and the shared ledger (fb, la, sqrt, word, hash);
+  - sq: its square tests and isqrt work;
+  - ps: its replayed FFT products.
+- **Why:** op-class v1 can only weight a lump by its average over the committed input mix: cfrac_ops 110.1, sq_ops 1,266.3 and ps_ops 0.283 Ir per op (`opclass/opclass_v1.json`). ps is a replay that charges FFT-model ops without doing the arithmetic, so its Ir per op does not measure the charged work at all.
+- **A meter change:** cost model in NOTES first, then code, acceptance, parity. No lump lamp is in a reference pipeline today.
+- Decision: pending (the user's).
