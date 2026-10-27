@@ -8913,3 +8913,48 @@ Yes, substantially. Against 2'b directly, pp3 is +0.7% wall at +1 and −0.9% at
   - So the 72-bit flags in shift-72-84 most likely came from the launch sample. This check is not a re-run of those cells.
 
 **Not done:** no timed run (as briefed). No charge, count or price changed.
+
+## Meter correction (proposed; cost note only, before any code; the user decides): pp's free-2 initialisation is uncharged
+
+**Label: a meter correction** (an op the meter does not count), separate from re-pricing (the open decision on official's prices). CLAUDE.md: "An uncharged op is a critical bug."
+
+**The op:**
+- With pp > 0, every polynomial's sieve starts by writing the prime 2's fixed log w2 into every second cell of the interval: `for x in arr[par..].iter_mut().step_by(2) { *x = w2; }` (`lampcore/src/qs.rs`, stage H). Python does the same.
+- **It is not charged.** The comment says "under the width charge", but the width charge (one sieve_scan per cell) already pays for clearing the array and for the scan. The free-2 writes are extra work, about width / 2 byte stores per polynomial.
+- **Without pp, the prime 2 is not sieved at all** (the base walks start at j = 2), so this is new work that pp adds, not work moved from elsewhere.
+- **pp 3 has no power entries at 54–96 bits** (NOTES, "Sieve breakdown"), so this write is pp 3's only sieve work.
+
+**Proposed charge:**
+- **Count:** one op per cell written, ⌈(width − par) / 2⌉ per polynomial. width = 2M + 1 is odd and par ∈ {0, 1}, so per number this is sieve_scan / 2 within ± polynomials / 2 (at most 0.0002 relative at 96).
+- **Type: sieve_scan** (proposed). The op class is one byte store per cell in a regular stride-2 pass, like the array clear and the scan that the width charge already types as sieve_scan. It is not a sieve update, which is a read-modify-write at a prime stride.
+  - **Alternative, sieve_update:** a strided store. Computed below for sensitivity.
+  - The type is chosen by op class, not from wall-clock. For reference only, the smoke breakdown measured ~0.27 ns per write at 96; that figure was not used.
+- **Python and Rust** would charge it identically (parity), in the sieve phase.
+
+**What the priced ratios would become** (`wolfram/2026-10-27_free2_charge.wl`, `.out`; counts from lampcore `--types`, card d269cc8, means over all map numbers; 2′a and 2′b have no pp and are unchanged; model, not a verdict):
+
+| cell | free-2 writes / number | as now (official / ruint / Montgomery) | charged as sieve_scan | robust now → charged |
+|---|---|---|---|---|
+| 72 +0 vs 2′a | 11,917 | 1.0289 / 0.9043 / 0.8971 | 1.1085 / 0.9212 / 0.9149 | 1.0289 → 1.1085 |
+| 72 +1 | 12,761 | 1.0171 / 0.8779 / 0.8698 | 1.1023 / 0.8959 / 0.8889 | 1.0171 → 1.1023 |
+| 72 +2 | 13,722 | 1.0186 / 0.8590 / 0.8533 | 1.1102 / 0.8784 / 0.8739 | 1.0186 → 1.1102 |
+| 84 +0 | 42,507 | 1.0020 / 0.8805 / 0.8740 | 1.0955 / 0.9040 / 0.8985 | 1.0020 → 1.0955 |
+| 84 +1 | 44,845 | 0.9987 / 0.8567 / 0.8505 | 1.0973 / 0.8815 / 0.8764 | 0.9987 → 1.0973 |
+| 84 +2 | 47,807 | 1.0108 / 0.8488 / 0.8412 | 1.1160 / 0.8753 / 0.8687 | 1.0108 → 1.1160 |
+| 96 +0 | 148,459 | 0.9618 / 0.8703 / 0.8656 | 1.0659 / 0.9018 / 0.8981 | 0.9618 → 1.0659 |
+| 96 +1 | 157,401 | 0.9807 / 0.8671 / 0.8620 | 1.0911 / 0.9005 / 0.8965 | 0.9807 → 1.0911 |
+| 96 +2 | 168,480 | 1.0138 / 0.8748 / 0.8710 | 1.1320 / 0.9106 / 0.9079 | 1.0138 → 1.1320 |
+| 96 +3 | 181,593 | 1.0595 / 0.8943 / 0.8913 | 1.1869 / 0.9329 / 0.9310 | 1.0595 → 1.1869 |
+
+- **Against 2′b at 96:**
+  - +0: now 0.9488 / 0.9804 / 0.9794; charged as sieve_scan **1.0515 / 1.0159 / 1.0162**.
+  - +1: now 0.9674 / 0.9768 / 0.9754; charged **1.0764 / 1.0145 / 1.0144**.
+- **As sieve_update** (alternative), ruint and Montgomery rise further. For example, 96 +0 against 2′a would be 1.0659 / 0.9361 / 0.9319, and against 2′b 1.0515 / 1.0546 / 1.0544.
+
+**Reading (model):**
+- **pp 3's official saving is the uncharged write.** The free-2 writes are 7.7–12.0% of official per number. Charged, every 2′b+pp3 cell is worse than 2′a under official at every size (1.07–1.19), and **2′b+pp3 at 96 is worse than 2′b under all three pricings** at +0 and +1.
+- **Every robust "better" call for 2′b+pp3** (i032-2prime; pp3-gap-and-shift +0 and +1; shift-past-2 +1) **rests on this uncharged op.** Those results stand as recorded under the meter of their day; this note does not rescore them.
+- ruint and Montgomery still show 2′b+pp3 below 2′a (0.88–0.93 as sieve_scan), because root confirm's saving is much larger than the write's cost. Against 2′b they show pp 3 a little worse (~+1.5%), consistent with wall-clock (+0.7% at +1, −0.9% at +2, run A).
+- This is consistent with the sieve excess pp 3 showed against 2′b in run A (+58 to +69 µs) and the ~40 µs `sv:free2` smoke figure. R2-20 (2b-sizes) measures that directly.
+
+**Not done:** no code changed; nothing rescored. Applying the correction (code, parity, and stating which earlier results it would affect) is the user's decision.
