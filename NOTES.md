@@ -9511,3 +9511,69 @@ Model: `wolfram/2026-10-27_meter_open.wl`, `.out`.
 - **Step 2 is authorised:** the counts and the frozen weights, "op-class v1". No break-even, no op-class ratio for any cell and no robust ratio under the new rule are computed until the user says "step 3".
 - *Open (not decided here):* whether earlier verdicts are re-reported under the new rule is the user's call, at step 3 or later.
 - valgrind 3.25.1 was installed by the user.
+
+## op-class v1, step 2: counts and frozen weights (no priced figure; step 3 not authorised)
+
+**Order kept:**
+- **Step 2.1 (1035971), before any count:** the toolchain, the binary hashes, the code identity of the debug build against release, the line map and the input set were committed.
+- **Step 2.2:** two separate agents each derived the weights. Each was given only the procedure, the map, the input set and the binaries, and wrote its own attribution code. Neither saw any priced figure or the other's work.
+- **Step 2.3:** the comparison and the static cross-check.
+- **Step 2.4 (df5a0e3):** the weights frozen as "op-class v1" (`opclass/opclass_v1.json`).
+
+**Agreement:** A and B agree within **5.7 × 10⁻⁵ per class** (the tolerance is 2%; the largest difference is hash, then cfrac_ops at 3 × 10⁻⁷; `opclass/compare.out`). Both pass the sum check in every run: classes + meter + uncharged + decl + unattributed = callgrind's total, within 4 × 10⁻⁶ Ir. Total: 138.22 × 10⁹ Ir over 17 runs.
+- **Where the total goes:** meter 3.17%, uncharged:card 7.97%, uncharged:harness 0.19%, unattributed 0.005%, decl 0.0007%.
+
+**Weights (Ir per charged op; fraction against root_test):**
+
+| class | weight | fraction | | class | weight | fraction |
+|---|---|---|---|---|---|---|
+| setup_gray | 4.87 | 0.093 | | lp_small | 68.2 | 1.305 |
+| f64_div | 6.00 | 0.115 | | confirm_td | 108.5 | 2.074 |
+| sieve_update | 11.09 | 0.212 | | cfrac_ops (lump) | 110.1 | 2.105 |
+| sieve_scan | 14.89 | 0.285 | | setup_euclid_N | 112.6 | 2.154 |
+| fb | 27.2 | 0.521 | | f64_log | 135.9 | 2.599 |
+| la | 28.4 | 0.543 | | sqrt_gcd | 159.7 | 3.054 |
+| td_mod | 29.0 | 0.555 | | setup_small | 178.8 | 3.419 |
+| setup_euclid | 39.4 | 0.753 | | sqrt_mul | 299.5 | 5.727 |
+| root_test | 52.3 | 1 | | setup_mul | 306.4 | 5.859 |
+| word | 55.6 | 1.063 | | check | 337.1 | 6.447 |
+| mult | 64.0 | 1.225 | | hash | 465.4 | 8.901 |
+| sort_cmp | 67.4 | 1.289 | | mul | 554.9 | 10.611 |
+| ps_ops (lump) | 0.283 | 0.005 | | lp_full | 649.4 | 12.419 |
+| | | | | sq_ops (lump) | 1,266 | 24.22 |
+| | | | | gcd | 1,402 | 26.81 |
+
+setup_full and confirm_full are charged by no card and get no weight.
+
+**Resolved in writing (no re-tuning toward any outcome):**
+1. **Line-0 rows** (DWARF line 0 in every lampcore frame; mostly in `qs::sieve_source`; about 2.5 × 10⁹ Ir). Both derivations, independently, read R2/R3 literally: a line-0 frame has no line, so the instruction moves outward, and by R3 to the caller's line (qs.rs 237, uncharged:card). **Kept as the v1 reading.** The rules were committed before counting, and the alternative was raised only after the weights were seen.
+   - The alternative, the nearest preceding instruction's line, would raise root_test by about 4%, la by 4–11%, lp_small by 12%, and confirm_td and setup_euclid by about 5%. It also gives A and B results 6.7% apart, so as written it is under-specified.
+   - Recorded as a known limitation: line-0 code inside charged loops is counted as uncharged:card in v1.
+2. **Ir in runs with no ops of the class** (R6 pools over all runs): check gets 7.6M Ir from the gene tests on qs.rs 376–379, evaluated when the check is off. That makes its weight 337.1 pooled, against 272.9 from C_check alone. root_test gets 3.9M Ir in the 2′a runs, from its branch tests; cfrac_ops gets 46k.
+   - **Kept as R6 says.** The source is the map: those lines are tests that run whatever the gene's value. It is noted for a v2 map.
+3. **Decl lines:** main.rs 385 and qs.rs 394 got 0.9M Ir (0.0007%), from code DWARF puts on a brace and a doc line. Reported, not reassigned.
+
+**Stability:**
+- **Single-run classes,** with no cross-run spread to measure: check, setup_mul (1,870 ops), setup_euclid_N (2,775), td_mod, sq_ops, ps_ops, cfrac_ops.
+  - setup_mul and setup_euclid_N are the "too few ops" classes. Instruction counts are deterministic, so their weights are exact for the committed mix, but that mix is one ECM run on 96 numbers.
+  - **Kept, flagged for the user.**
+- **Spread across runs above 2%** in most multi-run classes, from the mix, not from noise: the same type covers different work in different lamps and sizes.
+  - word: 1.3 in p−1 stage 2 against 38–71 in qs;
+  - gcd: rho, p−1 and ecm;
+  - mult: 36.6 at 54 bits against 65.7 elsewhere;
+  - confirm_td: 106–110 in full-pass runs, 136–140 in 2′b runs.
+  - root_test (0.6%) and f64_div (0%) are within 2%.
+  - **A v1 weight is an average over the committed input mix, and is valid for that mix.**
+
+**Static cross-check** (`opclass/static_crosscheck.md`): root_test is within 10% (54 static against 52.3). The others that differ by more than 10% are explained:
+- sieve_update +11%: the per-root work around the walk;
+- sieve_scan: glibc `memset`'s `rep stosb`, which callgrind counts per repetition (about 4 per cell; with it, 15 against 14.9);
+- setup_gray: only the d > 0 branch is vectorised (2.6 against about 7.5 per root; mean about 5.0, against 4.87);
+- la: the charge is a formula, not the XORs done;
+- setup_euclid: a fixed cost per inverse spread over a few steps.
+
+The library-bound classes have no single static body and are dynamic only.
+
+**Lumps** (IDEAS I-043, typing them is a meter change): cfrac_ops 110.1, sq_ops 1,266 and ps_ops 0.283 Ir per op, each an average over its supplementary run. ps is a replay that charges FFT-model ops without doing the arithmetic, so its weight does not measure the charged work.
+
+**What this does not establish:** no pricing has been applied. No break-even, no op-class ratio for any cell and no robust ratio under option (b) have been computed; that is step 3, the user's word. Memory cost is excluded (procedure, section 5): instruction counts are fixed by the binary, not by clock speed.
