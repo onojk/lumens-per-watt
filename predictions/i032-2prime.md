@@ -242,3 +242,4 @@ It needs no kernel or privilege changes and immediately places the current SIQS 
 - **DeepSeek's D-8, D-9 and the D-9 falsifier are now on file verbatim** (second round, received ~20:14 Oct 26 PT; filed late), so they can be scored as written. The earlier line saying their text was absent is superseded.
 - **Grok's G-1..G-6 and "Optional" are on file verbatim** (received 20:54 Oct 26 PT; filed late).
 - **Still placeholders:** DeepSeek's full first reply (D-1..D-7 are on file as transcribed) and DeepSeek's third reply (D-10, information only).
+- **2′b is built, in commit 5f0007a** (cost model 18efd55). With goff = 1 and confirm = root, root confirm's per-polynomial pass is removed, and the root test reads the kept offsets in place through the per-A `ka` index. The runner's 2′b cells now take this path. The earlier line "2′b is not built" is superseded.
