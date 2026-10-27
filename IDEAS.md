@@ -275,3 +275,42 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Compare against Claude Code's in-place option (one store per root per polynomial kept).
 - Design note: NOTES, "Design note: root confirm without the per-polynomial offset pass". Options 1 (in-place), 2-literal, 2-fused and 2′ (offsets maintained by the Gray code) are priced there. None changes relation identity.
 - Decision: pending (the user's).
+
+### I-033 — Light-meter calibration curve (predicted against measured yield, per decile)
+- Date: 2026-10-27. Source: the user (inventory, Oct 27).
+- Idea: for the yield model (I-023), plot predicted against measured relations per polynomial with the numbers grouped into deciles of predicted yield, at each size. A calibration curve shows whether the model's error is a constant scale (fixable by one factor) or depends on yield (it misranks numbers).
+- Why now: stage F (NOTES, "Stage F: step 6, the yield model against the card", 352cfa8) checks means and totals only; I-024 (per-N budgets) needs per-N ranking to be right.
+- Cost: small (from existing traces and the model; no card change).
+- Decision: pending (the user's).
+
+### I-034 — Under-count against smooth decile
+- Date: 2026-10-27. Source: the user (inventory, Oct 27).
+- Idea: check whether the sieve's under-count (stage B: median 4.6 bits at partials, 6.5 at fulls at 96; mainly the unsieved prime 2 and prime powers) varies with how smooth the residue is. Group true partials and fulls by deciles of their smooth part, or of the predicted smooth probability, and report the under-count per decile.
+- Why: if the under-count is larger for the smoothest residues, a flat threshold offset (or the pp "2 free" fix) recovers fewer relations than the median suggests.
+- Evidence base: NOTES, stage B / step 9 (1f45169); stage H ("2 free", pp 3).
+- Cost: small (Python traces on stage B's subset; no card change).
+- Decision: pending (the user's).
+
+### I-035 — The yield model's raw over-count of fulls
+- Date: 2026-10-27. Source: the user (inventory, Oct 27).
+- Idea: explain the yield model's 11–20% over-prediction of raw true counts (stage F, 352cfa8), fulls in particular, before the model is used to set F, M or L.
+- Candidates to test, one at a time against the card's traces: the Dickman/saddle-point smoothness approximation at small bounds; the treatment of A's primes and the multiplier's primes; the |g(x)| distribution across the interval; duplicate relations.
+- Why: stage F matched combinations and polynomials only after stage B's measured capture was applied. The raw over-count is an unexplained model error.
+- Cost: small to moderate (model and traces; no card change).
+- Decision: pending (the user's).
+
+### I-036 — Re-price root_test at a steady clock
+- Date: 2026-10-27. Source: the user (inventory, Oct 27), from the meter note on the root_test price (NOTES, 876296f) and DeepSeek round 59.
+- Today: root_test is 0.0581 ruint / 0.2142 Montgomery, from the I-029 microbenchmark's ns per prime divided by a fixed ns per ruint unit. The benchmark ran throttled (core 2 at 400 MHz before and 1,772 MHz after; TCPU 98 °C).
+- The within-benchmark ratio price (root_test = confirm_td × 1.587 / 4.212) is ~0.043 ruint / ~0.161 Montgomery. At the ratio price root alone reads ruint 0.8704 against 0.9051 (root-confirm, information only).
+- Idea: re-benchmark root_test and confirm_td together on a fixed clock at the next meter calibration. Write the price's dependence on the base op down (ratio or fixed rate), as DeepSeek suggested.
+- Meter change: the cost model goes in NOTES before any price changes; earlier scored runs keep the price they were scored at.
+- Decision: pending (the user's).
+
+### I-037 — Optional frequency cap for timing runs
+- Date: 2026-10-27. Source: the user (inventory, Oct 27).
+- Idea: before a timed sealed run, cap the CPU frequency below the throttle point, so cells see one clock. For example `sudo cpupower frequency-set -u 2.4GHz`, restored afterwards with `sudo cpupower frequency-set -u 5.0GHz`.
+- Why: every timed run so far ends at TCPU 98–99 °C under the powersave governor. In root-confirm the clock was flagged in 5 of 6 root cells (each cell's median was taken from only 4 samples); root-confirm-2 had no flags, but its ratio intervals were ±3.5–5 points.
+- Recording: the machine state records the limits (scaling_min/max_freq, intel_pstate no_turbo, min/max_perf_pct; 6a40164), so a cap shows in every guarded run's `.machine.txt`.
+- **A system setting: the user's call. Never applied by Claude Code.**
+- Decision: pending (the user's).
