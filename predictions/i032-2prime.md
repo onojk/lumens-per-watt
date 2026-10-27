@@ -72,6 +72,26 @@ Filed before any 2′a or 2′b timing run. 2′a acceptance had run (`evolve/go
 - **D-8/D-9 rest on a misreading of the robust ratio.** The robust ratio is the worst of the three pricings, so root + pp 3 at +0 bits (robust 0.982 against today's reference) was ≤ 0.982 under official too. Against root alone (official 1.038), pp 3 saved about 5% official, not the 1–1.5% DeepSeek assumed.
 - **D-8's ruint reasoning is internally inconsistent:** it computes 0.959–0.978, then seals 0.975–0.990.
 
+## DeepSeek, third round (received 20:54 Oct 26 PT)
+
+- **D-10: information only, because the model was committed first.** The exact-count 2′b cost model (18efd55) was committed at 20:52:39 PT, before this reply arrived at 20:54.
+
+### Its reply (verbatim)
+
+*(placeholder: the brief said the reply follows it, but no text followed; to be appended verbatim when the user pastes it)*
+
+### Its acceptances (recorded as given; all ranges unchanged)
+
+- **D-2's "missing parameters" note is withdrawn:** the reviewer's annotation was the error. The 4.5% is sourced to reviews/card_params.md:33, as annotated above.
+- **Accepted as annotations:** the reviewer's D-8/D-9 robust-ratio reading and the D-8 ruint inconsistency.
+
+### The reviewer's annotation (D-10's range unchanged)
+
+- **D-10's anchor is a unit slip, per polynomial against per A.** It charges the per-A index per root per **polynomial** (263.8 × 156.04 = 41,163 per number). `ka` is built per A (~264 roots × ~20 A's, about 5,300 per number).
+  - The per-A build and the per-candidate root reads were already in f12ae23's model, so they are not additional charges.
+  - The same "new charges" reasoning appears in Grok's G-6.
+  - *Claude Code's note, for the record:* the cost note (18efd55) charges 2 per sieved prime per A, i.e. 2 × 2,638.08 = 5,276.2 per number, not per root.
+
 ## The reviewer's (verbatim; sealed Oct 26, after DeepSeek's second round)
 
 Same cell and base as D-8: 2′b + pp 3 at +0 bits against 2′a, 96 bits, 640 map numbers, re-sieve off, 8 random-order replicates.
