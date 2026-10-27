@@ -9017,6 +9017,7 @@ Yes, substantially. Against 2'b directly, pp3 is +0.7% wall at +1 and −0.9% at
      - width = 2M + 1 is odd, so for par = 1 the two agree, (width − 1) / 2.
      - For par = 0 the loop writes (width + 1) / 2 cells, one more than floor gives.
      - The decision's principle ("one sieve_scan per cell written", the reviewer's recommendation) gives the ceiling. **The ceiling will be implemented and the acceptance checks it exactly,** unless the user says otherwise before the code.
+     - **Ruled by the user (~01:54 PT): the ceiling,** one sieve_scan per cell actually written, ⌈(width − par) / 2⌉ per polynomial. The reviewer's "floor" was a slip, recorded as such.
 2. **Scoring rule for affected outcomes: ADOPTED** (decided now, before the correction is applied).
    - The original score is kept, and a second score under the corrected meter is reported beside it, with the label "meter-invalidated: original scored under the uncorrected meter". No score is replaced.
 3. **pp 3: retired as an adoption candidate.**

@@ -189,3 +189,9 @@ Accepted, and consistent with the D-11 ruling. **D-15's priced clauses (official
 **The reviewer's notes:**
 - **Q1 treats "meter-invalidated" as voiding scores; the proposal keeps them.** Its re-scoring criterion (the meter broke its own charging rule, the error could not be anticipated, the sign flipped) arguably fits the free-2 case.
 - **Q2 is correct:** the differential check misses uncharged work that is constant across a toggle. Its absolute check complements it.
+
+## State at "go" (01:54 Oct 27 PT)
+
+- **AC online, battery 86% and charging** (the run was held at 01:44 and 01:50, when AC read offline).
+- Cap 2,400 MHz on all 8 cores; no Wolfram processes; 27 browser processes; load 0.74.
+- The user's conditions: laptop on the fan pad, untouched.
