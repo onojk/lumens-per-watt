@@ -4,7 +4,7 @@ Wolfram is run from the command line: wolframscript 1.14.0 at `/usr/bin/wolframs
 
 **Convention:**
 - Each run is a script, `wolfram/<date>_<name>.wl` (date as YYYY-MM-DD).
-- Sealed predictions for a run go in `wolfram/<date>_<name>.pred.md`, committed **before** the run.
+- Sealed predictions for a run go in `wolfram/<date>_<name>.pred.md`, committed **before** the run. Model outputs are forecasts ("model"), never scored as predictions (PROTOCOL.md).
 - Run it from the repo root with:
 
   ```
@@ -12,6 +12,6 @@ Wolfram is run from the command line: wolframscript 1.14.0 at `/usr/bin/wolframs
   ```
 
 - Commit the `.out` with the script. `*.out` is gitignored repo-wide, so use `git add -f`.
-- Scripts print their results with `Print` and read no files outside the repo. Inputs taken from card runs are copied into the script or read from committed files.
+- Scripts print their results with `Print` and read only committed inputs: values from card runs are copied into the script or read from committed files.
 
 `2026-10-26_smoke.wl` checks that the setup works.

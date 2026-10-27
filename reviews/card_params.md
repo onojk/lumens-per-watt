@@ -2,7 +2,9 @@
 
 This sheet is prepended to every DeepSeek prompt (`tools/ask_deepseek.py`). It holds values measured on the committed card, each with its source. **Use these values; do not assume others.** If a value you need is not here, say so and ask, rather than estimating it.
 
-Maintained by Claude. Card commit: b2bade2 (stage H's `pp` option built, off by default). Last updated 2026-10-26.
+Maintained by Claude.
+
+**Last updated:** 2026-10-26 (stage H facts added). **Card commit:** b2bade2, stage H's `pp` option built and off by default; the scan fix is pending acceptance (see stage H below).
 
 ## The card at 96 bits (the reference)
 
@@ -70,8 +72,31 @@ Official pricing counts every op as 1.
 - The large-prime table's hash runs at 1.4–1.7x its price (step 3).
 - **The confirm test:** ~3.9 ns per prime tested (i128 v mod p). About 137 primes are tested per candidate, and about 7.6 of them divide (stage D).
 
-## Stage H (b2bade2): built, comparisons not yet run
+## Stage H: the `pp` option (off by default; nothing adopted)
 
-- **Gene `pp`:** prime powers q = p^j < 2^pp are sieved like base primes (odd p not dividing k or A; 2^j for 4 ≤ j < pp when kN ≡ 1 mod 8). The prime 2's fixed part is added on one parity class by a second threshold: 1 bit for kN ≡ 3 mod 4, 2 for 5 mod 8, 3 for 1 mod 8; for even k, 1 bit on the even-y class.
-  - pp = 3 is "2 free": the parity add only.
-- **Matched candidate count with pp = 10:** tc 0.7623, a threshold +2.94 bits higher (32-number search).
+**The option** (built in b2bade2; design 3caf8df):
+- Gene `pp`; absent or 0 means off, identical to the reference card.
+- Prime powers q = p^j < 2^pp are sieved like base primes: odd base primes not dividing k or A; 2^j for 4 ≤ j < pp, only when kN ≡ 1 mod 8.
+- **The free 2:** the prime 2's fixed part is added on one parity class of positions, with no sieve walk.
+  - For odd kN, the class is the odd-y positions (y = A x + B): +1 bit for kN ≡ 3 mod 4, +2 for kN ≡ 5 mod 8, +3 for kN ≡ 1 mod 8.
+  - For even k (kN ≡ 2 mod 4), it is +1 bit on the even-y class.
+- **pp = 3 is "2 free":** the parity add alone, with no powers (an odd power needs p² < 2^pp, and the 2^j walk starts at j = 4).
+- Charges: as the stage H cost-model table in NOTES (per-attempt and per-A setup for the power entries; sieve updates for the walks; the parity add costs 2 words per attempt and 1 per A).
+
+**Measured, stage H** (06483b7; results 8cc9d79; 96 bits, 640 numbers, against the reference, same run):
+
+| cell | candidates / number | polynomials | partial capture | ruint | Montgomery | official | wall-clock |
+|---|---|---|---|---|---|---|---|
+| (i) pp 10, tc 1.0353 | +67.8% | −22.5% | 0.717 | +16.2% | +16.5% | +1.9% | +29.0% |
+| (ii) pp 10, tc 0.7623 (matched) | −1.4% | −13.9% | 0.407 | +1.5% | +1.4% | +1.8% | +9.0% |
+| (iii) pp 10, +5 bits | −32.9% | −3.2% | 0.225 | −0.8% | −0.8% | +8.2% | +3.8% |
+| (iv) pp 3, +3 bits | −28.6% | +10.1% | 0.203 | −2.5% | −2.5% | +4.9% | +3.1% |
+
+- Reference in that run: 2,015 µs per number, partial capture 0.316, never-combined 0.853.
+- **Under-count at true partials, median:** 4.58 bits (reference); −0.01 (pp 10); 2.68 (pp 3).
+- **With pp 10:** sieve updates per polynomial +28%, sieve wall-clock per polynomial +27.5% to +31%, setup per polynomial +18% to +22% (the per-A power entries).
+- **The scan, as built in b2bade2:** a per-position parity check that nearly doubled the scan's wall-clock per polynomial (0.73 → 1.35–1.44 µs), +60 to +120 µs per number. This was slow code, not a charge.
+- **The scan fix** (the free 2 written into the sieve array at initialisation; counts identical): acceptance passed (pp cells against b2bade2 14,000 / 14,000; option off 8,000 / 8,000; Python = Rust 48 / 48), parity running. Its commit is to be added here.
+- **The matched candidate count with pp = 10** is tc 0.7623, a threshold +2.94 bits higher (32-number search, `hsearch.out`).
+
+TODO: stage H2 (the re-time after the scan fix: pp 10 at +5 bits; pp 3 at +1, +2, +3 bits) has not run yet. Add its measured cells here when it has.
