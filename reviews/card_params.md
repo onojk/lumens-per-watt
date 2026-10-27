@@ -4,7 +4,30 @@ This sheet is prepended to every DeepSeek prompt (`tools/ask_deepseek.py`). It h
 
 Maintained by Claude.
 
-**Last updated:** 2026-10-27 (goff = 1 adopted as the reference default; I-032 results added). **Card commit:** 5f0007a (2′a and 2′b built); the phasetime instrumentation fix follows (counts unchanged).
+**Last updated:** 2026-10-27, overnight (free-2 meter correction 6031239; pp 3 retired; 2′b at 72 and 84; the open robust-rule decision). **Card commit:** 6031239 (the free-2 meter correction). Earlier: 5f0007a (2′a and 2′b built); d269cc8 (`--phasetime` sieve breakdown, counts unchanged).
+
+## State as of Oct 27 (read first)
+
+- **Reference genes: goff = 1** (2′a, adopted by the user Oct 26). Relations, factors, candidates and polynomials are identical to goff = 0; only the word count changes (−setup_gray).
+- **The free-2 meter correction (6031239, the user's decision):**
+  - With `pp` on, each polynomial is now charged ⌈(width − par) / 2⌉ sieve ops typed sieve_scan, one per cell the free-2 initialisation writes. Before 6031239 these writes were uncharged.
+  - Genomes without pp (the reference, 2′a, 2′b, root confirm) are unchanged.
+  - **Every priced figure of a pp cell on this sheet from before 6031239 is under the uncorrected meter.** The corrected values are in NOTES, "Second scores under the corrected meter".
+- **pp 3 is retired as an adoption candidate** (the user, Oct 27). Under the corrected meter it is worse than 2′b under all three pricings at 96 (+0: 1.0515 / 1.0159 / 1.0162), and on wall-clock (+3.5% at +0).
+- **Root confirm alone (2′b) against 2′a:**
+
+  | size | wall-clock | official | ruint | Montgomery |
+  |---|---|---|---|---|
+  | 72 | −9.6% | 1.0403 | 0.8896 | 0.8820 |
+  | 84 | −12.9% | 1.0242 | 0.8699 | 0.8638 |
+  | 96 | −11.2% | 1.0137 | 0.8877 | 0.8838 |
+
+  - 2b-sizes (5d8e1c9) and run A (3816bb4). Not adopted.
+  - Its robust ratio is official's at every size, so it is "undecided" under the current rule.
+- **Standing 2.4 GHz cap** (the user's, PROTOCOL.md): runs from i032-2prime on are at the cap and comparable with each other only. Claude Code never sets it.
+- **Open decision (the user's): the robust rule's veto by official pricing.**
+  - Options: (1) keep the rule; (2) a prospective op-class pricing, worst-of-four, and a sealed 2′b test; (3) energy (RAPL) arbitration.
+  - Nothing changed; see NOTES, "Open decision".
 
 ## The card at 96 bits (the reference)
 
@@ -14,7 +37,7 @@ Maintained by Claude.
   - The reference genes change only by goff = 1. Relations, factors, candidates and polynomials are identical, so earlier results stay valid.
   - Only the word count changes, by exactly −setup_gray: about −35,897 word per number at 96 bits.
   - Priced against the old reference: official 0.9754, ruint 0.9843, Montgomery 0.9842 (i032-2prime, 9b94247).
-- **Root confirm** (gene confirm = root; off by default; not adopted): with goff = 1 it reads the kept offsets in place (2′b). Against the goff = 1 reference: official 1.0137, ruint 0.8877, Montgomery 0.8838. With pp 3 at +0 bits: 0.9618 / 0.8703 / 0.8656.
+- **Root confirm** (gene confirm = root; off by default; not adopted): with goff = 1 it reads the kept offsets in place (2′b). Against the goff = 1 reference: official 1.0137, ruint 0.8877, Montgomery 0.8838. With pp 3 at +0 bits: 0.9618 / 0.8703 / 0.8656 under the uncorrected meter; **1.0659 / 0.9018 / 0.8981 corrected** (6031239).
 - **Formulas:**
   - B = bc · exp(½ √(ln N ln ln N));
   - M = max(64, mc · B), with the sieve interval [−M, M] (width 2M + 1);
@@ -104,7 +127,7 @@ Official pricing counts every op as 1.
 - **The scan fix** (373261d): the free 2 is written into the sieve array at initialisation, with counts identical (pp cells against b2bade2 14,000 / 14,000; option off 8,000 / 8,000; Python = Rust 48 / 48; parity). The scan per polynomial is back to 0.72–0.75 µs. The fill costs ~0.2–0.5 µs per polynomial, inside the sieve region.
 - **The matched candidate count with pp = 10** is tc 0.7623, a threshold +2.94 bits higher (32-number search, `hsearch.out`).
 
-**Measured, stage H2** (the re-time after the scan fix; results 5ae47ae, scored in NOTES; 96 bits, 640 numbers, against the reference in the same run, which took 2,100 µs):
+**Measured, stage H2** (the re-time after the scan fix; results 5ae47ae, scored in NOTES; 96 bits, 640 numbers, against the reference in the same run, which took 2,100 µs). **The priced columns are under the uncorrected meter** (the free-2 writes uncharged). Corrected robust: (iii) 1.1911, (iv) 1.1736, +1 1.0743, +2 1.1170, all worse than the reference (NOTES, "Second scores"). Stage H's own table above predates the write and is unaffected:
 
 | cell | candidates / number | polynomials | ruint | Montgomery | official | wall-clock |
 |---|---|---|---|---|---|---|
