@@ -8294,3 +8294,61 @@ The Gray code maintains `sr`: the roots in x-coordinates, in [0, p). The sieve's
 - **The user commits the returned file.** Claude Code neither requests nor uploads results files.
 - **Contributors' `tools/contribute_timing.sh` results are information only.**
 - Rules in PROTOCOL.md, "Replications on other machines".
+
+## I-032 option 2′b: root confirm reads the kept offsets in place — cost model (before code; `wolfram/2026-10-27_i032b_cost.wl`, `.out`; predictions/i032-2prime.md)
+
+**Scope:**
+- **No new gene.** When goff = 1 and confirm = root, root confirm's per-polynomial pass (qs.rs:945–967; qs.py's per-polynomial `rtab`) is removed. The root test reads the offsets the Gray code keeps (`sr`, Python `st_`) through a per-A index.
+- With goff = 0, root confirm is unchanged, so root-confirm and root-confirm-2 stay reproducible.
+- The runner's 2′b cells (`goff=1, confirm="root"`, evolve/i032time.py, 3f4034e) take the new path.
+
+**Per A** (in "setup", after 2′a's conversion), for the sieved odd primes of that A (132.2 per A at 96 bits):
+- `ka[t]`, the index in `sr` of prime t's first root, and `tm[t]`, its reciprocal (copied from the per-attempt `recip`).
+- **Charged `word` × 2 per sieved prime.**
+- Prime t's last root is `ka[t + 1] − 1`, or `sr.len() − 1` for the last prime: a compare, no stored sentinel, so no extra charge. A single-root prime (p | k) has first = last.
+- p and the base index are read as `sp[ka[t]]` and `sj[ka[t]]` (reads; no copy, no charge).
+- Python keeps per A a list of (base index, the prime's entry in `st_`). Its offsets are read live, since the Gray code rebinds them. Its charge is the same, 2 per sieved prime.
+- A's primes (`aj`) are formed per A instead of per polynomial. That is uncharged as today: it is a sort of s indices that today's code also does without a charge, and it moves without change.
+
+**Per polynomial:** the root pass and its charge (`word` × sieved roots, 263.8 per polynomial) are gone. Nothing replaces them.
+
+**Per candidate:** unchanged.
+- root_test × sieved primes.
+- The low-bit test (1 word), A's primes by v mod p (confirm_td each), the first division by each hit and an even v (confirm_td), and the merged list (`word` × |plist|).
+- **No negative-x handling:** the offsets are in sieve coordinates and i0 ≥ 0.
+- The reciprocal reduction is the same arithmetic, on `sr[ka[t]]` / `sr[last]` in place of `ta[t]` / `tb[t]`. Same hits, same order (ascending base index).
+
+**Exact structure** (Python traces of the reference genes, all 640 map numbers at 96 bits; polynomials 156.042 and setup_gray 35,897.39 agree exactly with lampcore):
+- 19.955 A's (7.82 polynomials per A);
+- 2,638.08 sieved primes summed over A's;
+- 41,162.74 sieved roots summed over polynomials (the pass);
+- 5,265.36 summed over A's (2′a's conversion);
+- root mode's per-candidate words 8,058.6 per number (7.96 per candidate).
+
+**Expected counts, 2′b against 2′a** (means per number):
+- `word` +8,058.6 (per candidate) + 5,276.2 (ka, tm);
+- root_test +135,730.6;
+- confirm_td −129,701.3;
+- setup_small +137.8 (the per-attempt reciprocals, as in today's root mode).
+- Every other type is identical.
+- **Against today's root mode (goff off):** `word` −41,162.7 (the pass) − 35,897.4 (2′a) + 5,276.2 (ka, tm).
+
+**Model** (the Wolfram run above; model, not a verdict; the sealed predictions stay as written):
+- 2′a / REF 0.9754 / 0.9843 / 0.9842 (official / ruint / Montgomery);
+- **2′b / 2′a 1.0137 / 0.8877 / 0.8838**, unchanged to 4 digits from f12ae23's estimate. The exact per-A build (2 × 132.2 per A) is 72 word per number below f12ae23's 2 × 134.0 × 19.955.
+- For information: 2′b / REF 0.9888 / 0.8738 / 0.8698, and 2′b / today's root 0.9527 / 0.9654 / 0.9650.
+- These are counts × prices from the REF and today's-root counts already used in f12ae23, plus trace structure. They are not measured 2′b or 2′a totals.
+
+**What the model does not establish:**
+- any wall-clock;
+- that the code matches the note. Acceptance checks that: the counts above to the op, per number.
+
+**Acceptance** (`evolve/rootb_accept.py`), all map numbers 54–96; genomes the new reference, + pp 3, + pp 10, the corrected reference:
+1. goff = 0 and confirm = root against the pre-change binary (a6d67a2): identical per number and per type.
+2. 2′b (goff = 1, root) against 2′a (goff = 1, full pass): the same factor, candidates, hits and polynomials. Types change only as follows:
+   - root_test, confirm_td and setup_small equal today's root mode against the full pass (goff off), per number;
+   - `word` 2′b − 2′a equals today's (root − full) word, less the pass (word × sieved roots per polynomial), plus 2 × sieved primes per A.
+3. Python traces (2 numbers per size): relations, candidate values and the root hits identical to 2′a and to the full pass. Python's `word` change against today's root mode is exact.
+4. Python = Rust per type for 2′b, 2′a and goff off + root.
+
+**Parity:** goff + root cases already run (a6d67a2's parity added `qs goff root`). Low caps inside the per-A build and the root test are added.

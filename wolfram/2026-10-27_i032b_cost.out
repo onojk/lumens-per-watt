@@ -1,0 +1,7 @@
+structure: P 156.0421875, A 19.9546875, P/A 7.819826168663379, sieved primes per A 132.20335134288624, roots per polynomial 263.79240389718325, roots per A 263.86563307493566
+per-candidate root-mode word per number 8058.59625000001 (7.9571583947833116 per candidate)
+2'b word changes against 2'a: +8058.59625000001 per-candidate, +5276.153125 per-A ka and tm; root pass removed (41162.74375 not charged)
+model 2'a / REF: {0.9754, 0.9843000000000001, 0.9842000000000001}  (f12ae23: 0.9754 / 0.9843 / 0.9842)
+model 2'b / 2'a (exact structure): {1.0137, 0.8877, 0.8838}  (f12ae23: 1.0137 / 0.8877 / 0.8838)
+model 2'b / REF (information): {0.9888, 0.8738, 0.8698}
+model 2'b / today's root (information): {0.9527, 0.9654, 0.9650000000000001}
