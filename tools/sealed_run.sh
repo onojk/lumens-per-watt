@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+# tools/sealed_run.sh EXPERIMENT [--deepseek] -- COMMAND [ARGS...]
+#
+# Runs COMMAND only if the experiment's predictions were sealed first (PROTOCOL.md):
+#   (a) predictions/EXPERIMENT.md exists, is committed, and has no uncommitted changes (staged or not), so its
+#       content is exactly what an earlier commit recorded;
+#   (b) with --deepseek: some reviews/deepseek_r*.md that mentions EXPERIMENT is committed and clean.
+# Then it runs COMMAND from the repo root, saves stdout and stderr to results/EXPERIMENT_<UTC time>.out, and commits
+# that file alone (explicit git add), naming the prediction commit (and the DeepSeek commit). A failing command is
+# committed too, with its exit code in the message: failures are results. Never pushes.
+set -euo pipefail
+cd "$(git rev-parse --show-toplevel)"
+
+[ $# -ge 3 ] || { echo "usage: $0 EXPERIMENT [--deepseek] -- COMMAND [ARGS...]" >&2; exit 2; }
+exp=$1; shift
+need_ds=0
+if [ "$1" = "--deepseek" ]; then need_ds=1; shift; fi
+[ "$1" = "--" ] || { echo "expected -- before the command" >&2; exit 2; }
+shift
+[[ "$exp" =~ ^[A-Za-z0-9._-]+$ ]] || { echo "experiment ID must be [A-Za-z0-9._-]+" >&2; exit 2; }
+
+clean_committed() {   # $1 path: prints its last commit if tracked, committed and clean; else fails
+    local f=$1
+    git ls-files --error-unmatch -- "$f" >/dev/null 2>&1 || return 1
+    git diff --quiet -- "$f" || return 1
+    git diff --cached --quiet -- "$f" || return 1
+    git log -1 --format=%h -- "$f"
+}
+
+pred=predictions/$exp.md
+[ -f "$pred" ] || { echo "REFUSED: $pred does not exist" >&2; exit 1; }
+pc=$(clean_committed "$pred") || { echo "REFUSED: $pred is not committed, or has uncommitted changes" >&2; exit 1; }
+echo "predictions: $pred, sealed in $pc ($(git log -1 --format='%ci' "$pc"))"
+
+dsnote=""
+if [ $need_ds = 1 ]; then
+    found=""
+    for f in $(grep -lF -- "$exp" reviews/deepseek_r*.md 2>/dev/null | grep -v '\.prompt\.md$' || true); do
+        if c=$(clean_committed "$f"); then found="$f $c"; fi
+    done
+    [ -n "$found" ] || { echo "REFUSED: no committed DeepSeek reply in reviews/ mentions $exp" >&2; exit 1; }
+    echo "DeepSeek: $found"
+    dsnote="; DeepSeek ${found#* } (${found%% *})"
+fi
+
+mkdir -p results
+out=results/${exp}_$(date -u +%Y%m%dT%H%M%SZ).out
+i=1
+while [ -e "$out" ]; do out=results/${exp}_$(date -u +%Y%m%dT%H%M%SZ)_$i.out; i=$((i + 1)); done   # never overwrite a result
+echo "running: $*  ->  $out"
+set +e
+"$@" > "$out" 2>&1
+rc=$?
+set -e
+status="ok"; [ $rc = 0 ] || status="FAILED (exit $rc)"
+git add -f -- "$out"
+git commit -q -m "Sealed run $exp: $status; predictions $pc$dsnote
+
+Command: $*
+Output: $out
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" -- "$out"
+echo "$status; committed $(git log -1 --format=%h) ($out)"
+exit $rc
