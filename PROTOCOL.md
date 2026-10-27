@@ -17,6 +17,11 @@ This file is the single source of truth for the workflow. Tool details are in `w
 - A copied predictions file states that it is a verbatim copy and names each block's first commit.
 - Never re-run an experiment whose predictions are already scored. A new run needs new predictions and a new ID (for example stage H → stage H2).
 - **Count passes during a cost note (from Oct 27, prospective):** any count pass made while preparing a cost note or model hides the priced totals of cells that have pending predictions. It prints only identity and counts by type, or a hash of the totals. Priced clauses whose totals were printed before their predictions file was committed are information only (the 2b-sizes ruling, Oct 27, as for D-11).
+- **Prediction guards (from Oct 27, prospective; all predictors: the reviewer, DeepSeek, Grok):**
+  - Every sealed range comes from an explicit arithmetic band. The range may not be narrower than the band without a stated reason.
+  - Any transfer across sizes or cells names its scaling assumption and widens the range by the measured cross-run drift (±1.5 points) plus a stated allowance.
+  - Before using a quoted number, state which comparison, which base and which pricing it is.
+  - Any categorical word in a prediction ("largest", "best", "better") is defined in the prediction itself: absolute or increase; point estimate or interval.
 
 ## Order
 
