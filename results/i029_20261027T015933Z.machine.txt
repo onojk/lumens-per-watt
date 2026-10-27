@@ -1,0 +1,41 @@
+## before
+time: 2026-10-26T18:59:33-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 400; max MHz: 5000
+load average: 0.77 0.93 1.31
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+power supply ucsi-source-psy-USBC000:001 online: 1
+power supply ucsi-source-psy-USBC000:002 online: 0
+temperature TCPU: 50 C
+temperature x86_pkg_temp: 54 C
+sensors: Package id 0:  +52.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  12.9% claude
+  9.9% xfce4-terminal
+  8.9% Xorg
+  5.0% chrome
+  4.0% htop
+
+## after
+time: 2026-10-26T18:59:43-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 1772; max MHz: 5000
+load average: 0.80 0.93 1.30
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+power supply ucsi-source-psy-USBC000:001 online: 1
+power supply ucsi-source-psy-USBC000:002 online: 0
+temperature TCPU: 98 C
+temperature x86_pkg_temp: 59 C
+sensors: Package id 0:  +57.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  15.8% claude
+  10.9% Xorg
+  5.9% xfce4-terminal
+  4.0% chrome
+  4.0% chrome
