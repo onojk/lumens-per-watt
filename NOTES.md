@@ -1,5 +1,34 @@
 # Decision log
 
+## Report Oct 27, after adoption (read first)
+
+**In plain English:** root confirm (2′b) is the reference, and its full parity suite is clean. Against msieve 1.53 as shipped, sieve against sieve on balanced numbers, our card is about 4–5 times faster at 72–96 bits. All three outside forecasts expected msieve to be faster or level; they missed or were falsified. The extra cost found in the kept-relation copies is a linear lookup beside the copy, not the copy itself. A counts-identical code fix would remove it without touching the meter. Nothing new adopted; nothing pushed.
+
+| stage | status | commit | in one line |
+|---|---|---|---|
+| 0. Adoption parity | **done** | 2c5f89d | Full parity clean: 0 mismatches in every suite, mutations 56 / 56. `git log origin/main..HEAD` was printed for the user to push. |
+| 1. Work traces | **done** | d20421f | `reviews/worktraces.md`: four pictures with plain-English captions (the free-2 grey band; the red root-test ticks), including the new reference. Python only. |
+| 2. msieve baseline | **done** | bb786c6 | The sealed comparison: card / msieve 0.299 / 0.390 / 0.319 at 72 / 84 / 96. Balanced band 0.185 / 0.256 / 0.210. Pipeline 0.260 / 0.346 / 0.265. Factors identical on every number. msieve built `-march=x86-64` runs 1.05–1.21× slower than native. |
+| 3. Kept-relation copies | **done (cost note only)** | 8abe863 | The growing cost is the A-primes' linear base-index scan: 47 / 82 / 165 ns per kept relation, capped. Recommended: look the indices up once per A (counts-identical; saves 1.6 / 2.4 / 4.3% of wall). A re-price would overprice under every pricing. |
+| 4. Unattributed-instruction guard | **done** | 8d50631 | `opclass/guard.py`: no flag for 2′b against 2′a; the reversed self-test flags at all three sizes. |
+
+**Scored (Stage 2, as filed):**
+- the reviewer's 96 claim (0.7–6) and 72 claim (closer to 1): **missed**;
+- **D-18:** missed (below its range; not falsified);
+- **D-19, G-11 and G-12:** **falsified.**
+
+The card is faster, and the 72-bit ratio is slightly further from 1 than the 96-bit one.
+
+**The main caveat (Stage 2):** msieve's 29-digit path is not tuned for small inputs. It sieves 4 × 32 KB blocks, overshoots its relations about 2×, and writes and reads `msieve.dat` for every number. This compares the card against msieve as shipped, not against a small-number-tuned SIQS (YAFU's tiny path).
+
+**Waiting on the user:**
+1. **The A-prime lookup fix** (Stage 3, option 1): a counts-identical card change, which would need a cost note, acceptance and parity. Your decision.
+2. **YAFU** as a second baseline (I-038), and an energy reading (RAPL needs root read access).
+3. **60 and 66 bits:** a reference needs defining at those sizes before 2′b can be checked there.
+4. **Whether to make goff = 1 and confirm = root the code default** of `lctest.ref()`. That would change what earlier scripts compute on a rerun, so it has been left as is.
+
+**Conditions** (Stages 2 and 3): AC online, cap 2,400 MHz on every core, core 2 at a median of 2,400 MHz, TCPU below 70 °C at the start, no Wolfram kernel. No system setting was changed.
+
 ## MORNING REPORT Oct 27 (read first)
 
 Overnight workload, all stages run in order. Nothing adopted; no reference, price or rule changed; no system setting touched; nothing pushed; nothing of the user's moved or deleted.
