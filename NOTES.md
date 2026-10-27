@@ -7911,3 +7911,47 @@ Timing: Rust release, `taskset -c 2`, 292–297 interleaved passes per version p
 ### Note on stage H2's timing order (documentation only)
 
 H2 (and stages G and H) timed the cells one after another, with the reference first and both replicates of a cell back to back. If the machine heated during the run (the I-029 run read TCPU 98 °C at its end), later cells may be biased slow against the reference. H2's scores stand as measured. From now on, comparisons are timed interleaved and counterbalanced (`evolve/timing.py`, PROTOCOL.md).
+
+## Root confirm (I-029) as a card option: cost model (before code; option off by default)
+
+**The gene:** confirm = "root", alongside "full" (absent: today's full pass) and "resieve". Off by default, so today's card is unchanged.
+
+**What it does per candidate** (version (c) of the benchmark, d443357):
+1. A branch-free pass over the polynomial's sieved base primes (odd, not dividing A; p | k included with its single root). Each prime's roots in sieve-index coordinates are the start offsets the sieve has just computed. r = i0 if i0 < p, else i0 mod p by the prime's precomputed reciprocal; a hit is r equal to either root. The hit's index is appended unconditionally (count += hit).
+2. The direct primes: the prime 2 by v's low bit, and A's primes by v mod p (g is linear mod those primes, and they are not sieved).
+3. The hits and the dividing direct primes are merged in ascending base order. v is divided only by those primes, with repeats, exactly as the full pass divides them. So the exponent vector, the touched list and its order, the cofactor and every relation are identical to the full pass.
+
+**Charges** (types of existing analogues, plus one new type):
+
+| when | op | type | count |
+|---|---|---|---|
+| per attempt | each odd base prime's reciprocal (a 64-bit divide) | setup_small | F − 2 |
+| per polynomial | each sieved root's start offset stored for the root test (the sieve already charges computing it) | word | 1 per root |
+| per candidate | the root test, per sieved base prime | **root_test (new)** | 1 per sieved prime |
+| per candidate | the prime 2's low-bit test | word | 1 |
+| per candidate | A's primes, v mod p | confirm_td | 1 per A prime |
+| per candidate | the first division by each hit (sieved hits and an even v) | confirm_td | 1 per hit |
+| per candidate | each repeat division | confirm_td | 1 per repeat, as today |
+| per candidate | merging hits and direct primes | word | 1 per merged entry |
+| per candidate | the two word multiply-adds for v, the sign check | word | unchanged |
+
+- The root_test charges are made at the point where the full pass charges its F − 1 tests (before the v = 0 check), so a cap stops both cores at the same op.
+
+**The new op type and its price** (an addition to the price table; no existing price changes):
+- root_test is priced from the benchmark's branch-free figure, 1.587 ns per prime tested.
+  - ruint: 1.587 / 27.3 ns (the calibrated ruint unit, anchor C) = **0.0581**;
+  - Montgomery: the unit implied by the word price's ruint-to-Montgomery ratio (0.0951 / 0.0258 = 3.686) is 27.3 / 3.686 = 7.41 ns, so 1.587 / 7.41 = **0.2142**;
+  - official: 1, like every op.
+- It is added to `evolve/calibrate.json` under word_price.own_types, the place the audit's own types (hash, sort_cmp, f64_log, f64_div) live. lampcore gets a new phase (PH_ROOT) and a 30th type column (TYPE_NAMES and optypes.TYPE_ORDER).
+- **Effect on existing priced results: none.** The option is off by default, so the new type's count is 0 in every run so far and in the reference card. Existing per-type outputs gain a zero column.
+
+**Estimate (labelled as an estimate) at 96 bits, ruint, per number:**
+- *Today:* ~138 confirm_td per candidate × 0.1141 = 15.7.
+- *Root:* ~133 root_test × 0.0581 = 7.7; plus ~4 A-prime tests and ~7 hit divisions × 0.1141 = 1.3; plus ~11 merge words and 1 low-bit word × 0.0258 = 0.3; total ~9.3. That saves ~6.4 per candidate × 1,013 = ~6,500.
+- *Added:* stored roots, ~270 words per polynomial × 156 × 0.0258 = ~1,090; reciprocals, ~136 × 0.3065 = ~42 per attempt.
+- *Net:* ~−5,400 ruint, **~−9%** of 59,071. Wall-clock (from the benchmark): ~−15% to −17%.
+
+**Acceptance (before any timed run):**
+- *Option off:* identical to today's card per number and per type (8,000 / 8,000; Python = Rust 32 / 32). The old binary has no root_test column, and it is compared with that column absent (it must be 0).
+- *Option on:* on all map numbers 54–96, identical relations, factor found, polynomials (sieve_scan), candidates (tests), combinations and stored partials to the full pass. Only the confirm charges differ. Python = Rust per type.
+- *Parity* with root cases added; the mutation check covers the new type.
