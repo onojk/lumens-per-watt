@@ -344,10 +344,31 @@ The free-2 meter correction (6031239) was applied after the 2b-sizes run. NOTES 
 
 ### DeepSeek's range-setting rules (received 05:39 Oct 27 PT; information only; verbatim)
 
-*Its main section appeared twice in the reply; recorded once.*
+*Its main section appeared twice in the reply; this is the single copy, from "## Recorded" on.*
 
 <!-- verbatim begin -->
-[PLACEHOLDER: DeepSeek's reply was not included in the brief that recorded it; to be pasted verbatim.]
+## Recorded
+
+- My op-class checklist is recorded with the reviewer's edits (frozen before the new-pricing ratio is computed; scope = every op class official prices at unit cost) and Grok's sixth requirement, **no hand-picked sequences**, with the fix: each class's weight = retired instructions per op over a whole run of the frozen binary, across all call sites. Accepted; that closes the cherry-picking hole my list left open.
+- My prediction guards are in PROTOCOL.md for all predictors. Accepted as written.
+- **W3 correction accepted**: the ±1.5 "measured drift" was overstated; between-run variation is ~±1.3 (upper limit ±2.9), and ±1.5 is better read as a safe allowance, ±2.0 with 4 replicates. My guard cites it accordingly.
+- **W4 calibration recorded** and is the basis for my answer below. **W1, W2, W5** recorded; the W1 conclusion that size will not settle the robust-rule question is noted, and the adoption decision remains the user's.
+
+## How I would change range-setting
+
+Three concrete rules, one target.
+
+**Rule 1 — minimum width set by the arithmetic band, not the point estimate.** No sealed range narrower than **±3 points** (or the equivalent ratio width) for any point prediction, and no range whose center is the model output with a subjective margin around it. The arithmetic band is the **center** of the range, not the bound. For ratios, ±3 points on the percentage scale; for interval widths and counts, the same ±3-point floor in the natural unit, stated explicitly. My median width of 2.0 against an 89%-inside reviewer at 3.0 says the floor is the binding constraint I was missing.
+
+**Rule 2 — widen by the scatter of my own misses, computed not guessed.** W4's upper-quartile z of 1.6–2.3 means my misses land far outside the range, which is what a single model output plus a margin produces. After every 10 scored predictions I will compute the standardized residual of my misses and set the next range as arithmetic band **± 2× the observed median |z|** in the same units. If misses keep landing at z ≈ 2, the range needs to be roughly twice the arithmetic band, not 10% wider — a rule that is checkable and re-tunable from the record.
+
+**Rule 3 — separate computed from transferred.** Directly computed quantity: arithmetic band × 2. Quantity requiring a transfer across size, cell, or pricing: arithmetic band × 2 **plus** the W3 allowance (±1.3, ±2.0 with 4 replicates) **plus** a stated factor for the scaling assumption. D-15 priced is the clean case: the 96→72/84 carryover was the mechanism error, and this rule would have covered 1.0403 and 1.0242.
+
+**Target hit rate: 80–85% inside stated range, and Brier ≤ 0.20 on the next 20 scored predictions.** Not 95%: a 95% target either forces absurdly wide ranges or invites post-hoc narrowing that breaks the sealing contract. The reviewer's 89% is the right neighbourhood; my 61% is the direct consequence of drawing ranges as if the model output were the truth. On confidences, 0.336 is worse than always-50%, which means my stated confidences were too high and too granular; the corrected-meter 0.186 is the target to match, not to beat by narrowing.
+
+One further change, applied to my own filings first: **any categorical or superlative claim gets its comparison direction written into the prediction** ("largest increase" vs "largest absolute difference," "best wall" vs "best robust"), before the run. D-17 is the case that motivated it, and the rule is already in PROTOCOL.md.
+
+No sealed prediction is filed from this message.
 <!-- verbatim end -->
 
 **The reviewer's notes:**
@@ -358,25 +379,72 @@ The free-2 meter correction (6031239) was applied after the 2b-sizes run. NOTES 
 - **Rule 2's units:** a miss's z is in units of the range's half-width. So the rule is "scale the next half-width by the median |z| of past misses", not "± 2 × |z|".
 - **Target 80–85% inside range:** agreed.
 
-### Interval score per sealed range (model, not a verdict; `wolfram/2026-10-27_interval_score.wl`, `.out`)
+### Grok's range-setting rules (received 05:40 Oct 27 PT; information only; verbatim)
 
-**Definition** (lower is better; in the quantity's own units): width + (2/α) × the distance outside the range when missed, with α = 0.2, so each range is read as an 80% interval. Same 110 ranges as W4. Coverage alone rewards wide ranges; the interval score charges for width as well as for misses.
+<!-- verbatim begin -->
+[PLACEHOLDER: Grok's reply was not included in the brief that recorded it; to be pasted verbatim.]
+<!-- verbatim end -->
 
-| forecaster | ratio ranges (points) | wall ranges (% points) | phase-excess ranges (µs per number) |
+**The reviewer's notes:**
+- **Q1 is adopted as Grok's own rule:**
+  - wall-clock and transferred ranges: at least 2.5 points full width, plus about ±1.3 for comparisons across runs;
+  - priced ranges from an exact model: half that;
+  - target coverage 75–80%.
+- **Q2: neither gaming route applies.**
+  - Only the single sealed range is scored, so there is no unscored "safety tail".
+  - The interval score charges the full width on both sides, so asymmetry costs what it adds. It is a proper scoring rule for honest quantiles.
+  - Whether it favours wide ranges is an empirical question, answered by the computation below.
+- **The real gaming route (the reviewer): choosing which questions to predict.** Priced ratios from an exact model are nearly free once the model has run.
+
+### Interval score per sealed range (model, not a verdict; `wolfram/2026-10-27_interval_score2.wl`, `.out`)
+
+**Definition** (lower is better; in the quantity's own units): width + (2/α) × the distance outside the range when missed, with α = 0.2, so each range is read as an 80% interval.
+
+**Rows:** the 110 sealed ranges of W4, with **every information-only prediction excluded**: the priced clauses of R2-18, D-15 and G-8, D-11, Grok's phase pick, and G-6. That leaves 89 ranges. The two "wall ratio" rows (R2-4, D-3) are converted to % change.
+
+**D-14 and G-7 were built on the reviewer's erroneous 241 µs figure.** Their scores are kept and labelled.
+
+This version supersedes the first computation (1195ebe, `2026-10-27_interval_score.wl`), which included the information-only rows.
+
+**(b) Common questions only (all three forecasters answered; 25 after the exclusions). Ranked on this only.**
+
+| type (unit) | questions | the reviewer: coverage, median width, mean score | DeepSeek | Grok |
+|---|---|---|---|---|
+| wall-clock (% points) | 9 | 100%, 5.0, **5.8** | 100%, 4.0, **4.2** | 67%, 3.5, **7.6** |
+| wall-clock (µs; sv:free2) | 1 | 100%, 25, 25 | 100%, 25, 25 | 100%, 20, **20** |
+| priced, exact model (points) | 6 | 100%, 2.5, **2.9** | 100%, 1.5, **1.5** | 100%, 1.15, **1.5** |
+| priced, by transfer (points) | 9 | 89%, 3.0, **5.6** | 44%, 2.0, **35.0** (median 14.5) | 67%, 1.8, **11.9** (median 3.0) |
+| categorical | — | no range, no interval score (see W4's Brier) | | |
+
+**Mean rank per common question** (1 = best, 3 = worst; unit-free; ties share the rank):
+
+| type | the reviewer | DeepSeek | Grok |
 |---|---|---|---|
-| the reviewer | n 25, coverage 84%, median width 3.0, **mean score 4.4** (median 3.8) | n 9, 100%, 5.0, **5.4** (5.0) | n 1, 100%, 25, **25** |
-| DeepSeek | n 25, 56%, 2.0, **17.0** (median 2.5) | n 8, 100%, 4.5, **4.6** (4.5) | n 5, 20%, 20, **462** (143) |
-| Grok | n 25, 68%, 1.8, **8.5** (median 2.5) | n 9, 67%, 3.5, **7.6** (6.0) | n 3, 33%, 25, **548** (309) |
+| wall-clock (10) | 2.20 | **1.70** | 2.10 |
+| priced, exact model (6) | 2.67 | **1.58** | 1.75 |
+| priced, by transfer (9) | 2.11 | 2.39 | **1.50** |
+| all types (25) | 2.28 | 1.92 | **1.80** |
 
-- **Ratio ranges:** the reviewer scores best on the mean (4.4). DeepSeek and Grok score better on the median (2.5 against 3.8): their typical range is narrower and right. Their means are driven by a few large misses, mostly as penalties: DeepSeek's D-8 ruint and Montgomery (106 each) and the +2 official cells (44–50).
-- **Wall ranges:** DeepSeek scores best (4.6): full coverage at a narrower width than the reviewer's 5.4. The reviewer's wall ranges were wider than needed. Grok's narrower ranges missed 3 of 9 (7.6).
-- **Phase-excess ranges** (µs): both outside forecasters score badly, from the shared "241 µs" anchor (D-11, Grok's phase pick, D-14, G-7). The reviewer has one such range.
+- **Overall, Grok ranks first on the common questions (1.80), DeepSeek second (1.92), the reviewer third (2.28).** The ranking is by rank per question; a few very large misses (D-8 ruint and Montgomery, 106 each) drive the means, not the ranks.
+- **The reviewer's wall ranges were wider than needed.** DeepSeek had the same coverage (9 of 9, 100%) with narrower ranges (median 4.0 against 5.0) and scores better (4.2 against 5.8).
+- **On exact-model priced ratios the reviewer's ranges were also wider than needed:** all three covered 6 of 6, and the reviewer's width cost it the last place.
+- **On transferred priced ratios the reviewer's width paid off:** 8 of 9 covered, against DeepSeek's 4 and Grok's 6. Grok still ranks first per question, because its hits were narrow and only the +0 and +2 official cells missed badly. DeepSeek ranks last.
+- **Who answered what** (the reviewer's gaming note) is not scored here: (b) compares only questions all three answered.
+
+**(a) All non-information-only sealed ranges** (not ranked, because each forecaster answered different questions):
+
+| unit | the reviewer | DeepSeek | Grok |
+|---|---|---|---|
+| ratio (points) | n 18, 89%, width 2.6, mean 4.4 (median 3.0) | n 18, 72%, 1.8, 18.3 (2.15) | n 18, 83%, 1.8, 6.7 (1.8) |
+| wall (% points) | n 10, 100%, 5.0, 5.6 | n 9, 100%, 4.0, 4.2 | n 9, 67%, 3.5, 7.6 |
+| µs per number | n 1 (R2-20), 100%, 25, 25 | n 4 (D-14 ×3, D-17), 25%, 15, 138.8 | n 2 (G-7, G-10), 50%, 22.5, 164.5 |
+
+The µs rows include D-14 and G-7, which were built on the reviewer's erroneous 241 µs figure.
 
 **Limits:**
-- Units differ, so the scores compare only within a column.
-- The means are dominated by single rows, so the medians are given too.
+- The type classification is Claude Code's, stated in the `.wl` header. Exact model covers i032-2prime's 2′a vs REF and 2′b vs 2′a. Transfer covers the pp3 cells (from earlier cells, or from +0).
 - Rows within one run share anchors, so they are not independent.
-- No like-for-like subset (the same cells, all three forecasters) was computed, because the extracted quantity labels differ by forecaster.
+- 25 common questions are few, and one run (i032-2prime) supplies 13 of them.
 
 ## 4. Ambiguities resolved, and Unclear items
 

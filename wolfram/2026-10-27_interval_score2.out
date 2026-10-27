@@ -1,0 +1,65 @@
+== (a) All sealed ranges, by unit (not ranked: each forecaster answered different questions)
+  ratio (points)
+    reviewer: n 18, coverage 16 (89%), median width 2.60, mean score 4.37 (median 3.00)
+    DeepSeek: n 18, coverage 13 (72%), median width 1.80, mean score 18.29 (median 2.15)
+    Grok: n 18, coverage 15 (83%), median width 1.80, mean score 6.71 (median 1.80)
+  pct (% points of wall)
+    reviewer: n 10, coverage 10 (100%), median width 5.00, mean score 5.60 (median 5.00)
+    DeepSeek: n 9, coverage 9 (100%), median width 4.00, mean score 4.22 (median 4.00)
+    Grok: n 9, coverage 6 (67%), median width 3.50, mean score 7.56 (median 6.00)
+  us (us per number)
+    reviewer: n 1, coverage 1 (100%), median width 25.00, mean score 25.00 (median 25.00)
+    DeepSeek: n 4, coverage 1 (25%), median width 15.00, mean score 138.75 (median 88.00)
+    Grok: n 2, coverage 1 (50%), median width 22.50, mean score 164.50 (median 164.50)
+
+== (b) Common questions only (all three answered), by type and unit
+  wall-clock, pct (% points of wall): 9 questions
+    reviewer: n 9, coverage 9 (100%), median width 5.00, mean score 5.78 (median 5.00)
+    DeepSeek: n 9, coverage 9 (100%), median width 4.00, mean score 4.22 (median 4.00)
+    Grok: n 9, coverage 6 (67%), median width 3.50, mean score 7.56 (median 6.00)
+  wall-clock, us (us per number): 1 questions
+    reviewer: n 1, coverage 1 (100%), median width 25.00, mean score 25.00 (median 25.00)
+    DeepSeek: n 1, coverage 1 (100%), median width 25.00, mean score 25.00 (median 25.00)
+    Grok: n 1, coverage 1 (100%), median width 20.00, mean score 20.00 (median 20.00)
+  priced, exact model, ratio (points): 6 questions
+    reviewer: n 6, coverage 6 (100%), median width 2.50, mean score 2.92 (median 2.50)
+    DeepSeek: n 6, coverage 6 (100%), median width 1.50, mean score 1.50 (median 1.50)
+    Grok: n 6, coverage 6 (100%), median width 1.15, mean score 1.52 (median 1.15)
+  priced, by transfer, ratio (points): 9 questions
+    reviewer: n 9, coverage 8 (89%), median width 3.00, mean score 5.64 (median 3.00)
+    DeepSeek: n 9, coverage 4 (44%), median width 2.00, mean score 35.02 (median 14.50)
+    Grok: n 9, coverage 6 (67%), median width 1.80, mean score 11.91 (median 3.00)
+  categorical: no interval score (no range)
+
+== Ranking on (b) only: mean rank of each forecaster's interval score per common question (1 = best, 3 = worst; unit-free)
+  wall-clock (10 questions): mean rank reviewer 2.20, DeepSeek 1.70, Grok 2.10; best on reviewer 2.3, DeepSeek 4.8, Grok 2.8 questions (ties split)
+  priced, exact model (6 questions): mean rank reviewer 2.67, DeepSeek 1.58, Grok 1.75; best on reviewer 0.0, DeepSeek 3.0, Grok 3.0 questions (ties split)
+  priced, by transfer (9 questions): mean rank reviewer 2.11, DeepSeek 2.39, Grok 1.50; best on reviewer 3.0, DeepSeek 0.0, Grok 6.0 questions (ties split)
+  all types (25 questions): mean rank reviewer 2.28, DeepSeek 1.92, Grok 1.80; best on reviewer 5.3, DeepSeek 7.8, Grok 11.8 questions (ties split)
+
+Per common question (scores reviewer / DeepSeek / Grok):
+  i032-2prime | 96 | 2'a vs REF official ratio [priced, exact model]: 2.0 / 2.0 / 1.1
+  i032-2prime | 96 | 2'a vs REF ruint ratio [priced, exact model]: 4.5 / 1.0 / 0.8
+  i032-2prime | 96 | 2'a vs REF Montgomery ratio [priced, exact model]: 4.5 / 1.0 / 0.8
+  i032-2prime | 96 | 2'a vs REF wall % change [wall-clock]: 7.0 / 1.5 / 10.0
+  i032-2prime | 96 | 2'b vs 2'a official ratio [priced, exact model]: 1.5 / 1.0 / 1.2
+  i032-2prime | 96 | 2'b vs 2'a ruint ratio [priced, exact model]: 2.5 / 2.0 / 2.5
+  i032-2prime | 96 | 2'b vs 2'a Montgomery ratio [priced, exact model]: 2.5 / 2.0 / 2.7
+  i032-2prime | 96 | 2'b vs 2'a wall % change [wall-clock]: 7.0 / 6.0 / 6.0
+  i032-2prime | 96 | 2'b vs 2'a sieve region wall % change [wall-clock]: 10.0 / 4.0 / 5.0
+  i032-2prime | 96 | 2'b+pp3 +0 vs 2'a official ratio [priced, by transfer]: 4.0 / 34.7 / 29.7
+  i032-2prime | 96 | 2'b+pp3 +0 vs 2'a ruint ratio [priced, by transfer]: 6.0 / 106.2 / 3.0
+  i032-2prime | 96 | 2'b+pp3 +0 vs 2'a Montgomery ratio [priced, by transfer]: 6.0 / 106.2 / 3.0
+  i032-2prime | 96 | 2'b+pp3 +0 vs 2'a wall % change [wall-clock]: 8.0 / 6.0 / 7.0
+  pp3-gap-and-shift | 96 | 2'b+pp3 +0 vs 2'a wall % change [wall-clock]: 3.0 / 3.0 / 3.0
+  pp3-gap-and-shift | 96 | 2'b+pp3 +1 vs 2'a official ratio [priced, by transfer]: 2.3 / 14.5 / 14.5
+  pp3-gap-and-shift | 96 | 2'b+pp3 +1 vs 2'a ruint ratio [priced, by transfer]: 2.5 / 2.3 / 1.8
+  pp3-gap-and-shift | 96 | 2'b+pp3 +1 vs 2'a Montgomery ratio [priced, by transfer]: 2.5 / 2.4 / 1.8
+  pp3-gap-and-shift | 96 | 2'b+pp3 +1 vs 2'a wall % change [wall-clock]: 3.0 / 3.5 / 3.5
+  pp3-gap-and-shift | 96 | 2'b+pp3 +2 vs 2'a official ratio [priced, by transfer]: 21.5 / 43.8 / 49.6
+  pp3-gap-and-shift | 96 | 2'b+pp3 +2 vs 2'a ruint ratio [priced, by transfer]: 3.0 / 2.5 / 1.8
+  pp3-gap-and-shift | 96 | 2'b+pp3 +2 vs 2'a Montgomery ratio [priced, by transfer]: 3.0 / 2.6 / 2.0
+  pp3-gap-and-shift | 96 | 2'b+pp3 +2 vs 2'a wall % change [wall-clock]: 4.0 / 4.0 / 8.5
+  2b-sizes | 72 | 2'b vs 2'a wall % change [wall-clock]: 5.0 / 5.0 / 3.0
+  2b-sizes | 84 | 2'b vs 2'a wall % change [wall-clock]: 5.0 / 5.0 / 22.0
+  2b-sizes | 96 | sv:free2 us per number, 2'b+pp3 +0 minus 2'b [wall-clock]: 25.0 / 25.0 / 20.0
