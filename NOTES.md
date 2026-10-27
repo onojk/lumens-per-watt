@@ -9359,3 +9359,24 @@ Model: `wolfram/2026-10-27_meter_open.wl`, `.out`.
   - lp_ledger (+17 / +57–61 / +244 µs), within it lp:copy (+5 / +100 µs at 84 / 96) and lp:hash (+8 / +16 / +72–78 µs);
   - gray (+7 / +27 µs at 84 / 96).
 - **These are the open meter questions of stage 5** (the hash, the copies, and solve's elimination benchmark, held) plus setup, whose A mod p (item 17) is inside it. sieve+scan runs *below* its price at the cell rate at every size.
+
+## W3: cross-run drift of wall ratios (model, not a verdict; information only; `wolfram/2026-10-27_w3_drift.wl`, `.out`)
+
+**What it computed.** Per-replicate paired wall ratios (cell / base, same replicate) from every capped timed run since i032-2prime: i032-2prime, pp3-gap-and-shift, shift-past-2, shift-72-84, 2b-sizes, and the overnight meter-health pass (information only, 4 replicates). All runs are capped at 2,400 MHz on AC and use the same `S2.map_nums` numbers per size. Seven cell pairs were timed in two or more runs: 2′b / 2′a at 72, 84 and 96 (96 in three runs); and at 96, 2′b+pp3 +0 / 2′a, +0 / 2′b, +1 / 2′a and +2 / 2′a. The model is random effects: each run's mean ratio = the pair's true ratio + a run effect (sd τ, shared across pairs) + within-run error (its own s.e.).
+
+**Results (points = 100 × ratio):**
+
+| set | df | Cochran Q (p) | τ, DL | τ, 95% Q-profile | cross-run difference, 95% half-width (DL / τ at upper bound) |
+|---|---|---|---|---|---|
+| all seven pairs | 8 | 10.06 (0.26) | 0.20 | [0, 0.94] | ±1.30 / ±2.87 |
+| without 96 +0 / 2′b | 7 | 7.76 (0.35) | 0.12 | [0, 0.82] | ±1.11 / ±2.50 |
+| 2′b / 2′a only | 4 | 2.44 (0.66) | 0.00 | [0, 0.60] | ±0.88 / ±1.89 |
+
+- **Within-run s.e. of a run's mean ratio:** 0.25–0.78 points (typical 0.38–0.42 for eight replicates).
+- **The between-run run effect is not distinguishable from zero** on these data (Q p = 0.26). The ±1.5 seen between pp3-gap-and-shift and shift-past-2 for +2 (86.50 vs 88.01) is 2.2 times its own within-run s.e. of the difference (0.68): the largest of the seven, but the pooled spread is what within-run noise predicts.
+- **2′b / 2′a repeats closely:** 90.38 / 89.85 at 72; 87.06 / 87.17 at 84; 88.39 / 88.77 / 88.67 at 96.
+- **The 96 +0 / 2′b pair straddles the free-2 meter correction** (6031239): i032-2prime ran before it, 2b-sizes after. The correction adds a charge call per polynomial, so part of its 1.5-point gap (101.98 vs 103.51) may be real code change, not drift. Hence the second row.
+
+**What it does not establish.** Seven pairs and nine degrees of freedom give a weak bound on τ: the Q-profile upper limit (0.94) is almost five times the point estimate. All runs are one machine on one day with one cap; it says nothing about other days, temperatures or machines. Clock options differ between runs (period, inner, skip_launch at 72 and 84), and are folded into τ.
+
+**Recommendation (the user's to adopt; nothing changed):** keep **±1.5 points** in the PROTOCOL guard for comparisons between two 8-replicate runs: it sits above the point estimate (±1.1–1.3) and below the upper bound (±2.5–2.9). Where either run has 4 replicates, use ±2.0. Revisit when more pairs repeat.

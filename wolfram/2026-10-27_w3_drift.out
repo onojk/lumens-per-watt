@@ -1,0 +1,44 @@
+Per group: run, n, mean (points), within-run s.e. of the mean (points)
+72 bits: 2'b / 2'a
+   2b-sizes  n=8  mean 90.38  se 0.28
+   meterhealth  n=4  mean 89.85  se 0.37
+84 bits: 2'b / 2'a
+   2b-sizes  n=8  mean 87.06  se 0.36
+   meterhealth  n=4  mean 87.17  se 0.32
+96 bits: 2'b / 2'a
+   i032-2prime  n=8  mean 88.39  se 0.25
+   shift-past-2  n=8  mean 88.77  se 0.28
+   meterhealth  n=4  mean 88.67  se 0.44
+96 bits: 2'b+pp3 +0 / 2'a
+   i032-2prime  n=8  mean 90.14  se 0.61
+   pp3-gap-and-shift  n=8  mean 90.61  se 0.78
+96 bits: 2'b+pp3 +0 / 2'b
+   i032-2prime  n=8  mean 101.98  se 0.72
+   2b-sizes  n=8  mean 103.51  se 0.70
+96 bits: 2'b+pp3 +1 / 2'a
+   pp3-gap-and-shift  n=8  mean 89.17  se 0.38
+   shift-past-2  n=8  mean 89.41  se 0.47
+96 bits: 2'b+pp3 +2 / 2'a
+   pp3-gap-and-shift  n=8  mean 86.50  se 0.53
+   shift-past-2  n=8  mean 88.01  se 0.42
+
+== all repeated groups: groups 7, df 8
+  Cochran Q (tau=0) = 10.06 on 8 df; p = 0.261
+  between-run sd tau: DL 0.20 points; Q-profile 95% [0.00, 0.94]
+  typical within-run s.e. of a run's mean ratio: 0.42 points (8-replicate runs dominate)
+  95% half-width for (run X ratio) - (run Y ratio), same cell pair: DL 1.30 points; at tau's upper bound 2.87
+  95% half-width for one run's ratio as an estimate of the long-run ratio: 0.92 (upper 2.03)
+
+== excluding 96 +0 / 2'b (its two runs straddle the free-2 meter correction, 6031239): groups 6, df 7
+  Cochran Q (tau=0) = 7.76 on 7 df; p = 0.354
+  between-run sd tau: DL 0.12 points; Q-profile 95% [0.00, 0.82]
+  typical within-run s.e. of a run's mean ratio: 0.38 points (8-replicate runs dominate)
+  95% half-width for (run X ratio) - (run Y ratio), same cell pair: DL 1.11 points; at tau's upper bound 2.50
+  95% half-width for one run's ratio as an estimate of the long-run ratio: 0.79 (upper 1.77)
+
+== 2'b / 2'a only (the adoption-relevant pair): groups 3, df 4
+  Cochran Q (tau=0) = 2.44 on 4 df; p = 0.655
+  between-run sd tau: DL 0.00 points; Q-profile 95% [0.00, 0.60]
+  typical within-run s.e. of a run's mean ratio: 0.32 points (8-replicate runs dominate)
+  95% half-width for (run X ratio) - (run Y ratio), same cell pair: DL 0.88 points; at tau's upper bound 1.89
+  95% half-width for one run's ratio as an estimate of the long-run ratio: 0.62 (upper 1.34)
