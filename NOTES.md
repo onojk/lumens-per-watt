@@ -8193,3 +8193,40 @@ The Gray code maintains `sr`: the roots in x-coordinates, in [0, p). The sieve's
 - **Uncertain inputs:** ~20 A's per number and 267 roots per polynomial are estimates (d7a1fd0; one trace). The cost note before code must count them exactly. The per-A charges assume 1 word per element written.
 - **Not measured:** wall-clock for every option. Option 1 and 2′ remove the pass the retime measured at ~0.51 µs per polynomial (~80 µs per number, ~4% of wall).
 - Ideas checkpoint (2026-10-27): added I-032 (root confirm reads existing roots), I-033 to I-037 (light-meter calibration curve, under-count vs smooth decile, the yield model's raw over-count, root_test re-price at a steady clock, optional frequency cap); IDEAS.md; documentation only.
+
+## I-032 cost model in Wolfram (`wolfram/2026-10-27_i032_cost.wl`, `.out`; model, not a verdict; before any code or predictions; documentation only)
+
+**What it computes:** root confirm alone at 96 bits against the reference, as op counts × prices under official / ruint / Montgomery, for the options in "Design note: root confirm without the per-polynomial offset pass".
+- **Inputs** are the card's measured means per number over the 640 map numbers (card e13603a; run_many per-type counts and phasetime call counts, Oct 27; calibrate.json prices). They are copied into the script.
+  - P = 156.04 polynomials per number.
+  - A = 19.955 A's per number: 20.955 setup-region entries less the pre-loop entry, i.e. 7.82 polynomials per A.
+  - C = 1,012.7 candidates per number (6.49 per polynomial).
+  - B = 1,754.3; M = 1,056.2.
+  - F ≈ 140.0 (candidate-weighted, 134.02 sieved odd primes per candidate + 2 + s, s = 4).
+- **Roots per polynomial, two ways, agreeing:** 263.78 from setup_gray / (P − A) (one Gray update per root per switch), and 263.82 from root mode's extra `word` less its per-candidate part. Hits plus an even v: 6.95 per candidate.
+- **Check:** the script reproduces today's measured root / reference ratios exactly (1.0379 / 0.9051 / 0.9014).
+- **Supersedes the design note's hand table,** which used ~267 roots and 20 A's. The figures move by less than 0.001 except 2′ (0.9882 → 0.9888).
+
+| option | Δ word per number | word per polynomial | word per A | extra word per candidate | official | ruint | Montgomery |
+|---|---|---|---|---|---|---|---|
+| today | 0 | 263.8 (pass) | 0 | 0 | 1.0379 | 0.9051 | 0.9014 |
+| 1 in-place store | +5,349 | 263.8 (store) | 268.0 (`ka`, `tm`) | 0 | **1.0416** | 0.9075 | 0.9037 |
+| 2-literal (sign fix on x < 0) | +32,053 | 0 | 268.0 | 67.0 (half the candidates × 134) | 1.0598 | 0.9191 | 0.9155 |
+| 2-fused (sign fix inside root_test) | −35,812 | 0 | 268.0 | 0 | **1.0134** | 0.8895 | 0.8856 |
+| 2′ Gray-maintained offsets, root mode only | −71,710 | −263.8 (the sieve's own start add removed too) | 531.8 (convert + `ka` + `tm`) | 0 | 0.9888 | 0.8738 | 0.8699 |
+| 2′ card-wide, against the new reference | — | — | — | — | **1.0137** | 0.8877 | 0.8838 |
+
+- **2′ card-wide:** the new reference is 0.9754 / 0.9843 / 0.9842 of today's.
+- **Sensitivities:**
+  - 2-literal official is 1.0413 / 1.0598 / 1.0784 if the share of candidates with x < 0 is 0.3 / 0.5 / 0.7. The 0.5 is assumed (a symmetric interval), not measured.
+  - 2-fused ruint is 0.8895 / 0.9028 / 0.9229 if root_test's price rises × 1.0 / 1.1 / 1.25 when the sign fix is fused in.
+- **Reading:**
+  - Neither option removes the official excess: it stays positive in every option except 2′ in root mode only, and half of that saving belongs to the full pass as well.
+  - The best fair case is about +1.3% official (2-fused, or 2′ against a 2′ reference), against +3.8% today.
+  - Option 1 costs about +0.4% official more than today on the meter and buys only wall-clock.
+- **What it does not establish:**
+  - any wall-clock figure;
+  - whether a fused sign fix may be typed as one root_test op under the fixed classification rule (the user's decision; it needs a benchmark);
+  - the share of candidates with x < 0 (assumed 0.5);
+  - relation identity, which is a code property, argued in the design note and checked only by acceptance.
+- **Machine:** no timed run in progress (root-confirm-2 finished, c5d1034). Three desktop WolframKernel processes were running; wolframscript ran without a license error.

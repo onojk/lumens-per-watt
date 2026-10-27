@@ -140,6 +140,8 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
   (3) no band costs more than 1% above today's card (the per-band gate);
   (4) the balanced bands (smaller factor within 4 bits of half) change by less than 1%.
   Timing: after the meter queue; uses the Oct 25 cost model ("pm1 stage 2: cost model") and its pre-registered predictions, reconciled with these. Evidence: NOTES, "Real-prime split-half search" (honest saving plain 12.1 / 8.1 / 10.0%, paired 17.4 / 14.6 / 12.6%).
+- Status (2026-10-27): **BUILT** (8207851: both cores, gene c, gap table, batch gcd with backtrack; acceptance and parity; restored in NOTES "Step 0a: p-1 stage 2 restored and committed"). The card re-solve that scores (1)-(4) has not run.
+
 
 ### I-017 — 1-2 small ECM curves at 96 bits
 - Date: 2026-10-26. Source: Claude chat, from the user's DP. Trigger: ECM at B1 2^8 with stage 2 is chosen at 96 under all three priors (gain 4.75-7.35%). Our ECM already has a BSGS stage 2 (B2 = 50 B1).
@@ -182,6 +184,7 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - Date: 2026-10-26. Source: the user, from the wall-clock check. Trigger: confirm zero-fills an F-entry vector per candidate (now charged), and the partial table holds F-entry vectors on cold memory (lp_ledger 1.83x at 96).
 - Idea: a card change. Keep each candidate's and relation's exponents as its list of (index, exponent) for the primes that divide it (about 5-15 entries, not F of about 26-122 at 54-96 in the new reference). The combination merges two short lists; the matrix is built from the lists. Most of the vector cost goes.
 - Cost: moderate (both cores, the ledger, the lp table, the matrix build; parity).
+- Status (2026-10-27): **DONE** in Step 1 (0876b5c: sparse relations, sparse combination, GF(2) rows built from the sparse lists; both cores; acceptance and parity). Only the sparse solver remains, as I-025.
 - Decision: pending.
 
 ### I-021 — Jacobi symbol instead of the Legendre power in KS scoring
