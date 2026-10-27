@@ -7512,3 +7512,32 @@ Same simulation and cost model, with each variant's extra sieve hits counted fro
 - **H-18** (iv) extra sieve hits / sieve wall-clock: ~0 (the sieve region within ±3% of the reference per polynomial).
 
 STOP after this for DeepSeek's predictions for (iii) and (iv), then "go".
+
+### Stage H addendum: DeepSeek, Oct 27, round 49 (recorded as given; filed before any stage H comparison run, so sealed; documentation only)
+
+**Accepted:**
+- its (iii) predictions, sealed;
+- the priced-against-wall correction (confirm test 0.114 ruint, not 0.0258; wall share used as priced share), with the reviewer's alternative reason for its direction;
+- the robustness check, confirmed;
+- the variant results and the user's Y1–Y6 score.
+
+**SEALED, cell (iv)** ("2 free" at +3 bits, tc only, all 640 numbers; cell (iv) was added, as pp = 3, in 3356813):
+- **H-16** wall-clock −3% to −11% (−6.5%). Falsified if > +2% or < −17%.
+- **H-17** priced ruint −3% to −13% (−7%). Falsified if < −20% or > +3%.
+- **H-18** sieve wall-clock per polynomial −1% to +1% (0%). Falsified if < −3% or > +3%.
+
+**Mechanism (its section 2):** the prime 2 is 65% of the median and 46% of the mean under-count at 96-bit partials (computed, correct).
+- Reviewer's corrections:
+  1. It assigns the free 2 to the **even**-y class. It is the reverse: for y even, y² − kN is odd (v2 = 0), and the 2 divides only on the odd-y class, as it derived itself in round 41. The same swap runs through its section 4.
+  2. Its quality mechanism ("removing 2^j leaves a smaller odd part, hence smaller q") is wrong: the 2 does not change q. The mechanism is ordering. The added bits make the sieve's ranking of positions more accurate, so a raised threshold keeps the positions with the largest true smooth part, which are the small-q partials, and those combine more.
+- Its 60–70% share for the 2 is an estimate; the model gives B −6.6% against G −8.3% at today's confirm.
+- (The card's code follows round 41's law: the odd-y class for odd kN; the even-y class only for even k, where kN ≡ 2 mod 4.)
+
+**"2 full" against "2 free" (its section 3):** basically right.
+- The 2^j walk costs ~22% extra sieve hits on each kN ≡ 1 mod 8 number (14.4% averaged over the six simulated numbers). It adds bits beyond the free 3 only where 2^4 divides: 1/4 of positions, ~1 extra bit there on average.
+- For kN ≡ 3 mod 4 and 5 mod 8, B and C are identical.
+- Its "v2 ≥ 3 has probability 1/4" should read v2 ≥ 4. (v2 ≥ 3 has probability 1/2: every odd-y position.)
+
+**Per-parity thresholds (its section 4):** "2 free" is equivalent to a lower threshold on the odd-y class.
+- Its first-order condition (one per class, coupled through P) is right in form, with the class labels corrected: the boosted class is odd-y.
+- **Proposed** (not started): a 2D model grid of the two classes' thresholds, then, if it shows a gain beyond ~1 point, a small split test on the card.
