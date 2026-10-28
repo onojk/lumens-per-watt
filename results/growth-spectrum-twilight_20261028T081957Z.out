@@ -1,0 +1,78 @@
+72 theta 0.10-0.12: td 40/40 66497.86, rho 40/40 11595.90, pm1 40/40 1259.67, ecm 40/40 113.32, cfrac 40/40 0.00, qs 40/40 3392.21; best td
+72 theta 0.12-0.14: td 40/40 21915.40, rho 40/40 6910.63, pm1 40/40 1259.67, ecm 40/40 113.57, cfrac 40/40 0.00, qs 40/40 290.86; best td
+72 theta 0.14-0.16: td 40/40 9690.63, rho 40/40 5164.36, pm1 34/40 1070.72, ecm 40/40 113.56, cfrac 40/40 0.00, qs 40/40 151.21; best td
+72 theta 0.16-0.18: td 40/40 3126.80, rho 40/40 3493.27, pm1 30/40 944.75, ecm 40/40 113.33, cfrac 40/40 0.00, qs 40/40 132.95; best rho
+72 theta 0.18-0.20: td 40/40 1230.94, rho 40/40 2410.51, pm1 26/40 818.78, ecm 40/40 108.27, cfrac 40/40 0.00, qs 40/40 122.94; best rho
+72 theta 0.20-0.22: td 40/40 442.45, rho 34/40 1399.25, pm1 23/40 724.31, ecm 40/40 90.28, cfrac 40/40 0.00, qs 40/40 123.17; best rho
+72 theta 0.22-0.24: td 40/40 172.41, rho 27/40 952.61, pm1 17/40 535.36, ecm 40/40 85.86, cfrac 40/40 0.00, qs 40/40 123.55; best rho
+72 theta 0.24-0.26: td 40/40 68.56, rho 8/40 245.11, pm1 9/40 283.43, ecm 40/40 82.66, cfrac 40/40 0.00, qs 40/40 124.96; best pm1; TWILIGHT
+72 theta 0.26-0.28: td 40/40 21.18, rho 4/40 118.45, pm1 9/40 283.43, ecm 40/40 64.58, cfrac 40/40 0.00, qs 40/40 129.43; best pm1; TWILIGHT
+72 theta 0.28-0.30: td 40/40 8.84, rho 3/40 90.31, pm1 10/40 314.92, ecm 40/40 63.70, cfrac 40/40 0.00, qs 40/40 120.50; best pm1
+72 theta 0.30-0.32: td 11/40 0.94, rho 0/40 0.00, pm1 4/40 125.97, ecm 40/40 44.03, cfrac 40/40 0.00, qs 40/40 122.20; best pm1; TWILIGHT
+72 theta 0.32-0.34: td 0/40 0.00, rho 0/40 0.00, pm1 4/40 125.97, ecm 40/40 44.91, cfrac 40/40 0.00, qs 40/40 121.02; best pm1; TWILIGHT
+72 theta 0.34-0.36: td 0/40 0.00, rho 0/40 0.00, pm1 3/40 94.48, ecm 40/40 43.23, cfrac 40/40 0.00, qs 40/40 121.38; best qs; TWILIGHT
+72 theta 0.36-0.38: td 0/40 0.00, rho 0/40 0.00, pm1 3/40 94.48, ecm 40/40 37.08, cfrac 40/40 0.00, qs 40/40 120.92; best qs; TWILIGHT
+72 theta 0.38-0.40: td 0/40 0.00, rho 0/40 0.00, pm1 4/40 125.97, ecm 40/40 30.51, cfrac 40/40 0.00, qs 40/40 124.32; best pm1; TWILIGHT
+72 theta 0.40-0.42: td 0/40 0.00, rho 0/40 0.00, pm1 2/40 62.98, ecm 40/40 21.69, cfrac 40/40 0.00, qs 40/40 124.01; best qs; TWILIGHT
+72 theta 0.42-0.44: td 0/40 0.00, rho 0/40 0.00, pm1 2/40 62.98, ecm 40/40 19.76, cfrac 40/40 0.00, qs 40/40 121.56; best qs; TWILIGHT
+72 theta 0.44-0.46: td 0/40 0.00, rho 0/40 0.00, pm1 1/40 31.49, ecm 40/40 12.44, cfrac 40/40 0.00, qs 40/40 120.34; best qs
+72 theta 0.46-0.48: td 0/40 0.00, rho 0/40 0.00, pm1 0/40 0.00, ecm 40/40 11.22, cfrac 40/40 0.00, qs 40/40 121.46; best qs
+72 theta 0.48-0.50: td 0/40 0.00, rho 0/40 0.00, pm1 0/40 0.00, ecm 40/40 10.43, cfrac 40/40 0.00, qs 40/40 121.17; best qs
+84 theta 0.10-0.12: td 40/40 26125.07, rho 40/40 8915.79, pm1 40/40 323.43, ecm 40/40 56.75, cfrac 40/40 0.00, qs 40/40 1379.35; best td
+84 theta 0.12-0.14: td 40/40 8270.74, rho 40/40 4821.04, pm1 40/40 323.43, ecm 40/40 57.14, cfrac 40/40 0.00, qs 40/40 80.42; best td
+84 theta 0.14-0.16: td 40/40 2619.92, rho 40/40 3370.07, pm1 35/40 283.00, ecm 40/40 56.96, cfrac 40/40 0.00, qs 40/40 52.71; best rho
+84 theta 0.16-0.18: td 40/40 723.83, rho 40/40 1780.78, pm1 28/40 226.40, ecm 40/40 53.27, cfrac 40/40 0.00, qs 40/40 52.58; best rho
+84 theta 0.18-0.20: td 40/40 256.88, rho 40/40 1059.19, pm1 32/40 258.74, ecm 40/40 47.78, cfrac 40/40 0.00, qs 40/40 49.88; best rho
+84 theta 0.20-0.22: td 40/40 78.74, rho 39/40 582.01, pm1 19/40 153.63, ecm 40/40 46.86, cfrac 40/40 0.00, qs 40/40 47.42; best rho
+84 theta 0.22-0.24: td 40/40 23.50, rho 33/40 426.24, pm1 17/40 137.46, ecm 40/40 42.12, cfrac 40/40 0.00, qs 40/40 49.89; best rho
+84 theta 0.24-0.26: td 40/40 8.41, rho 19/40 173.34, pm1 15/40 121.29, ecm 40/40 32.17, cfrac 40/40 0.00, qs 40/40 48.37; best rho
+84 theta 0.26-0.28: td 0/40 0.00, rho 7/40 56.29, pm1 4/40 32.34, ecm 40/40 29.70, cfrac 40/40 0.00, qs 40/40 46.57; best rho; TWILIGHT
+84 theta 0.28-0.30: td 0/40 0.00, rho 1/40 7.59, pm1 10/40 80.86, ecm 40/40 28.26, cfrac 40/40 0.00, qs 40/40 47.08; best pm1; TWILIGHT
+84 theta 0.30-0.32: td 0/40 0.00, rho 0/40 0.00, pm1 6/40 48.51, ecm 40/40 27.39, cfrac 40/40 0.00, qs 40/40 49.38; best qs; TWILIGHT
+84 theta 0.32-0.34: td 0/40 0.00, rho 0/40 0.00, pm1 11/40 88.94, ecm 40/40 23.53, cfrac 40/40 0.00, qs 40/40 48.60; best pm1; TWILIGHT
+84 theta 0.34-0.36: td 0/40 0.00, rho 0/40 0.00, pm1 7/40 56.60, ecm 40/40 13.96, cfrac 40/40 0.00, qs 40/40 49.46; best pm1; TWILIGHT
+84 theta 0.36-0.38: td 0/40 0.00, rho 0/40 0.00, pm1 3/40 24.26, ecm 40/40 12.35, cfrac 40/40 0.00, qs 40/40 48.37; best qs; TWILIGHT
+84 theta 0.38-0.40: td 0/40 0.00, rho 0/40 0.00, pm1 3/40 24.26, ecm 40/40 9.25, cfrac 40/40 0.00, qs 40/40 49.30; best qs; TWILIGHT
+84 theta 0.40-0.42: td 0/40 0.00, rho 0/40 0.00, pm1 1/40 8.09, ecm 40/40 6.35, cfrac 40/40 0.00, qs 40/40 48.17; best qs
+84 theta 0.42-0.44: td 0/40 0.00, rho 0/40 0.00, pm1 5/40 40.43, ecm 40/40 4.94, cfrac 40/40 0.00, qs 40/40 48.63; best qs; TWILIGHT
+84 theta 0.44-0.46: td 0/40 0.00, rho 0/40 0.00, pm1 0/40 0.00, ecm 40/40 5.72, cfrac 40/40 0.00, qs 40/40 49.89; best qs
+84 theta 0.46-0.48: td 0/40 0.00, rho 0/40 0.00, pm1 3/40 24.26, ecm 40/40 3.77, cfrac 40/40 0.00, qs 40/40 46.84; best qs; TWILIGHT
+84 theta 0.48-0.50: td 0/40 0.00, rho 0/40 0.00, pm1 1/40 8.09, ecm 37/40 3.25, cfrac 40/40 0.00, qs 40/40 50.05; best qs
+96 theta 0.10-0.12: td 40/40 11229.11, rho 40/40 5935.54, pm1 40/40 161.61, ecm 40/40 30.53, cfrac 40/40 0.00, qs 40/40 308.43; best td
+96 theta 0.12-0.14: td 40/40 2934.07, rho 40/40 3314.03, pm1 40/40 161.61, ecm 40/40 30.53, cfrac 40/40 0.00, qs 40/40 17.83; best rho
+96 theta 0.14-0.16: td 40/40 761.78, rho 40/40 1659.66, pm1 37/40 149.49, ecm 40/40 30.50, cfrac 40/40 0.00, qs 40/40 18.75; best rho
+96 theta 0.16-0.18: td 40/40 174.54, rho 40/40 906.58, pm1 29/40 117.16, ecm 40/40 27.66, cfrac 40/40 0.00, qs 40/40 18.59; best rho
+96 theta 0.18-0.20: td 40/40 57.45, rho 40/40 584.77, pm1 33/40 133.33, ecm 40/40 24.82, cfrac 40/40 0.00, qs 40/40 18.64; best rho
+96 theta 0.20-0.22: td 40/40 14.04, rho 40/40 319.75, pm1 21/40 84.84, ecm 40/40 21.56, cfrac 40/40 0.00, qs 40/40 18.00; best rho
+96 theta 0.22-0.24: td 28/40 3.08, rho 40/40 186.17, pm1 17/40 68.68, ecm 40/40 20.47, cfrac 40/40 0.00, qs 40/40 19.00; best rho
+96 theta 0.24-0.26: td 0/40 0.00, rho 23/40 66.22, pm1 15/40 60.60, ecm 40/40 15.91, cfrac 40/40 0.00, qs 40/40 17.90; best rho
+96 theta 0.26-0.28: td 0/40 0.00, rho 10/40 24.48, pm1 11/40 44.44, ecm 40/40 14.01, cfrac 40/40 0.00, qs 40/40 18.27; best pm1; TWILIGHT
+96 theta 0.28-0.30: td 0/40 0.00, rho 2/40 4.61, pm1 11/40 44.44, ecm 40/40 11.86, cfrac 40/40 0.00, qs 40/40 19.33; best pm1; TWILIGHT
+96 theta 0.30-0.32: td 0/40 0.00, rho 1/40 2.28, pm1 6/40 24.24, ecm 40/40 8.81, cfrac 40/40 0.00, qs 40/40 17.93; best pm1; TWILIGHT
+96 theta 0.32-0.34: td 0/40 0.00, rho 0/40 0.00, pm1 2/40 8.08, ecm 40/40 8.07, cfrac 40/40 0.00, qs 40/40 19.33; best qs; TWILIGHT
+96 theta 0.34-0.36: td 0/40 0.00, rho 0/40 0.00, pm1 2/40 8.08, ecm 40/40 4.93, cfrac 40/40 0.00, qs 40/40 18.66; best qs; TWILIGHT
+96 theta 0.36-0.38: td 0/40 0.00, rho 0/40 0.00, pm1 2/40 8.08, ecm 39/40 4.35, cfrac 40/40 0.00, qs 40/40 18.79; best qs; TWILIGHT
+96 theta 0.38-0.40: td 0/40 0.00, rho 0/40 0.00, pm1 0/40 0.00, ecm 37/40 2.89, cfrac 40/40 0.00, qs 40/40 18.09; best qs
+96 theta 0.40-0.42: td 0/40 0.00, rho 0/40 0.00, pm1 2/40 8.08, ecm 36/40 2.30, cfrac 40/40 0.00, qs 40/40 19.47; best qs; TWILIGHT
+96 theta 0.42-0.44: td 0/40 0.00, rho 0/40 0.00, pm1 3/40 12.12, ecm 35/40 2.05, cfrac 40/40 0.00, qs 40/40 18.75; best qs; TWILIGHT
+96 theta 0.44-0.46: td 0/40 0.00, rho 0/40 0.00, pm1 2/40 8.08, ecm 30/40 1.78, cfrac 40/40 0.00, qs 40/40 19.13; best qs; TWILIGHT
+96 theta 0.46-0.48: td 0/40 0.00, rho 0/40 0.00, pm1 1/40 4.04, ecm 32/40 2.09, cfrac 40/40 0.00, qs 40/40 18.08; best qs
+96 theta 0.48-0.50: td 0/40 0.00, rho 0/40 0.00, pm1 2/40 8.08, ecm 28/40 1.31, cfrac 40/40 0.00, qs 40/40 19.27; best qs; TWILIGHT
+instruction check 72 bits td: op-class / instructions pooled 0.617; bands off by > 25%: 0.10 (0.40), 0.12 (0.68)
+instruction check 72 bits rho: op-class / instructions pooled 1.099; bands off by > 25%: none
+instruction check 72 bits pm1: op-class / instructions pooled 0.769; bands off by > 25%: none
+instruction check 72 bits ecm: op-class / instructions pooled 1.012; bands off by > 25%: none
+instruction check 72 bits cfrac: op-class / instructions pooled 1.027; bands off by > 25%: 0.10 (1.53), 0.12 (2.00)
+instruction check 72 bits qs: op-class / instructions pooled 1.093; bands off by > 25%: 0.10 (0.59)
+instruction check 84 bits td: op-class / instructions pooled 0.602; bands off by > 25%: 0.10 (0.61)
+instruction check 84 bits rho: op-class / instructions pooled 1.107; bands off by > 25%: none
+instruction check 84 bits pm1: op-class / instructions pooled 0.780; bands off by > 25%: none
+instruction check 84 bits ecm: op-class / instructions pooled 1.032; bands off by > 25%: none
+instruction check 84 bits cfrac: op-class / instructions pooled 1.055; bands off by > 25%: 0.10 (1.59), 0.12 (2.09)
+instruction check 84 bits qs: op-class / instructions pooled 1.092; bands off by > 25%: 0.10 (0.56)
+instruction check 96 bits td: op-class / instructions pooled 0.558; bands off by > 25%: none
+instruction check 96 bits rho: op-class / instructions pooled 1.103; bands off by > 25%: none
+instruction check 96 bits pm1: op-class / instructions pooled 0.782; bands off by > 25%: none
+instruction check 96 bits ecm: op-class / instructions pooled 1.036; bands off by > 25%: none
+instruction check 96 bits cfrac: op-class / instructions pooled 1.064; bands off by > 25%: 0.10 (1.81)
+instruction check 96 bits qs: op-class / instructions pooled 1.098; bands off by > 25%: none
