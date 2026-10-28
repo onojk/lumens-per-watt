@@ -22,6 +22,7 @@ This file is the single source of truth for the workflow. Tool details are in `w
   - Any transfer across sizes or cells names its scaling assumption and widens the range by the measured cross-run drift (±1.5 points) plus a stated allowance.
   - Before using a quoted number, state which comparison, which base and which pricing it is.
   - Any categorical word in a prediction ("largest", "best", "better") is defined in the prediction itself: absolute or increase; point estimate or interval.
+  - **Qualitative claims in updates (adopted Oct 27, the user):** any qualitative claim relayed to forecasters in an update (for example "allocator code is short, cache-friendly") is labelled **"unmeasured opinion"** in the update. Forecasters treat it as an opinion, not an input. This follows the shared under-prediction in Run D (alloc-once).
 - **Predicting a counts-identical change's wall effect (from Oct 27, prospective; all forecasters):**
   - Predict the wall change as ρ × (instructions removed ÷ total instructions), both from callgrind on the same inputs.
   - **Default ρ = 0.85–1.06** (measured: Run D, alloc-once, 72 / 84 / 96). A different band may be used only if it was **measured for comparable code beforehand**; name that measurement.

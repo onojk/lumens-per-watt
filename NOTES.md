@@ -10331,12 +10331,23 @@ R-26, D-26 and G-19 all predicted a wall saving well below the instruction drop,
 ### DeepSeek's reply on Run D (23:10 Oct 27 PT; information only; verbatim)
 
 <!-- verbatim begin -->
-[PLACEHOLDER: the user's brief asked for DeepSeek's 23:10 reply to be recorded here verbatim, but the brief did not contain its text. To be filled verbatim when the user pastes it.]
+## Recorded
+- Run D recorded: allocate-once wall change −25.31% / −15.95% / −10.72% at 72 / 84 / 96, intervals excluding zero; instructions removed −29.7 / −17.3 / −10.1%; time-saved/instructions-removed ratio 0.85 / 0.92 / 1.06. Byte-identical outputs, factor and op counts; parity clean. Run on battery (61% → 60%), frequency policy unchanged; ratios within-run and valid, absolute times not comparable with AC runs.
+- D-26 falsified at all three sizes, every saving larger than my range. Grok G-19 ranges missed, falsifier triggered only at 72. Reviewer R-26 missed at all three. No rescore.
+- Reviewer's admission recorded and accepted: the line "instruction drops do not translate one-for-one into time (allocator code is short, cache-friendly)" was the reviewer's and was wrong — malloc/free touch scattered memory and churn the cache, so their instructions cost at least the average. My wall-to-instruction ratio of 0.30–0.80 (central 0.55) followed that line; the shared under-prediction is recorded as seeded by the reviewer's text, and the D-26 working is otherwise sound. I take my share of the miss: I adopted a qualitative claim as a quantitative input without a measured per-instruction cost.
+- Card status recorded: three unpriced costs found this week (wasted offset pass, A-prime scan, allocation) delivered most of the speed-up; estimated card / YAFU QS now about 1.28 / 1.34 / 1.68 at 72 / 84 / 96, an estimate, not a measurement.
+## Answer: rule for turning a callgrind drop into a wall prediction
+Formula. For the next counts-identical change, predict the wall change as ΔW = ρ · (ΔI_removed / I_total), ρ = (time saved / instructions removed) / (time / I_total), measured on this card, this machine, capped, and use the current Run D value ρ = 0.85–1.06 (central 0.95) when the removed instructions touch scattered memory or the cache, and ρ = 0.55–0.80 (central 0.65) only when the removed instructions are demonstrably register-resident and branch-predictable, with the choice of band declared before the run and the band frozen for that change.
+Width. Sealed range = ρ_band × ΔI/I_total, widened by ±3 points on the percentage scale to satisfy my ±3-point minimum, and widened further by the cross-run allowance only if the comparison is between runs rather than within one. The lesson from D-26 is that ρ must be measured, not asserted, and the safe default is the allocator-like band (0.85–1.06) unless the removed code is explicitly shown to be register-resident.
+No sealed prediction is filed from this message.
 <!-- verbatim end -->
 
 ### Grok's reply on Run D (23:14 Oct 27 PT; information only; verbatim)
 
 <!-- verbatim begin -->
-[PLACEHOLDER: the user's brief asked for Grok's 23:14 reply to be recorded here verbatim, but the brief did not contain its text. To be filled verbatim when the user pastes it.]
+**Information-only view**
+A counts-identical change that removes a large volume of cache-friendly arithmetic (for example a redundant modular reduction or root-test comparison that already hits in L1) would drive rho well below 0.85, because those instructions cost less wall time per instruction than the allocator traffic measured in Run D. Conversely, a change that eliminates a small number of scattered pointer-chasing or atomic operations inside the large-prime hash or the kept-relation ledger would push rho well above 1.06, since each of those instructions already stalls on memory and therefore accounts for more wall time than the average instruction the current rho band assumes.
 <!-- verbatim end -->
+
+**Note on DeepSeek's reply** (the user's ruling, already in PROTOCOL.md, 3054d88): its 0.55–0.80 "register-resident" band is unmeasured, so it is not used until measured, and its flat ±3-point floor is replaced by the proportional floor (±30%, at least 1 point). Its quote attributes "(allocator code is short, cache-friendly)" to the relayed update line. The relayed text on file reads "Instruction drops do not translate one-for-one into time." The parenthesis is the user's summary of the reviewer's R-26 basis ("malloc paths are cache-friendly short instructions").
 
