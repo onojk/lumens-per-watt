@@ -10019,3 +10019,46 @@ Part 1 ran twice: `partition`'s import cleared `sys.argv`, so the first `part2` 
 - **Optional, the user's call:** a YAFU build with `-march=native` (`USE_NATIVE=1`) as an extra cell, like msieve's native/x86-64 pair.
 - **Not included:** `tune()` (no effect on this path; see above).
 - **Wolfram:** none needed before sealing. The diagnosis numbers above are the forecasters' input; they were measured post hoc and are disclosed.
+
+## Run C (baseline-yafu-qs): the card's QS against YAFU's QS called directly (sealed; predictions 7af3d61 / bb0ea99 / 2db9534; runner 8867cac; result 9f95b11)
+
+**In plain English first: sieve against sieve, YAFU's small-input QS is faster than the card's: 1.7× at 72 bits, 1.6× at 84 and 1.9× at 96, by YAFU's own (instrumented) clock.** YAFU as a program is still slower per number than the card: about 5.8–6.0 ms of fixed overhead per number in batch (mostly re-sieving the primes to 10⁷ for every line) dwarfs its QS. Card / `siqs()` wall is 0.14 / 0.23 / 0.44. All nine sealed predictions hit.
+
+`results/baseline-yafu-qs_20261028T042027Z.out`; `evolve/baseline_yafu_qs.py`, `.json`; the instrumentation `evolve/yafu_timed.patch` (a monotonic clock around the `tinysiqs` call, printed to stderr; build sha256 1a4e1441…). Card: the current reference (2′b + the A-prime fix, ef345913…). 4 replicates; core 2 at a median of 2,400 MHz in every cell; AC, cap 2,400 MHz, TCPU 50 °C at the start, no Wolfram kernel. **Factor checks: 0 failures in every cell.** The instrumentation's cost: the uninstrumented `siqs()` wall is 6.264 / 6.837 / 7.833 ms against instrumented 6.316 / 6.836 / 7.840 (one pass; within noise).
+
+**Balanced band (80 numbers), ms per number, the means of 4 replicates:**
+
+| bits | card | YAFU internal tinysiqs | **card / internal (sealed)** | `siqs()` wall | siqs wall − internal | `smallmpqs` | `abs` floor | card / (qs − floor), option (b) |
+|---|---|---|---|---|---|---|---|---|
+| 72 | 0.876 | 0.510 | **1.718** [1.624, 1.813] | 6.316 | **5.806** [5.758, 5.854] | 5.306 | 4.631 | 1.315 [1.053, 1.578] |
+| 84 | 1.592 | 0.999 | **1.594** [1.551, 1.638] | 6.836 | 5.838 [5.792, 5.883] | 5.781 | 4.603 | 1.353 [1.240, 1.466] |
+| 96 | 3.425 | 1.823 | **1.879** [1.838, 1.919] | 7.840 | **6.016** [5.928, 6.105] | 6.581 | 4.605 | 1.736 [1.599, 1.874] |
+
+- **Card / `siqs()` wall** (YAFU as a program, QS called directly): 0.139 / 0.233 / 0.437. Card / `smallmpqs` wall: 0.165 / 0.275 / 0.521.
+- **All map numbers** (information; 480 / 560 / 640): card / internal 1.593 / 1.534 / 1.832; card / `siqs()` wall 0.149 / 0.253 / 0.470. tinysiqs runs the full QS on every number, small factor or not, as the card's qs does.
+- **The overhead, decomposed** (96, balanced): about 4.6 ms is the floor (`abs`), about 1.3 ms is `siqs()`'s checks plus the one-time 77 ms over 80 numbers (siqs − smallmpqs), and about 0.15 ms is tinysiqs's set-up and output (smallmpqs − abs − internal).
+- **Option (b) against (a):** the subtraction estimate (qs − floor) runs above the instrumented time (0.675 / 1.178 / 1.976 against 0.510 / 0.999 / 1.823 ms), so it understates YAFU's QS speed, most at 72. Its intervals are also much wider.
+- **Callgrind cross-check** (clock-free; 10 balanced numbers): the card executes 8.45 / 15.23 / 33.98 M instructions per number, tinysiqs 2.49 / 6.40 / 14.95 M: the card runs **3.4 / 2.4 / 2.3× the instructions**, but only 1.7 / 1.6 / 1.9× the time. The card retires more instructions per nanosecond, so the instruction gap overstates the time gap.
+
+**Scored as filed** (the point mean against each range):
+
+| prediction | quantity | range | measured | result |
+|---|---|---|---|---|
+| R-23 | 96, card / internal | 1.2–2.2 | 1.879 | **hit** |
+| R-24 | 72, card / internal | 1.0–1.8 | 1.718 | **hit** |
+| R-25 | 96, siqs wall − internal | > 3 ms | 6.02 ms | **hit** |
+| D-23 | 96, card / internal | 0.55–2.00 | 1.879 | **hit** |
+| D-24 | 72, card / internal | 0.65–2.10 | 1.718 | **hit** |
+| D-25 | 96, overhead | 3.5–9.5 ms | 6.02 ms | **hit** |
+| G-16 | 96, card / internal | 1.4–2.2 | 1.879 | **hit** |
+| G-17 | 72, card / internal | 1.1–1.8 | 1.718 | **hit** (its interval [1.624, 1.813] crosses the top) |
+| G-18 | 96, overhead | 3.5–6.5 ms | 6.02 ms | **hit** |
+
+All forecasters saw the unsealed 1.3–1.7× estimate first, so these hits test calibration on a disclosed estimate, not foresight. The ranges differ in width: Grok's are the narrowest (G-16 0.8 wide, G-17 0.7), DeepSeek's the widest (D-23 1.45, D-24 1.45).
+
+**What this means for the card (a reading, not a verdict):** YAFU's tinysiqs does the same job in 30–44% of the card's instructions. The card's QS has room for a constant-factor gain of about 1.6–1.9× in time before it matches a tuned small-input SIQS. Where that gap sits (sieve, candidate checks, linear algebra) is not measured here; tinysiqs's design is described in its source header ("extensions of the MPQS code of F. Bahr, used in the lattice sievers by Jens Franke"). Any port would follow the reuse and licence rules: algorithms from descriptions and papers, not code.
+
+**Not established:**
+- YAFU's internal time is from one instrumented copy. Its ±1% agreement with the uninstrumented wall rules out a timer cost, not a different code layout.
+- The callgrind comparison counts instructions only: no cache or branch model.
+- The `-march=native` YAFU build (optional) was not built.
