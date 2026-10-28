@@ -10552,3 +10552,5 @@ Total: about 1–3 hours of lampcore counting for the rest; wall timing roughly 
   - repeat at 104 bits once the growth harness exists.
 
 **Not established:** a few bands' light rests on a handful of successes (rho at 36–42 bits, ECM at θ 0.5). No intervals are given here (a bootstrap is cheap if wanted). One seed set per size.
+
+**Correction to the dark-regions entry:** "today's reference, which is several times cheaper per number" was not checked. Today's reference has not been counted on these map numbers, and the old meter undercounts the old card (no word-level types), so even the direction of the difference in priced cost is not established. What stands is that the maps' QS is a different card under a different meter, so the plateau's absolute light, and where QS overtakes ECM, are not today's. The redraw with today's reference (a counts-only pass) would settle it.
