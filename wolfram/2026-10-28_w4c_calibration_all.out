@@ -1,0 +1,181 @@
+== 1. Stated confidence against outcome (Brier score: mean (p - outcome)^2; 0.25 = always saying 50%)
+reviewer: 19 scored
+   R-29 (growth v1): QS doubling period 80-96 in 9-14: stated 70%, outcome 1 (second score 1)
+   R-30 (growth v1): rho doubling period 3.5-5: stated 75%, outcome 1 (second score 1)
+   R-31 (growth v1): rho / QS cross 48-64 (op-class, ruling): stated 65%, outcome 0 (second score 0)
+   R-32 (light spectrum v1): QS-best band 0.34-0.42: stated 65%, outcome 0 (second score 0)
+   R-33 (twilight): robust ratio 0.80-1.02 (by construction): stated 60%, outcome 1 (second score 1)
+   R-20 wall 72 (Run A (aprime-fix)): stated 70%, outcome 1 (second score 1)
+   R-20 wall 84 (Run A (aprime-fix)): stated 70%, outcome 1 (second score 1)
+   R-20 wall 96 (Run A (aprime-fix)): stated 70%, outcome 0 (second score 0)
+   R-21 card / YAFU wall (Run B (baseline-yafu)): stated 65%, outcome 0 (second score 0)
+   R-22 card / YAFU wall (Run B (baseline-yafu)): stated 60%, outcome 0 (second score 0)
+   R-23 card / YAFU internal (Run C (baseline-yafu-qs)): stated 70%, outcome 1 (second score 1)
+   R-24 card / YAFU internal (Run C (baseline-yafu-qs)): stated 65%, outcome 1 (second score 1)
+   R-25 YAFU overhead ms (Run C (baseline-yafu-qs)): stated 60%, outcome 1 (second score 1)
+   R-26 wall 72 (Run D (alloc-once)): stated 60%, outcome 0 (second score 0)
+   R-26 wall 84 (Run D (alloc-once)): stated 60%, outcome 0 (second score 0)
+   R-26 wall 96 (Run D (alloc-once)): stated 60%, outcome 0 (second score 0)
+   R-27 wall 72 (Run E (div64)): stated 65%, outcome 0 (second score 0)
+   R-27 wall 84 (Run E (div64)): stated 65%, outcome 0 (second score 0)
+   R-27 wall 96 (Run E (div64)): stated 65%, outcome 1 (second score 1)
+   mean stated 65.3%, hit rate 47.4% (second scores 47.4%)
+   Brier 0.265 (second scores 0.265)
+DeepSeek: 21 scored
+   D-9 (i032-2prime): 2'b+pp3 not better under all three: stated 65%, outcome 0 (second score 1)
+   D-14 (pp3-gap-and-shift): lp_ledger carries most of the rest: stated 50%, outcome 0 (second score 0)
+   D-29 (growth v1): QS doubling period 7.5-15.5: stated 25%, outcome 1 (second score 1)
+   D-30 (growth v1): rho doubling period 2.5-6.5: stated 15%, outcome 1 (second score 1)
+   D-31 (growth v1): rho / QS cross 56-96 (falsified): stated 15%, outcome 0 (second score 0)
+   D-32 (light spectrum v1): QS-best band 0.25-0.40: stated 30%, outcome 1 (second score 1)
+   D-33 (twilight): robust ratio 0.60-1.40 (by construction): stated 20%, outcome 1 (second score 1)
+   D-20 wall 72 (Run A (aprime-fix)): stated 75%, outcome 1 (second score 1)
+   D-20 wall 84 (Run A (aprime-fix)): stated 75%, outcome 1 (second score 1)
+   D-20 wall 96 (Run A (aprime-fix)): stated 75%, outcome 1 (second score 1)
+   D-21 card / YAFU wall (Run B (baseline-yafu)): stated 60%, outcome 0 (second score 0)
+   D-22 card / YAFU wall (Run B (baseline-yafu)): stated 60%, outcome 0 (second score 0)
+   D-23 card / YAFU internal (Run C (baseline-yafu-qs)): stated 55%, outcome 1 (second score 1)
+   D-24 card / YAFU internal (Run C (baseline-yafu-qs)): stated 55%, outcome 1 (second score 1)
+   D-25 YAFU overhead ms (Run C (baseline-yafu-qs)): stated 55%, outcome 1 (second score 1)
+   D-26 wall 72 (Run D (alloc-once)): stated 55%, outcome 0 (second score 0)
+   D-26 wall 84 (Run D (alloc-once)): stated 55%, outcome 0 (second score 0)
+   D-26 wall 96 (Run D (alloc-once)): stated 55%, outcome 0 (second score 0)
+   D-27 wall 72 (Run E (div64)): stated 60%, outcome 1 (second score 1)
+   D-27 wall 84 (Run E (div64)): stated 60%, outcome 0 (second score 0)
+   D-27 wall 96 (Run E (div64)): stated 60%, outcome 1 (second score 1)
+   mean stated 51.2%, hit rate 57.1% (second scores 61.9%)
+   Brier 0.296 (second scores 0.282)
+Grok: 22 scored
+   G-4 (i032-2prime): 2'b+pp3 not better under all three: stated 65%, outcome 0 (second score 1)
+   G-7 (pp3-gap-and-shift): lp_ledger carries most of the rest: stated 60%, outcome 0 (second score 0)
+   G-9 (2b-sizes): 2'b faster than 2'a on wall at 72 and 84: stated 75%, outcome 1 (second score 1)
+   G-22 (growth v1): QS doubling period 8-16: stated 65%, outcome 1 (second score 1)
+   G-23 (growth v1): rho doubling period 3-5.5: stated 75%, outcome 1 (second score 1)
+   G-24 (growth v1): rho / QS cross 56-96 (falsified): stated 55%, outcome 0 (second score 0)
+   G-25 (light spectrum v1): QS-best band 0.32-0.40: stated 60%, outcome 1 (second score 1)
+   G-26 (twilight): robust ratio 0.45-1.05 (by construction): stated 50%, outcome 1 (second score 1)
+   G-13 wall 72 (Run A (aprime-fix)): stated 70%, outcome 1 (second score 1)
+   G-13 wall 84 (Run A (aprime-fix)): stated 70%, outcome 1 (second score 1)
+   G-13 wall 96 (Run A (aprime-fix)): stated 65%, outcome 0 (second score 0)
+   G-14 card / YAFU wall (Run B (baseline-yafu)): stated 55%, outcome 0 (second score 0)
+   G-15 card / YAFU wall (Run B (baseline-yafu)): stated 50%, outcome 0 (second score 0)
+   G-16 card / YAFU internal (Run C (baseline-yafu-qs)): stated 60%, outcome 1 (second score 1)
+   G-17 card / YAFU internal (Run C (baseline-yafu-qs)): stated 55%, outcome 1 (second score 1)
+   G-18 YAFU overhead ms (Run C (baseline-yafu-qs)): stated 50%, outcome 1 (second score 1)
+   G-19 wall 72 (Run D (alloc-once)): stated 60%, outcome 0 (second score 0)
+   G-19 wall 84 (Run D (alloc-once)): stated 60%, outcome 0 (second score 0)
+   G-19 wall 96 (Run D (alloc-once)): stated 55%, outcome 0 (second score 0)
+   G-20 wall 72 (Run E (div64)): stated 60%, outcome 0 (second score 0)
+   G-20 wall 84 (Run E (div64)): stated 60%, outcome 0 (second score 0)
+   G-20 wall 96 (Run E (div64)): stated 55%, outcome 1 (second score 1)
+   mean stated 60.5%, hit rate 50.0% (second scores 54.5%)
+   Brier 0.248 (second scores 0.234)
+   Calibration bin 0-39%: 5 rows, 4 hit, mean stated 21.0%
+   Calibration bin 40-60%: 33 rows, 13 hit, mean stated 57.1%
+   Calibration bin 61-100%: 24 rows, 15 hit, mean stated 69.0%
+   62 rows: a 95% Wilson interval on 32 hits in 62 is [39%, 64%]
+
+== 2. Sealed ranges: width against hit rate
+ratio ranges (points):
+   reviewer: n 29, hit 23 (79%, 95% [62, 90]); second scores 14; median width 4.00; median |err| 1.10; median z 0.52; mean signed err -15.11
+   DeepSeek: n 29, hit 16 (55%, 95% [38, 72]); second scores 9; median width 2.00; median |err| 2.17; median z 0.62; mean signed err -3.01
+   Grok: n 29, hit 19 (66%, 95% [47, 80]); second scores 10; median width 2.00; median |err| 0.78; median z 0.31; mean signed err -3.06
+pct ranges (% points of wall):
+   reviewer: n 18, hit 12 (67%, 95% [44, 84]); second scores 12; median width 4.70; median |err| 1.40; median z 0.54; mean signed err -1.05
+   DeepSeek: n 17, hit 13 (76%, 95% [53, 90]); second scores 13; median width 4.00; median |err| 1.10; median z 0.54; mean signed err -1.17
+   Grok: n 18, hit 9 (50%, 95% [29, 71]); second scores 9; median width 3.00; median |err| 1.78; median z 1.03; mean signed err -1.50
+us ranges (% of midpoint):
+   reviewer: n 1, hit 1 (100%, 95% [21, 100]); second scores 1; median width 58.82; median |err| 6.59; median z 0.22; mean signed err -6.59
+   DeepSeek: n 6, hit 2 (33%, 95% [10, 70]); second scores 2; median width 62.75; median |err| 72.67; median z 2.56; mean signed err -38.06
+   Grok: n 4, hit 2 (50%, 95% [15, 85]); second scores 2; median width 44.44; median |err| 45.77; median z 1.98; mean signed err -38.32
+bits ranges (bits):
+   reviewer: n 3, hit 2 (67%, 95% [21, 94]); second scores 2; median width 5.00; median |err| 2.21; median z 0.88; mean signed err -6.14
+   DeepSeek: n 3, hit 2 (67%, 95% [21, 94]); second scores 2; median width 8.00; median |err| 2.21; median z 0.55; mean signed err -12.89
+   Grok: n 3, hit 2 (67%, 95% [21, 94]); second scores 2; median width 8.00; median |err| 2.71; median z 0.68; mean signed err -12.97
+theta ranges (theta):
+   reviewer: n 1, hit 0 (0%, 95% [0, 79]); second scores 0; median width 0.08; median |err| 0.06; median z 1.50; mean signed err -0.06
+   DeepSeek: n 1, hit 1 (100%, 95% [21, 100]); second scores 1; median width 0.15; median |err| 0.01; median z 0.07; mean signed err -0.01
+   Grok: n 1, hit 1 (100%, 95% [21, 100]); second scores 1; median width 0.08; median |err| 0.04; median z 1.00; mean signed err -0.04
+rratio ranges (robust ratio):
+   reviewer: n 1, hit 1 (100%, 95% [21, 100]); second scores 1; median width 0.22; median |err| 0.09; median z 0.82; mean signed err 0.09
+   DeepSeek: n 1, hit 1 (100%, 95% [21, 100]); second scores 1; median width 0.80; median |err| 0.00; median z 0.00; mean signed err 0.00
+   Grok: n 1, hit 1 (100%, 95% [21, 100]); second scores 1; median width 0.60; median |err| 0.25; median z 0.83; mean signed err 0.25
+All units, z only (unit-free):
+   reviewer: n 53, hit 39 (74%), median z 0.53, z quartiles 0.31 / 1.00; excluding info-only rows: hit 35 of 47
+   DeepSeek: n 57, hit 35 (61%), median z 0.56, z quartiles 0.16 / 1.49; excluding info-only rows: hit 35 of 50
+   Grok: n 56, hit 34 (61%), median z 0.80, z quartiles 0.21 / 1.80; excluding info-only rows: hit 32 of 48
+
+Reading: a range used as a ~90% interval should hit ~90% with median z ~0.4-0.5. Hit rate well below 90% with median z > 1 = over-confident (too narrow);
+hit rate near 100% with median z << 0.5 = under-confident (too wide). Rows within one run share numbers and anchors, so they are not independent;
+the Wilson intervals treat them as independent and are too narrow.
+
+Misses by row (forecaster | id | quantity | width | err):
+   DeepSeek | D-8 | 2'b+pp3 +0 vs 2'a official ratio | width 1.50 | err -4.07
+   DeepSeek | D-8 | 2'b+pp3 +0 vs 2'a ruint ratio | width 1.50 | err -11.22
+   DeepSeek | D-8 | 2'b+pp3 +0 vs 2'a Montgomery ratio | width 1.80 | err -11.34
+   Grok | G-1 | 2'a vs REF wall % change | width 3.00 | err 2.20
+   Grok | G-3 | 2'b+pp3 +0 vs 2'a official ratio | width 1.50 | err -3.57
+   Grok | G-6 | exact-count model 2'b vs 2'a official ratio | width 1.50 | err -0.88 (info only)
+   reviewer | R2-12 | 2'b+pp3 +2 vs 2'a official ratio | width 2.70 | err 3.23
+   DeepSeek | DeepSeek shift table +1 | 2'b+pp3 +1 vs 2'a official ratio | width 1.80 | err 2.17
+   DeepSeek | DeepSeek shift table +2 | 2'b+pp3 +2 vs 2'a official ratio | width 2.00 | err 5.18
+   Grok | Grok shift table +1 | 2'b+pp3 +1 vs 2'a official ratio | width 1.80 | err 2.17
+   Grok | Grok shift table +2 | 2'b+pp3 +2 vs 2'a official ratio | width 1.80 | err 5.68
+   Grok | Grok shift table +2 | 2'b+pp3 +2 vs 2'a wall % change | width 3.50 | err -2.25
+   DeepSeek | D-14 | lp_ledger wall excess over own-rate price ('rest' sub-region), +0 cell | width 33.33 | err -72.33
+   DeepSeek | D-14 | solve wall excess over own-rate price (second), +0 cell | width 66.67 | err -122.00
+   DeepSeek | D-14 | setup wall excess over own-rate price (third), +0 cell | width 100.00 | err 73.00
+   Grok | G-7 | lp_ledger wall excess over own-rate price ('rest' sub-region), +0 cell | width 43.48 | err -71.13
+   DeepSeek | D-11 | lp_ledger per-number wall excess (2'b+pp3 vs 2'b) | width 50.00 | err -93.08 (info only)
+   Grok | Grok phase pick (unnumbered) | large-prime table + lp_ledger per-number wall excess (2'b+pp3 vs 2'b) | width 44.44 | err -90.78 (info only)
+   reviewer | R2-15 | 2'b+pp3 +3 vs 2'a Montgomery ratio | width 2.50 | err 1.38
+   reviewer | R2-18 | 2'b vs 2'a ruint ratio | width 5.00 | err -2.54 (info only)
+   reviewer | R2-18 | 2'b vs 2'a ruint ratio | width 5.00 | err -2.51 (info only)
+   DeepSeek | D-15 | 2'b vs 2'a official ratio | width 6.00 | err -4.47 (info only)
+   DeepSeek | D-15 | 2'b vs 2'a ruint ratio | width 4.50 | err -3.29 (info only)
+   Grok | G-8 | 2'b vs 2'a ruint ratio | width 2.50 | err -3.29 (info only)
+   DeepSeek | D-15 | 2'b vs 2'a Montgomery ratio | width 4.50 | err -3.55 (info only)
+   Grok | G-8 | 2'b vs 2'a Montgomery ratio | width 2.50 | err -3.05 (info only)
+   DeepSeek | D-15 | 2'b vs 2'a official ratio | width 5.50 | err -3.33 (info only)
+   DeepSeek | D-15 | 2'b vs 2'a ruint ratio | width 4.00 | err -3.01 (info only)
+   Grok | G-8 | 2'b vs 2'a ruint ratio | width 2.00 | err -3.01 (info only)
+   DeepSeek | D-15 | 2'b vs 2'a Montgomery ratio | width 4.00 | err -3.12 (info only)
+   Grok | G-8 | 2'b vs 2'a Montgomery ratio | width 2.00 | err -2.62 (info only)
+   Grok | G-8 | 2'b vs 2'a wall % change | width 3.00 | err -3.40
+   reviewer | R-31 | rho / QS cross (<= 40, censored) | width 16.00 | err -16.00
+   DeepSeek | D-31 | rho / QS cross (<= 40, censored) | width 40.00 | err -36.00
+   Grok | G-24 | rho / QS cross (<= 40, censored) | width 40.00 | err -36.00
+   reviewer | R-32 | QS-best band at 96 (0.32) | width 0.08 | err -0.06
+   reviewer | R-20 wall 96 | Run A (aprime-fix) | width 3.00 | err -2.19
+   Grok | G-13 wall 96 | Run A (aprime-fix) | width 2.00 | err -1.19
+   DeepSeek | D-21 card / YAFU wall | Run B (baseline-yafu) | width 80.00 | err -67.50
+   DeepSeek | D-22 card / YAFU wall | Run B (baseline-yafu) | width 85.00 | err -75.40
+   reviewer | R-21 card / YAFU wall | Run B (baseline-yafu) | width 220.00 | err -187.50
+   reviewer | R-22 card / YAFU wall | Run B (baseline-yafu) | width 380.00 | err -302.90
+   Grok | G-14 card / YAFU wall | Run B (baseline-yafu) | width 55.00 | err -50.00
+   Grok | G-15 card / YAFU wall | Run B (baseline-yafu) | width 75.00 | err -65.40
+   reviewer | R-26 wall 72 | Run D (alloc-once) | width 12.00 | err -13.31
+   reviewer | R-26 wall 84 | Run D (alloc-once) | width 8.00 | err -8.00
+   reviewer | R-26 wall 96 | Run D (alloc-once) | width 6.00 | err -5.70
+   DeepSeek | D-26 wall 72 | Run D (alloc-once) | width 15.00 | err -8.81
+   DeepSeek | D-26 wall 84 | Run D (alloc-once) | width 10.00 | err -6.00
+   DeepSeek | D-26 wall 96 | Run D (alloc-once) | width 7.00 | err -4.70
+   Grok | G-19 wall 72 | Run D (alloc-once) | width 10.00 | err -12.31
+   Grok | G-19 wall 84 | Run D (alloc-once) | width 7.00 | err -7.50
+   Grok | G-19 wall 96 | Run D (alloc-once) | width 5.00 | err -5.20
+   reviewer | R-27 wall 72 | Run E (div64) | width 6.10 | err 4.05
+   reviewer | R-27 wall 84 | Run E (div64) | width 4.40 | err 3.25
+   DeepSeek | D-27 wall 84 | Run E (div64) | width 2.20 | err 1.15
+   Grok | G-20 wall 72 | Run E (div64) | width 3.00 | err 2.30
+   Grok | G-20 wall 84 | Run E (div64) | width 2.60 | err 1.95
+
+== W4b additions: the growth round alone (unchanged from W4b)
+   reviewer: 5 rows, mean stated 67.0%, hit 3, Brier 0.232
+   DeepSeek: 5 rows, mean stated 21.0%, hit 4, Brier 0.488
+   Grok: 5 rows, mean stated 61.0%, hit 4, Brier 0.180
+   All stated-confidence rows, pooled: 62 rows, 32 hit; Wilson 95% on the pooled hit rate [39%, 64%]
+
+== W4c additions: NOTES 9185-10649 alone (Runs A-E)
+   reviewer: 14 rows, mean stated 64.6%, hit 6, Brier 0.277
+   DeepSeek: 14 rows, mean stated 61.1%, hit 8, Brier 0.222
+   Grok: 14 rows, mean stated 58.9%, hit 6, Brier 0.265
