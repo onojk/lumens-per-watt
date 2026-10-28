@@ -23,6 +23,22 @@ Plan: [PLAN.md](PLAN.md). Reasoning, cost models, predictions and results: [NOTE
 - Stop and report at decision points: adopting a change, retunes, reference changes and pushes are the user's.
 - Documentation addenda go in their own commits, marked "documentation only".
 
+### Novelty Plan check-in (standing rule, Oct 28)
+
+The user's living plan is kept by the reviewer as a doc and mirrored here. Changes to the phases are the user's decision; the reviewer updates the doc and this mirror together.
+
+- **Phase 1, finish wins:** div64 timing, the fixed partials table, all three forecasters sealed. Gate: both scored.
+- **Phase 2, meter integrity:**
+  - the absolute meter-health check as a routine on every timed comparison;
+  - I-001 charged types;
+  - the judge (harness, meter, line map, predictions) locked away from any proposer.
+  - Gate: I-001 parity clean.
+- **Phase 3, measure growth:** the growth-exponent harness (40 to 110 bits); the first untested published method (proposed: Murru-Salvatori). Gate: growth fitness frozen before anything is scored with it.
+- **Phase 4, program search:** the building-block DSL, metered by construction; the proposer locked out; scored on growth. Gate: a composed card passes acceptance.
+- **In parallel:** the landscape map (the light spectrum across θ, dark regions, MAP-Elites; energy if RAPL is enabled).
+
+Every report ends with ONE line: "Novelty Plan: phase N, <gate status>; this work advanced / did not advance it (why)". If proposed work serves none of the phases, say so before starting it.
+
 ### Wolfram as a research tool
 
 - Use wolframscript (wolfram/ convention, 3ac43ab) on your own initiative whenever a question is a model, forecast or exact computation rather than a code measurement. That covers:
