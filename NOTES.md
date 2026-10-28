@@ -10512,3 +10512,8 @@ Total: about 1–3 hours of lampcore counting for the rest; wall timing roughly 
 **Predictions:** before the counts run, the forecasters seal their predictions of each lamp's local slope at 88–96 and of QS's relative growth. The theory (rho ≈ 1/4 per bit; QS and CFRAC on the L[1/2] forms) is relayed as theory. **Measured facts only, no opinions** (PROTOCOL, Oct 27).
 
 **Runner:** `evolve/growth_harness.py`, to be written after the user approves this design, then committed before any run. **STOP here.**
+
+**Correction to the growth harness's compute estimate** (the same session, after checking): "QS at 96: about 2^25 official ops (today's ~30 M instructions per number)" mixed instructions with official ops.
+- **The map's record:** the qs card ("qs + lc 1.4", `size_map.json`) takes a median of about **1.87 M official ops, about 2^21**, per balanced-band 96-bit number. Today's reference executes about 30 M machine instructions per number; that is a different unit.
+- **The ECM estimate is unchecked:** at a 2^21 cap the map's ECM spends a median of 0.66 M ops on balanced 96-bit numbers, mostly failing. Its cost to success at 96 bits is not known from existing data.
+- **The total compute estimate** (1–3 hours of counting) is therefore an order of magnitude only. The runner will measure each lamp's time at one size before committing to the full grid.
