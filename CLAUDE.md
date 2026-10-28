@@ -35,7 +35,9 @@ The user's living plan is kept by the reviewer as a doc and mirrored here. Chang
   - Gate: I-001 parity clean.
 - **Phase 3, measure growth:** the growth-exponent harness (40 to 110 bits); the first untested published method (proposed: Murru-Salvatori). Gate: growth fitness frozen before anything is scored with it.
 - **Phase 4, program search:** the building-block DSL, metered by construction; the proposer locked out; scored on growth. Gate: a composed card passes acceptance.
-- **In parallel:** the landscape map (the light spectrum across θ, dark regions, MAP-Elites; energy if RAPL is enabled).
+- **In parallel:**
+  - the landscape map: the light spectrum across θ, dark regions, MAP-Elites; energy if RAPL is enabled;
+  - the twilight band's exchange rate: the marginal op-class cost and success gain of one extra QS partial relation against one extra ECM curve, at matched θ (DeepSeek's suggestion, added Oct 28).
 
 Every report ends with ONE line: "Novelty Plan: phase N, <gate status>; this work advanced / did not advance it (why)". If proposed work serves none of the phases, say so before starting it.
 
