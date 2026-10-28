@@ -1236,9 +1236,11 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                     if even {
                         dl.push(1);
                     }
+                    let v64 = v >> 64 == 0; // v > 0 here; below 2^64 at these sizes (NOTES.md, "Cost note (before code): divide hits in 64-bit hardware steps")
                     for &j in &aj {
                         m.charge(CONFIRM, 1)?; // A's primes, v mod p
-                        if v % base[j] as i128 == 0 {
+                        let z = if v64 { (v as u64) % base[j] as u64 == 0 } else { v % base[j] as i128 == 0 };
+                        if z {
                             dl.push(j);
                         }
                     }
@@ -1262,6 +1264,26 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 let n_pl = if rs_on || rt_on { plist.len() } else { f - 1 };
                 for t in 0..n_pl {
                     let j = if rs_on || rt_on { plist[t] } else { t + 1 };
+                    if v >> 64 == 0 {
+                        // u64: one hardware divide gives the quotient and the remainder (the same values as the i128 path)
+                        let (mut w, p) = (v as u64, base[j] as u64);
+                        if w % p == 0 {
+                            w /= p;
+                            ev[j] += 1;
+                            tt.push(j as u32);
+                            loop {
+                                let (q, r) = (w / p, w % p);
+                                if r != 0 {
+                                    break;
+                                }
+                                w = q;
+                                ev[j] += 1;
+                                m.charge(CONFIRM, 1)?;
+                            }
+                        }
+                        v = w as i128;
+                        continue;
+                    }
                     let p = base[j] as i128;
                     if v % p == 0 {
                         v /= p;
