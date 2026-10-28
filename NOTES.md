@@ -5,7 +5,7 @@
 **In plain English:**
 - **Allocating once per attempt** makes the reference **25.3% / 16.0% / 10.7% faster** at 72 / 84 / 96 bits, with every output and op count identical.
 - **Acceptance and parity are clean.**
-- **Time fell about as much as instructions** (−29.7 / −17.3 / −10.1%). All three forecasters assumed it would fall by much less: every size-level forecast missed, and five were falsified.
+- **Time fell about as much as instructions** (−29.7 / −17.3 / −10.1%). All three forecasters assumed it would fall by much less: every size-level forecast missed, and four were falsified (corrected from five: see the correction under Run D).
 - Run on battery by your decision; the ratios are valid, the absolute times are not comparable with AC runs.
 - Nothing adopted beyond your go-ahead for the code; no system setting changed; nothing pushed.
 
@@ -20,7 +20,7 @@
 | **Run D, alloc-once** (sealed) | dd5fb3c | alloc / fix **0.7469 / 0.8405 / 0.8928**: −25.31% [−25.74, −24.87], −15.95% [−16.60, −15.31], −10.72% [−11.63, −9.82]. Battery 61% → 60%; policy unchanged. |
 
 **Scored as filed:**
-- **R-26:** missed at all three (falsified by default, no separate falsifier).
+- **R-26:** missed at all three. It states no falsifier, so it is scored as missed only (see the correction under Run D).
 - **D-26:** falsified at all three.
 - **G-19:** ranges missed at all three; its falsifier triggered only at 72 (−25.31 ≤ −25).
 - **The common error:** assuming an allocator instruction costs less time than an average one. The measured time-to-instruction ratio is 0.85 / 0.92 / 1.06.
@@ -10256,3 +10256,6 @@ The user asked for this to be recorded (Oct 27 late). Three times in one week, w
 - Why the allocator's instructions cost the average or more per instruction (no cache or branch counters: `perf` is not available to the user here).
 - Whether the battery state affected the ratio (the policy and clock were unchanged; the ratio is within-run).
 - Nothing is adopted beyond the user's go-ahead for the code change. The reference genes are unchanged; no priced figure moved.
+
+**Correction to Run D's scoring** (the same night): "R-26 states no separate falsifier; per the protocol's default, outside the range is falsified at all three" is wrong. PROTOCOL.md has no such default. R-26 states a range and a confidence, and no falsifier, so it is scored **missed at all three sizes**, not falsified. The tally is therefore: R-26 missed ×3; D-26 falsified ×3; G-19 ranges missed ×3 and falsifier triggered at 72. That makes four falsifications, not five.
+
