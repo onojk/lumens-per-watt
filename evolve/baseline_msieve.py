@@ -3,6 +3,8 @@ predictions/baseline-msieve.md (the reviewer, D-18 / D-19, G-11 / G-12; filed be
 msieve 1.53, built from source in ~/opt/msieve-src/msieve-1.53 (tarball sha256 c5fcbaaf...4d93bb4; its Makefile's
 -O3 -march=native; NO_ZLIB=1). The card: the adopted reference (2'b: lctest.ref + goff = 1 + confirm = root), lampcore
 release binary (baseline x86-64 target).
+  - Load (from Oct 28, every runner using conditions() / cool()): the 1-minute load average < 1.5 + the run's own
+    processes, at the start and before every replicate; otherwise wait and recheck every 60 s (wait_load).
   - Conditions required before timing (else timing is skipped and the reason printed): AC online, scaling_max_freq
     2,400 MHz on every core, TCPU < 70 C, no Wolfram kernel. Machine state (tools/machine_state.sh) recorded before
     each replicate; timing pauses if TCPU passes 90 C and resumes below 70 C.
@@ -29,7 +31,35 @@ MSIEVE_X86 = os.path.expanduser("~/opt/msieve-src/msieve-1.53-x86-64/msieve")   
 REPS, T3 = 4, 3.182
 SIZES = (72, 84, 96)
 
+def own_processes():
+    """The run's own processes: this runner plus its live descendants (from /proc)."""
+    me, kids = os.getpid(), {}
+    for d in os.listdir("/proc"):
+        if d.isdigit():
+            try:
+                ppid = int(open(f"/proc/{d}/stat").read().rsplit(")", 1)[1].split()[1])
+            except (OSError, IndexError, ValueError):
+                continue
+            kids.setdefault(ppid, []).append(int(d))
+    n, todo = 0, [me]
+    while todo:
+        x = todo.pop(); n += 1; todo += kids.get(x, [])
+    return n
+
+def wait_load(limit=1.5, period=60):
+    """The load condition (the user, Oct 28; every timed runner, at the start and before every replicate): the 1-minute
+    load average must be below 1.5 plus the run's own processes. If not, pause and recheck every 60 s: never time under
+    load, never skip a replicate. Returns the load average that passed (printed, for the run record)."""
+    while True:
+        la, own = os.getloadavg()[0], own_processes()
+        if la < limit + own:
+            print(f"load check passed: 1-minute load average {la:.2f} < {limit} + {own} own process(es)", flush=True)
+            return la
+        print(f"load check: 1-minute load average {la:.2f} >= {limit} + {own}: pausing, recheck in {period} s", flush=True)
+        time.sleep(period)
+
 def conditions():
+    wait_load()                                                # blocks until the load condition holds
     bad = []
     online = [open(f"/sys/class/power_supply/{p}/online").read().strip() for p in os.listdir("/sys/class/power_supply")
               if os.path.exists(f"/sys/class/power_supply/{p}/online")]
@@ -58,6 +88,7 @@ def tcpu():
     return None
 
 def cool():
+    wait_load()                                                # before every replicate: the load condition first
     if (tcpu() or 0) > 90:
         print(f"TCPU {tcpu()} C > 90: pausing until below 70", flush=True)
         while (tcpu() or 0) >= 70:
