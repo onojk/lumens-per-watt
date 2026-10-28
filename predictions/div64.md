@@ -18,9 +18,12 @@
 - **Measured ρ so far:** class (b), alloc-once (Run D): 0.85 / 0.92 / 1.06. Class (c), the A-prime fix (Run A, I-047): 1.01 / 0.98 / 1.35.
 - **The card's wall per number,** all map numbers: Run D's after-cell, on battery and not comparable with AC runs, was 0.623 / 1.302 / 3.000 ms. There is no AC measurement of the alloc-once card yet.
 
-## The reviewer's
+## The reviewer's R-27 (Oct 27 night; sealed; verbatim)
 
-Pending.
+      R-27 div64 vs current card (alloc-once), wall change: 72: -3.5% to -9.6%; 84: -2.6% to -7.0%;
+           96: -1.6% to -4.3%. 65%. Basis: callgrind-measured removal 8.76 / 6.38 / 3.90% x rho 0.4-1.1
+           (central 0.7). Unmeasured opinion behind the centre: a software 128-by-64 division routine is
+           replaced by hardware divides, which cost more time per instruction. Falsifier: outside the range.
 
 ## DeepSeek's
 
