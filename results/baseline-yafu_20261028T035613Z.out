@@ -1,0 +1,36 @@
+72 bits (480 numbers; balanced band 80, smaller factor 36-36 bits): us per number card 827.2, yafu 15,779.6, pipeline 733.8, card_bal 864.4, yafu_bal 34,813.5
+    card / yafu (sealed): 0.052 [0.052, 0.053]
+    pipeline / yafu: 0.047 [0.046, 0.047]
+    card / yafu, balanced band: 0.025 [0.025, 0.025]
+    core 2 median MHz: card 2400.0, yafu 2400.0, pipeline 2400.0, card_bal 2399.975, yafu_bal 2400.0; factor checks failed: {'card': 0, 'pipeline': 0, 'balanced': 0}
+    band 0 (smaller factor 16-16 bits): card 839.1 us, yafu 9,631.8 us, ratio 0.09 (one pass, information)
+    band 1 (smaller factor 20-20 bits): card 894.4 us, yafu 9,739.5 us, ratio 0.09 (one pass, information)
+    band 2 (smaller factor 24-24 bits): card 866.7 us, yafu 10,235.1 us, ratio 0.08 (one pass, information)
+    band 3 (smaller factor 28-28 bits): card 846.9 us, yafu 11,656.8 us, ratio 0.07 (one pass, information)
+    band 4 (smaller factor 32-32 bits): card 873.0 us, yafu 20,090.0 us, ratio 0.04 (one pass, information)
+    band 5 (smaller factor 36-36 bits): card 862.4 us, yafu 34,865.6 us, ratio 0.02 (one pass, information)
+84 bits (560 numbers; balanced band 80, smaller factor 42-42 bits): us per number card 1,549.7, yafu 34,300.7, pipeline 1,383.9, card_bal 1,539.7, yafu_bal 125,615.2
+    card / yafu (sealed): 0.045 [0.044, 0.046]
+    pipeline / yafu: 0.040 [0.040, 0.041]
+    card / yafu, balanced band: 0.012 [0.012, 0.012]
+    core 2 median MHz: card 2400.0, yafu 2400.0, pipeline 2400.0, card_bal 2400.0, yafu_bal 2400.0; factor checks failed: {'card': 0, 'pipeline': 0, 'balanced': 0}
+    band 0 (smaller factor 16-16 bits): card 1,551.6 us, yafu 10,016.9 us, ratio 0.15 (one pass, information)
+    band 1 (smaller factor 20-20 bits): card 1,602.3 us, yafu 10,056.4 us, ratio 0.16 (one pass, information)
+    band 2 (smaller factor 24-24 bits): card 1,554.3 us, yafu 10,265.6 us, ratio 0.15 (one pass, information)
+    band 3 (smaller factor 28-28 bits): card 1,573.0 us, yafu 12,206.3 us, ratio 0.13 (one pass, information)
+    band 4 (smaller factor 32-32 bits): card 1,590.4 us, yafu 18,984.3 us, ratio 0.08 (one pass, information)
+    band 5 (smaller factor 36-36 bits): card 1,561.8 us, yafu 54,969.6 us, ratio 0.03 (one pass, information)
+    band 6 (smaller factor 42-42 bits): card 1,541.0 us, yafu 125,163.9 us, ratio 0.01 (one pass, information)
+96 bits (640 numbers; balanced band 80, smaller factor 48-48 bits): us per number card 3,345.2, yafu 47,054.6, pipeline 2,826.3, card_bal 3,373.1, yafu_bal 135,063.0
+    card / yafu (sealed): 0.071 [0.071, 0.071]
+    pipeline / yafu: 0.060 [0.059, 0.061]
+    card / yafu, balanced band: 0.025 [0.025, 0.025]
+    core 2 median MHz: card 2400.0, yafu 2400.0, pipeline 2400.0, card_bal 2400.0, yafu_bal 2400.0; factor checks failed: {'card': 0, 'pipeline': 0, 'balanced': 0}
+    band 0 (smaller factor 16-16 bits): card 3,339.3 us, yafu 10,218.7 us, ratio 0.33 (one pass, information)
+    band 1 (smaller factor 20-20 bits): card 3,452.5 us, yafu 10,215.0 us, ratio 0.34 (one pass, information)
+    band 2 (smaller factor 24-24 bits): card 3,440.4 us, yafu 10,705.9 us, ratio 0.32 (one pass, information)
+    band 3 (smaller factor 28-28 bits): card 3,401.3 us, yafu 12,493.9 us, ratio 0.27 (one pass, information)
+    band 4 (smaller factor 32-32 bits): card 3,396.5 us, yafu 18,221.0 us, ratio 0.19 (one pass, information)
+    band 5 (smaller factor 36-36 bits): card 3,461.7 us, yafu 48,496.8 us, ratio 0.07 (one pass, information)
+    band 6 (smaller factor 42-42 bits): card 3,468.1 us, yafu 134,102.5 us, ratio 0.03 (one pass, information)
+    band 7 (smaller factor 48-48 bits): card 3,425.9 us, yafu 135,526.4 us, ratio 0.03 (one pass, information)
