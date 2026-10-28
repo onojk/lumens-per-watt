@@ -26,6 +26,22 @@ Working: cost note per-relation A-prime scan 47 / 82 / 165 ns at 72 / 84 / 96, g
            (Expect a little below the cost note: out-of-order overlap hides part of the lookup's latency.)
       Falsifiers: outside the stated range.
 
+## Grok's G-13 (20:07 Oct 27 PT; sealed; verbatim)
+
+<!-- verbatim begin -->
+**Sealed predictions (Grok, 27 Oct 2026 ~20:15 PT)**
+Using only the numbers supplied. Absolute YAFU wall times on this machine, per-size lookup costs beyond the stated forecasts, and the exact fraction of wall spent in the linear scan are missing.
+
+### G-13 — Wall change of 2'b+fix vs 2'b (negative = faster)
+- 72 bits: −1.0 % to −2.2 % (confidence 70 %)
+- 84 bits: −1.8 % to −3.2 % (confidence 70 %)
+- 96 bits: −3.5 % to −5.5 % (confidence 65 %)
+
+**Falsifier:** measured wall change at any size is ≥ 0 % (fix is not faster) or ≤ −6.0 % at 96 bits.
+<!-- verbatim end -->
+
+**The reviewer's annotation** (the ranges are unchanged): G-13's falsifier is an OR of two conditions (≥ 0% at any size, or ≤ −6.0% at 96).
+
 ## Model forecast (filed before; not a prediction)
 
 The cost note's model (Stage 3, `wolfram/2026-10-27_copies_cost`): −1.6% / −2.4% / −4.3% at 72 / 84 / 96.

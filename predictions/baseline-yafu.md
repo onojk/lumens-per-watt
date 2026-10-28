@@ -1,7 +1,7 @@
 # baseline-yafu: the adopted reference (2′b) against YAFU on the map numbers (I-038; information only): predictions
 
 **Run** (not yet): `evolve/baseline_yafu.py`, the same design as the msieve baseline (`evolve/baseline_msieve.py`, bb786c6). The runner is committed separately, before timing.
-- **YAFU:** built from the user's clones in `~/opt/yafu-src` (yafu c7d9028, Oct 15 2026; with the bundled ytools and ysieve), in user space, no sudo. The command was `make yafu GMP_INCDIR=/usr/include/x86_64-linux-gnu USE_AVX2=1 USE_BMI2=1 ECM=1`: gcc -O2, SSE4.1 + AVX2 + BMI2 (this CPU has no AVX-512), linked against the system GMP and GMP-ECM. Binary sha256 f5f9bde1….
+- **YAFU:** built in `~/opt/yafu-src/yafu` from the user's clone, yafu c7d90283972820f99b3b4920bfc1eff05c1f6342 (Oct 15 2026). YAFU 3 builds the ytools and ysieve copies tracked in its own tree; the separate clones (ysieve 21b6f96dea7e72c158c2c430ba6116f2b74ccd1a, ytools ee04dbb6f047e9b6a4e26931439323d87ddf6ba7) were not used by the build, in user space, no sudo. The command was `make yafu GMP_INCDIR=/usr/include/x86_64-linux-gnu USE_AVX2=1 USE_BMI2=1 ECM=1`: gcc -O2, SSE4.1 + AVX2 + BMI2 (this CPU has no AVX-512), linked against the system GMP and GMP-ECM. Binary sha256 f5f9bde1….
 - **The design** (the reviewer's, before timing): YAFU runs its **full default `factor()`** (its own trial division, Fermat, rho and ECM before SIQS, by its own choice), as msieve ran its default. One thread; batch; pinned. The exact command line, run in an empty scratch directory with no `yafu.ini` (YAFU's built-in defaults; the `yafu.ini` in the source tree carries another machine's paths and tune data):
 
       taskset -c 2 ~/opt/yafu-src/yafu/yafu "factor(@)" -threads 1 < in.txt
@@ -40,3 +40,26 @@ Working: all-numbers msieve ratio 0.319; if YAFU 2–6× faster than msieve, 0.3
       R-21 (B) 96 bits, balanced band, card / YAFU: 0.8 to 3.0 (central 1.5, YAFU faster). 65%.
       R-22 (B) 96 bits, all map numbers, card / YAFU: 1.2 to 5.0 (central 2.5). 60%.
       Falsifiers: outside the stated range.
+
+## Grok's G-14 / G-15 (20:07 Oct 27 PT; sealed; verbatim)
+
+<!-- verbatim begin -->
+**Sealed predictions (Grok, 27 Oct 2026 ~20:15 PT)**
+Using only the numbers supplied. Absolute YAFU wall times on this machine, per-size lookup costs beyond the stated forecasts, and the exact fraction of wall spent in the linear scan are missing.
+
+### G-14 — 96 bits, BALANCED band: card / YAFU
+**Range:** 0.25–0.80 (confidence 55 %).
+Below 1 = card faster.
+
+(Information only: public YAFU SIQS figures on ~30-decimal-digit numbers are typically a few milliseconds on a single core; the card's ~3.4 ms is in the same order, but pinning, batching and the 2.4 GHz cap differ. Those figures are in decimal digits.)
+
+**Falsifier:** the measured ratio lies outside 0.25–0.80.
+
+### G-15 — 96 bits, ALL map numbers: card / YAFU
+**Range:** 0.35–1.10 (confidence 50 %).
+Below 1 = card faster.
+
+**Falsifier:** the measured ratio lies outside 0.35–1.10.
+<!-- verbatim end -->
+
+**The reviewer's annotation** (the ranges are unchanged): G-14's range (0.25–0.80, card faster) is inconsistent with its own information-only figure. "A few milliseconds" for YAFU on ~30 digits, against the card's ~3.4 ms, implies a ratio near 1. The range appears anchored on the msieve result.
