@@ -773,16 +773,17 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
             }
         };
         let qs_ = &cur;
-        let mut aj: Vec<usize> = if rt_on { qs_.iter().map(|&q| pos(q)).collect() } else { Vec::new() }; // root confirm: A's primes, direct
+        let qj: Vec<usize> = qs_.iter().map(|&q| pos(q)).collect(); // A's primes' base indices, once per A (NOTES.md, "Cost note (before code): the A-prime lookup fix"); uncharged as before
+        let mut aj: Vec<usize> = if rt_on { qj.clone() } else { Vec::new() }; // root confirm: A's primes, direct
         aj.sort();
         let a: i128 = qs_.iter().map(|&x| x as i128).product();
         let mut bl: Vec<i128> = Vec::with_capacity(s);
-        for &ql in qs_ {
+        for (&ql, &jl) in qs_.iter().zip(&qj) {
             let ql_i = ql as i128;
             let aq = a / ql_i;
             m.charge(SETUP, 1)?;
             let inv = euclid_inv(aq.rem_euclid(ql_i), ql_i, SETUP, m)?;
-            let mut gam = (roots_t[pos(ql)] as i128 * inv).rem_euclid(ql_i);
+            let mut gam = (roots_t[jl] as i128 * inv).rem_euclid(ql_i);
             m.charge(SETUP, 1)?;
             if gam > ql_i / 2 {
                 gam = ql_i - gam;
@@ -1233,9 +1234,8 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 let u = a * x + bv;
                 let ptl = crate::pt_snap_lp(m); // "lp:copy"
                 let nt = tt.len();
-                for &ql in qs_ {
-                    // the A-primes (uncharged until item 15)
-                    let j = pos(ql);
+                for &j in &qj {
+                    // the A-primes (uncharged until item 15); indices from qj, not a base scan per relation
                     if ev[j] == 0 {
                         tt.push(j as u32);
                     }

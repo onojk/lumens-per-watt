@@ -300,6 +300,7 @@ def sieve_source(N, k, g, led, ch, at):
         at["rels"] = led.rels                  # for the acceptance relation check
     for qs_ in combos:
         A = math.prod(qs_)
+        qj = [idx[ql] for ql in qs_]           # A's primes' base indices, once per A (NOTES.md, "Cost note (before code): the A-prime lookup fix"); uncharged
         if at is not None:
             at["a_count"] += 1
             at["a_seq"].append(qs_)
@@ -571,8 +572,7 @@ def sieve_source(N, k, g, led, ch, at):
                     continue
                 u = A * x + Bv
                 Tk = list(TT)
-                for ql in qs_:                     # the A-primes (uncharged until item 15)
-                    j = idx[ql]
+                for j in qj:                       # the A-primes (uncharged until item 15); indices from qj
                     if ev[j] == 0:
                         Tk.append(j)
                     ev[j] += 1
