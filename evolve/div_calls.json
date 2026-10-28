@@ -1,0 +1,80 @@
+{
+ "72": {
+  "? | __divti3": [
+   19167,
+   1150020
+  ],
+  "? | __modti3": [
+   10064,
+   583712
+  ],
+  "confirm: A-prime and even checks | __modti3": [
+   151860,
+   8807880
+  ],
+  "confirm: divide hits | __divti3": [
+   261265,
+   15675900
+  ],
+  "confirm: divide hits | __modti3": [
+   261265,
+   15153370
+  ],
+  "lp: other | __modti3": [
+   21828,
+   1266024
+  ]
+ },
+ "84": {
+  "? | __divti3": [
+   27246,
+   1634760
+  ],
+  "? | __modti3": [
+   13120,
+   760960
+  ],
+  "confirm: A-prime and even checks | __modti3": [
+   227936,
+   13220288
+  ],
+  "confirm: divide hits | __divti3": [
+   434256,
+   26055360
+  ],
+  "confirm: divide hits | __modti3": [
+   434256,
+   25186848
+  ],
+  "lp: other | __modti3": [
+   34606,
+   2180178
+  ]
+ },
+ "96": {
+  "? | __divti3": [
+   57319,
+   3439140
+  ],
+  "? | __modti3": [
+   25168,
+   1459744
+  ],
+  "confirm: A-prime and even checks | __modti3": [
+   326792,
+   18953936
+  ],
+  "confirm: divide hits | __divti3": [
+   671632,
+   40297920
+  ],
+  "confirm: divide hits | __modti3": [
+   671632,
+   38954656
+  ],
+  "lp: other | __modti3": [
+   73804,
+   4649652
+  ]
+ }
+}

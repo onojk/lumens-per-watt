@@ -10354,3 +10354,29 @@ A counts-identical change that removes a large volume of cache-friendly arithmet
 **Correction to that note:** "the relayed text on file" overstates.
 - The only update text Claude has seen is the one the user showed for Grok (22:06 Oct 27): "Instruction drops do not translate one-for-one into time." It is not committed.
 - The update DeepSeek received is not on file, so whether it carried the parenthesis is not known.
+
+## Cost note (before code): divide hits in 64-bit hardware steps (the user's go-ahead, Oct 27 night; next step b)
+
+**The change** (lampcore `qs.rs`, `sieve_source`'s confirm). After the sign flip, the candidate value v is positive and, at these sizes, below 2^64: |v| ≤ M·√(kN/2), about 2^61 at 96 bits.
+- **When v < 2^64**, the A-prime checks (`v % p`) and the division of hits (`v % p`, `v /= p`, the power loop) run in **u64 arithmetic**: one hardware divide gives the quotient and the remainder together, inline.
+- **Today** each of these is a call to libgcc's `__modti3` / `__divti3` (the software 128-bit routines), about 58–60 instructions per call, a separate call for the remainder and for the quotient.
+- **When v ≥ 2^64**, the existing i128 code runs unchanged. It is a fallback, not expected below about 100 bits.
+- **Not changed:** the `lp: other` and line-0 `__modti3` sites (0.02–0.12 M instructions per number), and Python (`qs.py` uses big integers: no 128-bit division exists to change, and no Python count depends on it; Python = Rust stays checked by parity).
+- **On the brief's "two 64-bit steps":** for v < 2^64 the division needs one 64-bit step. The two-step 128-by-64 form (the high half, then the low half) is not needed below 2^64, so the i128 fallback stays as it is.
+
+**Cost model:**
+- **Charged ops: none change.** The same remainders and quotients are computed in the same order, so every op count, factor, relation and output is predicted **identical**.
+- **Measured inputs** (`evolve/div_calls.json`, from the second gap run's callgrind files; balanced band, the current card f6aa08d):
+  - 8,430 / 13,705 / 20,875 calls per number into `__modti3` / `__divti3` from the divide-hits and A-prime sub-steps;
+  - 0.496 / 0.806 / 1.228 M instructions per number inclusive.
+- **Removed instructions** (Wolfram, `wolfram/2026-10-27_div64.wl`, `.out`; c = 5–10 new instructions per division, central 7.5): **0.453 / 0.737 / 1.123 M at c = 5, 0.432 / 0.703 / 1.071 M at c = 7.5, 0.411 / 0.669 / 1.019 M at c = 10.** That is **7.5 / 5.5 / 3.3%** of the card's instructions at c = 7.5 (7.1–7.9 / 5.2–5.7 / 3.2–3.5% over c).
+- **No priced figure moves.** op-class v1 counts libgcc's instructions as part of the charged confirm work it attributes. v1 stays frozen; a v2 would be prospective.
+- **Wall forecast by the ρ rule** (PROTOCOL.md, counts-identical changes):
+  - **Memory class (a):** register-resident arithmetic in a software routine. Its lower side is extended to **ρ = 0.40**, Grok's direction for class (a).
+  - **The upper side is extended to ρ = 1.30,** a stated reason specific to this change: it also **halves the hardware divides** per hit (one divide gives both results instead of one in each routine). A divide is a long-latency instruction that counts as one.
+  - **Central (ρ = 0.85, c = 7.5): −6.4 / −4.6 / −2.8%** at 72 / 84 / 96.
+  - **Band (ρ 0.40–1.30, c 5–10): −2.9 to −10.2 / −2.1 to −7.4 / −1.3 to −4.5%.**
+  - The band is wider than the rule's minimum (±30% of the central, at least ±1 point) at every size.
+- **Caveat:** the inputs are the balanced band. The sealed run will use all map numbers, as Runs A and D did.
+
+**Procedure:** code (lampcore), acceptance (byte-identical outputs with and without `--types`, all map numbers at 72 / 84 / 96, for 2′a, 2′b, the pipeline, enumerate, pp 3 and resieve), full parity, a callgrind check of the instructions actually removed, then the predictions file and the runner. **STOP at the prediction point.**
