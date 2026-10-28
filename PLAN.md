@@ -1015,3 +1015,74 @@ meter is touched, and predictions in NOTES before it runs.
 ## Checkpoints
 
 Ideas and opportunities are reviewed at every checkpoint (a scored result, a closed phase or meter correction, a reviewer round, a surprise, or at least once per session), following the rules in IDEAS.md. Integrity ideas (meter holes, mispricing, confounding) may enter the current queue; all others are scheduled, parked with a revisit trigger, or rejected, and every decision is logged in IDEAS.md.
+
+## Program search (design)
+
+Design only, Oct 28 (the user's novelty programme, item 3). No code. Nothing is adopted.
+
+**The idea:** describe factoring methods as small programs in a typed language whose building blocks are the operations our lamps already use. Because every block carries its meter charge, a composed program is metered by construction (IDEAS I-001: an uncharged op cannot be written). A search can then mutate programs and evaluate them on cost and growth without a person writing, and possibly mis-metering, each candidate by hand.
+
+### The types
+
+| type | what it holds | how it can be used |
+|---|---|---|
+| `N` | the number to factor | read-only; never decomposed by the program |
+| `ModN` | a residue mod N | only through charged mod-N primitives |
+| `Word` | a machine-word integer (counters, small primes, offsets) | word arithmetic, charged `word` |
+| `Prime`, `Base` | a small prime; a factor base (a list of primes with roots) | built by `make_base` |
+| `Point` | a point on a group (an elliptic curve's projective point, or a class-group form) | only through `group_step` |
+| `Relation` | a smooth value's exponent vector over a `Base`, with its square-root side | produced by `smoothness_test`, consumed by `gf2_combine` |
+| `Divisor` | a candidate factor | produced only by `gcd` / `batch_gcd` / `gf2_combine`; the program's output |
+
+There are no other values and no raw integer arithmetic on `ModN` or `N`. A program that needs an operation outside the list cannot be written. That is the I-001 property.
+
+### The primitives and their meter charges
+
+Every charge is an existing op type (`optypes.TYPE_ORDER`) with its current prices. A primitive with **no** existing priced type is **not available** until its cost note, price calibration and parity exist.
+
+| primitive | does | charge (existing type) |
+|---|---|---|
+| `seq_step(f, x)` | x ← f(x) mod N for a polynomial f (rho, the p−1 power ladder) | `mul` per mod-N multiply; `word` per small add |
+| `group_step(op, P)` | one group-law step (an ECM add / double / ladder step) | `mul` per mod-N multiply (as `ecm.rs`); `setup_mul` / `setup_euclid_N` for curve set-up |
+| `gcd(x, N)` | one gcd | `gcd` |
+| `batch_gcd(xs, N)` | accumulate a product mod N, then one gcd (Pollard's trick); a product tree for many N | `mul` per accumulation multiply, `gcd` per gcd |
+| `make_base(N, k, size)` | a factor base with square roots mod p | `fb` per prime (Tonelli–Shanks steps as now) |
+| `sieve_update(arr, p, root, step)` | add log p along an arithmetic progression | `sieve_update` per cell updated |
+| `sieve_scan(arr, threshold)` | candidates above a threshold | `sieve_scan` per cell scanned |
+| `smoothness_test(v, Base)` | root test, trial division, cofactor check | `root_test` per prime tested, `confirm_td` per division, `lp_small` / `lp_full` per cofactor step |
+| `gf2_combine(relations)` | Gaussian elimination over GF(2), then square roots | `la` per elimination op, `sqrt_mul` / `sqrt_gcd` |
+| `lattice_step(basis)` | one size-reduction or swap (LLL) | **none today: unavailable** until `lattice` is priced (cost note, calibration, parity) |
+| `budget(k)`, `stop_if(cond)` | stop a stage after k charged ops; stop on a found divisor | none (control), but `budget` uses the existing "ob" rule (stop at the first charge past k) and `stop_if` charges `test` |
+
+**Metered by construction:** the interpreter, in both cores (Python and lampcore, like every card), charges exactly when a primitive executes. Programs have no other way to compute. Parity checks the interpreter, not each program.
+
+### The search (how programs change)
+
+- **The genome is a program:** a short sequence of stages (as today's pipelines), each a small typed expression tree over the primitives, with numeric parameters (bounds, budgets, polynomial coefficients).
+- **Mutations:**
+  - replace a primitive by another of the same type signature;
+  - insert or delete a stage;
+  - change a parameter within declared bounds (1/8-octave steps for budgets, as now);
+  - swap two stages;
+  - cross over: exchange subtrees of the same type between two programs.
+  - Every mutation keeps the program well-typed, so ill-typed children are never evaluated.
+- **Evaluation:** on **tuning numbers only**, with fixed seeded sets per size, never the sealed sets. Two numbers are reported:
+  - **cost:** the robust ratio, worst of op-class, ruint and Montgomery, against the reference;
+  - **growth:** G from the growth harness, the local slope ratio at the top sizes.
+  - Selection keeps a Pareto front on (cost, growth), not one number.
+- **The output is a candidate, not an adoption.** A program the search finds is read by a person, written as a card with a cost note, checked by acceptance and parity, and scored only through sealed predictions on sealed numbers, like every card today.
+
+### What stays off-limits to the search
+
+- **The meter, the interpreter, the price tables, the op-class weights and the type list:** programs cannot read or set them. A program cannot observe the meter. `budget` stops it, but it never sees a count.
+- **The harness:** the number generators, the seeds and the sealed sets. Programs see only N, never p or q, and never the oracle.
+- **Predictions and scoring:** the search never runs `sealed_run.sh`, and nothing it produces is scored until a person files predictions.
+- **No I/O, no clock, no randomness** beyond a seeded RNG primitive (charged `word`). A program's work is a function of N and its parameters.
+
+### Open questions for the user
+
+1. **Which primitive set to start with:** today's lamps only (rho, p−1, ECM, CFRAC, QS as compositions), or with `lattice_step` priced first.
+2. **Whether the Python interpreter alone** is enough for search (slow), with lampcore's twin only for candidates.
+3. **The tuning budget:** programs per generation, numbers per evaluation.
+4. **Whether growth G enters selection** (the Pareto front) or only reporting.
+5. **How to prevent overfitting** to the tuning sets: rotating seeds, a held-out tuning set.
