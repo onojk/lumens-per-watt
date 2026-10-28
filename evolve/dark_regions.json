@@ -1,0 +1,701 @@
+{
+ "72": {
+  "16": {
+   "td": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 281.0754416188857,
+    "light_official": 41.127066699362686
+   },
+   "rho": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 1262.59059954803,
+    "light_official": 1361.980319384385
+   },
+   "pm1": {
+    "success": 76,
+    "n": 80,
+    "light_ruint": 34.54883377058796,
+    "light_official": 34.55745540724143
+   },
+   "ecm": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 100.1375897257071,
+    "light_official": 100.11889118328014
+   },
+   "qs + lc 1.4": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 43.86184562990318,
+    "light_official": 6.556818644707225
+   },
+   "best": "rho"
+  },
+  "20": {
+   "td": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 17.73977504245599,
+    "light_official": 2.595690705671938
+   },
+   "rho": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 378.96938254767986,
+    "light_official": 395.6322202880203
+   },
+   "pm1": {
+    "success": 61,
+    "n": 80,
+    "light_ruint": 27.88445463795909,
+    "light_official": 27.891451955830913
+   },
+   "ecm": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 68.42966786158767,
+    "light_official": 68.4366084527766
+   },
+   "qs + lc 1.4": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 46.15206861190626,
+    "light_official": 6.545453057851578
+   },
+   "best": "rho"
+  },
+  "24": {
+   "td": {
+    "success": 0,
+    "n": 80,
+    "light_ruint": 0.0,
+    "light_official": 0.0
+   },
+   "rho": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 84.09207794016764,
+    "light_official": 86.87936908202173
+   },
+   "pm1": {
+    "success": 34,
+    "n": 80,
+    "light_ruint": 15.411471667834398,
+    "light_official": 15.415306492564381
+   },
+   "ecm": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 49.034070929081096,
+    "light_official": 49.03934978726117
+   },
+   "qs + lc 1.4": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 49.20156068653395,
+    "light_official": 6.676034255399368
+   },
+   "best": "rho"
+  },
+  "28": {
+   "td": {
+    "success": 0,
+    "n": 80,
+    "light_ruint": 0.0,
+    "light_official": 0.0
+   },
+   "rho": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 23.64735554924967,
+    "light_official": 24.38819172533043
+   },
+   "pm1": {
+    "success": 37,
+    "n": 80,
+    "light_ruint": 16.884524046738186,
+    "light_official": 16.888753778858657
+   },
+   "ecm": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 31.645309034108895,
+    "light_official": 31.650289619931453
+   },
+   "qs + lc 1.4": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 46.46112855055832,
+    "light_official": 6.707788203264429
+   },
+   "best": "qs + lc 1.4"
+  },
+  "32": {
+   "td": {
+    "success": 0,
+    "n": 80,
+    "light_ruint": 0.0,
+    "light_official": 0.0
+   },
+   "rho": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 5.04412597168722,
+    "light_official": 5.197764545424304
+   },
+   "pm1": {
+    "success": 27,
+    "n": 80,
+    "light_ruint": 12.297479764289452,
+    "light_official": 12.300554481661468
+   },
+   "ecm": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 19.514670419069436,
+    "light_official": 19.517169620061697
+   },
+   "qs + lc 1.4": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 39.164587429425914,
+    "light_official": 6.390353633383335
+   },
+   "best": "qs + lc 1.4"
+  },
+  "36": {
+   "td": {
+    "success": 0,
+    "n": 80,
+    "light_ruint": 0.0,
+    "light_official": 0.0
+   },
+   "rho": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 2.05531281881971,
+    "light_official": 2.117922538253917
+   },
+   "pm1": {
+    "success": 13,
+    "n": 80,
+    "light_ruint": 5.895756268738345,
+    "light_official": 5.897224085896244
+   },
+   "ecm": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 15.894759948684095,
+    "light_official": 15.896475791058311
+   },
+   "qs + lc 1.4": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 46.43538816565935,
+    "light_official": 6.642069423075662
+   },
+   "best": "qs + lc 1.4"
+  }
+ },
+ "84": {
+  "16": {
+   "td": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 285.8065821313753,
+    "light_official": 41.819328998411386
+   },
+   "rho": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 1159.991616673009,
+    "light_official": 1246.9410976199013
+   },
+   "pm1": {
+    "success": 79,
+    "n": 80,
+    "light_ruint": 6.896176171348666,
+    "light_official": 6.8965065702319714
+   },
+   "ecm": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 54.6149535331033,
+    "light_official": 54.608104934934445
+   },
+   "qs + lc 1.4": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 9.842813035621099,
+    "light_official": 1.7994939103326582
+   },
+   "best": "rho"
+  },
+  "20": {
+   "td": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 17.1780868474191,
+    "light_official": 2.513504272988683
+   },
+   "rho": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 332.891060464472,
+    "light_official": 347.15140574622365
+   },
+   "pm1": {
+    "success": 64,
+    "n": 80,
+    "light_ruint": 5.591849269873553,
+    "light_official": 5.592117421184566
+   },
+   "ecm": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 40.163333049313685,
+    "light_official": 40.16392907652584
+   },
+   "qs + lc 1.4": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 9.242178136236005,
+    "light_official": 1.75142709015911
+   },
+   "best": "rho"
+  },
+  "24": {
+   "td": {
+    "success": 0,
+    "n": 80,
+    "light_ruint": 0.0,
+    "light_official": 0.0
+   },
+   "rho": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 83.21551467723673,
+    "light_official": 85.95736085114979
+   },
+   "pm1": {
+    "success": 56,
+    "n": 80,
+    "light_ruint": 4.905004163460938,
+    "light_official": 4.90523996127313
+   },
+   "ecm": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 31.711931239868225,
+    "light_official": 31.712645377703552
+   },
+   "qs + lc 1.4": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 9.439006181201053,
+    "light_official": 1.8055375566030383
+   },
+   "best": "rho"
+  },
+  "28": {
+   "td": {
+    "success": 0,
+    "n": 80,
+    "light_ruint": 0.0,
+    "light_official": 0.0
+   },
+   "rho": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 25.639795698771415,
+    "light_official": 26.44269702288285
+   },
+   "pm1": {
+    "success": 42,
+    "n": 80,
+    "light_ruint": 3.680750679516026,
+    "light_official": 3.680927719988673
+   },
+   "ecm": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 22.028793892736374,
+    "light_official": 22.03035617853731
+   },
+   "qs + lc 1.4": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 10.240144024218884,
+    "light_official": 1.8211166304097521
+   },
+   "best": "rho"
+  },
+  "32": {
+   "td": {
+    "success": 0,
+    "n": 80,
+    "light_ruint": 0.0,
+    "light_official": 0.0
+   },
+   "rho": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 5.174749621291331,
+    "light_official": 5.331740209358777
+   },
+   "pm1": {
+    "success": 33,
+    "n": 80,
+    "light_ruint": 2.8395363017901336,
+    "light_official": 2.839670402037954
+   },
+   "ecm": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 10.74937195434549,
+    "light_official": 10.749974670372183
+   },
+   "qs + lc 1.4": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 9.939328890073345,
+    "light_official": 1.7589969671594168
+   },
+   "best": "ecm"
+  },
+  "36": {
+   "td": {
+    "success": 0,
+    "n": 80,
+    "light_ruint": 0.0,
+    "light_official": 0.0
+   },
+   "rho": {
+    "success": 76,
+    "n": 80,
+    "light_ruint": 1.2701886431269762,
+    "light_official": 1.3080816433649993
+   },
+   "pm1": {
+    "success": 23,
+    "n": 80,
+    "light_ruint": 1.9855632599875448,
+    "light_official": 1.9856573380484925
+   },
+   "ecm": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 5.854397502139839,
+    "light_official": 5.854614552303114
+   },
+   "qs + lc 1.4": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 9.966822764468015,
+    "light_official": 1.7664916235396138
+   },
+   "best": "qs + lc 1.4"
+  },
+  "42": {
+   "td": {
+    "success": 0,
+    "n": 80,
+    "light_ruint": 0.0,
+    "light_official": 0.0
+   },
+   "rho": {
+    "success": 18,
+    "n": 80,
+    "light_ruint": 0.1165633505884668,
+    "light_official": 0.11974751953990129
+   },
+   "pm1": {
+    "success": 22,
+    "n": 80,
+    "light_ruint": 1.9238567547523846,
+    "light_official": 1.923949090907819
+   },
+   "ecm": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 4.936921715034234,
+    "light_official": 4.937057454512421
+   },
+   "qs + lc 1.4": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 9.82737201723789,
+    "light_official": 1.802410033998635
+   },
+   "best": "qs + lc 1.4"
+  }
+ },
+ "96": {
+  "16": {
+   "td": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 276.1705939665157,
+    "light_official": 40.40938750481124
+   },
+   "rho": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 1198.9075535430648,
+    "light_official": 1290.5931888944456
+   },
+   "pm1": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 1.340825647653922,
+    "light_official": 1.3408379811666233
+   },
+   "ecm": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 30.1061896202343,
+    "light_official": 30.10346938721754
+   },
+   "qs + lc 1.4": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 4.404728351998846,
+    "light_official": 0.5394233146713094
+   },
+   "best": "rho"
+  },
+  "20": {
+   "td": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 17.432704076518775,
+    "light_official": 2.550759963858282
+   },
+   "rho": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 318.8532944672927,
+    "light_official": 332.16797734614397
+   },
+   "pm1": {
+    "success": 79,
+    "n": 80,
+    "light_ruint": 1.3273035486062115,
+    "light_official": 1.3273157875963415
+   },
+   "ecm": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 25.176786111705287,
+    "light_official": 25.176019715341038
+   },
+   "qs + lc 1.4": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 4.33985673940391,
+    "light_official": 0.5265956577435493
+   },
+   "best": "rho"
+  },
+  "24": {
+   "td": {
+    "success": 0,
+    "n": 80,
+    "light_ruint": 0.0,
+    "light_official": 0.0
+   },
+   "rho": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 88.09614798474065,
+    "light_official": 91.03478097600664
+   },
+   "pm1": {
+    "success": 69,
+    "n": 80,
+    "light_ruint": 1.1674736003807156,
+    "light_official": 1.1674844415778096
+   },
+   "ecm": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 18.14144303278087,
+    "light_official": 18.141659145437146
+   },
+   "qs + lc 1.4": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 4.43516397581136,
+    "light_official": 0.5405191827285095
+   },
+   "best": "rho"
+  },
+  "28": {
+   "td": {
+    "success": 0,
+    "n": 80,
+    "light_ruint": 0.0,
+    "light_official": 0.0
+   },
+   "rho": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 22.356881556206567,
+    "light_official": 23.045775824520245
+   },
+   "pm1": {
+    "success": 46,
+    "n": 80,
+    "light_ruint": 0.7761320128578586,
+    "light_official": 0.7761391998230942
+   },
+   "ecm": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 11.686780989589359,
+    "light_official": 11.68727596039825
+   },
+   "qs + lc 1.4": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 4.376157900902213,
+    "light_official": 0.5330083545861531
+   },
+   "best": "rho"
+  },
+  "32": {
+   "td": {
+    "success": 0,
+    "n": 80,
+    "light_ruint": 0.0,
+    "light_official": 0.0
+   },
+   "rho": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 5.553990089414014,
+    "light_official": 5.723041559082428
+   },
+   "pm1": {
+    "success": 40,
+    "n": 80,
+    "light_ruint": 0.672003056176868,
+    "light_official": 0.6720092522233846
+   },
+   "ecm": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 8.025575428276674,
+    "light_official": 8.025867370535234
+   },
+   "qs + lc 1.4": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 4.37137056981444,
+    "light_official": 0.5313835101069143
+   },
+   "best": "ecm"
+  },
+  "36": {
+   "td": {
+    "success": 0,
+    "n": 80,
+    "light_ruint": 0.0,
+    "light_official": 0.0
+   },
+   "rho": {
+    "success": 79,
+    "n": 80,
+    "light_ruint": 1.2609682183621902,
+    "light_official": 1.2991124102235214
+   },
+   "pm1": {
+    "success": 30,
+    "n": 80,
+    "light_ruint": 0.5016991981764427,
+    "light_official": 0.5017038028378976
+   },
+   "ecm": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 5.301434364864743,
+    "light_official": 5.301622210244974
+   },
+   "qs + lc 1.4": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 4.398845389217857,
+    "light_official": 0.5332420209696624
+   },
+   "best": "ecm"
+  },
+  "42": {
+   "td": {
+    "success": 0,
+    "n": 80,
+    "light_ruint": 0.0,
+    "light_official": 0.0
+   },
+   "rho": {
+    "success": 1,
+    "n": 80,
+    "light_ruint": 0.005838954613889541,
+    "light_official": 0.005995574750214913
+   },
+   "pm1": {
+    "success": 19,
+    "n": 80,
+    "light_ruint": 0.3173712105599688,
+    "light_official": 0.31737412002805254
+   },
+   "ecm": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 2.220725574711877,
+    "light_official": 2.2207476457854205
+   },
+   "qs + lc 1.4": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 4.382073993070989,
+    "light_official": 0.5312363486784384
+   },
+   "best": "qs + lc 1.4"
+  },
+  "48": {
+   "td": {
+    "success": 0,
+    "n": 80,
+    "light_ruint": 0.0,
+    "light_official": 0.0
+   },
+   "rho": {
+    "success": 0,
+    "n": 80,
+    "light_ruint": 0.0,
+    "light_official": 0.0
+   },
+   "pm1": {
+    "success": 17,
+    "n": 80,
+    "light_ruint": 0.2843924638711826,
+    "light_official": 0.2843950749464668
+   },
+   "ecm": {
+    "success": 76,
+    "n": 80,
+    "light_ruint": 1.216768362339516,
+    "light_official": 1.2167595499814805
+   },
+   "qs + lc 1.4": {
+    "success": 80,
+    "n": 80,
+    "light_ruint": 4.39205013674332,
+    "light_official": 0.5356689894010592
+   },
+   "best": "qs + lc 1.4"
+  }
+ }
+}

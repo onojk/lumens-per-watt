@@ -10517,3 +10517,38 @@ Total: about 1–3 hours of lampcore counting for the rest; wall timing roughly 
 - **The map's record:** the qs card ("qs + lc 1.4", `size_map.json`) takes a median of about **1.87 M official ops, about 2^21**, per balanced-band 96-bit number. Today's reference executes about 30 M machine instructions per number; that is a different unit.
 - **The ECM estimate is unchecked:** at a 2^21 cap the map's ECM spends a median of 0.66 M ops on balanced 96-bit numbers, mostly failing. Its cost to success at 96 bits is not known from existing data.
 - **The total compute estimate** (1–3 hours of counting) is therefore an order of magnitude only. The runner will measure each lamp's time at one size before committing to the full grid.
+
+## Dark regions: a first sketch of the light spectrum (Phase 3; the user's novelty programme, item 4, Oct 28; information only, existing data)
+
+**In plain English first:** light means successes per unit of priced cost. At 72–96 bits it falls by **two to three orders of magnitude** as the smaller factor grows from 16 bits to half of N.
+- **Rho lights the small-factor end brilliantly.** QS lights everything at one flat, dim level.
+- **The dark region is the plateau** where the smaller factor is above about 0.40–0.44 of N's bits (θ ≥ 0.39 at 72, ≥ 0.43 at 84, ≥ 0.44 at 96). There only QS succeeds at a useful rate, and every lamp is at its dimmest. Within the plateau the bands tie (QS's light does not depend on θ), so no single band is "the darkest". The plateau is.
+- **Just below it is a twilight band** (θ ≈ 0.33–0.40): rho has faded, and ECM and QS are within about 1–2.5× of each other, both mediocre. A new lamp that is good at medium factors would show first there.
+
+`evolve/dark_regions.py`, `.out`, `.json`. Existing per-number maps only, no new runs: `size_map.json` (72 and 96 bits) and `partition_map.json` (84 bits), 80 numbers per band.
+- **Lamps:** td, rho, p−1 and ECM each **alone** (Python, cap 2^21 ops, `partition.PRE`'s genes), and the maps' QS. Light = successes ÷ total priced cost spent on the band (per million units), under ruint (official in the `.out`).
+- **The maps' QS is "qs + lc 1.4",** an older card under an older meter. It lacks today's word-level types and costs, and it is not today's reference, which is several times cheaper per number. So today's plateau is brighter than shown, and the crossover from ECM to QS sits at lower θ than here.
+
+**Light under ruint (successes per million price units), the best lamp in bold:**
+
+| bits | θ = 0.17–0.22 (16-bit factor) | 20 | 24 | 28 | 32 | 36 | 42 | balanced |
+|---|---|---|---|---|---|---|---|---|
+| 72 | **rho 1,263** | **rho 379** | **rho 84** | **qs 46**, ecm 32 | **qs 39**, ecm 20 | — | — | **qs 46**, ecm 16 (θ 0.50) |
+| 84 | **rho 1,160** | **rho 333** | **rho 83** | **rho 26**, ecm 22 | **ecm 10.7**, qs 9.9 | **qs 10.0**, ecm 5.9 | — | **qs 9.8**, ecm 4.9 (θ 0.50) |
+| 96 | **rho 1,199** | **rho 319** | **rho 88** | **rho 22**, ecm 12 | **ecm 8.0**, rho 5.6, qs 4.4 | **ecm 5.3**, qs 4.4 | **qs 4.4**, ecm 2.2 | **qs 4.4**, ecm 1.2 (θ 0.50) |
+
+(At 72 the bands are 16–32 and 36 balanced; at 84, 16–42 with 42 balanced; at 96, 16–42 and 48 balanced. Each "—" is a band that size does not have.)
+
+- **td** is only ever competitive with a 16-bit factor (about 280 per million at every size), and it never succeeds above 20 bits within the cap.
+- **p−1** (its fixed B) is dim everywhere: 34 → 6 per million at 72, and 1.3 → 0.3 at 96. It succeeds only when p−1 happens to be smooth.
+- **The span of light at 96 bits:** 1,199 (rho, 16-bit factor) against 4.4 (the plateau), about **270×**.
+
+**Reading for Phase 3 (not a verdict):**
+- **The plateau** is where any new method for balanced numbers must compete with QS.
+- **The twilight band** (ECM and QS close) is where a medium-factor method (better ECM stage 2, a class-group method, or a new idea) would show up first. That makes it the cheapest place to test such an idea's light.
+- **Next steps** (the user's call):
+  - redraw the spectrum with today's reference QS under today's meter (a counts-only pass on these map numbers, untimed);
+  - add CFRAC as a lamp;
+  - repeat at 104 bits once the growth harness exists.
+
+**Not established:** a few bands' light rests on a handful of successes (rho at 36–42 bits, ECM at θ 0.5). No intervals are given here (a bootstrap is cheap if wanted). One seed set per size.
