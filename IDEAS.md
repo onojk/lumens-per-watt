@@ -386,3 +386,10 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - **Idea:** every op-class comparison reports, per cell, the uncharged (uncharged:card) and unattributed Ir, as v1's derivations do per run. A change that raises either by more than a stated tolerance is flagged. This is the op-class version of an uncharged op: work that runs but that no charged class pays for.
 - Pairs with I-042: I-042 finds time without price, this finds instructions without price. It would also expose growth in v1's known gap (line-0 code counted as uncharged).
 - Decision: pending (the user's).
+
+### I-046 — op-class needs a SIMD rule before any SIMD adoption
+- Date: 2026-10-27. Source: the user (after Experiment 1, the gap location against YAFU's tinysiqs).
+- **The problem:** op-class v1 weights are instructions retired (callgrind Ir) per charged op. A 256-bit instruction that compares 32 sieve bytes counts as **one** instruction, the same as a scalar compare of one byte. A change that vectorises a charged loop (the scan, the sieve clear, the Gray root update) would therefore look up to 16–32× cheaper per op under v1. v1 would price the vector instruction exactly as callgrind counts it, so that is not a meter hole; but it would treat a wide instruction's work as free beyond its count.
+- **Today:** the card runs no 256-bit instructions in its own code (Experiment 1: 0.00% of its main-object Ir; 1.8–2.0% 128-bit packed, mostly compiler-generated moves). Its only wide instructions are in libc's AVX2 memset, which v1 counts as uncharged (library) Ir. YAFU's tinysiqs uses 256-bit instructions in its scan (`mark_sieve_block`, about 22% of that function) and its polynomial-B root update (`find_next_poly_b`, about 50%).
+- **Rule, before any SIMD adoption:** a v2 op-class rule must say how a vector instruction is weighed. For example by lanes, by bytes touched, or by measured throughput relative to scalar. Its cost model goes in NOTES first, it is derived prospectively (v1 stays frozen for the decisions it made), and it is published before any SIMD change is scored.
+- Decision: pending (the user's).

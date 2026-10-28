@@ -10090,3 +10090,59 @@ All forecasters saw the unsealed 1.3–1.7× estimate first, so these hits test 
 - YAFU's internal time is from one instrumented copy. Its ±1% agreement with the uninstrumented wall rules out a timer cost, not a different code layout.
 - The callgrind comparison counts instructions only: no cache or branch model.
 - The `-march=native` YAFU build (optional) was not built.
+
+## Experiment 1: locating the gap to YAFU's tinysiqs (information only; the user's request, Oct 27 late)
+
+**In plain English first: the card's extra instructions are in two places, not in its sieve:**
+- **Polynomial set-up** carries 26–46% of the instruction gap. Close to half of it is **memory allocation** (malloc / free) on every new A.
+- **Candidate confirmation plus the large-prime ledger** carries 36–52%.
+
+Next come the scan (6–15%, where YAFU uses 256-bit compares), the sieve itself (6–22%, larger at 96), and per-attempt code outside the timed regions (8–20%, mostly allocation again). **YAFU spends more than the card only in the linear algebra and square root** (GMP-heavy). **SIMD is not the main story:** YAFU's own code is about 1% 256-bit and 2–3% 128-bit packed instructions, concentrated in the scan and the B-root update.
+
+`evolve/gap_locate.py` (`.out`, `gap_locate.json`), `evolve/gap_table.py` (`gap_table.out`, `gap_library.json`). Balanced band (80 numbers) at 72 / 84 / 96.
+- **The card:** this commit's source built with line tables (`CARGO_PROFILE_RELEASE_DEBUG=1`, in Claude's scratch, sha256 1b49eb6b…), stdout checked identical to the release binary's on the same numbers.
+- **YAFU:** the user's build (c7d9028, `-g`), `smallmpqs(@)`.
+- **Measurement:** callgrind 3.25.1, Ir only, one run per side per size. Attribution is complete on both sides: the card's regions sum to `lamp_qs`'s inclusive Ir, YAFU's functions to `tinysiqs`'s.
+- **Time shares:** the card's `--phasetime` on the release binary, median of 3 passes, core 2, under Run B's conditions. YAFU has no per-function clock, so it has no time shares.
+
+**The common phases** (YAFU's functions placed by their own source comments, `gap_table.py`), M Ir per number:
+
+| phase | 72: card / YAFU | 84: card / YAFU | 96: card / YAFU | share of the gap (72 / 84 / 96) | card time share (72 / 84 / 96) |
+|---|---|---|---|---|---|
+| factor base | 0.14 / 0.10 | 0.24 / 0.15 | 0.37 / 0.18 | 1 / 1 / 1% | 4 / 4 / 3% |
+| **poly set-up** (card setup + gray; YAFU find_poly_a, find_*_poly_b, modinv_16, sieve_next_poly) | **2.74 / 0.43** | **3.65 / 1.13** | **6.88 / 1.16** | **46 / 27 / 26%** | 34 / 28 / 26% |
+| sieve (card sieve + resieve; YAFU fill_sieve_block, memset) | 0.76 / 0.48 | 2.73 / 1.45 | 9.97 / 5.14 | 5 / 14 / 22% | 11 / 17 / 26% |
+| scan (card scan; YAFU mark_sieve_block) | 0.31 / 0.03 | 0.99 / 0.08 | 3.60 / 0.26 | 6 / 10 / 15% | 4 / 5 / 7% |
+| **confirm + lp** (card confirm + lp_ledger; YAFU check_sieve_val_tiny) | **2.78 / 0.62** | **5.76 / 1.01** | **11.23 / 3.43** | **43 / 52 / 36%** | 36 / 35 / 30% |
+| la + sqrt (card solve; YAFU solve_linear_system_tiny, find_factors_tiny) | 0.45 / 1.48 | 1.00 / 2.57 | 2.02 / 3.64 | **−20 / −17 / −7%** | 10 / 11 / 9% |
+| unplaced (card: code in sieve_source / lamp_qs outside the timed spans, and line 0) | 1.03 / 0.00 | 1.24 / 0.01 | 1.76 / 0.01 | 20 / 13 / 8% | — |
+| **total** | **8.22 / 3.15** | **15.60 / 6.39** | **35.82 / 13.83** | | |
+
+**The card's library calls** (libc, libm; `gap_library.json`), M Ir per number at 72 / 84 / 96:
+- **Allocation (malloc, free, realloc, calloc): 2.12 / 2.35 / 3.10,** 26 / 15 / 9% of all the card's instructions. In poly set-up it is 1.21 / 1.37 / 2.00 of that phase's 2.74 / 3.65 / 6.88 (44 / 38 / 29%). Outside the spans it is 0.78 at every size, about three-quarters of "unplaced". YAFU's tinysiqs makes no allocation calls on these inputs (its parameters are allocated once by `init_tinysiqs`).
+- **memset** (libc's AVX2 version) 0.04 / 0.40 / 1.37, all in the sieve clear; `log` 0.15 / 0.21 / 0.38, in setup.
+- Callees called from several regions are split by their run-wide fractions, an approximation.
+
+**SIMD** (each side's own executed main-object instructions, classified from `objdump -d`):
+
+| | 256-bit (%ymm) | 128-bit packed | scalar FP in xmm | not classified |
+|---|---|---|---|---|
+| card (72 / 84 / 96) | **0.00 / 0.00 / 0.00%** | 2.0 / 1.8 / 1.9% | 1.5 / 1.9 / 2.5% | libc / libm calls (above), including AVX2 memset |
+| YAFU tinysiqs (72 / 84 / 96) | 0.8 / 1.0 / 1.1% | 1.8 / 1.6 / 3.0% | ≤ 0.1% | GMP and libc: 1.98 / 3.46 / 7.14 M Ir per number, 63 / 54 / 52% of tinysiqs |
+
+- **Where YAFU's vector instructions sit:** `mark_sieve_block` (the scan) is about 22% 256-bit; `find_next_poly_b` (the B-root update) is 47–57% 256-bit; `check_sieve_val_tiny` is 14–20% 128-bit packed. `fill_sieve_block` (the sieve walks) uses none.
+- **The card's 128-bit packed share** is mostly compiler-generated moves (in solve, gray and setup), not vectorised work.
+- **A wide instruction does several lanes of work for one count,** so the instruction gap in the scan and the B update understates YAFU's work per instruction there. IDEAS I-046 records the meter consequence.
+
+**Reading (not a verdict):**
+1. **The largest single source is allocation.** Allocating per-A vectors and per-attempt state on every A costs 2.1–3.1 M instructions per number: 26% of the card's instructions at 72, 9% at 96. Allocating once per attempt and reusing would be a counts-identical code change like the A-prime fix: a cost note first, acceptance, parity.
+2. **Confirm + lp is the largest phase gap at 84 and 96.** The card does root tests and trial division per candidate; YAFU's check uses GMP division with a small-prime filter. Locating which sub-step dominates would need the confirm region split, not done here.
+3. **The scan:** YAFU compares 32 bytes per instruction; the card compares one. This is a SIMD candidate, so it would need I-046's rule first.
+4. **The sieve itself** is within about 2× at all sizes, and the card's growth from 84 to 96 (2.7 → 10.0 M) is faster than YAFU's (1.4 → 5.1 M): the card's block size or cache use at 96 may matter. Not measured.
+5. **The card is cheaper in LA + sqrt,** by 1.0–1.6 M instructions.
+
+**Not established:**
+- Instruction counts are not time. The card's time shares come from `--phasetime`, whose timer overhead (76 ns per region entry; the wall per number rises to 1.23 / 1.96 / 3.89 ms from 0.88 / 1.59 / 3.43) inflates regions entered often, such as confirm and lp_ledger. YAFU has no time shares.
+- The phase mapping is by function role, and the two designs do not split work identically: YAFU's single-large-prime handling sits inside its check function.
+- The library split is approximate where callees are shared between regions.
+- One callgrind run per size per side.

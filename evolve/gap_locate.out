@@ -1,0 +1,83 @@
+== 72 bits, balanced band (80 numbers)
+  card: wall 1.227 ms per number (--phasetime pass); lamp_qs inclusive 8.22 M Ir per number, attributed 8.22 M
+    mult                                 0.016 M Ir/number (  0.2%); time share   0.6%; own Ir 256-bit 0.0%, 128-bit packed 2.7%, scalar FP 2.1%
+    fb                                   0.121 M Ir/number (  1.5%); time share   3.5%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    solve                                0.454 M Ir/number (  5.5%); time share  10.2%; own Ir 256-bit 0.0%, 128-bit packed 16.7%, scalar FP 0.0%
+    setup                                2.713 M Ir/number ( 33.0%); time share  32.3%; own Ir 256-bit 0.0%, 128-bit packed 3.0%, scalar FP 3.1%
+    gray                                 0.030 M Ir/number (  0.4%); time share   2.0%; own Ir 256-bit 0.0%, 128-bit packed 22.5%, scalar FP 0.0%
+    sieve                                0.756 M Ir/number (  9.2%); time share  11.0%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    scan                                 0.313 M Ir/number (  3.8%); time share   3.9%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    resieve                              0.002 M Ir/number (  0.0%); time share   0.3%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    confirm                              2.199 M Ir/number ( 26.8%); time share  24.3%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    lp_ledger                            0.581 M Ir/number (  7.1%); time share  12.0%; own Ir 256-bit 0.0%, 128-bit packed 0.3%, scalar FP 0.6%
+    other (in lamp_qs / sieve_source)    0.860 M Ir/number ( 10.5%); time share   0.0%; own Ir 256-bit 0.0%, 128-bit packed 0.4%, scalar FP 0.3%
+    line 0                               0.171 M Ir/number (  2.1%); time share   0.0%; own Ir 256-bit 0.0%, 128-bit packed 0.3%, scalar FP 4.5%
+    (callees' own instructions, all regions: 256-bit 0.0%, 128-bit packed 3.5%, scalar FP 2.4%)
+  YAFU tinysiqs: inclusive 3.15 M Ir per number, attributed 3.15 M; internal time (Run C) 0.510 ms
+    find_factors_tiny                    1.310 M Ir/number ( 41.6%); library 88.0%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    check_sieve_val_tiny                 0.616 M Ir/number ( 19.6%); library 75.3%; own Ir 256-bit 0.1%, 128-bit packed 13.8%, scalar FP 0.0%
+    fill_sieve_block_tiny                0.429 M Ir/number ( 13.6%); library  0.0%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    find_first_poly_b                    0.301 M Ir/number (  9.6%); library 87.3%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    solve_linear_system_tiny             0.173 M Ir/number (  5.5%); library  0.0%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    sieve_next_poly_tiny                 0.052 M Ir/number (  1.7%); library  3.5%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    modinv_16                            0.051 M Ir/number (  1.6%); library  0.0%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    memset                               0.050 M Ir/number (  1.6%); library 63.1%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    init_fb_tiny                         0.042 M Ir/number (  1.3%); library 85.3%; own Ir 256-bit 0.0%, 128-bit packed 1.6%, scalar FP 7.8%
+    mark_sieve_block_tiny                0.033 M Ir/number (  1.1%); library  0.0%; own Ir 256-bit 20.7%, 128-bit packed 0.0%, scalar FP 0.0%
+    legendre_16                          0.033 M Ir/number (  1.0%); library  0.0%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    find_next_poly_b                     0.023 M Ir/number (  0.7%); library 79.0%; own Ir 256-bit 46.5%, 128-bit packed 0.0%, scalar FP 0.0%
+== 84 bits, balanced band (80 numbers)
+  card: wall 1.961 ms per number (--phasetime pass); lamp_qs inclusive 15.60 M Ir per number, attributed 15.60 M
+    mult                                 0.015 M Ir/number (  0.1%); time share   0.3%; own Ir 256-bit 0.0%, 128-bit packed 2.7%, scalar FP 2.1%
+    fb                                   0.222 M Ir/number (  1.4%); time share   3.5%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    solve                                1.000 M Ir/number (  6.4%); time share  11.1%; own Ir 256-bit 0.0%, 128-bit packed 16.7%, scalar FP 0.0%
+    setup                                3.585 M Ir/number ( 23.0%); time share  25.3%; own Ir 256-bit 0.0%, 128-bit packed 2.8%, scalar FP 2.8%
+    gray                                 0.063 M Ir/number (  0.4%); time share   2.3%; own Ir 256-bit 0.0%, 128-bit packed 25.2%, scalar FP 0.0%
+    sieve                                2.730 M Ir/number ( 17.5%); time share  16.8%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    scan                                 0.985 M Ir/number (  6.3%); time share   5.1%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    resieve                              0.002 M Ir/number (  0.0%); time share   0.2%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    confirm                              4.851 M Ir/number ( 31.1%); time share  25.6%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    lp_ledger                            0.908 M Ir/number (  5.8%); time share   9.8%; own Ir 256-bit 0.0%, 128-bit packed 0.3%, scalar FP 0.6%
+    other (in lamp_qs / sieve_source)    0.863 M Ir/number (  5.5%); time share   0.0%; own Ir 256-bit 0.0%, 128-bit packed 0.3%, scalar FP 0.2%
+    line 0                               0.372 M Ir/number (  2.4%); time share   0.0%; own Ir 256-bit 0.0%, 128-bit packed 0.2%, scalar FP 4.5%
+    (callees' own instructions, all regions: 256-bit 0.0%, 128-bit packed 3.8%, scalar FP 3.9%)
+  YAFU tinysiqs: inclusive 6.39 M Ir per number, attributed 6.39 M; internal time (Run C) 0.999 ms
+    find_factors_tiny                    2.208 M Ir/number ( 34.6%); library 87.7%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    fill_sieve_block_tiny                1.365 M Ir/number ( 21.4%); library  0.0%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    check_sieve_val_tiny                 1.006 M Ir/number ( 15.8%); library 73.2%; own Ir 256-bit 0.1%, 128-bit packed 17.6%, scalar FP 0.0%
+    find_first_poly_b                    0.712 M Ir/number ( 11.1%); library 87.8%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    solve_linear_system_tiny             0.365 M Ir/number (  5.7%); library  0.0%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    sieve_next_poly_tiny                 0.205 M Ir/number (  3.2%); library  2.4%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    modinv_16                            0.119 M Ir/number (  1.9%); library  0.0%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    find_next_poly_b                     0.088 M Ir/number (  1.4%); library 76.4%; own Ir 256-bit 52.2%, 128-bit packed 0.0%, scalar FP 0.0%
+    mark_sieve_block_tiny                0.081 M Ir/number (  1.3%); library  0.0%; own Ir 256-bit 22.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    memset                               0.079 M Ir/number (  1.2%); library 40.1%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    init_fb_tiny                         0.063 M Ir/number (  1.0%); library 85.3%; own Ir 256-bit 0.0%, 128-bit packed 1.6%, scalar FP 7.8%
+    legendre_16                          0.047 M Ir/number (  0.7%); library  0.0%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+== 96 bits, balanced band (80 numbers)
+  card: wall 3.886 ms per number (--phasetime pass); lamp_qs inclusive 35.82 M Ir per number, attributed 35.82 M
+    mult                                 0.016 M Ir/number (  0.0%); time share   0.1%; own Ir 256-bit 0.0%, 128-bit packed 2.7%, scalar FP 2.1%
+    fb                                   0.356 M Ir/number (  1.0%); time share   2.4%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    solve                                2.018 M Ir/number (  5.6%); time share   9.4%; own Ir 256-bit 0.0%, 128-bit packed 16.7%, scalar FP 0.0%
+    setup                                6.699 M Ir/number ( 18.7%); time share  22.8%; own Ir 256-bit 0.0%, 128-bit packed 2.6%, scalar FP 2.6%
+    gray                                 0.177 M Ir/number (  0.5%); time share   2.9%; own Ir 256-bit 0.0%, 128-bit packed 26.5%, scalar FP 0.0%
+    sieve                                9.963 M Ir/number ( 27.8%); time share  25.4%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    scan                                 3.595 M Ir/number ( 10.0%); time share   7.0%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    resieve                              0.004 M Ir/number (  0.0%); time share   0.2%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    confirm                              9.442 M Ir/number ( 26.4%); time share  21.1%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    lp_ledger                            1.788 M Ir/number (  5.0%); time share   8.7%; own Ir 256-bit 0.0%, 128-bit packed 0.2%, scalar FP 0.5%
+    other (in lamp_qs / sieve_source)    0.892 M Ir/number (  2.5%); time share   0.0%; own Ir 256-bit 0.0%, 128-bit packed 0.2%, scalar FP 0.1%
+    line 0                               0.869 M Ir/number (  2.4%); time share   0.0%; own Ir 256-bit 0.0%, 128-bit packed 0.1%, scalar FP 5.2%
+    (callees' own instructions, all regions: 256-bit 0.0%, 128-bit packed 4.6%, scalar FP 6.2%)
+  YAFU tinysiqs: inclusive 13.83 M Ir per number, attributed 13.83 M; internal time (Run C) 1.823 ms
+    fill_sieve_block                     3.913 M Ir/number ( 28.3%); library  0.0%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    check_sieve_val_tiny                 3.429 M Ir/number ( 24.8%); library 71.0%; own Ir 256-bit 0.3%, 128-bit packed 20.0%, scalar FP 0.0%
+    find_factors_tiny                    3.070 M Ir/number ( 22.2%); library 88.0%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    memset                               1.226 M Ir/number (  8.9%); library 99.8%; own Ir 256-bit 0.0%, 128-bit packed 0.1%, scalar FP 0.0%
+    find_first_poly_b                    0.739 M Ir/number (  5.3%); library 87.8%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    solve_linear_system_tiny             0.568 M Ir/number (  4.1%); library  0.0%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    mark_sieve_block                     0.264 M Ir/number (  1.9%); library  0.0%; own Ir 256-bit 22.7%, 128-bit packed 0.0%, scalar FP 0.0%
+    sieve_next_poly                      0.219 M Ir/number (  1.6%); library  1.9%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    modinv_16                            0.127 M Ir/number (  0.9%); library  0.0%; own Ir 256-bit 0.0%, 128-bit packed 0.0%, scalar FP 0.0%
+    init_fb_tiny                         0.078 M Ir/number (  0.6%); library 85.4%; own Ir 256-bit 0.0%, 128-bit packed 1.5%, scalar FP 7.7%
+    find_next_poly_b                     0.076 M Ir/number (  0.6%); library 74.3%; own Ir 256-bit 56.6%, 128-bit packed 0.0%, scalar FP 0.0%

@@ -1,0 +1,59 @@
+== 72 bits, balanced band: M Ir per number (callgrind); card time share (--phasetime)
+  phase              card     YAFU  card-YAFU  share of gap  card time share
+  factor base       0.136    0.102      0.034          0.7%             4.1%
+  poly set-up       2.743    0.429      2.314         45.7%            34.3%
+  sieve             0.758    0.480      0.278          5.5%            11.3%
+  scan              0.313    0.033      0.279          5.5%             3.9%
+  confirm + lp      2.779    0.616      2.163         42.7%            36.2%
+  la + sqrt         0.454    1.483     -1.029        -20.3%            10.2%
+  unplaced          1.032    0.004      1.028         20.3%             0.0%
+  total             8.215    3.147      5.068        100.0%
+  YAFU unplaced functions: __gmpz_abs, __gmpz_get_ui, get_rand, init_siqs_tiny, tinysiqs
+  card own main-object Ir: 5.910 M per number; 256-bit 0.00%, 128-bit packed 2.03%, scalar FP in xmm 1.49%
+  YAFU own main-object Ir: 1.172 M per number; 256-bit 0.79%, 128-bit packed 1.81%, scalar FP in xmm 0.07%; library (GMP, libc; not classified) 1.975 M per number
+== 84 bits, balanced band: M Ir per number (callgrind); card time share (--phasetime)
+  phase              card     YAFU  card-YAFU  share of gap  card time share
+  factor base       0.238    0.150      0.088          1.0%             3.8%
+  poly set-up       3.648    1.126      2.522         27.4%            27.6%
+  sieve             2.732    1.445      1.288         14.0%            17.0%
+  scan              0.985    0.081      0.903          9.8%             5.1%
+  confirm + lp      5.759    1.006      4.752         51.6%            35.4%
+  la + sqrt         1.000    2.573     -1.573        -17.1%            11.1%
+  unplaced          1.235    0.005      1.230         13.4%             0.0%
+  total            15.597    6.386      9.210        100.0%
+  YAFU unplaced functions: __gmpz_abs, __gmpz_get_ui, get_rand, init_siqs_tiny, tinysiqs
+  card own main-object Ir: 12.650 M per number; 256-bit 0.00%, 128-bit packed 1.81%, scalar FP in xmm 1.85%
+  YAFU own main-object Ir: 2.922 M per number; 256-bit 0.99%, 128-bit packed 1.63%, scalar FP in xmm 0.04%; library (GMP, libc; not classified) 3.464 M per number
+== 96 bits, balanced band: M Ir per number (callgrind); card time share (--phasetime)
+  phase              card     YAFU  card-YAFU  share of gap  card time share
+  factor base       0.372    0.184      0.188          0.9%             2.5%
+  poly set-up       6.876    1.164      5.712         26.0%            25.7%
+  sieve             9.968    5.139      4.828         22.0%            25.6%
+  scan              3.595    0.264      3.331         15.1%             7.0%
+  confirm + lp     11.230    3.429      7.801         35.5%            29.8%
+  la + sqrt         2.018    3.638     -1.619         -7.4%             9.4%
+  unplaced          1.761    0.008      1.753          8.0%             0.0%
+  total            35.820   13.826     21.994        100.0%
+  YAFU unplaced functions: __gmpz_abs, __gmpz_get_ui, get_rand, init_siqs_tiny, tinysiqs
+  card own main-object Ir: 30.970 M per number; 256-bit 0.00%, 128-bit packed 1.94%, scalar FP in xmm 2.53%
+  YAFU own main-object Ir: 6.683 M per number; 256-bit 1.10%, 128-bit packed 2.98%, scalar FP in xmm 0.02%; library (GMP, libc; not classified) 7.142 M per number
+== the card's library Ir by region (M per number; allocation split by callee-wide fractions)
+  72 bits: totals alloc 2.123, libm 0.155, memset/memcpy 0.035, other library 0.007
+    setup            alloc 1.210, libm 0.154, other library 0.007, memset/memcpy 0.004
+    other / line 0   alloc 0.783, other library 0.000, libm 0.000, memset/memcpy 0.000
+    solve            alloc 0.076, memset/memcpy 0.008, libm 0.000, other library 0.000
+    lp_ledger        alloc 0.033, memset/memcpy 0.008
+  84 bits: totals alloc 2.347, libm 0.205, memset/memcpy 0.397, other library 0.010
+    setup            alloc 1.373, libm 0.205, other library 0.009, memset/memcpy 0.005
+    other / line 0   alloc 0.781, other library 0.000, libm 0.000, memset/memcpy 0.000
+    sieve            memset/memcpy 0.355
+    solve            alloc 0.112, memset/memcpy 0.013, libm 0.000, other library 0.000
+    lp_ledger        alloc 0.053, memset/memcpy 0.012
+    fb               alloc 0.018, memset/memcpy 0.004, libm 0.000, other library 0.000
+  96 bits: totals alloc 3.101, libm 0.377, memset/memcpy 1.369, other library 0.015
+    setup            alloc 2.004, libm 0.376, other library 0.015, memset/memcpy 0.008
+    sieve            memset/memcpy 1.303
+    other / line 0   alloc 0.796, other library 0.000, libm 0.000, memset/memcpy 0.000
+    solve            alloc 0.150, memset/memcpy 0.016, libm 0.000, other library 0.000
+    lp_ledger        alloc 0.113, memset/memcpy 0.025
+    fb               alloc 0.028, memset/memcpy 0.005, libm 0.000, other library 0.000

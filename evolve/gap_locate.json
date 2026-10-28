@@ -1,0 +1,650 @@
+{
+ "72": {
+  "card_phasetime_ns": {
+   "confirm": 15380815,
+   "fb": 2210964,
+   "gray": 1272813,
+   "lp:add": 0,
+   "lp:comb": 0,
+   "lp:copy": 0,
+   "lp:hash": 0,
+   "lp_ledger": 7592389,
+   "mult": 364703,
+   "resieve": 197677,
+   "scan": 2501453,
+   "setup": 20484742,
+   "sieve": 6946743,
+   "solve": 6442588,
+   "sv:free2": 0,
+   "sv:power": 0,
+   "sv:prime": 0,
+   "sv:tail": 0,
+   "sv:zero": 0
+  },
+  "card_wall_s": 0.09815292101120576,
+  "card": {
+   "Ir": {
+    "other (in lamp_qs / sieve_source)": 68820730,
+    "setup": 217030964,
+    "line 0": 13712803,
+    "sieve": 60485329,
+    "gray": 2424757,
+    "scan": 25013034,
+    "resieve": 133364,
+    "confirm": 175881078,
+    "lp_ledger": 46442552,
+    "mult": 1242626,
+    "fb": 9674813,
+    "solve": 36355382
+   },
+   "simd_own": {
+    "other (in lamp_qs / sieve_source)": {
+     "general": 359073,
+     "128-bit packed": 1524,
+     "scalar FP in xmm": 1120
+    },
+    "setup": {
+     "general": 21481278,
+     "128-bit packed": 684026,
+     "scalar FP in xmm": 703963
+    },
+    "line 0": {
+     "general": 12433106,
+     "scalar FP in xmm": 590697,
+     "128-bit packed": 39176
+    },
+    "sieve": {
+     "general": 58878896
+    },
+    "gray": {
+     "general": 1764228,
+     "128-bit packed": 513414
+    },
+    "scan": {
+     "general": 95260
+    },
+    "resieve": {
+     "general": 52393
+    },
+    "confirm": {
+     "general": 127576561
+    },
+    "lp_ledger": {
+     "general": 10783130,
+     "128-bit packed": 32808,
+     "scalar FP in xmm": 70392
+    },
+    "mult": {
+     "general": 11120,
+     "scalar FP in xmm": 240,
+     "128-bit packed": 320
+    },
+    "fb": {
+     "general": 1944
+    },
+    "solve": {
+     "general": 1620,
+     "128-bit packed": 324
+    }
+   },
+   "simd_callees_all": {
+    "general": 222666031,
+    "128-bit packed": 8327600,
+    "scalar FP in xmm": 5691408
+   },
+   "lamp_qs_inclusive": 657217432,
+   "attributed": 657217432
+  },
+  "yafu": {
+   "Ir": {
+    "solve_linear_system_tiny": 13865190,
+    "memset": 4025362,
+    "get_rand": 78417,
+    "sqrtModP_16": 362719,
+    "powm_16": 1144901,
+    "legendre_16": 2622049,
+    "init_fb_tiny": 3344101,
+    "init_siqs_tiny": 44560,
+    "sieve_next_poly_tiny": 4194558,
+    "fill_sieve_block_tiny": 34356583,
+    "find_multiplier_tiny": 708879,
+    "__gmpz_get_ui": 11348,
+    "modinv_16": 4080756,
+    "check_sieve_val_tiny": 49290124,
+    "__gmpz_abs": 24146,
+    "find_factors_tiny": 104789239,
+    "mark_sieve_block_tiny": 2658372,
+    "tinysiqs": 156579,
+    "find_poly_a": 123470,
+    "find_first_poly_b": 24071052,
+    "find_next_poly_b": 1827910
+   },
+   "library_Ir": {
+    "memset": 2541200,
+    "init_fb_tiny": 2851771,
+    "init_siqs_tiny": 9200,
+    "sieve_next_poly_tiny": 145431,
+    "find_multiplier_tiny": 425488,
+    "check_sieve_val_tiny": 37102693,
+    "find_factors_tiny": 92265222,
+    "tinysiqs": 133622,
+    "find_poly_a": 81272,
+    "find_first_poly_b": 21005117,
+    "find_next_poly_b": 1444169
+   },
+   "simd_own": {
+    "solve_linear_system_tiny": {
+     "general": 13865190
+    },
+    "memset": {
+     "general": 1484002,
+     "128-bit packed": 160
+    },
+    "get_rand": {
+     "general": 78417
+    },
+    "sqrtModP_16": {
+     "general": 362719
+    },
+    "powm_16": {
+     "general": 1144901
+    },
+    "legendre_16": {
+     "general": 2622049
+    },
+    "init_fb_tiny": {
+     "general": 446250,
+     "128-bit packed": 7680,
+     "scalar FP in xmm": 38400
+    },
+    "init_siqs_tiny": {
+     "general": 34880,
+     "scalar FP in xmm": 400,
+     "128-bit packed": 80
+    },
+    "sieve_next_poly_tiny": {
+     "general": 4049127
+    },
+    "fill_sieve_block_tiny": {
+     "general": 34356583
+    },
+    "find_multiplier_tiny": {
+     "general": 258039,
+     "scalar FP in xmm": 24792,
+     "128-bit packed": 560
+    },
+    "__gmpz_get_ui": {
+     "general": 11348
+    },
+    "modinv_16": {
+     "general": 4080756
+    },
+    "check_sieve_val_tiny": {
+     "general": 10488662,
+     "128-bit packed": 1684465,
+     "256-bit": 14304
+    },
+    "__gmpz_abs": {
+     "general": 24146
+    },
+    "find_factors_tiny": {
+     "general": 12524017
+    },
+    "mark_sieve_block_tiny": {
+     "general": 2106932,
+     "256-bit": 551440
+    },
+    "tinysiqs": {
+     "general": 22317,
+     "scalar FP in xmm": 560,
+     "128-bit packed": 80
+    },
+    "find_poly_a": {
+     "general": 42198
+    },
+    "find_first_poly_b": {
+     "general": 3065935
+    },
+    "find_next_poly_b": {
+     "general": 205217,
+     "256-bit": 178524
+    }
+   },
+   "tinysiqs_inclusive": 251780315,
+   "attributed": 251780315
+  },
+  "yafu_internal_ms_runC": 0.5100641875
+ },
+ "84": {
+  "card_phasetime_ns": {
+   "confirm": 30734221,
+   "fb": 4153279,
+   "gray": 2725387,
+   "lp:add": 0,
+   "lp:comb": 0,
+   "lp:copy": 0,
+   "lp:hash": 0,
+   "lp_ledger": 11779387,
+   "mult": 363904,
+   "resieve": 270349,
+   "scan": 6074235,
+   "setup": 30347873,
+   "sieve": 20180709,
+   "solve": 13363879,
+   "sv:free2": 0,
+   "sv:power": 0,
+   "sv:prime": 0,
+   "sv:tail": 0,
+   "sv:zero": 0
+  },
+  "card_wall_s": 0.15687225200235844,
+  "card": {
+   "Ir": {
+    "other (in lamp_qs / sieve_source)": 69028259,
+    "setup": 286793730,
+    "line 0": 29778991,
+    "sieve": 218407145,
+    "gray": 5068606,
+    "scan": 78773515,
+    "resieve": 176792,
+    "confirm": 388046223,
+    "lp_ledger": 72641028,
+    "mult": 1239894,
+    "fb": 17769325,
+    "solve": 80006393
+   },
+   "simd_own": {
+    "other (in lamp_qs / sieve_source)": {
+     "general": 492258,
+     "128-bit packed": 1520,
+     "scalar FP in xmm": 1120
+    },
+    "setup": {
+     "general": 48598160,
+     "128-bit packed": 1423624,
+     "scalar FP in xmm": 1459924
+    },
+    "line 0": {
+     "general": 27458176,
+     "scalar FP in xmm": 1289347,
+     "128-bit packed": 58184
+    },
+    "sieve": {
+     "general": 188644417
+    },
+    "gray": {
+     "general": 3644990,
+     "128-bit packed": 1228374
+    },
+    "scan": {
+     "general": 126280
+    },
+    "resieve": {
+     "general": 69454
+    },
+    "confirm": {
+     "general": 310601283
+    },
+    "lp_ledger": {
+     "general": 17175054,
+     "128-bit packed": 47952,
+     "scalar FP in xmm": 104952
+    },
+    "mult": {
+     "general": 11120,
+     "scalar FP in xmm": 240,
+     "128-bit packed": 320
+    },
+    "fb": {
+     "general": 1920
+    },
+    "solve": {
+     "general": 1600,
+     "128-bit packed": 320
+    }
+   },
+   "simd_callees_all": {
+    "general": 378204548,
+    "128-bit packed": 15521778,
+    "scalar FP in xmm": 15857516
+   },
+   "lamp_qs_inclusive": 1247729901,
+   "attributed": 1247729901
+  },
+  "yafu": {
+   "Ir": {
+    "legendre_16": 3767029,
+    "find_multiplier_tiny": 749697,
+    "__gmpz_get_ui": 19932,
+    "sqrtModP_16": 560212,
+    "powm_16": 1883272,
+    "get_rand": 114793,
+    "solve_linear_system_tiny": 29195032,
+    "memset": 6340432,
+    "tinysiqs": 174285,
+    "find_next_poly_b": 7017958,
+    "init_fb_tiny": 5044211,
+    "init_siqs_tiny": 39016,
+    "sieve_next_poly_tiny": 16422444,
+    "modinv_16": 9504403,
+    "fill_sieve_block_tiny": 109227047,
+    "find_factors_tiny": 176667378,
+    "check_sieve_val_tiny": 80494094,
+    "__gmpz_abs": 33700,
+    "mark_sieve_block_tiny": 6493835,
+    "find_poly_a": 204394,
+    "find_first_poly_b": 56961536
+   },
+   "library_Ir": {
+    "find_multiplier_tiny": 428624,
+    "memset": 2541200,
+    "tinysiqs": 127194,
+    "find_next_poly_b": 5359784,
+    "init_fb_tiny": 4304144,
+    "init_siqs_tiny": 9200,
+    "sieve_next_poly_tiny": 393353,
+    "find_factors_tiny": 154911833,
+    "check_sieve_val_tiny": 58903419,
+    "find_poly_a": 136343,
+    "find_first_poly_b": 50010035
+   },
+   "simd_own": {
+    "legendre_16": {
+     "general": 3767029
+    },
+    "find_multiplier_tiny": {
+     "general": 292027,
+     "scalar FP in xmm": 28406,
+     "128-bit packed": 640
+    },
+    "__gmpz_get_ui": {
+     "general": 19932
+    },
+    "sqrtModP_16": {
+     "general": 560212
+    },
+    "powm_16": {
+     "general": 1883272
+    },
+    "get_rand": {
+     "general": 114793
+    },
+    "solve_linear_system_tiny": {
+     "general": 29195032
+    },
+    "memset": {
+     "general": 3799072,
+     "128-bit packed": 160
+    },
+    "tinysiqs": {
+     "general": 46451,
+     "scalar FP in xmm": 560,
+     "128-bit packed": 80
+    },
+    "find_next_poly_b": {
+     "general": 792802,
+     "256-bit": 865372
+    },
+    "init_fb_tiny": {
+     "general": 670947,
+     "128-bit packed": 11520,
+     "scalar FP in xmm": 57600
+    },
+    "init_siqs_tiny": {
+     "general": 29336,
+     "scalar FP in xmm": 400,
+     "128-bit packed": 80
+    },
+    "sieve_next_poly_tiny": {
+     "general": 16029091
+    },
+    "modinv_16": {
+     "general": 9504403
+    },
+    "fill_sieve_block_tiny": {
+     "general": 109227047
+    },
+    "find_factors_tiny": {
+     "general": 21755545
+    },
+    "check_sieve_val_tiny": {
+     "general": 17766369,
+     "128-bit packed": 3798368,
+     "256-bit": 25938
+    },
+    "__gmpz_abs": {
+     "general": 33700
+    },
+    "mark_sieve_block_tiny": {
+     "general": 5062579,
+     "256-bit": 1431256
+    },
+    "find_poly_a": {
+     "general": 68051
+    },
+    "find_first_poly_b": {
+     "general": 6951501
+    }
+   },
+   "tinysiqs_inclusive": 510914700,
+   "attributed": 510914700
+  },
+  "yafu_internal_ms_runC": 0.998727490625
+ },
+ "96": {
+  "card_phasetime_ns": {
+   "confirm": 56523279,
+   "fb": 6424171,
+   "gray": 7689963,
+   "lp:add": 0,
+   "lp:comb": 0,
+   "lp:copy": 0,
+   "lp:hash": 0,
+   "lp_ledger": 23329946,
+   "mult": 368887,
+   "resieve": 521576,
+   "scan": 18683346,
+   "setup": 61209860,
+   "sieve": 68158241,
+   "solve": 25343430,
+   "sv:free2": 0,
+   "sv:power": 0,
+   "sv:prime": 0,
+   "sv:tail": 0,
+   "sv:zero": 0
+  },
+  "card_wall_s": 0.3109034969820641,
+  "card": {
+   "Ir": {
+    "other (in lamp_qs / sieve_source)": 71346803,
+    "line 0": 69515255,
+    "mult": 1240963,
+    "fb": 28479838,
+    "solve": 161461249,
+    "setup": 535929858,
+    "sieve": 797068358,
+    "gray": 14126436,
+    "scan": 287639719,
+    "resieve": 344008,
+    "confirm": 755350690,
+    "lp_ledger": 143074937
+   },
+   "simd_own": {
+    "other (in lamp_qs / sieve_source)": {
+     "general": 813308,
+     "128-bit packed": 1520,
+     "scalar FP in xmm": 1120
+    },
+    "line 0": {
+     "general": 64510899,
+     "128-bit packed": 82898,
+     "scalar FP in xmm": 3526673
+    },
+    "mult": {
+     "general": 11120,
+     "scalar FP in xmm": 240,
+     "128-bit packed": 320
+    },
+    "fb": {
+     "general": 1920
+    },
+    "solve": {
+     "general": 1600,
+     "128-bit packed": 320
+    },
+    "setup": {
+     "general": 139325378,
+     "128-bit packed": 3812170,
+     "scalar FP in xmm": 3824260
+    },
+    "sieve": {
+     "general": 690152134
+    },
+    "gray": {
+     "general": 10101544,
+     "128-bit packed": 3644622
+    },
+    "scan": {
+     "general": 245720
+    },
+    "resieve": {
+     "general": 135146
+    },
+    "confirm": {
+     "general": 638486000
+    },
+    "lp_ledger": {
+     "general": 30680935,
+     "128-bit packed": 69132,
+     "scalar FP in xmm": 150760
+    }
+   },
+   "simd_callees_all": {
+    "general": 792505889,
+    "scalar FP in xmm": 55120186,
+    "128-bit packed": 40407635
+   },
+   "lamp_qs_inclusive": 2865578114,
+   "attributed": 2865578114
+  },
+  "yafu": {
+   "Ir": {
+    "mark_sieve_block": 21151983,
+    "init_siqs_tiny": 49616,
+    "memset": 98099805,
+    "find_poly_a": 174715,
+    "find_first_poly_b": 59106342,
+    "sieve_next_poly": 17539334,
+    "modinv_16": 10172214,
+    "check_sieve_val_tiny": 274334556,
+    "__gmpz_abs": 118158,
+    "__gmpz_get_ui": 151264,
+    "find_multiplier_tiny": 791117,
+    "sqrtModP_16": 682773,
+    "powm_16": 2388824,
+    "get_rand": 137859,
+    "legendre_16": 4608181,
+    "solve_linear_system_tiny": 45413712,
+    "tinysiqs": 165801,
+    "find_next_poly_b": 6093332,
+    "find_factors_tiny": 245604040,
+    "init_fb_tiny": 6220164,
+    "fill_sieve_block": 313058629
+   },
+   "library_Ir": {
+    "init_siqs_tiny": 9200,
+    "find_poly_a": 117044,
+    "find_first_poly_b": 51882442,
+    "sieve_next_poly": 330977,
+    "memset": 97903465,
+    "check_sieve_val_tiny": 194737819,
+    "find_multiplier_tiny": 432768,
+    "tinysiqs": 124942,
+    "find_next_poly_b": 4524820,
+    "find_factors_tiny": 216015026,
+    "init_fb_tiny": 5310100
+   },
+   "simd_own": {
+    "mark_sieve_block": {
+     "general": 16345339,
+     "256-bit": 4806644
+    },
+    "init_siqs_tiny": {
+     "general": 39936,
+     "scalar FP in xmm": 400,
+     "128-bit packed": 80
+    },
+    "memset": {
+     "128-bit packed": 160,
+     "general": 196180
+    },
+    "find_poly_a": {
+     "general": 57671
+    },
+    "find_first_poly_b": {
+     "general": 7223900
+    },
+    "sieve_next_poly": {
+     "general": 17208357
+    },
+    "modinv_16": {
+     "general": 10172214
+    },
+    "check_sieve_val_tiny": {
+     "general": 63485246,
+     "128-bit packed": 15911925,
+     "256-bit": 199566
+    },
+    "__gmpz_abs": {
+     "general": 118158
+    },
+    "__gmpz_get_ui": {
+     "general": 151264
+    },
+    "find_multiplier_tiny": {
+     "general": 325741,
+     "scalar FP in xmm": 31888,
+     "128-bit packed": 720
+    },
+    "sqrtModP_16": {
+     "general": 682773
+    },
+    "powm_16": {
+     "general": 2388824
+    },
+    "get_rand": {
+     "general": 137859
+    },
+    "legendre_16": {
+     "general": 4608181
+    },
+    "solve_linear_system_tiny": {
+     "general": 45413712
+    },
+    "tinysiqs": {
+     "general": 40219,
+     "scalar FP in xmm": 560,
+     "128-bit packed": 80
+    },
+    "find_next_poly_b": {
+     "general": 680714,
+     "256-bit": 887798
+    },
+    "find_factors_tiny": {
+     "general": 29589014
+    },
+    "init_fb_tiny": {
+     "general": 825584,
+     "128-bit packed": 14080,
+     "scalar FP in xmm": 70400
+    },
+    "fill_sieve_block": {
+     "general": 313058629
+    }
+   },
+   "tinysiqs_inclusive": 1106062419,
+   "attributed": 1106062419
+  },
+  "yafu_internal_ms_runC": 1.8233527937499998
+ }
+}
