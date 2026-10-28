@@ -1,0 +1,33 @@
+72 bits (balanced 80, all 480): ms per number card 0.876, siqs 6.316, qs 5.306, floor 4.631, card_all 0.826, siqs_all 5.545; YAFU internal tinysiqs siqs 0.510, siqs_all 0.518
+    card / YAFU internal (sealed): 1.718 [1.624, 1.813]
+    siqs wall - internal, ms: 5.806 [5.758, 5.854]
+    card / (qs - floor): 1.315 [1.053, 1.578]
+    card / siqs wall: 0.139 [0.132, 0.145]
+    card / qs wall: 0.165 [0.157, 0.173]
+    all numbers: card / YAFU internal: 1.593 [1.573, 1.614]
+    all numbers: card / siqs wall: 0.149 [0.147, 0.151]
+    core 2 median MHz: card 2400.0, siqs 2400.0, qs 2400.0, floor 2400.0, card_all 2400.0, siqs_all 2400.0; factor checks failed: {'card': 0, 'siqs': 0, 'qs': 0, 'floor': 0, 'card_all': 0, 'siqs_all': 0}
+    uninstrumented siqs(@) wall (one pass): 6.264 ms per number (instrumented mean 6.316)
+    callgrind, 10 balanced numbers: card 8.45 M Ir per number; tinysiqs 2.49 M Ir per number; ratio 3.39
+84 bits (balanced 80, all 560): ms per number card 1.592, siqs 6.836, qs 5.781, floor 4.603, card_all 1.547, siqs_all 6.125; YAFU internal tinysiqs siqs 0.999, siqs_all 1.008
+    card / YAFU internal (sealed): 1.594 [1.551, 1.638]
+    siqs wall - internal, ms: 5.838 [5.792, 5.883]
+    card / (qs - floor): 1.353 [1.240, 1.466]
+    card / siqs wall: 0.233 [0.225, 0.241]
+    card / qs wall: 0.275 [0.266, 0.285]
+    all numbers: card / YAFU internal: 1.534 [1.526, 1.543]
+    all numbers: card / siqs wall: 0.253 [0.251, 0.254]
+    core 2 median MHz: card 2400.0119999999997, siqs 2400.0, qs 2400.0, floor 2400.0, card_all 2400.0, siqs_all 2400.0; factor checks failed: {'card': 0, 'siqs': 0, 'qs': 0, 'floor': 0, 'card_all': 0, 'siqs_all': 0}
+    uninstrumented siqs(@) wall (one pass): 6.837 ms per number (instrumented mean 6.836)
+    callgrind, 10 balanced numbers: card 15.23 M Ir per number; tinysiqs 6.40 M Ir per number; ratio 2.38
+96 bits (balanced 80, all 640): ms per number card 3.425, siqs 7.840, qs 6.581, floor 4.605, card_all 3.357, siqs_all 7.142; YAFU internal tinysiqs siqs 1.823, siqs_all 1.832
+    card / YAFU internal (sealed): 1.879 [1.838, 1.919]
+    siqs wall - internal, ms: 6.016 [5.928, 6.105]
+    card / (qs - floor): 1.736 [1.599, 1.874]
+    card / siqs wall: 0.437 [0.432, 0.442]
+    card / qs wall: 0.521 [0.505, 0.536]
+    all numbers: card / YAFU internal: 1.832 [1.824, 1.840]
+    all numbers: card / siqs wall: 0.470 [0.467, 0.473]
+    core 2 median MHz: card 2400.0, siqs 2400.0, qs 2400.0, floor 2400.0, card_all 2400.0, siqs_all 2400.0; factor checks failed: {'card': 0, 'siqs': 0, 'qs': 0, 'floor': 0, 'card_all': 0, 'siqs_all': 0}
+    uninstrumented siqs(@) wall (one pass): 7.833 ms per number (instrumented mean 7.840)
+    callgrind, 10 balanced numbers: card 33.98 M Ir per number; tinysiqs 14.95 M Ir per number; ratio 2.27
