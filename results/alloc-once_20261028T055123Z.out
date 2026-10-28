@@ -1,0 +1,6 @@
+binaries: {"2'b+fix": 'ef3459130e46133f', "2'b+fix+alloc": '13554a617c8446b5'}
+battery (user's decision): AC check skipped for this run; battery 61% at the start
+72 bits (480 numbers): outputs with --types identical: True; us per number 2'b+fix 833.9, 2'b+fix+alloc 622.8; alloc / fix 0.7469 [0.7426, 0.7513] = -25.31% [-25.74, -24.87]; core 2 median MHz 2'b+fix 2400.0, 2'b+fix+alloc 2400.0
+84 bits (560 numbers): outputs with --types identical: True; us per number 2'b+fix 1,549.0, 2'b+fix+alloc 1,301.8; alloc / fix 0.8405 [0.8340, 0.8469] = -15.95% [-16.60, -15.31]; core 2 median MHz 2'b+fix 2400.0, 2'b+fix+alloc 2400.0
+96 bits (640 numbers): outputs with --types identical: True; us per number 2'b+fix 3,360.5, 2'b+fix+alloc 3,000.1; alloc / fix 0.8928 [0.8837, 0.9018] = -10.72% [-11.63, -9.82]; core 2 median MHz 2'b+fix 2400.0, 2'b+fix+alloc 2400.0
+battery (user's decision): 61% at the start, 60% at the end; frequency policy unchanged: True
