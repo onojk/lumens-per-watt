@@ -193,6 +193,31 @@ fn combinations(pool: &[u64], s: usize) -> Vec<Vec<u64>> {
     }
 }
 
+/// As `combinations`, the same order, in one flat buffer of stride s (NOTES.md, "Cost note (before code): allocate once
+/// per attempt"): one allocation instead of one per combination.
+fn combinations_flat(pool: &[u64], s: usize) -> Vec<u64> {
+    let n = pool.len();
+    let mut out = Vec::new();
+    if s > n {
+        return out;
+    }
+    let mut idx: Vec<usize> = (0..s).collect();
+    loop {
+        out.extend(idx.iter().map(|&i| pool[i]));
+        let mut i = s as isize - 1;
+        while i >= 0 && idx[i as usize] == i as usize + n - s {
+            i -= 1;
+        }
+        if i < 0 {
+            return out;
+        }
+        idx[i as usize] += 1;
+        for j in i as usize + 1..s {
+            idx[j] = idx[j - 1] + 1;
+        }
+    }
+}
+
 pub fn lamp_qs(num: &Num, g: &Value, m: &mut Meter) -> R {
     let n = num.n;
     if n % U256::from(2u64) == U256::ZERO {
@@ -522,47 +547,57 @@ impl Ledger {
 /// most s - 2 primes with each.
 struct OnDemand {
     pool: Vec<u64>,
-    prefixes: Vec<Vec<u64>>,
+    prefixes: Vec<u64>, // the (s - 1)-combinations, flat (stride s - 1; allocate once per attempt)
+    n_pre: usize,
     at: usize,
     target: f64,
     s: usize,
     used: Vec<Vec<u64>>,
     limit: usize,
     sc: bool,
+    pre: Vec<u64>, // reused buffers: the current prefix, the remaining primes, the try's key
+    rest: Vec<u64>,
+    key: Vec<u64>,
 }
 
 impl OnDemand {
     /// `by_q`: the pool in closeness order, as the pool selection produced it (item 12: no re-sort).
     fn new(pool: &[u64], by_q: &[u64], s: usize, target: f64, sc: bool) -> Self {
-        OnDemand { pool: pool.to_vec(), prefixes: combinations(by_q, s - 1), at: 0, target, s,
-                   used: Vec::new(), limit: s - 2, sc }
+        let prefixes = combinations_flat(by_q, s - 1);
+        let n_pre = prefixes.len() / (s - 1);
+        OnDemand { pool: pool.to_vec(), prefixes, n_pre, at: 0, target, s, used: Vec::new(), limit: s - 2, sc,
+                   pre: Vec::with_capacity(s), rest: Vec::with_capacity(pool.len()), key: Vec::with_capacity(s) }
     }
 
     fn next(&mut self, m: &mut Meter) -> Result<Option<Vec<u64>>, Budget> {
-        let s = self.s;
+        let OnDemand { pool, prefixes, n_pre, at, target, s, used, limit, sc, pre, rest, key } = self;
+        let s = *s;
+        let w = s - 1;
         loop {
-            if self.at >= self.prefixes.len() {
-                if self.limit == s - 2 {
-                    self.limit = s - 1; // pass 2 (third amendment): any A not already used
-                    self.at = 0;
+            if *at >= *n_pre {
+                if *limit == s - 2 {
+                    *limit = s - 1; // pass 2 (third amendment): any A not already used
+                    *at = 0;
                 } else {
                     return Ok(None);
                 }
             }
-            let pre = self.prefixes[self.at].clone();
-            self.at += 1;
-            if self.limit == s - 2 {
-                m.charge(crate::PH_WORD, ((s - 1) * self.used.len()) as u64)?; // prefix-overlap check (audit 1)
-                if self.used.iter().any(|u| pre.iter().all(|p| u.contains(p))) {
+            pre.clear();
+            pre.extend_from_slice(&prefixes[*at * w..(*at + 1) * w]);
+            *at += 1;
+            if *limit == s - 2 {
+                m.charge(crate::PH_WORD, ((s - 1) * used.len()) as u64)?; // prefix-overlap check (audit 1)
+                if used.iter().any(|u| pre.iter().all(|p| u.contains(p))) {
                     continue;
                 }
             }
             let ap: u64 = pre.iter().product();
             m.charge(crate::PH_WORD, s as u64 - 2)?; // word multiplies (audit 3)
-            let tp = self.target / ap as f64;
+            let tp = *target / ap as f64;
             m.charge(crate::PH_FDIV, 1)?; // a double divide (audit 1)
-            let mut rest: Vec<u64> = self.pool.iter().copied().filter(|p| !pre.contains(p)).collect();
-            m.charge(crate::PH_WORD, self.pool.len() as u64)?; // building rest: one word op per pool prime (item 13)
+            rest.clear();
+            rest.extend(pool.iter().copied().filter(|p| !pre.contains(p)));
+            m.charge(crate::PH_WORD, pool.len() as u64)?; // building rest: one word op per pool prime (item 13)
             while !rest.is_empty() {
                 let mut bi = 0usize;
                 for i in 1..rest.len() {
@@ -577,21 +612,22 @@ impl OnDemand {
                 let a = ap * last;
                 m.charge(crate::PH_WORD, 1)?; // A = A' last, a word multiply (audit 3)
                 m.charge(crate::PH_FLOG, 1)?; // target check: a log (audit 1)
-                if (a as f64 / self.target).log2().abs() > 0.25 {
+                if (a as f64 / *target).log2().abs() > 0.25 {
                     break;
                 }
-                let mut key = pre.clone();
+                key.clear();
+                key.extend_from_slice(pre);
                 key.push(last);
                 key.sort();
-                if self.sc {
+                if *sc {
                     m.charge(crate::PH_SORT, sort_cost(s as u64))?; // sort_charge: the key's s primes
                 }
-                m.charge(crate::PH_WORD, (s * self.used.len()) as u64)?; // overlap compare (audit 1)
-                if self.used.iter().any(|u| u.iter().filter(|x| key.contains(x)).count() > self.limit) {
+                m.charge(crate::PH_WORD, (s * used.len()) as u64)?; // overlap compare (audit 1)
+                if used.iter().any(|u| u.iter().filter(|x| key.contains(x)).count() > *limit) {
                     continue;
                 }
-                self.used.push(key.clone());
-                return Ok(Some(key));
+                used.push(key.clone());
+                return Ok(Some(key.clone()));
             }
         }
     }
@@ -754,6 +790,15 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
     // 2'b (goff with root confirm; NOTES.md, "I-032 option 2'b"): per A, each sieved prime's first-root index in sr;
     // the root test reads the Gray-kept offsets in place (no per-polynomial pass)
     let mut ka: Vec<usize> = Vec::new();
+    // allocate once per attempt (NOTES.md, "Cost note (before code): allocate once per attempt"): the per-A buffers,
+    // cleared per A instead of reallocated; unpriced, and no charge depends on them
+    let (mut qj, mut aj): (Vec<usize>, Vec<usize>) = (Vec::new(), Vec::new());
+    let (mut bl, mut bl64, mut bainv, mut rts): (Vec<i128>, Vec<i64>, Vec<i64>, Vec<i64>) =
+        (Vec::with_capacity(s), Vec::with_capacity(s), Vec::with_capacity(s), Vec::new());
+    let (mut sp, mut sj, mut sr): (Vec<i32>, Vec<usize>, Vec<i32>) = (Vec::new(), Vec::new(), Vec::new());
+    let mut sbi: Vec<Vec<i32>> = vec![Vec::new(); s]; // primes < 2^31: roots and inverses fit in i32
+    let (mut qp, mut qr, mut ql_, mut qm): (Vec<i64>, Vec<i64>, Vec<i32>, Vec<i64>) = (Vec::new(), Vec::new(), Vec::new(), Vec::new());
+    let mut qbi: Vec<Vec<i64>> = vec![Vec::new(); s];
 
     let mut next_i = 0usize;
     crate::pt_end(m, 2, pt_pre);
@@ -773,11 +818,15 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
             }
         };
         let qs_ = &cur;
-        let qj: Vec<usize> = qs_.iter().map(|&q| pos(q)).collect(); // A's primes' base indices, once per A (NOTES.md, "Cost note (before code): the A-prime lookup fix"); uncharged as before
-        let mut aj: Vec<usize> = if rt_on { qj.clone() } else { Vec::new() }; // root confirm: A's primes, direct
+        qj.clear();
+        qj.extend(qs_.iter().map(|&q| pos(q))); // A's primes' base indices, once per A (NOTES.md, "Cost note (before code): the A-prime lookup fix"); uncharged as before
+        aj.clear();
+        if rt_on {
+            aj.extend_from_slice(&qj); // root confirm: A's primes, direct
+        }
         aj.sort();
         let a: i128 = qs_.iter().map(|&x| x as i128).product();
-        let mut bl: Vec<i128> = Vec::with_capacity(s);
+        bl.clear();
         for (&ql, &jl) in qs_.iter().zip(&qj) {
             let ql_i = ql as i128;
             let aq = a / ql_i;
@@ -794,14 +843,19 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
         // per sieved root, structure of arrays (step 4, NOTES.md "Step 4: gray, a flat layout"): the prime, its base
         // index, the root, and per l the root's 2 B_l A^-1 (one contiguous vector per l); roots of one prime adjacent,
         // in the order (r1, r2), so every loop visits them as before
-        let (mut sp, mut sj, mut sr): (Vec<i32>, Vec<usize>, Vec<i32>) = (Vec::new(), Vec::new(), Vec::new());
-        let mut sbi: Vec<Vec<i32>> = vec![Vec::new(); s]; // primes < 2^31: roots and inverses fit in i32
+        sp.clear();
+        sj.clear();
+        sr.clear();
+        for v in sbi.iter_mut() {
+            v.clear();
+        }
         let mut n_st = 0usize; // sieved primes
         let mut bv: i128 = bl.iter().sum();
         // fix C.1: the per-prime arithmetic in i64 (A < 2^62, p < 2^30, B_l < A; results identical to i128)
         assert!(a < (1i128 << 62) && bv.abs() < (1i128 << 62), "A or B too large for the i64 setup arithmetic");
         let (a64, bv64) = (a as i64, bv as i64);
-        let bl64: Vec<i64> = bl.iter().map(|&b| b as i64).collect();
+        bl64.clear();
+        bl64.extend(bl.iter().map(|&b| b as i64));
         for j in 2..f {
             let p = base[j] as i64;
             let ar = a64.rem_euclid(p);
@@ -814,13 +868,14 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
             m.charge(SETUP, 1)?;
             let r2 = (ainv * (-t - bv64).rem_euclid(p)).rem_euclid(p);
             m.charge(SETUP, 1)?;
-            let mut bainv = Vec::with_capacity(s);
+            bainv.clear();
             for &b in &bl64 {
                 bainv.push(((2 * b).rem_euclid(p) * ainv).rem_euclid(p));
                 m.charge(SETUP, 1)?;
             }
             n_st += 1;
-            for r in if t == 0 { vec![r1] } else { vec![r1, r2] } {
+            let rr = [r1, r2];
+            for &r in &rr[..if t == 0 { 1 } else { 2 }] {
                 assert!(p < 1 << 30, "factor-base prime too large for the i32 root arrays");
                 sp.push(p as i32);
                 sj.push(j);
@@ -831,8 +886,13 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
             }
         }
         // stage H: the power entries, structure of arrays like the base roots (modulus, root, log, M mod q, 2 B_l A^-1)
-        let (mut qp, mut qr, mut ql_, mut qm): (Vec<i64>, Vec<i64>, Vec<i32>, Vec<i64>) = (Vec::new(), Vec::new(), Vec::new(), Vec::new());
-        let mut qbi: Vec<Vec<i64>> = vec![Vec::new(); s];
+        qp.clear();
+        qr.clear();
+        ql_.clear();
+        qm.clear();
+        for v in qbi.iter_mut() {
+            v.clear();
+        }
         let mut par = usize::MAX;
         if ppb > 0 {
             for (q, p, ts, lv, mq) in &ppe {
@@ -843,9 +903,10 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 let ar = a64.rem_euclid(q);
                 m.charge(SETUP, 1)?;
                 let ainv = euclid_inv64(ar, q, SETUP, m)?;
-                let rts: Vec<i64> = ts.iter().map(|&t| (ainv * (t - bv64).rem_euclid(q)).rem_euclid(q)).collect();
+                rts.clear();
+                rts.extend(ts.iter().map(|&t| (ainv * (t - bv64).rem_euclid(q)).rem_euclid(q)));
                 m.charge(SETUP, ts.len() as u64)?;
-                let mut bainv = Vec::with_capacity(s);
+                bainv.clear();
                 for &b in &bl64 {
                     bainv.push(((2 * b).rem_euclid(q) * ainv).rem_euclid(q));
                     m.charge(SETUP, 1)?;

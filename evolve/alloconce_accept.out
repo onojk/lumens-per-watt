@@ -1,0 +1,4 @@
+72 bits (480 numbers): lampcore before/after, stdout with and without --types: 2'a identical; 2'b identical; pipeline identical; 2'b enumerate identical; 2'b + pp 3 identical; resieve identical
+84 bits (560 numbers): lampcore before/after, stdout with and without --types: 2'a identical; 2'b identical; pipeline identical; 2'b enumerate identical; 2'b + pp 3 identical; resieve identical
+96 bits (640 numbers): lampcore before/after, stdout with and without --types: 2'a identical; 2'b identical; pipeline identical; 2'b enumerate identical; 2'b + pp 3 identical; resieve identical
+failures: 0
