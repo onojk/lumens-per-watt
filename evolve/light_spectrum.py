@@ -10,8 +10,14 @@ Per number: success (a factor p or q) and priced cost: op-class v1 (opclass/opcl
 counted as 0 and listed) and ruint (optypes.prices, median P-core). light = successes / total cost (per million units).
 Twilight band (defined before running): the bands where the best non-QS lamp's light is within 2.5x of QS's (ratio in
 [0.4, 2.5]) under ruint.
+Instruction check (added Oct 28, before the sealed run; from Grok's information-only point, the user's addition): for each
+lamp in each band, the total instructions retired (callgrind 3.25.1 whole-program summary, attribution-free) on the band's
+first 8 numbers, less the lamp's start-up (the same genome on no numbers), beside the op-class v1 cost of those 8
+numbers. Flag a band where op-class / instructions differs from that lamp's pooled ratio at the same size by > 25%.
+Run in parallel (6 workers), untimed.
   python3 light_spectrum.py -> light_spectrum.json, light_spectrum.csv, stdout"""
-import json, math, random, subprocess
+import json, math, os, random, re, subprocess, tempfile
+from multiprocessing import Pool
 import partition as P, optypes
 from lamps import rand_prime
 from fastlamps import BIN
@@ -44,6 +50,17 @@ def lamps(bits):
             "pm1": ([dict(P.PRE["pm1"], B=int(bud[1]), ob=2 * int(bud[1]))], P.QS_CAP),
             "ecm": ([dict(P.PRE["ecm"])], P.PRE_CAP), "cfrac": ([{"t": "cfrac", "kc": 32, "bc": 1.1}], P.QS_CAP),
             "qs": ([reference(bits)], P.QS_CAP)}
+
+SUB = 8
+SCR = "/tmp/claude-1000/-home-onojk123-lumens-per-watt/ddfe4e3f-7fea-48e0-ba4d-4e65f4fd682d/scratchpad"
+
+def instructions(args):
+    genome, cap, nums = args
+    text = json.dumps(genome) + "\n" + str(int(cap)) + "\n" + "".join(f"{N} {p} {q}\n" for N, p, q in nums)
+    out = os.path.join(tempfile.mkdtemp(dir=SCR, prefix="ls_"), "cg.out")
+    subprocess.run(["valgrind", "--tool=callgrind", "--dump-instr=no", "--dump-line=no", f"--callgrind-out-file={out}", BIN],
+                   input=text, capture_output=True, text=True, check=True)
+    return int(re.search(r"^summary: (\d+)", open(out).read(), re.M).group(1))
 
 def run(genome, cap, nums):
     text = json.dumps(genome) + "\n" + str(int(cap)) + "\n" + "".join(f"{N} {p} {q}\n" for N, p, q in nums)
@@ -82,6 +99,38 @@ if __name__ == "__main__":
                   + f"; best {cell['_best']}" + ("; TWILIGHT" if cell["_twilight"] else ""), flush=True)
     if unweighted:
         print("types without an op-class v1 weight (counted 0):", sorted(unweighted))
+    # the instruction check: the first SUB numbers of each band, each lamp, callgrind, in parallel
+    jobs, keys = [], []
+    for bits in SIZES:
+        L = lamps(bits)
+        for name, (g, cap) in L.items():
+            jobs.append((g, cap, [])); keys.append((bits, None, name))           # start-up
+            for bi, lo in enumerate(BANDS):
+                nums = band_numbers(bits, lo, 9700000 + 1000 * bits + bi)[:SUB]
+                jobs.append((g, cap, nums)); keys.append((bits, lo, name))
+    with Pool(6) as pool:
+        irs = pool.map(instructions, jobs, chunksize=1)
+    base = {(b, n): ir for (b, lo, n), ir in zip(keys, irs) if lo is None}
+    for (bits, lo, name), ir in zip(keys, irs):
+        if lo is None:
+            continue
+        g, cap = lamps(bits)[name]
+        nums = band_numbers(bits, lo, 9700000 + 1000 * bits + BANDS.index(lo))[:SUB]
+        v1 = sum(V1.get(t, 0.0) * n for _, ty in run(g, cap, nums) for t, n in ty.items())
+        out[bits][lo][name]["check_instructions"] = ir - base[(bits, name)]
+        out[bits][lo][name]["check_opclass_v1"] = v1
+    for bits in SIZES:
+        for name in lamps(bits):
+            cells = [out[bits][lo][name] for lo in BANDS]
+            pooled = sum(c["check_opclass_v1"] for c in cells) / sum(c["check_instructions"] for c in cells)
+            flagged = []
+            for lo, c in zip(BANDS, cells):
+                r = c["check_opclass_v1"] / c["check_instructions"] if c["check_instructions"] else None
+                c["check_ratio_to_pooled"] = r / pooled if r is not None else None
+                if r is not None and abs(r / pooled - 1) > 0.25:
+                    flagged.append(f"{lo:.2f} ({r / pooled:.2f})")
+            print(f"instruction check {bits} bits {name}: op-class / instructions pooled {pooled:.3f}; bands off by > 25%: "
+                  + (", ".join(flagged) if flagged else "none"), flush=True)
     json.dump({str(b): {f"{lo:.2f}": c for lo, c in d.items()} for b, d in out.items()}, open("light_spectrum.json", "w"), indent=1)
     with open("light_spectrum.csv", "w") as fh:
         fh.write("bits,theta_lo,lamp,success,n,light_v1,light_ruint\n")
