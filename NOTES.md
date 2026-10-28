@@ -10721,3 +10721,66 @@ Total: about 1–3 hours of lampcore counting for the rest; wall timing roughly 
 - **The reference pipeline against QS alone on θ 0.33–0.40, per pricing** (84 / 96): op-class 1.148 / 1.208, ruint 1.209 / 1.262, Montgomery 0.997 / 1.031, official **0.918 / 0.946**.
   - Under official pricing the pre-stages pay for themselves (it counts a rho or p−1 multiply as one op, like a sieve update); under ruint and op-class they cost 15–26% more.
   - The rule-(b) figure is ruint's, the worst of the three.
+
+## Growth harness v1: the counts and the fits (sealed counts run 68250b3; predictions 1c644de / c8b589d; untimed; the wall step is held)
+
+**In plain English first:** on balanced numbers from 40 to 96 bits, each lamp alone, per factorisation:
+- **QS's cost doubles every 9.3 bits** (op-class, 80 → 96).
+- **Rho's cost doubles every 4.05 bits,** matching the √p theory: it multiplies by 3.7–4.2× every 8 bits.
+- **td's cost doubles every 2 bits,** as expected for trial division up to √N.
+- **QS is cheaper than rho at every size measured, even 40 bits,** under op-class and ruint (1.5× and 2.0× cheaper at 40 bits). Only under official pricing does rho stay cheaper until about 59 bits; under Montgomery, until 40–48.
+- **ECM** grows more slowly than CFRAC (its slopes are noisy), but QS is 15–52× cheaper per factorisation throughout.
+
+**Runs:**
+- **The counts:** `results/growth-spectrum-twilight_20261028T093415Z.out` (68250b3); `evolve/growth_counts.json` committed unchanged (8e45de1).
+- **The fits:** `evolve/growth_fit.json`, `.out` (bootstrap 10,000 over numbers within sizes, `random.Random(2026)`).
+- **The two failed attempts** before it are committed as results: 083b916 (no QS genes at 40 bits; then interpolated genes, the user's decision) and 2ec0229 (CFRAC unpriced under ruint and Montgomery; now reported n/a there).
+- **QS at 40 / 48 / 56 / 64 / 80 / 88 bits runs on interpolated genes** (growth harness only).
+- **Every lamp but p−1 succeeds on 48 / 48 at every size.** p−1 (7–20 / 48) is below the 24-success floor everywhere, so it is not fitted.
+
+**Cost per factorisation, op-class v1, millions of units:**
+
+| bits | 40 | 48 | 56 | 64 | 72 | 80 | 88 | 96 |
+|---|---|---|---|---|---|---|---|---|
+| QS | 0.77 | 1.06 | 1.79 | 3.25 | 5.36 | 10.3 | 17.9 | **33.9** |
+| ECM | 2.59 | 4.68 | 7.41 | 20.0 | 43.2 | 121 | 206 | 494 |
+| CFRAC | 1.66 | 3.61 | 8.33 | 23.6 | 66.7 | 214 | 639 | 1,772 |
+| rho | 1.12 | 4.12 | 17.1 | 68.6 | 278 | 1,154 | 4,311 | **16,407** |
+| td | 9.98 | 170 | 2,710 | 40,398 | — | — | — | — |
+
+**Local slopes (log2 cost per bit, op-class) and doubling periods**, with 95% bootstrap intervals in the `.out`:
+- **QS:** 0.058, 0.095, 0.107, 0.091, 0.117, 0.100, 0.115 over successive 8-bit steps from 40 to 96. That is a doubling every 8.5–11 bits above 48, and 17 bits at 40–48, where fixed costs dominate.
+- **Rho:** 0.234–0.257, a doubling every 3.9–4.3 bits.
+- **CFRAC:** 0.14 rising to 0.21, a doubling every 4.8–7 bits.
+- **ECM:** 0.08–0.19, noisy, a doubling every 5.4–12 bits.
+- **td:** 0.49–0.51, a doubling every 2 bits.
+
+**The L[a, c] fits:**
+- **With a fixed at 1/2** (primary): c = 0.54 (QS), 0.76 (ECM), 1.00 (CFRAC), 1.36 (rho), 2.46 (td), under op-class.
+  - These are effective constants at 40–96 bits with the o(1) absorbed, not asymptotic ones.
+  - The order QS < ECM < CFRAC matches theory: L[1/2, 1], L[1/2, √2] with p ≈ √N, and L[1/2, √2] respectively.
+- **The free-a fits** hit the grid's top edge (a = 1.00) for QS, ECM, CFRAC and rho. a and c cannot be separated over this narrow range of ln N, as the design expected, so they are not used.
+
+**Scored as filed** (op-class unless stated):
+- **QS doubling period, 80 → 96:** measured **9.29 bits** (a cost ratio of 3.30 over 16 bits).
+  - **R-29** (9–14): **hit**.
+  - **D-29** (7.5–15.5): **hit**.
+  - **G-22** (8–16): **hit**. Its falsifier (a ratio > 4×) is **not triggered**.
+- **Rho doubling period:** measured **4.05 bits** (40 → 96; every 8-bit step a ratio of 3.67–4.16).
+  - **R-30** (3.5–5): **hit**.
+  - **D-30** (2.5–6.5): **hit**.
+  - **G-23** (3–5.5): **hit**. Its falsifier (any 8-bit step below 3×) is **not triggered**; the minimum step is 3.67×.
+- **The rho / QS crossing:** under op-class, QS is cheaper at every size from 40 bits (rho ÷ QS = 1.5, 3.9, 9.6, 21, 52, 112, 240, 484). The crossing is below 40, outside the measured range.
+  - **D-31** (op-class; the lowest size where rho exceeds QS, falsifier ≤ 56): that size is 40 → **falsified**.
+  - **G-24** (op-class; the smallest size where QS ≤ rho; range 56–96): it is 40 → **range missed**. Its falsifier (QS already cheaper at 72) is **triggered → falsified**.
+  - **R-31** (cross between 48 and 64; **pricing not stated**):
+    - **missed** under op-class and ruint (the crossing is below 40);
+    - **missed** under Montgomery (between 40 and 48: rho ÷ QS = 0.72 at 40, 1.72 at 48);
+    - **hit** under official (between 56 and 64: 0.78 at 56, 1.62 at 64).
+    - The pricing to score R-31 under is the user's ruling. Op-class is the one the other two forecasters named for the same question.
+
+**Not established:**
+- **Wall clock:** the harness's timed step is held (the load condition).
+- **Above 96 bits:** lampcore's ceiling.
+- **The interpolated QS genes** at non-sealed sizes may not be optimal there. That would bend QS's curve slightly, most at 40–48, where the 54-bit genes are held.
+- **The growth fitness G** (design: a card's local slope ÷ the reference's at 88–96) is not yet frozen, so nothing is scored with it.
