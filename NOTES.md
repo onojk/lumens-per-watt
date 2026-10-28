@@ -10429,3 +10429,38 @@ A counts-identical change that removes a large volume of cache-friendly arithmet
   - Against the alloc+div64 card. The balanced band is the input; the sealed run uses all map numbers.
 
 **Procedure:** after div64's parity: code, acceptance (byte-identical, the same six genome sets), parity, the callgrind check, then the predictions file and the runner. **STOP at the prediction point.**
+
+## Run E (div64): divide hits in 64-bit hardware steps, wall-clock (sealed; predictions 4d00f75 / 96740ac / 4f8cd1a; result fa8a248)
+
+**In plain English first: the 64-bit division makes the card 2.5% / 1.6% / 1.8% faster at 72 / 84 / 96 bits, with identical work.** That is much less than its 8.8 / 6.4 / 3.9% instruction drop: **ρ = 0.29 / 0.24 / 0.45**, the first measurement for memory class (a). The removed instructions (libgcc's software 128-bit routine around the hardware divide) cost far less time each than the card's average.
+
+`results/div64_20261028T071217Z.out`; `evolve/div64_time.py`, `.json`.
+- **Binaries:** before 13554a61… (alloc-once), after 1cbe837a… (the div64 code commit).
+- **Code checks:** acceptance byte-identical; full parity clean (the commit before the run).
+- **Design:** 8 alternating replicates, all map numbers, batch, core 2 at a median of 2,400 MHz in every cell.
+- **Conditions:** on AC, cap 2,400 MHz, TCPU 53 °C at the start, no Wolfram kernel.
+
+| bits | alloc, µs / number | alloc+div64 | div64 / alloc | 95% t interval | change | instructions removed (callgrind) | **ρ** |
+|---|---|---|---|---|---|---|---|
+| 72 | 616.5 | 601.1 | 0.9750 | [0.9649, 0.9851] | **−2.50%** [−3.51, −1.49] | −8.76% | **0.29** [0.17, 0.40] |
+| 84 | 1,288.8 | 1,268.8 | 0.9845 | [0.9775, 0.9915] | **−1.55%** [−2.25, −0.85] | −6.38% | **0.24** [0.13, 0.35] |
+| 96 | 3,004.0 | 2,950.7 | 0.9823 | [0.9744, 0.9902] | **−1.77%** [−2.56, −0.98] | −3.90% | **0.45** [0.25, 0.66] |
+
+- Outputs with `--types` identical in the run itself: yes, at all three sizes.
+- These are the first AC measurements of the alloc-once card: 616.5 / 1,288.8 / 3,004.0 µs per number, all map numbers.
+- **Against the cost note's model:** central −6.4 / −4.6 / −2.8%; band (ρ 0.40–1.30) −2.85 to −10.2 / −2.07 to −7.43 / −1.27 to −4.53%. The measured value is outside the band at 72 and 84 (a smaller saving), inside at 96. The model's lower ρ of 0.40 was not low enough.
+- **A reading** (not measured): libgcc's `__udivmodti4` already used the hardware divide for a 64-bit divisor. The change removed the call, the sign handling and the branches around it, which are cheap, well-predicted, register-only instructions. It kept the divide's latency, which dominates the time. The reviewer's labelled opinion (hardware divides cost more time per instruction) points the same way.
+
+**Scored as filed** (the point change against each range):
+- **R-27** (72: −3.5 to −9.6; 84: −2.6 to −7.0; 96: −1.6 to −4.3; falsifier outside): 72 **falsified** (−2.50, smaller); 84 **falsified** (−1.55); 96 **hit** (−1.77).
+- **D-27** (72: −2.2 to −5.0; 84: −1.6 to −3.8; 96: −0.9 to −2.4; falsifier outside): 72 **hit**; 84 **falsified** (−1.55 > −1.6, by 0.05 point); 96 **hit**.
+- **G-20 ranges** (72: −3.3 to −6.3; 84: −2.2 to −4.8; 96: −1.2 to −3.0): 72 **missed**; 84 **missed**; 96 **hit**.
+- **G-20 falsifiers** (72: ≥ −2.0 or ≤ −8.0; 84: ≥ −1.0 or ≤ −6.0; 96: ≥ 0 or ≤ −4.5): **none triggered.**
+- **As the reviewer recorded before the run,** D-27 and G-20 took their ρ from the reviewer's relayed opinion, so the three forecasts were not independent. The lowest ρ band (D-27's 0.25–0.58) scored best.
+
+**The measured ρ so far,** by memory class (PROTOCOL):
+- **(a)** register-resident arithmetic, div64: 0.29 / 0.24 / 0.45;
+- **(b)** allocation, alloc-once: 0.85 / 0.92 / 1.06;
+- **(c)** a cache-evicting scan, the A-prime fix: 1.01 / 0.98 / 1.35.
+
+**Not established:** the per-instruction mechanism (no cycle or cache counters); whether ρ for class (a) depends on what surrounds the removed code.
