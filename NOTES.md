@@ -10464,3 +10464,51 @@ A counts-identical change that removes a large volume of cache-friendly arithmet
 - **(c)** a cache-evicting scan, the A-prime fix: 1.01 / 0.98 / 1.35.
 
 **Not established:** the per-instruction mechanism (no cycle or cache counters); whether ρ for class (a) depends on what surrounds the removed code.
+
+## Growth-exponent harness: cost note and design (before any run; the user's novelty programme, item 1, Oct 28; adopt nothing)
+
+**In plain English first:** measure how each lamp's cost **grows** with the size of N, not only what it costs at one size. Fit that growth to the standard complexity form L_N[a, c] and to simple slopes, with intervals. Then score any new card on its growth **as well as** its cost. A card that is twice as expensive at 72 bits but grows more slowly would show up here, where today's fitness (cost at fixed sizes) hides it. **Nothing has been run.** This is the design; it stops before any measurement.
+
+**What is measured:**
+- **Lamps:** td, rho, p−1, ECM, CFRAC and QS, each **alone** with its current genes. QS is the adopted reference: 2′b plus the code fixes, A-prime, alloc-once, div64, and the partials table if its run keeps it. CFRAC and ECM use their accepted genes (`cfrac_accept.py`, `ecm_tune.json`); td, rho and p−1 use `partition.PRE`'s.
+- **Sizes:** 40, 48, 56, 64, 72, 80, 88, 96 and 104 bits.
+  - **The 104-bit limit:** lampcore's QS, CFRAC and ECM refuse N ≥ 2^100 (`qs.rs` 285, `cfrac.rs` 19, `ecm.rs` 102: their i128 and U256 arithmetic). So 104 bits is measured for td, rho and p−1 only. Lifting it is a lampcore change (wider arithmetic, a cost note, parity): the user's call.
+- **Numbers:** fresh, fixed, seeded balanced semiprimes, `semiprimes_pq(bits, 48, 9600000 + bits)`: 48 per size, never used before. The smaller factor is bits/2 (θ = 0.5). A θ sweep is the spectrum's job (item 4), not this harness's.
+- **Caps:** "as usual" would make the pre-stages (2^21 ops) fail on almost every balanced number above about 44 bits (td) or 84 bits (rho), so the growth curve would be mostly censored. The harness therefore runs each lamp **alone with a per-number cap of 2^34 official ops**; QS keeps 2^28.
+  - A number that hits the cap is **censored**, not dropped: its spent cost enters the totals, and it counts as a failure.
+  - A lamp-size cell with fewer than 24 of 48 successes is reported but **excluded from the fit**, which says so.
+  - Expected exclusions: td above about 64 bits (it needs about 2^(bits/2) divisions); p−1 at most sizes (balanced primes are rarely B-smooth).
+- **Cost metric:** **cost per factorisation** = total priced cost spent ÷ successes (censored spending included). It is the inverse of the spectrum's "light", per pricing: official, ruint, Montgomery, and op-class v1 for the types v1 covers. A lamp whose types v1 does not cover is not reported under v1.
+- **Wall:** timed separately, after the counts, under the standing conditions (AC, cap 2,400 MHz, core 2, TCPU < 70 °C, no Wolfram kernel), 4 replicates per size, the same numbers. **Not before the user says so.**
+
+**The fits** (per lamp, per pricing; Python with numpy, cross-checked once in Wolfram):
+1. **L form:** ln C = ln A + c · (ln N)^a · (ln ln N)^(1−a).
+   - **(i) Fixed a** ∈ {1/3, 1/2, 1}: fit ln A and c by least squares on the per-size ln C, and report c and the residual for each a.
+   - **(ii) Free (a, c, A):** nonlinear least squares, with intervals from a bootstrap over numbers within sizes (10,000 resamples, `random.Random(2026)`), reporting a, c and their correlation. **Over 40–104 bits a and c are expected to be strongly correlated** (a narrow range of ln N), so (ii) is reported but (i) is the primary reading.
+2. **Simple laws:**
+   - the exponential-in-bits slope β = d log2 C / d bits, from least squares over all sizes and as **local slopes** between neighbouring sizes. Rho should show about 1/4 (C ∝ √p = N^{1/4}) and td about 1/2;
+   - the power law in log N: log C = α + k · log(bits).
+3. **The yardstick:** each lamp's local slope ÷ L_N[1/2, 1]'s local slope at the same size. For QS this "relative growth" is expected near 1, for CFRAC near √2, and for rho rising with size.
+
+**Proposal: a growth fitness** (in addition to cost; adopt nothing):
+- **Definition:** **G(card) = the card's local slope ÷ the reference's local slope**, between 88 and 96 bits (the top of the range where every lamp but td is measured). It is computed per pricing, and the robust value is the worst (largest) of op-class, ruint and Montgomery, as for cost.
+- **Interval:** a paired bootstrap over numbers within sizes, the same resamples for both cards.
+- **Scoring:** a card is reported on **cost** (today's fitness, unchanged) and on **growth G**.
+  - "Grows more slowly" means the robust G interval lies below 1. "Grows faster" means it lies above 1. Otherwise the call is "not distinguished".
+  - A card that loses on cost but wins on growth is reported with its **extrapolated crossover**: the size where the two fitted curves cross, with an interval and labelled an extrapolation.
+- **Not proposed:** combining cost and G into one number. Two numbers keep the trade-off visible. Whether G enters the gate for adoption is the user's decision.
+
+**Cost note (meter):** the harness reads only existing charges (`lampcore --types`, Python traces for parity on 4 numbers per size and lamp). No charge, count or price changes. If a lamp has types op-class v1 does not price, it is reported without v1, not given made-up weights.
+
+**Compute estimate (counts, untimed):**
+- rho at 104 bits: about 2^26 multiplies per number;
+- ECM at 96: up to about 2^28;
+- CFRAC at 96: about 2^28–2^30;
+- QS at 96: about 2^25 official ops (today's ~30 M instructions per number);
+- td: capped at 2^34 per number from 72 bits up. That bounds td's spending, about 48 × 2^34 ops per size: hours. **So td is run only up to 64 bits** (the cell above is excluded by design, not by cap).
+
+Total: about 1–3 hours of lampcore counting for the rest; wall timing roughly as long again.
+
+**Predictions:** before the counts run, the forecasters seal their predictions of each lamp's local slope at 88–96 and of QS's relative growth. The theory (rho ≈ 1/4 per bit; QS and CFRAC on the L[1/2] forms) is relayed as theory. **Measured facts only, no opinions** (PROTOCOL, Oct 27).
+
+**Runner:** `evolve/growth_harness.py`, to be written after the user approves this design, then committed before any run. **STOP here.**
