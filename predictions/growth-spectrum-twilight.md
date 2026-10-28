@@ -39,3 +39,5 @@ Information only: prioritise a per-candidate, per-op trace in the 0.33–0.40 ba
 ## Grok's
 
 Pending (the user decides whether to relay).
+
+**Disclosure (Claude, after filing):** the light spectrum's counts had been started in the background before this file was committed (light_spectrum.py, committed first). When this file was filed, Claude stopped that run **without reading any of its output**. The partial output was moved, unread, to Claude's scratch. The spectrum will be run again from the start through `tools/sealed_run.sh growth-spectrum-twilight`, after this commit, so R-32 and D-32 are scored on a run that began after sealing.
