@@ -10629,3 +10629,34 @@ Total: about 1–3 hours of lampcore counting for the rest; wall timing roughly 
 - **Order:** ECM first (smallest), then CFRAC, then QS.
 
 **Decision needed (the user's):** whether to do it now (it serves Phase 3's growth harness, which wants 40–110+ bits), and whether width-tagged prices are acceptable. **STOP.**
+
+## Light spectrum v1 (sealed run; predictions 1c644de; result 721af65; information only, counts, untimed)
+
+**In plain English first: with today's QS and today's meter, QS takes over at a much lower θ than the old sketch showed.**
+- **At 96 bits** QS is the strictly brightest lamp, by successes per op-class cost, in every band from **θ = 0.32** up. At 84 bits it is from 0.36 up, except one p−1-noise band at 0.42; at 72, from 0.40.
+- **The old sketch's "twilight", where ECM and QS were close, is gone:** in θ 0.33–0.40 at 96 bits, ECM is about **4× dimmer** than today's QS (0.007 against 0.029 successes per million op-class units).
+- **What is still near QS just below the crossover is p−1 at its small reference B.** It is cheap and rarely successful (2–11 successes out of 40): a lottery ticket that the light metric rewards. It is not a method that finishes numbers.
+- **Below about θ 0.24–0.26, rho and td own the spectrum,** as before.
+
+`evolve/light_spectrum.py` (df23455), `.json`, `.csv`; the plot is `evolve/light_spectrum_v1.png` (Wolfram, `wolfram/2026-10-28_light_spectrum.wl`; a desktop or other Wolfram kernel was already running when it ran, and no timed run was in progress); the run record is `results/growth-spectrum-twilight_20261028T081957Z.out`.
+- **Inputs:** each lamp alone, in lampcore with `--types`, on 40 fresh numbers per θ band (width 0.02, 0.10–0.50) at 72 / 84 / 96 bits.
+- **Budgets:** rho and p−1 at the reference pipeline's budgets. td and ECM at the earlier maps' 2^21 cap, because they are off in the reference. CFRAC with its accepted genes at the QS cap.
+- **Light:** successes per million op-class v1 units (ruint also recorded).
+- **The run had been started once before the predictions were filed.** It was stopped unread and rerun from the start after sealing; the disclosure is in the predictions file.
+
+**Defects found in the runner, after the run:**
+1. **CFRAC under ruint:** its lumped type `cfrac_ops` has no ruint price, so its ruint cost was summed as 0 and its ruint light written as 0. The ruint columns for CFRAC are therefore wrong. The op-class columns (CFRAC weight 110) are right.
+2. **The committed "twilight" definition** (the best non-QS light within 2.5× of QS, under ruint) fires mainly on **p−1's lucky bands**, not on ECM. It does not measure what it was meant to. The plot shades the same rule under op-class, post hoc, and it is likewise p−1-driven.
+
+**The instruction check** (Grok's point; callgrind on the first 8 numbers per band per lamp, attribution-free):
+- **Within each lamp,** op-class ÷ instructions stays within 25% of that lamp's pooled ratio in every band except the smallest-θ bands (0.10–0.12). Those are flagged for td (0.40–0.68), CFRAC (1.53–2.09) and QS (0.56–0.59), where the lamps exit at once and set-up dominates.
+- **Across lamps** the pooled ratio differs about 2×: td 0.56–0.62, p−1 0.77–0.78, ECM 1.01–1.04, CFRAC 1.03–1.06, rho 1.10–1.11, QS 1.09–1.10. So **op-class prices a td or p−1 instruction at about half to 0.7 of what it prices a QS or rho instruction.** Under an instructions yardstick, td's and p−1's light would fall by that factor. It would not change who is brightest in any band from 0.26 up at 96 bits, where QS leads p−1 by ≥ 2×; nearer the crossover it could matter.
+
+**Scored as filed** (96 bits, "the lowest θ band where QS is strictly best by success per op-class cost", read as the band's lower edge): **0.32**.
+- **R-32** (0.34–0.42): **missed** (0.32 is below).
+- **D-32** (0.25–0.40; falsifier outside): **hit.**
+- **G-25** (range 0.32–0.40): **hit** at the edge.
+- **G-25's falsifier** (QS worse than any lamp at the 0.34 band): **not triggered.** At 0.34 QS has 0.029 against p−1's 0.015 and ECM's 0.008.
+- **The sensitivity:** the band below, 0.30, has p−1 brighter than QS on 6 successes out of 40. One or two fewer lucky p−1 successes would move the answer to 0.30.
+
+**Consequence for the twilight specialist (item 3):** its band (θ 0.33–0.40) was chosen from the old sketch. Today ECM is about 4× dimmer than QS there, and p−1 only reaches QS's level as a lottery. A gene-only pipeline (td, rho, p−1, ECM budgets in front of QS) is therefore unlikely to beat the QS card by much in that band. That is a reading, to be tested by the search's training map, which runs next (untimed).
