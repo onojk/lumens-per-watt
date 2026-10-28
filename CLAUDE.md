@@ -34,6 +34,7 @@ The user's living plan is kept by the reviewer as a doc and mirrored here. Chang
   - the judge (harness, meter, line map, predictions) locked away from any proposer.
   - Gate: I-001 parity clean.
 - **Phase 3, measure growth:** the growth-exponent harness (40 to 110 bits); the first untested published method (proposed: Murru-Salvatori). Gate: growth fitness frozen before anything is scored with it.
+  - **Growth fitness G frozen 2026-10-28** (`reviews/growth_fitness.md`; G = candidate doubling period ÷ reference doubling period, 80–96 chord primary, 84–96 gene check, all four pricings, op-class primary). Nothing was scored with G before the commit that froze it.
 - **Phase 4, program search:** the building-block DSL, metered by construction; the proposer locked out; scored on growth. Gate: a composed card passes acceptance.
 - **In parallel:**
   - the landscape map: the light spectrum across θ, dark regions, MAP-Elites; energy if RAPL is enabled;
