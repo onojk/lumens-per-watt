@@ -169,6 +169,65 @@ fn sort_cost(n: u64) -> u64 {
     if n >= 2 { n * (64 - (n - 1).leading_zeros()) as u64 } else { 0 }
 }
 
+/// The partial relations by large prime (NOTES.md, "Cost note (before code): a fixed-size partials table"): open
+/// addressing with a multiplicative hash and linear probing, allocated once per attempt, doubled only past half load.
+/// Keys are the large primes (1 < v < L < 2^53); 0 marks an empty slot. Only `get` and `insert` of an absent key are
+/// used, as with the map it replaces, so every result is the same as the map's.
+struct PTable {
+    keys: Vec<u64>,
+    vals: Vec<(i128, u32, u32)>,
+    shift: u32,
+    n: usize,
+}
+
+impl PTable {
+    fn new(log2: u32) -> Self {
+        let cap = 1usize << log2;
+        PTable { keys: vec![0; cap], vals: vec![(0, 0, 0); cap], shift: 64 - log2, n: 0 }
+    }
+
+    fn slot(&self, k: u64) -> usize {
+        (k.wrapping_mul(0x9E37_79B9_7F4A_7C15) >> self.shift) as usize
+    }
+
+    fn get(&self, k: u64) -> Option<&(i128, u32, u32)> {
+        let mask = self.keys.len() - 1;
+        let mut i = self.slot(k);
+        loop {
+            let x = self.keys[i];
+            if x == k {
+                return Some(&self.vals[i]);
+            }
+            if x == 0 {
+                return None;
+            }
+            i = (i + 1) & mask;
+        }
+    }
+
+    fn insert(&mut self, k: u64, v: (i128, u32, u32)) {
+        if 2 * (self.n + 1) > self.keys.len() {
+            let (keys, vals) = (std::mem::take(&mut self.keys), std::mem::take(&mut self.vals));
+            *self = PTable::new(64 - self.shift + 1);
+            for (k2, v2) in keys.into_iter().zip(vals) {
+                if k2 != 0 {
+                    self.insert(k2, v2);
+                }
+            }
+        }
+        let mask = self.keys.len() - 1;
+        let mut i = self.slot(k);
+        while self.keys[i] != 0 && self.keys[i] != k {
+            i = (i + 1) & mask;
+        }
+        if self.keys[i] == 0 {
+            self.n += 1;
+        }
+        self.keys[i] = k;
+        self.vals[i] = v;
+    }
+}
+
 /// All s-element combinations of `pool`, in itertools.combinations order.
 fn combinations(pool: &[u64], s: usize) -> Vec<Vec<u64>> {
     let n = pool.len();
@@ -764,8 +823,7 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
     // fix C.2: q -> (u, offset, length) into `parena`; `kept` and `cbuf` are per-attempt scratch for a kept
     // candidate's list and a combination's union
     let (mut parena, mut kept, mut cbuf): (Vec<(u32, u32)>, Vec<(u32, u32)>, Vec<(u32, u32)>) = (Vec::new(), Vec::new(), Vec::new());
-    let mut partials: std::collections::HashMap<i128, (i128, u32, u32)> =
-        std::collections::HashMap::new();
+    let mut partials = PTable::new(12); // 4,096 slots, doubled past half load
     let mut arr = vec![0i32; width];
     // step 1 (NOTES.md, "Step 1: delete the fills"): one exponent vector per attempt, reused (F word); with
     // re-sieve, the slot array (width) and the generation stamps (F) once per attempt
@@ -1350,11 +1408,12 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
                 }
                 let ptl = crate::pt_snap_lp(m); // "lp:hash"
                 m.charge(crate::PH_HASH, 1)?; // hash lookup (audit 6)
-                let Some(&(u1, o1, l1)) = partials.get(&v) else {
+                assert!(v > 1 && v < 1i128 << 63, "large prime outside the partials table's key range");
+                let Some(&(u1, o1, l1)) = partials.get(v as u64) else {
                     m.charge(crate::PH_HASH, 1)?; // insert (audit 6)
                     let off = parena.len() as u32;
                     parena.extend_from_slice(vec_);
-                    partials.insert(v, (u, off, vec_.len() as u32));
+                    partials.insert(v as u64, (u, off, vec_.len() as u32));
                     crate::pt_end(m, 11, ptl);
                     crate::pt_end(m, 8, pt);
                     continue;
@@ -1394,4 +1453,31 @@ fn sieve_source(num: &Num, g: &Value, k: u64, led: &mut Ledger, m: &mut Meter) -
         }
     }
     Ok(None)
+}
+
+#[cfg(test)]
+mod ptable_tests {
+    use super::PTable;
+
+    /// The table against std's HashMap: the same get / insert-if-absent sequence, from 4 slots so it doubles many
+    /// times (the rehash path the map numbers do not reach), with keys from a fixed LCG (repeats included).
+    #[test]
+    fn ptable_matches_hashmap() {
+        let mut t = PTable::new(2);
+        let mut h: std::collections::HashMap<u64, (i128, u32, u32)> = std::collections::HashMap::new();
+        let mut x: u64 = 12345;
+        for i in 0..200_000u32 {
+            x = x.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
+            let k = 2 + (x >> 40) % 300_000; // repeats: a key seen before is found, not re-inserted
+            let got = t.get(k).copied();
+            assert_eq!(got, h.get(&k).copied());
+            if got.is_none() {
+                let v = (k as i128 * 7 - 3, i, i % 97);
+                t.insert(k, v);
+                h.insert(k, v);
+            }
+        }
+        assert_eq!(t.n, h.len());
+        assert!(t.keys.len() >= 2 * t.n);
+    }
 }
