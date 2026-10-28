@@ -10146,3 +10146,42 @@ Next come the scan (6–15%, where YAFU uses 256-bit compares), the sieve itself
 - The phase mapping is by function role, and the two designs do not split work identically: YAFU's single-large-prime handling sits inside its check function.
 - The library split is approximate where callees are shared between regions.
 - One callgrind run per size per side.
+
+## Three unpriced costs in one week: evidence for the absolute meter-health check (I-042 a) and charged types (I-001)
+
+The user asked for this to be recorded (Oct 27 late). Three times in one week, wall time was found that the meter never priced. Each was found by a different, partly accidental route:
+1. **The wasted offset pass** (the old root confirm; NOTES "Design note: root confirm without the per-polynomial offset pass"): a second pass per polynomial over every root, storing start offsets the Gray code already kept. Found by reading the sieve region's code after a timing anomaly. Removed by the 2′b design.
+2. **The A-prime base scan** (Stage 3; fixed in f988aab): a linear scan of the factor base per kept relation, charged as a flat 4 word. Found by a microbenchmark of the kept-relation copies. Removing it saved 1.7–5.7% of wall with identical counts.
+3. **Allocation** (Experiment 1): malloc / free per (s−1)-combination of the A-prime pool and per A, 2.1–3.1 M instructions per number, 26 / 15 / 9% of all the card's instructions. Found only by comparing against an outside implementation (YAFU) instruction by instruction.
+
+**The pattern:**
+- None of the three was an uncharged *arithmetic* op of a charged type, so I-001's charged types would not have caught them.
+- All three are **work the card does that no charged op stands for**: bookkeeping, search and memory management.
+- A **differential** check (I-042 b) catches only what a change introduces. All three were present in both arms of every comparison, so it could not catch them.
+- **What would have caught all three is the absolute check (I-042 a):** per sub-region, wall against priced cost, flagged against that region's own noise. Setup at 72 bits, for example, takes 34% of the card's time but carries much less of its priced cost. That is the evidence for running I-042 (a) routinely; it is still the user's decision.
+- **I-001 still matters for its own class** (arithmetic outside the meter, four holes in one night, Oct 26). The two are complementary: I-001 prevents mis-charged arithmetic by construction, and I-042 (a) finds unpriced non-arithmetic work by measurement.
+
+## Cost note (before code): allocate once per attempt (Experiment 1; the user's go-ahead, Oct 27 late)
+
+**The change** (lampcore, `qs.rs` at 210a7d0), with no change to what is computed or charged:
+1. **`OnDemand` (the on-demand A selection):**
+   - `new` stores the (s−1)-combinations of the pool in **one flat buffer** (stride s−1), the same order as `combinations`, instead of one heap `Vec` per combination. There are hundreds to thousands per attempt, most never visited.
+   - `next` copies each prefix into a reused buffer instead of cloning it, rebuilds `rest` in a reused buffer, and builds each try's key in a reused buffer, allocating only for an accepted A: its entry in `used` and the returned key, as now.
+2. **Per A in `sieve_source`:** the per-A arrays (`sp`, `sj`, `sr`, the `sbi` rows, `bl`, `bl64`, `qj`, `aj`, and the power-entry arrays `qp`, `qr`, `ql_`, `qm`, `qbi`, `rts`) are declared once per attempt and **cleared per A** instead of reallocated.
+3. **Per prime:** `bainv` becomes one reused buffer, and the `vec![r1, r2]` per prime becomes a fixed two-element array.
+
+**Python** (`qs.py`) is **not changed**. Python has no allocation control that corresponds, and no Python op or count depends on it. Python = Rust stays checked by parity. This departs from "code in both cores"; the reason is recorded here.
+
+**Cost model:**
+- **Charged ops: none change.** No charge depends on how a buffer is stored. Every op count per type per number, every relation, every A in its order and every output are predicted **identical**: the same values are computed in the same order.
+- **Removed (unpriced) work, measured** (`evolve/alloc_estimate.py`, `.out`, `.json`, from Experiment 1's callgrind files; balanced band). The allocator's instructions at the targeted call sites are **1.96 / 2.11 / 2.73 M per number** at 72 / 84 / 96: 92 / 90 / 88% of the card's allocation instructions, and **23.9 / 13.5 / 7.6%** of all its instructions.
+  - This counts only the libc allocator, not the Rust wrapper code around it (RawVec growth, drop glue), so it is a **lower bound** on the instructions removed.
+  - Left in place: per-attempt allocations (the Ledger and its solve, the partials map, the attempt's arrays), 0.16 / 0.24 / 0.37 M per number.
+- **No priced figure moves** (official, ruint, Montgomery, op-class v1). v1 counts allocator instructions as uncharged, and it stays frozen.
+- **Wall forecast** (Wolfram, `wolfram/2026-10-27_alloc_once.wl`, `.out`; a model, not a verdict; before any code). The saved wall is k × the removed instructions × the card's average time per instruction, where k is the allocator's time per instruction relative to the card's average:
+  - **central (k = 1):** −23.9 / −13.5 / −7.6% at 72 / 84 / 96;
+  - **band (k from 0.7 to 2.0):** −16.7 to −47.7 / −9.5 to −27.0 / −5.3 to −15.2%.
+  - **Basis for the band:** allocator code is branchy and pointer-chasing, with lower IPC than the card's loops, which pushes k up. Freed cache lines push the other way.
+  - **Caveat:** the inputs are the balanced band; the sealed run uses all map numbers. Allocation per number is dominated by the per-attempt `OnDemand` buffers, which do not depend on the factor sizes.
+
+**Procedure:** code (lampcore), then acceptance (byte-identical outputs with and without `--types`, all map numbers at 72 / 84 / 96, for 2′a, 2′b and the pipeline; Python traces unchanged), full parity, a callgrind check of the allocation instructions actually removed, and then the sealed timing run 2′b+fix against 2′b+fix+alloc, with predictions filed first. **STOP at the prediction point** so the user can relay to DeepSeek and Grok.
