@@ -10784,3 +10784,5 @@ Total: about 1–3 hours of lampcore counting for the rest; wall timing roughly 
 - **Above 96 bits:** lampcore's ceiling.
 - **The interpolated QS genes** at non-sealed sizes may not be optimal there. That would bend QS's curve slightly, most at 40–48, where the 54-bit genes are held.
 - **The growth fitness G** (design: a card's local slope ÷ the reference's at 88–96) is not yet frozen, so nothing is scored with it.
+
+**Correction to the growth harness v1 entry:** "QS is 15–52× cheaper per factorisation throughout", said of ECM, is wrong. From the table, ECM ÷ QS is 3.4× at 40 bits rising to 14.6× at 96, and CFRAC ÷ QS is 2.2× rising to 52×.
