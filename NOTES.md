@@ -9847,3 +9847,16 @@ msieve's small-number path is not tuned for 29-digit inputs. This compares the c
 - The benchmark is a model of the card's path (synthetic primes, the same scan and copy code), not the card itself.
 - The A-prime index is estimated from π(p).
 - The 100–128 rows extrapolate three sizes.
+
+## Cost note (before code): the A-prime lookup fix (the user's decision, Oct 27: YES)
+
+**The change:** lampcore's `sieve_source` finds each A-prime's factor-base index with `pos` (qs.rs 607), a linear scan of the base, once per A in the setup (785) and, for 2′b, in `aj` (776), and **once per A-prime per kept relation** (1238). The fix computes the s indices **once per A**, in A's own order (`qj`), and the kept-relation loop reads `qj` instead of calling `pos`. The setup and `aj` read the same `qj`.
+- **Python:** `qs.py` already looks indices up in a dict (`idx[ql]`, 575), O(1); no linear scan exists there. The Python loop is changed only to read the same per-A list, so both cores have the same shape. No Python op or count changes.
+
+**Cost model:**
+- **Charged ops: none change.** `pos` was never charged (the meter charges the A-prime adds as 4 word per relation, item 15, and keeps charging them exactly so). Every op count per type, per number, is predicted **identical**; every relation, its exponent vector and its order are predicted identical (the same indices, in the same order, enter `tt`).
+- **Uncharged work removed:** about 87 / 155 / 318 base-entry compares per kept relation at 72 / 84 / 96 (Stage 3), replaced by s = 4 compares-and-scans per A (one scan per A-prime, as now in the setup).
+- **No priced figure moves** (official, ruint, Montgomery, op-class v1: all are counts × weights). op-class v1 is frozen; the removed instructions were mostly the scan's, attributed to `pos`'s line (@caller → lp:copy's word): v1's weights are not re-derived (a v2 would be prospective).
+- **Wall forecast** (Stage 3 model, `wolfram/2026-10-27_copies_cost`): −13.8 / −37.8 / −153 µs per number, i.e. 2′b+fix / 2′b ≈ 0.984 / 0.976 / 0.957 at 72 / 84 / 96. This is a model; the verdict will come from the sealed timing run (predictions filed first).
+
+**Procedure:** code in lampcore and qs.py; acceptance (every count per type and every relation identical, 2′a and 2′b, Python = Rust, at 72 / 84 / 96); full parity; then the sealed timing run 2′b against 2′b+fix (predictions filed first; STOP at the prediction point).
