@@ -1,0 +1,31 @@
+Part 1 (yafu_diag.py; information only, post hoc; the second of two identical runs, the first's printout in NOTES):
+  96 band 0 (16-bit factor): V0 factor() (Run B): wall 11.01 ms / number; YAFU's own total 5.58 ms
+  96 band 0 (16-bit factor): V1 factor() -silent: wall 10.93 ms / number; YAFU's own total 5.58 ms
+  96 band 0 (16-bit factor): V2 factor() -silent, logs off: wall 10.89 ms / number; YAFU's own total not logged
+  96 band 0 (16-bit factor): V3 siqs(): wall 10.97 ms / number; YAFU's own total not logged
+  96 band 0 (16-bit factor): V4 siqs() -silent, logs off: wall 10.87 ms / number; YAFU's own total not logged
+  96 band 0 (16-bit factor): V5 factor() with the tree's yafu.ini: wall 11.09 ms / number; YAFU's own total 5.58 ms
+  96 band 0 (16-bit factor): V8 smallmpqs(): wall 7.39 ms / number; YAFU's own total not logged
+  96 band 0 (16-bit factor): V6 one process per number: wall 30.03 ms / number; YAFU's own total 5.72 ms
+  96 balanced (48-bit factor): V0 factor() (Run B): wall 138.38 ms / number; YAFU's own total 132.58 ms
+  96 balanced (48-bit factor): V1 factor() -silent: wall 139.22 ms / number; YAFU's own total 133.47 ms
+  96 balanced (48-bit factor): V2 factor() -silent, logs off: wall 139.75 ms / number; YAFU's own total not logged
+  96 balanced (48-bit factor): V3 siqs(): wall 10.51 ms / number; YAFU's own total not logged
+  96 balanced (48-bit factor): V4 siqs() -silent, logs off: wall 10.72 ms / number; YAFU's own total not logged
+  96 balanced (48-bit factor): V5 factor() with the tree's yafu.ini: wall 140.08 ms / number; YAFU's own total 134.36 ms
+  96 balanced (48-bit factor): V8 smallmpqs(): wall 7.26 ms / number; YAFU's own total not logged
+  96 balanced (48-bit factor): V6 one process per number: wall 203.74 ms / number; YAFU's own total 178.14 ms
+  96 balanced (48-bit factor): V7 one number x20: wall 139.81 ms / number; YAFU's own total 134.12 ms
+  84 balanced (42-bit factor): V0 factor() (Run B): wall 131.17 ms / number; YAFU's own total 125.46 ms
+  84 balanced (42-bit factor): V1 factor() -silent: wall 133.13 ms / number; YAFU's own total 127.38 ms
+  84 balanced (42-bit factor): V2 factor() -silent, logs off: wall 131.79 ms / number; YAFU's own total not logged
+  84 balanced (42-bit factor): V3 siqs(): wall 9.36 ms / number; YAFU's own total not logged
+  84 balanced (42-bit factor): V4 siqs() -silent, logs off: wall 9.56 ms / number; YAFU's own total not logged
+  84 balanced (42-bit factor): V5 factor() with the tree's yafu.ini: wall 131.81 ms / number; YAFU's own total 126.17 ms
+  84 balanced (42-bit factor): V8 smallmpqs(): wall 6.36 ms / number; YAFU's own total not logged
+  84 balanced (42-bit factor): V6 one process per number: wall 177.64 ms / number; YAFU's own total 151.96 ms
+  84 balanced (42-bit factor): V7 one number x20: wall 135.84 ms / number; YAFU's own total 130.06 ms
+Part 2 (yafu_diag.py part2): balanced band, 80 numbers, median of 3 batches
+  72: abs(@) 4.62; smallmpqs(@) 5.28 (a factor printed 80/80); siqs(@) 6.26; QS alone (smallmpqs - abs) 0.65 ms / number
+  84: abs(@) 4.61; smallmpqs(@) 5.78 (a factor printed 80/80); siqs(@) 6.80; QS alone (smallmpqs - abs) 1.17 ms / number
+  96: abs(@) 4.59; smallmpqs(@) 6.56 (a factor printed 80/80); siqs(@) 7.81; QS alone (smallmpqs - abs) 1.97 ms / number

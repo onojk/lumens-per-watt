@@ -1,0 +1,94 @@
+{
+ "state_start": "time: 2026-10-27T21:11:19-07:00\npinned core: 2\ngovernor: powersave\nenergy_performance_preference: balance_performance\ncur MHz: 400; max MHz: 5000\nfrequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100\nload average: 2.93 2.16 1.78\npower supply AC online: 1\npower supply BAT0 capacity: 100% (Not charging)\npower supply ucsi-source-psy-USBC000:001 online: 1\npower supply ucsi-source-psy-USBC000:002 online: 0\ntemperature TCPU: 52 C\ntemperature x86_pkg_temp: 51 C\nsensors: Package id 0:  +51.0\u00b0C  (high = +100.0\u00b0C, crit = +100.0\u00b0C)\ntop 5 processes by current CPU (top, a 1 s sample):\n  48.5% chrome\n  43.6% chrome\n  29.7% Xorg\n  11.9% claude\n  8.9% chrome\n",
+ "72": {
+  "abs(@)": {
+   "wall_ms": [
+    4.637826936959755,
+    4.614525649958523,
+    4.624681475252146
+   ],
+   "median_ms": 4.624681475252146,
+   "factors_found": null
+  },
+  "smallmpqs(@)": {
+   "wall_ms": [
+    5.242708887089975,
+    5.3076051372045185,
+    5.27908598742215
+   ],
+   "median_ms": 5.27908598742215,
+   "factors_found": 80
+  },
+  "siqs(@)": {
+   "wall_ms": [
+    6.279698737489525,
+    6.251514500036137,
+    6.262722187966574
+   ],
+   "median_ms": 6.262722187966574,
+   "factors_found": null
+  },
+  "QS alone (smallmpqs - abs)": 0.6544045121700037
+ },
+ "84": {
+  "abs(@)": {
+   "wall_ms": [
+    4.62373411282897,
+    4.59333706239704,
+    4.613484237052035
+   ],
+   "median_ms": 4.613484237052035,
+   "factors_found": null
+  },
+  "smallmpqs(@)": {
+   "wall_ms": [
+    5.742878624732839,
+    5.779547275596997,
+    5.8105327749217395
+   ],
+   "median_ms": 5.779547275596997,
+   "factors_found": 80
+  },
+  "siqs(@)": {
+   "wall_ms": [
+    6.804811299662106,
+    6.798405437439214,
+    6.863382525625639
+   ],
+   "median_ms": 6.804811299662106,
+   "factors_found": null
+  },
+  "QS alone (smallmpqs - abs)": 1.1660630385449622
+ },
+ "96": {
+  "abs(@)": {
+   "wall_ms": [
+    4.599965087254532,
+    4.591547499876469,
+    4.591063762200065
+   ],
+   "median_ms": 4.591547499876469,
+   "factors_found": null
+  },
+  "smallmpqs(@)": {
+   "wall_ms": [
+    6.560008275118889,
+    6.626389174925862,
+    6.56054664941621
+   ],
+   "median_ms": 6.56054664941621,
+   "factors_found": 80
+  },
+  "siqs(@)": {
+   "wall_ms": [
+    7.807394962583203,
+    7.770427461946383,
+    7.859245487634325
+   ],
+   "median_ms": 7.807394962583203,
+   "factors_found": null
+  },
+  "QS alone (smallmpqs - abs)": 1.9689991495397408
+ },
+ "state_end": "time: 2026-10-27T21:11:34-07:00\npinned core: 2\ngovernor: powersave\nenergy_performance_preference: balance_performance\ncur MHz: 2369; max MHz: 5000\nfrequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100\nload average: 3.02 2.22 1.81\npower supply AC online: 1\npower supply BAT0 capacity: 100% (Not charging)\npower supply ucsi-source-psy-USBC000:001 online: 1\npower supply ucsi-source-psy-USBC000:002 online: 0\ntemperature TCPU: 56 C\ntemperature x86_pkg_temp: 53 C\nsensors: Package id 0:  +57.0\u00b0C  (high = +100.0\u00b0C, crit = +100.0\u00b0C)\ntop 5 processes by current CPU (top, a 1 s sample):\n  43.6% chrome\n  41.6% chrome\n  30.7% Xorg\n  12.9% claude\n  6.9% kworker/3:1H-i915_cleanup\n"
+}

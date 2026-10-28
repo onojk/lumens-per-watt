@@ -1,0 +1,363 @@
+{
+ "state_start": "time: 2026-10-27T21:10:04-07:00\npinned core: 2\ngovernor: powersave\nenergy_performance_preference: balance_performance\ncur MHz: 1545; max MHz: 5000\nfrequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100\nload average: 2.42 1.86 1.66\npower supply AC online: 1\npower supply BAT0 capacity: 100% (Not charging)\npower supply ucsi-source-psy-USBC000:001 online: 1\npower supply ucsi-source-psy-USBC000:002 online: 0\ntemperature TCPU: 49 C\ntemperature x86_pkg_temp: 49 C\nsensors: Package id 0:  +51.0\u00b0C  (high = +100.0\u00b0C, crit = +100.0\u00b0C)\ntop 5 processes by current CPU (top, a 1 s sample):\n  32.7% Xorg\n  25.7% chrome\n  8.9% claude\n  7.9% xfce4-terminal\n  7.9% chrome\n",
+ "sets": {
+  "96 band 0 (16-bit factor)": {
+   "V0 factor() (Run B)": {
+    "wall_ms": 11.00847004854586,
+    "internal_ms": 5.575,
+    "internal_n": 20,
+    "factor_lines": 80,
+    "log_tail": [
+     "10/27/26 21:10:06, prp5 = 63803",
+     "10/27/26 21:10:06, prp24 = 689764314822351763398539",
+     "10/27/26 21:10:06, Total factoring time = 0.0055 seconds",
+     "10/27/26 21:10:06, ",
+     "10/27/26 21:10:06, ****************************",
+     "10/27/26 21:10:06, Starting factorization of 42526880722622034243646554173",
+     "10/27/26 21:10:06, using pretesting plan: normal",
+     "10/27/26 21:10:06, no tune info: using qs/gnfs crossover of 95 digits",
+     "10/27/26 21:10:06, no tune info: using qs/snfs crossover of 95 digits",
+     "10/27/26 21:10:06, ****************************",
+     "10/27/26 21:10:06, rho: x^2 + 3, starting 1000 iterations on C29",
+     "10/27/26 21:10:06, prp5 = 49033",
+     "10/27/26 21:10:06, prp24 = 867311417262293440002581",
+     "10/27/26 21:10:06, Total factoring time = 0.0055 seconds"
+    ]
+   },
+   "V1 factor() -silent": {
+    "wall_ms": 10.931941901799291,
+    "internal_ms": 5.585,
+    "internal_n": 20,
+    "factor_lines": 40,
+    "log_tail": [
+     "10/27/26 21:10:06, prp5 = 63803",
+     "10/27/26 21:10:06, prp24 = 689764314822351763398539",
+     "10/27/26 21:10:06, Total factoring time = 0.0055 seconds",
+     "10/27/26 21:10:06, ",
+     "10/27/26 21:10:06, ****************************",
+     "10/27/26 21:10:06, Starting factorization of 42526880722622034243646554173",
+     "10/27/26 21:10:06, using pretesting plan: normal",
+     "10/27/26 21:10:06, no tune info: using qs/gnfs crossover of 95 digits",
+     "10/27/26 21:10:06, no tune info: using qs/snfs crossover of 95 digits",
+     "10/27/26 21:10:06, ****************************",
+     "10/27/26 21:10:06, rho: x^2 + 3, starting 1000 iterations on C29",
+     "10/27/26 21:10:06, prp5 = 49033",
+     "10/27/26 21:10:06, prp24 = 867311417262293440002581",
+     "10/27/26 21:10:06, Total factoring time = 0.0055 seconds"
+    ]
+   },
+   "V2 factor() -silent, logs off": {
+    "wall_ms": 10.891074451501481,
+    "internal_ms": null,
+    "internal_n": 0,
+    "factor_lines": 0,
+    "log_tail": []
+   },
+   "V3 siqs()": {
+    "wall_ms": 10.972683801082894,
+    "internal_ms": null,
+    "internal_n": 0,
+    "factor_lines": 80,
+    "log_tail": [
+     "10/27/26 21:10:07, random seed: 10071618390433617846",
+     "10/27/26 21:10:07, starting tinyqs on C29 = 35707603525101733071916302221",
+     "10/27/26 21:10:07, prp5 = 49783",
+     "10/27/26 21:10:07, prp24 = 717265000604658880981787",
+     "10/27/26 21:10:07, starting SIQS on c29: 44009032578610509560116983817",
+     "10/27/26 21:10:07, random seed: 10071618390433617846",
+     "10/27/26 21:10:07, starting tinyqs on C29 = 44009032578610509560116983817",
+     "10/27/26 21:10:07, prp24 = 689764314822351763398539",
+     "10/27/26 21:10:07, prp24 = 63803",
+     "10/27/26 21:10:07, starting SIQS on c29: 42526880722622034243646554173",
+     "10/27/26 21:10:07, random seed: 10071618390433617846",
+     "10/27/26 21:10:07, starting tinyqs on C29 = 42526880722622034243646554173",
+     "10/27/26 21:10:07, prp24 = 867311417262293440002581",
+     "10/27/26 21:10:07, prp5 = 49033"
+    ]
+   },
+   "V4 siqs() -silent, logs off": {
+    "wall_ms": 10.871306748595089,
+    "internal_ms": null,
+    "internal_n": 0,
+    "factor_lines": 0,
+    "log_tail": []
+   },
+   "V5 factor() with the tree's yafu.ini": {
+    "wall_ms": 11.092095449566841,
+    "internal_ms": 5.585,
+    "internal_n": 20,
+    "factor_lines": 80,
+    "log_tail": [
+     "10/27/26 21:10:07, Total factoring time = 0.0055 seconds",
+     "10/27/26 21:10:07, factorization: 44009032578610509560116983817=63803*689764314822351763398539",
+     "10/27/26 21:10:07, ",
+     "10/27/26 21:10:07, ****************************",
+     "10/27/26 21:10:07, Starting factorization of 42526880722622034243646554173",
+     "10/27/26 21:10:07, using pretesting plan: normal",
+     "10/27/26 21:10:07, no tune info: using qs/gnfs crossover of 95 digits",
+     "10/27/26 21:10:07, no tune info: using qs/snfs crossover of 95 digits",
+     "10/27/26 21:10:07, ****************************",
+     "10/27/26 21:10:07, rho: x^2 + 3, starting 1000 iterations on C29",
+     "10/27/26 21:10:07, prp5 = 49033",
+     "10/27/26 21:10:07, prp24 = 867311417262293440002581",
+     "10/27/26 21:10:07, Total factoring time = 0.0055 seconds",
+     "10/27/26 21:10:07, factorization: 42526880722622034243646554173=49033*867311417262293440002581"
+    ]
+   },
+   "V8 smallmpqs()": {
+    "wall_ms": 7.391755451681092,
+    "internal_ms": null,
+    "internal_n": 0,
+    "factor_lines": 0,
+    "log_tail": []
+   },
+   "V6 one process per number": {
+    "wall_ms": 30.03012757981196,
+    "internal_ms": 5.72
+   }
+  },
+  "96 balanced (48-bit factor)": {
+   "V0 factor() (Run B)": {
+    "wall_ms": 138.3837887988193,
+    "internal_ms": 132.58,
+    "internal_n": 20,
+    "factor_lines": 80,
+    "log_tail": [
+     "10/27/26 21:10:10, no tune info: using qs/gnfs crossover of 95 digits",
+     "10/27/26 21:10:10, no tune info: using qs/snfs crossover of 95 digits",
+     "10/27/26 21:10:10, ****************************",
+     "10/27/26 21:10:10, rho: x^2 + 3, starting 1000 iterations on C29",
+     "10/27/26 21:10:10, rho: x^2 + 2, starting 1000 iterations on C29",
+     "10/27/26 21:10:10, rho: x^2 + 1, starting 1000 iterations on C29",
+     "10/27/26 21:10:10, final ECM pretested depth: 0.000000",
+     "10/27/26 21:10:10, scheduler: switching to sieve method",
+     "10/27/26 21:10:10, starting SIQS on c29: 38534743958783378229821656333",
+     "10/27/26 21:10:10, random seed: 14585771315994591996",
+     "10/27/26 21:10:10, starting tinyqs on C29 = 38534743958783378229821656333",
+     "10/27/26 21:10:10, prp15 = 141317511914101",
+     "10/27/26 21:10:10, prp15 = 272682015391033",
+     "10/27/26 21:10:10, Total factoring time = 0.1291 seconds"
+    ]
+   },
+   "V1 factor() -silent": {
+    "wall_ms": 139.22393860120792,
+    "internal_ms": 133.465,
+    "internal_n": 20,
+    "factor_lines": 40,
+    "log_tail": [
+     "10/27/26 21:10:13, no tune info: using qs/gnfs crossover of 95 digits",
+     "10/27/26 21:10:13, no tune info: using qs/snfs crossover of 95 digits",
+     "10/27/26 21:10:13, ****************************",
+     "10/27/26 21:10:13, rho: x^2 + 3, starting 1000 iterations on C29",
+     "10/27/26 21:10:13, rho: x^2 + 2, starting 1000 iterations on C29",
+     "10/27/26 21:10:13, rho: x^2 + 1, starting 1000 iterations on C29",
+     "10/27/26 21:10:13, final ECM pretested depth: 0.000000",
+     "10/27/26 21:10:13, scheduler: switching to sieve method",
+     "10/27/26 21:10:13, starting SIQS on c29: 38534743958783378229821656333",
+     "10/27/26 21:10:13, random seed: 12398666268262149301",
+     "10/27/26 21:10:13, starting tinyqs on C29 = 38534743958783378229821656333",
+     "10/27/26 21:10:13, prp15 = 141317511914101",
+     "10/27/26 21:10:13, prp15 = 272682015391033",
+     "10/27/26 21:10:13, Total factoring time = 0.1279 seconds"
+    ]
+   },
+   "V2 factor() -silent, logs off": {
+    "wall_ms": 139.75302145117894,
+    "internal_ms": null,
+    "internal_n": 0,
+    "factor_lines": 0,
+    "log_tail": []
+   },
+   "V3 siqs()": {
+    "wall_ms": 10.512295400258154,
+    "internal_ms": null,
+    "internal_n": 0,
+    "factor_lines": 80,
+    "log_tail": [
+     "10/27/26 21:10:16, random seed: 4105974578972002729",
+     "10/27/26 21:10:16, starting tinyqs on C29 = 45655405731039557065684143157",
+     "10/27/26 21:10:16, prp15 = 205416602156351",
+     "10/27/26 21:10:16, prp15 = 222257623053707",
+     "10/27/26 21:10:16, starting SIQS on c29: 46095287061680073409049830757",
+     "10/27/26 21:10:16, random seed: 4105974578972002729",
+     "10/27/26 21:10:16, starting tinyqs on C29 = 46095287061680073409049830757",
+     "10/27/26 21:10:16, prp15 = 178423462173401",
+     "10/27/26 21:10:16, prp15 = 258347677486957",
+     "10/27/26 21:10:16, starting SIQS on c29: 38534743958783378229821656333",
+     "10/27/26 21:10:16, random seed: 4105974578972002729",
+     "10/27/26 21:10:16, starting tinyqs on C29 = 38534743958783378229821656333",
+     "10/27/26 21:10:16, prp15 = 141317511914101",
+     "10/27/26 21:10:16, prp15 = 272682015391033"
+    ]
+   },
+   "V4 siqs() -silent, logs off": {
+    "wall_ms": 10.724972147727385,
+    "internal_ms": null,
+    "internal_n": 0,
+    "factor_lines": 0,
+    "log_tail": []
+   },
+   "V5 factor() with the tree's yafu.ini": {
+    "wall_ms": 140.07659049821086,
+    "internal_ms": 134.36,
+    "internal_n": 20,
+    "factor_lines": 80,
+    "log_tail": [
+     "10/27/26 21:10:19, no tune info: using qs/snfs crossover of 95 digits",
+     "10/27/26 21:10:19, ****************************",
+     "10/27/26 21:10:19, rho: x^2 + 3, starting 1000 iterations on C29",
+     "10/27/26 21:10:19, rho: x^2 + 2, starting 1000 iterations on C29",
+     "10/27/26 21:10:19, rho: x^2 + 1, starting 1000 iterations on C29",
+     "10/27/26 21:10:19, final ECM pretested depth: 0.000000",
+     "10/27/26 21:10:19, scheduler: switching to sieve method",
+     "10/27/26 21:10:19, starting SIQS on c29: 38534743958783378229821656333",
+     "10/27/26 21:10:19, random seed: 7809417812133063499",
+     "10/27/26 21:10:19, starting tinyqs on C29 = 38534743958783378229821656333",
+     "10/27/26 21:10:19, prp15 = 141317511914101",
+     "10/27/26 21:10:19, prp15 = 272682015391033",
+     "10/27/26 21:10:19, Total factoring time = 0.1341 seconds",
+     "10/27/26 21:10:19, factorization: 38534743958783378229821656333=141317511914101*272682015391033"
+    ]
+   },
+   "V8 smallmpqs()": {
+    "wall_ms": 7.25655089772772,
+    "internal_ms": null,
+    "internal_n": 0,
+    "factor_lines": 0,
+    "log_tail": []
+   },
+   "V6 one process per number": {
+    "wall_ms": 203.7389826029539,
+    "internal_ms": 178.14000000000001
+   },
+   "V7 one number x20": {
+    "wall_ms": 139.81249964854214,
+    "internal_ms": 134.115,
+    "internal_n": 20,
+    "factor_lines": 80
+   }
+  },
+  "84 balanced (42-bit factor)": {
+   "V0 factor() (Run B)": {
+    "wall_ms": 131.17080405063462,
+    "internal_ms": 125.46000000000002,
+    "internal_n": 20,
+    "factor_lines": 80,
+    "log_tail": [
+     "10/27/26 21:10:26, no tune info: using qs/gnfs crossover of 95 digits",
+     "10/27/26 21:10:26, no tune info: using qs/snfs crossover of 95 digits",
+     "10/27/26 21:10:26, ****************************",
+     "10/27/26 21:10:26, rho: x^2 + 3, starting 1000 iterations on C25",
+     "10/27/26 21:10:26, rho: x^2 + 2, starting 1000 iterations on C25",
+     "10/27/26 21:10:26, rho: x^2 + 1, starting 1000 iterations on C25",
+     "10/27/26 21:10:26, final ECM pretested depth: 0.000000",
+     "10/27/26 21:10:26, scheduler: switching to sieve method",
+     "10/27/26 21:10:26, starting SIQS on c25: 8089386021532857036703639",
+     "10/27/26 21:10:26, random seed: 12178415293579020500",
+     "10/27/26 21:10:26, starting tinyqs on C25 = 8089386021532857036703639",
+     "10/27/26 21:10:26, prp13 = 2620373201443",
+     "10/27/26 21:10:26, prp13 = 3087112178173",
+     "10/27/26 21:10:26, Total factoring time = 0.1253 seconds"
+    ]
+   },
+   "V1 factor() -silent": {
+    "wall_ms": 133.13294629915617,
+    "internal_ms": 127.38,
+    "internal_n": 20,
+    "factor_lines": 40,
+    "log_tail": [
+     "10/27/26 21:10:28, no tune info: using qs/gnfs crossover of 95 digits",
+     "10/27/26 21:10:28, no tune info: using qs/snfs crossover of 95 digits",
+     "10/27/26 21:10:28, ****************************",
+     "10/27/26 21:10:28, rho: x^2 + 3, starting 1000 iterations on C25",
+     "10/27/26 21:10:28, rho: x^2 + 2, starting 1000 iterations on C25",
+     "10/27/26 21:10:28, rho: x^2 + 1, starting 1000 iterations on C25",
+     "10/27/26 21:10:28, final ECM pretested depth: 0.000000",
+     "10/27/26 21:10:28, scheduler: switching to sieve method",
+     "10/27/26 21:10:28, starting SIQS on c25: 8089386021532857036703639",
+     "10/27/26 21:10:28, random seed: 6261626585022402877",
+     "10/27/26 21:10:28, starting tinyqs on C25 = 8089386021532857036703639",
+     "10/27/26 21:10:28, prp13 = 2620373201443",
+     "10/27/26 21:10:28, prp13 = 3087112178173",
+     "10/27/26 21:10:28, Total factoring time = 0.1290 seconds"
+    ]
+   },
+   "V2 factor() -silent, logs off": {
+    "wall_ms": 131.78994390182197,
+    "internal_ms": null,
+    "internal_n": 0,
+    "factor_lines": 0,
+    "log_tail": []
+   },
+   "V3 siqs()": {
+    "wall_ms": 9.35908384853974,
+    "internal_ms": null,
+    "internal_n": 0,
+    "factor_lines": 80,
+    "log_tail": [
+     "10/27/26 21:10:31, random seed: 3449184991846512696",
+     "10/27/26 21:10:31, starting tinyqs on C26 = 11025389255231166660828439",
+     "10/27/26 21:10:31, prp13 = 2633765876107",
+     "10/27/26 21:10:31, prp13 = 4186169072677",
+     "10/27/26 21:10:31, starting SIQS on c25: 7957622972422134417211723",
+     "10/27/26 21:10:31, random seed: 3449184991846512696",
+     "10/27/26 21:10:31, starting tinyqs on C25 = 7957622972422134417211723",
+     "10/27/26 21:10:31, prp13 = 2205243665393",
+     "10/27/26 21:10:31, prp13 = 3608500546811",
+     "10/27/26 21:10:31, starting SIQS on c25: 8089386021532857036703639",
+     "10/27/26 21:10:31, random seed: 3449184991846512696",
+     "10/27/26 21:10:31, starting tinyqs on C25 = 8089386021532857036703639",
+     "10/27/26 21:10:31, prp13 = 3087112178173",
+     "10/27/26 21:10:31, prp13 = 2620373201443"
+    ]
+   },
+   "V4 siqs() -silent, logs off": {
+    "wall_ms": 9.561072901124135,
+    "internal_ms": null,
+    "internal_n": 0,
+    "factor_lines": 0,
+    "log_tail": []
+   },
+   "V5 factor() with the tree's yafu.ini": {
+    "wall_ms": 131.81259019766003,
+    "internal_ms": 126.17,
+    "internal_n": 20,
+    "factor_lines": 80,
+    "log_tail": [
+     "10/27/26 21:10:34, no tune info: using qs/snfs crossover of 95 digits",
+     "10/27/26 21:10:34, ****************************",
+     "10/27/26 21:10:34, rho: x^2 + 3, starting 1000 iterations on C25",
+     "10/27/26 21:10:34, rho: x^2 + 2, starting 1000 iterations on C25",
+     "10/27/26 21:10:34, rho: x^2 + 1, starting 1000 iterations on C25",
+     "10/27/26 21:10:34, final ECM pretested depth: 0.000000",
+     "10/27/26 21:10:34, scheduler: switching to sieve method",
+     "10/27/26 21:10:34, starting SIQS on c25: 8089386021532857036703639",
+     "10/27/26 21:10:34, random seed: 1329964930955497872",
+     "10/27/26 21:10:34, starting tinyqs on C25 = 8089386021532857036703639",
+     "10/27/26 21:10:34, prp13 = 2620373201443",
+     "10/27/26 21:10:34, prp13 = 3087112178173",
+     "10/27/26 21:10:34, Total factoring time = 0.1261 seconds",
+     "10/27/26 21:10:34, factorization: 8089386021532857036703639=2620373201443*3087112178173"
+    ]
+   },
+   "V8 smallmpqs()": {
+    "wall_ms": 6.362183598685078,
+    "internal_ms": null,
+    "internal_n": 0,
+    "factor_lines": 0,
+    "log_tail": []
+   },
+   "V6 one process per number": {
+    "wall_ms": 177.64146497938782,
+    "internal_ms": 151.96
+   },
+   "V7 one number x20": {
+    "wall_ms": 135.83751994883642,
+    "internal_ms": 130.065,
+    "internal_n": 20,
+    "factor_lines": 80
+   }
+  }
+ },
+ "state_end": "time: 2026-10-27T21:10:38-07:00\npinned core: 2\ngovernor: powersave\nenergy_performance_preference: balance_performance\ncur MHz: 458; max MHz: 5000\nfrequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100\nload average: 2.55 1.97 1.70\npower supply AC online: 1\npower supply BAT0 capacity: 100% (Not charging)\npower supply ucsi-source-psy-USBC000:001 online: 1\npower supply ucsi-source-psy-USBC000:002 online: 0\ntemperature TCPU: 58 C\ntemperature x86_pkg_temp: 55 C\nsensors: Package id 0:  +54.0\u00b0C  (high = +100.0\u00b0C, crit = +100.0\u00b0C)\ntop 5 processes by current CPU (top, a 1 s sample):\n  33.3% Xorg\n  24.5% chrome\n  8.8% claude\n  6.9% kworker/2:1H-i915_cleanup\n  6.9% kworker/6:1H-i915_cleanup\n"
+}

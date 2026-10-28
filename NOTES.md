@@ -9914,3 +9914,76 @@ Per band at 96 (one pass): YAFU 10.2 ms with a 16- or 20-bit factor, 12.5 ms at 
 All six are falsified in the same direction: every forecaster expected YAFU at least as fast as msieve, and here it is 4–20× slower. The common cause is the same for all six (YAFU's default path as built), so the six do not count as six independent misses.
 
 **Not established:** why tinyqs takes 185 ms on a C29; whether a native-tuned build, a tune run (`tune()`) or `siqs()` called directly would change the picture. Those are next experiments, not done (they would change YAFU's settings or call path, and need your go-ahead).
+
+## YAFU diagnosis (the user's request, Oct 27; information only, post hoc: Run B's sealed scores stand as "YAFU as configured")
+
+**In plain English first: almost none of YAFU's time in Run B was its quadratic sieve.**
+- **On balanced numbers:** about 90% of `factor()`'s per-number time in batch (138 ms against 10.5 ms for `siqs()`; 78% of the instructions in a one-number run) is a Pollard rho pretest that never finds a 42–48-bit factor.
+- **The floor of about 4.6 ms per number** in any batch is YAFU re-sieving the primes to 10⁷ for every input line.
+- **YAFU's QS alone is about 1.3–1.7× faster than the card's** on the balanced band: 0.65 / 1.17 / 1.97 ms against the card's 0.86 / 1.54 / 3.37 ms at 72 / 84 / 96. This is an estimate by subtraction, not a sealed measurement.
+
+`evolve/yafu_diag.py` (part 1 and `part2`), `.out`, `yafu_diag.json`, `yafu_diag2.json`; `evolve/yafu_diag_callgrind.txt`. Same build and conditions as Run B: core 2, cap 2,400 MHz, AC, TCPU < 70 °C, no Wolfram kernel. Each run in a fresh empty directory.
+
+**Part 1: variants, 20 numbers each, one batch per variant** (wall per number; YAFU's own "Total factoring time" where logged):
+
+| variant | 96, 16-bit factor | 96 balanced | 84 balanced |
+|---|---|---|---|
+| V0 `factor()` (Run B) | 10.9 (own 5.6) | 138.5 (own 132.8) | 131.2 (own 125.5) |
+| V1 `factor() -silent` | 10.9 | 140.2 | 132.5 |
+| V2 `-silent`, logs to /dev/null | 11.2 | 139.4 | 134.2 |
+| V3 `siqs()` | 10.9 | **10.5** | **9.5** |
+| V4 `siqs() -silent`, logs off | 10.9 | 10.6 | 9.4 |
+| V5 `factor()` with the tree's `yafu.ini` | 11.1 | 138.5 | 132.0 |
+| V8 `smallmpqs()` (tinysiqs directly) | 7.3 | 7.2 | 6.4 |
+| V6 one process per number (5) | 28.8 (own 5.7) | 207.9 (own 180.8) | 177.8 (own 152.2) |
+| V7 the same number ×20 in one batch | — | 138.2 | 136.3 |
+
+Part 1 ran twice: `partition`'s import cleared `sys.argv`, so the first `part2` call ran part 1 again; it is now fixed. The two runs agree within 2%; the table and JSON are the second.
+
+**Where the time goes** (callgrind, `yafu_diag_callgrind.txt`):
+1. **Rho in `factor()`:** three rho polynomials, "1000 iterations" each, run on every number with GMP division. They cost 1,439 M of 1,852 M instructions (78%) on a balanced 96-bit number and find nothing there. On the 16-bit band rho finds the factor at once, which is why those numbers take about 11 ms, not 135.
+   - **Not the cause:** the plan options. `-plan none`, `-noecm` and `-fmtmax 1` leave the time unchanged (one number each: 209–215 ms wall). ECM is already skipped ("trivial ECM work to do"). Fermat makes 27 square checks.
+2. **Per-line re-initialisation in batch mode:** every batch line resets the factor object, which **re-sieves the primes to 10⁷** (`reset_factobj`, 26 M instructions per line). That is the floor of about 4.6 ms per number even for a trivial expression (`abs(@)`).
+   - `siqs()` also sieves the primes to 10⁸ once per process (256 M instructions), which is why 20-number batches cost more per number (10.5 ms) than 80-number ones (7.8 ms).
+3. **The QS itself:** below 115 bits, `siqs()` runs **tinysiqs** (`check_specialcase`, `siqs_test.c`), YAFU's small-input SIQS. It costs 14.6 M instructions per balanced 96-bit number, plus about 5 M of primality and power checks. `smallmpqs()` calls tinysiqs directly.
+4. **Logging, JSON and the screen:** no measurable effect (V1, V2, V4).
+5. **`yafu.ini` and tune data:** no effect (V5). The tune data only set the QS/NFS crossover (95 digits by default), which these inputs are far below. **`tune()` was not run:** it times SIQS and NFS on much larger inputs (not quick), and its output would not change the path taken at C22–C29.
+6. **One process per number** (V6) adds about 18–70 ms per number: the start-up sieves. Batch mode avoids that.
+
+**Part 2: the QS alone, on the balanced band** (80 numbers; median of 3 batches; a factor printed by `smallmpqs` for 80 / 80 at every size):
+
+| bits | `abs(@)`: the floor | `smallmpqs(@)` | `siqs(@)` | QS alone (smallmpqs − abs) | card, balanced (Run B) | card / QS alone |
+|---|---|---|---|---|---|---|
+| 72 | 4.62 | 5.28 | 6.26 | **0.65** | 0.864 | **1.33** |
+| 84 | 4.61 | 5.78 | 6.80 | **1.17** | 1.540 | **1.32** |
+| 96 | 4.59 | 6.56 | 7.81 | **1.97** | 3.373 | **1.71** |
+
+**Not established:**
+- "QS alone" is a difference of two separately timed batches, not paired with the card's replicates, and it assumes `abs(@)`'s per-line cost equals `smallmpqs`'s non-QS cost. tinysiqs's own set-up (0.35 M instructions per number) is included.
+- The card figures are Run B's, not interleaved with these.
+- No predictions were sealed for any of this. It does not score anything.
+- Why rho's three polynomials of "1000 iterations" cost 1,439 M instructions was not examined.
+
+## Proposed: a fair YAFU re-run (not run; it needs sealed predictions first)
+
+**Question:** sieve against sieve, how does the card's QS compare with YAFU's small-input QS (tinysiqs), with YAFU's per-line overheads measured separately rather than mixed in?
+
+**Design (`baseline-yafu-qs`):**
+- **Numbers:** all map numbers and the balanced band at 72 / 84 / 96. The card is 2′b+fix (the release lampcore, ef345913…). YAFU is the same build (f5f9bde1…).
+- **Cells, in the same replicates:**
+  - **"card":** the qs card in batch, as before.
+  - **"yafu_qs":** `smallmpqs(@)` in batch: tinysiqs on every number, no pretests. On the all-numbers set it is a pure QS too, like the card's qs, so it is sieve against sieve on all numbers.
+  - **"yafu_floor":** `abs(@)` in batch on the same numbers: YAFU's per-line overhead.
+  - **"yafu_siqs":** `siqs(@)` in batch: YAFU's user-facing QS call (adds the primality and power checks and the one-time 10⁸ sieve).
+- **Ratios, per replicate:**
+  - **headline:** card / (yafu_qs − yafu_floor), "the QS against the QS";
+  - card / yafu_qs;
+  - card / yafu_siqs.
+  - Each with its mean and a 95% t interval.
+- **Clock-free cross-check** (information): instructions per number from callgrind, the card's (from a callgrind run of the same batch) against tinysiqs's (`smallmpqs` minus `abs`), on 10 balanced numbers per size.
+- **Conditions:** 8 replicates, the order rotating and alternating; cap 2,400 MHz, AC, core 2, TCPU < 70 °C, no Wolfram kernel; pause above 90 °C.
+- **Factors:** checked on every number. `smallmpqs` may print one factor; p or q is enough, the cofactor follows.
+- **Asymmetry, stated in advance:** subtracting YAFU's floor but not the card's per-number I/O favours YAFU slightly. The card's per-process start-up is paid once per batch.
+- **Optional, the user's call:** a YAFU build with `-march=native` (`USE_NATIVE=1`) as an extra cell, like msieve's native/x86-64 pair.
+- **Not included:** `tune()` (no effect on this path; see above).
+- **Wolfram:** none needed before sealing. The diagnosis numbers above are the forecasters' input; they were measured post hoc and are disclosed.

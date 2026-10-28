@@ -1,0 +1,16 @@
+YAFU c7d9028 under callgrind (valgrind 3.25.1), one process each, Ir inclusive (callgrind_annotate --inclusive=yes); post hoc,
+information only. Profiles kept in Claude's scratch, not committed.
+
+(1) factor(@) on one balanced 96-bit number (45655405731039557065684143157): 1,852 M Ir in all
+    rho.c:mbrent / brent_loop (3 polynomials x "1000 iterations"; no factor found)   1,439 M  (77.7%)
+      of which GMP mpz_tdiv_r                                                         958 M
+    ysieve soe_wrapper (prime sieves: 1e7 per factor object, 1e8 once for SIQS)        333 M  (18.0%)
+    SIQS.c:SIQS (includes the one-time 1e8 prime sieve, 256 M)                        276 M  (14.9%)
+(2) siqs(@) on the same number alone: 378 M Ir in all; soe_wrapper 333 M (88%); the QS itself small.
+(3) siqs(@) on 5 balanced 96-bit numbers in one batch: 584 M Ir in all
+    soe_wrapper, 1e8 sieve for SIQS (once per process)                                256 M
+    reset_factobj per batch line (6x; re-sieves the primes to 1e7 each time)           157 M  = 26.2 M per line
+    check_specialcase (5x: PRP / square / power checks, then tinysiqs)                100 M  = 20.1 M per number
+      tinysiqs (5x) (the QS proper)                                                    73 M  = 14.6 M per number
+      init_tinysiqs (5x)                                                                1.7 M
+    init_lehman (7x)                                                                    33 M
