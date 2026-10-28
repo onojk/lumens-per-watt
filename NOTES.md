@@ -10660,3 +10660,37 @@ Total: about 1–3 hours of lampcore counting for the rest; wall timing roughly 
 - **The sensitivity:** the band below, 0.30, has p−1 brighter than QS on 6 successes out of 40. One or two fewer lucky p−1 successes would move the answer to 0.30.
 
 **Consequence for the twilight specialist (item 3):** its band (θ 0.33–0.40) was chosen from the old sketch. Today ECM is about 4× dimmer than QS there, and p−1 only reaches QS's level as a lottery. A gene-only pipeline (td, rho, p−1, ECM budgets in front of QS) is therefore unlikely to beat the QS card by much in that band. That is a reading, to be tested by the search's training map, which runs next (untimed).
+
+## Light spectrum v1: the op-class view (a re-reading of the sealed outputs; the reviewer's brief, Oct 28)
+
+**This is a re-reading of sealed run 721af65's committed outputs** (`evolve/light_spectrum.json` and `.csv`, written by the run itself at 01:27:58, two seconds before its commit, and committed unchanged in 68be1a9). **No new runs.** The sealed predictions (R-32, D-32, G-25) are scored on op-class light as written; their scores stand as recorded in "Light spectrum v1". `evolve/spectrum_opclass_view.py`; output `results/growth-spectrum-twilight_opclass_view.out`.
+
+**In plain English first:** under op-class, QS takes over at θ 0.40 / 0.36 / 0.32 at 72 / 84 / 96 bits. Under ruint the 72- and 84-bit crossovers come earlier, because ruint prices p−1's lottery tickets higher relative to QS. At 96 bits the two pricings agree. Correcting td's and p−1's light by their instruction-check ratios gives ruint's answer, not op-class's.
+
+**The crossover** (lower band edges; "QS best" = strictly brighter than every other lamp):
+
+| bits | op-class: lowest band with QS best | op-class: QS best in every band from | ruint: lowest | ruint: every band from | instruction-corrected op-class (information only): lowest / every band from |
+|---|---|---|---|---|---|
+| 72 | 0.40 | 0.40 | 0.34 | 0.40 | 0.34 / 0.40 (td × 0.617, p−1 × 0.769) |
+| 84 | 0.36 | 0.44 | 0.30 | 0.36 | 0.30 / 0.36 (td × 0.602, p−1 × 0.780) |
+| 96 | **0.32** | **0.32** | 0.32 | 0.32 | 0.32 / 0.32 (td × 0.558, p−1 × 0.782) |
+
+- **The pricings differ at 72 and 84, and agree at 96.** Every difference comes from p−1's few lucky successes at low cost. Op-class prices p−1's multiplies higher relative to QS than ruint does, so under op-class p−1 stays ahead of QS in more bands.
+- **The instruction correction** (td's and p−1's light multiplied by their own pooled op-class ÷ instructions ratio, so that those two lamps are priced per instruction) reproduces ruint's crossover at 72 and 84 and leaves 96 unchanged. So the 72- and 84-bit op-class crossovers partly reflect op-class's pooled weights for p−1, which is Grok's concern.
+- **The per-band best lamps** under op-class and ruint differ in 12 bands across the three sizes, all around the crossover. They are listed in the `.out`.
+
+**The twilight-zone detail at 96 bits, θ 0.20–0.30** (the input for the exchange-rate measurement and for a possible specialist on 0.22–0.28; **that specialist is not started: it needs sealed predictions first**). Cost per success is in millions of units, op-class / ruint:
+
+| band | td | rho | p−1 | ECM | CFRAC | QS | best non-QS, op-class light ÷ QS's |
+|---|---|---|---|---|---|---|---|
+| 0.20–0.22 | 40/40: 14.1 / 0.071 | 40/40: **1.68** / 0.003 | 21/40: 6.5 / 0.012 | 40/40: 28.1 / 0.046 | 40/40: 1,962 / n/a | 40/40: 36.0 / 0.056 | rho **21.4** |
+| 0.22–0.24 | 28/40: 64.4 / 0.33 | 40/40: **2.90** / 0.005 | 17/40: 8.1 / 0.015 | 40/40: 29.5 / 0.049 | 40/40: 1,875 / n/a | 40/40: 33.9 / 0.053 | rho **11.7** |
+| 0.24–0.26 | 0/40 | 23/40: **8.15** / 0.015 | 15/40: 9.2 / 0.017 | 40/40: 38.3 / 0.063 | 40/40: 1,960 / n/a | 40/40: 36.2 / 0.056 | rho **4.4** |
+| 0.26–0.28 | 0/40 | 10/40: 22.1 / 0.041 | 11/40: **12.5** / 0.023 | 40/40: 43.5 / 0.071 | 40/40: 1,950 / n/a | 40/40: 35.7 / 0.055 | p−1 **2.9** |
+| 0.28–0.30 | 0/40 | 2/40: 117 / 0.22 | 11/40: **12.5** / 0.023 | 40/40: 51.5 / 0.084 | 40/40: 1,876 / n/a | 40/40: 34.0 / 0.052 | p−1 **2.7** |
+
+**Reading (not a verdict):**
+- **In θ 0.20–0.30 at 96 bits, the cheap lamps** (rho at its reference budget, p−1 at its reference B) cost 2.7–21× less per success than QS. But they succeed on only part of the numbers: rho 2–40, p−1 11–21 of 40.
+- **ECM succeeds on all 40** at a cost per success near QS's (28–51 against 34–36 M op-class units). ECM is the only lamp that both finishes every number and comes close to QS in cost here.
+- **A pipeline specialist for 0.22–0.28 would combine** cheap partial lamps in front of QS. The exchange-rate measurement would say whether ECM curves or QS relations are the better buy at the margin.
+- **CFRAC is about 50× costlier than QS per success** under op-class (its ruint cost is not priced: the runner defect).

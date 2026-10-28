@@ -1,0 +1,83 @@
+Re-reading of sealed run 721af65's committed outputs (light_spectrum.json, 68be1a9). No new runs.
+light = successes per million price units; QS 'best' = strictly brighter than every other lamp.
+
+== 72 bits: per band, light under op-class v1 / ruint, and the best lamp under each
+  0.10: td 335.517/66497.862  rho 27.826/11595.898  pm1 2.286/1259.668  ecm 0.192/113.324  cfrac 5.432/0.000  qs 15.684/3392.213   best op-class td, ruint td
+  0.12: td 110.575/21915.401  rho 15.252/6910.630  pm1 2.286/1259.668  ecm 0.192/113.567  cfrac 2.573/0.000  qs 0.458/290.860   best op-class td, ruint td
+  0.14: td 48.894/9690.631  rho 10.960/5164.363  pm1 1.943/1070.717  ecm 0.192/113.565  cfrac 0.016/0.000  qs 0.214/151.207   best op-class td, ruint td
+  0.16: td 15.776/3126.797  rho 7.084/3493.269  pm1 1.714/944.751  ecm 0.192/113.328  cfrac 0.013/0.000  qs 0.185/132.947   best op-class td, ruint rho   (differ)
+  0.18: td 6.211/1230.943  rho 4.761/2410.513  pm1 1.486/818.784  ecm 0.183/108.266  cfrac 0.013/0.000  qs 0.167/122.944   best op-class td, ruint rho   (differ)
+  0.20: td 2.232/442.454  rho 2.705/1399.246  pm1 1.314/724.309  ecm 0.151/90.278  cfrac 0.013/0.000  qs 0.171/123.167   best op-class rho, ruint rho
+  0.22: td 0.870/172.410  rho 1.830/952.611  pm1 0.971/535.359  ecm 0.143/85.859  cfrac 0.013/0.000  qs 0.169/123.549   best op-class rho, ruint rho
+  0.24: td 0.346/68.558  rho 0.469/245.108  pm1 0.514/283.425  ecm 0.137/82.656  cfrac 0.013/0.000  qs 0.173/124.962   best op-class pm1, ruint pm1
+  0.26: td 0.107/21.180  rho 0.226/118.448  pm1 0.514/283.425  ecm 0.106/64.582  cfrac 0.013/0.000  qs 0.179/129.434   best op-class pm1, ruint pm1
+  0.28: td 0.045/8.843  rho 0.173/90.309  pm1 0.571/314.917  ecm 0.105/63.705  cfrac 0.013/0.000  qs 0.167/120.505   best op-class pm1, ruint pm1
+  0.30: td 0.005/0.944  rho 0.000/0.000  pm1 0.229/125.967  ecm 0.072/44.034  cfrac 0.013/0.000  qs 0.168/122.200   best op-class pm1, ruint pm1
+  0.32: td 0.000/0.000  rho 0.000/0.000  pm1 0.229/125.967  ecm 0.074/44.912  cfrac 0.013/0.000  qs 0.168/121.024   best op-class pm1, ruint pm1
+  0.34: td 0.000/0.000  rho 0.000/0.000  pm1 0.171/94.475  ecm 0.071/43.233  cfrac 0.013/0.000  qs 0.167/121.384   best op-class pm1, ruint qs   (differ)
+  0.36: td 0.000/0.000  rho 0.000/0.000  pm1 0.171/94.475  ecm 0.061/37.077  cfrac 0.013/0.000  qs 0.167/120.918   best op-class pm1, ruint qs   (differ)
+  0.38: td 0.000/0.000  rho 0.000/0.000  pm1 0.229/125.967  ecm 0.050/30.512  cfrac 0.014/0.000  qs 0.170/124.323   best op-class pm1, ruint pm1
+  0.40: td 0.000/0.000  rho 0.000/0.000  pm1 0.114/62.983  ecm 0.035/21.689  cfrac 0.013/0.000  qs 0.172/124.005   best op-class qs, ruint qs
+  0.42: td 0.000/0.000  rho 0.000/0.000  pm1 0.114/62.983  ecm 0.032/19.760  cfrac 0.013/0.000  qs 0.169/121.559   best op-class qs, ruint qs
+  0.44: td 0.000/0.000  rho 0.000/0.000  pm1 0.057/31.492  ecm 0.020/12.443  cfrac 0.013/0.000  qs 0.167/120.336   best op-class qs, ruint qs
+  0.46: td 0.000/0.000  rho 0.000/0.000  pm1 0.000/0.000  ecm 0.018/11.224  cfrac 0.012/0.000  qs 0.168/121.460   best op-class qs, ruint qs
+  0.48: td 0.000/0.000  rho 0.000/0.000  pm1 0.000/0.000  ecm 0.017/10.433  cfrac 0.013/0.000  qs 0.167/121.174   best op-class qs, ruint qs
+
+== 84 bits: per band, light under op-class v1 / ruint, and the best lamp under each
+  0.10: td 131.815/26125.068  rho 20.537/8915.794  pm1 0.584/323.430  ecm 0.096/56.751  cfrac 2.953/0.000  qs 9.799/1379.351   best op-class td, ruint td
+  0.12: td 41.730/8270.738  rho 10.135/4821.037  pm1 0.584/323.430  ecm 0.097/57.143  cfrac 0.018/0.000  qs 0.121/80.415   best op-class td, ruint td
+  0.14: td 13.219/2619.918  rho 6.839/3370.068  pm1 0.511/283.001  ecm 0.096/56.960  cfrac 0.002/0.000  qs 0.078/52.711   best op-class td, ruint rho   (differ)
+  0.16: td 3.652/723.832  rho 3.456/1780.780  pm1 0.409/226.401  ecm 0.090/53.266  cfrac 0.003/0.000  qs 0.078/52.579   best op-class td, ruint rho   (differ)
+  0.18: td 1.296/256.879  rho 2.013/1059.186  pm1 0.467/258.744  ecm 0.080/47.784  cfrac 0.003/0.000  qs 0.073/49.878   best op-class rho, ruint rho
+  0.20: td 0.397/78.745  rho 1.091/582.012  pm1 0.277/153.629  ecm 0.078/46.856  cfrac 0.003/0.000  qs 0.069/47.424   best op-class rho, ruint rho
+  0.22: td 0.119/23.497  rho 0.799/426.238  pm1 0.248/137.458  ecm 0.070/42.122  cfrac 0.003/0.000  qs 0.072/49.893   best op-class rho, ruint rho
+  0.24: td 0.042/8.411  rho 0.324/173.337  pm1 0.219/121.286  ecm 0.053/32.173  cfrac 0.003/0.000  qs 0.071/48.368   best op-class rho, ruint rho
+  0.26: td 0.000/0.000  rho 0.105/56.285  pm1 0.058/32.343  ecm 0.049/29.704  cfrac 0.003/0.000  qs 0.067/46.566   best op-class rho, ruint rho
+  0.28: td 0.000/0.000  rho 0.014/7.588  pm1 0.146/80.857  ecm 0.046/28.257  cfrac 0.002/0.000  qs 0.069/47.076   best op-class pm1, ruint pm1
+  0.30: td 0.000/0.000  rho 0.000/0.000  pm1 0.088/48.514  ecm 0.045/27.390  cfrac 0.003/0.000  qs 0.072/49.383   best op-class pm1, ruint qs   (differ)
+  0.32: td 0.000/0.000  rho 0.000/0.000  pm1 0.161/88.943  ecm 0.039/23.533  cfrac 0.003/0.000  qs 0.071/48.604   best op-class pm1, ruint pm1
+  0.34: td 0.000/0.000  rho 0.000/0.000  pm1 0.102/56.600  ecm 0.023/13.965  cfrac 0.003/0.000  qs 0.072/49.456   best op-class pm1, ruint pm1
+  0.36: td 0.000/0.000  rho 0.000/0.000  pm1 0.044/24.257  ecm 0.020/12.348  cfrac 0.002/0.000  qs 0.071/48.372   best op-class qs, ruint qs
+  0.38: td 0.000/0.000  rho 0.000/0.000  pm1 0.044/24.257  ecm 0.015/9.248  cfrac 0.003/0.000  qs 0.072/49.305   best op-class qs, ruint qs
+  0.40: td 0.000/0.000  rho 0.000/0.000  pm1 0.015/8.086  ecm 0.010/6.350  cfrac 0.003/0.000  qs 0.072/48.167   best op-class qs, ruint qs
+  0.42: td 0.000/0.000  rho 0.000/0.000  pm1 0.073/40.429  ecm 0.008/4.938  cfrac 0.003/0.000  qs 0.071/48.627   best op-class pm1, ruint qs   (differ)
+  0.44: td 0.000/0.000  rho 0.000/0.000  pm1 0.000/0.000  ecm 0.009/5.723  cfrac 0.003/0.000  qs 0.074/49.890   best op-class qs, ruint qs
+  0.46: td 0.000/0.000  rho 0.000/0.000  pm1 0.044/24.257  ecm 0.006/3.769  cfrac 0.002/0.000  qs 0.069/46.836   best op-class qs, ruint qs
+  0.48: td 0.000/0.000  rho 0.000/0.000  pm1 0.015/8.086  ecm 0.005/3.246  cfrac 0.003/0.000  qs 0.073/50.051   best op-class qs, ruint qs
+
+== 96 bits: per band, light under op-class v1 / ruint, and the best lamp under each
+  0.10: td 56.657/11229.111  rho 12.793/5935.541  pm1 0.292/161.607  ecm 0.052/30.528  cfrac 1.459/0.000  qs 0.787/308.434   best op-class td, ruint td
+  0.12: td 14.804/2934.065  rho 6.695/3314.031  pm1 0.292/161.607  ecm 0.052/30.528  cfrac 0.001/0.000  qs 0.028/17.829   best op-class td, ruint rho   (differ)
+  0.14: td 3.844/761.783  rho 3.208/1659.657  pm1 0.270/149.486  ecm 0.052/30.498  cfrac 0.001/0.000  qs 0.029/18.749   best op-class td, ruint rho   (differ)
+  0.16: td 0.881/174.537  rho 1.715/906.585  pm1 0.211/117.165  ecm 0.046/27.662  cfrac 0.001/0.000  qs 0.029/18.588   best op-class rho, ruint rho
+  0.18: td 0.290/57.452  rho 1.096/584.770  pm1 0.240/133.326  ecm 0.041/24.820  cfrac 0.001/0.000  qs 0.028/18.642   best op-class rho, ruint rho
+  0.20: td 0.071/14.044  rho 0.595/319.752  pm1 0.153/84.844  ecm 0.036/21.564  cfrac 0.001/0.000  qs 0.028/18.000   best op-class rho, ruint rho
+  0.22: td 0.016/3.077  rho 0.345/186.175  pm1 0.124/68.683  ecm 0.034/20.469  cfrac 0.001/0.000  qs 0.029/19.003   best op-class rho, ruint rho
+  0.24: td 0.000/0.000  rho 0.123/66.224  pm1 0.109/60.603  ecm 0.026/15.907  cfrac 0.001/0.000  qs 0.028/17.897   best op-class rho, ruint rho
+  0.26: td 0.000/0.000  rho 0.045/24.477  pm1 0.080/44.442  ecm 0.023/14.011  cfrac 0.001/0.000  qs 0.028/18.268   best op-class pm1, ruint pm1
+  0.28: td 0.000/0.000  rho 0.009/4.610  pm1 0.080/44.442  ecm 0.019/11.862  cfrac 0.001/0.000  qs 0.029/19.331   best op-class pm1, ruint pm1
+  0.30: td 0.000/0.000  rho 0.004/2.284  pm1 0.044/24.241  ecm 0.014/8.814  cfrac 0.000/0.000  qs 0.028/17.930   best op-class pm1, ruint pm1
+  0.32: td 0.000/0.000  rho 0.000/0.000  pm1 0.015/8.080  ecm 0.013/8.071  cfrac 0.001/0.000  qs 0.029/19.328   best op-class qs, ruint qs
+  0.34: td 0.000/0.000  rho 0.000/0.000  pm1 0.015/8.080  ecm 0.008/4.926  cfrac 0.001/0.000  qs 0.029/18.656   best op-class qs, ruint qs
+  0.36: td 0.000/0.000  rho 0.000/0.000  pm1 0.015/8.080  ecm 0.007/4.355  cfrac 0.001/0.000  qs 0.029/18.792   best op-class qs, ruint qs
+  0.38: td 0.000/0.000  rho 0.000/0.000  pm1 0.000/0.000  ecm 0.005/2.887  cfrac 0.001/0.000  qs 0.028/18.088   best op-class qs, ruint qs
+  0.40: td 0.000/0.000  rho 0.000/0.000  pm1 0.015/8.080  ecm 0.004/2.298  cfrac 0.001/0.000  qs 0.030/19.470   best op-class qs, ruint qs
+  0.42: td 0.000/0.000  rho 0.000/0.000  pm1 0.022/12.121  ecm 0.003/2.047  cfrac 0.001/0.000  qs 0.029/18.752   best op-class qs, ruint qs
+  0.44: td 0.000/0.000  rho 0.000/0.000  pm1 0.015/8.080  ecm 0.003/1.782  cfrac 0.001/0.000  qs 0.029/19.125   best op-class qs, ruint qs
+  0.46: td 0.000/0.000  rho 0.000/0.000  pm1 0.007/4.040  ecm 0.003/2.087  cfrac 0.001/0.000  qs 0.028/18.077   best op-class qs, ruint qs
+  0.48: td 0.000/0.000  rho 0.000/0.000  pm1 0.015/8.080  ecm 0.002/1.313  cfrac 0.001/0.000  qs 0.030/19.268   best op-class qs, ruint qs
+
+== the crossover (lower edges of theta bands)
+  72 bits: op-class: lowest band with QS best 0.40, QS best in every band from 0.40; ruint: lowest 0.34, from 0.40; they differ
+  84 bits: op-class: lowest band with QS best 0.36, QS best in every band from 0.44; ruint: lowest 0.30, from 0.36; they differ
+  96 bits: op-class: lowest band with QS best 0.32, QS best in every band from 0.32; ruint: lowest 0.32, from 0.32; the same
+  72 bits, instruction-corrected, information only (td light x 0.617, p-1 light x 0.769): lowest band with QS best 0.34, QS best in every band from 0.40
+  84 bits, instruction-corrected, information only (td light x 0.602, p-1 light x 0.780): lowest band with QS best 0.30, QS best in every band from 0.36
+  96 bits, instruction-corrected, information only (td light x 0.558, p-1 light x 0.782): lowest band with QS best 0.32, QS best in every band from 0.32
+
+== 96 bits, theta 0.20-0.30: per lamp, successes / 40, op-class and ruint cost per success (millions; '-' = no success)
+  0.20-0.22: td 40/40 14.11 / 0.071; rho 40/40 1.68 / 0.003; pm1 21/40 6.53 / 0.012; ecm 40/40 28.05 / 0.046; cfrac 40/40 1961.86 / n/a; qs 40/40 35.95 / 0.056   best non-QS rho: op-class light ratio to QS 21.39
+  0.22-0.24: td 28/40 64.40 / 0.325; rho 40/40 2.90 / 0.005; pm1 17/40 8.07 / 0.015; ecm 40/40 29.52 / 0.049; cfrac 40/40 1875.17 / n/a; qs 40/40 33.91 / 0.053   best non-QS rho: op-class light ratio to QS 11.70
+  0.24-0.26: td 0/40 - / -; rho 23/40 8.15 / 0.015; pm1 15/40 9.15 / 0.017; ecm 40/40 38.34 / 0.063; cfrac 40/40 1959.59 / n/a; qs 40/40 36.24 / 0.056   best non-QS rho: op-class light ratio to QS 4.44
+  0.26-0.28: td 0/40 - / -; rho 10/40 22.07 / 0.041; pm1 11/40 12.47 / 0.023; ecm 40/40 43.54 / 0.071; cfrac 40/40 1950.49 / n/a; qs 40/40 35.73 / 0.055   best non-QS pm1: op-class light ratio to QS 2.86
+  0.28-0.30: td 0/40 - / -; rho 2/40 117.15 / 0.217; pm1 11/40 12.47 / 0.023; ecm 40/40 51.45 / 0.084; cfrac 40/40 1876.35 / n/a; qs 40/40 34.01 / 0.052   best non-QS pm1: op-class light ratio to QS 2.73
