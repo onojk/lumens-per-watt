@@ -55,7 +55,42 @@ Direction check on every falsifier: D-23/D-24 falsify if the ratio is too low (Y
 
 **Claude's notes for the record** (the ranges are unchanged):
 - **The reconciliation.** D-23 says the two estimates "don't reconcile". The reconciliation (above) was committed in 7af3d61 at 21:16:32, one minute before D-23's 21:17 timestamp. Whether DeepSeek saw it is not known.
-- **Replicates.** D-23 says "4 replicates"; the design in NOTES says 8. The run uses the design's 8; the definitions are otherwise the same.
+- **Replicates.** D-23 says "4 replicates"; the design in NOTES said 8. The user's go-ahead (after Grok's filing) sets **4**, so the run uses 4 (t 0.975 with 3 df = 3.182), as D-23 assumed.
 - **"YAFU's own timer."** By the user's choice (a), the internal time is a monotonic clock around the `tinysiqs` call in an instrumented copy of YAFU, since YAFU prints none on this path. D-25 is scored with that time.
 - **Batch length.** D-25's "siqs() direct wall 10.5 ms" was a 20-number batch. The re-run's batch is the 80-number balanced band, where the one-time 77 ms adds about 1 ms per number, not 3.85.
+
+## Grok's G-16 / G-17 / G-18 (21:18 Oct 27 PT; sealed; verbatim)
+
+<!-- verbatim begin -->
+**Sealed predictions (Grok, 27 Oct 2026 ~21:25 PT)**
+Using only the numbers supplied. Absolute post-fix card times, the exact unexplained ~4 ms, and side-by-side internal SIQS measurements are missing.
+
+### G-16 — 96 bits, balanced band: card / YAFU internal SIQS
+(YAFU configuration: `siqs()` called directly, one thread, no pretest)
+**Range:** 1.4–2.2 (confidence 60 %).
+> 1 means YAFU is faster.
+
+**Falsifier:** the measured ratio is ≤ 1.3 or ≥ 2.5.
+
+### G-17 — 72 bits, balanced band: card / YAFU internal SIQS
+(YAFU configuration: `siqs()` called directly, one thread, no pretest)
+**Range:** 1.1–1.8 (confidence 55 %).
+> 1 means YAFU is faster.
+
+**Falsifier:** the measured ratio is ≤ 1.0 or ≥ 2.0.
+
+### G-18 — 96 bits, YAFU wall via `siqs()` direct MINUS its internal SIQS time (overhead)
+(YAFU configuration: `siqs()` called directly)
+**Range:** 3.5–6.5 ms (confidence 50 %).
+
+**Falsifier:** the measured overhead is ≤ 2.5 ms or ≥ 8.0 ms.
+<!-- verbatim end -->
+
+**The reviewer's note** (the ranges are unchanged): the YAFU configuration is named correctly. The falsifiers are bands: outside the band is falsified. The predictions quoted pre-fix card times, as for all forecasters.
+
+**Claude's notes for the record:**
+- On "pre-fix card times": see "The card" above. The quoted 0.86 / 1.54 / 3.37 ms were already the post-fix binary's.
+- G-16 to G-18 say "the exact unexplained ~4 ms" is missing. The reconciliation above (7af3d61, 21:16) accounts for it; Grok's text is timestamped 21:18.
+
+**All three forecasters are sealed:** the reviewer R-23 to R-25, DeepSeek D-23 to D-25, Grok G-16 to G-18.
 
