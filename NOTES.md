@@ -10554,3 +10554,78 @@ Total: about 1–3 hours of lampcore counting for the rest; wall timing roughly 
 **Not established:** a few bands' light rests on a handful of successes (rho at 36–42 bits, ECM at θ 0.5). No intervals are given here (a bootstrap is cheap if wanted). One seed set per size.
 
 **Correction to the dark-regions entry:** "today's reference, which is several times cheaper per number" was not checked. Today's reference has not been counted on these map numbers, and the old meter undercounts the old card (no word-level types), so even the direction of the difference in priced cost is not established. What stands is that the maps' QS is a different card under a different meter, so the plateau's absolute light, and where QS overtakes ECM, are not today's. The redraw with today's reference (a counts-only pass) would settle it.
+
+## Cost note (no code): Kleinjung's polynomial set-up, from the description only (the user's next round, item 5, Oct 28)
+
+**In plain English first: at our sizes and genes, Kleinjung's improvement has nothing to act on.** It speeds up finding the roots for factor-base primes **larger than the sieve interval**, and the card has none: its interval is 1.2 × the largest factor-base prime. Its benefit also grows with the number of polynomials per A, and the card uses 8. **Expected change in instructions and relations: zero. Not recommended now.**
+
+**Source:** the description, not the paper. Kleinjung's paper (Math. Comp. 85 (2016) 1861–1873) is behind the AMS page (HTTP 403). The method is taken from Q. Luo, "On the Performance of Kleinjung's Quadratic Sieving Method", MSc thesis, University of Calgary, 2020, Chapter 4 (the open PDF, read in full text). No code was read or copied.
+
+**The method, as Luo describes it** (Chapter 4):
+- For an SIQS polynomial set (A with n A-primes, so 2^(n−1) polynomials) and a factor-base prime p **larger than the sieve interval** (p > M₁ − M₀), each polynomial has at most one sieving event per root.
+- SIQS's Gray-code iteration still updates every polynomial's roots for such p, mostly to find no event.
+- Kleinjung writes all roots of all polynomials as σ + Σ (±β_i), and splits the sum into two halves. The tables T₀ and T₁ are each about √(2^(n−1)) in size. A meet-in-the-middle search then finds only the pairs whose sum lands in the interval.
+- The cost per large prime falls from about 2^(n−1) root updates to about 2 · 2^((n−1)/2) plus the events found.
+- Luo measured a gain over SIQS that grows with the number of A-primes and shrinks as the sieve interval grows. Kleinjung used n = 18 and M = 2,048 for class groups with 130-digit discriminants.
+
+**The card at its reference genes** (measured, Python trace, one balanced number per size):
+
+| bits | factor-base primes F | A-primes s | polynomials per A, 2^(s−1) | the interval against the largest factor-base prime |
+|---|---|---|---|---|
+| 72 | 57 | 4 | 8 | 2M = 2 · mc · B ≈ 1.20 B > every base prime |
+| 84 | 92 | 4 | 8 | as above |
+| 96 | 122 | 4 | 8 | as above |
+
+`M = mc · B` (`qs.py` 206) and every base prime is ≤ B, so with the reference's mc ≈ 0.602 **no factor-base prime exceeds 2M**. The method's precondition holds for zero primes.
+
+**Cost model:**
+- **Instructions and wall:** zero change expected at 72–96 bits (no prime qualifies).
+- **Relations:** unchanged (the same sieving events would be found).
+- **Op counts, if it were built:** they would change for qualifying primes. The Gray root updates (`setup_gray`) would be replaced by table builds and merges, which have no priced type today. A new type with a cost note and calibration would be needed, and the change would be scored under rule (b) with sealed predictions.
+- **When it would matter:**
+  - genes with mc < 0.5, so some primes exceed the interval (a gene search could move there);
+  - or more A-primes (s ≥ 8, i.e. ≥ 128 polynomials per A), which happens at larger N;
+  - or both, past the 128-bit ceiling (item 4).
+- **Recommendation:** park it, and revisit it if a gene search moves mc below 0.5 or once the 128-bit ceiling is lifted. **STOP.**
+
+## Design (no code): lifting the 100-bit ceiling for QS, CFRAC and ECM to 128 bits (the user's next round, item 4, Oct 28)
+
+**In plain English first:** three lamps refuse N ≥ 2^100 because some of their arithmetic lives in 128-bit integers. Lifting that to 128 bits means:
+- widening the values that can overflow;
+- keeping the ≤ 96-bit path byte-identical and as fast as today;
+- re-pricing only through measurement.
+
+**Where the ceiling comes from:**
+- **ECM** (`ecm.rs` 102): its mod-N arithmetic is already 256-bit (U256 with `mul_mod`). The refusal guards a few i128 side values (`n_i`, the bounds from √N as f64). **Small: audit, widen, test.**
+- **CFRAC** (`cfrac.rs` 19): five i128 sites (residues Q_i and the P_i / Q_i recurrences, about √N in size). At N < 2^128 these are below 2^65 plus multiplier factors, so they need a 128-bit **unsigned** or i256 representation in two or three places. **Small.**
+- **QS** (`qs.rs` 285): 43 i128 sites. The kN-sized ones are the problem: kN itself (up to 2^133 with k ≤ 32), B² − kN, and C = (B² − kN)/A. Most per-candidate values stay small:
+  - v = (Ax + 2B)x + C ≤ M·√(kN/2), about 2^78 at 128 bits;
+  - A < 2^62 holds up to about 140 bits with the current M.
+  - **Medium:** an audit of every site, with each one classified "kN-sized" (widen) or "provably < 2^127 at 128 bits" (keep, with an assert).
+- **The div64 change:** v < 2^64 no longer holds above about 104 bits, so the i128 fallback path (kept by design) becomes live and must be correct and tested.
+
+**The approach:**
+1. **Two paths, chosen once per number:** the current i128 code for N < 2^100 (unchanged; byte-identical; no slowdown), and a wide path for 2^100 ≤ N < 2^128. The code would be generic over the integer type (one source, two instantiations, Rust generics), so the two paths cannot drift.
+2. **The wide type:** ruint's I256 / U256 (already a dependency) for kN-sized values; i128 kept where the audit proves it safe, with an assert.
+3. **Python:** no change (big integers). It is the oracle.
+
+**Meter charges (the cost model before code):**
+- **No new op type is needed:** the operations are the same (a full-size multiply, a small-modulus step, a word op), so each is charged as today's type.
+- **But a type's cost depends on the width:**
+  - A "full" op (`setup_full`, `mul`, `confirm_full`, `lp_full`, `sqrt_mul`) on 256-bit values costs more than on today's 128-bit ones.
+  - So the ruint and Montgomery price tables (`calibrate.json`, calibrated on today's widths) do not hold above 100 bits. **Proposal: a width-tagged price table:** today's prices for N < 2^100 and re-calibrated prices for the wide path, measured by the existing calibration harness on the wide types. Official stays at 1 per op.
+  - op-class v1 covers only today's binary. Wide-path cells would need a prospective v2 derivation on the wide binary (two independent derivations, as for v1). Until then wide-path cells report official / ruint / Montgomery only.
+- **Charges stay where they are:** no op is added or removed. The wide path computes the same values with wider integers, so the per-type counts at a given N are the same as Python's (parity).
+
+**Acceptance:**
+- **Byte-identical below the ceiling:** stdout identical, with and without `--types`, on all map numbers at 72 / 84 / 96 for the six genome sets used in the recent acceptances, plus parity's existing suites. This shows the narrow path is untouched.
+- **Correct above it:** at 104 / 112 / 120 / 128 bits, lampcore's wide path against Python's big integers, number by number. Per-type counts and the factor must be identical (parity extended to these sizes).
+- **No slowdown below the ceiling:** a sealed timing run, old against new at 72 / 84 / 96. The prediction is no change; ρ is not applicable because the instructions are identical.
+- **Price calibration** for the wide path, before any wide-path cell is priced.
+
+**Cost:**
+- **Code:** QS medium (the audit plus generics), CFRAC and ECM small.
+- **Checks:** parity's new suites at 104–128 bits are dominated by Python's speed there (Python QS at 128 bits: minutes per number), so a few numbers per size.
+- **Order:** ECM first (smallest), then CFRAC, then QS.
+
+**Decision needed (the user's):** whether to do it now (it serves Phase 3's growth harness, which wants 40–110+ bits), and whether width-tagged prices are acceptable. **STOP.**
