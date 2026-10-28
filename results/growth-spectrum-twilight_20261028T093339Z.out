@@ -1,0 +1,13 @@
+40 bits td: 48/48 succeeded; ruint cost per factorisation 50365; (0.1 s, untimed)
+40 bits rho: 48/48 succeeded; ruint cost per factorisation 2103; (0.0 s, untimed)
+40 bits pm1: 9/48 succeeded; ruint cost per factorisation None; (0.0 s, untimed)
+40 bits ecm: 48/48 succeeded; ruint cost per factorisation 4301; (0.0 s, untimed)
+Traceback (most recent call last):
+  File "/home/onojk123/lumens-per-watt/evolve/growth_harness.py", line 120, in <module>
+    r["cost"] = costs(r["types"])
+                ~~~~~^^^^^^^^^^^^
+  File "/home/onojk123/lumens-per-watt/evolve/growth_harness.py", line 75, in costs
+    ru = optypes.cost(ty, "ruint", PR); mo = optypes.cost(ty, "montgomery", PR)
+  File "/home/onojk123/lumens-per-watt/evolve/optypes.py", line 99, in cost
+    raise KeyError(f"unpriced op types under {pricing}: {missing}")
+KeyError: "unpriced op types under ruint: ['cfrac_ops']"
