@@ -10718,3 +10718,6 @@ Total: about 1–3 hours of lampcore counting for the rest; wall timing roughly 
 - R-33 (0.80–1.02), D-33 (0.60–1.40) and G-26 (0.45–1.05, falsifier ≥ 1.1) would all be scored on a foregone 1.000. **This is the validation prediction point: STOP for the user's decision** on whether to run it as registered, to score the forecasts on the foregone value, or to record the specialist as "none found" and leave the forecasts unscored.
 
 **Not established:** finer budget grids than the coarse grid (2^8 steps); other genes (ECM's B1 and B2, the p−1 bound's rule); pipelines that change QS's own genes for this band.
+- **The reference pipeline against QS alone on θ 0.33–0.40, per pricing** (84 / 96): op-class 1.148 / 1.208, ruint 1.209 / 1.262, Montgomery 0.997 / 1.031, official **0.918 / 0.946**.
+  - Under official pricing the pre-stages pay for themselves (it counts a rho or p−1 multiply as one op, like a sieve update); under ruint and op-class they cost 15–26% more.
+  - The rule-(b) figure is ruint's, the worst of the three.
