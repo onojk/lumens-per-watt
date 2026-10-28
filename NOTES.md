@@ -10327,3 +10327,10 @@ R-26, D-26 and G-19 all predicted a wall saving well below the instruction drop,
 - `tinysiqs` does keep partial relations, in a **fixed-size hash table** (`params->partial_hash`, cleared with memset at the start of each run, with a large-prime bound of 25–50 × the largest factor-base prime).
 - Its `lpb` argument only filters the sizes of the factors it returns.
 - So the lp hash difference is one of implementation: the card's growable hashbrown map against YAFU's fixed array table. That makes it a counts-identical candidate (a fixed table sized per attempt), not a design difference. Where YAFU's partial-table work sits in its function profile was not separated.
+
+### DeepSeek's reply on Run D (23:10 Oct 27 PT; information only; verbatim)
+
+<!-- verbatim begin -->
+[PLACEHOLDER: the user's brief asked for DeepSeek's 23:10 reply to be recorded here verbatim, but the brief did not contain its text. To be filled verbatim when the user pastes it.]
+<!-- verbatim end -->
+

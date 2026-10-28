@@ -22,6 +22,11 @@ This file is the single source of truth for the workflow. Tool details are in `w
   - Any transfer across sizes or cells names its scaling assumption and widens the range by the measured cross-run drift (±1.5 points) plus a stated allowance.
   - Before using a quoted number, state which comparison, which base and which pricing it is.
   - Any categorical word in a prediction ("largest", "best", "better") is defined in the prediction itself: absolute or increase; point estimate or interval.
+- **Predicting a counts-identical change's wall effect (from Oct 27, prospective; all forecasters):**
+  - Predict the wall change as ρ × (instructions removed ÷ total instructions), both from callgrind on the same inputs.
+  - **Default ρ = 0.85–1.06** (measured: Run D, alloc-once, 72 / 84 / 96). A different band may be used only if it was **measured for comparable code beforehand**; name that measurement.
+  - **Width:** at least ±30% of the predicted change, and at least ±1 point. Add the cross-run allowance (±1.5 points) only for comparisons between runs.
+  - The reviewer's notes: DeepSeek's 0.55–0.80 "register-resident" band is unmeasured, so it is not used until measured. Its flat ±3-point floor is replaced by the proportional floor above.
 
 ## Order
 

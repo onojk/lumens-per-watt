@@ -393,3 +393,12 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - **Today:** the card runs no 256-bit instructions in its own code (Experiment 1: 0.00% of its main-object Ir; 1.8–2.0% 128-bit packed, mostly compiler-generated moves). Its only wide instructions are in libc's AVX2 memset, which v1 counts as uncharged (library) Ir. YAFU's tinysiqs uses 256-bit instructions in its scan (`mark_sieve_block`, about 22% of that function) and its polynomial-B root update (`find_next_poly_b`, about 50%).
 - **Rule, before any SIMD adoption:** a v2 op-class rule must say how a vector instruction is weighed. For example by lanes, by bytes touched, or by measured throughput relative to scalar. Its cost model goes in NOTES first, it is derived prospectively (v1 stays frozen for the decisions it made), and it is published before any SIMD change is scored.
 - Decision: pending (the user's).
+
+### I-047 — Measure ρ for the A-prime fix too (a second point for the counts-identical prediction rule)
+- Date: 2026-10-27. Source: the user.
+- **Idea:** PROTOCOL's rule for counts-identical changes predicts the wall change as ρ × the instruction share removed, with ρ = 0.85–1.06 from one measurement (Run D, alloc-once). Measure ρ for the A-prime fix too. Run A measured its wall change: −1.73 / −2.57 / −5.69% at 72 / 84 / 96. The missing number is its instruction drop.
+  - **How:** callgrind on the same inputs, with the pre-fix lampcore (1505efbf…, built with line tables) and the post-fix one (ef345913…, likewise).
+  - **Then:** ρ = the wall change ÷ the instruction share removed.
+- **Why:** two measured points, from different kinds of removed code (a linear scan over an array against allocator calls), test whether one ρ band holds across counts-identical changes or depends on the code removed.
+- **Cost:** a callgrind pass per size per binary (minutes), no timing.
+- Decision: pending (the user's).
