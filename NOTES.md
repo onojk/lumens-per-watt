@@ -10351,3 +10351,6 @@ A counts-identical change that removes a large volume of cache-friendly arithmet
 
 **Note on DeepSeek's reply** (the user's ruling, already in PROTOCOL.md, 3054d88): its 0.55–0.80 "register-resident" band is unmeasured, so it is not used until measured, and its flat ±3-point floor is replaced by the proportional floor (±30%, at least 1 point). Its quote attributes "(allocator code is short, cache-friendly)" to the relayed update line. The relayed text on file reads "Instruction drops do not translate one-for-one into time." The parenthesis is the user's summary of the reviewer's R-26 basis ("malloc paths are cache-friendly short instructions").
 
+**Correction to that note:** "the relayed text on file" overstates.
+- The only update text Claude has seen is the one the user showed for Grok (22:06 Oct 27): "Instruction drops do not translate one-for-one into time." It is not committed.
+- The update DeepSeek received is not on file, so whether it carried the parenthesis is not known.
