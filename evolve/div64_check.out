@@ -1,0 +1,3 @@
+72 bits: instructions per number 5.776 M -> 5.270 M (-8.76%; removed 0.506 M, the cost note's estimate 0.432 M); __modti3 / __divti3 from lamp_qs / sieve_source 0.533 M -> 0.037 M
+84 bits: instructions per number 12.906 M -> 12.082 M (-6.38%; removed 0.823 M, the cost note's estimate 0.703 M); __modti3 / __divti3 from lamp_qs / sieve_source 0.863 M -> 0.057 M
+96 bits: instructions per number 32.212 M -> 30.957 M (-3.90%; removed 1.255 M, the cost note's estimate 1.071 M); __modti3 / __divti3 from lamp_qs / sieve_source 1.347 M -> 0.119 M
