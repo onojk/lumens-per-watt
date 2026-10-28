@@ -10403,3 +10403,29 @@ A counts-identical change that removes a large volume of cache-friendly arithmet
   - class (b), allocation (Run D): 0.85 / 0.92 / 1.06;
   - class (c), the A-prime scan (Run A): 1.01 / 0.98 / 1.35.
 - The instruction drops here (−1.71 / −2.62 / −4.20%) are whole-program counts on all map numbers; Run D's were `lamp_qs` on the balanced band. The two are close, but not the same measure.
+
+## Cost note (before code): a fixed-size partials table (the user's go-ahead, Oct 27 night; next step c, on top of div64)
+
+**The change** (lampcore, `sieve_source`'s large-prime ledger):
+- **Today:** the partial-relation map is a `std::collections::HashMap<i128, (i128, u32, u32)>`, the default SipHash hasher. It starts empty each attempt and grows by rehashing.
+- **The replacement:** an open-addressing table allocated once per attempt.
+  - Keys: the large prime v as u64 (v < the large-prime bound < 2^53), with 0 as the empty mark (v > 1 always).
+  - Slot: a multiplicative (Fibonacci) hash of v, then linear probing.
+  - Capacity: a power of two, 4,096 initially, doubled with a rehash only if the load passes 1/2 (a safeguard: about 1,500 partials per number at 96 bits).
+- **Safe because:** the code only ever calls `get` and `insert`, never iterates and never removes. Any correct map therefore gives identical results.
+- **Not changed:** `parena`'s growth (a `Vec`, 0.02–0.10 M instructions per number in reserve calls), and Python (a dict; no Python count depends on it).
+
+**Cost model:**
+- **Charged ops: none change.** `hash` stays charged as now, 1 per lookup and 1 per insert. Every op count, relation and output is predicted **identical**.
+- **Measured inputs** (the second gap run's callgrind files, balanced band, f6aa08d; hash op counts from `--types`):
+  - `get` + `insert`: **0.195 / 0.296 / 0.676 M instructions per number** for **580 / 922 / 1,924 hash ops per number**, about 320–350 instructions per op (SipHash, the hashbrown probes, the rehashes).
+- **Removed** (Wolfram, `wolfram/2026-10-27_ptable.wl`, `.out`; c = 15–30 new instructions per op, plus about 2 k per number for the table's clear): **0.180 / 0.273 / 0.631 M per number** at c = 22.5. That is **3.4 / 2.3 / 2.0%** of the card's instructions after div64 (5.270 / 12.082 / 30.957 M).
+- **No priced figure moves.** v1 stays frozen.
+- **Wall forecast by the ρ rule:**
+  - **Class (a), mostly:** hashing arithmetic and probes into a table that fits in L2. The lower side is extended to **ρ = 0.40**.
+  - **The upper side is extended to 1.20** for the rehashes' block moves, which are class (b)-like.
+  - **Central (ρ = 0.85, c = 22.5): −2.9 / −1.9 / −1.7%;** at ρ 0.40 / 1.20: −1.4 / −0.9 / −0.8% and −4.1 / −2.7 / −2.5%.
+  - **Band (ρ 0.40–1.20, c 15–30): −1.3 to −4.2 / −0.9 to −2.8 / −0.8 to −2.5%.**
+  - Against the alloc+div64 card. The balanced band is the input; the sealed run uses all map numbers.
+
+**Procedure:** after div64's parity: code, acceptance (byte-identical, the same six genome sets), parity, the callgrind check, then the predictions file and the runner. **STOP at the prediction point.**
