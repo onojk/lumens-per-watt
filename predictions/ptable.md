@@ -2,7 +2,7 @@
 
 **The change:** the partial-relation map becomes an open-addressing table with a multiplicative hash, allocated once per attempt, replacing the SipHash `HashMap`. Cost note: NOTES.md, "Cost note (before code): a fixed-size partials table" (3a69b74). Every op count, relation and output is predicted identical, so there is no priced prediction; only wall-clock is measured.
 
-**Status:** the code is not written yet; it waits for div64's parity. The planned run (not yet; its runner will be committed separately before it) is `tools/sealed_run.sh ptable -- bash -c "cd evolve && python3 ptable_time.py"`, with Run A's design: "alloc+div64" (the div64 release build, kept as a copy) against "alloc+div64+ptable"; reference genes; all map numbers at 72 / 84 / 96; 8 alternating replicates; outputs checked identical in the run; AC and the standard conditions. **Not timed until the reviewer's, DeepSeek's and Grok's predictions are filed** (the user, Oct 27 night).
+**Status:** the code is not written yet; it waits for div64's parity. The planned run (not yet; its runner will be committed separately before it) is `tools/sealed_run.sh ptable -- bash -c "cd evolve && python3 ptable_time.py"`, with Run A's design: "alloc+div64" (the div64 release build, kept as a copy) against "alloc+div64+ptable"; reference genes; all map numbers at 72 / 84 / 96; 8 alternating replicates; outputs checked identical in the run; AC and the standard conditions. **Not timed until the reviewer's, DeepSeek's and Grok's predictions are filed** (the user, Oct 27 night); all three now are.
 
 **Information the forecasters have** (filed before this file): the cost note's measured inputs and Wolfram forecast.
 - `get` + `insert`: 0.195 / 0.296 / 0.676 M instructions per number for 580 / 922 / 1,924 hash ops.
@@ -18,11 +18,22 @@ The post-code callgrind check will be added here when it exists.
            floored at +/-1 point. Falsifier: outside the range. If the post-code callgrind check differs from
            the cost note by more than 20%, note it beside R-28 (the range stands).
 
-## DeepSeek's D-28
+## DeepSeek's D-28 (00:07 Oct 28 PT; sealed; verbatim; filed before the partials-table run started)
 
 <!-- verbatim begin -->
-[PLACEHOLDER: the user's brief carried the slot "[PASTE DEEPSEEK'S D-28 REPLY HERE]" without D-28's text. To be filled verbatim when the user pastes it. ptable is not timed until it is filed (the user, Oct 27 night).]
+Definition: mean wall-clock change per number, partials-table build vs the alloc+div64 card, each size, all map numbers, AC, 2.4 GHz cap, 8 alternating replicates. Base: alloc+div64 card. Units: percent change; negative = faster. Pure wall-clock prediction.
+72 (3.4% removed): −1.5% to −3.9% (central −2.7%), 60%, falsifier >−1.5% or <−3.9%.
+84 (2.3%): −0.8% to −2.8% (−1.8%), 60%, falsifier >−0.8% or <−2.8%.
+96 (2.0%): −0.6% to −2.6% (−1.6%), 60%, falsifier >−0.6% or <−2.6%.
+Rho band 0.40–1.20, central 0.80. Basis, stated without using any reviewer opinion: the cost note class is "mostly (a) arithmetic into a table that fits in L2", upper side widened for rehash moves; removed work is predominantly SipHash rounds (cheap register arithmetic, pushes rho below 1); the replacement removes scattered HashMap access (pushes rho above 0.40); central 0.80. The two measured rho values (alloc 0.85–1.06, scan 1.01–1.35) are recorded as bracketing context, not anchors, because their removed work is scattered memory, a different class.
+Working: ΔW = ρ · ΔI/I_total. Natural range from [0.40, 1.20]: 72 [1.36, 4.08]; 84 [0.92, 2.76]; 96 [0.80, 2.40]. Central at 0.80: 2.72 / 1.84 / 1.60. Width rule (half-width ≥ max(0.30 × central, 1.0 point)): 72 sealed [1.5, 3.9]; 84 forced to [0.84, 2.84], sealed [0.8, 2.8] (implied low-end rho 0.365, below the cost-note floor, forced by the ±1 rule); 96 forced to [0.60, 2.60], sealed [0.6, 2.6] (implied low-end rho 0.30, forced by the ±1 rule). A saving inside the sealed range but below the rho-band range would be "a range hit forced by the width rule", not a rho hit.
+60% per size; sizes correlated through the shared rho. Falsifier direction checked: falsified if the measured saving is smaller than the low-magnitude end or larger than the high-magnitude end.
+Missing inputs: measured rho for this class; the post-code instruction count reconciliation (pending); rehash frequency at the tested sizes (if the table never doubles past 4,096 at 96, the upper side is nearer 0.90).
 <!-- verbatim end -->
+
+**The reviewer's note** (the ranges are unchanged): D-28 is independent of the reviewer's opinions, as it states. Its 84 and 96 low ends are set by the protocol's ±1-point minimum, below its own ρ band; DeepSeek records this itself.
+
+**All three ptable forecasters are sealed:** R-28, D-28, G-21. The timing may proceed after div64's run and the table's own acceptance and parity (the user, Oct 28).
 
 ## Grok's G-21 (23:44 Oct 27 PT; sealed; verbatim, with the header of Grok's reply)
 
