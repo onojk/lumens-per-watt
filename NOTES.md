@@ -10809,3 +10809,23 @@ Total: about 1–3 hours of lampcore counting for the rest; wall timing roughly 
 **The correction used in the op-class view** multiplies td's and p−1's light by their pooled ratios (0.617 / 0.602 / 0.558 for td and 0.769 / 0.780 / 0.782 for p−1, at 72 / 84 / 96), which lowers their light. It leaves QS's ratio (1.09–1.10) uncorrected.
 - **Correcting every lamp** (td, rho, p−1, ECM and QS each by its own pooled ratio; CFRAC uncorrected, information only; computed from the committed json, untimed): lowest band with QS best and band from which QS stays best = **0.30 / 0.30** at 72, **0.30 / 0.36** at 84, **0.32 / 0.32** at 96. Against the td-and-p−1 correction, only 72 moves (from 0.34 / 0.40).
 - **Not established:** the ratios come from the run's callgrind subset (SUB = 8 per cell), not from every number. This is a re-pricing of op-class, not a new pricing, and nothing is scored with it. R-32 / D-32 / G-25 stay scored on op-class light as written (68be1a9).
+
+## Scorecard recount with the growth round; W4b (the user's ruling, Oct 28; documentation only)
+
+`reviews/scorecard.md` sections 1 and 3a now include R-29..R-33, D-29..D-33 and G-22..G-26 (15 rows, NOTES 10650-10800, all card, all priced). The "not recounted" header is removed.
+- **Totals:** the reviewer 191 held / 137 missed / 3 falsified / 7 info (338); DeepSeek 60 / 51 / 34 / 15, plus 6 falsifier-only (166); Grok 28 / 37 / 8 / 4 (77).
+- **The growth round alone:** the reviewer 3 held / 2 missed; DeepSeek 4 held / 1 falsified; Grok 4 held / 1 falsified.
+
+**W4b** (`wolfram/2026-10-28_w4b_calibration_growth.wl`, `.out`) is W4's committed calibration script re-run with the 15 rows appended. It computes:
+- stated confidence against outcome (Brier);
+- the range width against hit rate (z = |measured − midpoint| ÷ half-width).
+
+Results:
+- **Brier:** the reviewer 0.232 (5 rows, its first stated confidences); DeepSeek 0.444 (7 rows; 0.488 on the growth round alone, with confidences of 15–30% on ranges that hit 4 of 5); Grok 0.218 (8 rows).
+- **Ranges** (125 rows): the reviewer 85% hit, median z 0.51; DeepSeek 63%, 0.54; Grok 67%, 0.71.
+
+**What W4b does not establish:**
+- 20 stated-confidence rows cannot support a calibration curve: 12 hits, 95% interval 39–78%.
+- The three crossing rows are censored at 40 bits, so their z is a lower bound.
+- The three twilight rows are hits on a value fixed by construction.
+- The rounds in NOTES 9185-10649 (R-20..R-28, D-20..D-28, G-13..G-21) are still not tallied in the scorecard.

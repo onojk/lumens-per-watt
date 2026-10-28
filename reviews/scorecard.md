@@ -1,15 +1,14 @@
 # Reviewer scorecard (I-002): the reviewer, DeepSeek and Grok
 
-**Last updated:** 2026-10-27 (overnight stage 3), NOTES at bcc1aed. Maintained by Claude Code. Documentation only: nothing here rescores anything; every count is the score as recorded in NOTES.
-
-**Rows added Oct 28 (growth round, NOTES 10650-10800):** appended to section 5. The totals in sections 1 and 3a are not yet recounted to include them.
+**Last updated:** 2026-10-28 (the growth round, R-29..R-33, D-29..D-33, G-22..G-26, NOTES 10650-10800, added to sections 1, 3a and 5; W4b), first built 2026-10-27 at NOTES bcc1aed. **Not tallied:** the rounds scored in NOTES 9185-10649 (Run A to the div64 run: R-20..R-28, D-20..D-28, G-13..G-21); the user did not ask for them in this recount. Maintained by Claude Code. Documentation only: nothing here rescores anything; every count is the score as recorded in NOTES.
 
 ## In plain English
 
-- **Tallied:** 566 scored rows. The reviewer (Claude chat, with the user's own sealed predictions) has 333, DeepSeek 161, Grok 72.
-  - **The reviewer: 188 held, 135 missed, 3 falsified, 7 information only.**
-  - **DeepSeek: 56 held, 51 missed, 33 falsified, 15 information only,** plus 6 rows where only its falsifier was scored.
-  - **Grok: 24 held, 37 missed, 7 falsified, 4 information only.**
+- **Tallied:** 581 scored rows. The reviewer (Claude chat, with the user's own sealed predictions) has 338, DeepSeek 166, Grok 77.
+  - **The reviewer: 191 held, 137 missed, 3 falsified, 7 information only.**
+  - **DeepSeek: 60 held, 51 missed, 34 falsified, 15 information only,** plus 6 rows where only its falsifier was scored.
+  - **Grok: 28 held, 37 missed, 8 falsified, 4 information only.**
+  - **The growth round alone** (NOTES 10650-10800, all card, all priced, 5 rows each): the reviewer 3 held / 2 missed (R-31, R-32); DeepSeek 4 held / 1 falsified (D-31); Grok 4 held / 1 falsified (G-24). The three twilight rows (R-33, D-33, G-26) are hits on a value fixed by construction.
 - **The reviewer's totals flatter it,** because many of its rows score Wolfram model runs rather than card runs: 63 of its 164 rows in NOTES lines 6390–9184, and most of its rows in 4300–6390.
   - **On card runs alone, lines 6390–9184:** the reviewer 62 held / 37 missed; DeepSeek 36 held / 18 missed / 20 falsified; Grok 13 held / 9 missed / 2 falsified.
   - The reviewer is the most often right on card runs, roughly 6 in 10. DeepSeek is right about half the time but falsifies often, because it states hard falsifiers. Grok is right about half the time on card runs and less often overall.
@@ -74,20 +73,20 @@ Totals are original scores as recorded. The second scores under the corrected me
 
 | forecaster / category | held | missed | falsified | info only | not falsified (falsifier-only) | total |
 |---|---|---|---|---|---|---|
-| Reviewer / priced | 15 | 15 | 1 | 1 | 0 | 32 |
+| Reviewer / priced | 18 | 17 | 1 | 1 | 0 | 37 |
 | Reviewer / wall | 28 | 20 | 0 | 1 | 0 | 49 |
 | Reviewer / mixed (priced+wall) | 3 | 0 | 0 | 0 | 0 | 3 |
 | Reviewer / categorical | 30 | 23 | 1 | 0 | 0 | 54 |
 | Reviewer / interval width | 0 | 2 | 0 | 0 | 0 | 2 |
 | Reviewer / other | 101 | 67 | 1 | 5 | 0 | 174 |
 | Reviewer / other (definition not in NOTES) | 11 | 8 | 0 | 0 | 0 | 19 |
-| DeepSeek / priced | 11 | 14 | 7 | 3 | 0 | 35 |
+| DeepSeek / priced | 15 | 14 | 8 | 3 | 0 | 40 |
 | DeepSeek / wall | 11 | 11 | 8 | 2 | 0 | 32 |
 | DeepSeek / mixed (priced+wall) | 3 | 0 | 0 | 0 | 0 | 3 |
 | DeepSeek / categorical | 8 | 8 | 8 | 1 | 0 | 25 |
 | DeepSeek / interval width | 0 | 1 | 0 | 0 | 0 | 1 |
 | DeepSeek / other | 23 | 17 | 10 | 9 | 6 | 65 |
-| Grok / priced | 6 | 6 | 4 | 2 | 0 | 18 |
+| Grok / priced | 10 | 6 | 5 | 2 | 0 | 23 |
 | Grok / wall | 4 | 4 | 1 | 1 | 0 | 10 |
 | Grok / mixed (priced+wall) | 3 | 0 | 0 | 0 | 0 | 3 |
 | Grok / categorical | 8 | 10 | 1 | 1 | 0 | 20 |
@@ -98,9 +97,9 @@ Totals are original scores as recorded. The second scores under the corrected me
 
 | forecaster | held | missed | falsified | info only | not falsified (falsifier-only) | total |
 |---|---|---|---|---|---|---|
-| Reviewer | 188 | 135 | 3 | 7 | 0 | 333 |
-| DeepSeek | 56 | 51 | 33 | 15 | 6 | 161 |
-| Grok | 24 | 37 | 7 | 4 | 0 | 72 |
+| Reviewer | 191 | 137 | 3 | 7 | 0 | 338 |
+| DeepSeek | 60 | 51 | 34 | 15 | 6 | 166 |
+| Grok | 28 | 37 | 8 | 4 | 0 | 77 |
 
 **Per forecaster and NOTES range** (700-4300 and 4300-6390 were tallied by sub-agents and spot-checked; 6390-9184 was done line by line):
 
@@ -109,12 +108,15 @@ Totals are original scores as recorded. The second scores under the corrected me
 | Reviewer / 700-4300 | 4 | 15 | 1 | 3 | 0 | 23 |
 | Reviewer / 4300-6390 | 78 | 64 | 2 | 2 | 0 | 146 |
 | Reviewer / 6390-9184 | 106 | 56 | 0 | 2 | 0 | 164 |
+| Reviewer / 10650-10800 | 3 | 2 | 0 | 0 | 0 | 5 |
 | DeepSeek / 700-4300 | 4 | 19 | 0 | 1 | 0 | 24 |
 | DeepSeek / 4300-6390 | 16 | 12 | 13 | 1 | 0 | 42 |
 | DeepSeek / 6390-9184 | 36 | 20 | 20 | 13 | 6 | 95 |
+| DeepSeek / 10650-10800 | 4 | 0 | 1 | 0 | 0 | 5 |
 | Grok / 700-4300 | 5 | 9 | 3 | 1 | 0 | 18 |
 | Grok / 4300-6390 | 6 | 19 | 2 | 0 | 0 | 27 |
 | Grok / 6390-9184 | 13 | 9 | 2 | 3 | 0 | 27 |
+| Grok / 10650-10800 | 4 | 0 | 1 | 0 | 0 | 5 |
 
 **Lines 6390-9184 only, card-measured against model-scored (Wolfram runs scored by the user):**
 
@@ -125,6 +127,8 @@ Totals are original scores as recorded. The second scores under the corrected me
 | DeepSeek / card | 36 | 18 | 20 | 13 | 6 | 93 |
 | DeepSeek / model | 0 | 2 | 0 | 0 | 0 | 2 |
 | Grok / card | 13 | 9 | 2 | 3 | 0 | 27 |
+
+Lines 10650-10800 (the growth round) are all card-measured: the rows are in the range table above.
 
 **Reading notes for the totals:**
 - **The reviewer's count is inflated by model-scored runs.** A large share of its rows score Wolfram or Mathematica model runs, not card runs: 63 of its 164 rows in 6390-9184, and, by part 2's account, most of its 146 rows in 4300-6390. These are the C, T, W, V, X, Y and Z series, the I-023 to I-028 forecasts, and Claude chat's pre-run expectations. Many of those ranges were never written into NOTES before the run. In 6390-9184 the card-only figures are: reviewer 62 held / 37 missed (101 rows), DeepSeek 36 / 18 / 20 falsified (93), Grok 13 / 9 / 2 (27).
@@ -316,29 +320,32 @@ The free-2 meter correction (6031239) was applied after the 2b-sizes run. NOTES 
   - D-14 and G-7 (pp3-gap-and-shift.md:223).
   - Earlier: G-a and P1-P2 (2820), G2 (2216), M1 3-4 and c ≈ 3.4 (4680, 4770).
 
-## 3a. Calibration (W4, Oct 27; `wolfram/2026-10-27_w4_calibration.wl`, `.out`; a tally, not a verdict)
+## 3a. Calibration (W4, Oct 27, re-run as W4b, Oct 28, with the growth round; `wolfram/2026-10-28_w4b_calibration_growth.wl`, `.out`; a tally, not a verdict)
 
-**Stated confidence against outcome.** Only nine predictions on file state a confidence, and only five have a recorded score. The reviewer states none.
+**Stated confidence against outcome.** 20 scored predictions state a confidence. The reviewer states one for the first time in the growth round (R-29..R-33).
 
 | forecaster | scored | mean stated | hit (as scored) | Brier | hit / Brier under the corrected meter |
 |---|---|---|---|---|---|
-| DeepSeek | 2 (D-9 65%, D-14 50%) | 58% | 0 of 2 | 0.336 | 1 of 2 / 0.186 |
-| Grok | 3 (G-4 65%, G-7 60%, G-9 75%) | 67% | 1 of 3 | 0.282 | 2 of 3 / 0.182 |
+| the reviewer | 5 (R-29 70%, R-30 75%, R-31 65%, R-32 65%, R-33 60%) | 67% | 3 of 5 | 0.232 | 3 of 5 / 0.232 |
+| DeepSeek | 7 (D-9 65%, D-14 50%, D-29 25%, D-30 15%, D-31 15%, D-32 30%, D-33 20%) | 31% | 4 of 7 | 0.444 | 5 of 7 / 0.401 |
+| Grok | 8 (G-4 65%, G-7 60%, G-9 75%, G-22 65%, G-23 75%, G-24 55%, G-25 60%, G-26 50%) | 63% | 5 of 8 | 0.218 | 6 of 8 / 0.180 |
 
-- Brier 0.25 is what always saying 50% scores. As scored, both are worse than that; under the corrected meter, both are better (D-9 and G-4 flip to held).
+- Brier 0.25 is what always saying 50% scores. The reviewer and Grok are slightly better than that; DeepSeek is much worse.
+- **DeepSeek's growth-round confidences (15–30%) sit far below its hit rate (4 of 5):** it is under-confident in its stated probabilities while setting wide ranges, the inconsistency the reviewer noted at filing. Its growth-round Brier alone is 0.488.
+- **Pooled bins:** 0–39% stated: 5 rows, 4 hit (mean stated 21%); 40–60%: 6 rows, 3 hit (56%); 61–100%: 9 rows, 5 hit (69%).
+- **20 rows still cannot support a calibration curve** (12 hits in 20: 95% interval 39–78%). Three of the hits (R-33, D-33, G-26) are on a value fixed by construction.
 - Not counted: D-11 (60%) and Grok's phase pick (55%), both information only; GP7 (85%) and Q5 (80%), still pending.
-- **Five rows cannot support a calibration curve** (1 hit in 5: 95% interval 4–62%). The data say nothing yet about over- or under-confidence in stated probabilities.
 
-**Sealed ranges: width against hit rate.** 110 numeric ranges from the five card runs since i032-2prime (i032-2prime, pp3-gap-and-shift, shift-past-2, shift-72-84, 2b-sizes). Hit = held as recorded; information-only rows use "measured inside the range". z = |measured − range midpoint| ÷ half-width, so z ≤ 1 is a hit.
+**Sealed ranges: width against hit rate.** 125 numeric ranges: 110 from the five card runs since i032-2prime (i032-2prime, pp3-gap-and-shift, shift-past-2, shift-72-84, 2b-sizes) and 15 from the growth round (doubling periods and the rho / QS crossing in bits, the QS-best θ band, the twilight robust ratio). The three crossing rows are censored (the crossing is at or below 40, scored as 40), so their z is a lower bound. Hit = held as recorded; information-only rows use "measured inside the range". z = |measured − range midpoint| ÷ half-width, so z ≤ 1 is a hit.
 
-| forecaster | rows | hit | median z (quartiles) | ratio ranges: hit, median width | wall % ranges: hit, median width | µs ranges: hit |
-|---|---|---|---|---|---|---|
-| the reviewer | 35 | 31 (89%) | 0.50 (0.22 / 0.73) | 21 of 25, 3.0 points | 9 of 9, 5.0 points | 1 of 1 |
-| DeepSeek | 38 | 23 (61%) | 0.55 (0.14 / 1.56) | 14 of 25, 2.0 points | 8 of 8, 4.5 points | 1 of 5 |
-| Grok | 37 | 24 (65%) | 0.53 (0.18 / 2.27) | 17 of 25, 1.8 points | 6 of 9, 3.5 points | 1 of 3 |
+| forecaster | rows | hit | median z (quartiles) | ratio ranges: hit, median width | wall % ranges: hit, median width | µs ranges: hit | growth round (bits / θ / robust ratio): hit |
+|---|---|---|---|---|---|---|---|
+| the reviewer | 40 | 34 (85%) | 0.51 (0.22 / 0.82) | 21 of 25, 3.0 points | 9 of 9, 5.0 points | 1 of 1 | 3 of 5 |
+| DeepSeek | 43 | 27 (63%) | 0.54 (0.11 / 1.56) | 14 of 25, 2.0 points | 8 of 8, 4.5 points | 1 of 5 | 4 of 5 |
+| Grok | 42 | 28 (67%) | 0.71 (0.18 / 1.80) | 17 of 25, 1.8 points | 6 of 9, 3.5 points | 1 of 3 | 4 of 5 |
 
-- **Who is over-confident:** DeepSeek and Grok. Their median miss is no larger than the reviewer's (median z 0.53–0.55 against 0.50), but their ranges are narrower (ratio ranges 1.8–2.0 points against 3.0) and their misses are far outside (upper quartile z 1.6–2.3 against 0.7). The miss rate comes from tails, not a general bias: a few large misses each run (D-8 by 11 points on ruint and Montgomery, the +2 official cells by 5–6 points, the µs phase excesses by 70–120% of the midpoint).
-- **The reviewer** is close to a ~90% interval: 89% hits with median z 0.50. Its wall ranges (9 of 9, z 0.47) are about right, not too wide.
+- **Who is over-confident:** DeepSeek and Grok. Their median miss is no larger than the reviewer's (median z 0.53–0.55 against 0.50 before the growth round; 0.54–0.71 against 0.51 after), but their ranges are narrower (ratio ranges 1.8–2.0 points against 3.0) and their misses are far outside (upper quartile z 1.6–2.3 against 0.7). The miss rate comes from tails, not a general bias: a few large misses each run (D-8 by 11 points on ruint and Montgomery, the +2 official cells by 5–6 points, the µs phase excesses by 70–120% of the midpoint).
+- **The reviewer** is close to a ~90% interval: 85% hits with median z 0.51 (89% and 0.50 before the growth round; its two growth misses, R-31 and R-32, are z ≥ 2.0 and 1.5). Its wall ranges (9 of 9, z 0.47) are about right, not too wide.
 - **µs phase-excess ranges are the worst calibrated** for both outside forecasters (2 hits in 8, median z above 3). Those predictions inherited the "241 µs" anchor (section 3), so this is one error counted several times.
 - **Direction:** DeepSeek's ratio ranges sit high on average (mean signed error −1.6 points: measured below the range), largely D-8. The others show no consistent direction.
 - **Under the corrected meter** many ratio rows move (the reviewer 12 of 25, DeepSeek 7, Grok 8 hit). The wall rows are unchanged.
