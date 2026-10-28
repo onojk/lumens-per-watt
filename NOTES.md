@@ -1,5 +1,33 @@
 # Decision log
 
+## Report Oct 27, late: the fair YAFU re-run (read first)
+
+**In plain English:**
+- **Sieve against sieve, YAFU's small-input QS is faster than the card's:** card / YAFU's internal tinysiqs time is **1.72 / 1.59 / 1.88** at 72 / 84 / 96 bits on the balanced band, YAFU faster.
+- **YAFU as a program is still slower per number** in batch: about 6 ms of fixed overhead per number (mostly re-sieving the primes to 10⁷ for every line) dwarfs its 0.5–1.8 ms QS. Card / `siqs()` wall is 0.14 / 0.23 / 0.44.
+- **The card runs 2.3–3.4× tinysiqs's instructions** (callgrind) for 1.6–1.9× its time.
+- **All nine sealed predictions hit.** All forecasters had seen the unsealed 1.3–1.7× estimate.
+- Nothing adopted; no system setting changed; nothing pushed.
+
+| step | commit | in one line |
+|---|---|---|
+| Reconciliation (before timing) | 7af3d61 | `siqs()`'s 10.5 ms = 4.38 floor + 1.99 tinysiqs + 0.51 checks + 77 ms one-time / 20 numbers. |
+| Predictions | 7af3d61, bb0ea99, 2db9534 | R-23 to R-25, D-23 to D-25, G-16 to G-18, verbatim. Two corrections recorded: the quoted card times were already post-fix (Run B ran on the fixed binary), and the replicates are 4, per your go-ahead. |
+| Instrumented YAFU + runner | 8867cac | A monotonic clock around `tinysiqs`, stderr only (`evolve/yafu_timed.patch`), built in Claude's scratch with your clone untouched. Its cost is within noise of the uninstrumented build. |
+| **Run C, baseline-yafu-qs** (sealed) | 9f95b11 | card / internal **1.718 [1.624, 1.813] / 1.594 [1.551, 1.638] / 1.879 [1.838, 1.919]**; siqs wall − internal 5.81 / 5.84 / 6.02 ms; factors 0 failures. |
+
+**Scored as filed:**
+- **The reviewer:** R-23, R-24 and R-25 hit.
+- **DeepSeek:** D-23, D-24 and D-25 hit.
+- **Grok:** G-16, G-17 and G-18 hit. G-17's interval crosses its top, but the point is inside.
+
+**For the card (a reading):** a tuned small-input SIQS does the job in 29–44% of the card's instructions and 53–63% of its time. A 1.6–1.9× constant-factor gap remains inside the card's QS. Where it sits is not measured.
+
+**Next experiments, ranked by information per compute (your decision):**
+1. **Locate the gap:** a per-phase comparison, the card's `--phasetime` regions against tinysiqs's parts by callgrind function. Cheap: one callgrind run per size.
+2. **The `-march=native` YAFU build** as one extra cell: tells whether part of YAFU's lead is compiler flags.
+3. **The 96-bit fix saving above the cost model** (Run A): a cache-miss comparison of the two lampcore binaries.
+
 ## Report Oct 27 evening: the A-prime fix and YAFU (read first)
 
 **In plain English:**
@@ -10056,7 +10084,7 @@ Part 1 ran twice: `partition`'s import cleared `sys.argv`, so the first `part2` 
 
 All forecasters saw the unsealed 1.3–1.7× estimate first, so these hits test calibration on a disclosed estimate, not foresight. The ranges differ in width: Grok's are the narrowest (G-16 0.8 wide, G-17 0.7), DeepSeek's the widest (D-23 1.45, D-24 1.45).
 
-**What this means for the card (a reading, not a verdict):** YAFU's tinysiqs does the same job in 30–44% of the card's instructions. The card's QS has room for a constant-factor gain of about 1.6–1.9× in time before it matches a tuned small-input SIQS. Where that gap sits (sieve, candidate checks, linear algebra) is not measured here; tinysiqs's design is described in its source header ("extensions of the MPQS code of F. Bahr, used in the lattice sievers by Jens Franke"). Any port would follow the reuse and licence rules: algorithms from descriptions and papers, not code.
+**What this means for the card (a reading, not a verdict):** YAFU's tinysiqs does the same job in 29–44% of the card's instructions. The card's QS has room for a constant-factor gain of about 1.6–1.9× in time before it matches a tuned small-input SIQS. Where that gap sits (sieve, candidate checks, linear algebra) is not measured here; tinysiqs's design is described in its source header ("extensions of the MPQS code of F. Bahr, used in the lattice sievers by Jens Franke"). Any port would follow the reuse and licence rules: algorithms from descriptions and papers, not code.
 
 **Not established:**
 - YAFU's internal time is from one instrumented copy. Its ±1% agreement with the uninstrumented wall rules out a timer cost, not a different code layout.
