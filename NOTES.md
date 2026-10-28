@@ -10853,3 +10853,35 @@ QS is 6–9× brighter than ECM in each of them. This does not change the correc
 - **The largest shared miss is Run B** (card / YAFU wall ratio 0.025 / 0.071): all six ranges were falsified at z 1.6–1.8.
 
 **What it does not establish:** rows per size and per run are correlated, so the intervals are too narrow. The conventions are as in W4b.
+
+## Run F (ptable): an open-addressing partials table, wall-clock (sealed; predictions 5523143; result f8e4758)
+
+`results/ptable_20261028T125557Z.out`; `evolve/ptable_time.py`, `.json`.
+- **Binaries:** before 1cbe837a… (alloc+div64), after a0e96c7a… (alloc+div64+ptable).
+- **Design:** 8 alternating replicates, all map numbers, batch, core 2 at a median of 2,400 MHz in every cell. The load check passed at the start (1.16) and before every replicate (1.53–1.81, against a limit of 2.5).
+- **Conditions:** on AC, cap 2,400 MHz, TCPU 51 °C at the start and 52 °C at the end, no Wolfram kernel. The waiter started the run only once the 1-minute load was below 1.5.
+
+| bits | alloc+div64, µs / number | +ptable | ptable / div64 | 95% t interval | change | instructions removed (callgrind, ptable_check) | **ρ** (change ÷ instruction share removed) |
+|---|---|---|---|---|---|---|---|
+| 72 | 600.3 | 576.0 | 0.9597 | [0.9448, 0.9745] | **−4.03%** [−5.52, −2.55] | −0.53% | **7.6** [4.8, 10.4] |
+| 84 | 1,263.5 | 1,239.5 | 0.9811 | [0.9723, 0.9898] | **−1.89%** [−2.77, −1.02] | −1.16% | **1.63** [0.88, 2.39] |
+| 96 | 2,953.5 | 2,855.1 | 0.9667 | [0.9591, 0.9744] | **−3.33%** [−4.09, −2.56] | −1.96% | **1.70** [1.31, 2.09] |
+
+- **Outputs with `--types` identical** in the run itself: yes, at all three sizes.
+- **The table is faster at every size, so no follow-up cost note is needed.** The brief asked for one only if the table lost at 72. It wins most at 72.
+- **ρ is far above every measured class at 72** (7.6, against 0.24–1.35 for classes (a)–(c)) and above class (b)'s 0.85–1.06 at 84 and 96. The wall saving is much larger than the callgrind instruction drop. At 72 the instruction drop is tiny because `PTable::new`'s zeroed 160 KB allocation (155–164 k instructions per number) cancels most of the lookup savings.
+- **A reading (unmeasured opinion):** what the wall saves and callgrind does not count is kernel and memory-system time. Candidates:
+  - the `HashMap`'s growth reallocations and their page faults;
+  - cache misses on its 16-byte-plus-value buckets, against the new table's separate key array.
+  
+  callgrind counts user-space instructions only. This is not measured; a `perf stat` of page faults and LLC misses per number would separate them. It is a counts-identical change, so it does not affect any priced result.
+- **For the ρ rule** (PROTOCOL): this change does not fit the default band 0.85–1.06. It is the first measured case with ρ well above 1.35, so a hash-table or allocation-shape class may need its own band. Changing the rule is the user's decision.
+
+**Scored as filed** (the point change against each range):
+- **R-28** (72: −1.7 to −4.4; 84: −1.1 to −3.0; 96: −1.0 to −2.6; falsifier outside): 72 **hit**; 84 **hit**; 96 **falsified** (−3.33, a larger saving). The note beside R-28 (post-code check differs > 20% at 72 and 84) was recorded before the run.
+- **D-28** (72: −1.5 to −3.9; 84: −0.8 to −2.8; 96: −0.6 to −2.6; falsifier outside): 72 **falsified** (−4.03, larger); 84 **hit**; 96 **falsified** (−3.33, larger).
+- **G-21 ranges** (72: −2.5 to −5.0; 84: −1.6 to −3.6; 96: −1.4 to −3.2): 72 **hit**; 84 **hit**; 96 **missed** (−3.33).
+- **G-21 falsifiers** (72: ≥ −1.0 or ≤ −7.0; 84: ≥ 0 or ≤ −5.0; 96: ≥ 0 or ≤ −4.5): **none triggered.**
+- **G-21's ρ of 1.15 was the closest** of the three at 84 and 96 (measured 1.6–1.7). Its stated basis ("pointer-chasing") was wrong per the reviewer's recorded note, so the closeness is not evidence for that mechanism.
+
+**Phase 1** (finish wins: div64 timing and the partials table, all three forecasters sealed and scored) is complete. All three counts-identical changes are timed: alloc-once, div64, ptable. None is adopted by this entry; adoption is the user's decision.
