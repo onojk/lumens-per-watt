@@ -10829,3 +10829,14 @@ Results:
 - The three crossing rows are censored at 40 bits, so their z is a lower bound.
 - The three twilight rows are hits on a value fixed by construction.
 - The rounds in NOTES 9185-10649 (R-20..R-28, D-20..D-28, G-13..G-21) are still not tallied in the scorecard.
+
+**Correction (from the reviewer, Oct 28; documentation only):** the twilight at 96 bits is θ ≈ **0.28–0.34**, the p−1 to QS hand-off, **not 0.22–0.26**. The earlier figure compared ECM with QS, but ECM is never the best non-QS lamp there.
+- Under op-class at 96, the best non-QS lamp is rho to 0.24, then p−1 from 0.26 to 0.30, and QS takes over from 0.32 (`results/growth-spectrum-twilight_opclass_view.out`).
+- The "0.22–0.26" wording is the reviewer's earlier figure; it does not appear verbatim in NOTES. The nearest Claude text is "a possible specialist on 0.22–0.28" in the op-class view entry (a13b93d), which this correction supersedes. The next specialist is on θ 0.28–0.34.
+
+**Claude's check of "ECM is never the best non-QS lamp"** (op-class light, `evolve/light_spectrum.json`): it holds in the twilight. ECM is the best non-QS lamp in only four bands, all past the crossover and all where p−1 had no success in the sample:
+- 72 bits: 0.46 and 0.48;
+- 84 bits: 0.44;
+- 96 bits: 0.38.
+
+QS is 6–9× brighter than ECM in each of them. This does not change the correction.
