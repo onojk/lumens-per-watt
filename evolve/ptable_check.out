@@ -1,0 +1,4 @@
+72 bits: instructions per number 5.270 M -> 5.242 M (-0.53%; removed 0.028 M, the cost note's estimate 0.180 M, a difference of -85%)
+84 bits: instructions per number 12.082 M -> 11.943 M (-1.16%; removed 0.140 M, the cost note's estimate 0.273 M, a difference of -49%)
+96 bits: instructions per number 30.957 M -> 30.351 M (-1.96%; removed 0.606 M, the cost note's estimate 0.631 M, a difference of -4%)
+96 bits, 10 balanced numbers (Python trace): partial inserts per attempt max 1194, median 912 (10 attempts); the table doubles past 2,048 entries: never

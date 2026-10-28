@@ -9,7 +9,18 @@
 - Removed: about 0.18 / 0.27 / 0.63 M per number, 3.4 / 2.3 / 2.0%.
 - The ρ-rule forecast: central −2.9 / −1.9 / −1.7%; band −1.3 to −4.2 / −0.9 to −2.8 / −0.8 to −2.5%.
 
-The post-code callgrind check will be added here when it exists.
+**The post-code callgrind check** (`evolve/ptable_check.py`, `.out`; after acceptance, before timing; added after all three forecasts were sealed):
+
+| bits | instructions per number, alloc+div64 → +ptable | removed | the cost note's estimate | difference |
+|---|---|---|---|---|
+| 72 | 5.270 → 5.242 M (−0.53%) | 0.028 M | 0.180 M | **−85%** |
+| 84 | 12.082 → 11.943 M (−1.16%) | 0.140 M | 0.273 M | **−49%** |
+| 96 | 30.957 → 30.351 M (−1.96%) | 0.606 M | 0.631 M | −4% |
+
+- **The cause:** `PTable::new` costs 155–164 k instructions per number, all in the zeroed allocation of its 4,096 slots (32 KB of keys + 128 KB of values) once per attempt. The cost note assumed about 2 k per number for the clear.
+- **The lookups and inserts themselves** cost 17 / 27 / 61 k per number against the map's 195 / 296 / 676 k.
+- **The table never doubles at these sizes:** at most 1,194 inserts per attempt on 10 balanced 96-bit numbers (Python trace), against a doubling threshold of 2,048. That answers D-28's missing input: the rehash side does not apply.
+- **The 160 KB allocation** is above glibc's default mmap threshold (128 KB), so it may also pay page-fault time that callgrind does not count. Not measured.
 
 ## The reviewer's R-28 (Oct 27 night; sealed; verbatim)
 
@@ -17,6 +28,8 @@ The post-code callgrind check will be added here when it exists.
            96: -1.0% to -2.6%. 60%. Basis: cost-note removal 3.4 / 2.3 / 2.0% x rho 0.5-1.3 (central 0.9),
            floored at +/-1 point. Falsifier: outside the range. If the post-code callgrind check differs from
            the cost note by more than 20%, note it beside R-28 (the range stands).
+
+**Note beside R-28** (as R-28 asks; the range stands): the post-code check differs from the cost note by more than 20% at 72 (−85%) and 84 (−49%), and by −4% at 96. See the check above.
 
 ## DeepSeek's D-28 (00:07 Oct 28 PT; sealed; verbatim; filed before the partials-table run started)
 
