@@ -10259,3 +10259,66 @@ The user asked for this to be recorded (Oct 27 late). Three times in one week, w
 
 **Correction to Run D's scoring** (the same night): "R-26 states no separate falsifier; per the protocol's default, outside the range is falsified at all three" is wrong. PROTOCOL.md has no such default. R-26 states a range and a confidence, and no falsifier, so it is scored **missed at all three sizes**, not falsified. The tally is therefore: R-26 missed ×3; D-26 falsified ×3; G-19 ranges missed ×3 and falsifier triggered at 72. That makes four falsifications, not five.
 
+
+## Gap location, second run: the current card (2′b + A-prime fix + alloc-once) against YAFU's tinysiqs (information only; the user's request, Oct 27 night)
+
+**In plain English first: after alloc-once, the card executes 1.84 / 2.02 / 2.33× YAFU's instructions on the balanced band** (5.78 / 12.91 / 32.21 M against 3.15 / 6.39 / 13.83 M per number), down from 2.61 / 2.44 / 2.59×.
+- **The largest remaining gap is confirm + large primes:** 82 / 72 / 42% of it at 72 / 84 / 96.
+- **Inside confirm, one step dominates:** the root test is 45 / 58 / 64% of confirm + lp. On its own it executes more instructions than YAFU's whole candidate check at every size (1.25 / 3.30 / 7.05 M against 0.62 / 1.01 / 3.43 M).
+- **YAFU runs the same test,** the offset mod p by a reciprocal compared with the two roots, but **8 primes at a time in 16-bit SSE4.1 lanes**, and it abandons a candidate early when its small primes contribute too little log. The card tests one prime at a time in 64-bit arithmetic.
+- **So the biggest remaining gap is a vector-width gap,** which I-046 says needs an op-class SIMD rule before any adoption.
+- **After the root test:** the sieve (11 / 20 / 26% of the gap) and the scan (11 / 14 / 18%; YAFU compares 32 bytes per instruction).
+
+`evolve/gap_locate2.py` (`.out`, `gap_locate2.json`), `evolve/gap_table2.py` (`gap_table2.out`).
+- **Builds:** the card is lampcore f6aa08d built with line tables in Claude's scratch (`lc-debug2`, sha256 09a8c763…), with stdout checked identical to the release binary's. YAFU is unchanged: its counts match Experiment 1's exactly.
+- **Region spans:** derived from `qs.rs` (each `pt_end` paired with its `pt_snap`). The derivation reproduces Experiment 1's hand-written spans on 210a7d0.
+- **Attribution:** complete; it sums to `lamp_qs`'s inclusive instructions.
+- **Card time shares: not measured.** The machine was on battery (54%), and the user's battery override covered Run D only.
+
+**Common phases, M instructions per number (card now / YAFU; the change in the card since Experiment 1):**
+
+| phase | 72 | 84 | 96 | share of the gap (72 / 84 / 96) | card change since Experiment 1 (72 / 84 / 96) |
+|---|---|---|---|---|---|
+| factor base | 0.14 / 0.10 | 0.24 / 0.15 | 0.37 / 0.18 | 1 / 1 / 1% | 0.00 / 0.00 / 0.00 |
+| poly set-up | 1.18 / 0.43 | 1.87 / 1.13 | 4.29 / 1.16 | 28 / 11 / 17% | **−1.57 / −1.78 / −2.59** |
+| sieve | 0.76 / 0.48 | 2.73 / 1.45 | 9.97 / 5.14 | 11 / 20 / 26% | 0 |
+| scan | 0.31 / 0.03 | 0.98 / 0.08 | 3.60 / 0.26 | 11 / 14 / 18% | 0 |
+| **confirm + lp** | **2.76 / 0.62** | **5.70 / 1.01** | **11.10 / 3.43** | **82 / 72 / 42%** | −0.02 / −0.06 / −0.13 |
+| la + sqrt | 0.44 / 1.48 | 0.99 / 2.57 | 2.01 / 3.64 | −40 / −24 / −9% | −0.01 / −0.01 / −0.01 |
+| unplaced (outside the timed spans, line 0) | 0.19 / 0.00 | 0.39 / 0.01 | 0.88 / 0.01 | 7 / 6 / 5% | **−0.84 / −0.84 / −0.88** |
+| **total** | **5.78 / 3.15** | **12.91 / 6.39** | **32.21 / 13.83** | | **−2.44 / −2.69 / −3.61** |
+
+**Confirm + large primes, by sub-step (the card; calls counted at their call site), M per number at 72 / 84 / 96:**
+
+| sub-step | 72 | 84 | 96 | share of confirm + lp (72 / 84 / 96) |
+|---|---|---|---|---|
+| **root test** (one prime at a time: the reciprocal, the compare, the hit list) | **1.246** | **3.296** | **7.053** | **45 / 58 / 64%** |
+| divide hits (i128 `%` and `/`: `__modti3`, `__divti3`) | 0.619 | 1.029 | 1.591 | 22 / 18 / 14% |
+| lp: hash (the partials map: hashbrown insert / get) | 0.254 | 0.397 | 0.904 | 9 / 7 / 8% |
+| A-prime and even checks (i128 `v % p` per A-prime) | 0.202 | 0.303 | 0.434 | 7 / 5 / 4% |
+| lp: copy | 0.130 | 0.213 | 0.442 | 5 / 4 / 4% |
+| lp: add, lp: comb, evaluate, merge hit lists, cofactor check, lp other | 0.31 | 0.47 | 0.68 | 11 / 8 / 6% |
+
+**YAFU's `check_sieve_val_tiny`** (0.62 / 1.01 / 3.43 M per number; PLT stubs followed to their GMP callee):
+- **Its own code: 25 / 27 / 29%.** This is the small-prime loop, then the factor base **8 primes at a time** (`USE_8X_TD`, SSE4.1 16-bit lanes; 14–20% of its own instructions are 128-bit packed, Experiment 1). It abandons a candidate when the small primes' log sum is below 6.
+- **GMP `mpz_tdiv_q_ui`: 59 / 58 / 56%.** This divides out the primes that hit, on a multi-precision value.
+- **Other GMP calls (add, mul_ui, swap, sub, shifts): about 15%.**
+
+**Reading (not a verdict):**
+1. **The root test is the card's largest single sub-step** and the largest piece of the remaining gap. Its algorithm is the same as YAFU's. The difference is lane width (64-bit scalar against 8 × 16-bit) and YAFU's early abandonment. A narrower-lane or vectorised root test is the natural next structural move. **It falls under I-046:** op-class v1 would count a vector instruction as one, so a SIMD rule (v2, prospective) comes first. An early-abandon rule would change which candidates are fully checked, so it would change op counts (tests, hits). It would be a card change with its own cost note, not counts-identical.
+2. **Divide hits** uses 128-bit integer division (`__modti3` / `__divti3`, software routines) for v up to about 2^100. YAFU uses GMP's `mpz_tdiv_q_ui` and spends a comparable or larger share on it. Dividing a 128-bit value by a word-size prime with a 64-bit two-step (high and low halves) is a counts-identical candidate.
+3. **The card's own lp hash** (hashbrown) is 8% of confirm + lp. YAFU's tiny path keeps no partials map (`lpb` is 0 in the call). That is a design difference, not a gap to close.
+4. **Count normalisation is missing:** candidates per number may differ between the two (thresholds, block sizes). A per-candidate comparison would need both sides' candidate counts. Not done.
+
+**Not established:** time per sub-step (no time shares measured; instructions are not time); YAFU's candidate count; one callgrind run per size per side.
+
+## The shared under-prediction in Run D: where it came from (the user asked for this to be recorded)
+
+R-26, D-26 and G-19 all predicted a wall saving well below the instruction drop, and all missed in the same direction. The measured time-to-instruction ratio was **0.85 / 0.92 / 1.06** at 72 / 84 / 96. The forecasters assumed 0.3–0.8.
+- **The seed, in the user's words:** the reviewer's update text, "allocator code is short, cache-friendly".
+- **The texts on file:**
+  - R-26's basis (`predictions/alloc-once.md`): "malloc paths are cache-friendly short instructions, so the time share is somewhat below the instruction share, but freeing memory also reduces cache churn. Widened for both."
+  - The relayed update to DeepSeek and Grok: "Instruction drops do not translate one-for-one into time."
+- **How it propagated:** D-26's working took "wall-to-instruction ratio 0.45–0.75, central 0.55" with a span of 0.30–0.80. G-19 named "the exact translation from instruction drop to time" as missing and centred lower. Neither forecaster had a measured figure, so both took the direction from the update.
+- **What the measurement says:** the allocator's instructions cost about the card's average time per instruction or more (the cost note's Wolfram band, k ≈ 1.06 / 1.18 / 1.41). That fits branchy, pointer-chasing code, which was the model's stated upper-side reason, not cache-friendly short code. No cache or branch counters were read.
+- **Lesson for the protocol (a suggestion, the user's call):** a qualitative claim in an update to the forecasters ("short, cache-friendly") acts like a shared input, so it should be labelled as an unmeasured opinion when relayed, as external figures are.

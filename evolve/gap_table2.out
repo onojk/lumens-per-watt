@@ -1,0 +1,95 @@
+== 72 bits, balanced band: M Ir per number (callgrind). Card time shares: see gap_locate2.json
+  phase           card now    YAFU  card-YAFU  share of gap  card before   change
+  factor base        0.137   0.102      0.035          1.3%        0.136   +0.000
+  poly set-up        1.176   0.429      0.747         28.4%        2.743   -1.568
+  sieve              0.758   0.480      0.278         10.6%        0.758   +0.000
+  scan               0.312   0.033      0.279         10.6%        0.313   -0.000
+  confirm + lp       2.759   0.616      2.143         81.5%        2.779   -0.020
+  la + sqrt          0.444   1.483     -1.040        -39.6%        0.454   -0.011
+  unplaced           0.190   0.004      0.186          7.1%        1.032   -0.842
+  total              5.776   3.147      2.629        100.0%        8.215   -2.439
+  -- confirm + lp, by sub-step (card; calls into other functions included at their call site):
+     confirm: root test                     1.246 ( 45.2%); calls: alloc::vec::Vec<T,A>::resize 0.008
+     confirm: divide hits                   0.619 ( 22.4%); calls: __divti3 0.196, __modti3 0.189
+     lp: hash                               0.254 (  9.2%); calls: hashbrown::map::HashMap<K,V,S,A>::insert 0.139, hashbrown::map::HashMap<K,V,S,A>::get 0.056
+     confirm: A-prime and even checks       0.202 (  7.3%); calls: __modti3 0.110, lampcore::Meter::charge 0.038
+     lp: copy                               0.130 (  4.7%); calls: alloc::vec::Vec<T,A>::extend_trusted 0.046, lampcore::pt_snap_lp 0.006
+     lp: add                                0.060 (  2.2%); calls: lampcore::qs::Ledger::add 0.056, lampcore::pt_snap_lp 0.001
+     confirm: evaluate (v, sign, lists)     0.060 (  2.2%); calls: lampcore::Meter::charge 0.023, alloc::raw_vec::RawVec<T,A>::grow_one 0.000
+     lp: comb                               0.059 (  2.2%); calls: ruint::modular::<impl ruint::Uint<_,_>>::mul 0.012, <i128>::rem_euclid 0.008
+     confirm: merge hit lists               0.053 (  1.9%); calls: lampcore::Meter::charge 0.015, __memcpy_avx_unaligned_erms 0.006
+     lp: cofactor check                     0.052 (  1.9%); calls: __floattidf 0.020, lampcore::Meter::charge 0.010
+     lp: other                              0.024 (  0.9%); calls: __modti3 0.016, lampcore::Meter::charge 0.004
+     (confirm / lp lines outside the sub-steps)   0.000 (  0.0%)
+  -- YAFU check_sieve_val_tiny, 0.617 M per number:
+     own code, check_sieve_val_tiny           0.152 ( 24.7%)
+     call libgmp.so.10.5.0:__gmpz_tdiv_q_ui   0.363 ( 58.9%)
+     call libgmp.so.10.5.0:__gmpz_add         0.029 (  4.7%)
+     call libgmp.so.10.5.0:__gmpz_mul_ui      0.028 (  4.5%)
+     call libgmp.so.10.5.0:__gmpz_swap        0.018 (  2.8%)
+     call libgmp.so.10.5.0:__gmpz_sub         0.010 (  1.5%)
+     call libgmp.so.10.5.0:__gmpz_tdiv_q_2exp   0.007 (  1.2%)
+     call libgmp.so.10.5.0:__gmpz_scan1       0.007 (  1.1%)
+== 84 bits, balanced band: M Ir per number (callgrind). Card time shares: see gap_locate2.json
+  phase           card now    YAFU  card-YAFU  share of gap  card before   change
+  factor base        0.237   0.150      0.087          1.3%        0.238   -0.000
+  poly set-up        1.869   1.126      0.743         11.4%        3.648   -1.779
+  sieve              2.732   1.445      1.288         19.8%        2.732   +0.000
+  scan               0.984   0.081      0.903         13.9%        0.985   -0.000
+  confirm + lp       5.703   1.006      4.697         72.0%        5.759   -0.055
+  la + sqrt          0.987   2.573     -1.586        -24.3%        1.000   -0.013
+  unplaced           0.392   0.005      0.387          5.9%        1.235   -0.843
+  total             12.906   6.386      6.519        100.0%       15.597   -2.691
+  -- confirm + lp, by sub-step (card; calls into other functions included at their call site):
+     confirm: root test                     3.296 ( 57.8%); calls: alloc::vec::Vec<T,A>::resize 0.012
+     confirm: divide hits                   1.029 ( 18.0%); calls: __divti3 0.326, __modti3 0.315
+     lp: hash                               0.397 (  7.0%); calls: hashbrown::map::HashMap<K,V,S,A>::insert 0.207, hashbrown::map::HashMap<K,V,S,A>::get 0.089
+     confirm: A-prime and even checks       0.303 (  5.3%); calls: __modti3 0.165, lampcore::Meter::charge 0.057
+     lp: copy                               0.213 (  3.7%); calls: alloc::vec::Vec<T,A>::extend_trusted 0.077, lampcore::pt_snap_lp 0.010
+     lp: add                                0.091 (  1.6%); calls: lampcore::qs::Ledger::add 0.085, lampcore::pt_snap_lp 0.002
+     lp: comb                               0.090 (  1.6%); calls: ruint::modular::<impl ruint::Uint<_,_>>::mul 0.018, <i128>::rem_euclid 0.012
+     confirm: evaluate (v, sign, lists)     0.089 (  1.6%); calls: lampcore::Meter::charge 0.034, alloc::raw_vec::RawVec<T,A>::grow_one 0.000
+     confirm: merge hit lists               0.078 (  1.4%); calls: lampcore::Meter::charge 0.023, __memcpy_avx_unaligned_erms 0.009
+     lp: cofactor check                     0.078 (  1.4%); calls: __floattidf 0.030, lampcore::Meter::charge 0.014
+     lp: other                              0.040 (  0.7%); calls: __modti3 0.027, lampcore::Meter::charge 0.007
+     (confirm / lp lines outside the sub-steps)   0.000 (  0.0%)
+  -- YAFU check_sieve_val_tiny, 1.007 M per number:
+     own code, check_sieve_val_tiny           0.270 ( 26.8%)
+     call libgmp.so.10.5.0:__gmpz_tdiv_q_ui   0.582 ( 57.8%)
+     call libgmp.so.10.5.0:__gmpz_add         0.044 (  4.3%)
+     call libgmp.so.10.5.0:__gmpz_mul_ui      0.043 (  4.2%)
+     call libgmp.so.10.5.0:__gmpz_swap        0.028 (  2.8%)
+     call libgmp.so.10.5.0:__gmpz_sub         0.015 (  1.5%)
+     call libgmp.so.10.5.0:__gmpz_tdiv_q_2exp   0.011 (  1.1%)
+     call libgmp.so.10.5.0:__gmpz_scan1       0.010 (  1.0%)
+== 96 bits, balanced band: M Ir per number (callgrind). Card time shares: see gap_locate2.json
+  phase           card now    YAFU  card-YAFU  share of gap  card before   change
+  factor base        0.369   0.184      0.185          1.0%        0.372   -0.003
+  poly set-up        4.290   1.164      3.126         17.0%        6.876   -2.586
+  sieve              9.968   5.139      4.828         26.3%        9.968   +0.000
+  scan               3.595   0.264      3.330         18.1%        3.595   -0.001
+  confirm + lp      11.103   3.429      7.674         41.7%       11.230   -0.127
+  la + sqrt          2.006   3.638     -1.632         -8.9%        2.018   -0.013
+  unplaced           0.882   0.008      0.874          4.8%        1.761   -0.879
+  total             32.212  13.826     18.386        100.0%       35.820   -3.608
+  -- confirm + lp, by sub-step (card; calls into other functions included at their call site):
+     confirm: root test                     7.053 ( 63.5%); calls: alloc::vec::Vec<T,A>::resize 0.017
+     confirm: divide hits                   1.591 ( 14.3%); calls: __divti3 0.504, __modti3 0.487
+     lp: hash                               0.904 (  8.1%); calls: hashbrown::map::HashMap<K,V,S,A>::insert 0.486, hashbrown::map::HashMap<K,V,S,A>::get 0.191
+     lp: copy                               0.442 (  4.0%); calls: alloc::vec::Vec<T,A>::extend_trusted 0.161, lampcore::pt_snap_lp 0.021
+     confirm: A-prime and even checks       0.434 (  3.9%); calls: __modti3 0.237, lampcore::Meter::charge 0.082
+     lp: comb                               0.134 (  1.2%); calls: ruint::modular::<impl ruint::Uint<_,_>>::mul 0.026, alloc::vec::Vec<T,A>::extend_trusted 0.018
+     lp: add                                0.132 (  1.2%); calls: lampcore::qs::Ledger::add 0.123, lampcore::pt_snap_lp 0.003
+     confirm: evaluate (v, sign, lists)     0.128 (  1.2%); calls: lampcore::Meter::charge 0.049, alloc::raw_vec::RawVec<T,A>::grow_one 0.000
+     confirm: merge hit lists               0.111 (  1.0%); calls: lampcore::Meter::charge 0.033, __memcpy_avx_unaligned_erms 0.012
+     lp: cofactor check                     0.088 (  0.8%); calls: __floattidf 0.042, lampcore::Meter::charge 0.015
+     lp: other                              0.085 (  0.8%); calls: __modti3 0.058, lampcore::Meter::charge 0.015
+     (confirm / lp lines outside the sub-steps)   0.000 (  0.0%)
+  -- YAFU check_sieve_val_tiny, 3.433 M per number:
+     own code, check_sieve_val_tiny           0.995 ( 29.0%)
+     call libgmp.so.10.5.0:__gmpz_tdiv_q_ui   1.914 ( 55.8%)
+     call libgmp.so.10.5.0:__gmpz_add         0.147 (  4.3%)
+     call libgmp.so.10.5.0:__gmpz_mul_ui      0.143 (  4.2%)
+     call libgmp.so.10.5.0:__gmpz_swap        0.090 (  2.6%)
+     call libgmp.so.10.5.0:__gmpz_sub         0.050 (  1.4%)
+     call libgmp.so.10.5.0:__gmpz_tdiv_q_2exp   0.036 (  1.1%)

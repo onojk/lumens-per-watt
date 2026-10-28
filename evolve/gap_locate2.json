@@ -1,0 +1,884 @@
+{
+ "spans": [
+  [
+   "confirm",
+   1165,
+   1277
+  ],
+  [
+   "fb",
+   255,
+   257
+  ],
+  [
+   "gray",
+   956,
+   987
+  ],
+  [
+   "lp_ledger",
+   1278,
+   1370
+  ],
+  [
+   "mult",
+   239,
+   250
+  ],
+  [
+   "resieve",
+   1103,
+   1162
+  ],
+  [
+   "scan",
+   1099,
+   1102
+  ],
+  [
+   "setup",
+   637,
+   804
+  ],
+  [
+   "setup",
+   806,
+   953
+  ],
+  [
+   "sieve",
+   989,
+   1098
+  ],
+  [
+   "solve",
+   266,
+   268
+  ]
+ ],
+ "substeps": [
+  [
+   "confirm: evaluate (v, sign, lists)",
+   1165,
+   1206
+  ],
+  [
+   "confirm: root test",
+   1207,
+   1232
+  ],
+  [
+   "confirm: A-prime and even checks",
+   1233,
+   1244
+  ],
+  [
+   "confirm: merge hit lists",
+   1245,
+   1261
+  ],
+  [
+   "confirm: divide hits",
+   1262,
+   1277
+  ],
+  [
+   "lp: cofactor check",
+   1278,
+   1295
+  ],
+  [
+   "lp: copy",
+   1296,
+   1312
+  ],
+  [
+   "lp: add",
+   1314,
+   1316
+  ],
+  [
+   "lp: hash",
+   1329,
+   1340
+  ],
+  [
+   "lp: comb",
+   1341,
+   1362
+  ],
+  [
+   "lp: add",
+   1363,
+   1365
+  ]
+ ],
+ "time_shares_measured": true,
+ "sizes": {
+  "72": {
+   "card": {
+    "Ir": {
+     "other (in lamp_qs / sieve_source)": 2045292,
+     "line 0": 13151552,
+     "mult": 1242626,
+     "fb": 9706367,
+     "solve": 35487540,
+     "setup": 91637358,
+     "sieve": 60485595,
+     "gray": 2416489,
+     "scan": 24999942,
+     "resieve": 133364,
+     "confirm": 174335325,
+     "lp_ledger": 46420173
+    },
+    "sub_Ir": {
+     "confirm: evaluate (v, sign, lists)": 4770773,
+     "confirm: root test": 99677627,
+     "confirm: A-prime and even checks": 16138276,
+     "confirm: merge hit lists": 4222912,
+     "confirm: divide hits": 49525737,
+     "lp: cofactor check": 4191147,
+     "lp: copy": 10395059,
+     "lp: other": 1914542,
+     "lp: add": 4808204,
+     "lp: hash": 20351979,
+     "lp: comb": 4759242
+    },
+    "sub_calls": {
+     "confirm: evaluate (v, sign, lists)": {
+      "lampcore::Meter::charge": 1822320,
+      "alloc::raw_vec::RawVec<T,A>::grow_one": 2944
+     },
+     "confirm: root test": {
+      "alloc::vec::Vec<T,A>::resize": 627440
+     },
+     "confirm: A-prime and even checks": {
+      "lampcore::Meter::charge": 3037200,
+      "alloc::raw_vec::RawVec<T,A>::grow_one": 14241,
+      "__modti3": 8807880
+     },
+     "confirm: merge hit lists": {
+      "lampcore::Meter::charge": 1214880,
+      "alloc::raw_vec::RawVec<T,A>::grow_one": 7736,
+      "__memcpy_avx_unaligned_erms": 455261,
+      "alloc::raw_vec::RawVecInner<A>::reserve::do_reserve_and_handle": 53372
+     },
+     "confirm: divide hits": {
+      "__divti3": 15675900,
+      "alloc::raw_vec::RawVec<T,A>::grow_one": 40706,
+      "__modti3": 15153370,
+      "lampcore::Meter::charge": 742304,
+      "lampcore::pt_end": 645405
+     },
+     "lp: copy": {
+      "lampcore::pt_snap_lp": 516537,
+      "alloc::raw_vec::RawVec<T,A>::grow_one": 30276,
+      "alloc::vec::Vec<T,A>::extend_trusted": 3713793,
+      "lampcore::Meter::charge": 393552,
+      "lampcore::pt_end": 418149
+     },
+     "lp: add": {
+      "lampcore::pt_snap_lp": 115563,
+      "lampcore::qs::Ledger::add": 4483527,
+      "lampcore::pt_end": 93551
+     },
+     "lp: other": {
+      "lampcore::Meter::charge": 349248,
+      "__modti3": 1266024,
+      "lampcore::pt_end": 1377
+     },
+     "lp: hash": {
+      "lampcore::pt_snap_lp": 458388,
+      "lampcore::Meter::charge": 654752,
+      "hashbrown::map::HashMap<K,V,S,A>::get": 4496262,
+      "lampcore::pt_end": 371076,
+      "__memcpy_avx_unaligned_erms": 415758,
+      "hashbrown::map::HashMap<K,V,S,A>::insert": 11099044,
+      "alloc::raw_vec::RawVecInner<A>::reserve::do_reserve_and_handle": 1742646
+     },
+     "lp: comb": {
+      "lampcore::pt_snap_lp": 57414,
+      "<i128>::rem_euclid": 667592,
+      "ruint::modular::<impl ruint::Uint<_,_>>::mul_mod_by_ref": 965660,
+      "lampcore::Meter::charge": 87488,
+      "alloc::raw_vec::RawVec<T,A>::grow_one": 106838,
+      "alloc::vec::Vec<T,A>::extend_trusted": 622006,
+      "lampcore::pt_end": 46478
+     },
+     "lp: cofactor check": {
+      "lampcore::Meter::charge": 777024,
+      "__floattidf": 1583820
+     }
+    },
+    "lamp_qs_inclusive": 462061623,
+    "attributed": 462061623
+   },
+   "yafu": {
+    "Ir": {
+     "tinysiqs": 156579,
+     "memset": 4025362,
+     "find_poly_a": 123470,
+     "find_first_poly_b": 24071052,
+     "find_next_poly_b": 1827910,
+     "find_multiplier_tiny": 708879,
+     "__gmpz_get_ui": 11348,
+     "solve_linear_system_tiny": 13865190,
+     "get_rand": 78417,
+     "sqrtModP_16": 362719,
+     "powm_16": 1144901,
+     "legendre_16": 2622049,
+     "init_fb_tiny": 3344101,
+     "init_siqs_tiny": 44560,
+     "sieve_next_poly_tiny": 4194558,
+     "fill_sieve_block_tiny": 34356583,
+     "modinv_16": 4080756,
+     "check_sieve_val_tiny": 49290124,
+     "__gmpz_abs": 24146,
+     "find_factors_tiny": 104789239,
+     "mark_sieve_block_tiny": 2658372
+    },
+    "library_Ir": {
+     "tinysiqs": 133622,
+     "find_poly_a": 81272,
+     "find_first_poly_b": 21005117,
+     "find_next_poly_b": 1444169,
+     "find_multiplier_tiny": 425488,
+     "memset": 2541200,
+     "init_fb_tiny": 2851771,
+     "init_siqs_tiny": 9200,
+     "sieve_next_poly_tiny": 145431,
+     "check_sieve_val_tiny": 37102693,
+     "find_factors_tiny": 92265222
+    },
+    "simd_own": {
+     "tinysiqs": {
+      "general": 22317,
+      "scalar FP in xmm": 560,
+      "128-bit packed": 80
+     },
+     "memset": {
+      "general": 1484002,
+      "128-bit packed": 160
+     },
+     "find_poly_a": {
+      "general": 42198
+     },
+     "find_first_poly_b": {
+      "general": 3065935
+     },
+     "find_next_poly_b": {
+      "general": 205217,
+      "256-bit": 178524
+     },
+     "find_multiplier_tiny": {
+      "general": 258039,
+      "scalar FP in xmm": 24792,
+      "128-bit packed": 560
+     },
+     "__gmpz_get_ui": {
+      "general": 11348
+     },
+     "solve_linear_system_tiny": {
+      "general": 13865190
+     },
+     "get_rand": {
+      "general": 78417
+     },
+     "sqrtModP_16": {
+      "general": 362719
+     },
+     "powm_16": {
+      "general": 1144901
+     },
+     "legendre_16": {
+      "general": 2622049
+     },
+     "init_fb_tiny": {
+      "general": 446250,
+      "128-bit packed": 7680,
+      "scalar FP in xmm": 38400
+     },
+     "init_siqs_tiny": {
+      "general": 34880,
+      "scalar FP in xmm": 400,
+      "128-bit packed": 80
+     },
+     "sieve_next_poly_tiny": {
+      "general": 4049127
+     },
+     "fill_sieve_block_tiny": {
+      "general": 34356583
+     },
+     "modinv_16": {
+      "general": 4080756
+     },
+     "check_sieve_val_tiny": {
+      "general": 10488662,
+      "128-bit packed": 1684465,
+      "256-bit": 14304
+     },
+     "__gmpz_abs": {
+      "general": 24146
+     },
+     "find_factors_tiny": {
+      "general": 12524017
+     },
+     "mark_sieve_block_tiny": {
+      "general": 2106932,
+      "256-bit": 551440
+     }
+    },
+    "tinysiqs_inclusive": 251780315,
+    "attributed": 251780315
+   },
+   "yafu_check": {
+    "own_by_innermost_fn": {
+     "check_sieve_val_tiny": 12187431,
+     "__gmpz_abs": 24146,
+     "__gmpz_get_ui": 10788
+    },
+    "calls_by_callee": {
+     "libgmp.so.10.5.0:__gmpz_mul_ui": 2244194.0,
+     "libgmp.so.10.5.0:__gmpz_add": 2296061.0,
+     "libgmp.so.10.5.0:__gmpz_scan1": 528178.0,
+     "libgmp.so.10.5.0:__gmpz_swap": 1402384.0,
+     "libgmp.so.10.5.0:__gmpz_tdiv_q_ui": 29068086.0,
+     "libgmp.so.10.5.0:__gmpz_tdiv_q_2exp": 578544.0,
+     "libgmp.so.10.5.0:__gmpz_sub": 760260.0,
+     "libgmp.so.10.5.0:__gmpz_cmp_ui": 224986.0
+    }
+   },
+   "card_phasetime_ns": {
+    "mult": 350623,
+    "fb": 2138901,
+    "setup": 9986676,
+    "gray": 1278795,
+    "sieve": 6889081,
+    "scan": 2403926,
+    "resieve": 200574,
+    "confirm": 15801844,
+    "lp_ledger": 7507074,
+    "solve": 6271101,
+    "lp:copy": 0,
+    "lp:hash": 0,
+    "lp:comb": 0,
+    "lp:add": 0,
+    "sv:zero": 0,
+    "sv:free2": 0,
+    "sv:prime": 0,
+    "sv:power": 0,
+    "sv:tail": 0
+   }
+  },
+  "84": {
+   "card": {
+    "Ir": {
+     "other (in lamp_qs / sieve_source)": 2780752,
+     "setup": 144460842,
+     "line 0": 28594071,
+     "sieve": 218407145,
+     "gray": 5057618,
+     "scan": 78743456,
+     "resieve": 176792,
+     "confirm": 383565403,
+     "lp_ledger": 72702049,
+     "mult": 1239894,
+     "fb": 17758672,
+     "solve": 78975116
+    },
+    "sub_Ir": {
+     "confirm: evaluate (v, sign, lists)": 7148852,
+     "confirm: root test": 263651834,
+     "confirm: A-prime and even checks": 24206083,
+     "confirm: merge hit lists": 6248048,
+     "confirm: divide hits": 82310586,
+     "lp: cofactor check": 6219433,
+     "lp: copy": 17033495,
+     "lp: other": 3206978,
+     "lp: add": 7280074,
+     "lp: hash": 31750097,
+     "lp: comb": 7211972
+    },
+    "sub_calls": {
+     "confirm: evaluate (v, sign, lists)": {
+      "lampcore::Meter::charge": 2735232,
+      "alloc::raw_vec::RawVec<T,A>::grow_one": 1850
+     },
+     "confirm: root test": {
+      "alloc::vec::Vec<T,A>::resize": 935500
+     },
+     "confirm: A-prime and even checks": {
+      "lampcore::Meter::charge": 4558720,
+      "alloc::raw_vec::RawVec<T,A>::grow_one": 12526,
+      "__modti3": 13220288
+     },
+     "confirm: merge hit lists": {
+      "lampcore::Meter::charge": 1823488,
+      "alloc::raw_vec::RawVec<T,A>::grow_one": 8145,
+      "__memcpy_avx_unaligned_erms": 688005,
+      "alloc::raw_vec::RawVecInner<A>::reserve::do_reserve_and_handle": 57738
+     },
+     "confirm: divide hits": {
+      "__divti3": 26055360,
+      "alloc::raw_vec::RawVec<T,A>::grow_one": 41114,
+      "__modti3": 25186848,
+      "lampcore::Meter::charge": 1140640,
+      "lampcore::pt_end": 968728
+     },
+     "lp: copy": {
+      "lampcore::pt_snap_lp": 821394,
+      "alloc::raw_vec::RawVec<T,A>::grow_one": 32841,
+      "alloc::vec::Vec<T,A>::extend_trusted": 6173644,
+      "lampcore::Meter::charge": 625824,
+      "lampcore::pt_end": 664938
+     },
+     "lp: add": {
+      "lampcore::pt_snap_lp": 178584,
+      "lampcore::qs::Ledger::add": 6778338,
+      "lampcore::pt_end": 144568
+     },
+     "lp: other": {
+      "lampcore::Meter::charge": 553696,
+      "__modti3": 2180178,
+      "lampcore::pt_end": 1360
+     },
+     "lp: hash": {
+      "lampcore::pt_snap_lp": 726726,
+      "lampcore::Meter::charge": 1043456,
+      "hashbrown::map::HashMap<K,V,S,A>::get": 7136073,
+      "lampcore::pt_end": 588302,
+      "__memcpy_avx_unaligned_erms": 672280,
+      "hashbrown::map::HashMap<K,V,S,A>::insert": 16522784,
+      "alloc::raw_vec::RawVecInner<A>::reserve::do_reserve_and_handle": 3285004
+     },
+     "lp: comb": {
+      "lampcore::pt_snap_lp": 83916,
+      "<i128>::rem_euclid": 976128,
+      "ruint::modular::<impl ruint::Uint<_,_>>::mul_mod_by_ref": 1421767,
+      "lampcore::Meter::charge": 127872,
+      "alloc::raw_vec::RawVec<T,A>::grow_one": 111768,
+      "alloc::vec::Vec<T,A>::extend_trusted": 967762,
+      "lampcore::pt_end": 67932
+     },
+     "lp: cofactor check": {
+      "lampcore::Meter::charge": 1125536,
+      "__floattidf": 2361420
+     }
+    },
+    "lamp_qs_inclusive": 1032461810,
+    "attributed": 1032461810
+   },
+   "yafu": {
+    "Ir": {
+     "sqrtModP_16": 560212,
+     "powm_16": 1883272,
+     "get_rand": 114793,
+     "solve_linear_system_tiny": 29195032,
+     "memset": 6340432,
+     "find_multiplier_tiny": 749697,
+     "__gmpz_get_ui": 19932,
+     "find_next_poly_b": 7017958,
+     "init_fb_tiny": 5044211,
+     "init_siqs_tiny": 39016,
+     "sieve_next_poly_tiny": 16422444,
+     "modinv_16": 9504403,
+     "fill_sieve_block_tiny": 109227047,
+     "find_factors_tiny": 176667378,
+     "check_sieve_val_tiny": 80494094,
+     "__gmpz_abs": 33700,
+     "mark_sieve_block_tiny": 6493835,
+     "tinysiqs": 174285,
+     "find_poly_a": 204394,
+     "find_first_poly_b": 56961536,
+     "legendre_16": 3767029
+    },
+    "library_Ir": {
+     "memset": 2541200,
+     "find_multiplier_tiny": 428624,
+     "find_next_poly_b": 5359784,
+     "init_fb_tiny": 4304144,
+     "init_siqs_tiny": 9200,
+     "sieve_next_poly_tiny": 393353,
+     "find_factors_tiny": 154911833,
+     "check_sieve_val_tiny": 58903419,
+     "tinysiqs": 127194,
+     "find_poly_a": 136343,
+     "find_first_poly_b": 50010035
+    },
+    "simd_own": {
+     "sqrtModP_16": {
+      "general": 560212
+     },
+     "powm_16": {
+      "general": 1883272
+     },
+     "get_rand": {
+      "general": 114793
+     },
+     "solve_linear_system_tiny": {
+      "general": 29195032
+     },
+     "memset": {
+      "general": 3799072,
+      "128-bit packed": 160
+     },
+     "find_multiplier_tiny": {
+      "general": 292027,
+      "scalar FP in xmm": 28406,
+      "128-bit packed": 640
+     },
+     "__gmpz_get_ui": {
+      "general": 19932
+     },
+     "find_next_poly_b": {
+      "general": 792802,
+      "256-bit": 865372
+     },
+     "init_fb_tiny": {
+      "general": 670947,
+      "128-bit packed": 11520,
+      "scalar FP in xmm": 57600
+     },
+     "init_siqs_tiny": {
+      "general": 29336,
+      "scalar FP in xmm": 400,
+      "128-bit packed": 80
+     },
+     "sieve_next_poly_tiny": {
+      "general": 16029091
+     },
+     "modinv_16": {
+      "general": 9504403
+     },
+     "fill_sieve_block_tiny": {
+      "general": 109227047
+     },
+     "find_factors_tiny": {
+      "general": 21755545
+     },
+     "check_sieve_val_tiny": {
+      "general": 17766369,
+      "128-bit packed": 3798368,
+      "256-bit": 25938
+     },
+     "__gmpz_abs": {
+      "general": 33700
+     },
+     "mark_sieve_block_tiny": {
+      "general": 5062579,
+      "256-bit": 1431256
+     },
+     "tinysiqs": {
+      "general": 46451,
+      "scalar FP in xmm": 560,
+      "128-bit packed": 80
+     },
+     "find_poly_a": {
+      "general": 68051
+     },
+     "find_first_poly_b": {
+      "general": 6951501
+     },
+     "legendre_16": {
+      "general": 3767029
+     }
+    },
+    "tinysiqs_inclusive": 510914700,
+    "attributed": 510914700
+   },
+   "yafu_check": {
+    "own_by_innermost_fn": {
+     "check_sieve_val_tiny": 21590675,
+     "__gmpz_abs": 33700,
+     "__gmpz_get_ui": 19372
+    },
+    "calls_by_callee": {
+     "libgmp.so.10.5.0:__gmpz_mul_ui": 3420738.0,
+     "libgmp.so.10.5.0:__gmpz_add": 3495970.0,
+     "libgmp.so.10.5.0:__gmpz_scan1": 809038.0,
+     "libgmp.so.10.5.0:__gmpz_swap": 2220848.0,
+     "libgmp.so.10.5.0:__gmpz_tdiv_q_ui": 46533443.0,
+     "libgmp.so.10.5.0:__gmpz_tdiv_q_2exp": 891004.0,
+     "libgmp.so.10.5.0:__gmpz_sub": 1181860.0,
+     "libgmp.so.10.5.0:__gmpz_cmp_ui": 350518.0
+    }
+   },
+   "card_phasetime_ns": {
+    "mult": 348985,
+    "fb": 4051652,
+    "setup": 17321688,
+    "gray": 2689780,
+    "sieve": 20566498,
+    "scan": 5847535,
+    "resieve": 267990,
+    "confirm": 30081050,
+    "lp_ledger": 11461020,
+    "solve": 13200651,
+    "lp:copy": 0,
+    "lp:hash": 0,
+    "lp:comb": 0,
+    "lp:add": 0,
+    "sv:zero": 0,
+    "sv:free2": 0,
+    "sv:prime": 0,
+    "sv:power": 0,
+    "sv:tail": 0
+   }
+  },
+  "96": {
+   "card": {
+    "Ir": {
+     "other (in lamp_qs / sieve_source)": 4086091,
+     "setup": 329098446,
+     "line 0": 66494641,
+     "sieve": 797068358,
+     "gray": 14105010,
+     "scan": 287591711,
+     "resieve": 344008,
+     "confirm": 745368658,
+     "lp_ledger": 142866551,
+     "mult": 1240963,
+     "fb": 28245041,
+     "solve": 160444754
+    },
+    "sub_Ir": {
+     "confirm: evaluate (v, sign, lists)": 10231793,
+     "confirm: root test": 564273340,
+     "confirm: A-prime and even checks": 34693209,
+     "confirm: merge hit lists": 8897627,
+     "confirm: divide hits": 127272689,
+     "lp: cofactor check": 7048909,
+     "lp: copy": 35360007,
+     "lp: other": 6822152,
+     "lp: add": 10558999,
+     "lp: hash": 72326339,
+     "lp: comb": 10750145
+    },
+    "sub_calls": {
+     "confirm: evaluate (v, sign, lists)": {
+      "lampcore::Meter::charge": 3921504,
+      "alloc::raw_vec::RawVec<T,A>::grow_one": 3470
+     },
+     "confirm: root test": {
+      "alloc::vec::Vec<T,A>::resize": 1372716
+     },
+     "confirm: A-prime and even checks": {
+      "lampcore::Meter::charge": 6535840,
+      "alloc::raw_vec::RawVec<T,A>::grow_one": 11645,
+      "__modti3": 18953936
+     },
+     "confirm: merge hit lists": {
+      "lampcore::Meter::charge": 2614336,
+      "alloc::raw_vec::RawVec<T,A>::grow_one": 6594,
+      "__memcpy_avx_unaligned_erms": 998823,
+      "alloc::raw_vec::RawVecInner<A>::reserve::do_reserve_and_handle": 61949
+     },
+     "confirm: divide hits": {
+      "__divti3": 40297920,
+      "alloc::raw_vec::RawVec<T,A>::grow_one": 45725,
+      "__modti3": 38954656,
+      "lampcore::Meter::charge": 1683152,
+      "lampcore::pt_end": 1388866
+     },
+     "lp: copy": {
+      "lampcore::pt_snap_lp": 1682562,
+      "alloc::raw_vec::RawVec<T,A>::grow_one": 32124,
+      "alloc::vec::Vec<T,A>::extend_trusted": 12897265,
+      "lampcore::Meter::charge": 1281952,
+      "lampcore::pt_end": 1362074
+     },
+     "lp: add": {
+      "lampcore::pt_snap_lp": 253659,
+      "lampcore::qs::Ledger::add": 9846338,
+      "lampcore::pt_end": 205343
+     },
+     "lp: other": {
+      "lampcore::Meter::charge": 1180864,
+      "__modti3": 4649652,
+      "lampcore::pt_end": 1360
+     },
+     "lp: hash": {
+      "lampcore::pt_snap_lp": 1549884,
+      "lampcore::Meter::charge": 2269552,
+      "hashbrown::map::HashMap<K,V,S,A>::get": 15241110,
+      "lampcore::pt_end": 1254668,
+      "__memcpy_avx_unaligned_erms": 1496076,
+      "hashbrown::map::HashMap<K,V,S,A>::insert": 38863028,
+      "alloc::raw_vec::RawVecInner<A>::reserve::do_reserve_and_handle": 7778419
+     },
+     "lp: comb": {
+      "lampcore::pt_snap_lp": 120981,
+      "<i128>::rem_euclid": 1405380,
+      "ruint::modular::<impl ruint::Uint<_,_>>::mul_mod_by_ref": 2094692,
+      "lampcore::Meter::charge": 184352,
+      "alloc::raw_vec::RawVec<T,A>::grow_one": 118274,
+      "alloc::vec::Vec<T,A>::extend_trusted": 1474782,
+      "lampcore::pt_end": 97937
+     },
+     "lp: cofactor check": {
+      "lampcore::Meter::charge": 1231296,
+      "__floattidf": 3392100
+     }
+    },
+    "lamp_qs_inclusive": 2576954232,
+    "attributed": 2576954232
+   },
+   "yafu": {
+    "Ir": {
+     "init_siqs_tiny": 49616,
+     "memset": 98099805,
+     "find_poly_a": 174715,
+     "find_first_poly_b": 59106342,
+     "sieve_next_poly": 17539334,
+     "modinv_16": 10172214,
+     "check_sieve_val_tiny": 274334556,
+     "__gmpz_abs": 118158,
+     "__gmpz_get_ui": 151264,
+     "find_multiplier_tiny": 791117,
+     "sqrtModP_16": 682773,
+     "powm_16": 2388824,
+     "get_rand": 137859,
+     "legendre_16": 4608181,
+     "solve_linear_system_tiny": 45413712,
+     "tinysiqs": 165801,
+     "find_next_poly_b": 6093332,
+     "find_factors_tiny": 245604040,
+     "init_fb_tiny": 6220164,
+     "fill_sieve_block": 313058629,
+     "mark_sieve_block": 21151983
+    },
+    "library_Ir": {
+     "init_siqs_tiny": 9200,
+     "find_poly_a": 117044,
+     "find_first_poly_b": 51882442,
+     "sieve_next_poly": 330977,
+     "memset": 97903465,
+     "check_sieve_val_tiny": 194737819,
+     "find_multiplier_tiny": 432768,
+     "tinysiqs": 124942,
+     "find_next_poly_b": 4524820,
+     "find_factors_tiny": 216015026,
+     "init_fb_tiny": 5310100
+    },
+    "simd_own": {
+     "init_siqs_tiny": {
+      "general": 39936,
+      "scalar FP in xmm": 400,
+      "128-bit packed": 80
+     },
+     "memset": {
+      "128-bit packed": 160,
+      "general": 196180
+     },
+     "find_poly_a": {
+      "general": 57671
+     },
+     "find_first_poly_b": {
+      "general": 7223900
+     },
+     "sieve_next_poly": {
+      "general": 17208357
+     },
+     "modinv_16": {
+      "general": 10172214
+     },
+     "check_sieve_val_tiny": {
+      "general": 63485246,
+      "128-bit packed": 15911925,
+      "256-bit": 199566
+     },
+     "__gmpz_abs": {
+      "general": 118158
+     },
+     "__gmpz_get_ui": {
+      "general": 151264
+     },
+     "find_multiplier_tiny": {
+      "general": 325741,
+      "scalar FP in xmm": 31888,
+      "128-bit packed": 720
+     },
+     "sqrtModP_16": {
+      "general": 682773
+     },
+     "powm_16": {
+      "general": 2388824
+     },
+     "get_rand": {
+      "general": 137859
+     },
+     "legendre_16": {
+      "general": 4608181
+     },
+     "solve_linear_system_tiny": {
+      "general": 45413712
+     },
+     "tinysiqs": {
+      "general": 40219,
+      "scalar FP in xmm": 560,
+      "128-bit packed": 80
+     },
+     "find_next_poly_b": {
+      "general": 680714,
+      "256-bit": 887798
+     },
+     "find_factors_tiny": {
+      "general": 29589014
+     },
+     "init_fb_tiny": {
+      "general": 825584,
+      "128-bit packed": 14080,
+      "scalar FP in xmm": 70400
+     },
+     "fill_sieve_block": {
+      "general": 313058629
+     },
+     "mark_sieve_block": {
+      "general": 16345339,
+      "256-bit": 4806644
+     }
+    },
+    "tinysiqs_inclusive": 1106062419,
+    "attributed": 1106062419
+   },
+   "yafu_check": {
+    "own_by_innermost_fn": {
+     "check_sieve_val_tiny": 79596737,
+     "__gmpz_abs": 118158,
+     "__gmpz_get_ui": 150704
+    },
+    "calls_by_callee": {
+     "libgmp.so.10.5.0:__gmpz_mul_ui": 11412624.0,
+     "libgmp.so.10.5.0:__gmpz_add": 11761176.0,
+     "libgmp.so.10.5.0:__gmpz_scan1": 2714918.0,
+     "libgmp.so.10.5.0:__gmpz_swap": 7230688.0,
+     "libgmp.so.10.5.0:__gmpz_tdiv_q_ui": 153133179.0,
+     "libgmp.so.10.5.0:__gmpz_tdiv_q_2exp": 2895897.0,
+     "libgmp.so.10.5.0:__gmpz_sub": 3966717.0,
+     "libgmp.so.10.5.0:__gmpz_cmp_ui": 1622620.0
+    }
+   },
+   "card_phasetime_ns": {
+    "mult": 353082,
+    "fb": 6449417,
+    "setup": 41148209,
+    "gray": 7577357,
+    "sieve": 68801005,
+    "scan": 18067048,
+    "resieve": 527975,
+    "confirm": 55397963,
+    "lp_ledger": 23839633,
+    "solve": 24785768,
+    "lp:copy": 0,
+    "lp:hash": 0,
+    "lp:comb": 0,
+    "lp:add": 0,
+    "sv:zero": 0,
+    "sv:free2": 0,
+    "sv:prime": 0,
+    "sv:power": 0,
+    "sv:tail": 0
+   }
+  }
+ }
+}
