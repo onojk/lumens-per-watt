@@ -10840,3 +10840,16 @@ Results:
 - 96 bits: 0.38.
 
 QS is 6–9× brighter than ECM in each of them. This does not change the correction.
+
+## Scorecard: NOTES 9185-10649 added; W4c (the user's ruling, Oct 28; documentation only)
+
+`reviews/scorecard.md` now includes Runs A–E: R-20..R-27, D-20..D-27, G-13..G-20, one row per scored size (42 rows, all card, all wall). R-28 / D-28 / G-21 are not yet scored (the partials table is not run). Sections 1, 3a and 5 are recounted.
+- **Runs A–E alone:** the reviewer 6 held / 3 missed / 5 falsified; DeepSeek 8 / 0 / 6; Grok 6 / 5 / 3.
+- **Totals:** the reviewer 197 / 140 / 8 / 7 info (352); DeepSeek 68 / 51 / 40 / 15, plus 6 falsifier-only (180); Grok 34 / 42 / 11 / 4 (91).
+
+**W4c** (`wolfram/2026-10-28_w4c_calibration_all.wl`, `.out`) is W4b with these rows appended, using per-size confidences from the sealed files.
+- **Brier** (62 rows): the reviewer 0.265, DeepSeek 0.296, Grok 0.248. All three are near the 0.25 of always saying 50%.
+- **Ranges hit** (166 rows): the reviewer 74% (median z 0.53), DeepSeek 61% (0.56), Grok 61% (0.80).
+- **The largest shared miss is Run B** (card / YAFU wall ratio 0.025 / 0.071): all six ranges were falsified at z 1.6–1.8.
+
+**What it does not establish:** rows per size and per run are correlated, so the intervals are too narrow. The conventions are as in W4b.
