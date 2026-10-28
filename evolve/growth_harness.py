@@ -9,7 +9,9 @@ semiprimes_pq(bits, 48, 9600000 + bits), at 40, 48, ..., 96 bits, lampcore --typ
   qs    the reference genes (2'b) at 54 / 72 / 84 / 96; at the other sizes interpolated genes (qs_genes; the user's
         decision, Oct 28, after the first counts run failed on a missing 40-bit reference, 083b916), cap 2^28
 Cost per factorisation = total priced cost spent (censored spending included) / successes, per pricing: official, ruint,
-Montgomery (optypes.prices, median P-core), op-class v1 (types without a v1 weight make the v1 figure "n/a"). A cell
+Montgomery (optypes.prices, median P-core), op-class v1 (a type without a price or v1 weight makes that pricing's
+figure "n/a" for the lamp: CFRAC's lumped cfrac_ops has no ruint or Montgomery price, so CFRAC is reported under
+official and op-class only; fixed after the second counts run failed on it, 2ec0229). A cell
 with < 24 / 48 successes is reported and excluded from fits.
 Fits (per lamp, per pricing; bootstrap over numbers within sizes, 10,000 resamples, random.Random(2026)):
   local slope beta(b) = d log2 C / d bits between neighbouring sizes; doubling period = 1 / beta;
@@ -72,7 +74,8 @@ def run(genome, cap, nums):
 
 def costs(ty):
     off = float(sum(ty.values()))
-    ru = optypes.cost(ty, "ruint", PR); mo = optypes.cost(ty, "montgomery", PR)
+    priced = lambda pr: None if any(n and t not in PR[pr] for t, n in ty.items()) else optypes.cost(ty, pr, PR)
+    ru, mo = priced("ruint"), priced("montgomery")             # None where a type has no price (CFRAC's cfrac_ops)
     v1 = None if any(n and t not in V1 for t, n in ty.items()) else sum(V1[t] * n for t, n in ty.items() if n)
     return {"official": off, "ruint": ru, "montgomery": mo, "opclass_v1": v1}
 
