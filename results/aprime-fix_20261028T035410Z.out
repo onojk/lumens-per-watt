@@ -1,0 +1,4 @@
+binaries: {"2'b": '1505efbffb200023', "2'b+fix": 'ef3459130e46133f'}
+72 bits (480 numbers): outputs with --types identical: True; us per number 2'b 846.6, 2'b+fix 831.8; fix / 2'b 0.9827 [0.9674, 0.9980] = -1.73% [-3.26, -0.20]; core 2 median MHz 2'b 2400.0, 2'b+fix 2400.0
+84 bits (560 numbers): outputs with --types identical: True; us per number 2'b 1,594.9, 2'b+fix 1,553.8; fix / 2'b 0.9743 [0.9637, 0.9848] = -2.57% [-3.63, -1.52]; core 2 median MHz 2'b 2400.0, 2'b+fix 2400.0
+96 bits (640 numbers): outputs with --types identical: True; us per number 2'b 3,555.3, 2'b+fix 3,352.7; fix / 2'b 0.9431 [0.9370, 0.9492] = -5.69% [-6.30, -5.08]; core 2 median MHz 2'b 2400.0, 2'b+fix 2400.0
