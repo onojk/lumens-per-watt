@@ -404,4 +404,5 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
 - **Class (added Oct 27, the user):** the removed code is **class (c)** in PROTOCOL's memory classes, a factor-base scan suspected of evicting sieve data.
   - Grok's view predicts ρ > 1.06 for class (c), and the 96-bit overshoot of the cost note (−5.69% measured against −4.3% modelled) is consistent with that.
   - When measured, report ρ **per size** (72 / 84 / 96).
-- Decision: pending (the user's).
+- **Measured (Oct 27 night, `evolve/rho_aprime.out`):** ρ = 1.01 / 0.98 / 1.35 at 72 / 84 / 96. At 96 the interval is 1.21–1.50, above the class (b) band; at 72 and 84 the intervals are wide. Recorded in NOTES, "I-047: ρ for the A-prime fix".
+- Decision: done (measured); no rule change proposed from it.

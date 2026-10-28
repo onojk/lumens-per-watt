@@ -10380,3 +10380,26 @@ A counts-identical change that removes a large volume of cache-friendly arithmet
 - **Caveat:** the inputs are the balanced band. The sealed run will use all map numbers, as Runs A and D did.
 
 **Procedure:** code (lampcore), acceptance (byte-identical outputs with and without `--types`, all map numbers at 72 / 84 / 96, for 2′a, 2′b, the pipeline, enumerate, pp 3 and resieve), full parity, a callgrind check of the instructions actually removed, then the predictions file and the runner. **STOP at the prediction point.**
+
+## I-047: ρ for the A-prime fix (the user's go-ahead; information only, no timing)
+
+**In plain English first:** for the A-prime fix, the wall time fell as much as the instructions did at 72 and 84 bits (ρ ≈ 1.0), and **more** than the instructions at 96 (ρ = 1.35). Grok predicted exactly that for class (c), a scan that evicts sieve data.
+
+`evolve/rho_aprime.py`, `.out`, `.json`.
+- **Instructions:** callgrind's whole-program instruction count, all map numbers (Run A's inputs and genes). Before: `opclass/bin/lampcore-debug1`, the line-table build of Run A's pre-fix 1505efbf…. After: 210a7d0 with line tables, the fix without alloc-once. Each build's stdout was checked identical to its release twin's.
+- **Wall:** Run A's measured change, from 8 alternating replicates on AC.
+
+| bits | instructions per number, before → after | instruction change | Run A wall change [95% interval] | **ρ** [from the interval] |
+|---|---|---|---|---|
+| 72 | 8.275 → 8.134 M | −1.71% | −1.73% [−3.26, −0.20] | **1.01** [0.12, 1.91] |
+| 84 | 16.313 → 15.887 M | −2.62% | −2.57% [−3.63, −1.52] | **0.98** [0.58, 1.39] |
+| 96 | 37.462 → 35.888 M | −4.20% | −5.69% [−6.30, −5.08] | **1.35** [1.21, 1.50] |
+
+- **Class (c)** (PROTOCOL): a factor-base scan suspected of evicting sieve data.
+  - At 96, the interval lies entirely above the class (b) band (0.85–1.06), consistent with Grok's view (ρ > 1.06 for scans that stall on memory) and with the cost note's 96-bit overshoot (−5.69% measured against −4.3% modelled).
+  - At 72 and 84, ρ is about 1 but the intervals are wide (the saving is small against the noise), so the class cannot be told apart from (b) there.
+  - **One reading:** the scan cost more time per instruction only once the factor base outgrew the fastest cache, at 96. That is consistent with the data, not measured: no cache counters were read.
+- **The two measured points so far:**
+  - class (b), allocation (Run D): 0.85 / 0.92 / 1.06;
+  - class (c), the A-prime scan (Run A): 1.01 / 0.98 / 1.35.
+- The instruction drops here (−1.71 / −2.62 / −4.20%) are whole-program counts on all map numbers; Run D's were `lamp_qs` on the balanced band. The two are close, but not the same measure.
