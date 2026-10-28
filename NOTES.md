@@ -10694,3 +10694,5 @@ Total: about 1–3 hours of lampcore counting for the rest; wall timing roughly 
 - **ECM succeeds on all 40** at a cost per success near QS's (28–51 against 34–36 M op-class units). ECM is the only lamp that both finishes every number and comes close to QS in cost here.
 - **A pipeline specialist for 0.22–0.28 would combine** cheap partial lamps in front of QS. The exchange-rate measurement would say whether ECM curves or QS relations are the better buy at the margin.
 - **CFRAC is about 50× costlier than QS per success** under op-class (its ruint cost is not priced: the runner defect).
+
+**Correction to the op-class view entry:** "Op-class prices p−1's multiplies higher relative to QS than ruint does, so under op-class p−1 stays ahead of QS in more bands" has the direction wrong. Under op-class, p−1 stays ahead in more bands because op-class prices p−1 **lower** relative to QS than ruint does. That matches the instruction check: op-class ÷ instructions is 0.78 for p−1 against 1.10 for QS, so op-class charges a p−1 instruction about 0.7 as much as a QS instruction.
