@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/home/onojk123/lumens-per-watt/evolve/growth_harness.py", line 96, in <module>
+    for name, (g, cap) in lamps(bits).items():
+                          ~~~~~^^^^^^
+  File "/home/onojk123/lumens-per-watt/evolve/growth_harness.py", line 36, in lamps
+    "cfrac": ([{"t": "cfrac", "kc": 32, "bc": 1.1}], CAP), "qs": ([reference(bits)], P.QS_CAP)}
+                                                                   ~~~~~~~~~^^^^^^
+  File "/home/onojk123/lumens-per-watt/evolve/baseline_msieve.py", line 98, in reference
+    return dict(ref(bits), goff=1, confirm="root")             # the adopted reference (Oct 27)
+                ~~~^^^^^^
+  File "/home/onojk123/lumens-per-watt/evolve/lctest.py", line 31, in ref
+    return dict(SS.qsg(sealed["sizes"][str(bits)]["tracks"]["R"]["new_genes"]), kset="sf32")
+                       ~~~~~~~~~~~~~~~^^^^^^^^^^^
+KeyError: '40'
