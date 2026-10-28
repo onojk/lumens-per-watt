@@ -1,0 +1,24 @@
+diff --git a/factor/qs/siqs_test.c b/factor/qs/siqs_test.c
+index 02fb2dd..3e6bcfb 100644
+--- a/factor/qs/siqs_test.c
++++ b/factor/qs/siqs_test.c
+@@ -18,6 +18,7 @@ code to the public domain.
+ 					   --bbuhrow@gmail.com 11/24/09
+ ----------------------------------------------------------------------*/
+ 
++#include <time.h>
+ #include "qs.h"
+ #include "qs_impl.h"
+ #include "ytools.h"
+@@ -203,7 +204,10 @@ int check_specialcase(FILE* sieve_log, fact_obj_t* fobj)
+ 
+ 			// todo: need to define alternate routines if this isn't defined...
+ 			params = init_tinysiqs();
+-			i = tinysiqs(params, fobj->qs_obj.gmp_n, f1, f2, f3, 0);
++			{ struct timespec lpw_t0, lpw_t1; clock_gettime(CLOCK_MONOTONIC, &lpw_t0);   /* lumens-per-watt timing */
++			i = tinysiqs(params, fobj->qs_obj.gmp_n, f1, f2, f3, 0);
++			clock_gettime(CLOCK_MONOTONIC, &lpw_t1);
++			fprintf(stderr, "lpw_tinysiqs_ns %lld\n", (long long)(lpw_t1.tv_sec - lpw_t0.tv_sec) * 1000000000LL + (lpw_t1.tv_nsec - lpw_t0.tv_nsec)); }
+ 			params = free_tinysiqs(params);
+ 
+ 			for (j = 0; j < i; j++)
