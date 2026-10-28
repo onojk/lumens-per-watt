@@ -1,5 +1,37 @@
 # Decision log
 
+## Report Oct 27, night: allocate once per attempt (read first)
+
+**In plain English:**
+- **Allocating once per attempt** makes the reference **25.3% / 16.0% / 10.7% faster** at 72 / 84 / 96 bits, with every output and op count identical.
+- **Acceptance and parity are clean.**
+- **Time fell about as much as instructions** (−29.7 / −17.3 / −10.1%). All three forecasters assumed it would fall by much less: every size-level forecast missed, and five were falsified.
+- Run on battery by your decision; the ratios are valid, the absolute times are not comparable with AC runs.
+- Nothing adopted beyond your go-ahead for the code; no system setting changed; nothing pushed.
+
+| step | commit | in one line |
+|---|---|---|
+| Cost note + R-26 | ed07059 | ≥ 1.96 / 2.11 / 2.73 M allocator instructions per number removable; Wolfram −23.9 / −13.5 / −7.6% at k = 1. Also "three unpriced costs in one week" (I-042 a, I-001), with a correction to an overstated example (566f9a8). |
+| Code + acceptance | f6aa08d | OnDemand's prefixes flat, its buffers reused; per-A arrays hoisted and cleared; per-prime temporaries reused. Byte-identical for 2′a, 2′b, pipeline, enumerate, pp 3 and resieve. Python unchanged (reason in the cost note). |
+| Callgrind check | d73a258 | Allocator instructions per number 2.12 → 0.15 / 2.35 → 0.24 / 3.10 → 0.41 M; all instructions −29.7 / −17.3 / −10.1%. |
+| Parity | ba63ea3 | Clean: 0 mismatches; mutations 56 / 56. |
+| Predictions | 56dc99c | D-26 and G-19 verbatim, with the reviewer's notes. |
+| Battery override | 1aaced4 | This run only: the AC check skipped; battery and frequency-policy guards. |
+| **Run D, alloc-once** (sealed) | dd5fb3c | alloc / fix **0.7469 / 0.8405 / 0.8928**: −25.31% [−25.74, −24.87], −15.95% [−16.60, −15.31], −10.72% [−11.63, −9.82]. Battery 61% → 60%; policy unchanged. |
+
+**Scored as filed:**
+- **R-26:** missed at all three (falsified by default, no separate falsifier).
+- **D-26:** falsified at all three.
+- **G-19:** ranges missed at all three; its falsifier triggered only at 72 (−25.31 ≤ −25).
+- **The common error:** assuming an allocator instruction costs less time than an average one. The measured time-to-instruction ratio is 0.85 / 0.92 / 1.06.
+
+**Where the card stands against YAFU's QS now** (an estimate, not run): Run C's card / YAFU-internal 1.72 / 1.59 / 1.88, scaled by this run's ratios, is about 1.28 / 1.34 / 1.68. The remaining gap is in confirm + lp, polynomial set-up arithmetic, the scan and the sieve (Experiment 1).
+
+**Next experiments, ranked by information per compute (your decision):**
+1. **Re-run Experiment 1's callgrind on the new card:** where the gap now sits. Cheap.
+2. **Split the confirm region** (the largest remaining phase gap at 84 and 96).
+3. **Routine I-042 (a) absolute check:** needs per-region charge attribution first (the correction in 566f9a8).
+
 ## Report Oct 27, late: the fair YAFU re-run (read first)
 
 **In plain English:**
@@ -10191,3 +10223,36 @@ The user asked for this to be recorded (Oct 27 late). Three times in one week, w
 - **Setup at 96:** 22.7% against 21.4%, no clear excess.
 - **The per-region priced shares have artefacts of their own.** Scan shows 0.0% priced at both sizes because its sieve_scan charges land in another region's counts, and the sieve shows 22.7 / 45.2% priced against 10.3 / 25.5% of the time.
 - So a usable I-042 (a) needs a per-region charge attribution first. The argument for the absolute check stands. The 72-bit setup example supports it only weakly, and the 96-bit one not at all.
+
+## Run D (alloc-once): allocate once per attempt, wall-clock (sealed; predictions ed07059 / d73a258 / 56dc99c; result dd5fb3c)
+
+**In plain English first: allocating once per attempt makes the reference 25.3% faster at 72 bits, 16.0% at 84 and 10.7% at 96, for identical work.** Every output, factor and op count is the same. The time saved is about as large as the instructions removed (29.7 / 17.3 / 10.1%), larger than every forecaster expected. All nine size-level forecasts missed on the low side, and five were falsified.
+
+`results/alloc-once_20261028T055123Z.out`; `evolve/alloconce_time.py` (1aaced4), `.json`.
+- **Binaries:** before ef345913… (the A-prime fix), after 13554a61… (f6aa08d).
+- **Design:** 8 alternating replicates, all map numbers, batch, core 2; core 2 at a median of 2,400 MHz in every cell.
+- **Code checks:** acceptance byte-identical (f6aa08d); full parity clean (ba63ea3).
+- **Power: battery (the user's decision, this run only).** The battery was at 61% at the start and 60% at the end; the frequency policy was unchanged throughout. The AC check was skipped; the cap (2,400 MHz on every core), TCPU (51 °C at the start) and Wolfram checks applied.
+  - The sealed ratios (alternating replicates within one run) stay valid. **The absolute per-number times are not comparable with the earlier AC runs.**
+
+| bits | 2′b+fix, µs / number (battery) | 2′b+fix+alloc | alloc / fix | 95% t interval | change | instructions removed (callgrind) |
+|---|---|---|---|---|---|---|
+| 72 | 833.9 | 622.8 | 0.7469 | [0.7426, 0.7513] | **−25.31%** [−25.74, −24.87] | −29.7% |
+| 84 | 1,549.0 | 1,301.8 | 0.8405 | [0.8340, 0.8469] | **−15.95%** [−16.60, −15.31] | −17.3% |
+| 96 | 3,360.5 | 3,000.1 | 0.8928 | [0.8837, 0.9018] | **−10.72%** [−11.63, −9.82] | −10.1% |
+
+- Outputs with `--types` identical in the run itself at all three sizes: yes.
+- **The time-to-instruction ratio** (wall change ÷ instruction change) is **0.85 / 0.92 / 1.06**. All three forecasters assumed 0.3–0.8 (malloc instructions cheaper than the average).
+- **Against the cost note's Wolfram model:** the central (k = 1) was −23.9 / −13.5 / −7.6%; the measured values sit inside its band at k ≈ 1.06 / 1.18 / 1.41. The allocator's instructions cost at least as much time as the card's average instruction, more at larger sizes. That is consistent with the model's stated upper-side reason (branchy, pointer-chasing code), not measured directly.
+
+**Scored as filed** (the point change against each range):
+- **R-26** (72: −6 to −18; 84: −4 to −12; 96: −2 to −8): **missed at all three** (−25.3, −16.0, −10.7, all beyond the larger-saving end). R-26 states no separate falsifier; per the protocol's default, outside the range is falsified at all three.
+- **D-26** (72: −9 to −24; 84: −5 to −15; 96: −2.5 to −9.5; falsifier outside): **falsified at all three** (each saving larger than the range). D-26's definition said "balanced band" and "4 replicates". It is scored on the run as designed (all map numbers, 8 replicates), as the reviewer noted before the run.
+- **G-19 ranges** (72: −8 to −18; 84: −5 to −12; 96: −3 to −8): **missed at all three.**
+- **G-19 falsifiers:** 72 (≥ −2% or ≤ −25%): **falsified** (−25.31 ≤ −25). 84 (≥ −1% or ≤ −18%): not falsified. 96 (≥ 0% or ≤ −12%): not falsified.
+- **The common error:** all three discounted the instruction drop by a time-to-instruction ratio below 1. The measured ratio is about 1. That is the shared reasoning the reviewer said this run tests.
+
+**Not established:**
+- Why the allocator's instructions cost the average or more per instruction (no cache or branch counters: `perf` is not available to the user here).
+- Whether the battery state affected the ratio (the policy and clock were unchanged; the ratio is within-run).
+- Nothing is adopted beyond the user's go-ahead for the code change. The reference genes are unchanged; no priced figure moved.
