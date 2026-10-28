@@ -1,5 +1,37 @@
 # Decision log
 
+## Report Oct 27 evening: the A-prime fix and YAFU (read first)
+
+**In plain English:**
+- **The A-prime lookup fix** makes the reference 1.7% / 2.6% / 5.7% faster at 72 / 84 / 96 bits, with every output and op count identical. Acceptance and parity are clean.
+- **YAFU as configured** (full default `factor()`) was 14–83× slower than the card. All six YAFU predictions are falsified.
+- **The diagnosis** shows that almost none of that time is YAFU's sieve: a rho pretest and a per-line reset dominate. YAFU's QS alone is an estimated 1.3–1.7× faster than the card's.
+- **A fair re-run is designed** and waits for sealed predictions.
+- Nothing adopted beyond your decision; no system setting changed; nothing pushed.
+
+| step | commit | in one line |
+|---|---|---|
+| Cost note (before code) | 9164007 | A-prime base indices once per A; no charged op changes. |
+| Fix + acceptance | f988aab | lampcore stdout byte-identical before / after (2′a, 2′b, pipeline; 72 / 84 / 96, with and without `--types`); Python whole traces identical 24 / 24. |
+| Parity | ad58c90 | Clean: 0 mismatches in every suite; mutations 56 / 56. |
+| Predictions | 9350a34, 9de399f | D-20 to D-22, R-20 to R-22, G-13 to G-15, verbatim, with annotations. A pre-sealing YAFU functional check is disclosed. |
+| **Run A, aprime-fix** (sealed) | de74839 | fix / 2′b **0.9827 / 0.9743 / 0.9431**: −1.73% [−3.26, −0.20], −2.57% [−3.63, −1.52], −5.69% [−6.30, −5.08]. |
+| **Run B, baseline-yafu** (sealed) | f132518 | card / YAFU, all map numbers, **0.052 / 0.045 / 0.071**; balanced 0.025 / 0.012 / 0.025; factors identical on every number. |
+| YAFU diagnosis (post hoc) | 5eadb1e | rho is about 90% of `factor()`'s per-number time on balanced numbers; a 4.6 ms floor per batch line (primes re-sieved to 10⁷); logs, ini and plan no effect; QS alone 0.65 / 1.17 / 1.97 ms against the card's 0.86 / 1.54 / 3.37. |
+
+**Scored as filed:**
+- **Run A:**
+  - **D-20:** hit at all three sizes.
+  - **R-20:** hit at 72 and 84; **falsified at 96** (−5.69 outside −2.0 to −5.0).
+  - **G-13:** hit at 72 and 84; **missed at 96, not falsified** (outside −3.5 to −5.5; its falsifier ≤ −6.0 is not met).
+- **Run B (96 bits):** D-21, D-22, R-21, R-22, G-14 and G-15 are all **falsified**. The measured ratio is far below every range, the card faster. All six share one cause (YAFU's default path), so they are not six independent misses.
+
+**Caveat on Run B:** it measures YAFU's default `factor()` as built here, by design. It is not a measure of YAFU's sieve. The diagnosis estimates card / YAFU's QS alone at 1.33 / 1.32 / 1.71 (YAFU faster), close to the reviewer's R-21 central of 1.5, but that is an unsealed estimate by subtraction.
+
+**Waiting on you:**
+1. **The fair YAFU re-run (`baseline-yafu-qs`),** design in NOTES, "Proposed: a fair YAFU re-run": sealed predictions first. Optionally, a `-march=native` YAFU build as an extra cell.
+2. **The 96-bit saving from the fix is 1.3 points above the cost note's model;** the cache-eviction reading is untested. A callgrind or cache-miss comparison of the two binaries would test it.
+
 ## Report Oct 27, after adoption (read first)
 
 **In plain English:** root confirm (2′b) is the reference, and its full parity suite is clean. Against msieve 1.53 as shipped, sieve against sieve on balanced numbers, our card is about 4–5 times faster at 72–96 bits. All three outside forecasts expected msieve to be faster or level; they missed or were falsified. The extra cost found in the kept-relation copies is a linear lookup beside the copy, not the copy itself. A counts-identical code fix would remove it without touching the meter. Nothing new adopted; nothing pushed.
