@@ -10885,3 +10885,28 @@ QS is 6–9× brighter than ECM in each of them. This does not change the correc
 - **G-21's ρ of 1.15 was the closest** of the three at 84 and 96 (measured 1.6–1.7). Its stated basis ("pointer-chasing") was wrong per the reviewer's recorded note, so the closeness is not evidence for that mechanism.
 
 **Phase 1** (finish wins: div64 timing and the partials table, all three forecasters sealed and scored) is complete. All three counts-identical changes are timed: alloc-once, div64, ptable. None is adopted by this entry; adoption is the user's decision.
+
+## Growth harness v1: the wall step (sealed run 2ea9b24; information only, nothing scored)
+
+`growth_harness.py wall` → `evolve/growth_wall.json`, `results/growth-spectrum-twilight_20261028T125838Z.out`.
+- **Design:** the same 48 numbers per size as the counts run; each lamp alone; 4 replicates; core 2.
+- **Conditions:** the load check at the start (1.18) and before every replicate; AC; cap 2,400 MHz; TCPU 51 °C at the start and 46 °C at the end; no Wolfram kernel.
+- **Duration:** 30 minutes. It ran after Run F ended, with no other work of mine during it.
+
+**Wall doubling periods** (wall per factorisation = wall per number ÷ success rate; all lamps below had 48/48 except p−1):
+
+| lamp | window | wall doubling period | priced doubling period (op-class, growth v1) |
+|---|---|---|---|
+| QS | 80–96 | **10.38 bits** | 9.29 |
+| QS | 72–96 | 10.36 | – |
+| rho | 40–96 | 4.08 | 4.05 |
+| rho | 80–96 | 4.19 | – |
+| ECM | 80–96 | 7.96 | – |
+| CFRAC | 80–96 | 5.54 | – |
+| td | 40–64 | 2.02 | ~2 |
+
+- **QS's wall grows more slowly than its op-class cost** (10.4 against 9.3 bits per doubling). Per number, the clock pays relatively less for QS's work at 96 than op-class charges. G's wall column (rule 6 of `reviews/growth_fitness.md`) has its reference: **10.38 bits** over 80–96.
+- **The ranges in brackets** (QS 10.15–10.54) cover the 16 replicate pairs on the same numbers. They are timing noise only, not number-sampling uncertainty: the wall step times each batch whole, so a per-number bootstrap is not possible from this file.
+- **The rho / QS crossing on wall** is between 40 and 48 bits: rho 0.125 against QS 0.172 ms at 40; 0.333 against 0.176 at 48. This is the same as Montgomery's, and later than op-class's (below 40). Information only; R-31 stays scored under op-class (the user's ruling).
+- **ECM and CFRAC at 96:** 56.3 and 103.4 ms per number, against QS's 2.97 (19× and 35×).
+- **Not established:** the 84-bit end of the wall gene check (the wall step has no 84-bit size).
