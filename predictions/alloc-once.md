@@ -26,6 +26,19 @@
 
 **Note** (the range is unchanged): R-26 was written before the cost note's targeted-site estimate and the Wolfram forecast were computed, and its basis cites only `gap_library.json`.
 
+## Added after code, before any timing (information for DeepSeek and Grok; R-26 was sealed before it)
+
+**The cost note's callgrind check** (`evolve/alloconce_check.py`, `.out`; balanced band, reference genes):
+
+| bits | allocator instructions per number, before → after | removed | all instructions per number, before → after |
+|---|---|---|---|
+| 72 | 2.123 → 0.152 M | 1.970 M | 8.215 → 5.776 M (−29.7%) |
+| 84 | 2.347 → 0.235 M | 2.113 M | 15.597 → 12.906 M (−17.3%) |
+| 96 | 3.101 → 0.406 M | 2.695 M | 35.820 → 32.212 M (−10.1%) |
+
+- The removed allocator instructions match the cost note's estimate (1.961 / 2.107 / 2.728 M). The Rust wrapper code makes the total removed larger: 2.44 / 2.69 / 3.61 M.
+- Acceptance: byte-identical outputs (`evolve/alloconce_accept.out`). Parity: see NOTES.
+
 ## DeepSeek's and Grok's
 
 Pending: the user relays the cost note and the information above. Nothing is timed until the user says so.

@@ -1,0 +1,3 @@
+72 bits: instructions per number 8.215 M -> 5.776 M (-29.7%); allocator 2.123 M -> 0.152 M (removed 1.970 M; the cost note's estimate at the targeted sites 1.961 M); all instructions removed 2.440 M
+84 bits: instructions per number 15.597 M -> 12.906 M (-17.3%); allocator 2.347 M -> 0.235 M (removed 2.113 M; the cost note's estimate at the targeted sites 2.107 M); all instructions removed 2.691 M
+96 bits: instructions per number 35.820 M -> 32.212 M (-10.1%); allocator 3.101 M -> 0.406 M (removed 2.695 M; the cost note's estimate at the targeted sites 2.728 M); all instructions removed 3.608 M
