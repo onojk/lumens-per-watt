@@ -27,6 +27,11 @@ This file is the single source of truth for the workflow. Tool details are in `w
   - **Default ρ = 0.85–1.06** (measured: Run D, alloc-once, 72 / 84 / 96). A different band may be used only if it was **measured for comparable code beforehand**; name that measurement.
   - **Width:** at least ±30% of the predicted change, and at least ±1 point. Add the cross-run allowance (±1.5 points) only for comparisons between runs.
   - The reviewer's notes: DeepSeek's 0.55–0.80 "register-resident" band is unmeasured, so it is not used until measured. Its flat ±3-point floor is replaced by the proportional floor above.
+  - **Classify the removed code by memory behaviour before predicting** (added Oct 27, after Grok's 23:14 reply):
+    - **(a)** cache-resident arithmetic;
+    - **(b)** allocator or scattered memory;
+    - **(c)** pointer-chasing or cache-evicting scans.
+  - ρ is measured per class; Run D's 0.85–1.06 is class (b). Until a class is measured, predictions for it use the measured default (0.85–1.06) **widened toward Grok's direction for that class**: class (a) extends the lower side, class (c) the upper side. The prediction states the amount of widening.
 
 ## Order
 

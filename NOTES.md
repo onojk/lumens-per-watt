@@ -10334,3 +10334,9 @@ R-26, D-26 and G-19 all predicted a wall saving well below the instruction drop,
 [PLACEHOLDER: the user's brief asked for DeepSeek's 23:10 reply to be recorded here verbatim, but the brief did not contain its text. To be filled verbatim when the user pastes it.]
 <!-- verbatim end -->
 
+### Grok's reply on Run D (23:14 Oct 27 PT; information only; verbatim)
+
+<!-- verbatim begin -->
+[PLACEHOLDER: the user's brief asked for Grok's 23:14 reply to be recorded here verbatim, but the brief did not contain its text. To be filled verbatim when the user pastes it.]
+<!-- verbatim end -->
+

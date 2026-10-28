@@ -401,4 +401,7 @@ A running log of new ideas, opportunities and method changes for lumens-per-watt
   - **Then:** ρ = the wall change ÷ the instruction share removed.
 - **Why:** two measured points, from different kinds of removed code (a linear scan over an array against allocator calls), test whether one ρ band holds across counts-identical changes or depends on the code removed.
 - **Cost:** a callgrind pass per size per binary (minutes), no timing.
+- **Class (added Oct 27, the user):** the removed code is **class (c)** in PROTOCOL's memory classes, a factor-base scan suspected of evicting sieve data.
+  - Grok's view predicts ρ > 1.06 for class (c), and the 96-bit overshoot of the cost note (−5.69% measured against −4.3% modelled) is consistent with that.
+  - When measured, report ρ **per size** (72 / 84 / 96).
 - Decision: pending (the user's).
