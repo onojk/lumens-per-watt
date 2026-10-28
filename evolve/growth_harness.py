@@ -6,7 +6,8 @@ semiprimes_pq(bits, 48, 9600000 + bits), at 40, 48, ..., 96 bits, lampcore --typ
   pm1   partition.PRE genes (B from N), cap 2^34
   ecm   partition.PRE genes, cap 2^34
   cfrac accepted genes (kc 32, bc 1.1), cap 2^34
-  qs    the reference genes (2'b), cap 2^28
+  qs    the reference genes (2'b) at 54 / 72 / 84 / 96; at the other sizes interpolated genes (qs_genes; the user's
+        decision, Oct 28, after the first counts run failed on a missing 40-bit reference, 083b916), cap 2^28
 Cost per factorisation = total priced cost spent (censored spending included) / successes, per pricing: official, ruint,
 Montgomery (optypes.prices, median P-core), op-class v1 (types without a v1 weight make the v1 figure "n/a"). A cell
 with < 24 / 48 successes is reported and excluded from fits.
@@ -31,9 +32,29 @@ PER, CAP = 48, 2 ** 34
 V1 = {k: v["weight"] for k, v in json.load(open("../opclass/opclass_v1.json"))["classes"].items() if v["weight"]}
 PR = optypes.prices()
 
+SEALED_SIZES = (54, 72, 84, 96)
+
+def qs_genes(bits):
+    """QS genes for the growth harness (the user's decision, Oct 28: "interpolated genes, growth harness only"; not a
+    reference anywhere else): at a sealed size, the reference (2'b) genes; otherwise each numeric gene (kc, bc, mc, tc,
+    lc) interpolated linearly in bits between the neighbouring sealed sizes (kc rounded; with kset sf32 the
+    multipliers are fixed anyway); below 54, the 54-bit genes held constant. Non-numeric genes are the reference's."""
+    if bits in SEALED_SIZES:
+        return reference(bits)
+    if bits < SEALED_SIZES[0]:
+        return dict(reference(SEALED_SIZES[0]), interpolated="held at 54")
+    lo = max(b for b in SEALED_SIZES if b < bits); hi = min(b for b in SEALED_SIZES if b > bits)
+    a, b, t = reference(lo), reference(hi), (bits - lo) / (hi - lo)
+    g = dict(a)
+    for k in ("bc", "mc", "tc", "lc"):
+        g[k] = a[k] + t * (b[k] - a[k])
+    g["kc"] = round(a["kc"] + t * (b["kc"] - a["kc"]))
+    g["interpolated"] = f"{lo}-{hi}"
+    return g
+
 def lamps(bits):
     L = {"rho": ([dict(P.PRE["rho"])], CAP), "pm1": ([dict(P.PRE["pm1"])], CAP), "ecm": ([dict(P.PRE["ecm"])], CAP),
-         "cfrac": ([{"t": "cfrac", "kc": 32, "bc": 1.1}], CAP), "qs": ([reference(bits)], P.QS_CAP)}
+         "cfrac": ([{"t": "cfrac", "kc": 32, "bc": 1.1}], CAP), "qs": ([qs_genes(bits)], P.QS_CAP)}
     if bits <= 64:
         L = {"td": ([dict(P.PRE["td"])], CAP), **L}
     return L

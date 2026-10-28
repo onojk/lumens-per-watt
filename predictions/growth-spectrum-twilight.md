@@ -61,3 +61,9 @@ Information-only: The light-spectrum setup can mislead if the op-class v1 weight
 **All three forecasters are sealed** for this round: the reviewer R-29 to R-33, DeepSeek D-29 to D-33, Grok G-22 to G-26.
 
 **Disclosure (Claude, after filing):** the light spectrum's counts had been started in the background before this file was committed (light_spectrum.py, committed first). When this file was filed, Claude stopped that run **without reading any of its output**. The partial output was moved, unread, to Claude's scratch. The spectrum will be run again from the start through `tools/sealed_run.sh growth-spectrum-twilight`, after this commit, so R-32 and D-32 are scored on a run that began after sealing.
+
+**The growth counts' first run failed** (083b916, committed by `sealed_run.sh` as a result): the QS reference genes exist only at 54 / 72 / 84 / 96 bits, and the harness asked for 40. Nothing was counted. **The user's decision, Oct 28:**
+- QS genes at the other sizes are **interpolated**: each numeric gene (kc, bc, mc, tc, lc) linearly in bits between the neighbouring sealed sizes (kc rounded); below 54, the 54-bit genes are held.
+- They are labelled "interpolated genes, growth harness only", and are not a reference anywhere else.
+- The harness is updated (`qs_genes`) before the rerun.
+- The predictions above are unchanged. R-29, D-29 and G-22 (QS between 80 and 96) are scored with QS at 80 and 88 on interpolated genes, which the forecasters did not know.
