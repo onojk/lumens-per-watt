@@ -10696,3 +10696,25 @@ Total: about 1–3 hours of lampcore counting for the rest; wall timing roughly 
 - **CFRAC is about 50× costlier than QS per success** under op-class (its ruint cost is not priced: the runner defect).
 
 **Correction to the op-class view entry:** "Op-class prices p−1's multiplies higher relative to QS than ruint does, so under op-class p−1 stays ahead of QS in more bands" has the direction wrong. Under op-class, p−1 stays ahead in more bands because op-class prices p−1 **lower** relative to QS than ruint does. That matches the instruction check: op-class ÷ instructions is 0.78 for p−1 against 1.10 for QS, so op-class charges a p−1 instruction about 0.7 as much as a QS instruction.
+
+## The twilight specialist (θ 0.33–0.40): training search result (untimed; information; the validation is not run)
+
+**In plain English first: the gene search's best pipeline on θ 0.33–0.40 is QS alone.** Every pre-stage budget (td, rho, p−1, ECM) is 0, at both 84 and 96 bits. Nothing in front of QS paid for itself on the training numbers. The light spectrum predicted this: ECM is about 4× dimmer than QS there. **The reference pipeline** (rho and p−1 in front of QS) **costs 1.21× / 1.26× QS alone on this band**, so its pre-stages are mostly wasted on numbers with medium-sized factors.
+
+`evolve/twilight_search.py` (5835507), `.out`, `.json`.
+- **Training numbers:** 160 fresh per size (seeds 9800000 + bits), θ 0.33–0.40.
+- **The map:** each lamp alone at every coarse budget in lampcore with `--types`, with rho also at the reference's own budget, and the costs composed exactly.
+- **The composition check:** it equals a direct lampcore run of the best genome on 160 / 160 numbers at each size.
+- **Fitness:** rule (b), the worst of op-class v1, ruint and Montgomery, of mean pipeline cost ÷ mean QS-alone cost.
+
+| bits | best (td, rho, p−1 B, ECM) | its fitness | the reference pipeline (td 0, rho, p−1 B, ECM 0) | the reference pipeline's fitness (rule b) |
+|---|---|---|---|---|
+| 84 | (0, 0, 0, 0): QS alone | 1.0000 | (0, 3158, 2048, 0) | **1.2088** |
+| 96 | (0, 0, 0, 0): QS alone | 1.0000 | (0, 10624, 4096, 0) | **1.2616** |
+
+**The registered validation, and why it is not run:** the specialist that came out of the search is genome-identical to the reference card (QS alone, the reference genes).
+- On the sealed held-out set its robust ratio against the reference card is **exactly 1.000 by construction**: the same genome gives the same op counts on every number.
+- Its wall ratio would differ from 1 only by noise.
+- R-33 (0.80–1.02), D-33 (0.60–1.40) and G-26 (0.45–1.05, falsifier ≥ 1.1) would all be scored on a foregone 1.000. **This is the validation prediction point: STOP for the user's decision** on whether to run it as registered, to score the forecasts on the foregone value, or to record the specialist as "none found" and leave the forecasts unscored.
+
+**Not established:** finer budget grids than the coarse grid (2^8 steps); other genes (ECM's B1 and B2, the p−1 bound's rule); pipelines that change QS's own genes for this band.

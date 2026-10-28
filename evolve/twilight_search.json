@@ -1,0 +1,92 @@
+{
+ "84": {
+  "best": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "fitness": 1.0,
+  "scores": {
+   "opclass_v1": 1.0,
+   "ruint": 1.0,
+   "montgomery": 1.0,
+   "official": 1.0
+  },
+  "reference_pipeline_grid": [
+   0,
+   3158,
+   2048,
+   0
+  ],
+  "reference_fitness": 1.2088430841853528,
+  "reference_scores": {
+   "opclass_v1": 1.147923398298974,
+   "ruint": 1.2088430841853528,
+   "montgomery": 0.9964981821650357,
+   "official": 0.918395177796441
+  },
+  "composition_matches_direct": 160,
+  "n": 160,
+  "genome": [
+   {
+    "t": "qs",
+    "kc": 32,
+    "bc": 0.5258029693118351,
+    "mc": 0.5118651317214798,
+    "tc": 1.456939234548333,
+    "lc": 1.6411709038747615,
+    "a_mode": "on_demand",
+    "sort_charge": 1,
+    "kset": "sf32",
+    "goff": 1,
+    "confirm": "root"
+   }
+  ]
+ },
+ "96": {
+  "best": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "fitness": 1.0,
+  "scores": {
+   "opclass_v1": 1.0,
+   "ruint": 1.0,
+   "montgomery": 1.0,
+   "official": 1.0
+  },
+  "reference_pipeline_grid": [
+   0,
+   10624,
+   4096,
+   0
+  ],
+  "reference_fitness": 1.2616230705987497,
+  "reference_scores": {
+   "opclass_v1": 1.2078345115216187,
+   "ruint": 1.2616230705987497,
+   "montgomery": 1.0308632061277943,
+   "official": 0.9459339107153447
+  },
+  "composition_matches_direct": 160,
+  "n": 160,
+  "genome": [
+   {
+    "t": "qs",
+    "kc": 60,
+    "bc": 0.43245193099307744,
+    "mc": 0.6023151214915646,
+    "tc": 1.035307067324659,
+    "lc": 1.9736809858022166,
+    "a_mode": "on_demand",
+    "sort_charge": 1,
+    "kset": "sf32",
+    "goff": 1,
+    "confirm": "root"
+   }
+  ]
+ }
+}
