@@ -18,10 +18,25 @@ The post-code callgrind check will be added here when it exists.
            floored at +/-1 point. Falsifier: outside the range. If the post-code callgrind check differs from
            the cost note by more than 20%, note it beside R-28 (the range stands).
 
-## DeepSeek's
+## DeepSeek's D-28
 
-Pending.
+<!-- verbatim begin -->
+[PLACEHOLDER: the user's brief carried the slot "[PASTE DEEPSEEK'S D-28 REPLY HERE]" without D-28's text. To be filled verbatim when the user pastes it. ptable is not timed until it is filed (the user, Oct 27 night).]
+<!-- verbatim end -->
 
-## Grok's
+## Grok's G-21 (23:44 Oct 27 PT; sealed; verbatim, with the header of Grok's reply)
 
-Pending.
+<!-- verbatim begin -->
+**Sealed predictions (Grok, 27 Oct 2026 ~23:50 PT)**
+Using only the numbers supplied. Absolute post-div64 wall times and the final partials-table instruction counts are missing.
+### G-21 — partials-table wall change vs alloc+div64 card (negative = faster)
+Rho basis: the change replaces a growable hash map (pointer-chasing, allocations) with a fixed open-addressing table; this is closer to the memory-stalling class that previously pushed rho above 1. Rho = 1.15.
+- 72 bits: −2.5 % to −5.0 % (confidence 55 %)
+- 84 bits: −1.6 % to −3.6 % (confidence 55 %)
+- 96 bits: −1.4 % to −3.2 % (confidence 50 %)
+**Falsifiers:** 72: ≥ −1.0 % or ≤ −7.0 %; 84: ≥ 0 % or ≤ −5.0 %; 96: ≥ 0 % or ≤ −4.5 %
+<!-- verbatim end -->
+
+**The reviewer's notes** (the ranges are unchanged):
+- **The reviewer's unmeasured opinion, recorded after G-21 was sealed:** G-21's ρ 1.15 rests on a "pointer-chasing" map, but Rust's std `HashMap` is open addressing (hashbrown), not pointer-chasing.
+- **Scoring G-21.** Its falsifiers are bands wider than its ranges, so ranges and falsifiers are scored separately.

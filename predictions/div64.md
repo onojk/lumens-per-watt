@@ -25,10 +25,31 @@
            (central 0.7). Unmeasured opinion behind the centre: a software 128-by-64 division routine is
            replaced by hardware divides, which cost more time per instruction. Falsifier: outside the range.
 
-## DeepSeek's
+## DeepSeek's D-27 (23:44 Oct 27 PT; sealed; verbatim)
 
-Pending.
+<!-- verbatim begin -->
+Definition: mean wall-clock change per number, div64 build vs current card, each size, 2.4 GHz cap, within-run comparison. Base: current card (root confirm + A-prime fix + alloc-once). Units: percent change; negative = faster. Pure wall-clock prediction.
+72 (8.76% removed): −2.2% to −5.0% (central −3.5%), 60%, falsifier >−2.2% or <−5.0%.
+84 (6.38%): −1.6% to −3.8% (−2.6%), 60%, falsifier >−1.6% or <−3.8%.
+96 (3.90%): −0.9% to −2.4% (−1.5%), 60%, falsifier >−0.9% or <−2.4%.
+Working: ΔW = ρ · ΔI/I_total. Band choice: the cost note's class is "register-resident arithmetic, band rho 0.40–1.30", but the reviewer's unmeasured opinion says the removed instructions are a software division routine, cheap per instruction, so rho falls below that band. I accept that direction and use rho 0.25–0.58, central 0.40, declared before the run. 72: 8.76% × [0.25, 0.58] = [2.19%, 5.08%]; 84: 6.38% × [0.25, 0.58] = [1.60%, 3.70%]; 96: 3.90% × [0.25, 0.58] = [0.98%, 2.26%]. Missing input: no measured rho for hardware-divide replacement; the band is a declared assumption. Falsifier direction checked. 60% per size; sizes correlated through the shared rho. (DeepSeek's copy of the update was truncated; change (2) was resent.)
+<!-- verbatim end -->
 
-## Grok's
+## Grok's G-20 (23:44 Oct 27 PT; sealed; verbatim, with the header of Grok's reply)
 
-Pending.
+<!-- verbatim begin -->
+**Sealed predictions (Grok, 27 Oct 2026 ~23:50 PT)**
+Using only the numbers supplied. Absolute post-div64 wall times and the final partials-table instruction counts are missing.
+### G-20 — div64 wall change vs current card (negative = faster)
+Rho basis: reviewer's unmeasured opinion that hardware divides cost more time per instruction than the software routine they replace, so rho is taken at the low end of the stated register-arithmetic band (0.40–1.30). Rho = 0.55.
+- 72 bits: −3.3 % to −6.3 % (confidence 60 %)
+- 84 bits: −2.2 % to −4.8 % (confidence 60 %)
+- 96 bits: −1.2 % to −3.0 % (confidence 55 %)
+**Falsifiers:** 72: ≥ −2.0 % or ≤ −8.0 %; 84: ≥ −1.0 % or ≤ −6.0 %; 96: ≥ 0 % or ≤ −4.5 %
+<!-- verbatim end -->
+
+**The reviewer's notes** (the ranges are unchanged):
+- **Not independent.** D-27 and G-20 both took the reviewer's labelled "unmeasured opinion" as their ρ basis (D-27 ρ 0.25–0.58; G-20 ρ 0.55), so the three div64 forecasts are not independent. Recorded.
+- **Scoring G-20.** Its falsifiers are bands wider than its ranges, so ranges and falsifiers are scored separately.
+
+**All three div64 forecasters are sealed:** R-27, D-27, G-20.
