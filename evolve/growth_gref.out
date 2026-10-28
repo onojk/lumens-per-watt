@@ -1,0 +1,13 @@
+84 bits qs: 48/48 succeeded; genes {'t': 'qs', 'kc': 32, 'bc': 0.5258029693118351, 'mc': 0.5118651317214798, 'tc': 1.456939234548333, 'lc': 1.6411709038747615, 'a_mode': 'on_demand', 'sort_charge': 1, 'kset': 'sf32', 'goff': 1, 'confirm': 'root'}; (0.1 s, untimed)
+QS doubling period 80-96 [opclass_v1]: 9.29 bits [8.75, 9.89]
+QS doubling period 80-96 [ruint]: 8.80 bits [8.26, 9.39]
+QS doubling period 80-96 [montgomery]: 8.69 bits [8.17, 9.25]
+QS doubling period 80-96 [official]: 7.63 bits [7.16, 8.16]
+QS doubling period 84-96 [opclass_v1]: 9.17 bits [8.43, 10.06]
+QS doubling period 84-96 [ruint]: 8.69 bits [7.96, 9.56]
+QS doubling period 84-96 [montgomery]: 8.61 bits [7.89, 9.46]
+QS doubling period 84-96 [official]: 7.56 bits [6.93, 8.35]
+gene check [opclass_v1]: intervals overlap
+gene check [ruint]: intervals overlap
+gene check [montgomery]: intervals overlap
+gene check [official]: intervals overlap
