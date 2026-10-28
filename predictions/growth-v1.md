@@ -23,3 +23,11 @@ Pending (the user decides whether to relay).
 ## Grok's
 
 Pending (the user decides whether to relay).
+
+## Scores (recorded after the run; the forecasts above are unchanged)
+
+Sealed counts run 68250b3 (output committed unchanged in 8e45de1); scored in NOTES "Growth harness v1" (e352362).
+- **R-29:** hit (QS doubling period 80–96, op-class: 9.29 bits).
+- **R-30:** hit (rho doubling period: 4.05 bits).
+- **R-31: MISS, scored under op-class** (the user's ruling, Oct 28): QS is cheaper than rho at every size from 40 bits, so the curves do not cross between 48 and 64. Note: no pricing named; scored under op-class, the pricing of R-29 in the same entry and the one D-31/G-24 named; official would hit; not chosen post hoc.
+- DeepSeek's D-29 to D-31 and Grok's G-22 to G-24 are filed and scored in `predictions/growth-spectrum-twilight.md` and NOTES.

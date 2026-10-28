@@ -2,6 +2,8 @@
 
 **Last updated:** 2026-10-27 (overnight stage 3), NOTES at bcc1aed. Maintained by Claude Code. Documentation only: nothing here rescores anything; every count is the score as recorded in NOTES.
 
+**Rows added Oct 28 (growth round, NOTES 10650-10800):** appended to section 5. The totals in sections 1 and 3a are not yet recounted to include them.
+
 ## In plain English
 
 - **Tallied:** 566 scored rows. The reviewer (Claude chat, with the user's own sealed predictions) has 333, DeepSeek 161, Grok 72.
@@ -1091,4 +1093,18 @@ The µs rows include D-14 and G-7, which were built on the reviewer's erroneous 
 | Grok | G-9 faster at both sizes | 2b-sizes | 9072 | 6390-9184 | card | categorical | held |  |
 | Grok | G-10 sv:free2 size | 2b-sizes | 9073 | 6390-9184 | card | wall | held |  |
 | Grok | G-10 largest | 2b-sizes | 9074 | 6390-9184 | card | categorical | falsified | missed; falsifier triggered |
-| Grok | G-8 priced clauses | 2b-sizes | 9084 | 6390-9184 | card | priced | info only | time-order ruling |
+| Grok | G-8 priced clauses | 2b-sizes | 9084 | 6390-9184 | card | priced | info only | time-order ruling || Reviewer | R-29 QS doubling period 80-96 | growth v1 | 10766 | 10650-10800 | card | priced | held | op-class; QS at 80/88 on interpolated genes |
+| DeepSeek | D-29 QS doubling period 80-96 | growth v1 | 10767 | 10650-10800 | card | priced | held |  |
+| Grok | G-22 QS doubling period 80-96 | growth v1 | 10768 | 10650-10800 | card | priced | held | falsifier not triggered |
+| Reviewer | R-30 rho doubling period | growth v1 | 10770 | 10650-10800 | card | priced | held |  |
+| DeepSeek | D-30 rho doubling period | growth v1 | 10771 | 10650-10800 | card | priced | held |  |
+| Grok | G-23 rho doubling period | growth v1 | 10772 | 10650-10800 | card | priced | held | falsifier not triggered |
+| Reviewer | R-31 rho/QS cross 48-64 | growth v1 | 10790 | 10650-10800 | card | priced | missed | no pricing named; scored under op-class, the pricing of R-29 in the same entry and the one D-31/G-24 named; official would hit; not chosen post hoc (the user's ruling) |
+| DeepSeek | D-31 rho/QS cross | growth v1 | 10774 | 10650-10800 | card | priced | falsified | crossing below 40 |
+| Grok | G-24 rho/QS cross 56-96 | growth v1 | 10775 | 10650-10800 | card | priced | falsified | range missed; falsifier triggered |
+| Reviewer | R-32 spectrum QS-best band at 96 | light spectrum v1 | 10656 | 10650-10800 | card | priced | missed | measured 0.32, below 0.34 |
+| DeepSeek | D-32 spectrum QS-best band at 96 | light spectrum v1 | 10657 | 10650-10800 | card | priced | held |  |
+| Grok | G-25 spectrum QS-best band at 96 | light spectrum v1 | 10658 | 10650-10800 | card | priced | held | at the range edge; falsifier not triggered |
+| Reviewer | R-33 twilight specialist ratio | twilight (not run) | 10794 | 10650-10800 | card | priced | held | 1.000 by construction (genes identical to the reference card; the user's ruling) |
+| DeepSeek | D-33 twilight specialist ratio | twilight (not run) | 10795 | 10650-10800 | card | priced | held | 1.000 by construction |
+| Grok | G-26 twilight specialist ratio | twilight (not run) | 10796 | 10650-10800 | card | priced | held | 1.000 by construction; falsifier not triggered; predicted 1.3-2x gain did not occur |

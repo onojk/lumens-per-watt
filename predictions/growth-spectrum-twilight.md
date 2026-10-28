@@ -67,3 +67,18 @@ Information-only: The light-spectrum setup can mislead if the op-class v1 weight
 - They are labelled "interpolated genes, growth harness only", and are not a reference anywhere else.
 - The harness is updated (`qs_genes`) before the rerun.
 - The predictions above are unchanged. R-29, D-29 and G-22 (QS between 80 and 96) are scored with QS at 80 and 88 on interpolated genes, which the forecasters did not know.
+
+**The twilight validation: the user's ruling (Oct 28), applied.** The rule: if the gene search's chosen genes on θ 0.33–0.40 are exactly the reference QS genes, record the validation ratio as 1.000 by construction and score R-33 / D-33 / G-26 on it without running; if any gene differs, run the validation as registered. The genes, side by side (`evolve/twilight_search.json` against the adopted reference card, `dict(lctest.ref(bits), goff=1, confirm="root")`, as `adopt2b_accept.py` defines it):
+
+| bits | pre-stages (td, rho, p−1 B, ECM) | kc | bc | mc | tc | lc | a_mode | sort_charge | kset | goff | confirm |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 84, chosen | 0, 0, 0, 0 | 32 | 0.5258029693118351 | 0.5118651317214798 | 1.456939234548333 | 1.6411709038747615 | on_demand | 1 | sf32 | 1 | root |
+| 84, reference card | none | 32 | 0.5258029693118351 | 0.5118651317214798 | 1.456939234548333 | 1.6411709038747615 | on_demand | 1 | sf32 | 1 | root |
+| 96, chosen | 0, 0, 0, 0 | 60 | 0.43245193099307744 | 0.6023151214915646 | 1.035307067324659 | 1.9736809858022166 | on_demand | 1 | sf32 | 1 | root |
+| 96, reference card | none | 60 | 0.43245193099307744 | 0.6023151214915646 | 1.035307067324659 | 1.9736809858022166 | on_demand | 1 | sf32 | 1 | root |
+
+Every gene is equal, so the validation is **not run**. Its robust ratio against the reference card is **1.000 by construction** (the same genome gives the same op counts on every number). Scored on it:
+- **R-33** (0.80–1.02; "reference" read as the reference card, per the scope note above): **hit.**
+- **D-33** (0.60–1.40; falsifier outside it): **hit.**
+- **G-26** (prediction 0.75, range 0.45–1.05; falsifier ≥ 1.1): **range hit** (1.000 is inside 0.45–1.05); **falsifier not triggered.** Its central claim, a 1.3–2× gain, did not happen.
+- All three hits are on a foregone value. The search found **no specialist better than the reference card** in this band.
