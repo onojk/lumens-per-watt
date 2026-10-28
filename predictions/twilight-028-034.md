@@ -52,16 +52,33 @@ As `twilight_search.py`:
 2. **STOP** to report the selected genome. No validation numbers exist yet.
 3. Run the validation counts arm (untimed), then the wall arm (timed, with the load check). Both go through `sealed_run.sh`.
 
-## Claude's estimate (from the committed light-spectrum table; information; the user decides whether to relay it)
+## Claude's estimate (from the committed light-spectrum table; information; NOT RELAYED to DeepSeek or Grok, the user's ruling Oct 28, same rule as the reviewer's opinions)
 
 At 96 bits, θ 0.28–0.30, p−1 at its reference B succeeds on 11 / 40 numbers, at 12.5 M op-class units per success (spending about 3.4 M per number), against QS's 34.0 M. A p−1 stage in front of QS would cost about 3.4 + 0.725 × 34.0 ≈ 28.1 M, about **0.83× QS alone** under op-class at that band edge (ruint, the same arithmetic: about 0.84×).
 - The gain shrinks toward 0.34, where p−1 succeeds less often (at 0.32–0.34, 0.015 light against QS's 0.029). Averaged over the band, the specialist would be about **0.85–0.95× QS alone**.
 - **Against the reference pipeline,** which already runs p−1 at its B after rho, the specialist would be near **1.0×**: the possible saving is rho's spending (rho rarely succeeds above θ 0.28) plus a better B.
 - These estimates are untested.
 
-## The reviewer's
+## The reviewer's R-34 to R-37 (Oct 28; sealed; verbatim; filed before any run)
 
-Pending (to be sealed verbatim).
+<!-- verbatim begin -->
+  R-34 Specialist / QS alone, 96 bits, theta 0.28-0.34, op-class, band average:
+       0.90, range 0.84-0.97, 70%. (Edge arithmetic 0.28-0.30: p-1 11/40 at 12.5M
+       per success = 3.4M per attempt; 3.4 + 29/40 x 34.5 = 28.4 -> 0.82; the gain
+       fades toward 0.32-0.34.)
+  R-35 Specialist / reference pipeline, same band and pricing: 0.85, range
+       0.78-0.95, 60%. (The reference's rho pre-stage is nearly dead here, rho 2/40
+       at 0.28-0.30; pre-stages cost the reference 1.21-1.26x QS alone at 0.33-0.40.)
+  R-36 The search picks a p-1 bound B larger than the reference card's: yes, 60%.
+  R-37 Wall clock, specialist / QS alone, 96 bits: 0.88-1.00, 60% (op-class
+       under-charges p-1 by ~21%, so the clock gain is smaller than op-class's).
+  Disclosure: the reviewer saw Claude Code's estimate on screen before sealing.
+<!-- verbatim end -->
+
+**Notes on scope** (the ranges are unchanged):
+- **R-36's "the reference card's" p−1 B.** The reference card is QS alone and has no p−1 stage. The p−1 B that exists is the reference pipeline's: 4,096 at 96 bits in the search's grid units (B, with ob = 2B; `twilight_search.json` "reference_pipeline_grid"). R-36 is scored against that B unless the user rules otherwise before the run. "Larger" means strictly larger, and a selected B of 0 (no p−1 stage) is "no".
+- **R-37 names wall-clock,** so the wall arm (§4) is scored for R-37, not information only.
+- **R-34 and R-35's "band average"** is the mean cost per number over the held-out numbers, θ uniform in 0.28–0.34 (§4), under op-class v1. They name op-class, so they are scored under op-class; rule (b) is reported beside it.
 
 ## DeepSeek's
 
