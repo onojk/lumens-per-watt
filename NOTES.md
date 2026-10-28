@@ -9860,3 +9860,57 @@ msieve's small-number path is not tuned for 29-digit inputs. This compares the c
 - **Wall forecast** (Stage 3 model, `wolfram/2026-10-27_copies_cost`): −13.8 / −37.8 / −153 µs per number, i.e. 2′b+fix / 2′b ≈ 0.984 / 0.976 / 0.957 at 72 / 84 / 96. This is a model; the verdict will come from the sealed timing run (predictions filed first).
 
 **Procedure:** code in lampcore and qs.py; acceptance (every count per type and every relation identical, 2′a and 2′b, Python = Rust, at 72 / 84 / 96); full parity; then the sealed timing run 2′b against 2′b+fix (predictions filed first; STOP at the prediction point).
+
+## Run A (aprime-fix): the A-prime lookup fix, wall-clock (sealed; predictions 9350a34 / 9de399f; result de74839)
+
+**In plain English first: the fix makes the reference 1.7% / 2.6% / 5.7% faster at 72 / 84 / 96 bits, for identical work.** Every output, factor and op count is the same before and after; only the unpriced base scan is gone.
+
+`results/aprime-fix_20261028T035410Z.out`; `evolve/aprimefix_time.py` (fa96cfd), `.json`. 8 alternating replicates, all map numbers, batch, core 2; core 2 at a median of 2,400 MHz in every cell; AC, cap 2,400 MHz, TCPU 50 °C at the start, no Wolfram kernel. Code f988aab; acceptance (byte-identical outputs, Python traces identical) and full parity clean (the commit after).
+
+| bits | 2′b, µs / number | 2′b+fix, µs / number | fix / 2′b | 95% t interval | change |
+|---|---|---|---|---|---|
+| 72 | 846.6 | 831.8 | 0.9827 | [0.9674, 0.9980] | **−1.73%** [−3.26, −0.20] |
+| 84 | 1,594.9 | 1,553.8 | 0.9743 | [0.9637, 0.9848] | **−2.57%** [−3.63, −1.52] |
+| 96 | 3,555.3 | 3,352.7 | 0.9431 | [0.9370, 0.9492] | **−5.69%** [−6.30, −5.08] |
+
+- Outputs with `--types` identical in the run itself at all three sizes: yes.
+- At 72, two of the 8 replicate ratios are above 1 (1.0072, 1.0014); the interval still excludes 0.
+- **Against the cost note's model** (−1.6 / −2.4 / −4.3%): close at 72 and 84; at 96 the measured saving is 1.3 points larger. The model priced the scan's instructions from a microbenchmark; at 96 the scan (about 318 base entries per kept relation) also evicts sieve data, which the benchmark did not include. That is a reading, not measured.
+
+**Scored as filed** (the point change against each range):
+- **D-20:** 72 inside (−0.8 to −2.6); 84 inside (−1.4 to −3.6); 96 inside (−2.8 to −6.0). **Hit at all three.**
+- **R-20:** 72 inside (−0.5 to −2.2); 84 inside (−1.0 to −3.2); 96 **outside** (−2.0 to −5.0; −5.69). **Falsified at 96** (the falsifier: outside the range). The direction of its note (below the cost note) held at none of the sizes.
+- **G-13:** 72 inside (−1.0 to −2.2); 84 inside (−1.8 to −3.2); 96 **outside** (−3.5 to −5.5). **Missed at 96, not falsified:** its falsifier (≥ 0% at any size, or ≤ −6.0% at 96) is not met (−5.69 > −6.0).
+
+**Not established:** the 96-bit mechanism (cache eviction by the scan) is unmeasured. Nothing adopted: the fix is code (the user's decision, made before the run), not a reference or pricing change; no priced figure moved.
+
+## Run B (baseline-yafu): the reference (2′b+fix) against YAFU, full default factor() (I-038; information only, never fitness; sealed; predictions 9350a34 / 9de399f; result f132518)
+
+**In plain English first: as built and run here, YAFU is much slower than the card: sieve against sieve on the balanced band, the card takes 1/40 of YAFU's time at 72 and 96 bits and 1/80 at 84.** Even with one 16-bit factor, YAFU takes about 10 ms per number. All three forecasters expected YAFU to be at least as fast as msieve. Here it is 4.2–8.4× slower than msieve on all map numbers and 7.3–20× slower on the balanced band (from `baseline_msieve.json`; the card binaries differ by the fix). **This is very likely not YAFU's best:** see the caveat below before reading anything into it.
+
+`results/baseline-yafu_20261028T035613Z.out`; `evolve/baseline_yafu.py` (fa96cfd), `.json`; one balanced 96-bit number's `factor.log` (post hoc, rerun outside the timing): `evolve/baseline_yafu_96bal_example.log`. YAFU c7d9028, built as in `predictions/baseline-yafu.md` (sha256 f5f9bde1…). The command: `taskset -c 2 yafu "factor(@)" -threads 1 < in.txt`, in an empty directory with no `yafu.ini`. The card: the release lampcore after the A-prime fix (ef345913…), 2′b genes. 4 replicates; core 2 at a median of 2,400 MHz in every cell; AC, cap 2,400 MHz, TCPU 50 °C at the start, no Wolfram kernel. **Factor checks: 0 failures** in every cell at every size.
+
+| bits | card, µs / number | YAFU, µs / number | **card / YAFU (sealed, all map numbers)** | balanced band: card / YAFU (µs) | pipeline / YAFU |
+|---|---|---|---|---|---|
+| 72 | 827.2 | 15,779.6 | **0.052** [0.052, 0.053] | **0.025** (864 / 34,814) | 0.047 |
+| 84 | 1,549.7 | 34,300.7 | **0.045** [0.044, 0.046] | **0.012** (1,540 / 125,615) | 0.040 |
+| 96 | 3,345.2 | 47,054.6 | **0.071** [0.071, 0.071] | **0.025** (3,373 / 135,063) | 0.060 |
+
+Per band at 96 (one pass): YAFU 10.2 ms with a 16- or 20-bit factor, 12.5 ms at 28 bits, 18.2 ms at 32, 48.5 ms at 36, 134 ms at 42, and 136 ms at 48 (balanced). At 72 and 84 the floor is the same, about 10 ms.
+
+**Caveat: this YAFU run is slow for reasons inside YAFU's default path, only partly diagnosed (post hoc, one number each, outside the timing):**
+- **The about 10 ms floor per number:** before any sieve, `factor()` runs trial division to 10,000, **Fermat for 1,000,000 iterations** (`fmt: 1000000 iterations`) and rho, and it writes `factor.log` and `factor.json` per number. On the 16-bit-factor number YAFU's own clock says 5.8 ms, all before rho finds the factor; the rest of the about 10 ms is outside YAFU's own clock (output, logs).
+- **The balanced numbers:** YAFU's scheduler skips ECM ("trivial ECM work to do") and runs **tinyqs** on the C29: 185 ms by YAFU's own clock for one number. Where tinyqs spends that time was not found within the time box; the source search did not reach its entry point. Published YAFU figures for C30 are a few ms (the forecasters' information-only figures), so something in this build or default path costs 30–50× that. Candidate causes, none tested: the build (`-O2` and generic flags, not `-march=native`; no tune data, "ignoring tune info"), per-call set-up in tinyqs, and the default plan's pretests.
+- **So the sealed number is "the card against YAFU's default `factor()` as built here"**, as designed (the reviewer's design: full default, like msieve's). It is **not** evidence about YAFU's SIQS at its best. A fair "sieve against sieve" YAFU cell would need the slow path understood first.
+
+**Scored as filed** (96 bits; the sealed ratio is card / YAFU):
+- **D-21** (balanced, 0.30–1.10; falsifier < 0.15 or > 1.40): measured **0.025**: **falsified** (below 0.15; the falsifier glosses were inverted, per the reviewer, and the numbers stand).
+- **D-22** (all numbers, 0.40–1.25; falsifier < 0.20 or > 1.60): measured **0.071**: **falsified**.
+- **R-21** (balanced, 0.8–3.0): 0.025: **falsified**.
+- **R-22** (all numbers, 1.2–5.0): 0.071: **falsified**.
+- **G-14** (balanced, 0.25–0.80): 0.025: **falsified**.
+- **G-15** (all numbers, 0.35–1.10): 0.071: **falsified**.
+
+All six are falsified in the same direction: every forecaster expected YAFU at least as fast as msieve, and here it is 4–20× slower. The common cause is the same for all six (YAFU's default path as built), so the six do not count as six independent misses.
+
+**Not established:** why tinyqs takes 185 ms on a C29; whether a native-tuned build, a tune run (`tune()`) or `siqs()` called directly would change the picture. Those are next experiments, not done (they would change YAFU's settings or call path, and need your go-ahead).

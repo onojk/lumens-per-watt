@@ -1,0 +1,18 @@
+10/27/26 21:03:59, 
+10/27/26 21:03:59, ****************************
+10/27/26 21:03:59, Starting factorization of 45655405731039557065684143157
+10/27/26 21:03:59, using pretesting plan: normal
+10/27/26 21:03:59, no tune info: using qs/gnfs crossover of 95 digits
+10/27/26 21:03:59, no tune info: using qs/snfs crossover of 95 digits
+10/27/26 21:03:59, ****************************
+10/27/26 21:03:59, rho: x^2 + 3, starting 1000 iterations on C29
+10/27/26 21:03:59, rho: x^2 + 2, starting 1000 iterations on C29
+10/27/26 21:03:59, rho: x^2 + 1, starting 1000 iterations on C29
+10/27/26 21:03:59, final ECM pretested depth: 0.000000
+10/27/26 21:03:59, scheduler: switching to sieve method
+10/27/26 21:03:59, starting SIQS on c29: 45655405731039557065684143157
+10/27/26 21:03:59, random seed: 8710019084343919009
+10/27/26 21:03:59, starting tinyqs on C29 = 45655405731039557065684143157
+10/27/26 21:03:59, prp15 = 205416602156351
+10/27/26 21:03:59, prp15 = 222257623053707
+10/27/26 21:03:59, Total factoring time = 0.1853 seconds
