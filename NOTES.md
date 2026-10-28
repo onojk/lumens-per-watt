@@ -10185,3 +10185,9 @@ The user asked for this to be recorded (Oct 27 late). Three times in one week, w
   - **Caveat:** the inputs are the balanced band; the sealed run uses all map numbers. Allocation per number is dominated by the per-attempt `OnDemand` buffers, which do not depend on the factor sizes.
 
 **Procedure:** code (lampcore), then acceptance (byte-identical outputs with and without `--types`, all map numbers at 72 / 84 / 96, for 2′a, 2′b and the pipeline; Python traces unchanged), full parity, a callgrind check of the allocation instructions actually removed, and then the sealed timing run 2′b+fix against 2′b+fix+alloc, with predictions filed first. **STOP at the prediction point** so the user can relay to DeepSeek and Grok.
+
+**Correction to "Three unpriced costs in one week"** (the same night, after checking): the example "setup at 72 bits takes 34% of the card's time but carries much less of its priced cost" was written before it was checked, and it overstates. The check: `--phasetime` per-region op counts priced under ruint, balanced band, one pass, core 2.
+- **Setup at 72:** 32.5% of the time against 21.9% of the ruint cost, an excess of about a third.
+- **Setup at 96:** 22.7% against 21.4%, no clear excess.
+- **The per-region priced shares have artefacts of their own.** Scan shows 0.0% priced at both sizes because its sieve_scan charges land in another region's counts, and the sieve shows 22.7 / 45.2% priced against 10.3 / 25.5% of the time.
+- So a usable I-042 (a) needs a per-region charge attribution first. The argument for the absolute check stands. The 72-bit setup example supports it only weakly, and the 96-bit one not at all.
