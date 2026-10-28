@@ -10786,3 +10786,26 @@ Total: about 1–3 hours of lampcore counting for the rest; wall timing roughly 
 - **The growth fitness G** (design: a card's local slope ÷ the reference's at 88–96) is not yet frozen, so nothing is scored with it.
 
 **Correction to the growth harness v1 entry:** "QS is 15–52× cheaper per factorisation throughout", said of ECM, is wrong. From the table, ECM ÷ QS is 3.4× at 40 bits rising to 14.6× at 96, and CFRAC ÷ QS is 2.2× rising to 52×.
+
+## Rulings on the growth and twilight forecasts (the user's, Oct 28; documentation only)
+
+- **R-31 is scored under op-class: MISS.** QS is cheaper than rho from 40 bits, so the curves do not cross between 48 and 64. Note: no pricing named; scored under op-class, the pricing of R-29 in the same entry and the one D-31/G-24 named; official would hit; not chosen post hoc. Recorded in `predictions/growth-v1.md` and `reviews/scorecard.md`.
+- **The twilight validation is not run.** The gene search's chosen genes on θ 0.33–0.40 equal the adopted reference card's genes (`dict(lctest.ref(bits), goff=1, confirm="root")`) at 84 and 96, with every pre-stage budget 0. The genes are side by side in `predictions/growth-spectrum-twilight.md`. By the user's rule, the validation ratio is recorded as **1.000 by construction**, and the sealed forecasts are scored on it:
+  - **R-33** (0.80–1.02): hit.
+  - **D-33** (0.60–1.40): hit.
+  - **G-26** (0.45–1.05; falsifier ≥ 1.1): range hit, falsifier not triggered. Its predicted 1.3–2× gain did not occur.
+  - All three are hits on a foregone value. The result is that the search found **no specialist better than the reference card** on this band.
+
+## The instruction-check ratio: its direction (light spectrum v1; documentation only)
+
+**The ratio is (op-class v1 units) ÷ (instructions retired)**, per lamp, pooled over a size's bands (`spectrum_opclass_view.py`, `pooled()`). Op-class v1 weights are instructions retired per charged op (`reviews/opclass_procedure.md`), so the units are comparable. A ratio **below 1** means op-class charges a lamp **less** than the instructions it retires, so it **under-charges** that lamp and makes it look brighter.
+
+**The arithmetic on one band** (96 bits, θ 0.20–0.22; `evolve/light_spectrum.json`):
+- **td:** 144,297,557 op-class units ÷ 258,796,578 instructions = **0.558**. Op-class under-charges td by about 44%.
+- **p−1:** 27,443,572 ÷ 34,774,060 = **0.789**. Under-charged by about 21%.
+- **QS:** 329,536,662 ÷ 298,338,317 = **1.105**. Over-charged by about 10%.
+- **So op-class prices a p−1 instruction at 0.789 ÷ 1.105 ≈ 0.71 of a QS instruction,** and a td instruction at about 0.50 of one. That is why p−1 and td stay ahead of QS in more bands under op-class (the direction 1562dbd corrected).
+
+**The correction used in the op-class view** multiplies td's and p−1's light by their pooled ratios (0.617 / 0.602 / 0.558 for td and 0.769 / 0.780 / 0.782 for p−1, at 72 / 84 / 96), which lowers their light. It leaves QS's ratio (1.09–1.10) uncorrected.
+- **Correcting every lamp** (td, rho, p−1, ECM and QS each by its own pooled ratio; CFRAC uncorrected, information only; computed from the committed json, untimed): lowest band with QS best and band from which QS stays best = **0.30 / 0.30** at 72, **0.30 / 0.36** at 84, **0.32 / 0.32** at 96. Against the td-and-p−1 correction, only 72 moves (from 0.34 / 0.40).
+- **Not established:** the ratios come from the run's callgrind subset (SUB = 8 per cell), not from every number. This is a re-pricing of op-class, not a new pricing, and nothing is scored with it. R-32 / D-32 / G-25 stay scored on op-class light as written (68be1a9).
