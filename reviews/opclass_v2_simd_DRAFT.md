@@ -19,9 +19,9 @@ What it does **not** affect today: the card runs no 256-bit instructions in its 
 | **(T) measured throughput** | the instruction class's reciprocal throughput at the cap, from a calibration microbenchmark, relative to a scalar add (as ruint and Montgomery prices are calibrated) | reflects what the machine actually pays | machine-specific; it needs its own calibration and re-calibration per machine; it mixes cost with work, which is ruint's job, not op-class's |
 
 **Recommendation: (L) lanes,** with fixed fallbacks:
-- **Packed arithmetic, compare, logic, min/max, blend:** weight = the number of lanes, from the mnemonic's element suffix and the register width (b = 8 bits, w = 16, d / ps = 32, q / pd = 64).
+- **Packed arithmetic, compare, logic, min/max:** weight = the number of lanes, from the mnemonic's element suffix and the register width (b = 8 bits, w = 16, d / ps = 32, q / pd = 64).
 - **Loads, stores and register moves of vector width:** weight = bytes ÷ 8, rounded up. They move data, so they get no lane credit.
-- **Shuffles, permutes, packs, unpacks, broadcasts, extracts, inserts, and movemask:** weight 1. They are overhead, not lane work.
+- **Gathers, shuffles, permutes, blends, packs, unpacks, broadcasts, extracts, inserts, and mask extracts (`movemask`, `vpmovmskb`):** weight 1, counted as instructions **without lane credit**. They move data; they do no lane work. (Added Oct 28, the user: gather / shuffle / blend / mask-extract named explicitly; blends moved here from the lane-weighted group.)
 - **Scalar FP in xmm (`*ss`, `*sd`, `cvt*`):** weight 1, as in v1.
 - **Mnemonics outside a committed table:** weight 1, and the derivation lists them (a guard, like I-045's unattributed instructions).
 
@@ -44,6 +44,7 @@ Under (L), vectorisation is **neutral** in op-class: it shows up only in wall-cl
 
 1. **On today's card** (no 256-bit code), v2's weights equal v1's within 3% per class. If not, the mnemonic table or the classifier is wrong.
 2. **A synthetic test:** a scalar loop and its hand-vectorised twin doing the same lane work (a standalone crate, as `bench/copybench`, not the card) get v2 weights within 5% of each other, while v1 gives the vector twin roughly 1 ÷ lanes.
+   - **The twin test's wall comparison** is reported as a **warning only**, never used to set v2 weights (added Oct 28, the user). Setting op-class weights from time would make op-class a second ruint; the time side is ruint's job.
 3. **The table's coverage:** every vector mnemonic executed in the input set is in the table. None falls to the fallback weight unlisted.
 
 ## 6. Open points for the user
@@ -53,3 +54,17 @@ Under (L), vectorisation is **neutral** in op-class: it shows up only in wall-cl
 3. Masked or partial lanes (AVX-512, not on this CPU): count the active lanes or the full width.
 4. Whether the YAFU comparison (information only) should also be reported under v2 instructions, so the card and YAFU compare in lane work.
 5. When to derive it: now, on today's card, as check 1; or only when a vectorised change is proposed.
+
+## Outside views (information only)
+
+### Grok (00:09 Oct 28 PT; verbatim)
+
+<!-- verbatim begin -->
+[PLACEHOLDER: the user's brief asked for Grok's 00:09 reply to be recorded here verbatim, but the brief did not contain its text. To be filled verbatim when the user pastes it.]
+<!-- verbatim end -->
+
+**The reviewer's notes:**
+- **The mechanism** (a gather of primes, a scalar early exit) is a real way a lanes rule overstates vector savings.
+- **Its check matches the draft's scalar / vector twin test,** reached independently.
+- **Its "lanes weight is too high"** is ambiguous in direction. It is read as "the vector discount is too generous".
+
