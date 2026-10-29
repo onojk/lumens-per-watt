@@ -23,7 +23,7 @@ A genome is one stage, `{"t": "arr", "layout": {...}, "detect": {...}, "ob": bud
 | stride | start a, stride s | a + s·i | one `word` (an add) |
 | fold | width w, stride s | the stride walk in blocks of w, with the block's product accumulated mod N | one `mul` per dot |
 | map | c, degree d (even, 2–8), x0 | x_{i+1} = x_i^d + c mod N | rho's step cost: (log2 d + popcount d − 1) × `mul` |
-| squares bins | multiplier m, bins B | x_i = (m·i)² mod N, placed into B bins by low bits | one `mul` and one `hash` per dot |
+| squares bins | multiplier m, bins B | x_i = (m·i)² mod N, placed into B bins by low bits | one `mul` and one `hash` per dot (see §5: the bins carry no information about x mod p) |
 | exponent (in the pool, the user's ruling) | base a, bound B | x_k = a^(k!) mod N (p−1's arrangement) | `mul` per modular multiply, as p−1 |
 
 **Detection rules** (when to test for a collision):
@@ -68,10 +68,14 @@ A genome is one stage, `{"t": "arr", "layout": {...}, "detect": {...}, "ob": bud
 ## 5. The baseline and the expected best
 
 - **Baseline: rho** (Brent, x² + 1, lampcore's genes), measured on the same numbers.
-- **The birthday limit:** for any layout whose x_i mod p behave like random draws, the first collision mod p comes after about √(πp/2) dots. No detection rule can see a collision before it exists. So for the map, fold and bins layouts the best possible growth is about p^(1/2), a log2-steps slope of about 0.25 per bit of N. That is rho's, and "rediscovers rho" is the expected best outcome.
+- **The birthday limit:** for any layout whose x_i mod p behave like random draws, the first collision mod p comes after about √(πp/2) dots. No detection rule can see a collision before it exists. So for the map and fold layouts the best possible growth is about p^(1/2), a log2-steps slope of about 0.25 per bit of N. That is rho's, and "rediscovers rho" is the expected best outcome.
 - **Structured layouts:**
   - stride walks find p at the first multiple, about p steps (slope 0.5);
-  - squares bins compare values mod N, so a collision mod p is visible only through pairwise gcds (quadratic in the dots per bin) or products. They should not beat the birthday limit, and with bin-compare detection they pay √p² compares;
+  - **squares bins (the reviewer's amendment, Oct 29):**
+    - binning by the low bits of x mod N carries no information about x mod p, so dots that agree mod p land in bins at random, and the bins cannot expose mod-p collisions;
+    - bin compare detects only exact equality mod N (x² ≡ y² mod N, a Fermat-type square congruence), a different and rarer event;
+    - a mod-p collision is reachable only through gcds of differences across bins, which the bins do not organise;
+    - **so the expected result for bins is worse than the birthday limit, not equal to it;**
   - the exponent arrangement is p−1, erratic, depending on p−1's smoothness. **It is in the gene pool** (the user's ruling), so the family can rediscover p−1 on smooth-p numbers.
 - **Rediscoveries** of p−1 (the exponent layout) or rho (the map layout with cycle detection) are reported separately, as **"rediscovered known lamp"**, never as novelty (the user's ruling; G_rho's rule 5).
 - **The origin-dots shape check** (`explore/origin_dots.py`, unmetered) already shows walk 0.503, rho 0.254 and p−1 0.253 (erratic) per bit at 20–40 bits.
@@ -89,17 +93,27 @@ A genome is one stage, `{"t": "arr", "layout": {...}, "detect": {...}, "ob": bud
 ## 7. Questions to seal (forecasters, before any scored run)
 
 1. **Does evolution rediscover a rho-shaped layout?** Defined as: the best genome uses the map layout (any c, d) with a cycle-detection rule (Floyd or Brent, batched or not), and its log2-steps slope over 48–80 bits is within 0.20–0.30 per bit. Yes or no, with a probability. (A yes is reported as "rediscovered known lamp".)
+   - **Its meaning (the reviewer's amendment):** "map + cycle detection" is in the gene pool, so a yes mainly validates the search, the meter and the guard on a family with a known answer. It is phase 4's test drive and is reported as such, not as discovery.
 2. The best genome's G_rho (frozen, 48–80, op-class; and its worst-of value including the scaled gcd price), or "not defined". Its G (80–96), or "not defined".
 3. The best genome's cost ratio against rho alone at 64 and 80 bits, op-class v1, with a range; and the same under the size-scaled gcd price.
 4. Does any non-map layout (stride, fold, bins) beat a slope of 0.45 per bit? Yes or no.
-5. Does the search select the exponent layout (rediscovered p−1) on θ < 0.3 numbers?
+5. Does the search select the exponent layout (rediscovered p−1) on θ < 0.3 numbers? Scored on the θ sub-map only (§8).
+6. **The best genome's map degree d** (the reviewer's addition): is d = 2, or higher? Background: Brent and Pollard (1981) showed that x^(2k) + c maps shorten the expected cycle when p ≡ 1 mod 2k, while each step costs more multiplies under §2's charge (log2 d + popcount d − 1).
 
 ## 8. Run plan (only after the user's approval and sealing)
 
 1. Cost model in NOTES for each layout and rule (charges per §3), then code in Python and lampcore. Parity, including stride + per-dot = vl exactly.
-2. The training map at 48, 56, 64, 72 and 80 bits (untimed counts), and the search (a coordinate search over the genes, as the twilight search). STOP to report the genome.
-3. Validation on held-out numbers: G_rho (frozen, 48–80), G (frozen, 80–96) where defined, cost against rho; the worst-of set including the scaled gcd price.
-4. A wall arm only if a prediction names it.
+2. **Number distributions** (the reviewer's amendment, Oct 29):
+   - **Main map, balanced** (θ ≈ 0.5, `semiprimes_pq(bits, n, seed)` as G_rho's reference):
+     - training: 48 per size at 48, 56, 64, 72 and 80 bits, seeds 9920000 + bits;
+     - validation: 48 per size at 48, 64 and 80 bits (G_rho and the cost ratios) and at 96 bits (G's 80–96 chord, with 80), seeds 9930000 + bits, never seen by the search. Rho alone runs on the same validation numbers (G_rho's paired bootstrap).
+   - **θ sub-map for Q5** (θ uniform in 0.20–0.30, drawn as `twilight2_search.numbers()` with the band changed):
+     - training: 48 per size at 64 and 80 bits, seeds 9925000 + bits;
+     - validation: 96 per size at 64 and 80 bits, seeds 9935000 + bits.
+     - The search runs separately on the sub-map. Its genome answers Q5 and nothing else; G_rho, Q1–Q4 and Q6 are scored on the balanced map only.
+3. The training map (untimed counts) and the search (a coordinate search over the genes, as the twilight search), on each map. STOP to report the genomes.
+4. Validation on held-out numbers: G_rho (frozen, 48–80), G (frozen, 80–96) where defined, cost against rho at 64 and 80 bits; the worst-of set including the scaled gcd price.
+5. A wall arm only if a prediction names it.
 
 ## 9. Decisions
 
@@ -109,7 +123,8 @@ A genome is one stage, `{"t": "arr", "layout": {...}, "detect": {...}, "ob": bud
 - the exponent layout in the pool, and rediscoveries reported as known lamps;
 - the design approved in principle.
 
+**The reviewer's read (Oct 29):** four amendments folded in: squares bins (§2, §5), the number distributions and Q5's sub-map (§8), Q1's meaning (§7), and Q6 (§7). Q5 is kept, with its own sub-map.
+
 **Still open:**
-- the reviewer's read after the push;
 - the predictions (§7), sealed before any run;
 - the cost models in NOTES for each layout and rule, before code.
