@@ -11142,3 +11142,56 @@ Montgomery is read from calibrate.json at run time and reported. With official p
 - **Reading:** costs step up when N needs a second 64-bit word. One-word models such as Montgomery's prices fit below 64 bits and miss above it, which is why Montgomery under-prices rho's multiplies at 84–96 bits.
 - **The reviewer expected the clock to side with Montgomery on the rho stage. That expectation was wrong:** the clock sided with op-class and ruint.
 - **Not established:** a per-operation wall breakdown of rho at 96 bits. The reading rests on the two measurements above.
+
+## Cost model: the arrangement lamp "arr" (arrangement-v1; design 70d374a; written before code)
+
+**The stage:** `{"t": "arr", "layout": {...}, "detect": {...}, "ob": budget}`. It is in no deck; the search builds genomes explicitly.
+- **Ops identity:** ops = mul + word + hash + sort_cmp + gcd, where **gcd = tests** (one tick and one luck-meter test per gcd, rho's convention).
+- **Trace:** the lamp keeps its own per-type counters, the way p−1 keeps `word`. The split is exact by construction, and `per_type` asserts the sum.
+- **No new op type and no new price:** mul 554.9, word 55.6, hash 465.4, sort_cmp 67.4 and gcd 1,401.7 op-class units; all five are priced under ruint and Montgomery.
+- **The scaled-gcd view** (the user's ruling, 558b18f) needs to know which curve each gcd used. The trace also counts **gcd_small**: gcds whose non-N argument was < 2^64 at the call. This is information only; op-class v1 prices all gcds the same.
+
+### Layouts (each produces dots x_0, x_1, … mod N)
+
+| layout | genes | dot i | charge per dot |
+|---|---|---|---|
+| stride | a ≥ 0, s ≥ 1 | x_0 = a, x_{i+1} = x_i + s (mod N) | 1 `word` per step (x_0 free) |
+| fold | w ≥ 2, a, s | dot j = ∏ (a + s·i) over the j-th block of w stride values, mod N | w `mul` (the products) + w `word` (the stride steps) per dot |
+| map | c, even d in {2, 4, 6, 8}, x0 | x_0 = x0, x_{i+1} = x_i^d + c mod N | rho's step cost: max(1, bitlen(d) − 1 + popcount(d) − 1) `mul`; the + c is not charged (rho's convention) |
+| bins | m ≥ 1, B (power of 2, ≤ 2^16) | x_i = (m·i)² mod N; bin = x_i mod B | 1 `word` (m·i by adding m) + 1 `mul` (the square mod N) + 1 `hash` (the bin insert) |
+| exponent | base a, bound K | x_0 = a, x_k = x_{k−1}^k mod N, k = 1 … K | max(1, bitlen(k)) `mul` per k (p−1's per-prime-power convention) |
+
+### Detection rules
+
+| rule | genes | what happens | charge |
+|---|---|---|---|
+| per dot | target t (default 0) | after each dot, g = gcd(x_i − t mod N, N) | 1 `gcd` per dot |
+| batched | b in 1 … 4,096, t | q ← q·(x_i − t) mod N per dot; every b dots, g = gcd(q, N) | 1 `mul` per dot, 1 `gcd` per batch |
+| Floyd | b (1 = unbatched) | x advances 1 dot, y advances 2 dots; q ← q·(x − y); every b iterations, g = gcd(q, N) | the 3 layout steps per iteration + 1 `mul` + 1 `gcd` per b iterations |
+| Brent | b | lampcore rho's loop exactly (power-of-two checkpoints r, batches of b) | as rho: the layout steps, + 1 `mul` per batched difference, + 1 `gcd` per batch |
+| bin compare | – | on insert, for each earlier dot y in the same bin: an equality check x == y, then g = gcd(x − y, N) | 1 `sort_cmp` + 1 `gcd` per pair |
+
+**Rules shared by all:**
+- **The backtrack:** if a batched gcd returns N, the rule backtracks from the batch's start one dot at a time. It re-steps the layout (charged as the layout) with one `gcd` per dot (charged), as rho does. If the backtrack also gives N, the stage fails (returns nothing).
+- **Validity:** Floyd and Brent need a layout whose next dot is a function of the current dot only (map, stride). With fold, bins or exponent the genome is invalid and refused with an error, as both cores do for bad genes. Bin compare needs the bins layout.
+- **Budget:** the stage's `ob` and the run's cap, as every stage. Budget exhaustion ends the stage, censored.
+- **Absdiff, comparisons of q with 1, and bin indexing** are not charged. That is rho's and the hash table's convention: the charge is for the arithmetic mod N and the gcd.
+
+### Built-in exactness checks (parity, before any training run)
+
+1. **map(c = 1, d = 2, x0 = 2) + Brent(b) must reproduce lampcore's rho exactly** (ops, factor, tests, hits, per-type counts), for every b in the parity set.
+2. **stride(a = 2, s = 1) + per dot(t = 0) and the vl lamp:**
+   - **Identical:** the gcds, tests, hits and factor.
+   - **Different by design:** ops. stride charges 1 `word` per step (§2's design), and vl, like td, charges none for its k += 1 stepping. So arr ops = vl ops + (dots − 1) `word`, which costs 55.6 ÷ 1,401.7 ≈ 4% more per dot under op-class.
+   - **This is a decision for the user,** because the brief asked for "stride + per-dot must reproduce vl exactly":
+     - (i) keep the design's `word` charge, so the check is the identity above;
+     - (ii) charge stride stepping as td and vl do (nothing), so the check is exact on ops too.
+   
+     (i) is the default, because an uncharged op is a critical bug. td's and vl's free stepping is an existing convention, not a precedent to extend.
+3. **Python and lampcore:** identical ops, factor, tests, hits and per-type counts (including gcd_small) on every layout × rule pair in the parity set, plus the mutation check that every changed charge is caught.
+
+**Expected shapes** (from the design and the origin-dots measurement; not predictions):
+- stride + per dot ≈ p dots;
+- map + cycle detection ≈ √p dots (rho);
+- exponent ≈ the largest prime factor of p − 1;
+- bins: mod-p collisions are not exposed by the binning (the reviewer's amendment).
