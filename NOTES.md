@@ -10976,3 +10976,25 @@ QS is 6–9× brighter than ECM in each of them. This does not change the correc
 - **The disagreement on the rho pre-stage** (D-35 0.99 against R-35 0.85 and G-28 0.80) is settled toward R-35 and G-28 under op-class: removing rho pays. Under Montgomery (0.972) and official (1.050) D-35's "tiny" reading is closer. D-35's point error is the round's largest.
 - **R-35 and G-28 quoted the mislabelled relayed fact** (1.21 / 1.26 as op-class; correction 2cf3f5f). Their scores stand as filed.
 - **Pending:** R-37, D-37 and G-30 (wall). The wall arm waits for AC power and the load check; nothing in its conditions is changed.
+
+## twilight-028-034 wall arm (sealed run 92802f6; predictions a505fc1; scored for R-37, D-37, G-30)
+
+`results/twilight-028-034_20261029T061048Z.out`; `evolve/twilight2_wall.json`. The 400 held-out numbers per size, batch, core 2, 4 replicates, the order rotating. **Machine state (run record):** AC online 1, cap 2,400 MHz, governor powersave (not changed), load 0.50 → 0.96, TCPU 34 → 37 °C, core 2 median 2,400 MHz in every cell, no Wolfram kernel. The load check passed at the start and before every replicate (0.50–0.95, against 2.5). The run started from a waiter that held until AC returned (the validation counts ran on battery, dee408f).
+
+| bits | ms per number: specialist / QS alone / reference pipeline | specialist ÷ QS alone (95% t, 3 df) | specialist ÷ reference pipeline |
+|---|---|---|---|
+| **96** | 2.899 / 2.986 / 3.588 | **0.971** [0.941, 1.001] | 0.808 [0.781, 0.835] |
+| 84 | 1.235 / 1.270 / 1.451 | 0.973 [0.953, 0.992] | 0.852 [0.833, 0.871] |
+
+- **The wall gain against QS alone is smaller than op-class's** (0.971 against 0.919 at 96): the direction R-37, D-37 and G-30 all gave (op-class under-charges p−1). At 96 the interval just reaches 1 (upper 1.001), so the wall saving against QS alone is not separable from 0 at 4 replicates; at 84 it is (upper 0.992).
+- **Against the reference pipeline the clock agrees with op-class and ruint** (0.808 at 96, against op-class 0.849), not with Montgomery (0.972) or official (1.050). The reference's rho stage costs more wall time than Montgomery or official charge for it.
+
+**Scored as filed (wall, 96 bits, specialist ÷ QS alone):**
+
+| prediction | point; range | measured | range | error of point |
+|---|---|---|---|---|
+| R-37 | 0.88–1.00, 60% | 0.971 | **hit** | (range only; midpoint 0.94, 0.031) |
+| D-37 | 0.95; 0.67–1.24 | 0.971 | **hit** | 0.021 |
+| G-30 | 0.90; 0.60–1.20; falsifier ≥ 1.25 | 0.971 | **hit**; falsifier not triggered | 0.071 |
+
+**The round, all twelve:** the reviewer 3 hit, 1 miss (R-36); DeepSeek 4 hit; Grok 3 hit, 1 falsified (G-29). Smallest point errors: D-34 0.001 and R-35 0.001; largest D-35 0.141. Not yet entered in `reviews/scorecard.md` (with R-28 / D-28 / G-21, on the user's word). **Adoption of the specialist is the user's decision; nothing is adopted here.**
