@@ -10910,3 +10910,17 @@ QS is 6–9× brighter than ECM in each of them. This does not change the correc
 - **The rho / QS crossing on wall** is between 40 and 48 bits: rho 0.125 against QS 0.172 ms at 40; 0.333 against 0.176 at 48. This is the same as Montgomery's, and later than op-class's (below 40). Information only; R-31 stays scored under op-class (the user's ruling).
 - **ECM and CFRAC at 96:** 56.3 and 103.4 ms per number, against QS's 2.97 (19× and 35×).
 - **Not established:** the 84-bit end of the wall gene check (the wall step has no 84-bit size).
+
+## Correction: the reference pipeline's cost on θ 0.33–0.40 was relayed under the wrong pricing (Oct 28; found by the reviewer; documentation only)
+
+**The relay for twilight-028-034** told all three forecasters that the reference pipeline costs 1.21 / 1.26× QS alone on θ 0.33–0.40 (84 / 96 bits) **under op-class**. That figure is the rule (b) value, which on that band is ruint's. The committed data (`evolve/twilight_search.json`, ad4a88d, "reference_scores"):
+
+| pricing | 84 bits | 96 bits |
+|---|---|---|
+| op-class v1 | **1.148** | **1.208** |
+| ruint (= rule (b) here) | 1.209 | 1.262 |
+| Montgomery | 0.996 | 1.031 |
+| official | 0.918 | 0.946 |
+
+- **Source of the error:** the ad4a88d NOTES headline gave "1.21× / 1.26×" without naming the pricing; 2edd2f0 gave the per-pricing values correctly. The relay took the headline.
+- **Effect:** R-35 and G-28 quote the mislabelled figure. **Relayed fact mislabelled; sealed predictions unchanged; the corrected fact goes to DeepSeek and Grok with the scores.** The same correction is recorded in `predictions/twilight-028-034.md`.
