@@ -10998,3 +10998,7 @@ QS is 6–9× brighter than ECM in each of them. This does not change the correc
 | G-30 | 0.90; 0.60–1.20; falsifier ≥ 1.25 | 0.971 | **hit**; falsifier not triggered | 0.071 |
 
 **The round, all twelve:** the reviewer 3 hit, 1 miss (R-36); DeepSeek 4 hit; Grok 3 hit, 1 falsified (G-29). Smallest point errors: D-34 0.001 and R-35 0.001; largest D-35 0.141. Not yet entered in `reviews/scorecard.md` (with R-28 / D-28 / G-21, on the user's word). **Adoption of the specialist is the user's decision; nothing is adopted here.**
+
+## Wolfram: "seven of nine", tower 77 (the user's script, Oct 28; documentation only)
+
+`wolfram/2026-10-28_seven_of_nine_77.wl` (the user's script, verbatim; run from `wolfram/`, so the figure is `wolfram/seven_of_nine_77.png`, not committed). The fractions k/77, k = 1..77, are dropped onto the Farey-style towers k/n, n = 1..76. **17 land on an existing point** (k sharing a factor with 77: the reduced fractions j/7, j/11 and 1/1, i.e. p + q − 1 = 7 + 11 − 1), and **60 = φ(77) are new.** Checked separately: count 17, EulerPhi[77] = 60, collision denominators {1, 7, 11}. It computes a picture of gcd(k, N) > 1, not a factoring method: finding a collision needs a k with gcd(k, N) > 1, which is as hard as finding a factor (the fraction of such k is (p + q − 1) / N). Not in any Novelty Plan phase.
