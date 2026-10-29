@@ -10924,3 +10924,19 @@ QS is 6–9× brighter than ECM in each of them. This does not change the correc
 
 - **Source of the error:** the ad4a88d NOTES headline gave "1.21× / 1.26×" without naming the pricing; 2edd2f0 gave the per-pricing values correctly. The relay took the headline.
 - **Effect:** R-35 and G-28 quote the mislabelled figure. **Relayed fact mislabelled; sealed predictions unchanged; the corrected fact goes to DeepSeek and Grok with the scores.** The same correction is recorded in `predictions/twilight-028-034.md`.
+
+## twilight-028-034 training: the selected genome (sealed run c4005b0; predictions a505fc1; untimed counts; STOP before validation, design §6)
+
+`results/twilight-028-034_20261029T043247Z.out`; `evolve/twilight2_search.json`. θ 0.28–0.34, 160 training numbers per size (seeds 9810000 + bits). The composition equals the direct run on 160 / 160 at both sizes.
+
+**The search keeps one pre-stage: p−1, with td, rho and ECM at 0.**
+
+| bits | selected (td, rho, p−1 B, ECM) | coarse best | rule (b) vs QS alone | op-class | ruint | Montgomery | official | reference pipeline, rule (b) / op-class |
+|---|---|---|---|---|---|---|---|---|
+| **96** | **(0, 0, 2048, 0)** | (0, 0, 2048, 0) | **0.9358** | 0.9268 | 0.9358 | 0.8937 | 0.8799 | 1.1411 / 1.0887 |
+| 84 | (0, 0, 609, 0) | (0, 0, 512, 0) | 0.9108 | 0.9013 | 0.9108 | 0.8781 | 0.8671 | 1.0666 / 1.0013 |
+
+- **The p−1 B scan at 96** (op-class / rule (b)): 1024 0.967 / 0.971; 1722 0.930 / 0.938; **2048 0.927 / 0.936**; 2435 0.925 / 0.936; 2896 0.937 / 0.950; 4096 0.949 / 0.968; 8192 0.999 / 1.034. The curve is flat over 1,722–2,435. 2,435 is marginally cheaper under op-class, but rule (b) (ruint is the worst here) picks 2,048 by 0.0006. Successes per 160: B 2,048 20, 4,096 25, 8,192 33.
+- **The rho pre-stage is dropped at both sizes.** On training, the reference pipeline costs more than QS alone under rule (b) (1.14 at 96), so the specialist ÷ reference pipeline on training is 0.9358 ÷ 1.1411 ≈ 0.82 under rule (b), 0.9268 ÷ 1.0887 ≈ 0.85 under op-class. Training numbers only; the scored ratios come from validation.
+- **The p−1 B question is settled by the selected genome** (B 2,048 at 96, against the reference pipeline's 4,096): it is not larger. R-36 (yes, 60%) misses; D-36 (No, P 0.55) hits; G-29 (yes, 60%) is falsified (its falsifier: B ≤ 4,096). These are recorded here and scored with the round.
+- **Not established:** any held-out ratio. Validation counts and the wall arm wait for the user's go-ahead (design §6).
