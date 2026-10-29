@@ -11032,3 +11032,31 @@ QS is 6–9× brighter than ECM in each of them. This does not change the correc
   - Wolfram: 17 collisions, EulerPhi[77] = 60, the lowest tower equals N / GCD[k, N] on every collision, and the collision count = N − EulerPhi[N] = p + q − 1 on all 990 semiprimes with odd primes p < q < 200.
 - **Rule:** **φ(N) is the answer.** It is never an input or a fitness term anywhere. The lens counts collisions by gcd and never computes φ. The lens is visualization only: never fitness, never in a charged path, imported by nothing in evolve/ or lampcore.
 - **Not established:** anything about cost. The lens is a picture of gcd(k, N) > 1. Finding a collision needs a k sharing a factor with N, which the stage-2 sanity arm charges.
+
+## Cost model: the value-line lamp "vl" (the user's "Seven of Nine" card, stage 2, sanity arm; written before code)
+
+**The lamp:** genome `{"t": "vl", "a": a}`. It places tower N's dots k = 2, 3, … up to N^a + 1 (the same limit as td). Each placed dot is **one charged gcd**: g = gcd(k, N), computed with the same big-integer gcd as rho (U256 `gcd` in lampcore, `math.gcd` in Python). The lamp stops at the first collision (g > 1) and returns g. For a balanced semiprime with p < q that is k = p, g = p.
+
+**Charging:** one op per placed dot (`m.tick(1)`) and one luck-meter test (`m.test(g > 1)`). Per-type split: **all ops → type `gcd`** (`o[18]` in lampcore; `{"gcd": ops}` in optypes). It uses the existing type and price; no new type and no new price. This is the op the lamp actually runs (one full gcd against N), so nothing is uncharged. A word-level variant (N mod k, then a word Euclid) would be cheaper; it is not built, and its estimate is below.
+
+**Which td the lamp is compared with:** td (`lamp_td`) does **not** try primes only. It tests N mod d for d = 3, 5, 7, … (odd d), charging one `td_mod` per d. To reach p:
+- td: (p − 1) / 2 steps;
+- vl: p − 1 steps (k = 2 … p).
+
+The step ratio is **exactly 2**, not p / π(p). (Against a primes-only td it would be p / π(p) ≈ ln p ≈ 8–17 at 24–48 bits.)
+
+**Expected ratio vl ÷ td, cost per number, both succeeding at p:** 2 × price(gcd) ÷ price(td_mod).
+
+| pricing | gcd | td_mod | gcd ÷ td_mod | **expected vl ÷ td** |
+|---|---|---|---|---|
+| op-class v1 | 1,401.7 | 29.0 | 48.3 | **≈ 96.7** |
+| ruint | 7.860 | 0.1463 | 53.7 | ≈ 107 |
+| official | 1 | 1 | 1 | 2.0 |
+
+Montgomery is read from calibrate.json at run time and reported. With official prices (1 per op) the ratio is exactly 2(p − 1) ÷ (p − 1) = 2.000 per number; that is the meter's step check.
+
+- **The word-level variant, for information only** (not built): one `td_mod` plus about 0.84 ln k word Euclid steps (≈ 10–14 at these sizes; `word` op-class 55.6). That gives about 29 + 12 × 55.6 ≈ 700 units per dot, ≈ 24× td_mod, so vl ÷ td ≈ 48 under op-class. Either way the value line is much dearer than td.
+- **The bug rule (the user's):** if vl ties or beats td on any pricing other than official, it is a meter bug, and it is investigated before anything else. Under official, any ratio other than 2.000 is also a bug.
+- **Parity:** Python and lampcore give identical ops, tests, factor and per-type counts on every number, checked before the counts run.
+- **Scope:** untimed counts, op-class primary, balanced semiprimes at 24, 32, 40 and 48 bits (24 per size, seeds 9900000 + bits), td at a = 0.5 and vl at a = 0.5 on the same numbers.
+- **Not scored and not in evolution:** vl is not added to any mutation or search operator. It runs only from an explicit genome.
