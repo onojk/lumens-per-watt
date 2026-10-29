@@ -1,6 +1,6 @@
 # twilight-028-034: a gene-only specialist for θ 0.28–0.34 (the p−1 to QS hand-off): design, for sealing
 
-**Status: DESIGN. Nothing is run.** The forecasters' sections below are empty, and the runner is written and committed only after they are sealed. The user ruled the next specialist band on Oct 28 (the reviewer's correction, f64f3d2): the twilight at 96 bits is θ ≈ 0.28–0.34, where p−1 hands off to QS. In the light spectrum v1 under op-class, the best non-QS lamp at 96 bits is p−1 at 0.26–0.30, and QS is best from 0.32.
+**Status: SEALED (all three forecasters, Oct 28). Nothing is run.** The runner is written and committed only after this file. The user ruled the next specialist band on Oct 28 (the reviewer's correction, f64f3d2): the twilight at 96 bits is θ ≈ 0.28–0.34, where p−1 hands off to QS. In the light spectrum v1 under op-class, the best non-QS lamp at 96 bits is p−1 at 0.26–0.30, and QS is best from 0.32.
 
 Novelty Plan: phase 3 (and the landscape map in parallel). It is scored on cost ratios, not on growth fitness G.
 
@@ -80,10 +80,118 @@ At 96 bits, θ 0.28–0.30, p−1 at its reference B succeeds on 11 / 40 numbers
 - **R-37 names wall-clock,** so the wall arm (§4) is scored for R-37, not information only.
 - **R-34 and R-35's "band average"** is the mean cost per number over the held-out numbers, θ uniform in 0.28–0.34 (§4), under op-class v1. They name op-class, so they are scored under op-class; rule (b) is reported beside it.
 
-## DeepSeek's
+## DeepSeek's D-34 to D-37 (Oct 28; sealed; verbatim, as relayed by the user; filed before any run)
 
-Pending (the user decides whether to relay).
+<!-- verbatim begin -->
+SEALED — no revisions. Band average = uniform theta 0.28–0.34, 96-bit validation,
+400 held-out numbers. "Specialist" = gene-only evolved pipeline with searched
+td/rho/ECM budgets and p-1 B, QS last on reference genes. Ratios are specialist
+divided by stated base; below 1 = specialist cheaper.
 
-## Grok's
+D-34 | 0.92; range 0.64–1.20 | Specialist / QS alone, 96 bits, op-class v1, band
+average. From light spectrum at theta 0.28–0.30: p-1 per attempt = (11/40)×12.47
+= 3.43 M op-class; QS = 34.01 M. p-1-then-QS lower-subband ratio = [3.43 +
+(29/40)×34.01]/34.01 = 0.826. Assumption: p-1 benefit decays linearly to zero by
+theta 0.34; if p-1 is off in 0.30–0.34, band average ≈ (1/3)×0.826 + (2/3)×1.00
+= 0.94; if it still helps, ≈0.90. Range widened for transfer across theta. |
+Confidence 35% | Falsified if <0.64 or >1.20.
 
-Pending (the user decides whether to relay).
+D-35 | 0.99; range 0.69–1.29 | Specialist / reference pipeline (rho budget 10,624
+ops, then p-1 B=4096 stage 1 op budget 2B, then QS), 96 bits, op-class v1, band
+average. Reference pipeline already contains the same p-1 pre-stage; with D-36 =
+No (B stays 4096), specialist should nearly match it. The reference rho budget is
+tiny relative to QS; removing/retuning it changes ratio only slightly. Prediction
+≈1.00, widened for search overfitting and band transfer. | Confidence 30% |
+Falsified if <0.69 or >1.29.
+
+D-36 | No; P(No)=0.55, range 0.25–0.85 | Does the search pick p-1 B > 4096 at 96
+bits? B=0 counts as No. Doubling B to 8192 roughly doubles p-1 per-attempt cost to
+≈6.86 M; to beat B=4096's 0.826 lower-subband ratio it would need p-1 success to
+rise from 27.5% to >37.6%. B=16384 would need >57.7% success. Measured B=4096
+success is 11/40; No is favored but not strong. | Confidence 55% | Falsified if
+chosen B > 4096; B=0 is consistent with No.
+
+D-37 | 0.95; range 0.67–1.24 | Wall clock, specialist / QS alone, 96 bits, band
+average. Start from D-34 ≈0.92. Instruction check: p-1 op-class undercharged
+(0.789), QS overcharged (1.105), so a p-1-heavy specialist looks worse in wall
+than in op-class. With lower-subband p-1 share x≈0.10: wall ≈ 0.92 + x×(1/0.789 −
+1/1.105) ≈ 0.92 + 0.04 = 0.96. Range widened for pricing/timer transfer. |
+Confidence 25% | Falsified if <0.67 or >1.24.
+<!-- verbatim end -->
+
+## Grok's G-27 to G-30 (Oct 28; sealed; verbatim, as relayed by the user; filed before any run)
+
+<!-- verbatim begin -->
+G-27 (specialist / QS alone, 96 bits, op-class, band-average 0.28–0.34)
+Prediction: 0.85. Range: 0.60–1.10 (±29% around centre; from the 0.28–0.30
+spectrum: p-1 alone yields 11/40 successes at 12.47 M op-class per success ⇒
+average overhead ≈ 3.4 M if always executed, leaving an expected residual 0.725 ×
+34.01 M ≈ 28.1 M or 0.83× QS-alone; centre shifted slightly upward for the full
+band where p-1 hit-rate falls, then widened for search stochasticity, budget
+discretisation and the fact that the previous 0.33–0.40 specialist collapsed to
+pure QS). Base: gene-only evolved pre-stage budgets (td/rho/ECM) + p-1 B, QS genes
+frozen, op-class v1, 96-bit held-out average over uniform θ ∈ [0.28, 0.34], vs
+reference-card QS alone. Ratio < 1 = specialist cheaper. Confidence: 55%.
+Falsifier: measured op-class ratio on the 400 held-out numbers ≥ 1.15.
+
+G-28 (specialist / reference pipeline, 96 bits, op-class)
+Prediction: 0.80. Range: 0.55–1.05 (±31%; reference pipeline = rho (fixed 10 624
+ops) + p-1 (B = 4 096, budget 2B) + QS previously cost 1.26× QS-alone at 96 bits
+on the adjacent band; G-27's arithmetic suggests a tuned p-1 can reach ~0.83×
+QS-alone, hence ~0.66× the reference pipeline; centre raised to 0.80 to allow for
+the extra rho stage and for the search rediscovering a near-reference budget).
+Base: same specialist vs the stated reference pipeline (rho → p-1 B=4096 → QS),
+op-class v1, 96-bit band average. Confidence: 50%. Falsifier: measured op-class
+ratio ≥ 1.10.
+
+G-29 (search selects p-1 B > 4 096 at 96 bits?)
+Prediction: yes. Categorical; support: p-1 already delivers successes at low cost
+in the lower half of the band, so a larger bound has positive expected value under
+op-class (B = 0 would be strictly dominated). Base: the searched p-1 bound on the
+96-bit twilight-028-034 specialist. Confidence: 60%. Falsifier: selected genome
+has B ≤ 4096.
+
+G-30 (wall-clock specialist / QS alone, 96 bits)
+Prediction: 0.90. Range: 0.60–1.20 (±33%; from G-27's 0.85, then the previously
+measured rho factors 0.85–1.35 for allocation/scan-style work and the instruction
+check (op-class under-charges p-1 0.789, slightly over-charges QS 1.105): a modest
+upward shift and extra width). Base: same specialist vs reference-card QS alone,
+wall-clock on the pinned 2.4 GHz core, 96-bit band average. Confidence: 50%.
+Falsifier: measured wall-clock ratio ≥ 1.25.
+<!-- verbatim end -->
+
+## The reviewer's notes on D-34..D-37 and G-27..G-30 (Oct 28; annotations only; no prediction changes)
+
+<!-- verbatim begin -->
+- DeepSeek: arithmetic checked (0.826; 0.94; thresholds 37.6% / 57.7%; wall
+  +0.036, p-1 share 0.12 at the 0.28 edge). D-35 calls the rho pre-stage "tiny";
+  the relayed table gives 117.15 M x 2/40 = 5.86 M op-class per number (~17% of
+  QS), not used. Ranges of +/-30% with 25-35% confidence are inconsistent; interval
+  score as before.
+- Grok: arithmetic checked (edge 0.83; 0.83/1.26 = 0.66). The 1.26 was measured on
+  0.33-0.40 where p-1 barely succeeds. G-29's "B = 0 dominated" does not show a
+  larger B pays. G-30's "rho factors" = the rho coefficient, not the rho lamp. All
+  four falsifiers are one-sided and consistent with their ranges.
+- Disagreements the run settles: vs reference D-35 0.99 / R-35 0.85 / G-28 0.80;
+  B > 4,096: D-36 no / R-36 yes / G-29 yes.
+<!-- verbatim end -->
+
+**All three forecasters are sealed** (the reviewer's R-34..R-37, DeepSeek's D-34..D-37, Grok's G-27..G-30). Claude's estimate above was not relayed to DeepSeek or Grok.
+
+**Scope notes on the new entries** (the predictions are unchanged):
+- **D-36 and G-29** are scored against the reference pipeline's B 4,096, as R-36. A selected B of 0 is "no".
+- **D-37 and G-30** name wall clock, so the wall arm is scored for them, as for R-37. D-37 is a two-sided range; G-30's falsifier is one-sided (≥ 1.25) and its range 0.60–1.20 is scored as a range.
+- **The p−1 grid tops out at B 8,192** (§2; the refinement stays between the coarse best's neighbours), so D-36's B 16,384 case cannot be selected. This was so in the design before sealing.
+
+## Correction: a relayed fact was mislabelled (Oct 28; found by the reviewer; sealed predictions unchanged)
+
+The relay to all three forecasters said the reference pipeline costs **1.21 / 1.26× QS alone on θ 0.33–0.40 (84 / 96 bits) under op-class.** That figure is mislabelled. The committed data (`evolve/twilight_search.json`, ad4a88d, "reference_scores") gives:
+
+| pricing | 84 bits | 96 bits |
+|---|---|---|
+| op-class v1 | **1.148** | **1.208** |
+| ruint | 1.209 | 1.262 |
+| Montgomery | 0.996 | 1.031 |
+| official | 0.918 | 0.946 |
+
+The 1.21 / 1.26 is the rule (b) value ("reference_fitness"), which on that band is ruint's. ad4a88d's NOTES headline gave it without naming the pricing; 2edd2f0 gave the per-pricing values correctly. **The op-class figure is 1.15 / 1.21.** R-35 ("1.21-1.26x") and G-28 ("1.26× QS-alone") quote the mislabelled figure. Relayed fact mislabelled; sealed predictions unchanged; the corrected fact goes to DeepSeek and Grok with the scores.
