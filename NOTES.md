@@ -11124,3 +11124,21 @@ Montgomery is read from calibrate.json at run time and reported. With official p
   - Implementation: `evolve/gcdscale.py`.
 - **Added rule for the arrangement family:** an advantage must also hold under the size-scaled gcd price, which joins the worst-of set (rule (b)) for this family. A win that exists only under the flat price is flagged as a **pricing artifact** and not adopted.
 - **The p−1 exponent layout is in the gene pool.** Any rediscovery of p−1 or rho is reported separately, as **"rediscovered known lamp"**, never as novelty.
+
+## The one-word to two-word step: the twilight rho stage and the gcd cost point the same way (the user's note, Oct 29; documentation only)
+
+- **The twilight wall arm** (92802f6), specialist ÷ reference pipeline at 96 bits, the rho stage's removal:
+
+  | measure | ratio |
+  |---|---|
+  | wall | **0.808** [0.781, 0.835] |
+  | op-class | 0.849 |
+  | ruint | 0.819 |
+  | Montgomery | 0.972 |
+  | official | 1.050 |
+
+  The clock charges the reference's rho stage at least as heavily as op-class and ruint do, and far more than Montgomery.
+- **The gcd cost** (`bench/gcdbench`, dd2db46) steps up when N needs a second 64-bit word: small-k gcds 323 → 588 instructions, uniform-k 845 at 64 bits → 1,594 at 96.
+- **Reading:** costs step up when N needs a second 64-bit word. One-word models such as Montgomery's prices fit below 64 bits and miss above it, which is why Montgomery under-prices rho's multiplies at 84–96 bits.
+- **The reviewer expected the clock to side with Montgomery on the rho stage. That expectation was wrong:** the clock sided with op-class and ruint.
+- **Not established:** a per-operation wall breakdown of rho at 96 bits. The reading rests on the two measurements above.
