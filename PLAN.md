@@ -669,6 +669,12 @@ card: every op count stays exactly as it is.
     - waste: ops spent on positions that could not have split this N. For planted
       factors this is known exactly: td past p, sq windows that cannot contain the
       square, a ps block that contains neither p nor q.
+- **The value-line lens ("k of n", the user's "Seven of Nine" card, Oct 28; built: `explore/value_line_lens.py`).**
+  - Dot "k of n" sits at k/n on [0, 1]. Tower N's dot k collides iff gcd(k, N) > 1; the lowest dot underneath is in
+    tower N / gcd(k, N) and carries its tag (77: 7 of 77 -> 1 of 11, 11 of 77 -> 1 of 7, 77 of 77 -> 1 of 1).
+  - The panel draws tower N over towers 1..N-1: fresh ground blue, collisions ember with the tag they land on.
+  - Visualization only: never fitness, never in a charged path. phi(N) is the answer and is never an input
+    (the lens counts dots by gcd). The charged sanity arm is separate (NOTES, stage 2).
 - **The qs ledger picture.**
   - qs events: each polynomial, each sieve candidate (full, partial, discarded), each
     relation entering the matrix, each large-prime pair combined, the dependency that

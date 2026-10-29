@@ -11021,3 +11021,14 @@ QS is 6–9× brighter than ECM in each of them. This does not change the correc
 - **The value line equals the walk step for step:** it is one step longer on every number, because it places k = 1 (1/N, which lands on nothing) and the walk starts at k = 2. Both collide at the same k, the smaller prime.
 - **p−1's median slope is also 0.25, but erratic** (per-step slopes 0.15–0.42; the maximum at 40 bits is 172,171 steps). Its step count is the largest prime factor of p − 1 or q − 1, not a √p law.
 - **gcd = N (no factor):** rho 0 cases, p−1 3 (at 20–28 bits).
+
+## Value-line lens, "k of n" (the user's "Seven of Nine" card, stage 1, Oct 28; visualization only; documentation and data)
+
+`explore/value_line_lens.py` (panel `explore/value_line_lens_77.png`); PLAN.md, Illumination maps, "The value-line lens". Wolfram cross-check `wolfram/2026-10-28_value_line_phi.wl`, `.out`.
+
+- **The identity:** for k = 1..N, the fresh-ground count is **φ(N)** and the collisions number **N − φ(N) = p + q − 1** (N = pq, p ≠ q). For 77: **60 / 17**. Each collision k lands on tower N / gcd(k, N) with tag k/gcd(k, N), so for 77: 7 of 77 → 1 of 11, 11 of 77 → 1 of 7, …, 77 of 77 → 1 of 1 (10 tags on tower 11, 6 on tower 7, 1 on tower 1).
+- **Checked:**
+  - the Python lens counts 60 / 17 by gcd, dot by dot;
+  - Wolfram: 17 collisions, EulerPhi[77] = 60, the lowest tower equals N / GCD[k, N] on every collision, and the collision count = N − EulerPhi[N] = p + q − 1 on all 990 semiprimes with odd primes p < q < 200.
+- **Rule:** **φ(N) is the answer.** It is never an input or a fitness term anywhere. The lens counts collisions by gcd and never computes φ. The lens is visualization only: never fitness, never in a charged path, imported by nothing in evolve/ or lampcore.
+- **Not established:** anything about cost. The lens is a picture of gcd(k, N) > 1. Finding a collision needs a k sharing a factor with N, which the stage-2 sanity arm charges.
