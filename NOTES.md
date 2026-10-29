@@ -11082,3 +11082,36 @@ Montgomery is read from calibrate.json at run time and reported. With official p
 - **No meter-bug flag:** vl is dearer than td under every pricing, as the cost model said.
 - **The ratio is identical at every size** because both lamps' per-step prices are flat and the step ratio is exactly 2. It is a check of the counting, not of the prices; the gcd price's dependence on size is the next entry.
 - **Correction to the brief** (the reviewer's note, Oct 29): the stage-2 brief assumed a primes-only td, giving a step ratio of p / π(p). td tests every odd d, so the step ratio is exactly 2. **d033b40's cost model is the correct one.**
+
+## gcd cost against N's size: a pricing question for the user (meter check, I-042 style; untimed; documentation and data)
+
+`bench/gcdbench/` (a scratch-style Rust bench on ruint 1.20.1, lampcore's version; `run.py`, `gcd_ir.out`, `gcd_ir.json`). It is never in a charged path. Callgrind instructions per call, 2,000 calls minus the same loop without the call, 3 seeds, N random odd of the given size.
+
+| bits of N | gcd(k, N), small k (vl's dots) | gcd(k, N), k uniform below N (rho, p−1, ECM) | td's N mod d (u128) |
+|---|---|---|---|
+| 24 | 322 | 446 | 26 |
+| 32 | 325 | 528 | 26 |
+| 48 | 324 | 687 | 26 |
+| 64 | 323 | 845 | 26 |
+| 96 | 588 | 1,594 | 31 |
+| 128 | 596 | 2,134 | 32 |
+
+**The meter's charge:** op-class v1 prices `gcd` flat at 1,401.7 units per call, at every size. At QS's 0.909 instructions per op-class unit (the twilight meter-health check), that stands for about **1,274 instructions**. `td_mod` at 29.0 units ≈ 26 instructions matches td's measured 26 closely.
+
+**Measured ÷ the flat price's ~1,274 instructions:**
+
+| bits | small k | uniform k |
+|---|---|---|
+| 24–64 | 0.25 | 0.35 → 0.66 |
+| 96 | 0.46 | 1.25 |
+| 128 | 0.47 | 1.68 |
+
+- **It grows with bits, as expected.** With uniform k, about linearly: about 10 instructions per bit within one 64-bit limb, and about 17 per bit at 96–128 bits, with a step at the limb boundary. With small k it is flat within a limb count (one N mod k, then word Euclid) and steps up at two limbs.
+- **So op-class v1 overcharges gcds at small sizes and undercharges them above about 90 bits** (uniform k).
+  - For the existing lamps this is minor: rho batches its gcds, and p−1 and ECM run a handful.
+  - For lamps where every dot is a gcd (vl, and the arrangement family's per-dot rule) it dominates. On instructions vl ÷ td is about 2 × 323 / 26 ≈ **25×** at 24–64 bits, against the meter's 96.7×. The value line is still far dearer either way.
+- **The pricing question for the user (no change made; op-class v1's frozen weights stand):**
+  - (a) keep gcd flat and report a size-scaled gcd price beside it for information (the stage-3 design's default);
+  - (b) define a size-scaled gcd price as a new pricing version (op-class v2), prospectively, for families where gcds dominate;
+  - (c) leave as is.
+- **Not established:** wall time (callgrind counts instructions, not cycles); ruint versions other than 1.20.1; N with planted structure. The numbers are random odd N, which is enough for a gcd's cost.
