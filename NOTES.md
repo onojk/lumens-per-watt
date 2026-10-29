@@ -10940,3 +10940,5 @@ QS is 6–9× brighter than ECM in each of them. This does not change the correc
 - **The rho pre-stage is dropped at both sizes.** On training, the reference pipeline costs more than QS alone under rule (b) (1.14 at 96), so the specialist ÷ reference pipeline on training is 0.9358 ÷ 1.1411 ≈ 0.82 under rule (b), 0.9268 ÷ 1.0887 ≈ 0.85 under op-class. Training numbers only; the scored ratios come from validation.
 - **The p−1 B question is settled by the selected genome** (B 2,048 at 96, against the reference pipeline's 4,096): it is not larger. R-36 (yes, 60%) misses; D-36 (No, P 0.55) hits; G-29 (yes, 60%) is falsified (its falsifier: B ≤ 4,096). These are recorded here and scored with the round.
 - **Not established:** any held-out ratio. Validation counts and the wall arm wait for the user's go-ahead (design §6).
+
+- **Addendum (the user's note, Oct 28):** the B choice of 2,048 against 2,435 differs by 0.0006 under rule (b), within noise; the curve is flat over 1,722–2,435. Scoring of the B question is unaffected: both are ≤ 4,096.
