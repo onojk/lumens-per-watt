@@ -1,0 +1,11 @@
+load check passed: 1-minute load average 0.50 < 1.5 + 1 own process(es)
+load check passed: 1-minute load average 0.50 < 1.5 + 1 own process(es)
+load check passed: 1-minute load average 0.54 < 1.5 + 1 own process(es)
+load check passed: 1-minute load average 0.74 < 1.5 + 1 own process(es)
+load check passed: 1-minute load average 0.68 < 1.5 + 1 own process(es)
+96 bits wall (400 numbers, 4 replicates): ms per number specialist 2.899, qs 2.986, reference_pipeline 3.588; specialist / qs 0.9710 [0.9411, 1.0009]; specialist / reference_pipeline 0.8080 [0.7812, 0.8347]; core 2 median MHz specialist 2400.0, qs 2400.0, reference_pipeline 2400.0
+load check passed: 1-minute load average 0.95 < 1.5 + 1 own process(es)
+load check passed: 1-minute load average 0.95 < 1.5 + 1 own process(es)
+load check passed: 1-minute load average 0.95 < 1.5 + 1 own process(es)
+load check passed: 1-minute load average 0.95 < 1.5 + 1 own process(es)
+84 bits wall (400 numbers, 4 replicates): ms per number specialist 1.235, qs 1.270, reference_pipeline 1.451; specialist / qs 0.9728 [0.9532, 0.9923]; specialist / reference_pipeline 0.8516 [0.8325, 0.8708]; core 2 median MHz specialist 2400.0, qs 2400.0, reference_pipeline 2400.0
