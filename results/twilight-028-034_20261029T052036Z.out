@@ -1,0 +1,8 @@
+96 bits, specialist / qs: opclass_v1 0.9194 [0.8840, 0.9524], ruint 0.9267 [0.8909, 0.9602], montgomery 0.8853 [0.8497, 0.9186], official 0.8705 [0.8342, 0.9042]; rule (b) 0.9267 [0.8909, 0.9602]; three pricings: cheaper
+96 bits, specialist / reference_pipeline: opclass_v1 0.8494 [0.8314, 0.8697], ruint 0.8190 [0.8018, 0.8383], montgomery 0.9722 [0.9503, 0.9976], official 1.0498 [1.0246, 1.0797]; rule (b) 0.9722 [0.9503, 0.9976]; three pricings: cheaper
+96 bits: successes specialist 400/400, qs 400/400, reference_pipeline 400/400
+96 bits meter-health (instructions per op-class unit, first 8 held-out numbers): specialist 0.926 (1.019 x QS), qs 0.909 (1.000 x QS), reference_pipeline 0.937 (1.030 x QS)
+84 bits, specialist / qs: opclass_v1 0.9398 [0.9099, 0.9681], ruint 0.9489 [0.9190, 0.9772], montgomery 0.9157 [0.8857, 0.9440], official 0.9043 [0.8740, 0.9326]; rule (b) 0.9489 [0.9190, 0.9772]; three pricings: cheaper
+84 bits, specialist / reference_pipeline: opclass_v1 0.9135 [0.8861, 0.9447], ruint 0.8678 [0.8428, 0.8958], montgomery 1.0463 [1.0114, 1.0866], official 1.1357 [1.0948, 1.1832]; rule (b) 1.0463 [1.0114, 1.0866]; three pricings: not called
+84 bits: successes specialist 400/400, qs 400/400, reference_pipeline 400/400
+84 bits meter-health (instructions per op-class unit, first 8 held-out numbers): specialist 0.929 (1.025 x QS), qs 0.907 (1.000 x QS), reference_pipeline 0.964 (1.062 x QS)
