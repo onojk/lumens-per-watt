@@ -1,0 +1,12 @@
+balanced semiprimes, 40 per size, seeds 7000 + bits; steps to the first hidden collision
+20 bits: median steps walk 708.0, rho 17.0, p-1 14.0, value 709.0; max p-1 281; gcd = N (no factor): rho 0, p-1 1; value = walk + 1 on every number: True; walk ends at the smaller prime: True
+24 bits: median steps walk 2,882.0, rho 32.0, p-1 37.0, value 2,883.0; max p-1 661; gcd = N (no factor): rho 0, p-1 1; value = walk + 1 on every number: True; walk ends at the smaller prime: True
+28 bits: median steps walk 12,423.0, rho 74.5, p-1 56.0, value 12,424.0; max p-1 1,103; gcd = N (no factor): rho 0, p-1 1; value = walk + 1 on every number: True; walk ends at the smaller prime: True
+32 bits: median steps walk 47,787.0, rho 164.0, p-1 120.0, value 47,788.0; max p-1 9,397; gcd = N (no factor): rho 0, p-1 0; value = walk + 1 on every number: True; walk ends at the smaller prime: True
+36 bits: median steps walk 188,127.0, rho 263.5, p-1 189.0, value 188,128.0; max p-1 6,661; gcd = N (no factor): rho 0, p-1 0; value = walk + 1 on every number: True; walk ends at the smaller prime: True
+40 bits: median steps walk 763,395.0, rho 561.5, p-1 609.0, value 763,396.0; max p-1 172,171; gcd = N (no factor): rho 0, p-1 0; value = walk + 1 on every number: True; walk ends at the smaller prime: True
+slope of log2(median steps) per bit, 20-40: walk 0.503, rho 0.254, p-1 0.253, value 0.503
+  walk: log2(median) 9.47 11.49 13.60 15.54 17.52 19.54; per-step slopes 0.506 0.527 0.486 0.494 0.505
+  rho: log2(median) 4.09 5.00 6.22 7.36 8.04 9.13; per-step slopes 0.228 0.305 0.285 0.171 0.273
+  p-1: log2(median) 3.81 5.21 5.81 6.91 7.56 9.25; per-step slopes 0.351 0.149 0.275 0.164 0.422
+  value: log2(median) 9.47 11.49 13.60 15.54 17.52 19.54; per-step slopes 0.506 0.527 0.486 0.494 0.505

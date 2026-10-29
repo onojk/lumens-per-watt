@@ -11002,3 +11002,22 @@ QS is 6–9× brighter than ECM in each of them. This does not change the correc
 ## Wolfram: "seven of nine", tower 77 (the user's script, Oct 28; documentation only)
 
 `wolfram/2026-10-28_seven_of_nine_77.wl` (the user's script, verbatim; run from `wolfram/`, so the figure is `wolfram/seven_of_nine_77.png`, not committed). The fractions k/77, k = 1..77, are dropped onto the Farey-style towers k/n, n = 1..76. **17 land on an existing point** (k sharing a factor with 77: the reduced fractions j/7, j/11 and 1/1, i.e. p + q − 1 = 7 + 11 − 1), and **60 = φ(77) are new.** Checked separately: count 17, EulerPhi[77] = 60, collision denominators {1, 7, 11}. It computes a picture of gcd(k, N) > 1, not a factoring method: finding a collision needs a k with gcd(k, N) > 1, which is as hard as finding a factor (the fraction of such k is (p + q − 1) / N). Not in any Novelty Plan phase.
+
+## Origin dots, "k of n": steps to the first hidden collision (exploratory, not scored, no predictions; documentation and data)
+
+`explore/origin_dots.py`, `.out`. The user's idea, Oct 28. Plain Python, no op meter: a shape check, not a cost. Balanced semiprimes at 20–40 bits, 40 per size, seeds 7000 + bits. A step is one dot placed plus one gcd or compare test.
+
+| bits | walk (td) | rho (Floyd) | p−1 (a^(k!)) | value line |
+|---|---|---|---|---|
+| 20 | 708 | 17 | 14 | 709 |
+| 24 | 2,882 | 32 | 37 | 2,883 |
+| 28 | 12,423 | 74.5 | 56 | 12,424 |
+| 32 | 47,787 | 164 | 120 | 47,788 |
+| 36 | 188,127 | 263.5 | 189 | 188,128 |
+| 40 | 763,395 | 561.5 | 609 | 763,396 |
+| **slope of log2(median) per bit** | **0.503** | **0.254** | **0.253** | **0.503** |
+
+- **The walk and the value line match the expected shapes:** about 0.5 bits of steps per bit of N (the walk ends at the smaller prime on every number). Rho comes out near 0.25.
+- **The value line equals the walk step for step:** it is one step longer on every number, because it places k = 1 (1/N, which lands on nothing) and the walk starts at k = 2. Both collide at the same k, the smaller prime.
+- **p−1's median slope is also 0.25, but erratic** (per-step slopes 0.15–0.42; the maximum at 40 bits is 172,171 steps). Its step count is the largest prime factor of p − 1 or q − 1, not a √p law.
+- **gcd = N (no factor):** rho 0 cases, p−1 3 (at 20–28 bits).
