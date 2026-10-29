@@ -11115,3 +11115,12 @@ Montgomery is read from calibrate.json at run time and reported. With official p
   - (b) define a size-scaled gcd price as a new pricing version (op-class v2), prospectively, for families where gcds dominate;
   - (c) leave as is.
 - **Not established:** wall time (callgrind counts instructions, not cycles); ruint versions other than 1.20.1; N with planted structure. The numbers are random odd N, which is enough for a gcd's cost.
+
+## Ruling: gcd pricing for the arrangement family (the user's, Oct 29; recorded before anything is scored; documentation only)
+
+- **Option (a).** Op-class v1 stays frozen. A **size-scaled gcd price** is reported beside it: op-class v1 with the `gcd` weight replaced by (measured instructions per gcd at N's size) ÷ 0.909, where 0.909 is QS's instructions per op-class unit from the twilight meter-health check.
+  - The instructions come from `bench/gcdbench/gcd_ir.json` (dd2db46): the mean of 3 seeds, interpolated linearly in bits between the measured sizes (24, 32, 48, 64, 96, 128) and held constant outside them.
+  - The small-k curve applies where the gcd's other argument fits one 64-bit word (vl's dots, per-dot gcd against a word-size target). The uniform-k curve applies elsewhere (rho, p−1, ECM, and any gcd of a difference mod N).
+  - Implementation: `evolve/gcdscale.py`.
+- **Added rule for the arrangement family:** an advantage must also hold under the size-scaled gcd price, which joins the worst-of set (rule (b)) for this family. A win that exists only under the flat price is flagged as a **pricing artifact** and not adopted.
+- **The p−1 exponent layout is in the gene pool.** Any rediscovery of p−1 or rho is reported separately, as **"rediscovered known lamp"**, never as novelty.
