@@ -1,0 +1,10 @@
+parity 20 bits td: 12/12 identical
+parity 20 bits vl: 12/12 identical
+parity 24 bits td: 12/12 identical
+parity 24 bits vl: 12/12 identical
+expected vl / td (2 x gcd / td_mod): opclass_v1 96.67, ruint 107.44, montgomery 105.67, official 2.00
+24 bits (24 numbers): success td 24, vl 24; steps vl = p - 1 and td = (p - 1)/2 on every number: True; vl / td opclass_v1 96.672 (x1.0000 of expected), ruint 107.439 (x1.0000 of expected), montgomery 105.669 (x1.0000 of expected), official 2.000 (x1.0000 of expected)
+32 bits (24 numbers): success td 24, vl 24; steps vl = p - 1 and td = (p - 1)/2 on every number: True; vl / td opclass_v1 96.672 (x1.0000 of expected), ruint 107.439 (x1.0000 of expected), montgomery 105.669 (x1.0000 of expected), official 2.000 (x1.0000 of expected)
+40 bits (24 numbers): success td 24, vl 24; steps vl = p - 1 and td = (p - 1)/2 on every number: True; vl / td opclass_v1 96.672 (x1.0000 of expected), ruint 107.439 (x1.0000 of expected), montgomery 105.669 (x1.0000 of expected), official 2.000 (x1.0000 of expected)
+48 bits (24 numbers): success td 24, vl 24; steps vl = p - 1 and td = (p - 1)/2 on every number: True; vl / td opclass_v1 96.672 (x1.0000 of expected), ruint 107.439 (x1.0000 of expected), montgomery 105.669 (x1.0000 of expected), official 2.000 (x1.0000 of expected)
+meter bug flag: none (vl dearer than td under every pricing, official exactly 2x)

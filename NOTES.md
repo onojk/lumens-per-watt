@@ -11060,3 +11060,25 @@ Montgomery is read from calibrate.json at run time and reported. With official p
 - **Parity:** Python and lampcore give identical ops, tests, factor and per-type counts on every number, checked before the counts run.
 - **Scope:** untimed counts, op-class primary, balanced semiprimes at 24, 32, 40 and 48 bits (24 per size, seeds 9900000 + bits), td at a = 0.5 and vl at a = 0.5 on the same numbers.
 - **Not scored and not in evolution:** vl is not added to any mutation or search operator. It runs only from an explicit genome.
+
+## The value-line lamp vl: sanity arm result (the user's "Seven of Nine" card, stage 2; cost model d033b40; untimed counts; not scored)
+
+`evolve/vl_sanity.py`, `.out`, `.json`; `lamp_vl` in `evolve/lamps.py` and `lampcore/src/main.rs`; `optypes` vl → `gcd`. vl is in no deck.
+
+- **Parity:**
+  - vl and td alone, Python against lampcore: 48 / 48 identical (ops, factor, tests, hits, per-type counts), at 20 and 24 bits;
+  - the full `parity.py` on the new binary (`evolve/parity_vl.out`): 0 mismatches in every section; types 7,986 pairs, sum-identity failures 0, mutations caught 56 / 56 (as `parity_ptable.out`).
+- **Counts** (24 balanced semiprimes per size, seeds 9900000 + bits, a = 0.5 for both):
+  - both lamps factored 24 / 24 at 24, 32, 40 and 48 bits;
+  - steps were vl = p − 1 and td = (p − 1) / 2 on every number.
+
+| pricing | expected (d033b40) | vl ÷ td, at every size 24–48 |
+|---|---|---|
+| op-class v1 | 96.67 | **96.672** (×1.0000) |
+| ruint | 107.44 | 107.439 |
+| Montgomery | 105.67 | 105.669 |
+| official | 2.000 | 2.000, exactly 2× on every number |
+
+- **No meter-bug flag:** vl is dearer than td under every pricing, as the cost model said.
+- **The ratio is identical at every size** because both lamps' per-step prices are flat and the step ratio is exactly 2. It is a check of the counting, not of the prices; the gcd price's dependence on size is the next entry.
+- **Correction to the brief** (the reviewer's note, Oct 29): the stage-2 brief assumed a primes-only td, giving a step ratio of p / π(p). td tests every odd d, so the step ratio is exactly 2. **d033b40's cost model is the correct one.**

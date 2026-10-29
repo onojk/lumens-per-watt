@@ -54,6 +54,20 @@ def lamp_td(N, g, m):
         d += 2
     return None
 
+def lamp_vl(N, g, m):
+    """Value-line lamp (the "Seven of Nine" sanity arm, NOTES "Cost model: the value-line lamp"): dots k = 2, 3, ...
+    up to N^a, one charged gcd(k, N) each; stops at the first collision. In no deck."""
+    lim = int(N ** g["a"]) + 1
+    k = 2
+    while k <= lim:
+        m.tick()
+        d = math.gcd(k, N)
+        m.test(d > 1)
+        if d > 1:
+            return d
+        k += 1
+    return None
+
 SMOOTH_K = [1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 16, 18, 20, 24, 30, 36, 40, 45, 48, 60,
             72, 80, 90, 120, 144, 180, 210, 240, 360, 420, 480, 720, 840, 1260, 1680,
             2520, 5040, 7560, 10080, 15120, 20160, 25200, 27720, 45360, 50400, 55440]
@@ -351,7 +365,7 @@ from cfrac import lamp_cfrac                              # in no deck: tests an
 from ecm import lamp_ecm                                  # in no deck until Run 8
 from race import lamp_race, validate as race_validate     # Stage 9; in no deck until Run 8
 
-LAMPS = {"td": lamp_td, "sq": lamp_sq, "rho": lamp_rho, "pm1": lamp_pm1, "ps": lamp_ps,
+LAMPS = {"td": lamp_td, "vl": lamp_vl, "sq": lamp_sq, "rho": lamp_rho, "pm1": lamp_pm1, "ps": lamp_ps,
          "qs": lamp_qs, "cfrac": lamp_cfrac, "ecm": lamp_ecm, "race": lamp_race}
 
 # ---- genomes ----------------------------------------------------------------

@@ -112,6 +112,7 @@ fn stage_types(t: &str, d_ops: u64, d_tests: u64, ph: &[u64; N_PH], ev: &[u64; 7
             o[23] = p(PH_WORD);
         }
         "td" => o[19] = d_ops as i64,
+        "vl" => o[18] = d_ops as i64,
         "sq" => o[20] = d_ops as i64,
         "ps" => o[21] = d_ops as i64,
         "cfrac" => o[22] = d_ops as i64,
@@ -308,6 +309,24 @@ fn lamp_td(num: &Num, g: &Value, m: &mut Meter) -> R {
             return Ok(Some(U256::from(d)));
         }
         d += 2;
+    }
+    Ok(None)
+}
+
+// The value-line lamp (NOTES.md, "Cost model: the value-line lamp"): dots k = 2, 3, ... up to N^a, one charged
+// gcd(k, N) each (the U256 gcd rho uses); stops at the first collision. In no deck.
+fn lamp_vl(num: &Num, g: &Value, m: &mut Meter) -> R {
+    let lim = num.f.powf(gf(g, "a")) as u128 + 1;
+    let mut k: u128 = 2;
+    while k <= lim {
+        m.tick(1)?;
+        let d = U256::from(k).gcd(num.n);
+        let hit = d > U256::from(1u64);
+        m.test(hit);
+        if hit {
+            return Ok(Some(d));
+        }
+        k += 1;
     }
     Ok(None)
 }
@@ -835,6 +854,7 @@ struct Win {
 fn run_stage(num: &Num, s: &Value, m: &mut Meter) -> R {
     match s["t"].as_str().unwrap() {
         "td" => lamp_td(num, s, m),
+        "vl" => lamp_vl(num, s, m),
         "sq" => lamp_sq(num, s, m),
         "rho" => lamp_rho(num, s, m),
         "pm1" => lamp_pm1(num, s, m),

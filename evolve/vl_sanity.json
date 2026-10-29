@@ -1,0 +1,159 @@
+{
+ "parity": {
+  "20 td": 0,
+  "20 vl": 0,
+  "24 td": 0,
+  "24 vl": 0
+ },
+ "sizes": {
+  "24": {
+   "n": 24,
+   "success": {
+    "td": 24,
+    "vl": 24
+   },
+   "steps_vl_p_minus_1_td_half": true,
+   "official_2x_every_number": true,
+   "ratio": {
+    "opclass_v1": 96.67236230962726,
+    "ruint": 107.43851006610201,
+    "montgomery": 105.66903716598382,
+    "official": 2.0
+   },
+   "expected": {
+    "opclass_v1": 96.67236230962726,
+    "ruint": 107.438510066102,
+    "montgomery": 105.66903716598381,
+    "official": 2.0
+   },
+   "ratio_over_expected": {
+    "opclass_v1": 1.0,
+    "ruint": 1.0000000000000002,
+    "montgomery": 1.0000000000000002,
+    "official": 1.0
+   },
+   "mean_ops": {
+    "td": 1481.7083333333333,
+    "vl": 2963.4166666666665
+   },
+   "types_vl": [
+    "gcd"
+   ],
+   "types_td": [
+    "td_mod"
+   ]
+  },
+  "32": {
+   "n": 24,
+   "success": {
+    "td": 24,
+    "vl": 24
+   },
+   "steps_vl_p_minus_1_td_half": true,
+   "official_2x_every_number": true,
+   "ratio": {
+    "opclass_v1": 96.67236230962726,
+    "ruint": 107.438510066102,
+    "montgomery": 105.66903716598381,
+    "official": 2.0
+   },
+   "expected": {
+    "opclass_v1": 96.67236230962726,
+    "ruint": 107.438510066102,
+    "montgomery": 105.66903716598381,
+    "official": 2.0
+   },
+   "ratio_over_expected": {
+    "opclass_v1": 1.0,
+    "ruint": 1.0,
+    "montgomery": 1.0,
+    "official": 1.0
+   },
+   "mean_ops": {
+    "td": 22713.083333333332,
+    "vl": 45426.166666666664
+   },
+   "types_vl": [
+    "gcd"
+   ],
+   "types_td": [
+    "td_mod"
+   ]
+  },
+  "40": {
+   "n": 24,
+   "success": {
+    "td": 24,
+    "vl": 24
+   },
+   "steps_vl_p_minus_1_td_half": true,
+   "official_2x_every_number": true,
+   "ratio": {
+    "opclass_v1": 96.67236230962726,
+    "ruint": 107.438510066102,
+    "montgomery": 105.66903716598382,
+    "official": 2.0
+   },
+   "expected": {
+    "opclass_v1": 96.67236230962726,
+    "ruint": 107.438510066102,
+    "montgomery": 105.66903716598381,
+    "official": 2.0
+   },
+   "ratio_over_expected": {
+    "opclass_v1": 1.0,
+    "ruint": 1.0,
+    "montgomery": 1.0000000000000002,
+    "official": 1.0
+   },
+   "mean_ops": {
+    "td": 365387.1666666667,
+    "vl": 730774.3333333334
+   },
+   "types_vl": [
+    "gcd"
+   ],
+   "types_td": [
+    "td_mod"
+   ]
+  },
+  "48": {
+   "n": 24,
+   "success": {
+    "td": 24,
+    "vl": 24
+   },
+   "steps_vl_p_minus_1_td_half": true,
+   "official_2x_every_number": true,
+   "ratio": {
+    "opclass_v1": 96.67236230962726,
+    "ruint": 107.438510066102,
+    "montgomery": 105.66903716598381,
+    "official": 2.0
+   },
+   "expected": {
+    "opclass_v1": 96.67236230962726,
+    "ruint": 107.438510066102,
+    "montgomery": 105.66903716598381,
+    "official": 2.0
+   },
+   "ratio_over_expected": {
+    "opclass_v1": 1.0,
+    "ruint": 1.0,
+    "montgomery": 1.0,
+    "official": 1.0
+   },
+   "mean_ops": {
+    "td": 6044909.541666667,
+    "vl": 12089819.083333334
+   },
+   "types_vl": [
+    "gcd"
+   ],
+   "types_td": [
+    "td_mod"
+   ]
+  }
+ },
+ "meter_bug": false
+}
