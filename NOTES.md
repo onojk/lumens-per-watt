@@ -10942,3 +10942,37 @@ QS is 6–9× brighter than ECM in each of them. This does not change the correc
 - **Not established:** any held-out ratio. Validation counts and the wall arm wait for the user's go-ahead (design §6).
 
 - **Addendum (the user's note, Oct 28):** the B choice of 2,048 against 2,435 differs by 0.0006 under rule (b), within noise; the curve is flat over 1,722–2,435. Scoring of the B question is unaffected: both are ≤ 4,096.
+
+## twilight-028-034 validation counts (sealed run dee408f; predictions a505fc1; 400 held-out per size, untimed)
+
+`results/twilight-028-034_20261029T052036Z.out`; `evolve/twilight2_validate.json`. Seeds 9820000 + bits, never seen by the search. **Every arm factored all 400 numbers at both sizes.** Machine state (run record): **on battery** (AC online 0, BAT0 82%), cap 2,400 MHz, governor powersave (not changed), load 0.90 → 1.23, TCPU 38 → 45 °C. Counts do not depend on the clock, so battery does not affect them; the wall arm waits for AC.
+
+**Specialist ÷ baseline, mean cost per number, paired bootstrap 95%:**
+
+| bits | baseline | op-class v1 | ruint | Montgomery | official | rule (b) | all three agree |
+|---|---|---|---|---|---|---|---|
+| **96** | QS alone | **0.919** [0.884, 0.952] | 0.927 [0.891, 0.960] | 0.885 [0.850, 0.919] | 0.871 [0.834, 0.904] | 0.927 [0.891, 0.960] | cheaper |
+| **96** | reference pipeline | **0.849** [0.831, 0.870] | 0.819 [0.802, 0.838] | 0.972 [0.950, 0.998] | 1.050 [1.025, 1.080] | 0.972 [0.950, 0.998] | cheaper |
+| 84 | QS alone | 0.940 [0.910, 0.968] | 0.949 [0.919, 0.977] | 0.916 [0.886, 0.944] | 0.904 [0.874, 0.933] | 0.949 [0.919, 0.977] | cheaper |
+| 84 | reference pipeline | 0.914 [0.886, 0.945] | 0.868 [0.843, 0.896] | 1.046 [1.011, 1.087] | 1.136 [1.095, 1.183] | 1.046 [1.011, 1.087] | not called |
+
+- **Against the reference pipeline the pricings split.** Op-class and ruint charge the reference's rho stage heavily; Montgomery and official charge it lightly. At 96 the three called pricings still agree (cheaper), with Montgomery's interval just below 1. At 84 Montgomery says dearer, so no call. Under official the reference pipeline is cheaper at both sizes.
+- **Meter-health** (callgrind instructions per op-class unit, first 8 held-out numbers, start-up subtracted): 96 specialist 0.926 (1.019× QS's 0.909), reference pipeline 0.937 (1.030×); 84 specialist 1.025×, reference pipeline 1.062×. Op-class under-charges the p−1 and rho stages slightly against QS, as the light spectrum's instruction check said; the specialist's 2% is small.
+
+**Scored as filed (op-class, 96 bits, band average; rule (b) beside):**
+
+| prediction | point; range | measured op-class | range | error of point | rule (b) beside |
+|---|---|---|---|---|---|
+| R-34 (vs QS alone) | 0.90; 0.84–0.97 | 0.919 | **hit** | 0.019 | 0.927, in range |
+| D-34 | 0.92; 0.64–1.20 | 0.919 | **hit** | 0.001 | in range |
+| G-27 | 0.85; 0.60–1.10; falsifier ≥ 1.15 | 0.919 | **hit**; falsifier not triggered | 0.069 | in range |
+| R-35 (vs reference pipeline) | 0.85; 0.78–0.95 | 0.849 | **hit** | 0.001 | 0.972, outside R-35's range |
+| D-35 | 0.99; 0.69–1.29 | 0.849 | **hit** | 0.141 | in range |
+| G-28 | 0.80; 0.55–1.05; falsifier ≥ 1.10 | 0.849 | **hit**; falsifier not triggered | 0.049 | in range |
+| R-36 (B > 4,096) | yes, 60% | B 2,048 | **miss** | – | – |
+| D-36 | No, P 0.55 | B 2,048 | **hit** | – | – |
+| G-29 | yes, 60%; falsifier B ≤ 4,096 | B 2,048 | **falsified** | – | – |
+
+- **The disagreement on the rho pre-stage** (D-35 0.99 against R-35 0.85 and G-28 0.80) is settled toward R-35 and G-28 under op-class: removing rho pays. Under Montgomery (0.972) and official (1.050) D-35's "tiny" reading is closer. D-35's point error is the round's largest.
+- **R-35 and G-28 quoted the mislabelled relayed fact** (1.21 / 1.26 as op-class; correction 2cf3f5f). Their scores stand as filed.
+- **Pending:** R-37, D-37 and G-30 (wall). The wall arm waits for AC power and the load check; nothing in its conditions is changed.
