@@ -1,0 +1,6 @@
+rho doubling period 48-80 [opclass_v1]: 3.936 bits [3.790, 4.098]
+rho doubling period 48-80 [ruint]: 3.938 bits [3.788, 4.094]
+rho doubling period 48-80 [montgomery]: 3.947 bits [3.801, 4.108]
+rho doubling period 48-80 [official]: 3.935 bits [3.788, 4.093]
+rho doubling period 48-80 [opclass_v1_gcdscaled]: 3.932 bits [3.786, 4.088]
+successes {48: 48, 80: 48}; rho's gcd share of op-class cost 48: 0.0128, 80: 0.0111; scaled gcd units 48: 755.4, 80: 1341.7 (flat 1401.7)
