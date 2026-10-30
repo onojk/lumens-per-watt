@@ -11471,3 +11471,9 @@ Forecast scoring (Q1–Q6 against R-38..R-43, G-31..G-36 and D-38..D-43) is a se
 - **Post hoc** (labelled; after seeing that difference): the evaluated lists, compared as sets sorted by genome, have **identical content**. Order differs at 38 of 215 positions.
   - The cause is the memo recording each genome when its evaluation finishes; with 2 workers in parallel, either may finish first. Everything before the list (numbers, rho, budget, selection, every pair's genome, fitness, search entry and records) was identical, and so was the sweep log.
 - **A consequence for G-37's tie-break** ("ties broken by the order the search evaluated them"): that order is not deterministic under 2 workers. On the balanced run there was no tie at the top-10 boundary (10th 1.0109, 11th 1.0074), so G-37's value is unaffected. A future version should break ties by the genome's sorted JSON.
+
+**Q5 result (θ 0.20–0.30 sub-map; Oct 30):**
+- **The search did not select the exponent layout** (p − 1). It selected map(c = 5, d = 2, x0 = 2) + Brent(512), a rho variant.
+- **The exponent layout lost on cost:** K ≥ 1,024 costs 27–50 × rho at 64 bits on these numbers, under op-class, and K = 256 factors fewer than half.
+- **Scored as written:** R-42 and D-42 not falsified; G-35 falsified (`results/arrangement-v1_forecast_scores.md`).
+- **Held-out:** the pick is dearer than rho at 64 bits (robust 1.267 [1.077, 1.491]) and level at 80 (0.990 [0.804, 1.227]). Its training G_rho of 1.133 reflects a flatter cost curve, not a cheaper one; it is the padding pattern the cost guard limits, at the guard's edge. Rho remains the cheaper choice on this sub-map.

@@ -55,3 +55,29 @@
 Of the 16, 3 are not falsified only by default (R-41, D-41, G-34: no non-map slope could be measured within the search's budget).
 
 Two statements outside their falsifiers were wrong: D-39's and G-32's "G not defined / ≈ 1.00". The measured G is 0.447, defined, as the reviewer's notes said.
+
+## Q5, scored after the θ sub-map search (Oct 30)
+
+**Sources:**
+- θ search: sealed 0f16ffe; its same-seed rerun, 32773cc, has identical content (post-hoc set comparison; order differs, NOTES).
+- θ scoring: sealed d8321a8.
+
+**Selected genome on the θ 0.20–0.30 sub-map:** map(c = 5, d = 2, x0 = 2) + Brent(512), training fitness (worst-of G_rho, 64–80, cost guard) 1.133. **Not the exponent layout.**
+- The exponent layout was evaluated across its grid: K = 256 factored fewer than half the training numbers at 64 bits; K ≥ 1,024 factored at least half but cost 27–50 × rho (robust) at 64 bits, far over the 1.25 cost guard.
+- Both exponent pairs were dropped at 64 bits.
+
+| ID | Q | forecast (as written) | measured | falsified | note |
+|---|---|---|---|---|---|
+| R-42 | Q5 | exponent selected on θ < 0.3: no, 60% | not selected (map + Brent) | **no** | |
+| D-42 | Q5 | no; selects a map/rho-shaped genome; 0.60 | map + Brent selected | **no** | |
+| G-35 | Q5 | yes, exponent selected; 55% | map + Brent selected | **yes** | the falsifier holds: the selected genome is not the exponent layout |
+
+**Totals over all 20 forecasts:**
+- 15 genuine passes;
+- 3 not falsified by default (R-41, D-41, G-34);
+- 2 falsified: D-39, by 0.002 on the point value; G-35.
+
+**Held-out θ scoring of the selected genome** (information; not a Q5 condition; 96 per size, seeds 9935000 + bits; audit clean, 192 / 192 factors in both arms):
+- Robust cost against rho: **1.267 [1.077, 1.491] at 64 bits**, dearer than rho with the interval above 1.
+- 0.990 [0.804, 1.227] at 80 bits.
+- On held-out numbers the pick exceeds the search's 1.25 guard at 64 bits. Its training fitness (G_rho 1.133) came from a flatter cost curve, not from being cheaper.
