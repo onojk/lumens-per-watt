@@ -11616,3 +11616,4 @@ Both maps are scored.
   - ruint: D = 4.0 (48, 64), 4.8 (80);
   - Montgomery: D = 4.0 (48, 64), 4.8 (80). Both timed pricings express D in their own `word` units, so one ratio serves both.
 - **Caveat:** the bench's "word add" is an add in a dependent chain. The calibrated `word` price comes from the sieve update (load, add, store). If that op is dearer than this add, the true timed D is lower than measured, which favours SQUFOF.
+- **An unintended second run** (a check command of mine re-ran `run.py` at 02:59, minutes after the first, same conditions): D_timed 4.00 / 4.01 / 4.75 at 48 / 64 / 80. It agrees with the first to ±0.01. Kept as `bench/divbench/divbench_rep2_unintended.json`; the first run's file stays the record.
