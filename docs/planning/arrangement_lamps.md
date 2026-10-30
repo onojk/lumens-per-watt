@@ -128,3 +128,5 @@ A genome is one stage, `{"t": "arr", "layout": {...}, "detect": {...}, "ob": bud
 **Still open:**
 - the predictions (§7), sealed before any run;
 - the cost models in NOTES for each layout and rule, before code.
+
+**Addendum (the user, Oct 29), §8 step 2:** the balanced validation map gains **48 at 84 bits** (`semiprimes_pq(84, 48, 9930084)`), for G's 84–96 gene check (the candidate and the reference QS). NOTES, "Ruling: 84-bit validation numbers".

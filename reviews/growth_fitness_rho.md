@@ -43,3 +43,7 @@ Rho's gcds are 1.3% (48 bits) and 1.1% (80 bits) of its op-class cost, so the gc
 - **Absolute cost.** A candidate can grow more slowly and still cost more at every size.
 - **Growth outside 48–80,** including the QS range (that is G's job).
 - **Resolution:** rho's own interval is about ±4% (3.79–4.10), so a G_rho within about 0.96–1.04 is not separable from 1 at 48 numbers per size, before pairing.
+
+## v2 (the user's ruling, Oct 29; before anything was scored with v1 or v2)
+
+§3 rule 1's "the gcd's other argument fits one 64-bit word" becomes **"the gcd's other argument is < 2^32"** (the small-k curve; the uniform-k curve elsewhere). The reason: at 48–64 bits every residue mod N fits one word, so the v1 wording put differences mod N on the small-k curve. That contradicts the ruling 558b18f, which puts differences mod N on the uniform curve, and the gcd bench's small-k definition (k = 2, 3, …). It also priced an algorithm identical to rho differently from rho. Everything else in v1 stands. NOTES, "Ruling: the scaled gcd price's small-k label".

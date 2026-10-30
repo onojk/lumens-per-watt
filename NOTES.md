@@ -11226,3 +11226,25 @@ Montgomery is read from calibrate.json at run time and reported. With official p
 - a predictions-only pin commit passes;
 - an uncommitted pin block fails;
 - a pin commit that also appends to `optypes.py` fails. In that case the new pin matches the edited file, so only the isolation rule catches it, and `sealed_run.sh` then refuses the run and commits the failure.
+
+## Ruling: the scaled gcd price's small-k label is "argument < 2^32" (the user's, Oct 29; G_rho v2; before anything is scored; documentation only)
+
+**The problem:** found while writing the scoring harness. The arr cost model (6062320) has the trace count `gcd_small` as gcds whose non-N argument was < 2^64, and G_rho's frozen text (§3 rule 1) says "fits one 64-bit word".
+- At 48–64 bits every residue mod N is < 2^64. So every arr gcd there, differences mod N included, went on the small-k curve, while the rho arm is priced on the uniform curve.
+- The gcd bench's small-k curve is k = 2, 3, … (vl's counter). The ruling 558b18f puts "any gcd of a difference mod N" on the uniform curve.
+- The literal label therefore priced an algorithm identical to rho at 357 units per gcd at 48 bits (rho: 755), but at about 1,342 at 80. That is a growth penalty from labelling alone. The harness selftest showed it already at 20–32 bits: map + Brent(64) came out 0.988 × rho under the scaled price, against exactly 1.000 under the four flat pricings.
+
+**The ruling: option "tiny k".** `gcd_small` counts gcds whose non-N argument is **< 2^32** at the call.
+- A difference mod N falls below 2^32 with probability about 2^(32 − bits): 2^−16 at 48 bits, so practically never, the same as the rho arm.
+- Stride / vl-style dots near a small target stay small, as the bench's k = 2, 3, … intends.
+
+**Cost model (before code):**
+- **No op, charge or price changes.** op-class v1 is untouched. `gcd_small` is information that feeds only the scaled-gcd view.
+- The threshold changes in both cores: `arr.py gt` uses `v.bit_length() <= 32`, and `arr.rs gt` uses `v.bit_len() <= 32`.
+- Parity (3) already compares `gcd_small` line by line, so it covers the change. It is re-run, and the release binary is rebuilt and re-pinned.
+
+**G_rho v2:** the change is recorded as an addendum to `reviews/growth_fitness_rho.md`, prospectively. Nothing was scored with v1.
+
+## Ruling: 84-bit validation numbers for G's gene check (the user's, Oct 29; documentation only)
+
+G's rule 1 reports the 84–96 chord beside 80–96, but design §8 drew no 84-bit validation numbers. **The user's decision:** add 48 balanced semiprimes at 84 bits, `semiprimes_pq(84, 48, 9930084)`, the same seed rule as the other validation sizes. The candidate and the reference QS run on them, and the reference QS uses the sealed 2'b genes at 84. If the 80–96 and 84–96 intervals do not overlap, the report flags it, per G's rule 1. Rho does not need 84 (G_rho is 48–80).
