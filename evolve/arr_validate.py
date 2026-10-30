@@ -5,18 +5,19 @@ reviews/growth_fitness.md, frozen c86ef35). A judge file: pinned in the predicti
 Input: genome files written by the search (tools/search_sandbox.sh -> search_out/), each a JSON genome (a list of
 stages) or {"name": ..., "genome": [...]}. Every genome must hold an arr stage and pass lamps.validate_genome.
 
-Maps (design §8; numbers never seen by the search):
-  balanced  48 per size at 48, 64, 80 and 96 bits, semiprimes_pq(bits, 48, 9930000 + bits)
+Maps (design §8 with its 84-bit addendum; numbers never seen by the search):
+  balanced  48 per size at 48, 64, 80, 84 and 96 bits, semiprimes_pq(bits, 48, 9930000 + bits); 84 runs the
+            candidate and QS only (G's 84-96 gene check)
   theta     96 per size at 64 and 80 bits, theta = log2 p / log2 N uniform in [0.20, 0.30), seeds 9935000 + bits
             (twilight2_search.numbers' draw with the band changed; Q5's map: cost against rho only, no growth)
 Arms, each on the same numbers (the paired bootstrap): the candidate; rho alone (partition.PRE["rho"], G_rho's
-reference genes); on the balanced map at 80 and 96 bits, the reference card's QS (growth_harness.qs_genes: the
-sealed 2'b genes at 96, interpolated at 80, as G's reference). Untimed counts, lampcore --types; 2 lampcore processes
+reference genes); on the balanced map at 80, 84 and 96 bits, the reference card's QS (growth_harness.qs_genes: the
+sealed 2'b genes at 84 and 96, interpolated at 80, as G's reference). Untimed counts, lampcore --types; 2 lampcore processes
 at a time (the user's instruction: the laptop runs hot). Caps: CAP = 2^34 for the candidate and rho (the growth
 harness's cap, as G_rho's reference); partition.QS_CAP for QS.
 
 Pricing per run (growth_harness.costs): official, ruint, Montgomery, op-class v1, and op-class v1 with the size-scaled
-gcd price (gcdscale.py; per gcd, the small-k curve for the arr gcds whose other argument was < 2^64, lampcore's " A n"
+gcd price (gcdscale.py; per gcd, the small-k curve for the arr gcds whose other argument was < 2^32 (G_rho v2), lampcore's " A n"
 column, and the uniform-k curve for every other gcd). C(s) = total priced cost, censored spending included, divided
 by successes (growth_harness.per_fact). A success is a factor equal to p or q.
 
@@ -29,8 +30,9 @@ Reported per genome (balanced map):
     "slower growth" / "faster growth" only when the whole interval is on one side of 1;
   - a pricing artifact flag: G_rho > 1 under op-class v1 but not under the scaled gcd price (rule 1);
   - G = period_cand / period_QS over 80-96, under the four pricings (and the scaled gcd price, for information);
-    worst-of = min over op-class v1, ruint, Montgomery; not defined below 24 / 48 at 80 or 96 for either arm. The
-    84-96 gene check needs 84-bit numbers, which design §8 does not draw: reported as not run, flagged for the user;
+    worst-of = min over op-class v1, ruint, Montgomery; not defined below 24 / 48 at 80 or 96 for either arm; the
+    84-96 gene check beside it, flagged when the two windows' op-class period intervals do not overlap for the
+    candidate or for the reference QS (G rule 1);
   - cost ratio C_cand / C_rho at 64 and 80 bits, per pricing, paired bootstrap; robust = max over the worst-of set;
   - the user's flag (Oct 29): a genome with a bin-compare rule whose cost grows faster than rho's (its op-count slope
     or its op-class C(80)/C(48) above rho's on the same numbers), even if it does well at 48 bits;
@@ -40,8 +42,9 @@ Theta map: per genome, the cost ratio against rho at 64 and 80 bits and the op-c
 A JSON line "RESULT {...}" closes the output with every number above.
 
   python3 arr_validate.py balanced|theta GENOME_FILE [...]
-  python3 arr_validate.py selftest       the code paths on small numbers (20/24/28/32 bits, seeds 9939000 + bits),
-                                         never on a scored map; prints counts, no verdicts"""
+  python3 arr_validate.py selftest       the code paths on small numbers (20-44 bits, seeds 9939000 / 9939500 /
+                                         9939700 + bits, never a scored map), QS and the gene check included;
+                                         prints counts, no verdicts"""
 import os, sys
 ARGV = sys.argv[1:]
 sys.argv = sys.argv[:1]
@@ -107,8 +110,10 @@ def per_fact(rs, pr, idx=None):
     return sum(rs[i]["cost"][pr] for i in idx) / s
 
 def period(R, a, b, pr, ix=None):
+    """Doubling period over a-b; None when not defined: too few successes, an unpriced type, or a cost that does not
+    grow over the chord (C(b) <= C(a): no doubling, so no period; a negative "period" would read as fast growth)."""
     ca, cb = per_fact(R[a], pr, ix and ix[a]), per_fact(R[b], pr, ix and ix[b])
-    return (b - a) / math.log2(cb / ca) if ca and cb and cb != ca else None
+    return (b - a) / math.log2(cb / ca) if ca and cb and cb > ca else None
 
 def ls_slope(xs, ys):
     mx, my = sum(xs) / len(xs), sum(ys) / len(ys)
@@ -169,13 +174,14 @@ def fmt(v, nd=3):
     lo, hi = v["ci"]
     return f"{v['value']:.{nd}f} [{lo:.{nd}f}, {hi:.{nd}f}]" if lo is not None else f"{v['value']:.{nd}f}"
 
-def score_balanced(genomes, sizes=(48, 64, 80, 96), chord=(48, 80), gchord=(80, 96), ratio_at=(64, 80), per=48,
-                   seed0=9930000, qs=True):
+def score_balanced(genomes, sizes=(48, 64, 80, 84, 96), chord=(48, 80), gchord=(80, 96), gene=(84, 96), ratio_at=(64, 80),
+                   per=48, seed0=9930000, qs=True):
     nums = {b: semiprimes_pq(b, per, seed0 + b) for b in sizes}
     n = {b: len(nums[b]) for b in sizes}
-    jobs = {("rho", b): (RHO, CAP, nums[b], b) for b in sizes}
+    rho_sizes = tuple(b for b in sizes if not (qs and b == gene[0]))    # 84 is for G's gene check only (QS, candidate)
+    jobs = {("rho", b): (RHO, CAP, nums[b], b) for b in rho_sizes}
     if qs:
-        jobs.update({("qs", b): ([qs_genes(b)], P.QS_CAP, nums[b], b) for b in gchord})
+        jobs.update({("qs", b): ([qs_genes(b)], P.QS_CAP, nums[b], b) for b in sorted(set(gchord) | set(gene))})
     for i, (_, g) in enumerate(genomes):
         jobs.update({(i, b): (g, CAP, nums[b], b) for b in sizes})
     R = arms_run(jobs)
@@ -183,15 +189,16 @@ def score_balanced(genomes, sizes=(48, 64, 80, 96), chord=(48, 80), gchord=(80, 
     rho = arm("rho")
     a, b = chord
     out = {"map": "balanced", "sizes": list(sizes), "per_size": per, "seeds": f"{seed0} + bits", "cap": CAP,
-           "rho": {"successes": {s: sum(r["ok"] for r in rho[s]) for s in sizes},
+           "rho": {"successes": {s: sum(r["ok"] for r in rho[s]) for s in rho_sizes},
                    "ops_slope": ops_slope(rho, (a, ratio_at[0], b)),
                    "period": {pr: period(rho, a, b, pr) for pr in PRICINGS}},
-           "gene_check_84_96": "not run: design §8 draws no 84-bit validation numbers (flagged for the user)",
-           "genomes": []}
+           "chords": {"g_rho": chord, "g": gchord, "gene_check": gene}, "genomes": []}
     if qs:
         q = arm("qs")
-        out["qs"] = {"successes": {s: sum(r["ok"] for r in q[s]) for s in gchord},
-                     "period": {pr: period(q, *gchord, pr) for pr in PRICINGS}}
+        out["qs"] = {"genes": {s: qs_genes(s) for s in sorted(set(gchord) | set(gene))},
+                     "successes": {s: sum(r["ok"] for r in q[s]) for s in sorted(set(gchord) | set(gene))},
+                     "period": {pr: period(q, *gchord, pr) for pr in PRICINGS},
+                     "period_gene_check": {pr: period(q, *gene, pr) for pr in PRICINGS}}
     for i, (name, g) in enumerate(genomes):
         rng = random.Random(SEED)
         C = arm(i)
@@ -218,6 +225,20 @@ def score_balanced(genomes, sizes=(48, 64, 80, 96), chord=(48, 80), gchord=(80, 
             e["g_worst"] = paired(lambda ix: (lambda v: min(v) if None not in v else None)(
                 [(lambda pc, pq: pc / pq if pc and pq else None)(period(C, *gchord, pr, ix), period(q, *gchord, pr, ix))
                  for pr in WORST_G]), gchord, n, rng)
+            # G's gene check (rule 1): the 84-96 chord beside 80-96; flag when the two windows' period intervals do not
+            # overlap, for the candidate or for the reference QS (op-class v1, the primary pricing)
+            e["g_gene_check"] = {pr: paired(lambda ix, pr=pr: (lambda pc, pq: pc / pq if pc and pq else None)(
+                period(C, *gene, pr, ix), period(q, *gene, pr, ix)), gene, n, rng) for pr in PRICINGS}
+            win = {}
+            for who, X in (("candidate", C), ("reference QS", q)):
+                for w in (gchord, gene):
+                    v = paired(lambda ix, X=X, w=w: period(X, *w, "opclass_v1", ix), w, n, rng)
+                    win[(who, w)] = v["ci"] if v["value"] is not None else (None, None)   # undefined point: no interval
+            e["gene_check_flag"] = [who for who in ("candidate", "reference QS")
+                                    if None in win[(who, gchord)] + win[(who, gene)]
+                                    or win[(who, gchord)][1] < win[(who, gene)][0]
+                                    or win[(who, gene)][1] < win[(who, gchord)][0]]
+            e["gene_check_windows"] = {f"{who} {w[0]}-{w[1]}": ci for (who, w), ci in win.items()}
         e["ratio"] = {}
         for s in ratio_at:
             r1 = lambda ix, pr, s=s: (lambda x, y: x / y if x and y else None)(per_fact(C[s], pr, ix and ix[s]),
@@ -266,20 +287,28 @@ def report(out):
     if "qs" in out:
         print(f"QS (reference genes): successes {out['qs']['successes']}; doubling period " + ", ".join(
             f"{pr} {v:.3f}" if v else f"{pr} n/a" for pr, v in out["qs"]["period"].items()))
-        print(f"G gene check 84-96: {out['gene_check_84_96']}")
+        print(f"QS gene-check period {out['chords']['gene_check'][0]}-{out['chords']['gene_check'][1]}: " + ", ".join(
+            f"{pr} {v:.3f}" if v else f"{pr} n/a" for pr, v in out["qs"]["period_gene_check"].items()))
     for e in out["genomes"]:
         print(f"\n== {e['name']}: {e['layout']} + {e['rule']}" + (f", d = {e['d']}" if e["d"] else "")
               + f"; {e['class']}" + ("; rho-shaped (Q1)" if e.get("rho_shaped") else ""))
         print(f"   successes {e['successes']}")
         print(f"   op-count slope {e['ops_slope']:.3f} per bit (rho {out['rho']['ops_slope']:.3f})")
         if "g_rho" in e:
-            print(f"   G_rho 48-80: " + "; ".join(f"{pr} {fmt(v)}" for pr, v in e["g_rho"].items()))
+            ca, cb = out["chords"]["g_rho"]
+            print(f"   G_rho {ca}-{cb}: " + "; ".join(f"{pr} {fmt(v)}" for pr, v in e["g_rho"].items()))
             print(f"   G_rho worst-of (op-class, ruint, Montgomery, scaled gcd): {fmt(e['g_rho_worst'])}: {e['g_rho_verdict']}"
                   + ("; PRICING ARTIFACT (G_rho > 1 flat, not scaled)" if e["pricing_artifact"] else ""))
-            print(f"   gcds whose other argument < 2^64: " + ", ".join(f"{s}: {e['gcd_small'][s]}/{e['gcd'][s]}" for s in e["gcd"]))
+            print(f"   gcds whose other argument < 2^32: " + ", ".join(f"{s}: {e['gcd_small'][s]}/{e['gcd'][s]}" for s in e["gcd"]))
         if "g" in e:
-            print(f"   G 80-96: " + "; ".join(f"{pr} {fmt(v)}" for pr, v in e["g"].items())
+            ga, gb = out["chords"]["g"]
+            print(f"   G {ga}-{gb}: " + "; ".join(f"{pr} {fmt(v)}" for pr, v in e["g"].items())
                   + f"; worst-of {fmt(e['g_worst'])}: {side(e['g_worst'])}")
+            ka, kb = out["chords"]["gene_check"]
+            print(f"   G {ka}-{kb} (gene check): " + "; ".join(f"{pr} {fmt(v)}" for pr, v in e["g_gene_check"].items()))
+            if e["gene_check_flag"]:
+                print(f"   FLAG (G rule 1): the {ga}-{gb} and {ka}-{kb} period intervals do not overlap (or are not defined) for "
+                      f"{', '.join(e['gene_check_flag'])}; the verdict rests on neither window until the user rules")
         for s, rr in e["ratio"].items():
             print(f"   cost / rho at {s}: " + "; ".join(f"{pr} {fmt(v, 4)}" for pr, v in rr.items()))
         if e.get("flag_bin_compare_faster_than_rho"):
@@ -298,6 +327,9 @@ if __name__ == "__main__":
         report(score_balanced(G, sizes=(20, 24, 28, 32), chord=(20, 28), gchord=(28, 32), ratio_at=(24, 28), per=16,
                               seed0=9939000, qs=False))
         report(score_theta(G[:1], sizes=(28, 32), per=16, seed0=9939500))
+        # the G and gene-check paths, with QS on small numbers (qs_genes holds the 54-bit genes below 54)
+        report(score_balanced(G[:1], sizes=(24, 32, 36, 40, 44), chord=(24, 36), gchord=(36, 44), gene=(40, 44),
+                              ratio_at=(32, 36), per=16, seed0=9939700, qs=True))
         sys.exit(0)
     G = load(ARGV[1:])
     report(score_balanced(G) if ARGV[0] == "balanced" else score_theta(G))
