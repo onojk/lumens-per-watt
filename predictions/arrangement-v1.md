@@ -200,6 +200,22 @@ Falsifier (single condition): the measured fraction exceeds 0.08.
 - "Valid genomes" with a training G_rho are the search record's evaluated genomes whose training G_rho (op-class v1) is defined. A genome the search dropped (by the cost guard or for too few successes) has none and is not ranked.
 - Disclosure: before this seal, a code check of g37 ran once on the held-out 48-bit numbers with the 20–32-bit selftest genomes (rho-like). It showed a Fermat-easy subset of 6 of 48, and 0 / 5 for those genomes. Grok did not see it. NOTES, "Incident: held-out 48-bit numbers seen before G-37 was sealed"; the user decides whether this stands.
 
+## DeepSeek's D-44 (sealed Oct 30, before any validation run; verbatim, pasted by the user)
+
+<!-- verbatim begin -->
+| D-44 | 0.98; range 0.69-1.27 | Best genome by held-out op-class cost at 64-80 bits, balanced numbers, op-class v1, band average; ratio = genome cost / rho reference cost. Base: rho reference (doubling period 3.936 op-class [3.790, 4.098]). Prediction near 1.0 because rho rediscovery is a likely outcome; range is +/-30% widened for search overfit and per-size transfer. | 25% | Measured best-genome/rho op-class band-average ratio outside 0.69-1.27. Direction: falsified if <0.69 or >1.27. |
+<!-- verbatim end -->
+
+**Pre-run notes (the user's, marked as such; verbatim):**
+
+<!-- verbatim begin -->
+- "Best genome" = rank 1 by training G_rho among valid genomes; not chosen on held-out data.
+- "Band average" = the geometric mean of the held-out op-class v1 ratios C_cand/C_rho at 64 and 80 bits (C = total cost over successes), with a paired bootstrap over both sizes for the interval. The validation map has no 72-bit numbers.
+- Computed by the report script, like G-37; the harness is unchanged.
+<!-- verbatim end -->
+
+**The recorder's note (Claude's; not part of the forecast):** "rank 1 by training G_rho among valid genomes" is read as the search's own ranking, the genome `arr_search.py` selects ("best" in its record): the worst-of training G_rho over op-class v1, ruint, Montgomery and the scaled gcd price, under the cost guard (the user's ruling, Oct 30). G-37's top 10 ranks by op-class v1 alone, as its text says. The report prints both rank-1 genomes if they differ.
+
 
 ## Judge pins, pin 1
 
