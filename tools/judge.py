@@ -20,7 +20,10 @@ A later pin (a new block, appended, never an edit of an earlier one) supersedes 
                                                                 --allow-pending: pending entries pass (the search
                                                                 sandbox only; a scored run never passes it)
   python3 tools/judge.py paths EXPERIMENT                       the last pin's paths, one per line (for the sandbox)
-check also refuses when LAMPCORE is set in the environment: fastlamps.BIN would then not be the pinned binary.
+check also refuses when LAMPCORE is set in the environment: fastlamps.BIN would then not be the pinned binary, and
+when a pin commit is not alone: every commit that adds or changes the pin section (the text from the first
+"## Judge pins" heading on) must touch predictions/<id>.md and no other file, so a judge change can never ride in
+with the pin that blesses it; a pin section changed but not committed fails too. Needs the repo's git history.
 Run from anywhere inside the repo; paths are relative to the repo root."""
 import hashlib, os, re, subprocess, sys
 
@@ -90,12 +93,37 @@ def cmd_pin(exp, add, pending):
         print(f"{h:<{w}}  {p}")
     print(END)
 
+def git(*a):
+    return subprocess.run(["git", "-C", ROOT, *a], capture_output=True, text=True)
+
+def pin_section(text):
+    i = text.find("\n" + HEAD)
+    return "" if i < 0 else text[i + 1:]
+
+def pin_commit_faults(exp):
+    """Each commit whose change to the predictions' pin section comes with any other file, and an uncommitted pin
+    change. A commit changes the pin section if the section differs between it and its parent."""
+    rel = f"predictions/{exp}.md"
+    show = lambda c: (r.stdout if (r := git("show", f"{c}:{rel}")).returncode == 0 else "")
+    faults = []
+    for c in git("log", "--format=%H", "--", rel).stdout.split():
+        parent = git("rev-parse", "--verify", "-q", c + "^").stdout.strip()
+        if pin_section(show(c)) == pin_section(show(parent) if parent else ""):
+            continue
+        files = git("diff-tree", "--no-commit-id", "--name-only", "-r", "--root", c).stdout.split()
+        others = [f for f in files if f != rel]
+        if others:
+            faults.append(f"pin commit {c[:7]} also touches {', '.join(others)}")
+    if pin_section(open(pred_path(exp)).read()) != pin_section(show("HEAD")):
+        faults.append(f"the pin section of {rel} has uncommitted changes")
+    return faults
+
 def cmd_check(exp, allow_pending=False):
     pins, n = last_pin(exp)
     if pins is None:
         print(f"JUDGE: no pins in predictions/{exp}.md")
         return 1
-    bad = []
+    bad = pin_commit_faults(exp)
     if "LAMPCORE" in os.environ:
         bad.append(f"LAMPCORE is set ({os.environ['LAMPCORE']}): the meter would not run the pinned binary")
     for h, p in pins:

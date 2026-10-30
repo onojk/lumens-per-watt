@@ -11221,3 +11221,8 @@ Montgomery is read from calibrate.json at run time and reported. With official p
 - (d) `LAMPCORE=/bin/true`: not run;
 - (e) a committed edit of the sealed prediction text: `@predictions` mismatch, not run; the sandbox also refuses to start;
 - (f) in the sandbox, writing to `arr.py`, chmod, replacing the binary, `cargo build` and the network are all blocked, while writing `search_out/g.json` and running lampcore both work. The repo under /home is mounted read-only (probe: `touch tools/x` gives "Read-only file system").
+
+**Addendum (Oct 29): pin commits stand alone.** At the user's request, `judge.py check` now also fails when a commit that adds or changes the pin section (the text from the first `## Judge pins` heading on) touches any file besides `predictions/<id>.md`, and when the pin section has uncommitted changes. This closes the hole noted above ("a judge change committed together with a new pin passes check"): such a commit is now itself a failure, and it stays one in history (only the user can rule on a recovery). Tested in the scratch clone:
+- a predictions-only pin commit passes;
+- an uncommitted pin block fails;
+- a pin commit that also appends to `optypes.py` fails. In that case the new pin matches the edited file, so only the isolation rule catches it, and `sealed_run.sh` then refuses the run and commits the failure.
