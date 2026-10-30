@@ -8,6 +8,37 @@ The picture behind it: place a number's smaller factor on the line θ = log p / 
 
 Independent research by Jonathan Kendall. Rust ("lampcore") for the fast core, Python for the harness and analysis; the two cores must agree exactly.
 
+## Findings so far (Oct 30, 2026)
+
+Every claim below is scoped to its sizes, budgets and pricings. Details: [NOTES.md](NOTES.md) (cost models, runs, results) and [MOVES.md](MOVES.md) (ideas and their statuses).
+
+**A sealed program search rediscovered Pollard rho (arrangement-v1).**
+- **The family:** about 15 "arrangement + detection rule" pairs (stride walks, folds, polynomial maps, bins, exponent towers; per-dot, batched, Floyd, Brent and bin-compare detection), searched by coordinate search.
+- **The judge:** pinned by hash, checked before and after each scored run, with the search sandboxed away from held-out numbers.
+- **The pick** on balanced numbers was a polynomial map with Brent cycle detection, i.e. rho.
+- **Held-out cost:** 0.99 × rho at 64 and 80 bits (robust over op-class, ruint, Montgomery and a size-scaled gcd price; intervals about ±20% at 48 numbers per size).
+- **Selection bias:** its growth fitness fell from 1.048 on training numbers to 0.968 held out, which is why held-out numbers are kept.
+- **On numbers with one small factor** (θ 0.20–0.30) the search again picked a rho variant. p − 1 lost on cost.
+- **Forecasts:** 20 sealed forecasts from three forecasters: 15 genuine passes, 3 not falsified by default, 2 falsified.
+- **Scope:** 48–96 bits, the search's budget (16 × rho's worst training cost per number); no genome beat rho by more than about 15–20%.
+
+**Growth fitness can be bought by padding.** A genome that is dearer at the bottom of the size range looks as if it grows slowly. The θ pick did this: 1.27 × rho at 64 bits, 0.99 × at 80. The rules for future families therefore require:
+- **a slope win** to be no dearer than the reference at any measured size;
+- **a level win** to be cheaper at every size under every pricing in the worst-of set.
+
+**Two candidate families were stopped at the pre-check, before any search code.**
+- **Square-form walks (SQUFOF-like):**
+  - **Measured:** its step constant, and the cost of a 64-bit division on this machine.
+  - **Expected cost:** 1.31–1.41 × rho at 48–80 bits under the worst-of pricing, even at the low end of the measured step count. One-word arithmetic does not make up for the extra steps once divisions are timed.
+- **Change the group (p − 1, p + 1, small elliptic curves):** wins exist only for lamps already in the project (ECM, and p − 1 with stage 2) on balanced numbers. p + 1, the new member, wins nowhere, and on θ 0.20–0.30 numbers no group method beats rho at 48–64 bits.
+
+**The measured frontier:** the cheapest existing lamp per size, exact charges, frozen genes, 96 fresh numbers per size, robust over the worst-of pricing set.
+- **Balanced:** the quadratic sieve at every size from 48 to 96 bits. At 48 bits p − 1 with stage 2 ties it under some pricings.
+- **θ 0.20–0.30:** rho at 56–96 bits; trial division at 48 under op-class.
+- **No crossovers in 48–96.** This frontier is the reference future families must beat.
+
+![The frontier: op-class cost per factorisation against N's size, per lamp, balanced and θ 0.20–0.30](results/frontier.png)
+
 ## How it is measured
 
 - **The op meter.** Every operation is charged by what it physically is (a fixed classification rule): a full multiply mod N, a reduction modulo a small prime, a word-level step (an add, a compare, an index move), a gcd, and so on.
