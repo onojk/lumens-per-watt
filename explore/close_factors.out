@@ -1,0 +1,40 @@
+== balanced train (actual set: 48 per size)
+  48 bits: |q-p|/sqrt(N) histogram [0,0.01): 2, [0.01,0.05): 6, [0.05,0.1): 8, [0.1,0.25): 10, [0.25,0.5): 19, [0.5,1): 3; min 0.0022, median 0.2332
+     fraction |q-p| < N^(1/4): 0.0000 (0/48)
+     200 numbers, median steps: td down 1.328e+06, td up 1.101e+07, Fermat 7.9e+04, rho scale sqrt(p) 3319; Fermat / sqrt(p) 23.81; fraction Fermat <= sqrt(p): 0.1150
+  64 bits: |q-p|/sqrt(N) histogram [0,0.01): 1, [0.01,0.05): 8, [0.05,0.1): 7, [0.1,0.25): 12, [0.25,0.5): 17, [0.5,1): 3; min 0.0077, median 0.1924
+     fraction |q-p| < N^(1/4): 0.0000 (0/48)
+     200 numbers, median steps: td down 3.038e+08, td up 2.823e+09, Fermat 1.64e+07, rho scale sqrt(p) 5.314e+04; Fermat / sqrt(p) 308.7; fraction Fermat <= sqrt(p): 0.0350
+  80 bits: |q-p|/sqrt(N) histogram [0.01,0.05): 2, [0.05,0.1): 5, [0.1,0.25): 14, [0.25,0.5): 20, [0.5,1): 7; min 0.0384, median 0.2674
+     fraction |q-p| < N^(1/4): 0.0000 (0/48)
+     200 numbers, median steps: td down 7.908e+10, td up 6.927e+11, Fermat 4.905e+09, rho scale sqrt(p) 8.323e+05; Fermat / sqrt(p) 5893; fraction Fermat <= sqrt(p): 0.0050
+  doubling period 48-80 (bits per doubling of the median): td_down 2.017, td_up 2.007, fermat 2.010, rho_scale 4.015
+== balanced valid (actual set: 48 per size)
+  48 bits: |q-p|/sqrt(N) histogram [0,0.01): 2, [0.01,0.05): 5, [0.05,0.1): 12, [0.1,0.25): 14, [0.25,0.5): 12, [0.5,1): 3; min 0.0025, median 0.1571
+     fraction |q-p| < N^(1/4): 0.0000 (0/48)
+     200 numbers, median steps: td down 1.113e+06, td up 1.104e+07, Fermat 5.734e+04, rho scale sqrt(p) 3322; Fermat / sqrt(p) 17.26; fraction Fermat <= sqrt(p): 0.1600
+  64 bits: |q-p|/sqrt(N) histogram [0,0.01): 1, [0.01,0.05): 8, [0.05,0.1): 6, [0.1,0.25): 15, [0.25,0.5): 12, [0.5,1): 6; min 0.0041, median 0.1493
+     fraction |q-p| < N^(1/4): 0.0000 (0/48)
+     200 numbers, median steps: td down 2.687e+08, td up 2.734e+09, Fermat 1.082e+07, rho scale sqrt(p) 5.229e+04; Fermat / sqrt(p) 206.9; fraction Fermat <= sqrt(p): 0.0300
+  80 bits: |q-p|/sqrt(N) histogram [0,0.01): 3, [0.01,0.05): 2, [0.05,0.1): 6, [0.1,0.25): 16, [0.25,0.5): 17, [0.5,1): 4; min 0.0029, median 0.2364
+     fraction |q-p| < N^(1/4): 0.0000 (0/48)
+     200 numbers, median steps: td down 7.732e+10, td up 7.119e+11, Fermat 3.968e+09, rho scale sqrt(p) 8.437e+05; Fermat / sqrt(p) 4703; fraction Fermat <= sqrt(p): 0.0050
+  doubling period 48-80 (bits per doubling of the median): td_down 1.990, td_up 2.003, fermat 1.990, rho_scale 4.006
+== theta train (actual set: 48 per size)
+  64 bits: |q-p|/sqrt(N) histogram [2,inf): 48; min 11713.7092, median 69028.3131
+     fraction |q-p| < N^(1/4): 0.0000 (0/48)
+     200 numbers, median steps: td down 3.897e+09, td up 5.761e+04, Fermat 1.429e+14, rho scale sqrt(p) 240; Fermat / sqrt(p) 5.956e+11; fraction Fermat <= sqrt(p): 0.0000
+  80 bits: |q-p|/sqrt(N) histogram [2,inf): 48; min 161441.2342, median 805573.0533
+     fraction |q-p| < N^(1/4): 0.0000 (0/48)
+     200 numbers, median steps: td down 1.017e+12, td up 6.94e+05, Fermat 7.041e+17, rho scale sqrt(p) 833.1; Fermat / sqrt(p) 8.452e+14; fraction Fermat <= sqrt(p): 0.0000
+  doubling period 64-80 (theta; no 48-bit draw): td_down 1.993, td_up 4.456, fermat 1.304, rho_scale 8.912
+== theta valid (actual set: 96 per size)
+  64 bits: |q-p|/sqrt(N) histogram [2,inf): 96; min 9623.1439, median 71675.0581
+     fraction |q-p| < N^(1/4): 0.0000 (0/96)
+     200 numbers, median steps: td down 3.895e+09, td up 4.939e+04, Fermat 1.509e+14, rho scale sqrt(p) 222.2; Fermat / sqrt(p) 6.788e+11; fraction Fermat <= sqrt(p): 0.0000
+  80 bits: |q-p|/sqrt(N) histogram [2,inf): 96; min 69503.9598, median 1226880.3080
+     fraction |q-p| < N^(1/4): 0.0000 (0/96)
+     200 numbers, median steps: td down 1.011e+12, td up 7.686e+05, Fermat 6.093e+17, rho scale sqrt(p) 876.7; Fermat / sqrt(p) 6.95e+14; fraction Fermat <= sqrt(p): 0.0000
+  doubling period 64-80 (theta; no 48-bit draw): td_down 1.995, td_up 4.040, fermat 1.336, rho_scale 8.081
+
+stop rule (3): TOO EASY: balanced train 48: 11.50% have Fermat steps <= sqrt(p); balanced train 48: median Fermat 7.9e+04 < 100 x median sqrt(p) 3319; balanced valid 48: 16.00% have Fermat steps <= sqrt(p); balanced valid 48: median Fermat 5.734e+04 < 100 x median sqrt(p) 3322
