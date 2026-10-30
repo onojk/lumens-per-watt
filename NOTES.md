@@ -11370,4 +11370,4 @@ It is re-run under the hardened sandbox with the same search seed and settings (
 - Mutation check: changing one training cost by one unit in a copy is reported as the first difference.
 - Per the user's ruling, "identical" is evidence that 39ffaf5 never used held-out data. 39ffaf5 stays void; only the re-run counts.
 
-**The re-run's evaluated list:** 224 genomes, 16 with a defined training G_rho (all map + Brent or map + Floyd variants under the cost guard), 0 invalid.
+**The re-run's evaluated list:** 224 genomes, 16 with a defined training G_rho (all 16 are map + Brent variants; no other pair passed the cost guard), 0 invalid.
