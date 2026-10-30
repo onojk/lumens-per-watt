@@ -173,3 +173,38 @@ genome has map degree d ≥ 4.
   bits; on the 0.20-0.30 sub-map at 64/80 bits p-1 competes with rho at
   p ~ 2^13-2^24. Recorded as given.
 <!-- verbatim end -->
+
+## Judge pins, pin 1
+
+Appended after sealing; no prediction changed (design §6). The judge's sha256s at 3d3f42d (the arr lamp, parity clean, c94e986; the guard, 743fde7 and 3d3f42d). `@predictions` is the sealed text above this heading. The scoring harness `evolve/arr_validate.py` is not written yet: it stays `pending`, so tools/sealed_run.sh refuses every scored run until a later pin (appended, in its own commit) names its hash. Check: `python3 tools/judge.py check arrangement-v1`.
+
+<!-- judge-pins begin -->
+db88aaec5e9ee750e6f62724f626b4abbc02a0595ba1c1367f9d4a07a1d9d373  lampcore/target/release/lampcore
+2f606e441a8bb4f84281d0b279570b4ea4d12db0e27af0ad4f2b97465caf5bfd  lampcore/Cargo.toml
+3fe5a57d381e98ac6cd19fb5857f9e327d3327818ccb8c7609513b3d267da596  lampcore/Cargo.lock
+43b0e4beb9d153a63e7f204e90c2163beb413bd805d4346f66a2636ed23c2ae3  lampcore/src/arr.rs
+1c65c2ae2932f4a66e5171c911d847cf230a2c6fd1153167a18434df7ddec7d6  lampcore/src/cfrac.rs
+f97cdd67b7b139b917566c0b793e16d4fc24b1cea7ca4e36f7cbd426f2ec95d5  lampcore/src/ecm.rs
+dd6e1fdd513995bbf31b8f21ac9fb78b780eb755ca35f580c672a3c90e113c17  lampcore/src/main.rs
+1b5790834fc1d7decf19f4ec775f4c003477466f58616dabf3e04e7f37af819e  lampcore/src/qs.rs
+c574752b6d5669c1d2f187c09266e583529288d4ec5f03b3addef35f4bb7db46  lampcore/src/race.rs
+60725704a573d1eadbf0904a2729501568c69044b682fab5da670b2340f5ba05  evolve/lamps.py
+cf926d3383660d474585200206ab623003db97464ee12e681433adac0a19e88b  evolve/arr.py
+33bc565f4e60e3cef1ba3b91202b2434de85b43247810a2c623a3fb772a2b971  evolve/fastlamps.py
+a03d5a259ac45e24404988b60b535570b025cb5b751cef0f682fda54f47b9b48  evolve/optypes.py
+32c4102a0cf7a5dd2124cbcd706c5ad5560b614ff99dc79e602c39be5266a4fe  evolve/qs.py
+d84a2559a4e43256a57186b02a351a2e8ea6f914f069dfc1108c0c8fa2a00e9b  evolve/cfrac.py
+32c36aa229413299f88120570e82ed1b6f4302670159528529aa31bca7d8dc61  evolve/ecm.py
+57569989f14bb4e341837dfe787d3aa34f2664b886b4b1a3c6ccceab8aa442d6  evolve/race.py
+8f7027c29a4c6a1eb901955dbe7f74c40d7694bcd5e8f4eb8cd08da5354a8729  evolve/ledger.py
+8301947ba7d51e6222b4e3d19f8a9ad2504b37e14a26014480a78d77834e47f6  evolve/blockflash.py
+449b87a000739d360490d87472f671e7eab2dfd727a136450ce5853c73816982  evolve/calibrate.json
+60e5333bfe2a9288163dd5631e4b67a787e135b3ccaee48a333eb056ce197746  opclass/opclass_v1.json
+23907d75ab800182d18280abeeb3890349c7f245c28736c5827b5dd4223a2463  reviews/growth_fitness_rho.md
+7a168f8c2bbc446405b86c024dfe667094796b174712a971b7517f8820ff962f  reviews/growth_fitness.md
+3ddb6ded114c00d8f5d8c58e2eab8d400468ac483e4627e0a64c4dafaf41d2af  tools/sealed_run.sh
+9527edab23dfb931fccc2d0665a7ebfee83d01bac586ed5d0ac0ae82d89b156b  tools/judge.py
+5eff0bfa34b38423808e78f3096ff48f95f9cb2ed42003bda5246bf0740e4318  tools/search_sandbox.sh
+pending                                                           evolve/arr_validate.py
+d57e3189d78ca5210c90d61a62cf2bf9cc116afe45e5bc83fb89dc175090fb73  @predictions
+<!-- judge-pins end -->
