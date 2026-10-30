@@ -11799,3 +11799,44 @@ Both maps are scored.
 - **Frozen genes only:** QS's reference genes are tuned at 54–96 and held below 54; ECM's and p − 1's are the frozen PRE genes. Other genes could move the 48-bit cell.
 - **The 48-bit holder is a pricing split,** not a robust one.
 - **CFRAC, sq and ps** cannot enter a worst-of frontier: their lumped op types have no ruint or Montgomery price.
+
+## Frontier extension to 104–128 bits: BLOCKED (Oct 30; nothing run)
+
+- **The blocker:** lampcore's QS, ECM and CFRAC refuse N ≥ 2^100 (`lampcore/src/qs.rs`, `ecm.rs`, `cfrac.rs`: "kN-sized values live in i128: refuse rather than risk a silent wrap"). The growth fitness doc's "above 96 bits is lampcore's ceiling" is this.
+- **What can run:** at 104–128 only rho, p − 1 and td. That leaves out the balanced frontier holder (QS) and the lamp in the θ question (ECM vs rho), so a partial frontier would answer neither question and was not run.
+- **Extending those lamps** means changing judge files (i128 → wider kN arithmetic in both cores, Python in lockstep), with a cost-model note (no charge change expected), parity at the new sizes and new pins. That is the user's decision, as is scope: CLAUDE.md sets roughly 40–100 bits.
+
+## Sieve-family pre-check, step 0: what the existing QS lamp implements (Oct 30; reading only, no code, no run)
+
+**Read from:** `evolve/qs.py`'s cost-model docstring, `lampcore/src/qs.rs`, the reference genes (`growth_harness.qs_genes`: 2'b at 54 / 72 / 84 / 96), MOVES and NOTES. Phase shares are from the committed growth counts (`evolve/growth_counts.json`, sealed 68250b3), priced under op-class v1.
+
+**Implemented:**
+- **Multiple polynomials, self-initialized (SIQS).** A = a product of s factor-base primes, chosen on demand (`a_mode on_demand`), B_l by the usual construction, with Gray-code switching between the 2^(s−1) B's per A. Start offsets are kept across switches (`goff = 1`, adopted).
+- **Knuth–Schroeppel multiplier:** squarefree k ≤ 32 scored, the winner kept (`kset sf32`).
+- **Factor-base sizing:** B = bc·exp(½√(ln N ln ln N)), with bc a per-size gene (0.43–0.87 in the reference).
+- **Sieve interval:** M = mc·B, a single interval of width 2M + 1 (no blocking).
+- **Log sieve and threshold:** rounded log weights; threshold log2(M√(kN/2)) − (tc + lc − 1)·log2 B.
+- **Confirmation:** root-matched confirmation (`confirm root`, adopted Oct 27): each candidate is divided only by the primes whose roots match its sieve index.
+- **Large primes:** the single large-prime variation, L = B^lc, lc 1.64–1.97 in the reference, with partials paired through a hash ledger.
+- **Linear algebra:** dense GF(2) Gaussian elimination, ⌈rows·cols·rows / 64⌉ word ops. The square root is the direct product method.
+- **Phase shares** (op-class v1, of QS's cost; the top phases):
+
+  | bits | shares |
+  |---|---|
+  | 48 | word 35%, root_test 11%, confirm_td 11%, hash 8%, setup_small 8%, sieve_update 5% |
+  | 64 | word 28%, root_test 20%, confirm_td 10%, setup_small 8%, sieve_update 8%, hash 6%, sieve_scan 5% |
+  | 80 | root_test 25%, word 20%, sieve_update 15%, sieve_scan 10%, setup_small 8%, confirm_td 8%, la 2.8% |
+  | 96 | sieve_update 24%, root_test 22%, sieve_scan 14%, word 14%, setup_small 9%, la 4.3% |
+
+  So confirmation dominates at 48–80 bits and the sieve at 96. Linear algebra is at most 4.3%.
+
+**Standard refinements it lacks,** each with a one-line expected effect at 48–96 bits (from the cost model and the shares above; model estimates, not measurements):
+- **Small-prime variation** (skip sieving primes below about 30, lower the threshold): primes below 30 carry about 55% of sieve updates (Σ1/p), so this removes about 3% (48) to 13% (96) of the total. The extra candidates it lets through cost confirmations, so the net is about 2–10%, rising with size. The sealed forecasts sat at 6–11% official; MOVES has it UNTESTED.
+- **Double large prime variation:** under 1%. Only 0–1.2% of partials have a 2LP-qualifying cofactor at the reference threshold (MOVES, `lpdist.out`). Expected to matter only above about 100 bits.
+- **Block Lanczos or structured Gauss, and relation filtering** (singleton removal before LA): at most the LA share, 2.8% (80) to 4.3% (96), and under 2% below 80, even if LA became free.
+- **Block or bucket sieving:** 0 under every pricing, by construction. The meter counts ops, not memory traffic, so this is a wall-clock effect only (MOVES: a meter question, not a gene).
+- **Larger Gray-code families per A** (a bigger s, more B's per A): setup is about 8–9% at every size, so at most part of that. The trade-off is more sieve-root updates per switch, already charged.
+- **Cheaper candidate rejection** (a tighter threshold, or early abort of confirmation): confirmation is 35–57% at 48–80. The remaining lever is fewer false candidates. A threshold already tuned per size (tc) limits the gain; it needs a cost model before any estimate.
+- **Triple large primes, batch-gcd cofactorisation:** not relevant below about 100 bits (no partials of that shape at these thresholds).
+
+**Reading:** the lamp is a full SIQS with the main constant-factor refinements of its class. What it lacks is worth at most about 10% at 48–96 bits under op-class: the small-prime variation is the one sizeable item, and the rest are each under 5%. A sieve "family" built from these refinements is a tuning programme on the frontier holder, not a structural move, and per CLAUDE.md it would be measured as tuning (Run 8 style, with control arms), not presented as a new idea.
