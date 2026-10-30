@@ -1,0 +1,35 @@
+rho genes: map(1, 2, 2) + Brent(64): parity with lampcore's metered op-class cost: 48/48
+map(2, 2, 5) + Brent(512): parity with lampcore's metered op-class cost: 48/48
+map(2, 2, 5) + Brent(64): parity with lampcore's metered op-class cost: 48/48
+map(2, 2, 5) + Brent(16): parity with lampcore's metered op-class cost: 48/48
+map(2, 2, 5) + Brent(1): parity with lampcore's metered op-class cost: 48/48
+
+held-out 48-bit numbers: 6 Fermat-easy of 48
+
+rho genes: map(1, 2, 2) + Brent(64)
+  easy (n =  6): gcd = N events 0 (0.000 per number); backtrack ops per number 0.0 (steps 0.0, gcds 0.0); backtrack share of cost 0.000; mean op-class cost 3,415,582 = 1.000 x rho's; map steps per number 4,403 (rho 4,403)
+  rest (n = 42): gcd = N events 0 (0.000 per number); backtrack ops per number 0.0 (steps 0.0, gcds 0.0); backtrack share of cost 0.000; mean op-class cost 4,722,719 = 1.000 x rho's; map steps per number 6,118 (rho 6,118)
+
+map(2, 2, 5) + Brent(512)
+  easy (n =  6): gcd = N events 1 (0.167 per number); backtrack ops per number 17.7 (steps 8.8, gcds 8.8); backtrack share of cost 0.004; mean op-class cost 4,104,852 = 1.202 x rho's; map steps per number 5,118 (rho 4,403)
+  rest (n = 42): gcd = N events 2 (0.048 per number); backtrack ops per number 12.3 (steps 6.2, gcds 6.2); backtrack share of cost 0.003; mean op-class cost 3,704,928 = 0.784 x rho's; map steps per number 4,636 (rho 6,118)
+
+map(2, 2, 5) + Brent(64)
+  easy (n =  6): gcd = N events 0 (0.000 per number); backtrack ops per number 0.0 (steps 0.0, gcds 0.0); backtrack share of cost 0.000; mean op-class cost 3,799,974 = 1.113 x rho's; map steps per number 4,830 (rho 4,403)
+  rest (n = 42): gcd = N events 0 (0.000 per number); backtrack ops per number 0.0 (steps 0.0, gcds 0.0); backtrack share of cost 0.000; mean op-class cost 3,473,388 = 0.735 x rho's; map steps per number 4,412 (rho 6,118)
+
+map(2, 2, 5) + Brent(16)
+  easy (n =  6): gcd = N events 0 (0.000 per number); backtrack ops per number 0.0 (steps 0.0, gcds 0.0); backtrack share of cost 0.000; mean op-class cost 3,895,293 = 1.140 x rho's; map steps per number 4,806 (rho 4,403)
+  rest (n = 42): gcd = N events 0 (0.000 per number); backtrack ops per number 0.0 (steps 0.0, gcds 0.0); backtrack share of cost 0.000; mean op-class cost 3,552,876 = 0.752 x rho's; map steps per number 4,384 (rho 6,118)
+
+map(2, 2, 5) + Brent(1)
+  easy (n =  6): gcd = N events 0 (0.000 per number); backtrack ops per number 0.0 (steps 0.0, gcds 0.0); backtrack share of cost 0.000; mean op-class cost 6,374,383 = 1.866 x rho's; map steps per number 4,798 (rho 4,403)
+  rest (n = 42): gcd = N events 0 (0.000 per number); backtrack ops per number 0.0 (steps 0.0, gcds 0.0); backtrack share of cost 0.000; mean op-class cost 5,812,342 = 1.231 x rho's; map steps per number 4,377 (rho 6,118)
+
+per easy number, map(2, 2, 5) + Brent(512) against rho's genes (map steps, gcd = N, backtrack ops, cost ratio):
+  # 5 p 13707349 q 13795907: steps 2,046 vs 3,390; gcd = N 0 vs 0; backtrack ops 0 vs 0; cost ratio 0.645
+  # 8 p 9931907 q 10311923: steps 7,166 vs 6,206; gcd = N 1 vs 0; backtrack ops 106 vs 0; cost ratio 1.243
+  #19 p 12304337 q 12880723: steps 4,094 vs 3,326; gcd = N 0 vs 0; backtrack ops 0 vs 0; cost ratio 1.322
+  #28 p 11825063 q 11855141: steps 4,094 vs 6,782; gcd = N 0 vs 0; backtrack ops 0 vs 0; cost ratio 0.644
+  #35 p 16097749 q 16760171: steps 6,654 vs 3,582; gcd = N 0 vs 0; backtrack ops 0 vs 0; cost ratio 1.781
+  #39 p 15538727 q 15838841: steps 6,654 vs 3,134; gcd = N 0 vs 0; backtrack ops 0 vs 0; cost ratio 2.162

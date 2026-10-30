@@ -11406,3 +11406,27 @@ It is re-run under the hardened sandbox with the same search seed and settings (
 - Fermat (training split).
 
 Forecast scoring (Q1–Q6 against R-38..R-43, G-31..G-36 and D-38..D-43) is a separate step, scored as written. Q5 (the θ sub-map) has not run.
+
+## Check: why map(2, 2, 5) + Brent(512) is dearer than rho on the Fermat-easy subset (explore/brent_backtrack.py; unmetered; Oct 30; documentation only)
+
+**The hypothesis and prediction (the user's, written before the run):** close p and q make both cycles close in the same batch, so the batch gcd is N and Brent backtracks. Prediction: more gcd = N events on the easy subset, shrinking as b drops.
+
+**The run:** held-out 48-bit numbers, 6 Fermat-easy of 48. Counters on a Python copy of arr's Brent loop, whose op-class totals equal lampcore's metered cost on 48 / 48 numbers for every arm. (The first run failed this parity check: hard-coded rounded weights. Fixed to the exact op-class v1 weights.)
+- **gcd = N events** at b = 512: 1 of 6 easy numbers, 2 of 42 others. At b = 64, 16 and 1: 0 everywhere. rho's genes: 0.
+- **The backtrack's share of the genome's cost:** 0.4% (easy), 0.3% (rest).
+- **Cost against rho's genes on the same numbers** (easy / rest):
+
+  | b | easy | rest |
+  |---|---|---|
+  | 512 | 1.20 | 0.78 |
+  | 64 | 1.11 | 0.74 |
+  | 16 | 1.14 | 0.75 |
+  | 1 | 1.87 | 1.23 |
+
+  The gap persists with no backtracks at all.
+- **Map steps per number** (genome / rho): 5,118 / 4,403 easy, 4,636 / 6,118 rest. Per easy number the genome's cost ratio runs 0.64–2.16; one of the six had the gcd = N event.
+
+**Reading:**
+- **The hypothesis is not supported as the explanation.** The gcd = N direction matches literally (1 event in 6 against 2 in 42, and none below b = 512), but it rests on one event and accounts for 0.4% of the cost against a 20% gap.
+- **The gap is walk length.** The genome's map (c = 2, x0 = 5) is a different random walk from rho's (c = 1, x0 = 2), and its cycle lengths differ number by number. On these 6 numbers its walks happened to be longer and rho's shorter. A cycle length mod p does not depend on how close q is to p. With n = 6, the 1.09–1.84 range in G-37's table is noise, not a closeness effect.
+- **Not established:** the gap's size at larger n. Wider sets would tell.
