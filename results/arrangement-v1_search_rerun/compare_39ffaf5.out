@@ -1,0 +1,2 @@
+compared: training numbers, rho's records, budget, evaluation count, selected genome, every pair's final genome, fitness, search entry and per-number training records, and the sweep log; not compared (not written by the old code): per-number termination, the invalid flag, the evaluated-genome list
+identical

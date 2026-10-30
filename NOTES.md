@@ -11361,3 +11361,13 @@ G's rule 1 reports the 84–96 chord beside 80–96, but design §8 drew no 84-b
 The balanced-map search of 39ffaf5 (record bd3a26c) is **void for all scoring and forecasts**. It ran before the guard hardening, with the whole file system readable, validation seeds included.
 
 It is re-run under the hardened sandbox with the same search seed and settings (training seeds 9920000 + bits, the same grid, start points, cost guard and budget, 2 workers). Before any scoring, the re-run's evaluated genomes and final genomes are compared with 39ffaf5's, and the report states "identical" or the first difference. An identical result is evidence that the old run never used held-out data. 39ffaf5's record keeps only the per-pair final genomes, their fitness, search entries and records, plus the sweep log; it has no evaluated-genome list, so the comparison covers what it holds.
+
+## The balanced-map search, re-run under the hardened sandbox (sealed run 96bb064; Oct 30)
+
+**The re-run:** same seed and settings, 2 workers, the training-only sandbox. Judge pin 5 checked before and after (47/47). 224 evaluations in 175 s. The selected genome is again map(c = 2, d = 2, x0 = 5) + Brent(512), training worst-of G_rho 1.048.
+
+**The comparison with the void run 39ffaf5** (`evolve/arr_compare_search.py`, output `results/arrangement-v1_search_rerun/compare_39ffaf5.out`): **identical**. It covers the training numbers, rho's records, the budget, the evaluation count, the selected genome, every pair's final genome, fitness, search entry and per-number training records, and the sweep log. Not compared, because the old code did not write them: the per-number termination, the invalid flag and the evaluated-genome list.
+- Mutation check: changing one training cost by one unit in a copy is reported as the first difference.
+- Per the user's ruling, "identical" is evidence that 39ffaf5 never used held-out data. 39ffaf5 stays void; only the re-run counts.
+
+**The re-run's evaluated list:** 224 genomes, 16 with a defined training G_rho (all map + Brent or map + Floyd variants under the cost guard), 0 invalid.
