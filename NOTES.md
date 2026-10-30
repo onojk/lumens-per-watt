@@ -11749,3 +11749,10 @@ Both maps are scored.
 - **rho is a weak reference on the balanced map at 64–80 bits.** The existing ECM lamp beats it by 3–11 × there (worst-of 0.33 at 64, 0.09 at 80), with a G_rho of about 1.8. So a G_rho or cost-ratio "win" against rho at these sizes may only be a rediscovery of a known lamp.
 - **For balanced numbers,** the next family's reference could be the best known lamp per size (rho at 48, ECM from about 54–64), rather than rho alone.
 - **On the θ sub-map,** rho remains the strongest of rho, p − 1, p + 1 and ECM at 48–64 bits.
+
+## Ruling: the reference for future families is the FRONTIER (the user's, Oct 30; documentation only)
+
+- **Definition:** a new family's reference is the frontier, the per-size minimum cost over all known lamps (rho, ECM, p − 1, QS, and any other existing lamp), under the worst-of pricing set. It replaces rho alone.
+- **The slope and level win rules apply against the frontier** (`docs/planning/next_family_template.md` §0).
+- **Arrangement-v1's results stay as recorded,** scoped to rho.
+- The frontier is measured next, with the p − 1 / ECM bound rule fixed before the run.

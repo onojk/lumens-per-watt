@@ -2,6 +2,14 @@
 
 **Status: TEMPLATE, not frozen.** It carries the user's rulings of Oct 30 into the next family's design. It is frozen, and its fitness and harness rules pinned, only when that family's predictions are sealed (`predictions/<id>.md`, `tools/judge.py pin`), not before. Until then it may change; any change is a commit of its own.
 
+## 0. The reference: the FRONTIER, not rho alone (the user's ruling, Oct 30)
+
+- **Definition:** a new family's reference is the **frontier**, the per-size minimum cost over all known lamps (rho, ECM, p − 1, QS, and any other existing lamp), under the worst-of pricing set.
+- **Per pricing:** the frontier's cost at a size is the minimum over the lamps priced under it. A candidate's ratio against the frontier is the worst (max) over the worst-of pricings of its cost / the frontier's cost.
+- **The win rules below apply against the frontier,** wherever they say "rho": G_rho becomes the candidate's doubling period ÷ the frontier's over the chord, and the cost-ratio intervals are against the frontier at every measured size.
+- **The measured frontier** is recorded in `results/frontier_*` (Oct 30) with the bound rule used for p − 1 and ECM.
+- **Arrangement-v1's results stay as recorded,** scoped to rho.
+
 ## 1. Fitness: G_rho with a cost condition at every size (the user's ruling, Oct 30: a strengthened option (a))
 
 - **Primary growth fitness:** G_rho, as frozen (`reviews/growth_fitness_rho.md` v2): the candidate's doubling period ÷ rho's over the chord, worst-of {op-class v1, ruint, Montgomery, scaled gcd}, paired bootstrap.
