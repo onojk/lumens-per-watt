@@ -1,0 +1,19 @@
+== 48 bits: 400 numbers, seed 9946048
+  S1: A mean 3.582 [3.195, 3.989], median 2.178; alpha mean 1.815, beta 0.973; failures 0/400; multipliers per number 1.00; reverse attempts (gcds) per number 1.98
+  S2: A mean 3.554 [3.177, 3.945], median 2.178; alpha mean 1.817, beta 0.956; failures 0/400; multipliers per number 1.01; reverse attempts (gcds) per number 1.98
+  k =  1 alone: A mean 3.582 [3.195, 3.989], median 2.178; alpha mean 1.815, beta 0.973; failures 0/400; multipliers per number 1.00; reverse attempts (gcds) per number 1.98
+  k =  3 alone: A mean 4.063 [2.822, 6.271], median 1.924; alpha mean 1.811, beta 1.304; failures 1/400; multipliers per number 1.00; reverse attempts (gcds) per number 2.19
+  k =  5 alone: A mean 3.201 [2.804, 3.635], median 1.613; alpha mean 1.597, beta 1.003; failures 0/400; multipliers per number 1.00; reverse attempts (gcds) per number 1.94
+  k =  7 alone: A mean 3.298 [2.431, 4.821], median 1.610; alpha mean 1.659, beta 0.996; failures 1/400; multipliers per number 1.00; reverse attempts (gcds) per number 2.01
+  k = 11 alone: A mean 4.092 [3.176, 5.488], median 2.047; alpha mean 2.026, beta 1.044; failures 1/400; multipliers per number 1.00; reverse attempts (gcds) per number 2.18
+== 64 bits: 400 numbers, seed 9946064
+  S1: A mean 3.160 [2.819, 3.526], median 2.019; alpha mean 1.647, beta 0.908; failures 0/400; multipliers per number 1.00; reverse attempts (gcds) per number 1.89
+  S2: A mean 3.130 [2.800, 3.480], median 2.019; alpha mean 1.642, beta 0.897; failures 0/400; multipliers per number 1.00; reverse attempts (gcds) per number 1.89
+  k =  1 alone: A mean 3.160 [2.819, 3.526], median 2.019; alpha mean 1.647, beta 0.908; failures 0/400; multipliers per number 1.00; reverse attempts (gcds) per number 1.89
+  k =  3 alone: A mean 3.362 [2.980, 3.767], median 1.959; alpha mean 1.699, beta 0.981; failures 0/400; multipliers per number 1.00; reverse attempts (gcds) per number 2.00
+  k =  5 alone: A mean 2.844 [2.510, 3.183], median 1.681; alpha mean 1.464, beta 0.946; failures 0/400; multipliers per number 1.00; reverse attempts (gcds) per number 1.89
+  k =  7 alone: A mean 3.359 [2.861, 3.899], median 1.513; alpha mean 1.611, beta 1.079; failures 0/400; multipliers per number 1.00; reverse attempts (gcds) per number 1.95
+  k = 11 alone: A mean 3.406 [3.048, 3.773], median 2.274; alpha mean 1.770, beta 0.917; failures 0/400; multipliers per number 1.00; reverse attempts (gcds) per number 1.91
+== 80 bits: 160 numbers, seed 9946080
+  S1: A mean 3.835 [3.093, 4.774], median 2.019; alpha mean 1.893, beta 1.040; failures 0/160; multipliers per number 1.00; reverse attempts (gcds) per number 2.07
+  S2: A mean 3.674 [3.056, 4.386], median 2.019; alpha mean 1.898, beta 0.945; failures 0/160; multipliers per number 1.01; reverse attempts (gcds) per number 2.05

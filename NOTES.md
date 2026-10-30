@@ -11617,3 +11617,24 @@ Both maps are scored.
   - Montgomery: D = 4.0 (48, 64), 4.8 (80). Both timed pricings express D in their own `word` units, so one ratio serves both.
 - **Caveat:** the bench's "word add" is an add in a dependent chain. The calibrated `word` price comes from the sieve update (load, add, store). If that op is dearer than this add, the true timed D is lower than measured, which favours SQUFOF.
 - **An unintended second run** (a check command of mine re-ran `run.py` at 02:59, minutes after the first, same conditions): D_timed 4.00 / 4.01 / 4.75 at 48 / 64 / 80. It agrees with the first to ±0.01. Kept as `bench/divbench/divbench_rep2_unintended.json`; the first run's file stays the record.
+
+## Family (2), SQUFOF-like: the measured step constants (explore/squfof_constants.py; unmetered; Oct 30; documentation and explore only)
+
+**The run:**
+- Training-like balanced numbers: `semiprimes_pq(bits, n, 9946000 + bits)`, checked against every held-out and training seed; 400 per size at 48 and 64 bits, 160 at 80.
+- Plain-Python SQUFOF ported from the published description. Every number factored, and each factor was checked against p and q.
+- One form step = the cost model's step. A is normalised by N^(1/4), so it compares directly with rho's 2.1 ops per N^(1/4).
+- The variant has no queue: every square on an even step gets a reverse cycle. An improper square costs its reverse steps, and the forward cycle continues.
+
+**Mean A** (95% bootstrap interval) per number:
+
+| N bits | S1: k = 1, cap 64 N^(1/4) | S2: multipliers 1, 3, 5, …, standard bound | median | α (S2) | β (S2) | reverse attempts per number |
+|---|---|---|---|---|---|---|
+| 48 | 3.58 [3.20, 3.99] | **3.55 [3.18, 3.95]** | 2.18 | 1.82 | 0.96 | 1.98 |
+| 64 | 3.16 [2.82, 3.53] | **3.13 [2.80, 3.48]** | 2.02 | 1.64 | 0.90 | 1.89 |
+| 80 | 3.84 [3.09, 4.77] | **3.67 [3.06, 4.39]** | 2.02 | 1.90 | 0.95 | 2.05 |
+
+- **Failures:** S1 0 at every size. S2 tried 1.00–1.01 multipliers per number.
+- **Single multipliers** (48 / 64 bits): k = 1: 3.58 / 3.16; k = 3: 4.06 / 3.36; k = 5: 3.20 / 2.84; k = 7: 3.30 / 3.36; k = 11: 4.09 / 3.41.
+- A's distribution is heavy-tailed: means sit about 1.6 × above medians.
+- **Not measured:** Shanks's queue variant. It would skip the improper squares' reverse cycles, about one of the two attempts per number, so it could bring β down toward about 0.5.
