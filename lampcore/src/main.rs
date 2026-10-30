@@ -13,6 +13,8 @@
 //! If the genome has a race stage (Stage 9, race.rs), the line then ends with
 //! " R <side A ops> <side B ops> <switches>" for the last race that ran (and the phase columns
 //! are printed when either side is a qs, cfrac or ecm stage).
+//! If the genome has an arr stage, the line then ends with " A <gcd_small>": the run's arr gcds whose non-N argument
+//! was < 2^64 (information only; NOTES.md, "Cost model: the arrangement lamp").
 //! With --types, each line then ends with " T" and the run's per-type op counts, in
 //! TYPE_NAMES order (the types evolve/optypes.py splits; read-only instrumentation).
 //! stage is the winning stage's index; k is the multiplier a square-search win came from,
@@ -25,6 +27,7 @@ use ruint::aliases::U256;
 use serde_json::Value;
 use std::io::{self, BufRead, BufWriter, Write};
 
+mod arr;
 mod cfrac;
 mod ecm;
 mod qs;
@@ -113,6 +116,14 @@ fn stage_types(t: &str, d_ops: u64, d_tests: u64, ph: &[u64; N_PH], ev: &[u64; 7
         }
         "td" => o[19] = d_ops as i64,
         "vl" => o[18] = d_ops as i64,
+        "arr" => {
+            // NOTES.md, "Cost model: the arrangement lamp": word, hash, sort_cmp by phase, gcd = tests, mul the rest
+            o[17] = d_ops as i64 - d_tests as i64 - p(PH_WORD) - p(PH_HASH) - p(PH_SORT);
+            o[18] = d_tests as i64;
+            o[23] = p(PH_WORD);
+            o[25] = p(PH_HASH);
+            o[26] = p(PH_SORT);
+        }
         "sq" => o[20] = d_ops as i64,
         "ps" => o[21] = d_ops as i64,
         "cfrac" => o[22] = d_ops as i64,
@@ -855,6 +866,7 @@ fn run_stage(num: &Num, s: &Value, m: &mut Meter) -> R {
     match s["t"].as_str().unwrap() {
         "td" => lamp_td(num, s, m),
         "vl" => lamp_vl(num, s, m),
+        "arr" => arr::lamp_arr(num, s, m),
         "sq" => lamp_sq(num, s, m),
         "rho" => lamp_rho(num, s, m),
         "pm1" => lamp_pm1(num, s, m),
@@ -880,7 +892,11 @@ fn run(genome: &[Value], num: &Num, cap: u64) -> RunOut {
                     "ob is not allowed on a race or its sides");
             race::validate(s);
         }
+        if s["t"] == "arr" {
+            arr::validate(s);
+        }
     }
+    arr::small_reset();
     let mut m = Meter { ops: 0, cap, tests: 0, hits: 0, k: None, phases: [0; N_PH], hook: None, race: None,
                         ob: None, ob_spent: 0, ob_hit: false, ev: [0; 7], types: [0; N_TY] };
     for (i, s) in genome.iter().enumerate() {
@@ -931,6 +947,7 @@ fn main() {
     let phased = |s: &Value| s["t"] == "qs" || s["t"] == "cfrac" || s["t"] == "ecm";
     let has_qs = genome.iter().any(|s| phased(s) || (s["t"] == "race" && (phased(&s["a"]) || phased(&s["b"]))));
     let has_race = genome.iter().any(|s| s["t"] == "race");
+    let has_arr = genome.iter().any(|s| s["t"] == "arr");
     let types_out = std::env::args().any(|a| a == "--types");
     if std::env::args().any(|a| a == "--phasetime") {
         PT_ON.store(true, std::sync::atomic::Ordering::Relaxed);
@@ -986,6 +1003,9 @@ fn main() {
         if has_race {
             let (a, b, sw) = rc.unwrap_or((0, 0, 0));
             tail += &format!(" R {a} {b} {sw}");
+        }
+        if has_arr {
+            tail += &format!(" A {}", arr::small_take());
         }
         if types_out {
             if let Some((i, double)) = mutate {

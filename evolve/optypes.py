@@ -6,6 +6,8 @@ into the types calibrate.py prices. Shared by calibrate.py and race.py.
         gcd at the end (one test); its prime generation is not charged
   td:   td_mod = ops, one N mod d per divisor (its divisor stepping is not charged)
   vl:   gcd = ops, one gcd(k, N) per placed dot (the value-line sanity arm)
+  arr:  word, hash, sort_cmp from its trace, gcd = tests, mul the rest (arr.counts; NOTES, "Cost model: the
+        arrangement lamp")
   ecm:  setup_mul, setup_euclid_N (each curve's Euclid steps, recomputed from its sigma),
         mul (stage 1 + stage 2), gcd
   qs:   the trace split of qs_counts below
@@ -126,6 +128,9 @@ def per_type(stage, tr, ops, tests, N):
         c = {"td_mod": ops}
     elif t == "vl":                            # one gcd per placed dot (NOTES, "Cost model: the value-line lamp")
         c = {"gcd": ops}
+    elif t == "arr":
+        import arr
+        c = arr.counts(tr, ops, tests)
     else:
         c = {f"{t}_ops": ops}
     assert sum(c.values()) == ops, ("per-type split does not add up", t, c, ops)

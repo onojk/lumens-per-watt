@@ -364,9 +364,10 @@ from qs import lamp_qs
 from cfrac import lamp_cfrac                              # in no deck: tests and comparisons only
 from ecm import lamp_ecm                                  # in no deck until Run 8
 from race import lamp_race, validate as race_validate     # Stage 9; in no deck until Run 8
+import arr                                                # arrangement-v1; in no deck
 
 LAMPS = {"td": lamp_td, "vl": lamp_vl, "sq": lamp_sq, "rho": lamp_rho, "pm1": lamp_pm1, "ps": lamp_ps,
-         "qs": lamp_qs, "cfrac": lamp_cfrac, "ecm": lamp_ecm, "race": lamp_race}
+         "qs": lamp_qs, "cfrac": lamp_cfrac, "ecm": lamp_ecm, "race": lamp_race, "arr": arr.lamp_arr}
 
 # ---- genomes ----------------------------------------------------------------
 
@@ -498,7 +499,7 @@ def crossover(a, b, rng):
     child = a[:rng.randint(0, len(a))] + b[rng.randint(0, len(b)):]
     return [dict(s) for s in (child or a)][:4]
 
-LAST = {"tests": 0, "hits": 0, "stage": None, "k": None, "ob": []}
+LAST = {"tests": 0, "hits": 0, "stage": None, "k": None, "ob": [], "arr_small": 0}
 
 class StageBudget(Exception):
     """A stage's own op budget ("ob") is spent: the stage ends without a factor."""
@@ -548,6 +549,8 @@ def validate_genome(gen):
             if "ob" in s or "ob" in s.get("a", {}) or "ob" in s.get("b", {}):
                 raise ValueError("ob is not allowed on a race or its sides")
             race_validate(s)
+        if s["t"] == "arr":
+            arr.validate(s)
 
 TYPES = False    # True: LAST["types"] gets the run's per-type op counts (optypes.py), per stage
 NO_BUDGET = 1 << 200
@@ -569,10 +572,11 @@ def run(gen, N, cap):
     lists, per stage with an op budget that ran, (index, ob, spent, ended by its budget,
     its own tests, its own hits). With TYPES on, LAST["types"] holds the run's per-type op
     counts, taken per stage (each stage on its own counting meter and with its own traces;
-    read-only, no op changes)."""
+    read-only, no op changes). LAST["arr_small"]: the run's arr gcds with a non-N argument < 2^64 (information only)."""
     global PM1_TRACE
     PM1_TRACE = None
     validate_genome(gen)
+    arr.SMALL = 0
     m = Meter(cap)
     obs = []
     types = {}
@@ -587,7 +591,7 @@ def run(gen, N, cap):
                 budget = ob if ob is not None else NO_BUDGET
                 sm = StageMeter(m, budget)
                 start = m.ops
-                mod = sys.modules.get(s["t"]) if TYPES and s["t"] in ("qs", "ecm", "cfrac", "race") else None
+                mod = sys.modules.get(s["t"]) if TYPES and s["t"] in ("qs", "ecm", "cfrac", "race", "arr") else None
                 if mod is not None:
                     saved, tr = mod.TRACE, {}
                     mod.TRACE = tr
@@ -618,11 +622,11 @@ def run(gen, N, cap):
                         for t, n in _stage_types(s, st_tr, sm.spent, sm.tests, N).items():
                             types[t] = types.get(t, 0) + n
             if d:
-                LAST.update(tests=m.tests, hits=m.hits, stage=i, k=m.k, ob=obs, types=types)
+                LAST.update(tests=m.tests, hits=m.hits, stage=i, k=m.k, ob=obs, types=types, arr_small=arr.SMALL)
                 return m.ops, d
     except Budget:
         pass
-    LAST.update(tests=m.tests, hits=m.hits, stage=None, k=None, ob=obs, types=types)
+    LAST.update(tests=m.tests, hits=m.hits, stage=None, k=None, ob=obs, types=types, arr_small=arr.SMALL)
     return None, None
 
 # ---- test semiprimes ---------------------------------------------------------
