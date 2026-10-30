@@ -11430,3 +11430,12 @@ Forecast scoring (Q1–Q6 against R-38..R-43, G-31..G-36 and D-38..D-43) is a se
 - **The hypothesis is not supported as the explanation.** The gcd = N direction matches literally (1 event in 6 against 2 in 42, and none below b = 512), but it rests on one event and accounts for 0.4% of the cost against a 20% gap.
 - **The gap is walk length.** The genome's map (c = 2, x0 = 5) is a different random walk from rho's (c = 1, x0 = 2), and its cycle lengths differ number by number. On these 6 numbers its walks happened to be longer and rho's shorter. A cycle length mod p does not depend on how close q is to p. With n = 6, the 1.09–1.84 range in G-37's table is noise, not a closeness effect.
 - **Not established:** the gap's size at larger n. Wider sets would tell.
+
+## Result: arrangement-v1, balanced map (Oct 30; documentation only)
+
+**The search rediscovered rho:** map(c = 2, d = 2, x0 = 5) + Brent(512).
+- **Held-out:** robust cost ratio against rho 0.99 at 64 and 80 bits (0.993 [0.831, 1.180]; 0.988 [0.807, 1.218]).
+- **Training G_rho 1.048 → held-out 0.968 [0.913, 1.027]:** the drop is selection bias, which is why held-out numbers are kept.
+- **Unmeasured:** bin compare and the other non-map pairs. All were dropped at 48 bits within the search's budget, so their growth is not established either way.
+- **Forecasts** (`results/arrangement-v1_forecast_scores.md`): 16 not falsified (3 of them by default), D-39 falsified by 0.002 on the point value, Q5 unscored.
+- **Scope:** this family (arr layouts × detection rules, design §2's gene grid), this budget (16 × rho's largest training op count per number, cost guard 1.25), balanced numbers at 48–96 bits. The θ sub-map (Q5) has not run.
