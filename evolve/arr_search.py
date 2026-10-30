@@ -246,4 +246,5 @@ if __name__ == "__main__":
         if ARGV[0] == "balanced":
             main((48, 56, 64, 72, 80), 48, 9920000, (48, 80), 64, out_dir, "balanced")
         else:
-            main((64, 80), 48, 9925000, (64, 80), 64, out_dir, "theta", theta_numbers)
+            main((64, 80), 48, 9925000, (64, 80), 64, out_dir, "theta",
+                 lambda bits, n, seed: theta_numbers(bits, seed, n))     # Search draws (bits, count, seed)

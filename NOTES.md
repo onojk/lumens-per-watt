@@ -11462,3 +11462,5 @@ Forecast scoring (Q1–Q6 against R-38..R-43, G-31..G-36 and D-38..D-43) is a se
 - **Recorded for the next family's design:** size the held-out set by the metric that carries the verdict. At least about 850 per size if a cost ratio at 80 bits must resolve ±5%.
 
 **Protocol proposal (future rounds only; needs the user's approval before it applies; not retroactive):** a forecast's range must be at least as wide as the metric's stated resolution, for example ±4% for G_rho.
+
+**Failed run, Q5 (sealed c6e7958, FAILED exit 143; Oct 30; recorded as a failure):** the first θ sub-map search hung in Python before any lampcore call. My bug in the new theta mode (366688d): `Search` calls `draw(bits, count, seed)`, but `theta_numbers` takes `(bits, seed, n)`. So it was drawing about 9.9 million numbers from seed 48. I stopped the Python process inside the sandbox after 10 minutes, so that `sealed_run.sh` ran its second judge check (ok) and committed the failure. No genome was evaluated. Fixed with an adapter; initialisation then takes 0.05 s, with rho factoring 48 / 48 at 64 and 80. The balanced mode was not affected.
