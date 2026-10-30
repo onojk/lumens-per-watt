@@ -30,7 +30,7 @@ Gene grid (design §2's genes; bounded as there; ob is not searched: the stage r
            the exponent layout needs t = 1); floyd, brent b {1, 8, 64, 128, 512, 4096}; bin compare none
 Search: for each of the 15 valid layout x rule pairs, a coordinate search from the first grid value of every gene:
 sweep the genes in order, evaluate every grid value of the gene (2 lampcore processes at a time), keep the best
-(ties keep the incumbent), until a sweep changes nothing (at most 4 sweeps). The best genome overall is the pair best
+(ties: see below), until a sweep changes nothing (at most 4 sweeps). The best genome overall is the pair best
 with the highest fitness. Every pair's best is then run on all five sizes, and its per-number records are kept for
 the report (evolve/arr_report.py).
 Theta mode (Q5, design §8: the theta 0.20-0.30 sub-map; its genome answers Q5 and nothing else): training 48 per size
@@ -40,6 +40,11 @@ balanced map's rule is used on the sizes it has: worst-of G_rho over the 64-80 c
 under the same cost guard (robust cost ratio <= 1.25 at 64 and 80), the same budget (16 x rho's max per size), grid,
 start points and early drop.
 If no pair has a defined fitness, the record's "best" is null (no genome selected).
+Ties (the user's ruling, Oct 30, for runs after arrangement-v1): every ranking tie, in the sweep and for the best
+overall, is broken on the genome's sorted JSON (the smaller ranks first), never on evaluation order; an undefined
+fitness is not ranked and never displaces a genome. The record's evaluated list is written sorted by the genome's
+sorted JSON, so it does not depend on which of the 2 workers finished first. selftest also runs the tie check: two
+genomes with equal fitness, evaluated in both completion orders with 2 workers, must rank identically.
   python3 arr_search.py balanced          -> $LPW_SEARCH_OUT/arr_search_balanced.json, genome_<layout>_<rule>.json
   python3 arr_search.py theta             -> $LPW_SEARCH_OUT/arr_search_theta.json, genome_<layout>_<rule>.json
   python3 arr_search.py selftest          the same on 20-32 bits, 16 per size, seeds 9929000 + bits (no training map)"""
@@ -160,9 +165,27 @@ class Search:
                                   "g_rho": dict(zip(V.WORST_G_RHO, v)), "ratio": ratios}
         return self.memo[key]
 
-def better(x, y):
-    """x strictly better than y (None = not defined, below everything)."""
-    return x is not None and (y is None or x > y)
+def gkey(g):
+    """The tie-break key (the user's ruling, Oct 30): the genome's sorted JSON."""
+    return json.dumps(g, sort_keys=True)
+
+def better(x, gx, y, gy):
+    """(x, gx) ranks above (y, gy): a higher fitness, or an equal defined fitness and a smaller sorted JSON. None (not
+    defined) ranks below every defined value and never displaces anything."""
+    if x is None:
+        return False
+    if y is None:
+        return True
+    return x > y or (x == y and gkey(gx) < gkey(gy))
+
+def pick_best(res):
+    """The best pair overall: the highest defined fitness, ties on the genome's sorted JSON; None if none is defined."""
+    defined = [p for p in res if res[p][1] is not None]
+    return min(defined, key=lambda p: (-res[p][1], gkey(res[p][0]))) if defined else None
+
+def evaluated(memo):
+    """The record's evaluated list, sorted by the genome's sorted JSON (independent of completion order)."""
+    return [{"genome": json.loads(k), **memo[k]} for k in sorted(memo)]
 
 def genome(pair, genes):
     lay, rule = pair
@@ -175,6 +198,7 @@ def coordinate(S, pair, log):
     axes = [(("layout", k), v) for k, v in LAYOUT_GRID[lay].items()] + [(("detect", k), v) for k, v in RULE_GRID[rule].items()]
     genes = {k: v[0] for k, v in axes}
     best = S.fitness(genome(pair, genes))["fit"]
+    bg = genome(pair, genes)
     with ThreadPoolExecutor(WORKERS) as ex:
         for sweep in range(4):
             changed = False
@@ -182,8 +206,9 @@ def coordinate(S, pair, log):
                 cands = [{**genes, k: v} for v in vals]
                 fits = list(ex.map(lambda c: S.fitness(genome(pair, c))["fit"], cands))
                 for c, f in zip(cands, fits):
-                    if better(f, best):
-                        genes, best, changed = c, f, True
+                    g = genome(pair, c)
+                    if better(f, g, best, bg):
+                        genes, best, bg, changed = c, f, g, True
             log(f"  {lay} x {rule}: sweep {sweep + 1}: best {best if best is None else round(best, 4)} at "
                 + json.dumps({k[1]: v for k, v in genes.items()}) + f" ({S.evals} evaluations so far)")
             if not changed:
@@ -201,9 +226,8 @@ def main(sizes, per, seed0, chord, screen, out_dir, tag, draw=semiprimes_pq):
         g, f = coordinate(S, pair, log)
         lamps.validate_genome(g)
         res[pair] = (g, f)
-    best = max((p for p in PAIRS), key=lambda p: (res[p][1] is not None, res[p][1] or 0))
-    if res[best][1] is None:
-        best = None
+    best = pick_best(res)
+    if best is None:
         log(f"best overall: none (no pair has a defined fitness); {S.evals} evaluations")
     else:
         log(f"best overall: {best[0]} x {best[1]}, fitness {res[best][1]}; {S.evals} evaluations")
@@ -211,7 +235,7 @@ def main(sizes, per, seed0, chord, screen, out_dir, tag, draw=semiprimes_pq):
            "budget": {"x_rho_max": CAP_X, "per_size": S.cap}, "evaluations": S.evals,
            "numbers": {b: [[str(N), str(p), str(q)] for N, p, q in S.nums[b]] for b in sizes},
            "rho": {"genome": V.RHO, "records": S.rho}, "best": f"{best[0]}_{best[1]}" if best else None, "pairs": {},
-           "evaluated": [{"genome": json.loads(k), **v} for k, v in S.memo.items()]}
+           "evaluated": evaluated(S.memo)}
     def final(pair):                      # every size in order, stopping where the genome is dropped (as the search)
         g = res[pair][0]
         try:
@@ -233,11 +257,55 @@ def main(sizes, per, seed0, chord, screen, out_dir, tag, draw=semiprimes_pq):
     json.dump(out, open(path, "w"))
     log(f"wrote {path}")
 
+def tie_selftest():
+    """Two genomes with equal fitness (map + Brent with c = 2 and with c = 3), evaluated in both completion orders by
+    2 workers (a stub fitness, delayed so that the other one finishes first), must rank identically everywhere: the
+    sweep's choice, the evaluated list, and the best overall. Returns the number of failures."""
+    import threading
+    class Stub:
+        def __init__(self, slow_c):
+            self.memo, self.evals, self.order, self.slow_c, self.lock = {}, 0, [], slow_c, threading.Lock()
+        def fitness(self, g):
+            k = gkey(g)
+            c = g[0]["layout"].get("c")
+            time.sleep(0.03 if c == self.slow_c else 0.0)
+            with self.lock:
+                if k not in self.memo:
+                    self.evals += 1
+                    self.order.append(k)
+                    self.memo[k] = {"fit": 1.0 if c in (2, 3) else 0.5}
+                return self.memo[k]
+    runs = []
+    for slow in (2, 3):
+        S = Stub(slow)
+        g, f = coordinate(S, ("map", "brent"), lambda s: None)
+        twin = [{**g[0], "layout": {**g[0]["layout"], "c": 3}}]          # the same genome with c = 3: equal fitness
+        pairs = [(("map", "brent"), (g, f)), (("map", "floyd"), (twin, f))]
+        res = dict(pairs if slow == 2 else pairs[::-1])                    # the two orders of arrival
+        runs.append({"choice": gkey(g), "fit": f, "evaluated": [gkey(e["genome"]) for e in evaluated(S.memo)],
+                     "best": gkey(res[pick_best(res)][0]), "order": [S.order.index(k) for k in sorted(S.memo)]})
+    a, b = runs
+    bad = []
+    if a["order"] == b["order"]:
+        bad.append("the two runs did not complete in different orders (the test did not exercise the tie)")
+    for k in ("choice", "fit", "evaluated", "best"):
+        if a[k] != b[k]:
+            bad.append(f"{k} differs between completion orders")
+    if '"c": 2' not in a["choice"]:
+        bad.append(f"the tie did not go to the smaller sorted JSON (c = 2): {a['choice']}")
+    for x in bad:
+        print("TIE SELFTEST FAILED:", x)
+    print(f"tie selftest (sweep choice, evaluated list of {len(a['evaluated'])} genomes, best overall; both completion "
+          f"orders): " + ("ok, identical; the tie went to " + a["choice"] if not bad else f"{len(bad)} failed"))
+    return len(bad)
+
 if __name__ == "__main__":
     if not ARGV or ARGV[0] not in ("balanced", "theta", "selftest"):
         sys.exit(__doc__)
     out_dir = os.environ.get("LPW_SEARCH_OUT")
     if ARGV[0] == "selftest":
+        if tie_selftest():
+            sys.exit(3)
         out_dir = out_dir or os.environ.get("TMPDIR", "/tmp")
         main((20, 24, 28, 32), 16, 9929000, (20, 32), 28, out_dir, "selftest")
     else:

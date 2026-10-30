@@ -22,7 +22,8 @@ Per reported genome (every layout x rule pair's best; the overall best marked):
 G-37 (Grok's forecast, sealed in predictions/arrangement-v1.md; computed here, after the search, never by the judge):
   - the ranking: the search record's evaluated genomes with a defined training G_rho (op-class v1, the forecast's
     pricing; a genome the search dropped, by the cost guard or for too few successes, has none), excluding any
-    invalidated by the early-exit audit; the 10 highest, ties broken by the order the search evaluated them;
+    invalidated by the early-exit audit; the 10 highest, ties broken on the genome's sorted JSON (the smaller first;
+    the user's ruling, Oct 30: never on evaluation order; arrangement-v1's G-37 had no tie at its boundary);
   - the numbers: the held-out 48-bit balanced validation numbers, semiprimes_pq(48, 48, 9930048) (the harness's
     draw), run here for each ranked genome and for rho alone (cap arr_price.CAP); a genome whose runs here hit an
     error or abort is excluded and listed (the denominator printed is the count actually measured);
@@ -111,6 +112,10 @@ def read_record(path):
     except (UnicodeDecodeError, ValueError, RecursionError) as e:
         raise SystemExit(f"REFUSED: {path}: {str(e)[:80]}")
 
+def gkey(g):
+    """The tie-break key (the user's ruling, Oct 30): the genome's sorted JSON."""
+    return json.dumps(g, sort_keys=True)
+
 def checked(genome):
     """A genome from the record, through the harness's own checks (one arr stage, valid genes) or refused."""
     import arr_validate as AV
@@ -198,7 +203,7 @@ def g37(d, seed=9930000 + 48):
     from fastlamps import semiprimes_pq
     ranked = [dict(e, genome=checked(e["genome"])) for e in d["evaluated"]
               if not e.get("invalid") and (e.get("g_rho") or {}).get("opclass_v1") is not None]
-    ranked = sorted(ranked, key=lambda e: -e["g_rho"]["opclass_v1"])[:10]           # stable: ties keep search order
+    ranked = sorted(ranked, key=lambda e: (-e["g_rho"]["opclass_v1"], gkey(e["genome"])))[:10]
     nums = semiprimes_pq(48, 48, seed)
     easy = [fermat_easy(*x) for x in nums]
     rho = AP.run(AP.RHO, AP.CAP, nums, 48)
@@ -235,7 +240,7 @@ def d44(d, test=None):
     from concurrent.futures import ThreadPoolExecutor
     best = checked(d["pairs"][d["best"]]["genome"])
     ranked = [e for e in d["evaluated"] if not e.get("invalid") and (e.get("g_rho") or {}).get("opclass_v1") is not None]
-    top_op = max(ranked, key=lambda e: e["g_rho"]["opclass_v1"])["genome"] if ranked else None
+    top_op = min(ranked, key=lambda e: (-e["g_rho"]["opclass_v1"], gkey(e["genome"])))["genome"] if ranked else None
     seeds = {64: test + 16, 80: test + 32} if test else {64: 9930064, 80: 9930080}
     nums = {b: semiprimes_pq(b, 48, seeds[b]) for b in (64, 80)}
     jobs = [(g, b) for g in ("cand", "rho") for b in (64, 80)]
