@@ -11266,3 +11266,25 @@ G's rule 1 reports the 84–96 chord beside 80–96, but design §8 drew no 84-b
 - **With the guard,** the selftest selects map + Brent(64), which is rho itself: 1.000 under the four flat pricings, and 0.996 under the scaled gcd price (gcds whose argument is < 2^32 are common at 20–32 bits).
 - **The search's budget:** 16 × rho's largest op count per training size.
 - This is the proposer's rule, not the judge's. The sealed harness scores G_rho with the cost ratio beside it, unchanged.
+
+## arrangement-v1, the balanced-map search (sealed run 39ffaf5; report `results/arrangement-v1_search/report.out`; Oct 30)
+
+**What ran:** `tools/sealed_run.sh` → `tools/search_sandbox.sh` → `arr_search.py balanced`. Both judge checks passed (pin 2, 44/44). 224 evaluations in 174 s, 2 workers, on the training map only (seeds 9920000 + bits). Another session's manim render was running at the time; the counts are untimed.
+
+**The selected genome** is map(c = 2, d = 2, x0 = 5) + Brent(b = 512): a **rediscovered known lamp**, rho-shaped (Q1 shape: slope 0.249 per bit).
+- Training G_rho 48–80, worst-of: **1.048**. op-class 1.048, ruint 1.051, Montgomery 1.060, official 1.048, scaled gcd 1.048.
+- Robust cost ratio against rho, per size: 1.06, 0.98, 1.14, 1.07, 0.82.
+- This is the best of 24 map + Brent variants scored on the same training numbers, so the 1.048 carries selection bias. It is also inside rho's own ±4% resolution. The validation run decides; nothing is concluded here.
+- Fermat split at 48 bits (7 of 48 numbers Fermat-easy): no advantage over rho (−5.7% overall, −4.8% without the easy subset). The flag does not fire.
+
+**Every other pair was dropped at 48 bits** ("not defined"):
+- stride, fold, and map with per-dot or batched gcd: 0 / 48 factored within 16 × rho's budget. These are walks, needing about p dots.
+- bins with bin compare: 0 / 48. All-pairs comparisons are quadratic in the dots. Its growth cannot be measured over the chord, so the bin-compare flag could not apply.
+- exponent (p − 1): 4 / 48.
+- map + Floyd: factors 48 / 48 at every size, but fails the cost guard.
+  - The search record keeps the start point, b = 1: 9.3 × rho, one gcd per iteration.
+  - Post hoc (labelled as such, training numbers, not scored): batched Floyd is 1.32 (b = 64) to 1.45 (b = 512) × rho at 48 bits, and 1.36–1.37 at 80. That is just over the 1.25 guard.
+
+**Limits of this search:**
+- A coordinate search cannot leave a start point where every single-gene move is "not defined". For the walk, bins and exponent pairs, one sweep ended the search. Those pairs are dropped under the search's budget (16 × rho's max per number), not ruled out in general.
+- The memo of non-selected evaluations is not in the record, only each pair's kept genome.

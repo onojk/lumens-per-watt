@@ -1,0 +1,1 @@
+{"name": "fold_batch", "genome": [{"t": "arr", "layout": {"kind": "fold", "w": 2, "a": 1, "s": 1}, "detect": {"kind": "batch", "b": 1, "t": 1}}]}
