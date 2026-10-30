@@ -26,9 +26,11 @@ SITES = ("stride", "fold_word", "fold_mul", "map", "bins_word", "bins_mul", "bin
          "dot_gcd", "batch_mul", "batch_gcd", "bt_gcd", "floyd_mul", "floyd_gcd", "brent_mul", "brent_gcd",
          "cmp_sort", "cmp_gcd")
 
-def _int(g, k, lo, hi=None, default=None):
+U64_MAX = (1 << 64) - 1                           # lampcore reads genes as u64 (serde as_u64): larger is refused by both
+
+def _int(g, k, lo, hi=U64_MAX, default=None):
     v = g.get(k, default)
-    if not isinstance(v, int) or isinstance(v, bool) or v < lo or (hi is not None and v > hi):
+    if not isinstance(v, int) or isinstance(v, bool) or v < lo or v > min(hi, U64_MAX):
         raise ValueError(f"arr: gene {k} = {v!r} out of range")
     return v
 

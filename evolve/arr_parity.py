@@ -168,7 +168,11 @@ if __name__ == "__main__":
             A({"kind": "stride", "a": 2, "s": 1}, {"kind": "batch", "b": 0}),
             A({"kind": "stride", "a": 2, "s": 1}, {"kind": "batch", "b": 5000}),
             A({"kind": "spiral", "a": 2}, {"kind": "dot"}),
-            A({"kind": "stride", "a": 2, "s": 1}, {"kind": "guess"})]
+            A({"kind": "stride", "a": 2, "s": 1}, {"kind": "guess"}),
+            A({"kind": "stride", "a": 1 << 64, "s": 1}, {"kind": "dot"}),          # genes >= 2^64 (lampcore's u64)
+            A({"kind": "map", "c": 1 << 64, "d": 2, "x0": 2}, {"kind": "brent", "b": 4}),
+            A({"kind": "exponent", "a": 2, "K": 400}, {"kind": "dot", "t": 1 << 70}),
+            A({"kind": "bins", "m": (1 << 64) + 1, "B": 16}, {"kind": "bins"})]
     ref = 0
     for g in BADG:
         try:
