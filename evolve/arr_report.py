@@ -19,7 +19,20 @@ Per reported genome (every layout x rule pair's best; the overall best marked):
     more than half of the advantage). Not computed when C_cand is not defined (fewer than half factored);
   - the class: "rediscovered known lamp" (exponent, or map with Floyd / Brent), rho-shaped (Q1: map + Floyd / Brent,
     slope 0.20-0.30), the map degree d (Q6).
-  python3 arr_report.py SEARCH_JSON"""
+G-37 (Grok's forecast, sealed in predictions/arrangement-v1.md; computed here, after the search, never by the judge):
+  - the ranking: the search record's evaluated genomes with a defined training G_rho (op-class v1, the forecast's
+    pricing; a genome the search dropped, by the cost guard or for too few successes, has none), excluding any
+    invalidated by the early-exit audit; the 10 highest, ties broken by the order the search evaluated them;
+  - the numbers: the held-out 48-bit balanced validation numbers, semiprimes_pq(48, 48, 9930048) (the harness's
+    draw), run here for each ranked genome and for rho alone (cap arr_price.CAP); a genome whose runs here hit an
+    error or abort is excluded and listed (the denominator printed is the count actually measured);
+  - the split: Fermat-easy = Fermat steps <= sqrt(p) (as above); its size is printed beside the result;
+  - "cost vs rho on a subset" = the MEAN op-class v1 cost per number of the genome on that subset (total spent,
+    censored runs included, / numbers) divided by rho's mean on the same numbers; the aggregate is the mean, and
+    nothing else (the user's pre-run note);
+  - a genome counts when (cost vs rho, easy) <= 0.5 x (cost vs rho, rest); G-37's value = count / genomes measured.
+  python3 arr_report.py SEARCH_JSON [--test-seed S]   (--test-seed: G-37 on semiprimes_pq(48, 48, S), for code checks;
+                                                        never a held-out seed)"""
 import json, math, statistics, sys
 
 WORST = ("opclass_v1", "ruint", "montgomery", "opclass_v1_gcdscaled")
@@ -126,9 +139,57 @@ def main(path):
             print("   FLAG: bin-compare genome whose cost grows faster than rho's" if faster else
                   f"   bin compare: growth {'not measurable over the chord (dropped)' if undefined else 'not faster than rho'}")
         out[name] = rec
+    if "evaluated" in d:
+        out["_g37"] = g37(d, TEST_SEED or 9930048)
+    else:
+        print("\nG-37: not computed (this search record keeps no evaluated-genome list)")
     print("\nREPORT " + json.dumps(out, default=str))
 
+def g37(d, seed=9930000 + 48):
+    import os
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import arr_price as AP
+    from fastlamps import semiprimes_pq
+    ranked = [e for e in d["evaluated"] if not e.get("invalid") and (e.get("g_rho") or {}).get("opclass_v1") is not None]
+    ranked = sorted(ranked, key=lambda e: -e["g_rho"]["opclass_v1"])[:10]           # stable: ties keep search order
+    nums = semiprimes_pq(48, 48, seed)
+    easy = [fermat_easy(*x) for x in nums]
+    rho = AP.run(AP.RHO, AP.CAP, nums, 48)
+    if any(r["term"] in AP.BAD_TERMS for r in rho):
+        print("\nG-37: NOT COMPUTED: rho's run on the held-out 48-bit numbers hit an error or abort")
+        return {"error": "rho"}
+    mean = lambda rs, m: sum(r["cost"]["opclass_v1"] for r, k in zip(rs, m) if k) / sum(m)
+    rest = [not x for x in easy]
+    rows, excluded = [], []
+    for e in ranked:
+        rs = AP.run(e["genome"], AP.CAP, nums, 48)
+        if any(r["term"] in AP.BAD_TERMS for r in rs):
+            excluded.append(e["genome"])
+            continue
+        re_, rr = mean(rs, easy) / mean(rho, easy), mean(rs, rest) / mean(rho, rest)
+        rows.append({"genome": e["genome"], "g_rho_train_opclass": e["g_rho"]["opclass_v1"], "vs_rho_easy": re_,
+                     "vs_rho_rest": rr, "counts": re_ <= 0.5 * rr})
+    k = sum(r["counts"] for r in rows)
+    print(f"\nG-37 ({'held-out' if seed == 9930048 else 'TEST (not held-out)'} 48-bit numbers, seed {seed}, 48; Fermat-easy subset {sum(easy)} of {len(easy)}; aggregate: mean op-class v1 "
+          f"cost per number vs rho's on the same numbers):")
+    for r in rows:
+        print(f"   {json.dumps(r['genome'])}: training G_rho (op-class) {r['g_rho_train_opclass']:.4f}; vs rho easy "
+              f"{r['vs_rho_easy']:.4f}, rest {r['vs_rho_rest']:.4f}" + ("; counts (easy <= 0.5 x rest)" if r["counts"] else ""))
+    for g in excluded:
+        print(f"   EXCLUDED (early-exit audit on the held-out runs): {json.dumps(g)}")
+    print(f"G-37 value: {k} / {len(rows)} = {k / len(rows):.2f}" if rows else "G-37 value: no genome measured")
+    return {"easy": sum(easy), "n": len(easy), "rows": rows, "excluded": excluded, "count": k, "measured": len(rows),
+            "value": k / len(rows) if rows else None}
+
+TEST_SEED = None
+
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
+    a = sys.argv[1:]
+    if "--test-seed" in a:                       # code checks only: G-37 on numbers that are not held out
+        i = a.index("--test-seed")
+        TEST_SEED = int(a[i + 1])
+        assert TEST_SEED not in (9930048, 9935048), "a test seed must not be a held-out seed"
+        a = a[:i] + a[i + 2:]
+    if len(a) != 1:
         sys.exit(__doc__)
-    main(sys.argv[1])
+    main(a[0])

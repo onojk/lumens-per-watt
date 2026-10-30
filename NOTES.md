@@ -11329,3 +11329,22 @@ G's rule 1 reports the 84–96 chord beside 80–96, but design §8 drew no 84-b
 **Fixes found by these tests:**
 - the sandbox root was writable (now `--remount-ro /`);
 - the scoring sandbox hid a repo living under /tmp (the repo and the search worktrees are now bound back read-only).
+
+## Incident: held-out 48-bit numbers seen before G-37 was sealed (Oct 30; my error; recorded as a failure)
+
+**What happened:** while checking the new G-37 code in `evolve/arr_report.py`, I ran it once on the **held-out 48-bit validation numbers**, `semiprimes_pq(48, 48, 9930048)`. It ran on the scratch selftest's genome list (20–32-bit selftest genomes, not the balanced search's), before G-37 was sealed and before any validation run.
+
+**What was seen** (op-class v1, mean cost per number against rho's on the same numbers):
+- Fermat-easy subset: 6 of 48.
+- map + Brent(64), x0 = 2 and x0 = 5: 1.0000 on the easy subset, 1.0000 on the rest (the same algorithm as rho).
+- map + Brent(8): 1.0639 easy, 1.0654 rest.
+- map + Floyd(8), x0 = 2 and x0 = 5: 1.5022 easy, 1.4150 rest.
+- Value on these genomes: 0 / 5.
+- Implied: rho's own costs on the held-out 48-bit set, and the size of its Fermat-easy subset.
+
+**What it touches:**
+- G-37's forecast text is Grok's, written before this, and Grok did not see these numbers.
+- The 48-bit held-out set is also the bottom of the scored G_rho chord. These were rho-like genomes, and no search genome was run on held-out data.
+- The user decides whether G-37 and the 48-bit held-out set stand, or whether a fresh 48-bit draw is needed. That would be a judge change, with a new pin.
+
+**Fix:** `arr_report.py` gains `--test-seed S` for code checks. It refuses the held-out seeds, and the output labels which numbers were used.
