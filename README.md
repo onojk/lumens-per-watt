@@ -8,6 +8,58 @@ The picture behind it: place a number's smaller factor on the line θ = log p / 
 
 Independent research by Jonathan Kendall. Rust ("lampcore") for the fast core, Python for the harness and analysis; the two cores must agree exactly.
 
+## Status and how to pick this up
+
+**Status: paused after phase 1 (Oct 30, 2026).**
+- **What phase 1 did:**
+  - built an exact op meter for six factoring lamps, with a Rust core and Python twins that must agree;
+  - scored them under four pricings;
+  - ran a sealed program search (arrangement-v1) under a judge the search could not touch or see past.
+- **What it found:**
+  - the search rediscovered Pollard rho;
+  - two further families, square-form walks and change-the-group, were stopped at cost-model pre-checks;
+  - the missing quadratic-sieve refinements are worth about 10% or less;
+  - the cheapest known method per size (the frontier) was measured: the quadratic sieve on balanced semiprimes, rho on numbers with one small factor.
+- **Within 40–100 bits** (measured at 48–96), under the worst-of pricing set, nothing tried lands ahead of that frontier.
+- **No novelty is claimed.** See [Findings so far](#findings-so-far-oct-30-2026) and the phase conclusion there for the numbers and their scope.
+
+**What's ready to reuse:**
+- **The judge:**
+  - `tools/judge.py` pins every file that decides a score by sha256, in the predictions file;
+  - `tools/sealed_run.sh` refuses to run unless the predictions are committed, checks the pins before and after, and commits each result;
+  - `tools/search_sandbox.sh` runs a search with only training data visible (an allow-list, a held-out-seed check, no network, a clean environment, its own process group);
+  - `tools/score_sandbox.sh` scores in a fresh sandbox after killing any search.
+- **The meter:** `lampcore/` (Rust) and its Python twins in `evolve/` (`lamps.py`, `qs.py`, `ecm.py`, `arr.py` and the rest), with parity suites (`evolve/parity.py`, `evolve/arr_parity.py`) that must agree op for op.
+- **The four pricings:** official op count, ruint, Montgomery and op-class v1 (`evolve/optypes.py`, `evolve/calibrate.json`, `opclass/opclass_v1.json`), plus a size-scaled gcd view (`evolve/gcdscale.py`).
+- **The frontier measurement:** `explore/frontier.py` measures each lamp's cost per size under every pricing and finds the cheapest. Results: `results/frontier_table.md`, `results/frontier.png` and `results/frontier.json`.
+- **The next-family template:** `docs/planning/next_family_template.md` holds the frontier reference, the level and slope win rules, held-out sizing, tie-breaking and the guards. It is frozen and pinned only when a family's predictions are sealed.
+- **The forecast workflow:** `predictions/<id>.md` is sealed before any run (forecasters' text verbatim, with notes). Results are scored as written (`results/arrangement-v1_forecast_scores.md`). Model runs live in `wolfram/` (input and output committed, labelled as models).
+
+**Open doors** (each with its conditions in [MOVES.md](MOVES.md) and [NOTES.md](NOTES.md)):
+- **Square-form walks (SQUFOF-like):** worth reopening if a variant's measured step constant A falls below about 2.1 (Shanks's queue might help), or if the pricing set changes.
+- **Change the group:** worth reopening for a cheaper p + 1 (one seed per number), a stage 2 shared between p − 1 and p + 1, or populations where p + 1 is often smooth.
+- **Cheaper candidate rejection / resieving** in the quadratic sieve: a tuning experiment, not a new idea. Confirmation is 35–57% of the sieve's cost at 48–80 bits. It needs approval and a cost model first.
+- **Past 2^100:** lampcore's QS, ECM and CFRAC keep kN in 128-bit integers and refuse larger N. Widening means changing the core and the Python twins together, a cost-model note, parity at the new sizes and re-pinning the judge. It is also a scope decision: the project targets roughly 40–100 bits.
+- **The θ map's ECM-vs-rho crossover:** on numbers with one small factor, ECM's cost against rho falls from 22 × at 48 bits to 4.6 × at 96, so a crossover probably lies just past 96 bits. It is not measured.
+- **The Illumination program** (PLAN.md, Oct 26): a watt meter (energy counters against priced cost), a price map (where in price space each pipeline wins), a light spectrum (success against θ per unit cost) and the steps after them. Planning only.
+- **Larger held-out sets:** about 600 numbers at 64 bits and 850 at 80 to resolve cost ratios to ±5% (the 48 per size used so far resolve about ±15–20%).
+
+**How to start:**
+1. Build the core: `cd lampcore && cargo build --release` (Rust stable; ruint 1.20.1 is pinned in `Cargo.lock`).
+2. Check the meter: `cd evolve && python3 parity.py` (lamps against lampcore) and `python3 arr_parity.py` (the arrangement lamp). Both must report no mismatches.
+3. Check the judge: `python3 tools/judge.py check arrangement-v1` should print `ok` with nothing pending.
+4. Reproduce the frontier: `python3 explore/frontier.py > explore/frontier.out` (2 workers; tens of minutes at the 2.4 GHz cap used here). Its bound rule is in the script's docstring.
+5. **Any new family starts with a cost-model pre-check against the frontier, before any code:** charges in existing op types written in NOTES; the unknown constants measured unmetered in `explore/`; the expected cost ratio against the frontier under the worst-of pricing set; a go/no-go.
+
+**Contributing:**
+- Issues and pull requests are welcome.
+- A new family must follow `docs/planning/next_family_template.md`:
+  - the frontier as the reference;
+  - the worst-of pricing set;
+  - held-out numbers the search never sees;
+  - predictions sealed before any run;
+  - a cost model in NOTES before code.
+
 ## Findings so far (Oct 30, 2026)
 
 Every claim below is scoped to its sizes, budgets and pricings. Details: [NOTES.md](NOTES.md) (cost models, runs, results) and [MOVES.md](MOVES.md) (ideas and their statuses).
