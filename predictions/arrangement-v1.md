@@ -174,6 +174,33 @@ genome has map degree d ≥ 4.
   p ~ 2^13-2^24. Recorded as given.
 <!-- verbatim end -->
 
+## Grok's G-37 (sealed Oct 30, after judge pin 3 and before any validation run; verbatim, as clarified by Grok and pasted by the user)
+
+<!-- verbatim begin -->
+G-37 (fraction of top genomes whose 48-bit advantage is concentrated on the Fermat-easy subset)
+Prediction: 0.02.
+Range: 0.00-0.08.
+Exact comparison: among the top 10 genomes ranked by training G_rho (op-class v1) on the balanced map, the fraction for which (48-bit cost vs rho on the Fermat-easy subset) <= 0.5 x (48-bit cost vs rho on the complementary subset), where the Fermat-easy subset is defined as Fermat steps <= sqrt(p) and is taken from the held-out 48-bit validation numbers.
+Confidence: 60%.
+Falsifier (single condition): the measured fraction exceeds 0.08.
+<!-- verbatim end -->
+
+**Pre-run notes (the user's, marked as such; verbatim):**
+
+<!-- verbatim begin -->
+- With a denominator of 10, only 0/10 is within range; 1/10 = 0.10 falsifies.
+- "Cost vs rho" on a subset = the genome's aggregate op-class v1 cost on that subset / rho's aggregate on the same numbers, using the split report's aggregate (state which: median or mean) and nothing else.
+- Top 10 = the 10 highest training G_rho among valid genomes; genomes invalidated by the early-exit audit are excluded before ranking.
+- The report prints the Fermat-easy subset size at 48 bits (validation) beside the result.
+- The search never sees validation numbers; G-37 is computed after the search, by the report script.
+<!-- verbatim end -->
+
+**The recorder's notes (Claude's; not part of the forecast):**
+- The aggregate is the **mean** op-class v1 cost per number on the subset (total spent, censored runs included, divided by the subset's numbers), against rho's mean on the same numbers (`evolve/arr_report.py` g37, 39375a9).
+- "Valid genomes" with a training G_rho are the search record's evaluated genomes whose training G_rho (op-class v1) is defined. A genome the search dropped (by the cost guard or for too few successes) has none and is not ranked.
+- Disclosure: before this seal, a code check of g37 ran once on the held-out 48-bit numbers with the 20–32-bit selftest genomes (rho-like). It showed a Fermat-easy subset of 6 of 48, and 0 / 5 for those genomes. Grok did not see it. NOTES, "Incident: held-out 48-bit numbers seen before G-37 was sealed"; the user decides whether this stands.
+
+
 ## Judge pins, pin 1
 
 Appended after sealing; no prediction changed (design §6). The judge's sha256s at 3d3f42d (the arr lamp, parity clean, c94e986; the guard, 743fde7 and 3d3f42d). `@predictions` is the sealed text above this heading. The scoring harness `evolve/arr_validate.py` is not written yet: it stays `pending`, so tools/sealed_run.sh refuses every scored run until a later pin (appended, in its own commit) names its hash. Check: `python3 tools/judge.py check arrangement-v1`.
