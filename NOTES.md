@@ -11840,3 +11840,32 @@ Both maps are scored.
 - **Triple large primes, batch-gcd cofactorisation:** not relevant below about 100 bits (no partials of that shape at these thresholds).
 
 **Reading:** the lamp is a full SIQS with the main constant-factor refinements of its class. What it lacks is worth at most about 10% at 48–96 bits under op-class: the small-prime variation is the one sizeable item, and the rest are each under 5%. A sieve "family" built from these refinements is a tuning programme on the frontier holder, not a structural move, and per CLAUDE.md it would be measured as tuning (Run 8 style, with control arms), not presented as a new idea.
+
+## Rulings (the user's, Oct 30; documentation only)
+
+1. **Frontier past 96 bits: option (b).** The frontier stays measured at 48–96 bits, and lampcore is not widened now.
+   - **Extending past 2^100 is a scope decision for later** (CLAUDE.md: roughly 40–100 bits).
+   - **Option (a)'s cost,** for that decision: widen the kN arithmetic of QS, ECM and CFRAC from i128 in lampcore, with the Python twins in lockstep. That means a cost-model note (no charge change expected); parity at the new sizes, including the mutation checks; re-pins of every judge that loads them; then the 104–128-bit frontier (QS and ECM there are slower per number; some cells would need 48 per size).
+2. **Sieve family: parked as a novelty family.** The missing refinements are worth about 10% or less and are known SIQS techniques.
+   - **"Cheaper candidate rejection / resieving"** is recorded in MOVES as a possible **tuning** experiment only (control arms; reported as tuning, never as novelty), because confirmation is 35–57% of QS cost at 48–80 bits.
+   - No cost model and no code until the user approves it.
+
+## Phase conclusion (Oct 30)
+
+**Within 40–100 bits** (measured 48–96), under the worst-of pricing set (op-class v1, ruint, Montgomery, scaled gcd) and the strengthened win rules (a level win cheaper at every size under every pricing in the set; a slope win never dearer at any size), **every family tried or pre-checked lands on or behind the known-lamp frontier:**
+- **arrangement-v1:** a sealed search that rediscovered rho;
+- **SQUFOF-like square-form walks:** pre-check no-go, 1.31–1.41 × rho;
+- **change the group:** pre-check; only known lamps win;
+- **sieve refinements:** at most about 10%, known SIQS techniques.
+
+**The frontier** (frozen genes, 96 numbers per size, exact charges):
+- balanced: QS;
+- θ 0.20–0.30: rho (td at 48 under op-class).
+
+**No novelty is claimed.**
+
+**Scope:**
+- these families, at their stated budgets, genes and grids;
+- random semiprimes, balanced and θ 0.20–0.30;
+- lampcore's charges and the four pricings;
+- sizes 48–96 bits.

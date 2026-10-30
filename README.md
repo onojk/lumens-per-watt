@@ -37,6 +37,13 @@ Every claim below is scoped to its sizes, budgets and pricings. Details: [NOTES.
 - **θ 0.20–0.30:** rho at 56–96 bits; trial division at 48 under op-class.
 - **No crossovers in 48–96.** This frontier is the reference future families must beat.
 
+**Phase conclusion.**
+- **Families:** within 40–100 bits (measured at 48–96), every family tried or pre-checked lands on or behind the known-lamp frontier. That covers the sealed arrangement search, square-form walks, change of group and sieve refinements.
+- **The frontier:** quadratic sieve on balanced numbers; rho on θ 0.20–0.30.
+- **Rules:** this holds under the worst-of pricing set and the win rules above.
+- **No novelty is claimed.**
+- **Scope:** these families at their stated budgets and gene grids, random semiprimes of the two kinds measured, and lampcore's charges.
+
 ![The frontier: op-class cost per factorisation against N's size, per lamp, balanced and θ 0.20–0.30](results/frontier.png)
 
 ## How it is measured
