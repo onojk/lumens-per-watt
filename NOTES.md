@@ -11706,3 +11706,31 @@ Both maps are scored.
 - ECM with the `ecm` lamp: the frozen genes and a b1 grid.
 - p + 1 by smoothness: the largest and second-largest prime factors of p + 1 and q + 1 by trial division, charged by the model above, with 2 seeds.
 - On balanced and θ 0.20–0.30 training-like numbers at 48, 64 and 80 bits, with fresh guarded seeds.
+
+## Family (1), change the group: the pre-check measurements (explore/group_precheck.py; Oct 30; documentation and explore only)
+
+**The run:** fresh guarded seeds (balanced 9948000 + bits, θ 9949000 + bits), 96 per size at 48 / 64 / 80. No errors.
+- p − 1 and ECM are the existing lamps run in lampcore (exact charges, untimed); p + 1 is by the cost model (3cf6d3e) on the true factorizations of p ± 1.
+- **Ratio:** the worst-of cost / rho (op-class, ruint, Montgomery, scaled gcd), cost per factorisation, with a paired bootstrap interval. It is defined only where at least half the numbers factor (f ≥ 0.5).
+
+**Balanced map:**
+- **ECM (known lamp)**, b1 0.5 / 1.0:
+  - 1.00 [0.82, 1.19] / 1.11 [0.93, 1.32] at 48;
+  - 0.33 / 0.32 at 64;
+  - 0.090 / 0.090 at 80.
+  - G_rho 1.76 / 1.82. It meets the SLOPE-win rule: no size's interval lies entirely above 1. It is not a level win, since its 48-bit interval includes 1.
+  - This matches Stage 8's measurement (ECM ahead of rho from about 54 bits).
+- **p − 1 with stage 2 (known lamp, `pm1` with c = 50):**
+  - **The best bound per size is about N^0.2** (B1 2^8 / 2^12 / 2^16): 0.63 [0.47, 0.76] at 48 (f 0.55), 0.30 [0.23, 0.41] at 64 (f 0.68), 0.29 [0.21, 0.40] at 80 (f 0.60). Every interval lies below 1. This is the existing lamp's N-scaled B with its stage 2, chosen post hoc on these numbers.
+  - **A single fixed B1** is not defined at all three sizes, except B1 2^16, which is 27 × at 48 and fails the rule.
+  - f falls when B1 is too large for N (48 bits, B1 2^16): both p − 1 and q − 1 are then smooth, so the gcd is N.
+- **p + 1 (the new member), 2 seeds, B2 50·B1, best bound per size:**
+  - 1.40 [1.12, 1.77] at 48 (f 0.65), 1.19 [0.95, 1.48] at 64 (f 0.61), 0.33 [0.25, 0.37] at 80 (f 0.52).
+  - The 48-bit interval lies entirely above 1, so it fails both win rules.
+  - It always costs more than p − 1 at the same bound: 2 mul per ladder bit against p − 1's 1, and about 2 seeds. Its extra group orders do not pay for that.
+
+**θ 0.20–0.30 map:** every group arm is dearer than rho at 48 and 64 bits.
+- The best p − 1 (B1 2^8, c = 50): 2.06 [1.70, 2.64] / 1.33 / 0.70.
+- ECM: 3.4–18 ×.
+- p + 1: 1.8 × and worse.
+- This matches the earlier finding for small p (rho ahead at 24-bit p and below).
