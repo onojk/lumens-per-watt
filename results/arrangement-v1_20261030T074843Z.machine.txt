@@ -1,0 +1,39 @@
+## before
+time: 2026-10-30T00:48:43-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 716; max MHz: 5000
+frequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100
+load average: 1.72 2.36 2.16
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+temperature TCPU: 48 C
+temperature x86_pkg_temp: 50 C
+sensors: Package id 0:  +50.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  12.7% Xorg
+  10.8% chrome
+  9.8% claude
+  8.8% chrome
+  5.9% liquidsoap
+
+## after
+time: 2026-10-30T00:48:52-07:00
+pinned core: 2
+governor: powersave
+energy_performance_preference: balance_performance
+cur MHz: 2400; max MHz: 5000
+frequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100
+load average: 2.00 2.39 2.17
+power supply AC online: 1
+power supply BAT0 capacity: 100% (Not charging)
+temperature TCPU: 54 C
+temperature x86_pkg_temp: 51 C
+sensors: Package id 0:  +51.0°C  (high = +100.0°C, crit = +100.0°C)
+top 5 processes by current CPU (top, a 1 s sample):
+  13.9% claude
+  6.9% Xorg
+  5.9% liquidsoap
+  5.9% xfce4-terminal
+  4.0% chrome

@@ -1,0 +1,167 @@
+## judge check 1 (before the run)
+JUDGE: pin 5, 47 entries: ok
+search process group 232299 (/home/onojk123/lpw-search-arrangement-v1-501eb41/.search.pgid): none running
+search process group 222235 (/home/onojk123/lpw-search-arrangement-v1-686662e/.search.pgid): none running
+scoring (fresh sandbox, clean environment): python3 evolve/arr_report.py /home/onojk123/lpw-search-arrangement-v1-501eb41/search_out/arr_search_balanced.json
+search /home/onojk123/lpw-search-arrangement-v1-501eb41/search_out/arr_search_balanced.json: map balanced, sizes [48, 56, 64, 72, 80], 48 per size, seeds 9920000 + bits, 224 evaluations; budget 16 x rho's max per number
+rho alone: successes {48: 48, 56: 48, 64: 48, 72: 48, 80: 48}; op-count slope 0.251 per bit (48/64/80), 0.250 (all sizes); op-class period 3.972
+Fermat split at 48 bits: 7 of 48 training numbers Fermat-easy (Fermat steps <= sqrt p); rho op-class per factorisation: easy 3455265, rest 4235083
+
+== map_brent  (BEST OVERALL): [{"t": "arr", "layout": {"kind": "map", "c": 2, "d": 2, "x0": 5}, "detect": {"kind": "brent", "b": 512}}]
+   class: rediscovered known lamp; d = 2; rho-shaped (Q1)
+   search fitness (worst-of G_rho 48-80, cost guard): 1.048
+   successes {48: 48, 56: 48, 64: 48, 72: 48, 80: 48}
+   op-count slope 0.249 per bit (48/64/80; rho 0.251), 0.249 over all sizes (rho 0.250)
+   G_rho 48-80 (training, point): opclass_v1 1.048; ruint 1.051; montgomery 1.060; official 1.048; opclass_v1_gcdscaled 1.048; worst-of 1.048
+   robust cost ratio vs rho: 48: 1.059, 56: 0.976, 64: 1.137, 72: 1.067, 80: 0.818
+   Fermat split at 48: op-class per factorisation easy 3862133 (rho 3455265), rest 4438703 (rho 4235083); advantage over rho -0.057 overall, -0.048 without the easy subset
+
+== stride_dot: [{"t": "arr", "layout": {"kind": "stride", "a": 0, "s": 1}, "detect": {"kind": "dot", "t": 1}}]
+   class: candidate
+   search fitness (worst-of G_rho 48-80, cost guard): n/a; dropped at 48 bits: fewer than half factored
+   successes {48: 0}
+   op-count slope n/a per bit (48/64/80; rho 0.251), n/a over all sizes (rho 0.250)
+   G_rho 48-80 (training, point): opclass_v1 n/a; ruint n/a; montgomery n/a; official n/a; opclass_v1_gcdscaled n/a; worst-of n/a
+   robust cost ratio vs rho: 48: n/a
+   Fermat split at 48: not available (the genome was not run on all 48-bit numbers)
+
+== stride_batch: [{"t": "arr", "layout": {"kind": "stride", "a": 0, "s": 1}, "detect": {"kind": "batch", "b": 1, "t": 1}}]
+   class: candidate
+   search fitness (worst-of G_rho 48-80, cost guard): n/a; dropped at 48 bits: fewer than half factored
+   successes {48: 0}
+   op-count slope n/a per bit (48/64/80; rho 0.251), n/a over all sizes (rho 0.250)
+   G_rho 48-80 (training, point): opclass_v1 n/a; ruint n/a; montgomery n/a; official n/a; opclass_v1_gcdscaled n/a; worst-of n/a
+   robust cost ratio vs rho: 48: n/a
+   Fermat split at 48: not available (the genome was not run on all 48-bit numbers)
+
+== stride_floyd: [{"t": "arr", "layout": {"kind": "stride", "a": 0, "s": 1}, "detect": {"kind": "floyd", "b": 1}}]
+   class: candidate
+   search fitness (worst-of G_rho 48-80, cost guard): n/a; dropped at 48 bits: fewer than half factored
+   successes {48: 0}
+   op-count slope n/a per bit (48/64/80; rho 0.251), n/a over all sizes (rho 0.250)
+   G_rho 48-80 (training, point): opclass_v1 n/a; ruint n/a; montgomery n/a; official n/a; opclass_v1_gcdscaled n/a; worst-of n/a
+   robust cost ratio vs rho: 48: n/a
+   Fermat split at 48: not available (the genome was not run on all 48-bit numbers)
+
+== stride_brent: [{"t": "arr", "layout": {"kind": "stride", "a": 0, "s": 1}, "detect": {"kind": "brent", "b": 1}}]
+   class: candidate
+   search fitness (worst-of G_rho 48-80, cost guard): n/a; dropped at 48 bits: fewer than half factored
+   successes {48: 0}
+   op-count slope n/a per bit (48/64/80; rho 0.251), n/a over all sizes (rho 0.250)
+   G_rho 48-80 (training, point): opclass_v1 n/a; ruint n/a; montgomery n/a; official n/a; opclass_v1_gcdscaled n/a; worst-of n/a
+   robust cost ratio vs rho: 48: n/a
+   Fermat split at 48: not available (the genome was not run on all 48-bit numbers)
+
+== fold_dot: [{"t": "arr", "layout": {"kind": "fold", "w": 2, "a": 1, "s": 1}, "detect": {"kind": "dot", "t": 1}}]
+   class: candidate
+   search fitness (worst-of G_rho 48-80, cost guard): n/a; dropped at 48 bits: fewer than half factored
+   successes {48: 0}
+   op-count slope n/a per bit (48/64/80; rho 0.251), n/a over all sizes (rho 0.250)
+   G_rho 48-80 (training, point): opclass_v1 n/a; ruint n/a; montgomery n/a; official n/a; opclass_v1_gcdscaled n/a; worst-of n/a
+   robust cost ratio vs rho: 48: n/a
+   Fermat split at 48: not available (the genome was not run on all 48-bit numbers)
+
+== fold_batch: [{"t": "arr", "layout": {"kind": "fold", "w": 2, "a": 1, "s": 1}, "detect": {"kind": "batch", "b": 1, "t": 1}}]
+   class: candidate
+   search fitness (worst-of G_rho 48-80, cost guard): n/a; dropped at 48 bits: fewer than half factored
+   successes {48: 0}
+   op-count slope n/a per bit (48/64/80; rho 0.251), n/a over all sizes (rho 0.250)
+   G_rho 48-80 (training, point): opclass_v1 n/a; ruint n/a; montgomery n/a; official n/a; opclass_v1_gcdscaled n/a; worst-of n/a
+   robust cost ratio vs rho: 48: n/a
+   Fermat split at 48: not available (the genome was not run on all 48-bit numbers)
+
+== map_dot: [{"t": "arr", "layout": {"kind": "map", "c": 1, "d": 2, "x0": 2}, "detect": {"kind": "dot", "t": 1}}]
+   class: candidate; d = 2
+   search fitness (worst-of G_rho 48-80, cost guard): n/a; dropped at 48 bits: fewer than half factored
+   successes {48: 0}
+   op-count slope n/a per bit (48/64/80; rho 0.251), n/a over all sizes (rho 0.250)
+   G_rho 48-80 (training, point): opclass_v1 n/a; ruint n/a; montgomery n/a; official n/a; opclass_v1_gcdscaled n/a; worst-of n/a
+   robust cost ratio vs rho: 48: n/a
+   Fermat split at 48: not available (the genome was not run on all 48-bit numbers)
+
+== map_batch: [{"t": "arr", "layout": {"kind": "map", "c": 1, "d": 2, "x0": 2}, "detect": {"kind": "batch", "b": 1, "t": 1}}]
+   class: candidate; d = 2
+   search fitness (worst-of G_rho 48-80, cost guard): n/a; dropped at 48 bits: fewer than half factored
+   successes {48: 0}
+   op-count slope n/a per bit (48/64/80; rho 0.251), n/a over all sizes (rho 0.250)
+   G_rho 48-80 (training, point): opclass_v1 n/a; ruint n/a; montgomery n/a; official n/a; opclass_v1_gcdscaled n/a; worst-of n/a
+   robust cost ratio vs rho: 48: n/a
+   Fermat split at 48: not available (the genome was not run on all 48-bit numbers)
+
+== map_floyd: [{"t": "arr", "layout": {"kind": "map", "c": 1, "d": 2, "x0": 2}, "detect": {"kind": "floyd", "b": 1}}]
+   class: rediscovered known lamp; d = 2; rho-shaped (Q1)
+   search fitness (worst-of G_rho 48-80, cost guard): n/a; dropped at 48 bits: cost guard: robust ratio 9.310234891372238
+   successes {48: 48, 56: 48, 64: 48, 72: 48, 80: 48}
+   op-count slope 0.255 per bit (48/64/80; rho 0.251), 0.253 over all sizes (rho 0.250)
+   G_rho 48-80 (training, point): opclass_v1 0.990; ruint 0.989; montgomery 0.987; official 0.990; opclass_v1_gcdscaled 0.960; worst-of 0.960
+   robust cost ratio vs rho: 48: 9.310, 56: 9.628, 64: 9.951, 72: 9.294, 80: 10.043
+   Fermat split at 48: op-class per factorisation easy 7608649 (rho 3455265), rest 8807189 (rho 4235083); advantage over rho -1.095 overall, -1.080 without the easy subset
+
+== bins_dot: [{"t": "arr", "layout": {"kind": "bins", "m": 1, "B": 1}, "detect": {"kind": "dot", "t": 1}}]
+   class: candidate
+   search fitness (worst-of G_rho 48-80, cost guard): n/a; dropped at 48 bits: fewer than half factored
+   successes {48: 0}
+   op-count slope n/a per bit (48/64/80; rho 0.251), n/a over all sizes (rho 0.250)
+   G_rho 48-80 (training, point): opclass_v1 n/a; ruint n/a; montgomery n/a; official n/a; opclass_v1_gcdscaled n/a; worst-of n/a
+   robust cost ratio vs rho: 48: n/a
+   Fermat split at 48: not available (the genome was not run on all 48-bit numbers)
+
+== bins_batch: [{"t": "arr", "layout": {"kind": "bins", "m": 1, "B": 1}, "detect": {"kind": "batch", "b": 1, "t": 1}}]
+   class: candidate
+   search fitness (worst-of G_rho 48-80, cost guard): n/a; dropped at 48 bits: fewer than half factored
+   successes {48: 0}
+   op-count slope n/a per bit (48/64/80; rho 0.251), n/a over all sizes (rho 0.250)
+   G_rho 48-80 (training, point): opclass_v1 n/a; ruint n/a; montgomery n/a; official n/a; opclass_v1_gcdscaled n/a; worst-of n/a
+   robust cost ratio vs rho: 48: n/a
+   Fermat split at 48: not available (the genome was not run on all 48-bit numbers)
+
+== bins_bins: [{"t": "arr", "layout": {"kind": "bins", "m": 1, "B": 1}, "detect": {"kind": "bins"}}]
+   class: candidate
+   search fitness (worst-of G_rho 48-80, cost guard): n/a; dropped at 48 bits: fewer than half factored
+   successes {48: 0}
+   op-count slope n/a per bit (48/64/80; rho 0.251), n/a over all sizes (rho 0.250)
+   G_rho 48-80 (training, point): opclass_v1 n/a; ruint n/a; montgomery n/a; official n/a; opclass_v1_gcdscaled n/a; worst-of n/a
+   robust cost ratio vs rho: 48: n/a
+   Fermat split at 48: not available (the genome was not run on all 48-bit numbers)
+   bin compare: growth not measurable over the chord (dropped)
+
+== exponent_dot: [{"t": "arr", "layout": {"kind": "exponent", "a": 2, "K": 256}, "detect": {"kind": "dot", "t": 1}}]
+   class: rediscovered known lamp
+   search fitness (worst-of G_rho 48-80, cost guard): n/a; dropped at 48 bits: fewer than half factored
+   successes {48: 4}
+   op-count slope n/a per bit (48/64/80; rho 0.251), n/a over all sizes (rho 0.250)
+   G_rho 48-80 (training, point): opclass_v1 n/a; ruint n/a; montgomery n/a; official n/a; opclass_v1_gcdscaled n/a; worst-of n/a
+   robust cost ratio vs rho: 48: n/a
+   Fermat split at 48: not available (the genome was not run on all 48-bit numbers)
+
+== exponent_batch: [{"t": "arr", "layout": {"kind": "exponent", "a": 2, "K": 256}, "detect": {"kind": "batch", "b": 1, "t": 1}}]
+   class: rediscovered known lamp
+   search fitness (worst-of G_rho 48-80, cost guard): n/a; dropped at 48 bits: fewer than half factored
+   successes {48: 4}
+   op-count slope n/a per bit (48/64/80; rho 0.251), n/a over all sizes (rho 0.250)
+   G_rho 48-80 (training, point): opclass_v1 n/a; ruint n/a; montgomery n/a; official n/a; opclass_v1_gcdscaled n/a; worst-of n/a
+   robust cost ratio vs rho: 48: n/a
+   Fermat split at 48: not available (the genome was not run on all 48-bit numbers)
+
+G-37 (held-out 48-bit numbers, seed 9930048, 48; Fermat-easy subset 6 of 48; aggregate: mean op-class v1 cost per number vs rho's on the same numbers):
+   [{"detect": {"b": 512, "kind": "brent"}, "layout": {"c": 2, "d": 2, "kind": "map", "x0": 5}, "t": "arr"}]: training G_rho (op-class) 1.0482; vs rho easy 1.2018, rest 0.7845
+   [{"detect": {"b": 512, "kind": "brent"}, "layout": {"c": 3, "d": 2, "kind": "map", "x0": 5}, "t": "arr"}]: training G_rho (op-class) 1.0430; vs rho easy 1.4465, rest 0.9331
+   [{"detect": {"b": 512, "kind": "brent"}, "layout": {"c": 2, "d": 2, "kind": "map", "x0": 7}, "t": "arr"}]: training G_rho (op-class) 1.0375; vs rho easy 1.4517, rest 0.8974
+   [{"detect": {"b": 512, "kind": "brent"}, "layout": {"c": 11, "d": 2, "kind": "map", "x0": 5}, "t": "arr"}]: training G_rho (op-class) 1.0356; vs rho easy 1.8352, rest 0.9244
+   [{"detect": {"b": 128, "kind": "brent"}, "layout": {"c": 2, "d": 2, "kind": "map", "x0": 5}, "t": "arr"}]: training G_rho (op-class) 1.0342; vs rho easy 1.1173, rest 0.7378
+   [{"detect": {"b": 64, "kind": "brent"}, "layout": {"c": 2, "d": 2, "kind": "map", "x0": 5}, "t": "arr"}]: training G_rho (op-class) 1.0325; vs rho easy 1.1125, rest 0.7355
+   [{"detect": {"b": 512, "kind": "brent"}, "layout": {"c": 2, "d": 2, "kind": "map", "x0": 2}, "t": "arr"}]: training G_rho (op-class) 1.0298; vs rho easy 1.5628, rest 0.9248
+   [{"detect": {"b": 512, "kind": "brent"}, "layout": {"c": 1, "d": 2, "kind": "map", "x0": 2}, "t": "arr"}]: training G_rho (op-class) 1.0151; vs rho easy 1.0914, rest 1.0731
+   [{"detect": {"b": 512, "kind": "brent"}, "layout": {"c": 1, "d": 2, "kind": "map", "x0": 5}, "t": "arr"}]: training G_rho (op-class) 1.0151; vs rho easy 1.0914, rest 1.0731
+   [{"detect": {"b": 512, "kind": "brent"}, "layout": {"c": 5, "d": 2, "kind": "map", "x0": 5}, "t": "arr"}]: training G_rho (op-class) 1.0109; vs rho easy 1.4466, rest 0.9775
+G-37 value: 0 / 10 = 0.00
+
+D-44 (held-out balanced numbers at 64 and 80 bits, seeds {64: 9930064, 80: 9930080}, 48 each; op-class v1; band average = geometric mean of C_cand / C_rho at 64 and 80):
+   genome (rank 1, the search's ranking): [{"t": "arr", "layout": {"kind": "map", "c": 2, "d": 2, "x0": 5}, "detect": {"kind": "brent", "b": 512}}]
+   successes {('cand', 64): 48, ('cand', 80): 48, ('rho', 64): 48, ('rho', 80): 48}; C_cand / C_rho: 64 0.9896, 80 0.9872
+   D-44 band average 0.9884 [0.8611, 1.1331] (10000 resamples defined); forecast 0.98, range 0.69-1.27: not falsified
+
+REPORT {"map_brent": {"genome": [{"t": "arr", "layout": {"kind": "map", "c": 2, "d": 2, "x0": 5}, "detect": {"kind": "brent", "b": 512}}], "fitness": 1.0481866430260058, "slope": 0.24905896351700907, "slope_all": 0.24949914596262088, "g_rho": {"opclass_v1": 1.0481866430260058, "ruint": 1.0505017065769462, "montgomery": 1.059556943513362, "official": 1.0475217980209077, "opclass_v1_gcdscaled": 1.048425434828901}, "ratio": {"48": 1.0586013342696117, "56": 0.9764525879590137, "64": 1.1371747576154774, "72": 1.06712542199038, "80": 0.8177162149998708}, "fermat": {"easy": {"n": 7, "ok": 7, "per_fact": 3862132.884741682, "mean_spent": 3862132.884741682, "total": 27034930.193191774}, "rest": {"n": 41, "ok": 41, "per_fact": 4438703.304056046, "mean_spent": 4438703.304056046, "total": 181986835.46629786}, "adv": -0.05659791570858874, "adv_rest": -0.04807935012879172, "flag": false}}, "stride_dot": {"genome": [{"t": "arr", "layout": {"kind": "stride", "a": 0, "s": 1}, "detect": {"kind": "dot", "t": 1}}], "fitness": null, "slope": null, "slope_all": null, "g_rho": {"opclass_v1": null, "ruint": null, "montgomery": null, "official": null, "opclass_v1_gcdscaled": null}, "ratio": {"48": null}}, "stride_batch": {"genome": [{"t": "arr", "layout": {"kind": "stride", "a": 0, "s": 1}, "detect": {"kind": "batch", "b": 1, "t": 1}}], "fitness": null, "slope": null, "slope_all": null, "g_rho": {"opclass_v1": null, "ruint": null, "montgomery": null, "official": null, "opclass_v1_gcdscaled": null}, "ratio": {"48": null}}, "stride_floyd": {"genome": [{"t": "arr", "layout": {"kind": "stride", "a": 0, "s": 1}, "detect": {"kind": "floyd", "b": 1}}], "fitness": null, "slope": null, "slope_all": null, "g_rho": {"opclass_v1": null, "ruint": null, "montgomery": null, "official": null, "opclass_v1_gcdscaled": null}, "ratio": {"48": null}}, "stride_brent": {"genome": [{"t": "arr", "layout": {"kind": "stride", "a": 0, "s": 1}, "detect": {"kind": "brent", "b": 1}}], "fitness": null, "slope": null, "slope_all": null, "g_rho": {"opclass_v1": null, "ruint": null, "montgomery": null, "official": null, "opclass_v1_gcdscaled": null}, "ratio": {"48": null}}, "fold_dot": {"genome": [{"t": "arr", "layout": {"kind": "fold", "w": 2, "a": 1, "s": 1}, "detect": {"kind": "dot", "t": 1}}], "fitness": null, "slope": null, "slope_all": null, "g_rho": {"opclass_v1": null, "ruint": null, "montgomery": null, "official": null, "opclass_v1_gcdscaled": null}, "ratio": {"48": null}}, "fold_batch": {"genome": [{"t": "arr", "layout": {"kind": "fold", "w": 2, "a": 1, "s": 1}, "detect": {"kind": "batch", "b": 1, "t": 1}}], "fitness": null, "slope": null, "slope_all": null, "g_rho": {"opclass_v1": null, "ruint": null, "montgomery": null, "official": null, "opclass_v1_gcdscaled": null}, "ratio": {"48": null}}, "map_dot": {"genome": [{"t": "arr", "layout": {"kind": "map", "c": 1, "d": 2, "x0": 2}, "detect": {"kind": "dot", "t": 1}}], "fitness": null, "slope": null, "slope_all": null, "g_rho": {"opclass_v1": null, "ruint": null, "montgomery": null, "official": null, "opclass_v1_gcdscaled": null}, "ratio": {"48": null}}, "map_batch": {"genome": [{"t": "arr", "layout": {"kind": "map", "c": 1, "d": 2, "x0": 2}, "detect": {"kind": "batch", "b": 1, "t": 1}}], "fitness": null, "slope": null, "slope_all": null, "g_rho": {"opclass_v1": null, "ruint": null, "montgomery": null, "official": null, "opclass_v1_gcdscaled": null}, "ratio": {"48": null}}, "map_floyd": {"genome": [{"t": "arr", "layout": {"kind": "map", "c": 1, "d": 2, "x0": 2}, "detect": {"kind": "floyd", "b": 1}}], "fitness": null, "slope": 0.25470381586736895, "slope_all": 0.25261741465605986, "g_rho": {"opclass_v1": 0.9899661304411068, "ruint": 0.9892129076671927, "montgomery": 0.9865608322234883, "official": 0.9901888906641786, "opclass_v1_gcdscaled": 0.960327964917407}, "ratio": {"48": 9.310234891372238, "56": 9.628484790922052, "64": 9.950705200617042, "72": 9.294291016002239, "80": 10.043462293688982}, "fermat": {"easy": {"n": 7, "ok": 7, "per_fact": 7608648.845567683, "mean_spent": 7608648.845567683, "total": 53260541.91897378}, "rest": {"n": 41, "ok": 41, "per_fact": 8807188.817989063, "mean_spent": 8807188.817989063, "total": 361094741.5375516}, "adv": -1.094551863925132, "adv_rest": -1.0795786743359645, "flag": false}}, "bins_dot": {"genome": [{"t": "arr", "layout": {"kind": "bins", "m": 1, "B": 1}, "detect": {"kind": "dot", "t": 1}}], "fitness": null, "slope": null, "slope_all": null, "g_rho": {"opclass_v1": null, "ruint": null, "montgomery": null, "official": null, "opclass_v1_gcdscaled": null}, "ratio": {"48": null}}, "bins_batch": {"genome": [{"t": "arr", "layout": {"kind": "bins", "m": 1, "B": 1}, "detect": {"kind": "batch", "b": 1, "t": 1}}], "fitness": null, "slope": null, "slope_all": null, "g_rho": {"opclass_v1": null, "ruint": null, "montgomery": null, "official": null, "opclass_v1_gcdscaled": null}, "ratio": {"48": null}}, "bins_bins": {"genome": [{"t": "arr", "layout": {"kind": "bins", "m": 1, "B": 1}, "detect": {"kind": "bins"}}], "fitness": null, "slope": null, "slope_all": null, "g_rho": {"opclass_v1": null, "ruint": null, "montgomery": null, "official": null, "opclass_v1_gcdscaled": null}, "ratio": {"48": null}, "flag_bins": false}, "exponent_dot": {"genome": [{"t": "arr", "layout": {"kind": "exponent", "a": 2, "K": 256}, "detect": {"kind": "dot", "t": 1}}], "fitness": null, "slope": null, "slope_all": null, "g_rho": {"opclass_v1": null, "ruint": null, "montgomery": null, "official": null, "opclass_v1_gcdscaled": null}, "ratio": {"48": null}}, "exponent_batch": {"genome": [{"t": "arr", "layout": {"kind": "exponent", "a": 2, "K": 256}, "detect": {"kind": "batch", "b": 1, "t": 1}}], "fitness": null, "slope": null, "slope_all": null, "g_rho": {"opclass_v1": null, "ruint": null, "montgomery": null, "official": null, "opclass_v1_gcdscaled": null}, "ratio": {"48": null}}, "_g37": {"easy": 6, "n": 48, "rows": [{"genome": [{"detect": {"b": 512, "kind": "brent"}, "layout": {"c": 2, "d": 2, "kind": "map", "x0": 5}, "t": "arr"}], "g_rho_train_opclass": 1.0481866430260058, "vs_rho_easy": 1.2018015181852277, "vs_rho_rest": 0.7844905487241159, "counts": false}, {"genome": [{"detect": {"b": 512, "kind": "brent"}, "layout": {"c": 3, "d": 2, "kind": "map", "x0": 5}, "t": "arr"}], "g_rho_train_opclass": 1.0430065996552431, "vs_rho_easy": 1.4464699092937436, "vs_rho_rest": 0.9330736518541034, "counts": false}, {"genome": [{"detect": {"b": 512, "kind": "brent"}, "layout": {"c": 2, "d": 2, "kind": "map", "x0": 7}, "t": "arr"}], "g_rho_train_opclass": 1.037458702822059, "vs_rho_easy": 1.451735269067703, "vs_rho_rest": 0.8973977273345687, "counts": false}, {"genome": [{"detect": {"b": 512, "kind": "brent"}, "layout": {"c": 11, "d": 2, "kind": "map", "x0": 5}, "t": "arr"}], "g_rho_train_opclass": 1.035569774886217, "vs_rho_easy": 1.8352329440956712, "vs_rho_rest": 0.9243953492105064, "counts": false}, {"genome": [{"detect": {"b": 128, "kind": "brent"}, "layout": {"c": 2, "d": 2, "kind": "map", "x0": 5}, "t": "arr"}], "g_rho_train_opclass": 1.0342052165328322, "vs_rho_easy": 1.117260491150745, "vs_rho_rest": 0.7378121335908547, "counts": false}, {"genome": [{"detect": {"b": 64, "kind": "brent"}, "layout": {"c": 2, "d": 2, "kind": "map", "x0": 5}, "t": "arr"}], "g_rho_train_opclass": 1.032515266365087, "vs_rho_easy": 1.112540860924147, "vs_rho_rest": 0.7354635384508827, "counts": false}, {"genome": [{"detect": {"b": 512, "kind": "brent"}, "layout": {"c": 2, "d": 2, "kind": "map", "x0": 2}, "t": "arr"}], "g_rho_train_opclass": 1.0297562682858212, "vs_rho_easy": 1.5627713363182911, "vs_rho_rest": 0.9247897561987494, "counts": false}, {"genome": [{"detect": {"b": 512, "kind": "brent"}, "layout": {"c": 1, "d": 2, "kind": "map", "x0": 2}, "t": "arr"}], "g_rho_train_opclass": 1.0151352217302518, "vs_rho_easy": 1.0913653743251595, "vs_rho_rest": 1.0731047696697613, "counts": false}, {"genome": [{"detect": {"b": 512, "kind": "brent"}, "layout": {"c": 1, "d": 2, "kind": "map", "x0": 5}, "t": "arr"}], "g_rho_train_opclass": 1.0151352217302518, "vs_rho_easy": 1.0913653743251595, "vs_rho_rest": 1.0731047696697613, "counts": false}, {"genome": [{"detect": {"b": 512, "kind": "brent"}, "layout": {"c": 5, "d": 2, "kind": "map", "x0": 5}, "t": "arr"}], "g_rho_train_opclass": 1.0109385775263384, "vs_rho_easy": 1.4466067087186127, "vs_rho_rest": 0.9774558975540616, "counts": false}], "excluded": [], "count": 0, "measured": 10, "value": 0.0}, "_d44": {"genome": [{"t": "arr", "layout": {"kind": "map", "c": 2, "d": 2, "x0": 5}, "detect": {"kind": "brent", "b": 512}}], "ratios": {"64": 0.9896161837739873, "80": 0.9872393208303949}, "band": 0.98842703784943, "ci": [0.861115975818122, 1.1330708996982004], "outcome": "not falsified", "successes": {"cand 64": 48, "cand 80": 48, "rho 64": 48, "rho 80": 48}}}
+
+## judge check 2 (after the run, before the result is committed)
+JUDGE: pin 5, 47 entries: ok
