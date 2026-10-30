@@ -11348,3 +11348,16 @@ G's rule 1 reports the 84–96 chord beside 80–96, but design §8 drew no 84-b
 - The user decides whether G-37 and the 48-bit held-out set stand, or whether a fresh 48-bit draw is needed. That would be a judge change, with a new pin.
 
 **Fix:** `arr_report.py` gains `--test-seed S` for code checks. It refuses the held-out seeds, and the output labels which numbers were used.
+
+**Ruling on the incident (the user's, Oct 30):** G-37 and the 48-bit held-out set both stand; no redraw. The grounds:
+- only the easy-subset size (a property of the sealed set) and the costs of control genomes were seen;
+- no search genome was evaluated;
+- Grok's text predates it;
+- the search cannot read held-out data;
+- `--test-seed` now refuses the held-out seeds.
+
+## Ruling: the search run 39ffaf5 is VOID (the user's, Oct 30; documentation only)
+
+The balanced-map search of 39ffaf5 (record bd3a26c) is **void for all scoring and forecasts**. It ran before the guard hardening, with the whole file system readable, validation seeds included.
+
+It is re-run under the hardened sandbox with the same search seed and settings (training seeds 9920000 + bits, the same grid, start points, cost guard and budget, 2 workers). Before any scoring, the re-run's evaluated genomes and final genomes are compared with 39ffaf5's, and the report states "identical" or the first difference. An identical result is evidence that the old run never used held-out data. 39ffaf5's record keeps only the per-pair final genomes, their fitness, search entries and records, plus the sweep log; it has no evaluated-genome list, so the comparison covers what it holds.
