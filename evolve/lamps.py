@@ -572,7 +572,7 @@ def run(gen, N, cap):
     lists, per stage with an op budget that ran, (index, ob, spent, ended by its budget,
     its own tests, its own hits). With TYPES on, LAST["types"] holds the run's per-type op
     counts, taken per stage (each stage on its own counting meter and with its own traces;
-    read-only, no op changes). LAST["arr_small"]: the run's arr gcds with a non-N argument < 2^64 (information only)."""
+    read-only, no op changes). LAST["arr_small"]: the run's arr gcds with a non-N argument < 2^32 (information only)."""
     global PM1_TRACE
     PM1_TRACE = None
     validate_genome(gen)

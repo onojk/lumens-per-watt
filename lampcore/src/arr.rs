@@ -3,7 +3,7 @@
 //! same tests. In no deck.
 //!
 //! word, hash and sort_cmp charges go to their phases (PH_WORD, PH_HASH, PH_SORT); gcd = tests; mul is the rest
-//! (main.rs, stage_types). SMALL counts the gcds whose non-N argument was < 2^64 at the call (information only).
+//! (main.rs, stage_types). SMALL counts the gcds whose non-N argument was < 2^32 at the call (information only).
 
 use super::{Budget, Meter, Num, R, PH_HASH, PH_SORT, PH_WORD};
 use ruint::aliases::U256;
@@ -194,7 +194,7 @@ impl Layout {
 /// One charged gcd of v with N and one luck-meter test (hit: the gcd is not 1).
 fn gt(v: U256, n: U256, m: &mut Meter) -> Result<U256, Budget> {
     m.tick(1)?;
-    if v.bit_len() <= 64 {
+    if v.bit_len() <= 32 {  // small-k: argument < 2^32 (G_rho v2, 9e89a4e)
         SMALL.with(|s| s.set(s.get() + 1));
     }
     let g = v.gcd(n);

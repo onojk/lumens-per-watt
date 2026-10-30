@@ -14,7 +14,7 @@
 //! " R <side A ops> <side B ops> <switches>" for the last race that ran (and the phase columns
 //! are printed when either side is a qs, cfrac or ecm stage).
 //! If the genome has an arr stage, the line then ends with " A <gcd_small>": the run's arr gcds whose non-N argument
-//! was < 2^64 (information only; NOTES.md, "Cost model: the arrangement lamp").
+//! was < 2^32 (information only; NOTES.md, "Cost model: the arrangement lamp").
 //! With --types, each line then ends with " T" and the run's per-type op counts, in
 //! TYPE_NAMES order (the types evolve/optypes.py splits; read-only instrumentation).
 //! stage is the winning stage's index; k is the multiplier a square-search win came from,

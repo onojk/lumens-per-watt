@@ -12,8 +12,9 @@ Ops = mul + word + hash + sort_cmp + gcd, gcd = tests. lampcore/src/main.rs (lam
 order of charges, same tests.
 
 Read-only instrumentation: with TRACE a dict, the stage's word / hash / sort_cmp / mul / gcd charges; SMALL counts the
-gcds whose non-N argument was < 2^64 at the call (the size-scaled gcd price's small-k curve; information only).
-MUTATE (parity's mutation check): a charge site's name; that site charges one op more than the cost model."""
+gcds whose non-N argument was < 2^32 at the call (G_rho v2, 9e89a4e) (the size-scaled gcd price's small-k curve; information only).
+MUTATE (parity's mutation check): a charge site's name; that site charges one op more than the cost model; or "small64":
+the v1 gcd_small threshold (< 2^64), which parity (6) must catch."""
 import math
 
 TRACE = None
@@ -146,7 +147,7 @@ def lamp_arr(N, g, m):
         """One charged gcd of v with N, one luck-meter test (hit: the gcd is not 1)."""
         global SMALL
         ch({"gcd": 1}, site)
-        if v.bit_length() <= 64:
+        if v.bit_length() <= (64 if MUTATE == "small64" else 32):   # small-k: argument < 2^32 (G_rho v2, 9e89a4e)
             SMALL += 1
         G = math.gcd(v, N)
         m.test(G != 1)

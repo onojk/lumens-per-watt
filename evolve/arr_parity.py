@@ -10,6 +10,9 @@ ruling 77e898e). Untimed counts; not scored; no training run.
   4. Refusals: invalid genomes are refused by both cores.
   5. Mutation check: each charge site in arr.SITES, charged one op more in Python (arr.MUTATE), must be caught by (3);
      each type arr uses, dropped and doubled in lampcore's output (LAMPCORE_TYPES_MUTATE), must be caught.
+  6. gcd_small's threshold (< 2^32, G_rho v2, 9e89a4e) at 36-56 bits, where gcd arguments fall between 2^32 and 2^64
+     (the 20-28-bit numbers of (3) cannot tell 2^32 from 2^64): Python = lampcore on the whole line; some gcds counted
+     small and some not; and the v1 threshold (Python with arr.MUTATE = "small64") must differ.
   python3 arr_parity.py > arr_parity.out; exit 3 on any failure"""
 import sys
 sys.argv = sys.argv[:1]
@@ -206,5 +209,29 @@ if __name__ == "__main__":
     miss = [k for k, v in caught.items() if not v]
     print(f"5. mutations caught: {len(caught) - len(miss)}/{len(caught)}" + (f"; NOT caught: {miss}" if miss else ""))
     fail += len(miss)
+    # 6. gcd_small's threshold
+    tn = [x for bits in (36, 44, 56) for x in semiprimes(bits, 3, 9960000 + bits)]
+    TG = [[A({"kind": "map", "c": 1, "d": 2, "x0": 2}, {"kind": "brent", "b": 16})],
+          [A({"kind": "stride", "a": 2, "s": 1}, {"kind": "dot"}, ob=20000)],
+          [A({"kind": "stride", "a": 1 << 40, "s": 1}, {"kind": "dot"}, ob=20000)],
+          [A({"kind": "bins", "m": 1, "B": 1}, {"kind": "bins"}, ob=20000)]]
+    bad = tot = 0
+    small = gcds = 0
+    caught = False
+    for g in TG:
+        c = core(g, tn, 200_000)
+        for (N, _, _), x in zip(tn, c):
+            tot += 1
+            ok = py(g, N, 200_000) == x
+            bad += not ok
+            f, ty = fields(x)
+            small += int(f[f.index("A") + 1]); gcds += ty.get("gcd", 0)
+            arr.MUTATE = "small64"
+            caught |= py(g, N, 200_000) != x
+            arr.MUTATE = None
+    mixed = 0 < small < gcds
+    print(f"6. gcd_small < 2^32 at 36/44/56 bits ({len(TG)} genomes x {len(tn)} numbers): {tot - bad}/{tot} identical lines; "
+          f"{small} of {gcds} gcds small (both kinds present: {mixed}); the v1 threshold (< 2^64) caught: {caught}")
+    fail += bad + (not mixed) + (not caught)
     print(f"exit {3 if fail else 0}")
     sys.exit(3 if fail else 0)
