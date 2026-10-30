@@ -11591,3 +11591,28 @@ Both maps are scored.
 - (a) choose D, or order a division bench;
 - (b) an unmetered measurement of α and β on training-like numbers (an explore script), so the forecasters see A;
 - then the family's design (genes: the multiplier set, the square-test filter, the queue bound, the cycle-length cap) and its predictions.
+
+## Family (2), SQUFOF-like: the word-division price D per pricing (the user's ruling, Oct 30; documentation and bench only)
+
+**Rule:** D is set by each pricing's own method, not chosen.
+- **op-class v1: D = 1.** Its definition is a frozen instruction count, and a 64-bit DIV is one instruction.
+- **ruint and Montgomery: D timed.**
+
+**The bench** (`bench/divbench`, run.py, `divbench.json`):
+- A dependent chain of 64-bit divisions with SQUFOF-sized operands (dividend about 2^(bits/2), divisor uniform in [2^(bits/4), 2^(bits/2))) against the same chain with a word add.
+- Pinned to core 2 under the 2.4 GHz cap (cur 2,400 MHz; governor powersave; AC; TCPU 66 °C), 5 interleaved rounds × 3 reps × 2·10^7 iterations, medians.
+- The load average was 4.4–4.7 during the run (another session's work on other cores); the spreads were ±0.2%.
+
+| N bits | div (ns / iteration) | add | loop only | **D_timed = div / add** |
+|---|---|---|---|---|
+| 48 | 6.729 | 1.678 | 1.677 | **4.01** |
+| 64 | 6.726 | 1.677 | 1.677 | **4.01** |
+| 80 | 7.978 | 1.677 | 1.677 | **4.76** |
+
+- The add costs nothing measurable beyond the loop's own dependency chain, about 4 cycles at 2.4 GHz. So the overhead-subtracted ratio is undefined (a division by about zero) and is not used.
+- The division adds about 12 cycles at 48–64 bits and about 15 at 80 (the dividend grows past 2^32).
+- **Recorded values:**
+  - op-class v1: D = 1;
+  - ruint: D = 4.0 (48, 64), 4.8 (80);
+  - Montgomery: D = 4.0 (48, 64), 4.8 (80). Both timed pricings express D in their own `word` units, so one ratio serves both.
+- **Caveat:** the bench's "word add" is an add in a dependent chain. The calibrated `word` price comes from the sieve update (load, add, store). If that op is dearer than this add, the true timed D is lower than measured, which favours SQUFOF.

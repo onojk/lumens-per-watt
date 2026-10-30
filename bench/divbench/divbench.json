@@ -1,0 +1,75 @@
+{
+ "results": {
+  "48": {
+   "ns": {
+    "div": 6.7293,
+    "add": 1.6776,
+    "loop": 1.6772
+   },
+   "spread": {
+    "div": [
+     6.7157,
+     6.7374
+    ],
+    "add": [
+     1.6751,
+     1.6877
+    ],
+    "loop": [
+     1.6761,
+     1.6855
+    ]
+   },
+   "D_timed": 4.011266094420601,
+   "D_net": 12630.250000001392
+  },
+  "64": {
+   "ns": {
+    "div": 6.7258,
+    "add": 1.6772,
+    "loop": 1.6771
+   },
+   "spread": {
+    "div": [
+     6.7159,
+     6.7315
+    ],
+    "add": [
+     1.6753,
+     1.6819
+    ],
+    "loop": [
+     1.6758,
+     1.682
+    ]
+   },
+   "D_timed": 4.010135940853804,
+   "D_net": 50487.00000000555
+  },
+  "80": {
+   "ns": {
+    "div": 7.9776,
+    "add": 1.6774,
+    "loop": 1.6766
+   },
+   "spread": {
+    "div": [
+     7.9712,
+     7.9816
+    ],
+    "add": [
+     1.6755,
+     1.6794
+    ],
+    "loop": [
+     1.6757,
+     3.297
+    ]
+   },
+   "D_timed": 4.755931799213068,
+   "D_net": 7876.250000000868
+  }
+ },
+ "machine_before": "time: 2026-10-30T02:58:42-07:00\npinned core: 2\ngovernor: powersave\nenergy_performance_preference: balance_performance\ncur MHz: 2399; max MHz: 5000\nfrequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100\nload average: 4.70 3.56 2.81\npower supply AC online: 1\npower supply BAT0 capacity: 100% (Not charging)\ntemperature TCPU: 67 C\ntemperature x86_pkg_temp: 67 C\nsensors: Package id 0:  +67.0\u00b0C  (high = +100.0\u00b0C, crit = +100.0\u00b0C)\ntop 5 processes by current CPU (top, a 1 s sample):\n  107.0% abstrakt-deck\n  26.0% Xorg\n  13.0% xfce4-terminal\n  8.0% claude\n  8.0% kworker/u37:6+ttm\n",
+ "machine_after": "time: 2026-10-30T02:58:53-07:00\npinned core: 2\ngovernor: powersave\nenergy_performance_preference: balance_performance\ncur MHz: 2400; max MHz: 5000\nfrequency limits: scaling_min_freq 400 MHz; scaling_max_freq 2400 MHz; intel_pstate no_turbo 0; min_perf_pct 8; max_perf_pct 100\nload average: 4.74 3.60 2.84\npower supply AC online: 1\npower supply BAT0 capacity: 100% (Not charging)\ntemperature TCPU: 66 C\ntemperature x86_pkg_temp: 67 C\nsensors: Package id 0:  +67.0\u00b0C  (high = +100.0\u00b0C, crit = +100.0\u00b0C)\ntop 5 processes by current CPU (top, a 1 s sample):\n  128.7% abstrakt-deck\n  22.8% Xorg\n  10.9% xfce4-terminal\n  9.9% chrome\n  8.9% claude\n"
+}
