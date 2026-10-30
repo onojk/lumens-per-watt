@@ -11248,3 +11248,21 @@ Montgomery is read from calibrate.json at run time and reported. With official p
 ## Ruling: 84-bit validation numbers for G's gene check (the user's, Oct 29; documentation only)
 
 G's rule 1 reports the 84–96 chord beside 80–96, but design §8 drew no 84-bit validation numbers. **The user's decision:** add 48 balanced semiprimes at 84 bits, `semiprimes_pq(84, 48, 9930084)`, the same seed rule as the other validation sizes. The candidate and the reference QS run on them, and the reference QS uses the sealed 2'b genes at 84. If the 80–96 and 84–96 intervals do not overlap, the report flags it, per G's rule 1. Rho does not need 84 (G_rho is 48–80).
+
+## Ruling: the 48-bit close-factor tail stays (the user's, Oct 30; documentation only)
+
+**The finding:** the close-factor check (`explore/close_factors.py`, 34823e3) found a Fermat-easy tail at 48 bits: 11.5% (training) and 16.0% (validation) of 200 numbers need no more Fermat steps than √p. The tail is about 3% at 64 bits and 0.5% at 80. Of the actual sets, 0 / 48 at every size has |q − p| < N^(1/4).
+
+**The ruling:** keep the sealed sets. No redraw; pin 2 (1a9c29d) stands.
+- A post-hoc redraw would be a judge change.
+- The tail sits at the cheap end of the 48–80 chord. A genome that exploits close factors gets cheaper at 48 bits, where the tail is largest, than at 80, where it is nearly gone. That lengthens its cost growth over 48–80 (a shorter doubling period), so the tail cannot improve its G_rho.
+
+**Reporting rule for the search** (in the report script `evolve/arr_report.py`, not the judge):
+- For each reported genome, the 48-bit cost on the Fermat-easy subset (Fermat steps ≤ √p) and on the rest, beside rho's on the same split.
+- **Flag** any genome whose 48-bit advantage over rho comes mostly from the Fermat-easy subset.
+
+**The search's ranking (the user's ruling, Oct 30, before the search ran):** the search (`evolve/arr_search.py`, the proposer) ranks genomes by worst-of G_rho on the training numbers, under a **cost guard**: a genome is ranked only if its robust cost ratio against rho is ≤ 1.25 at every training size, 48 to 80.
+- **Why:** on the 20–32-bit selftest, G_rho alone selected padded genomes. map + Floyd with b = 128 and d = 8 scored 13.8, and exponent + batch(512) 6.4. Both are costly at the small end, so their cost curve looks flat.
+- **With the guard,** the selftest selects map + Brent(64), which is rho itself: 1.000 under the four flat pricings, and 0.996 under the scaled gcd price (gcds whose argument is < 2^32 are common at 20–32 bits).
+- **The search's budget:** 16 × rho's largest op count per training size.
+- This is the proposer's rule, not the judge's. The sealed harness scores G_rho with the cost ratio beside it, unchanged.
