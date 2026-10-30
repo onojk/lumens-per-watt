@@ -1,0 +1,45 @@
+## judge check 1 (before the run)
+JUDGE: pin 5, 47 entries: ok
+Preparing worktree (detached HEAD 501eb41)
+worktree: /home/onojk123/lpw-search-arrangement-v1-501eb41 (HEAD 501eb41)
+JUDGE: pin 5, 47 entries: ok
+running (sandboxed; training data only; mounted: 17 allow-listed files; writable: /home/onojk123/lpw-search-arrangement-v1-501eb41/search_out): python3 arr_search.py balanced
+[      7s] map balanced: sizes (48, 56, 64, 72, 80), 48 per size, seeds 9920000 + bits; rho successes {48: 48, 56: 48, 64: 48, 72: 48, 80: 48}; budget per number 16 x rho's max: {48: 279712, 56: 1100176, 64: 5030128, 72: 18900592, 80: 71164672}
+[     11s]   stride x dot: sweep 1: best None at {"a": 0, "s": 1, "t": 1} (10 evaluations so far)
+[     15s]   stride x batch: sweep 1: best None at {"a": 0, "s": 1, "b": 1, "t": 1} (24 evaluations so far)
+[     19s]   stride x floyd: sweep 1: best None at {"a": 0, "s": 1, "b": 1} (38 evaluations so far)
+[     23s]   stride x brent: sweep 1: best None at {"a": 0, "s": 1, "b": 1} (52 evaluations so far)
+[     26s]   fold x dot: sweep 1: best None at {"w": 2, "a": 1, "s": 1, "t": 1} (64 evaluations so far)
+[     30s]   fold x batch: sweep 1: best None at {"w": 2, "a": 1, "s": 1, "b": 1, "t": 1} (80 evaluations so far)
+[     42s]   map x dot: sweep 1: best None at {"c": 1, "d": 2, "x0": 2, "t": 1} (93 evaluations so far)
+[     52s]   map x batch: sweep 1: best None at {"c": 1, "d": 2, "x0": 2, "b": 1, "t": 1} (110 evaluations so far)
+[     53s]   map x floyd: sweep 1: best None at {"c": 1, "d": 2, "x0": 2, "b": 1} (127 evaluations so far)
+[     70s]   map x brent: sweep 1: best 1.015 at {"c": 1, "d": 2, "x0": 2, "b": 512} (144 evaluations so far)
+[    108s]   map x brent: sweep 2: best 1.0482 at {"c": 2, "d": 2, "x0": 5, "b": 512} (160 evaluations so far)
+[    132s]   map x brent: sweep 3: best 1.0482 at {"c": 2, "d": 2, "x0": 5, "b": 512} (168 evaluations so far)
+[    135s]   bins x dot: sweep 1: best None at {"m": 1, "B": 1, "t": 1} (177 evaluations so far)
+[    137s]   bins x batch: sweep 1: best None at {"m": 1, "B": 1, "b": 1, "t": 1} (190 evaluations so far)
+[    140s]   bins x bins: sweep 1: best None at {"m": 1, "B": 1} (198 evaluations so far)
+[    141s]   exponent x dot: sweep 1: best None at {"a": 2, "K": 256, "t": 1} (209 evaluations so far)
+[    142s]   exponent x batch: sweep 1: best None at {"a": 2, "K": 256, "b": 1, "t": 1} (224 evaluations so far)
+[    142s] best overall: map x brent, fitness 1.0481866430260058; 224 evaluations
+[    175s]   stride_dot: fitness None; successes {48: 0}; dropped at 48 bits
+[    175s]   stride_batch: fitness None; successes {48: 0}; dropped at 48 bits
+[    175s]   stride_floyd: fitness None; successes {48: 0}; dropped at 48 bits
+[    175s]   stride_brent: fitness None; successes {48: 0}; dropped at 48 bits
+[    175s]   fold_dot: fitness None; successes {48: 0}; dropped at 48 bits
+[    175s]   fold_batch: fitness None; successes {48: 0}; dropped at 48 bits
+[    175s]   map_dot: fitness None; successes {48: 0}; dropped at 48 bits
+[    175s]   map_batch: fitness None; successes {48: 0}; dropped at 48 bits
+[    175s]   map_floyd: fitness None; successes {48: 48, 56: 48, 64: 48, 72: 48, 80: 48}
+[    175s]   map_brent: fitness 1.0481866430260058; successes {48: 48, 56: 48, 64: 48, 72: 48, 80: 48}
+[    175s]   bins_dot: fitness None; successes {48: 0}; dropped at 48 bits
+[    175s]   bins_batch: fitness None; successes {48: 0}; dropped at 48 bits
+[    175s]   bins_bins: fitness None; successes {48: 0}; dropped at 48 bits
+[    175s]   exponent_dot: fitness None; successes {48: 4}; dropped at 48 bits
+[    175s]   exponent_batch: fitness None; successes {48: 4}; dropped at 48 bits
+[    175s] wrote /lpw/search_out/arr_search_balanced.json
+search ended (exit 0); its process group 232299 killed
+
+## judge check 2 (after the run, before the result is committed)
+JUDGE: pin 5, 47 entries: ok
