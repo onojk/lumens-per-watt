@@ -1,0 +1,10 @@
+## judge check 1 (before the run)
+JUDGE: pin 5, 47 entries: ok
+Preparing worktree (detached HEAD 366688d)
+worktree: /home/onojk123/lpw-search-arrangement-v1-366688d (HEAD 366688d)
+JUDGE: pin 5, 47 entries: ok
+running (sandboxed; training data only; mounted: 17 allow-listed files; writable: /home/onojk123/lpw-search-arrangement-v1-366688d/search_out): python3 arr_search.py theta
+search ended (exit 143); its process group 280163 killed
+
+## judge check 2 (after the run, before the result is committed)
+JUDGE: pin 5, 47 entries: ok
