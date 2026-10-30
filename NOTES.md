@@ -11288,3 +11288,13 @@ G's rule 1 reports the 84–96 chord beside 80–96, but design §8 drew no 84-b
 **Limits of this search:**
 - A coordinate search cannot leave a start point where every single-gene move is "not defined". For the walk, bins and exponent pairs, one sweep ended the search. Those pairs are dropped under the search's budget (16 × rho's max per number), not ruled out in general.
 - The memo of non-selected evaluations is not in the record, only each pair's kept genome.
+
+## Check: no N-dependent start point in arr (DeepSeek's caveat (a); report only; Oct 30; documentation only)
+
+**Within the arr lamp, the Fermat-from-√N route is closed by construction.**
+- Every arr start point is a constant gene below 2^64, reduced mod N: stride's a, fold's a, map's x0, bins' first dot (y = 0, stepping by the gene m) and exponent's base a.
+- The detection target t is a constant gene too.
+- Nothing in `evolve/arr.py` or `lampcore/src/arr.rs` computes isqrt(N) or any function of N other than reduction mod N.
+- So no arr genome can start a walk at √N. The only way to get there is a constant that happens to land near √N, and a constant cannot track N across 48 numbers per size.
+
+**One gap, found by this check, outside the lamp: the harness's genome input.** `arr_validate.load` accepted any genome that passes `lamps.validate_genome` and holds an arr stage. Such a genome could add an `sq` stage (Fermat / Lehman / Hart square search, which starts at isqrt(kN)). The search never builds one, since `arr_search.py` emits a single arr stage, but the judge would have scored it. The design (§2) says a genome is one arr stage. The reader hardening (DeepSeek b1–b3, next) makes the harness refuse anything else.
