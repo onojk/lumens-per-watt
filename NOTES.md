@@ -11756,3 +11756,12 @@ Both maps are scored.
 - **The slope and level win rules apply against the frontier** (`docs/planning/next_family_template.md` §0).
 - **Arrangement-v1's results stay as recorded,** scoped to rho.
 - The frontier is measured next, with the p − 1 / ECM bound rule fixed before the run.
+
+**The frontier measurement's bound rule, fixed before the run** (`explore/frontier.py`, this commit; nothing chosen post hoc):
+- **rho, td and ECM:** `partition.PRE` genes. td runs only where its walk fits (balanced 48 and 56; θ at every size).
+- **p − 1:** `partition.PRE` (B = N^0.199, no stage 2), and the same with stage 2 c = 50, the analogue of ECM's frozen b2 = 50. Disclosed: the family (1) pre-check saw p − 1 with stage 2 near N^0.2 do well on other numbers; b = 0.199 predates it.
+- **QS:** the growth harness's reference genes (sealed 2'b, interpolated, held at 54 below).
+- **CFRAC:** the accepted genes, reported under official and op-class only, since it cannot hold a worst-of frontier.
+- **Not run:** sq and ps (no ruint / Montgomery price for their lumped ops); vl (a walk like td); race and arr (composites and families).
+- **Numbers:** fresh guarded seeds (balanced 9950000 + bits, θ 9951000 + bits), 96 per size at 48–96 in steps of 8.
+- **Smoke test:** on other seeds (9952000 / 9953000, 4 numbers, 48 and 56 bits), not on the measured numbers.
