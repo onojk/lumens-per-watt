@@ -11734,3 +11734,18 @@ Both maps are scored.
 - ECM: 3.4–18 ×.
 - p + 1: 1.8 × and worse.
 - This matches the earlier finding for small p (rho ahead at 24-bit p and below).
+
+## Family (1), change the group: go / no-go (Oct 30; documentation only)
+
+**Verdict: NO-GO as a novelty family. Park it.**
+- **Wins that exist** under the worst-of pricing and the win rules belong to known lamps only:
+  - ECM, a slope win on the balanced map;
+  - p − 1 with stage 2 at about N^0.2, a level win on the balanced map, composed post hoc from the bound grid.
+  The family's search would rediscover them, and rediscoveries are reported as known lamps, never as novelty (G_rho rule 5).
+- **The family's new member, p + 1,** wins under neither rule on either map. On the balanced map it is entirely above rho at 48 bits (1.40 [1.12, 1.77]), and it costs more than p − 1 at every bound. On the θ map it is at least 1.8 × rho.
+- **On the θ sub-map** no group arm beats rho at 48 or 64 bits.
+
+**A design note this exposes (for the user; not a ruling):**
+- **rho is a weak reference on the balanced map at 64–80 bits.** The existing ECM lamp beats it by 3–11 × there (worst-of 0.33 at 64, 0.09 at 80), with a G_rho of about 1.8. So a G_rho or cost-ratio "win" against rho at these sizes may only be a rediscovery of a known lamp.
+- **For balanced numbers,** the next family's reference could be the best known lamp per size (rho at 48, ECM from about 54–64), rather than rho alone.
+- **On the θ sub-map,** rho remains the strongest of rho, p − 1, p + 1 and ECM at 48–64 bits.
