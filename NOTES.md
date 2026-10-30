@@ -11464,3 +11464,10 @@ Forecast scoring (Q1–Q6 against R-38..R-43, G-31..G-36 and D-38..D-43) is a se
 **Protocol proposal (future rounds only; needs the user's approval before it applies; not retroactive):** a forecast's range must be at least as wide as the metric's stated resolution, for example ±4% for G_rho.
 
 **Failed run, Q5 (sealed c6e7958, FAILED exit 143; Oct 30; recorded as a failure):** the first θ sub-map search hung in Python before any lampcore call. My bug in the new theta mode (366688d): `Search` calls `draw(bits, count, seed)`, but `theta_numbers` takes `(bits, seed, n)`. So it was drawing about 9.9 million numbers from seed 48. I stopped the Python process inside the sandbox after 10 minutes, so that `sealed_run.sh` ran its second judge check (ok) and committed the failure. No genome was evaluated. Fixed with an adapter; initialisation then takes 0.05 s, with rho factoring 48 / 48 at 64 and 80. The balanced mode was not affected.
+
+**Q5, the θ sub-map search and its same-seed rerun (sealed 0f16ffe and 32773cc; Oct 30):**
+- **Both runs:** 215 evaluations, about 11 s, selected map + Brent with fitness 1.1326.
+- **The comparison as written** (`arr_compare_search.py`, its evaluated-list extension committed in ef3ea1f before run 2): **FIRST DIFFERENCE at evaluated[1]**, a different genome in that position.
+- **Post hoc** (labelled; after seeing that difference): the evaluated lists, compared as sets sorted by genome, have **identical content**. Order differs at 38 of 215 positions.
+  - The cause is the memo recording each genome when its evaluation finishes; with 2 workers in parallel, either may finish first. Everything before the list (numbers, rho, budget, selection, every pair's genome, fitness, search entry and records) was identical, and so was the sweep log.
+- **A consequence for G-37's tie-break** ("ties broken by the order the search evaluated them"): that order is not deterministic under 2 workers. On the balanced run there was no tie at the top-10 boundary (10th 1.0109, 11th 1.0074), so G-37's value is unaffected. A future version should break ties by the genome's sorted JSON.

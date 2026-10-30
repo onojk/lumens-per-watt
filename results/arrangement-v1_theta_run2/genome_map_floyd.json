@@ -1,0 +1,1 @@
+{"name": "map_floyd", "genome": [{"t": "arr", "layout": {"kind": "map", "c": 1, "d": 2, "x0": 2}, "detect": {"kind": "floyd", "b": 1}}]}

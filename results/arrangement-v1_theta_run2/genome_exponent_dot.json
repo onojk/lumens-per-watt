@@ -1,0 +1,1 @@
+{"name": "exponent_dot", "genome": [{"t": "arr", "layout": {"kind": "exponent", "a": 2, "K": 256}, "detect": {"kind": "dot", "t": 1}}]}

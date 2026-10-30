@@ -1,0 +1,1 @@
+{"name": "stride_brent", "genome": [{"t": "arr", "layout": {"kind": "stride", "a": 0, "s": 1}, "detect": {"kind": "brent", "b": 1}}]}

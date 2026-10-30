@@ -1,0 +1,1 @@
+{"name": "fold_dot", "genome": [{"t": "arr", "layout": {"kind": "fold", "w": 2, "a": 1, "s": 1}, "detect": {"kind": "dot", "t": 1}}]}

@@ -1,0 +1,6 @@
+compared: training numbers, rho's records, budget, evaluation count, selected genome, every pair's final genome, fitness, search entry and per-number training records, the evaluated-genome list, and the sweep log; not compared: per-number termination and the invalid flag in the pairs
+FIRST DIFFERENCE: evaluated[1].genome[0].layout.a: 1 vs 2
+
+POST HOC (after the first difference above): the evaluated lists compared as sets, each sorted by genome JSON:
+  215 vs 215 entries; identical content
+  order differs at 38 of 215 positions (the memo records each genome when its evaluation finishes; 2 workers finish in either order)
