@@ -11298,3 +11298,34 @@ G's rule 1 reports the 84–96 chord beside 80–96, but design §8 drew no 84-b
 - So no arr genome can start a walk at √N. The only way to get there is a constant that happens to land near √N, and a constant cannot track N across 48 numbers per size.
 
 **One gap, found by this check, outside the lamp: the harness's genome input.** `arr_validate.load` accepted any genome that passes `lamps.validate_genome` and holds an arr stage. Such a genome could add an `sq` stage (Fermat / Lehman / Hart square search, which starts at isqrt(kN)). The search never builds one, since `arr_search.py` emits a single arr stage, but the judge would have scored it. The design (§2) says a genome is one arr stage. The reader hardening (DeepSeek b1–b3, next) makes the harness refuse anything else.
+
+## Guard hardening (DeepSeek items 2, b1–b3; Grok b1–b2; Oct 30): what changed and how it was tested
+
+**What changed (4e86af5 and the sandbox fixes after it):**
+- **Training data only in the search sandbox.** The search sees /usr, a private /tmp, /proc, /dev, and under /lpw only 17 allow-listed files: the search, `arr_price.py`, the meter modules, the price files and the lampcore binary. The sandbox root is read-only, and `search_out` is its only writable path. Each allow-listed file is checked for an integer held-out seed (993[05]0xx); the only near-match found was inside a float in `opclass_v1.json` (159.6993001…), and the integer-only pattern skips it.
+  - To make this possible, the harness's pricing moved to `evolve/arr_price.py`, which holds no seed. The harness selftest results are identical before and after the move, the new audit fields aside.
+- **Isolation for both sandboxes:** a clean environment (no LD_PRELOAD, LAMPCORE or other inherited variables); new PID, network, IPC and UTS namespaces; a new session; and the run dies with its parent.
+- **The search's process group** is killed when the search ends, and again (from `.search.pgid`) by `tools/score_sandbox.sh` before any scoring.
+- **Scoring sandbox:** scoring runs in a fresh sandbox (`tools/score_sandbox.sh`), and `sealed_run.sh` refuses any other command for a pinned experiment.
+- **The total genome reader and the search_out allow-list.** The harness reads only `genome_<layout>_<rule>.json` names, skips the search record, and refuses and logs anything else, continuing with what remains. Each file either parses into a one-stage arr genome or is refused.
+- **The early-exit audit.** Every record carries its termination: factor, budget, ended, error or aborted. An error or abort invalidates the genome's score, or the whole run if it happens in a reference arm.
+
+**Tests**
+- **Harness selftest:** 18 refusal cases, a stray file, a symlinked directory, forced aborts (of a genome and of rho's arm) and a lampcore error. All behave as expected.
+- **Scratch clone, search sandbox:**
+  - unreadable from inside: the harness, the predictions, NOTES, `explore/`, `/home` and the clone itself;
+  - no visible file holds a held-out seed;
+  - the environment is PATH, HOME, LPW_SEARCH_OUT and PYTHONDONTWRITEBYTECODE only (Python adds LC_CTYPE itself), with LD_PRELOAD and a test variable set outside;
+  - 2 PIDs are visible (the PID namespace works);
+  - writes to /lpw and / fail, while /tmp and `search_out` succeed;
+  - two `sleep`s left running by the probe (one in its own session) are gone afterwards;
+  - the real search selftest runs inside it and writes its record.
+- **Scratch clone, scoring sandbox:**
+  - the environment is clean, with LD_PRELOAD, LAMPCORE and a test variable set outside;
+  - the harness selftest passes inside it;
+  - a leftover search process group (a real one, pgid = pid) is killed before scoring.
+- **`sealed_run.sh`** refuses an unsandboxed command for a pinned experiment.
+
+**Fixes found by these tests:**
+- the sandbox root was writable (now `--remount-ro /`);
+- the scoring sandbox hid a repo living under /tmp (the repo and the search worktrees are now bound back read-only).

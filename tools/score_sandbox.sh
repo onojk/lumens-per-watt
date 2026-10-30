@@ -30,9 +30,13 @@ for f in "$(dirname "$root")"/lpw-search-"$exp"-*/.search.pgid; do
     echo "search process group $pg ($f): none running"
 done
 
+binds=(--ro-bind "$root" "$root")                  # the repo and the searches' worktrees stay visible (read-only) even
+for d in "$(dirname "$root")"/lpw-search-"$exp"-*; do   # when they live under /tmp, which the sandbox replaces
+    [ -d "$d" ] && binds+=(--ro-bind "$d" "$d")
+done
 echo "scoring (fresh sandbox, clean environment): $*"
 set +e
-setsid bwrap --ro-bind / / --dev /dev --proc /proc --tmpfs /tmp \
+setsid bwrap --ro-bind / / --dev /dev --proc /proc --tmpfs /tmp "${binds[@]}" \
     --unshare-pid --unshare-net --unshare-ipc --unshare-uts --die-with-parent --new-session \
     --clearenv --setenv PATH /usr/bin:/bin --setenv HOME /tmp --setenv LANG C.UTF-8 --setenv PYTHONDONTWRITEBYTECODE 1 \
     --chdir "$root" -- "$@" &

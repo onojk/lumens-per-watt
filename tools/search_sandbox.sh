@@ -9,7 +9,7 @@
 #      pending entries are allowed here and nowhere else), then made read-only (chmod a-w), with the judge's dirs;
 #   3. training data only: the sandbox's file system is /usr (read-only), a private /tmp, /proc and /dev, and under
 #      /lpw ONLY the allow-listed files below (SEARCH_FILES: the search, the meter it runs, its prices and the
-#      binary), read-only, in the repo's layout, plus /lpw/search_out (<worktree>/search_out, the only writable
+#      binary), read-only, in the repo's layout (the sandbox root itself remounted read-only), plus /lpw/search_out (<worktree>/search_out, the only writable
 #      path; also $LPW_SEARCH_OUT). No /home, no repo, no predictions, docs, NOTES or results. Each allow-listed file
 #      is checked for the held-out seeds (an integer 993[05]0xx: arrangement-v1's validation maps); a match refuses
 #      the run. The training seeds are in the search's own code;
@@ -73,7 +73,7 @@ echo "running (sandboxed; training data only; mounted: ${#SEARCH_FILES[@]} allow
 set +e
 setsid bwrap --ro-bind /usr /usr --symlink usr/lib /lib --symlink usr/lib64 /lib64 --symlink usr/bin /bin \
     --symlink usr/sbin /sbin --ro-bind /etc/ld.so.cache /etc/ld.so.cache --proc /proc --dev /dev --tmpfs /tmp \
-    --dir /lpw "${mounts[@]}" --bind "$out" /lpw/search_out \
+    --dir /lpw "${mounts[@]}" --bind "$out" /lpw/search_out --remount-ro / \
     --unshare-pid --unshare-net --unshare-ipc --unshare-uts --die-with-parent --new-session \
     --clearenv --setenv PATH /usr/bin:/bin --setenv HOME /tmp --setenv PYTHONDONTWRITEBYTECODE 1 \
     --setenv LPW_SEARCH_OUT /lpw/search_out --chdir /lpw/evolve -- "$@" &
