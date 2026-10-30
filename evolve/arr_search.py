@@ -3,11 +3,12 @@ proposer: not a judge file, run only inside tools/search_sandbox.sh, through too
 no code is mutated. Its only output is what it writes to $LPW_SEARCH_OUT (genome files and the search record).
 
 Training map: 48 balanced semiprimes per size at 48, 56, 64, 72 and 80 bits, semiprimes_pq(bits, 48, 9920000 + bits)
-(design §8). The validation numbers (9930000 + bits) are never drawn here.
+(design §8). No held-out number or seed is drawn, read or mounted here (tools/search_sandbox.sh mounts an
+allow-list of files, checked for the held-out seeds).
 
 Fitness: G_rho on the training numbers (reviews/growth_fitness_rho.md, v2): the candidate's doubling period over
 48-80 / rho's (partition.PRE["rho"], alone, on the same numbers), worst of op-class v1, ruint, Montgomery and the
-size-scaled gcd price (point values; the pricing and the period are arr_validate.run / .period, read-only).
+size-scaled gcd price (point values; the pricing and the period are arr_price.run / .period, the judge's own).
 "Not defined" (fewer than 24 / 48 successes at a size) ranks below every defined value.
 The cost guard (the user's ruling, Oct 30, after the selftest showed G_rho alone selecting padded genomes, costly at
 the small end and so flat): a genome's fitness is defined only if its robust cost ratio against rho (the worst of the
@@ -42,7 +43,7 @@ sys.path.insert(0, ".")
 import json, math, time
 from concurrent.futures import ThreadPoolExecutor
 import lamps
-import arr_validate as V
+import arr_price as V
 from fastlamps import semiprimes_pq
 
 WORKERS = 2
@@ -66,6 +67,9 @@ RULE_GRID = {
 PAIRS = [(l, r) for l in LAYOUT_GRID for r in RULE_GRID
          if not (r in ("floyd", "brent") and l not in ("map", "stride")) and not (r == "bins" and l != "bins")]
 
+class Invalid(Exception):
+    """An error or aborted number (the early-exit audit): the genome is invalid and is never ranked."""
+
 class Search:
     def __init__(self, sizes, per, seed0, chord, screen):
         self.sizes, self.per, self.chord, self.screen = sizes, per, chord, screen
@@ -85,6 +89,8 @@ class Search:
             for i in range(0, self.per, CHUNK):
                 part = V.run(g, self.cap[b], self.nums[b][i:i + CHUNK], b)
                 rs += part
+                if any(r["term"] in V.BAD_TERMS for r in part):
+                    raise Invalid(f"{b} bits: " + next(r.get("why", r["term"]) for r in part if r["term"] in V.BAD_TERMS))
                 fail += sum(not r["ok"] for r in part)
                 if fail > self.per - self.per // 2:
                     if partial:
@@ -109,7 +115,12 @@ class Search:
             order = (a, self.screen, b) + tuple(x for x in self.sizes if x not in (a, self.screen, b))
             R, ratios = {}, {}
             for s in order:
-                rs, dropped = self.records(g, (s,))
+                try:
+                    rs, dropped = self.records(g, (s,))
+                except Invalid as e:
+                    self.memo[key] = {"fit": None, "dropped_at": s, "why": f"INVALID (early-exit audit): {e}",
+                                      "invalid": True, "ratio": ratios}
+                    break
                 if rs is None:
                     self.memo[key] = {"fit": None, "dropped_at": s, "why": "fewer than half factored", "ratio": ratios}
                     break
@@ -172,10 +183,14 @@ def main(sizes, per, seed0, chord, screen, out_dir, tag):
     out = {"map": tag, "sizes": sizes, "per": per, "seeds": f"{seed0} + bits", "chord": chord, "screen": screen,
            "budget": {"x_rho_max": CAP_X, "per_size": S.cap}, "evaluations": S.evals,
            "numbers": {b: [[str(N), str(p), str(q)] for N, p, q in S.nums[b]] for b in sizes},
-           "rho": {"genome": V.RHO, "records": S.rho}, "best": f"{best[0]}_{best[1]}", "pairs": {}}
+           "rho": {"genome": V.RHO, "records": S.rho}, "best": f"{best[0]}_{best[1]}", "pairs": {},
+           "evaluated": [{"genome": json.loads(k), **v} for k, v in S.memo.items()]}
     def final(pair):                      # every size in order, stopping where the genome is dropped (as the search)
         g = res[pair][0]
-        return pair, S.records(g, sizes, partial=True)
+        try:
+            return pair, S.records(g, sizes, partial=True)
+        except Invalid as e:
+            return pair, ({}, f"INVALID: {e}")
     with ThreadPoolExecutor(WORKERS) as ex:
         finals = dict(ex.map(final, PAIRS))
     for pair in PAIRS:

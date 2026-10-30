@@ -12,7 +12,8 @@
 # Judge pins (design docs/planning/arrangement_lamps.md §6): if predictions/EXPERIMENT.md carries a "## Judge pins"
 # block, tools/judge.py check runs twice, before COMMAND and again after it, before the result is committed; both
 # reports head the result file. A mismatch before the run skips COMMAND; a mismatch at either check makes the run a
-# failure, committed as a result. Pending pins fail (a scored run needs every judge file pinned).
+# failure, committed as a result. Pending pins fail (a scored run needs every judge file pinned). With pins, COMMAND
+# must be tools/score_sandbox.sh or tools/search_sandbox.sh (refused otherwise, before anything runs).
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
@@ -57,6 +58,10 @@ ms=${out%.out}.machine.txt
 grep -q "governor: powersave" "$ms" && echo "NOTE: the CPU governor is powersave (not changed; the user's call)"
 pinned=0
 grep -qF -- '<!-- judge-pins begin -->' "$pred" && pinned=1
+if [ $pinned = 1 ] && [ "$1" != tools/score_sandbox.sh ] && [ "$1" != tools/search_sandbox.sh ]; then
+    echo "REFUSED: a pinned experiment runs only through tools/score_sandbox.sh (scoring) or tools/search_sandbox.sh (the search)" >&2
+    exit 1
+fi
 judge_fail=""
 set +e
 if [ $pinned = 1 ]; then

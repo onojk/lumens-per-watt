@@ -40,7 +40,7 @@ JUDGE = [
     "evolve/qs.py", "evolve/cfrac.py", "evolve/ecm.py", "evolve/race.py", "evolve/ledger.py", "evolve/blockflash.py",
     "evolve/calibrate.json", "opclass/opclass_v1.json",
     "reviews/growth_fitness_rho.md", "reviews/growth_fitness.md",
-    "tools/sealed_run.sh", "tools/judge.py", "tools/search_sandbox.sh",
+    "tools/sealed_run.sh", "tools/judge.py", "tools/search_sandbox.sh", "tools/score_sandbox.sh",
 ]
 
 def sha(path):
