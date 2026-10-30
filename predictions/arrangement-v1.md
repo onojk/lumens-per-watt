@@ -1,6 +1,6 @@
 # arrangement-v1: the arrangement lamp family ("arrangement + detection rule"), predictions
 
-**Status: the reviewer's and Grok's sealed; DeepSeek's text not yet received (two relay messages ended in the paste placeholder). Nothing is built or run.** The design is `docs/planning/arrangement_lamps.md` as of 70d374a: approved in principle by the user (Oct 29), with the reviewer's amendments. The fitness is G_rho (`reviews/growth_fitness_rho.md`, frozen 77ff2ee), with G (`reviews/growth_fitness.md`, frozen c86ef35) beside it.
+**Status: SEALED. All three forecasters recorded (the reviewer's R-38..R-43, Grok's G-31..G-36, DeepSeek's D-38..D-43), before any build or run.** The design is `docs/planning/arrangement_lamps.md` as of 70d374a: approved in principle by the user (Oct 29), with the reviewer's amendments. The fitness is G_rho (`reviews/growth_fitness_rho.md`, frozen 77ff2ee), with G (`reviews/growth_fitness.md`, frozen c86ef35) beside it.
 
 Novelty Plan: phase 4 (program search, the building-block family). Q1 is phase 4's test drive on a family with a known answer.
 
@@ -38,9 +38,61 @@ Novelty Plan: phase 4 (program search, the building-block family). Q1 is phase 4
 
 **Scope note** (the prediction is unchanged): Q5 is kept, with its own sub-map (design §8), so R-42 is scored.
 
-## DeepSeek's
+## DeepSeek's D-38 to D-43 (Oct 29; sealed; verbatim, as relayed by the user; filed before any build or run)
 
-Pending (the user decides whether to relay).
+<!-- verbatim begin -->
+Sealed predictions for the arrangement-v1 round. Facts below are predictions,
+not measurements; I will not revise them after scoring.
+
+D-38 | Yes. Best genome is rho-shaped: map layout + Floyd or Brent cycle
+detection, batched or not, slope 0.20–0.30 per bit over 48–80. | 0.85 | Best
+genome is not map+cycle detection, or its measured slope falls outside 0.20–0.30.
+
+D-39 | G_rho ≈ 1.00, range [0.97, 1.04] op-class over 48–80. Under worst-of incl.
+scaled gcd: ≈0.99 [0.96, 1.03], so I predict no strict win under worst-of (near
+parity). G(80–96): ≈1.00, or effectively "not defined" if the genome is rho
+rediscovered. | 0.65 | G_rho outside [0.97,1.04] op-class, or a strict G_rho > 1
+win holds under worst-of.
+
+D-40 | Best genome / rho alone, op-class: 64 bits ≈ 0.99 [0.95, 1.04]; 80 bits ≈
+1.00 [0.96, 1.05]. Under scaled gcd: 64 ≈ 1.00 [0.96, 1.05]; 80 ≈ 1.01 [0.97,
+1.06]. | 0.60 | Any ratio outside those ranges, or scaled-gcd shifts the ratio by
+more than about 5%.
+
+D-41 | No. No non-map layout — stride, fold, or bins — beats 0.45 per bit. Best
+non-map likely sits near 0.50. | 0.85 | Any stride/fold/bins layout measures a
+slope below 0.45 per bit.
+
+D-42 | No. On the theta 0.20–0.30 sub-map, the search does not select the
+exponent layout; it selects a map/rho-shaped genome. | 0.60 | The exponent layout
+is selected on the theta 0.20–0.30 sub-map.
+
+D-43 | d = 2. Best genome's map degree is 2, not higher. | 0.75 | Best genome
+selects degree d > 2.
+
+Short rationale: the measured shapes put rho and p-1 near slope 0.25, while
+walk/value-line sit near 0.50; non-map layouts in this family are unlikely to
+cross 0.45. Since rho is the frozen baseline for G_rho, a rediscovered
+rho-shaped best genome should sit near parity rather than a large win,
+especially once scaled gcd is in the worst-of set.
+<!-- verbatim end -->
+
+**The reviewer's notes on D-38..D-43** (Oct 29; annotations only; no prediction changes):
+
+<!-- verbatim begin -->
+- D-39's G (80-96) "~1.00, or effectively not defined if the genome is rho
+  rediscovered" appears to treat G as G_rho. G compares against QS's 9.29-bit
+  doubling period; a rho-shaped genome (~4-bit doubling) has G ~ 4/9.29 ~ 0.43
+  (the relay's design states rho's G is about 0.44). The "rediscovered known
+  lamp" label does not make G undefined. Recorded and scored as written.
+- D-39 / D-40 ranges are narrow (about +/-3-5%) with confidence 0.60-0.65;
+  G_rho's own resolution note says 0.96-1.04 is not separable from 1 at 48 per
+  size. Interval score as usual.
+- D-40's falsifier has two conditions (range; scaled-gcd shift > 5%); recorded
+  as written.
+<!-- verbatim end -->
+
+**Recording note:** the relay text printed for the forecasters did not contain the figure "rho's G is about 0.44" that the first note cites (flagged to the user earlier). The note is recorded as given.
 
 ## Grok's G-31 to G-36 (Oct 29; sealed; verbatim, as relayed by the user; filed before any build or run)
 
