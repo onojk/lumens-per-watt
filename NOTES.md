@@ -11371,3 +11371,38 @@ It is re-run under the hardened sandbox with the same search seed and settings (
 - Per the user's ruling, "identical" is evidence that 39ffaf5 never used held-out data. 39ffaf5 stays void; only the re-run counts.
 
 **The re-run's evaluated list:** 224 genomes, 16 with a defined training G_rho (all 16 are map + Brent variants; no other pair passed the cost guard), 0 invalid.
+
+## arrangement-v1, balanced map: scoring and report (sealed runs f527a0a, harness; 6c6edfc, report; Oct 30)
+
+**The genome scored:** map(c = 2, d = 2, x0 = 5) + Brent(b = 512), the re-run search's rank 1. A **rediscovered known lamp** (rho-shaped).
+
+**Held-out results** (balanced, 48 per size, seeds 9930000 + bits; pin 5 checked before and after each run; early-exit audit clean: the candidate 240 / 240 factors, rho 192 / 192, QS 144 / 144):
+- **Robust cost ratio against rho:** 0.993 [0.831, 1.180] at 64 bits and 0.988 [0.807, 1.218] at 80. op-class 0.990 and 0.987.
+- **G_rho 48–80, worst-of:** 0.968 [0.913, 1.027], not separable from 1. op-class 0.968, ruint 0.970, Montgomery 0.976, official 0.968, scaled gcd 0.968. No pricing-artifact flag.
+- **The training value shrank on held-out numbers:** training 1.048 against held-out 0.968. This is the selection bias noted at the search.
+- **G 80–96, worst-of:** 0.447 [0.407, 0.494], faster growth than QS, as a p^(1/2) method should be.
+  - Gene check 84–96: 0.464 [0.405, 0.533].
+  - The windows' period intervals overlap, so no gene-check flag.
+  - The reference QS period on these numbers: 8.78 (80–96) and 8.38 (84–96), op-class.
+- **Op-count slope 48–80:** 0.263 per bit (rho 0.250 on the same numbers). Q1's band is 0.20–0.30.
+- **gcds with argument < 2^32:** 48 to 51 per size, about one per number. Not material to the scaled price.
+
+**The report's held-out measurements:**
+- **D-44:** band average (geometric mean of op-class C_cand / C_rho at 64 and 80) **0.988 [0.861, 1.133]**. Forecast 0.98, range 0.69–1.27: **not falsified**.
+- **G-37:** **0 / 10 = 0.00**. Held-out 48-bit numbers, Fermat-easy subset 6 of 48, mean op-class cost against rho's. Range 0.00–0.08: **not falsified**.
+  - All 10 top genomes are map + Brent variants, and all are dearer than rho on the Fermat-easy subset (1.09–1.84) while cheaper or near on the rest (0.74–1.07).
+  - So no genome's advantage sits on the easy subset; it is the reverse.
+
+**Training-map report** (the search's own numbers):
+- Fermat split at 48 bits (7 of 48 easy): rank 1 is −5.7% against rho overall and −4.8% without the easy subset. The Fermat flag does not fire.
+- Bin compare was dropped at 48 bits, so its growth could not be measured and the bin-compare flag could not apply.
+- Every non-map pair was dropped at 48 bits within the search's budget.
+
+**Flags fired: none.** Not fired, or not applicable:
+- the early-exit audit;
+- the pricing artifact;
+- the G gene-check overlap;
+- bin compare (not measurable);
+- Fermat (training split).
+
+Forecast scoring (Q1–Q6 against R-38..R-43, G-31..G-36 and D-38..D-43) is a separate step, scored as written. Q5 (the θ sub-map) has not run.
