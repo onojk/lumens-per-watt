@@ -11477,3 +11477,30 @@ Forecast scoring (Q1–Q6 against R-38..R-43, G-31..G-36 and D-38..D-43) is a se
 - **The exponent layout lost on cost:** K ≥ 1,024 costs 27–50 × rho at 64 bits on these numbers, under op-class, and K = 256 factors fewer than half.
 - **Scored as written:** R-42 and D-42 not falsified; G-35 falsified (`results/arrangement-v1_forecast_scores.md`).
 - **Held-out:** the pick is dearer than rho at 64 bits (robust 1.267 [1.077, 1.491]) and level at 80 (0.990 [0.804, 1.227]). Its training G_rho of 1.133 reflects a flatter cost curve, not a cheaper one; it is the padding pattern the cost guard limits, at the guard's edge. Rho remains the cheaper choice on this sub-map.
+
+## Rulings (the user's, Oct 30; documentation only)
+
+1. **Approved for future rounds (not retroactive):** a forecast's range must be at least as wide as the metric's stated resolution (G_rho: ±4%).
+2. **Approved for future runs:** ranking ties are broken on the genome's sorted JSON, never on evaluation order. The rerun-identical check compares evaluated lists as sorted sets, plus the fields that do not depend on order. (Arrangement-v1's code still breaks ties by evaluation order; its G-37 had no tie at the boundary.)
+
+## Design lesson for the next family: G_rho alone can be bought by padding (Oct 30; documentation only)
+
+**The finding:**
+- The Q5 pick reached training G_rho 1.133 by being dearer at the low end of the chord (held-out 1.267 × rho at 64 bits, 0.990 at 80). Only the 1.25 cost guard held it back.
+- This is the mirror of the Fermat case: a discount at the low end of the chord hurts G_rho, and a penalty there helps it.
+- A growth ratio rewards a flat cost curve whatever its level, so a slope win needs a cost condition beside it.
+
+**Two options, recorded; neither chosen (the user's approval is needed before any new family):**
+- **(a)** A slope win counts only if the genome's cost ratio at the top of the chord is ≤ 1 within its interval.
+- **(b)** Rank on the projected cost at a fixed target size instead of on the slope.
+
+## Arrangement-v1: closed (Oct 30)
+
+Both maps are scored.
+- **The family rediscovered rho:**
+  - balanced map: map(c = 2, d = 2, x0 = 5) + Brent(512), held-out cost 0.99 × rho at 64 and 80 bits;
+  - θ sub-map: map(c = 5, d = 2, x0 = 2) + Brent(512).
+- **p − 1 lost on cost on the θ sub-map:** the exponent layout costs 27–50 × rho at 64 bits.
+- **No genome beats rho by more than about 15–20% at this budget,** the resolution of 48 held-out numbers per size.
+- The non-map pairs (stride, fold, bins) were dropped at the bottom of each chord within the search's budget, so their growth is not established.
+- **Forecasts:** 15 genuine passes, 3 not falsified by default, 2 falsified (D-39, G-35). See `results/arrangement-v1_forecast_scores.md`.
