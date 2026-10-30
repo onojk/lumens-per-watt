@@ -31,8 +31,21 @@ G-37 (Grok's forecast, sealed in predictions/arrangement-v1.md; computed here, a
     censored runs included, / numbers) divided by rho's mean on the same numbers; the aggregate is the mean, and
     nothing else (the user's pre-run note);
   - a genome counts when (cost vs rho, easy) <= 0.5 x (cost vs rho, rest); G-37's value = count / genomes measured.
+D-44 (DeepSeek's forecast, sealed; computed here, never by the judge):
+  - the genome: rank 1 by training G_rho among valid genomes = the search record's "best" (the search's own ranking:
+    worst-of G_rho under the cost guard); if the op-class-only rank 1 differs, it is printed beside (not scored);
+  - the numbers: the held-out balanced validation numbers at 64 and 80 bits, semiprimes_pq(bits, 48, 9930000 + bits)
+    (the harness's draw), the genome and rho alone (arr_price.RHO) each run here (cap arr_price.CAP); an error or abort
+    in either arm makes D-44 INVALID (the early-exit audit);
+  - the ratio: C_cand / C_rho at each size, op-class v1, C = total cost over successes (arr_price.per_fact); the band
+    average = the geometric mean of the two; interval: paired bootstrap over both sizes (one index list per size,
+    shared by both arms), 10,000 resamples, random.Random(2026), 2.5-97.5%;
+  - the outcome: "falsified" if the band average is < 0.69 or > 1.27, otherwise "not falsified".
+The search record is proposer output, read like a genome file: O_NOFOLLOW, a regular file, at most 64 MiB, strict
+UTF-8, no NaN / Infinity or duplicate keys; every genome taken from it must pass the harness's own genome checks
+(arr_validate._parse) or is refused.
   python3 arr_report.py SEARCH_JSON [--test-seed S]   (--test-seed: G-37 on semiprimes_pq(48, 48, S), for code checks;
-                                                        never a held-out seed)"""
+                                                        never a held-out seed; D-44 then on S + 16 and S + 32)"""
 import json, math, statistics, sys
 
 WORST = ("opclass_v1", "ruint", "montgomery", "opclass_v1_gcdscaled")
@@ -71,8 +84,40 @@ def split_cost(rs, mask):
 def f(x, nd=3):
     return "n/a" if x is None else f"{x:.{nd}f}" if isinstance(x, float) else str(x)
 
+def read_record(path):
+    """The search record, read as untrusted input (see the module doc)."""
+    import os, stat
+    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK | os.O_CLOEXEC)
+    try:
+        st = os.fstat(fd)
+        if not stat.S_ISREG(st.st_mode) or st.st_size > (64 << 20):
+            raise SystemExit(f"REFUSED: {path} is not a regular file of at most 64 MiB")
+        data = b""
+        while True:
+            chunk = os.read(fd, 1 << 20)
+            if not chunk:
+                break
+            data += chunk
+    finally:
+        os.close(fd)
+    def no_const(c):
+        raise ValueError(f"constant {c}")
+    def no_dupes(pairs):
+        if len({k for k, _ in pairs}) != len(pairs):
+            raise ValueError("duplicate keys")
+        return dict(pairs)
+    try:
+        return json.loads(data.decode("utf-8"), parse_constant=no_const, object_pairs_hook=no_dupes)
+    except (UnicodeDecodeError, ValueError, RecursionError) as e:
+        raise SystemExit(f"REFUSED: {path}: {str(e)[:80]}")
+
+def checked(genome):
+    """A genome from the record, through the harness's own checks (one arr stage, valid genes) or refused."""
+    import arr_validate as AV
+    return AV._parse("record", json.dumps(genome).encode())[1]
+
 def main(path):
-    d = json.load(open(path))
+    d = read_record(path)
     sizes = list(d["sizes"])
     a, b = d["chord"]
     mid = d["screen"]
@@ -141,6 +186,7 @@ def main(path):
         out[name] = rec
     if "evaluated" in d:
         out["_g37"] = g37(d, TEST_SEED or 9930048)
+        out["_d44"] = d44(d, TEST_SEED)
     else:
         print("\nG-37: not computed (this search record keeps no evaluated-genome list)")
     print("\nREPORT " + json.dumps(out, default=str))
@@ -150,7 +196,8 @@ def g37(d, seed=9930000 + 48):
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     import arr_price as AP
     from fastlamps import semiprimes_pq
-    ranked = [e for e in d["evaluated"] if not e.get("invalid") and (e.get("g_rho") or {}).get("opclass_v1") is not None]
+    ranked = [dict(e, genome=checked(e["genome"])) for e in d["evaluated"]
+              if not e.get("invalid") and (e.get("g_rho") or {}).get("opclass_v1") is not None]
     ranked = sorted(ranked, key=lambda e: -e["g_rho"]["opclass_v1"])[:10]           # stable: ties keep search order
     nums = semiprimes_pq(48, 48, seed)
     easy = [fermat_easy(*x) for x in nums]
@@ -181,6 +228,55 @@ def g37(d, seed=9930000 + 48):
     return {"easy": sum(easy), "n": len(easy), "rows": rows, "excluded": excluded, "count": k, "measured": len(rows),
             "value": k / len(rows) if rows else None}
 
+def d44(d, test=None):
+    import random
+    import arr_price as AP
+    from fastlamps import semiprimes_pq
+    from concurrent.futures import ThreadPoolExecutor
+    best = checked(d["pairs"][d["best"]]["genome"])
+    ranked = [e for e in d["evaluated"] if not e.get("invalid") and (e.get("g_rho") or {}).get("opclass_v1") is not None]
+    top_op = max(ranked, key=lambda e: e["g_rho"]["opclass_v1"])["genome"] if ranked else None
+    seeds = {64: test + 16, 80: test + 32} if test else {64: 9930064, 80: 9930080}
+    nums = {b: semiprimes_pq(b, 48, seeds[b]) for b in (64, 80)}
+    jobs = [(g, b) for g in ("cand", "rho") for b in (64, 80)]
+    with ThreadPoolExecutor(2) as ex:
+        res = dict(zip(jobs, ex.map(lambda j: AP.run(best if j[0] == "cand" else AP.RHO, AP.CAP, nums[j[1]], j[1]), jobs)))
+    bad = [j for j in jobs if any(r["term"] in AP.BAD_TERMS for r in res[j])]
+    label = "held-out" if not test else "TEST (not held-out)"
+    print(f"\nD-44 ({label} balanced numbers at 64 and 80 bits, seeds {seeds}, 48 each; op-class v1; band average = geometric "
+          f"mean of C_cand / C_rho at 64 and 80):")
+    print(f"   genome (rank 1, the search's ranking): {json.dumps(best)}")
+    if top_op is not None and json.dumps(top_op, sort_keys=True) != json.dumps(best, sort_keys=True):
+        print(f"   (rank 1 by op-class-only training G_rho differs, not scored: {json.dumps(top_op)})")
+    if bad:
+        print(f"   D-44 INVALID (early-exit audit): an error or abort in {bad}")
+        return {"invalid": bad}
+    def band(ix):
+        r = []
+        for b in (64, 80):
+            c, h = AP.per_fact(res[("cand", b)], "opclass_v1", ix and ix[b]), AP.per_fact(res[("rho", b)], "opclass_v1", ix and ix[b])
+            if not c or not h:
+                return None
+            r.append(c / h)
+        return math.sqrt(r[0] * r[1])
+    per = {b: (lambda c, h: c / h if c and h else None)(AP.per_fact(res[("cand", b)], "opclass_v1"),
+                                                         AP.per_fact(res[("rho", b)], "opclass_v1")) for b in (64, 80)}
+    rng, bs = random.Random(2026), []
+    for _ in range(10000):
+        ix = {b: [rng.randrange(48) for _ in range(48)] for b in (64, 80)}
+        v = band(ix)
+        if v is not None:
+            bs.append(v)
+    bs.sort()
+    v = band(None)
+    ci = (bs[int(0.025 * len(bs))], bs[int(0.975 * len(bs)) - 1]) if bs else (None, None)
+    succ = {k: sum(r["ok"] for r in rs) for k, rs in res.items()}
+    out = "not defined" if v is None else ("falsified" if v < 0.69 or v > 1.27 else "not falsified")
+    print(f"   successes {succ}; C_cand / C_rho: 64 {f(per[64], 4)}, 80 {f(per[80], 4)}")
+    print(f"   D-44 band average {f(v, 4)} [{f(ci[0], 4)}, {f(ci[1], 4)}] ({len(bs)} resamples defined); forecast 0.98, range "
+          f"0.69-1.27: {out}")
+    return {"genome": best, "ratios": per, "band": v, "ci": ci, "outcome": out, "successes": {f"{a} {b}": n for (a, b), n in succ.items()}}
+
 TEST_SEED = None
 
 if __name__ == "__main__":
@@ -188,8 +284,10 @@ if __name__ == "__main__":
     if "--test-seed" in a:                       # code checks only: G-37 on numbers that are not held out
         i = a.index("--test-seed")
         TEST_SEED = int(a[i + 1])
-        assert TEST_SEED not in (9930048, 9935048), "a test seed must not be a held-out seed"
+        HELD_OUT = {9930000 + b for b in (48, 64, 80, 84, 96)} | {9935000 + b for b in (64, 80)}
+        assert not {TEST_SEED, TEST_SEED + 16, TEST_SEED + 32} & HELD_OUT, "a test seed must not be a held-out seed"
         a = a[:i] + a[i + 2:]
     if len(a) != 1:
         sys.exit(__doc__)
-    main(a[0])
+    import os
+    main(os.path.abspath(a[0]))
