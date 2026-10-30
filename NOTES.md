@@ -11201,3 +11201,23 @@ Montgomery is read from calibrate.json at run time and reported. With official p
 **Option (i): keep one `word` per stride step.** The user's reason: the stride layout's x = a + s·i is an N-size residue, so each step is a real big-number add. td and the value line step a small machine counter, which is correctly uncharged. Their free stepping is no precedent for the stride layout.
 
 **The built-in check becomes exact:** stride(a = 2, s = 1) + per dot(t = 0) equals vl on gcds, tests, hits and factor, and **ops = vl ops + exactly one `word` per step** (dots − 1 words; x_0 is free). The cost model above (6062320) stands unchanged; this closes its open decision.
+
+## The judge guard (arrangement-v1 design §6; Novelty Plan phase 2, "the judge locked away"; Oct 29)
+
+**What it is.** Three pieces, no op or charge changes (the meter is untouched):
+- **`tools/judge.py`**: pins the judge's sha256s in `predictions/<id>.md`, in a block appended below the sealed text. The judge is: the lampcore release binary, its `Cargo.toml`/`Cargo.lock` and every `src/*.rs`; the Python meter and twins (`lamps.py`, `arr.py`, `fastlamps.py`, `optypes.py`, and the modules lamps.py imports into the meter's process: `qs.py`, `cfrac.py`, `ecm.py`, `race.py`, `ledger.py`, `blockflash.py`); the prices (`calibrate.json`, `opclass_v1.json`); the frozen fitness definitions (`reviews/growth_fitness_rho.md`, `reviews/growth_fitness.md`); `sealed_run.sh`, `judge.py` and `search_sandbox.sh`; the experiment's scoring harness (`--add`, or `pending` until it is written); and the predictions' own text above the pins (`@predictions`). A later pin is a new block appended, never an edit; `check` reads the last. `check` also fails when `LAMPCORE` is set (fastlamps would run another binary).
+- **Checked twice, in `tools/sealed_run.sh`:** when the predictions carry pins, `judge.py check` runs before COMMAND (a mismatch skips it) and again after it, before the result is committed. Both reports head the result file; a mismatch at either makes the run a failure, committed as a result. A `pending` pin fails both checks, so no scored run happens before the harness is pinned.
+- **`tools/search_sandbox.sh`:** the search (the proposer) runs in a detached worktree of HEAD beside the repo, with the pinned binary copied in. The worktree's judge files are checked against the pins (`pending` allowed here only) and chmod a-w. The command then runs under bwrap: the whole file system read-only, except the worktree's `search_out/`; a private /tmp; no network; LAMPCORE unset. The search's only output is what it writes to `search_out/`.
+
+**What it does not establish.**
+- The proposer runs as the same user. The read-only mounts stop it; the file modes alone would not. A process outside the sandbox can still change the judge, and the pins are what catch that, at the next check.
+- The pins are as good as the pin commit. A judge change committed together with a new pin passes `check`. That is visible only in history, so a new pin goes in its own commit, saying which judge file changed and why.
+- The binary is pinned by hash, not rebuilt from source and compared. Pin 1 pins the binary that passed parity (8422152 plus the gene bound), built from the pinned sources.
+
+**Tests** (a throwaway clone in the session scratchpad; no commits to this repo):
+- (a) pending harness: not run, failure committed;
+- (b) all pinned: runs, both checks ok;
+- (c) the command appends to `optypes.py` during the run: check 2 fails, the run is committed as a failure;
+- (d) `LAMPCORE=/bin/true`: not run;
+- (e) a committed edit of the sealed prediction text: `@predictions` mismatch, not run; the sandbox also refuses to start;
+- (f) in the sandbox, writing to `arr.py`, chmod, replacing the binary, `cargo build` and the network are all blocked, while writing `search_out/g.json` and running lampcore both work. The repo under /home is mounted read-only (probe: `touch tools/x` gives "Read-only file system").

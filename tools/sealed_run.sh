@@ -9,6 +9,10 @@
 # that file and the machine state before and after (results/EXPERIMENT_<UTC time>.machine.txt, tools/machine_state.sh)
 # alone (explicit git add), naming the prediction commit (and the DeepSeek commit). A failing command is
 # committed too, with its exit code in the message: failures are results. Never pushes.
+# Judge pins (design docs/planning/arrangement_lamps.md §6): if predictions/EXPERIMENT.md carries a "## Judge pins"
+# block, tools/judge.py check runs twice, before COMMAND and again after it, before the result is committed; both
+# reports head the result file. A mismatch before the run skips COMMAND; a mismatch at either check makes the run a
+# failure, committed as a result. Pending pins fail (a scored run needs every judge file pinned).
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
@@ -51,15 +55,34 @@ while [ -e "$out" ]; do out=results/${exp}_$(date -u +%Y%m%dT%H%M%SZ)_$i.out; i=
 ms=${out%.out}.machine.txt
 { echo "## before"; tools/machine_state.sh; } > "$ms"      # the machine's state, saved beside the result
 grep -q "governor: powersave" "$ms" && echo "NOTE: the CPU governor is powersave (not changed; the user's call)"
-echo "running: $*  ->  $out"
+pinned=0
+grep -qF -- '<!-- judge-pins begin -->' "$pred" && pinned=1
+judge_fail=""
 set +e
-"$@" > "$out" 2>&1
-rc=$?
+if [ $pinned = 1 ]; then
+    { echo "## judge check 1 (before the run)"; python3 tools/judge.py check "$exp"; } > "$out" 2>&1
+    [ $? = 0 ] || judge_fail="judge check before the run"
+else
+    : > "$out"
+fi
+if [ -z "$judge_fail" ]; then
+    echo "running: $*  ->  $out"
+    "$@" >> "$out" 2>&1
+    rc=$?
+else
+    echo "NOT RUN: the judge does not match its pins (see $out)"
+    rc=1
+fi
+if [ $pinned = 1 ]; then
+    { echo; echo "## judge check 2 (after the run, before the result is committed)"; python3 tools/judge.py check "$exp"; } >> "$out" 2>&1
+    if [ $? != 0 ]; then judge_fail="${judge_fail:+$judge_fail and }judge check after the run"; rc=1; fi
+fi
 set -e
 { echo; echo "## after"; tools/machine_state.sh; } >> "$ms"
 hot=$(awk '/^temperature TCPU:/ {if ($3 + 0 > 90) print $3}' "$ms" | tr '\n' ' ')
 [ -n "$hot" ] && echo "FLAG: TCPU above 90 C during the run (readings: $hot C); see $ms"
 status="ok"; [ $rc = 0 ] || status="FAILED (exit $rc)"
+[ -n "$judge_fail" ] && status="FAILED: judge mismatch ($judge_fail)"
 [ -n "$hot" ] && status="$status; TCPU above 90 C ($hot C)"
 git add -f -- "$out" "$ms"
 git commit -q -m "Sealed run $exp: $status; predictions $pc$dsnote
