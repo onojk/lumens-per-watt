@@ -1,0 +1,38 @@
+## judge check 1 (before the run)
+JUDGE: pin 5, 47 entries: ok
+search process group 305477 (/home/onojk123/lpw-search-arrangement-v1-1e2067c/.search.pgid): none running
+search process group 280163 (/home/onojk123/lpw-search-arrangement-v1-366688d/.search.pgid): none running
+search process group 232299 (/home/onojk123/lpw-search-arrangement-v1-501eb41/.search.pgid): none running
+search process group 222235 (/home/onojk123/lpw-search-arrangement-v1-686662e/.search.pgid): none running
+search process group 308006 (/home/onojk123/lpw-search-arrangement-v1-ef3ea1f/.search.pgid): none running
+scoring (fresh sandbox, clean environment): python3 evolve/arr_validate.py theta /home/onojk123/lumens-per-watt/results/arrangement-v1_theta_run1 genome_map_brent.json
+skipped: arr_search_theta.json (the search record, not a genome)
+skipped: genome_bins_batch.json (allowed, not requested)
+skipped: genome_bins_bins.json (allowed, not requested)
+skipped: genome_bins_dot.json (allowed, not requested)
+skipped: genome_exponent_batch.json (allowed, not requested)
+skipped: genome_exponent_dot.json (allowed, not requested)
+skipped: genome_fold_batch.json (allowed, not requested)
+skipped: genome_fold_dot.json (allowed, not requested)
+skipped: genome_map_batch.json (allowed, not requested)
+skipped: genome_map_dot.json (allowed, not requested)
+skipped: genome_map_floyd.json (allowed, not requested)
+skipped: genome_stride_batch.json (allowed, not requested)
+skipped: genome_stride_brent.json (allowed, not requested)
+skipped: genome_stride_dot.json (allowed, not requested)
+skipped: genome_stride_floyd.json (allowed, not requested)
+read: genome_map_brent.json -> map_brent
+map theta 0.20-0.30: sizes [64, 80], 96 per size, seeds 9935000 + bits, cap 17179869184
+rho alone: successes {64: 96, 80: 96}; op-count slope 0.129 per bit
+reference terminations: {'rho': {'factor': 192, 'budget': 0, 'ended': 0, 'error': 0, 'aborted': 0}}
+
+== map_brent: map + brent, d = 2; rediscovered known lamp
+   successes {64: 96, 80: 96}; terminations {'factor': 192, 'budget': 0, 'ended': 0, 'error': 0, 'aborted': 0}
+   op-count slope 0.125 per bit (rho 0.129)
+   cost / rho at 64: opclass_v1 1.2648 [1.0734, 1.4862]; ruint 1.2452 [1.0637, 1.4508]; montgomery 1.1844 [1.0300, 1.3606]; official 1.2708 [1.0781, 1.4947]; opclass_v1_gcdscaled 1.2669 [1.0751, 1.4898]; robust 1.2669 [1.0769, 1.4909]
+   cost / rho at 80: opclass_v1 0.9899 [0.7961, 1.2285]; ruint 0.9740 [0.7860, 1.2035]; montgomery 0.9188 [0.7522, 1.1329]; official 0.9946 [0.8014, 1.2347]; opclass_v1_gcdscaled 0.9899 [0.8020, 1.2242]; robust 0.9899 [0.8039, 1.2265]
+
+RESULT {"map": "theta 0.20-0.30", "sizes": [64, 80], "per_size": 96, "seeds": "9935000 + bits", "cap": 17179869184, "rho": {"successes": {"64": 96, "80": 96}, "ops_slope": 0.1291994028890049}, "genomes": [{"name": "map_brent", "genome": [{"t": "arr", "layout": {"kind": "map", "c": 5, "d": 2, "x0": 2}, "detect": {"kind": "brent", "b": 512}}], "layout": "map", "rule": "brent", "d": 2, "arr_stages": 1, "class": "rediscovered known lamp", "bin_compare": false, "successes": {"64": 96, "80": 96}, "ops_slope": 0.12462009675749808, "ratio": {"64": {"opclass_v1": {"value": 1.264804859603184, "ci": [1.073402379552188, 1.4861583772777498], "resamples_defined": 10000}, "ruint": {"value": 1.2452402190365983, "ci": [1.063652724724774, 1.450782865232422], "resamples_defined": 10000}, "montgomery": {"value": 1.1843617182624457, "ci": [1.029976823669783, 1.360612361033872], "resamples_defined": 10000}, "official": {"value": 1.2708109377123722, "ci": [1.0781436937220579, 1.4946985558597736], "resamples_defined": 10000}, "opclass_v1_gcdscaled": {"value": 1.2669078946876842, "ci": [1.0750857183149771, 1.4897939257227155], "resamples_defined": 10000}, "robust": {"value": 1.2669078946876842, "ci": [1.0768955887476745, 1.4909351596147795], "resamples_defined": 10000}}, "80": {"opclass_v1": {"value": 0.9898700356418507, "ci": [0.796113202206508, 1.2284670772633521], "resamples_defined": 10000}, "ruint": {"value": 0.9739686944483669, "ci": [0.7859580269907503, 1.2035126444887185], "resamples_defined": 10000}, "montgomery": {"value": 0.9188030985072897, "ci": [0.7521768709031418, 1.132918133610051], "resamples_defined": 10000}, "official": {"value": 0.994592815497461, "ci": [0.8014400466673905, 1.234671832524175], "resamples_defined": 10000}, "opclass_v1_gcdscaled": {"value": 0.9898635029779241, "ci": [0.8019721358770674, 1.224162022617377], "resamples_defined": 10000}, "robust": {"value": 0.9898700356418507, "ci": [0.8038794292522834, 1.2265487825164676], "resamples_defined": 10000}}}, "terms": {"factor": 192, "budget": 0, "ended": 0, "error": 0, "aborted": 0}, "invalid": false}], "reference_terms": {"rho": {"factor": 192, "budget": 0, "ended": 0, "error": 0, "aborted": 0}}, "run_invalid": false}
+
+## judge check 2 (after the run, before the result is committed)
+JUDGE: pin 5, 47 entries: ok
