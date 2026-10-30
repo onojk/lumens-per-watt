@@ -1,0 +1,115 @@
+
+===== balanced: 96 per size, seeds 9950000 + bits
+  48 bits: frontier holder per pricing official pm1+s2, opclass_v1 qs, ruint qs, montgomery pm1+s2, opclass_v1_gcdscaled qs; robust holder qs (worst-of ratio 1.257)
+     rho     f 1.00; op-class C 2^22.00 [2^21.84, 2^22.15]; worst-of ratio to frontier 4.953
+     pm1     f 0.31; op-class C n/a; worst-of ratio to frontier n/a
+     pm1+s2  f 0.86; op-class C 2^20.93 [2^20.55, 2^21.28]; worst-of ratio to frontier 2.221
+     ecm     f 1.00; op-class C 2^22.04 [2^21.82, 2^22.23]; worst-of ratio to frontier 4.542
+     qs      f 1.00; op-class C 2^20.08 [2^20.02, 2^20.15]; worst-of ratio to frontier 1.257
+     cfrac   f 1.00; op-class C 2^21.66 [2^21.54, 2^21.79]; worst-of ratio to frontier n/a
+     td      f 1.00; op-class C 2^27.28 [2^27.23, 2^27.32]; worst-of ratio to frontier 760.081
+  56 bits: frontier holder per pricing official rho, opclass_v1 qs, ruint qs, montgomery qs, opclass_v1_gcdscaled qs; robust holder qs (worst-of ratio 1.000)
+     rho     f 1.00; op-class C 2^23.97 [2^23.82, 2^24.12]; worst-of ratio to frontier 12.005
+     pm1     f 0.23; op-class C n/a; worst-of ratio to frontier n/a
+     pm1+s2  f 0.69; op-class C 2^23.19 [2^22.75, 2^23.62]; worst-of ratio to frontier 6.503
+     ecm     f 1.00; op-class C 2^22.97 [2^22.73, 2^23.18]; worst-of ratio to frontier 5.314
+     qs      f 1.00; op-class C 2^20.80 [2^20.76, 2^20.84]; worst-of ratio to frontier 1.000
+     cfrac   f 1.00; op-class C 2^23.07 [2^22.96, 2^23.18]; worst-of ratio to frontier n/a
+     td      f 1.00; op-class C 2^31.27 [2^31.22, 2^31.31]; worst-of ratio to frontier 5665.179
+  64 bits: frontier holder per pricing official ecm, opclass_v1 qs, ruint qs, montgomery qs, opclass_v1_gcdscaled qs; robust holder qs (worst-of ratio 1.000)
+     rho     f 1.00; op-class C 2^26.01 [2^25.84, 2^26.17]; worst-of ratio to frontier 25.609
+     pm1     f 0.19; op-class C n/a; worst-of ratio to frontier n/a
+     pm1+s2  f 0.66; op-class C 2^24.84 [2^24.43, 2^25.27]; worst-of ratio to frontier 10.681
+     ecm     f 1.00; op-class C 2^24.25 [2^24.02, 2^24.48]; worst-of ratio to frontier 6.760
+     qs      f 1.00; op-class C 2^21.77 [2^21.68, 2^21.88]; worst-of ratio to frontier 1.000
+     cfrac   f 1.00; op-class C 2^24.53 [2^24.47, 2^24.59]; worst-of ratio to frontier n/a
+  72 bits: frontier holder per pricing official qs, opclass_v1 qs, ruint qs, montgomery qs, opclass_v1_gcdscaled qs; robust holder qs (worst-of ratio 1.000)
+     rho     f 1.00; op-class C 2^27.94 [2^27.75, 2^28.10]; worst-of ratio to frontier 59.986
+     pm1     f 0.24; op-class C n/a; worst-of ratio to frontier n/a
+     pm1+s2  f 0.59; op-class C 2^26.54 [2^26.12, 2^26.93]; worst-of ratio to frontier 21.343
+     ecm     f 1.00; op-class C 2^25.38 [2^25.10, 2^25.63]; worst-of ratio to frontier 9.031
+     qs      f 1.00; op-class C 2^22.43 [2^22.38, 2^22.49]; worst-of ratio to frontier 1.000
+     cfrac   f 1.00; op-class C 2^26.09 [2^26.02, 2^26.16]; worst-of ratio to frontier n/a
+  80 bits: frontier holder per pricing official qs, opclass_v1 qs, ruint qs, montgomery qs, opclass_v1_gcdscaled qs; robust holder qs (worst-of ratio 1.000)
+     rho     f 1.00; op-class C 2^30.01 [2^29.84, 2^30.16]; worst-of ratio to frontier 144.734
+     pm1     f 0.26; op-class C n/a; worst-of ratio to frontier n/a
+     pm1+s2  f 0.66; op-class C 2^27.75 [2^27.35, 2^28.18]; worst-of ratio to frontier 28.321
+     ecm     f 1.00; op-class C 2^26.46 [2^26.21, 2^26.69]; worst-of ratio to frontier 10.915
+     qs      f 1.00; op-class C 2^23.20 [2^23.15, 2^23.25]; worst-of ratio to frontier 1.000
+     cfrac   f 1.00; op-class C 2^27.63 [2^27.56, 2^27.70]; worst-of ratio to frontier n/a
+  88 bits: frontier holder per pricing official qs, opclass_v1 qs, ruint qs, montgomery qs, opclass_v1_gcdscaled qs; robust holder qs (worst-of ratio 1.000)
+     rho     f 1.00; op-class C 2^31.98 [2^31.81, 2^32.14]; worst-of ratio to frontier 282.119
+     pm1     f 0.22; op-class C n/a; worst-of ratio to frontier n/a
+     pm1+s2  f 0.55; op-class C 2^29.67 [2^29.22, 2^29.93]; worst-of ratio to frontier 53.018
+     ecm     f 1.00; op-class C 2^27.81 [2^27.56, 2^28.03]; worst-of ratio to frontier 13.864
+     qs      f 1.00; op-class C 2^24.14 [2^24.08, 2^24.20]; worst-of ratio to frontier 1.000
+     cfrac   f 1.00; op-class C 2^29.25 [2^29.19, 2^29.31]; worst-of ratio to frontier n/a
+  96 bits: frontier holder per pricing official qs, opclass_v1 qs, ruint qs, montgomery qs, opclass_v1_gcdscaled qs; robust holder qs (worst-of ratio 1.000)
+     rho     f 1.00; op-class C 2^33.96 [2^33.78, 2^34.13]; worst-of ratio to frontier 580.563
+     pm1     f 0.26; op-class C n/a; worst-of ratio to frontier n/a
+     pm1+s2  f 0.46; op-class C n/a; worst-of ratio to frontier n/a
+     ecm     f 1.00; op-class C 2^29.08 [2^28.81, 2^29.33]; worst-of ratio to frontier 17.429
+     qs      f 1.00; op-class C 2^25.03 [2^24.97, 2^25.09]; worst-of ratio to frontier 1.000
+     cfrac   f 1.00; op-class C 2^30.76 [2^30.70, 2^30.82]; worst-of ratio to frontier n/a
+  robust holders: 48: qs, 56: qs, 64: qs, 72: qs, 80: qs, 88: qs, 96: qs
+  crossovers: none
+
+===== theta: 96 per size, seeds 9951000 + bits
+  48 bits: frontier holder per pricing official rho, opclass_v1 td, ruint rho, montgomery rho, opclass_v1_gcdscaled td; robust holder rho (worst-of ratio 1.982)
+     rho     f 1.00; op-class C 2^16.96 [2^16.76, 2^17.14]; worst-of ratio to frontier 1.982
+     pm1     f 0.91; op-class C 2^19.38 [2^19.30, 2^19.48]; worst-of ratio to frontier 10.641
+     pm1+s2  f 0.98; op-class C 2^19.54 [2^19.28, 2^19.88]; worst-of ratio to frontier 11.914
+     ecm     f 1.00; op-class C 2^20.43 [2^20.32, 2^20.55]; worst-of ratio to frontier 22.036
+     qs      f 1.00; op-class C 2^20.06 [2^19.97, 2^20.14]; worst-of ratio to frontier 16.989
+     cfrac   f 1.00; op-class C 2^21.64 [2^21.55, 2^21.73]; worst-of ratio to frontier n/a
+     td      f 1.00; op-class C 2^15.97 [2^15.72, 2^16.19]; worst-of ratio to frontier 3.170
+  56 bits: frontier holder per pricing official rho, opclass_v1 rho, ruint rho, montgomery rho, opclass_v1_gcdscaled rho; robust holder rho (worst-of ratio 1.000)
+     rho     f 1.00; op-class C 2^18.05 [2^17.84, 2^18.26]; worst-of ratio to frontier 1.000
+     pm1     f 0.82; op-class C 2^21.09 [2^20.96, 2^21.24]; worst-of ratio to frontier 8.321
+     pm1+s2  f 0.97; op-class C 2^21.01 [2^20.88, 2^21.15]; worst-of ratio to frontier 7.890
+     ecm     f 1.00; op-class C 2^21.24 [2^21.13, 2^21.34]; worst-of ratio to frontier 9.224
+     qs      f 1.00; op-class C 2^20.85 [2^20.80, 2^20.89]; worst-of ratio to frontier 13.272
+     cfrac   f 1.00; op-class C 2^23.09 [2^22.98, 2^23.22]; worst-of ratio to frontier n/a
+     td      f 1.00; op-class C 2^18.13 [2^17.80, 2^18.42]; worst-of ratio to frontier 7.993
+  64 bits: frontier holder per pricing official rho, opclass_v1 rho, ruint rho, montgomery rho, opclass_v1_gcdscaled rho; robust holder rho (worst-of ratio 1.000)
+     rho     f 1.00; op-class C 2^18.92 [2^18.72, 2^19.11]; worst-of ratio to frontier 1.000
+     pm1     f 0.79; op-class C 2^22.73 [2^22.60, 2^22.89]; worst-of ratio to frontier 14.158
+     pm1+s2  f 0.98; op-class C 2^22.64 [2^22.48, 2^22.86]; worst-of ratio to frontier 13.299
+     ecm     f 1.00; op-class C 2^22.19 [2^22.06, 2^22.32]; worst-of ratio to frontier 9.728
+     qs      f 1.00; op-class C 2^21.81 [2^21.73, 2^21.90]; worst-of ratio to frontier 15.388
+     cfrac   f 1.00; op-class C 2^24.62 [2^24.56, 2^24.69]; worst-of ratio to frontier n/a
+     td      f 1.00; op-class C 2^20.47 [2^20.16, 2^20.75]; worst-of ratio to frontier 24.320
+  72 bits: frontier holder per pricing official rho, opclass_v1 rho, ruint rho, montgomery rho, opclass_v1_gcdscaled rho; robust holder rho (worst-of ratio 1.000)
+     rho     f 1.00; op-class C 2^19.83 [2^19.58, 2^20.05]; worst-of ratio to frontier 1.000
+     pm1     f 0.88; op-class C 2^24.18 [2^24.08, 2^24.29]; worst-of ratio to frontier 20.446
+     pm1+s2  f 1.00; op-class C 2^24.05 [2^24.01, 2^24.10]; worst-of ratio to frontier 18.741
+     ecm     f 1.00; op-class C 2^22.79 [2^22.67, 2^22.90]; worst-of ratio to frontier 7.796
+     qs      f 1.00; op-class C 2^22.56 [2^22.49, 2^22.63]; worst-of ratio to frontier 14.976
+     cfrac   f 1.00; op-class C 2^26.25 [2^26.19, 2^26.32]; worst-of ratio to frontier n/a
+     td      f 1.00; op-class C 2^22.38 [2^22.03, 2^22.70]; worst-of ratio to frontier 51.669
+  80 bits: frontier holder per pricing official rho, opclass_v1 rho, ruint rho, montgomery rho, opclass_v1_gcdscaled rho; robust holder rho (worst-of ratio 1.000)
+     rho     f 1.00; op-class C 2^20.93 [2^20.69, 2^21.15]; worst-of ratio to frontier 1.000
+     pm1     f 0.85; op-class C 2^25.79 [2^25.68, 2^25.92]; worst-of ratio to frontier 29.108
+     pm1+s2  f 1.00; op-class C 2^25.70 [2^25.61, 2^25.81]; worst-of ratio to frontier 27.369
+     ecm     f 1.00; op-class C 2^23.74 [2^23.57, 2^23.90]; worst-of ratio to frontier 7.008
+     qs      f 1.00; op-class C 2^23.27 [2^23.23, 2^23.32]; worst-of ratio to frontier 12.431
+     cfrac   f 1.00; op-class C 2^27.71 [2^27.65, 2^27.76]; worst-of ratio to frontier n/a
+     td      f 1.00; op-class C 2^24.60 [2^24.18, 2^24.97]; worst-of ratio to frontier 115.946
+  88 bits: frontier holder per pricing official rho, opclass_v1 rho, ruint rho, montgomery rho, opclass_v1_gcdscaled rho; robust holder rho (worst-of ratio 1.000)
+     rho     f 1.00; op-class C 2^21.91 [2^21.60, 2^22.19]; worst-of ratio to frontier 1.000
+     pm1     f 0.78; op-class C 2^27.51 [2^27.37, 2^27.68]; worst-of ratio to frontier 48.662
+     pm1+s2  f 0.98; op-class C 2^27.50 [2^27.29, 2^27.76]; worst-of ratio to frontier 48.306
+     ecm     f 1.00; op-class C 2^24.56 [2^24.37, 2^24.74]; worst-of ratio to frontier 6.262
+     qs      f 1.00; op-class C 2^24.19 [2^24.14, 2^24.23]; worst-of ratio to frontier 12.747
+     cfrac   f 1.00; op-class C 2^29.34 [2^29.28, 2^29.41]; worst-of ratio to frontier n/a
+     td      f 1.00; op-class C 2^26.83 [2^26.34, 2^27.24]; worst-of ratio to frontier 281.190
+  96 bits: frontier holder per pricing official rho, opclass_v1 rho, ruint rho, montgomery rho, opclass_v1_gcdscaled rho; robust holder rho (worst-of ratio 1.000)
+     rho     f 1.00; op-class C 2^22.87 [2^22.58, 2^23.12]; worst-of ratio to frontier 1.000
+     pm1     f 0.81; op-class C 2^29.04 [2^28.92, 2^29.20]; worst-of ratio to frontier 72.108
+     pm1+s2  f 0.97; op-class C 2^28.99 [2^28.83, 2^29.20]; worst-of ratio to frontier 69.393
+     ecm     f 1.00; op-class C 2^25.06 [2^24.91, 2^25.21]; worst-of ratio to frontier 4.577
+     qs      f 1.00; op-class C 2^25.04 [2^24.99, 2^25.09]; worst-of ratio to frontier 12.417
+     cfrac   f 1.00; op-class C 2^30.81 [2^30.75, 2^30.87]; worst-of ratio to frontier n/a
+     td      f 1.00; op-class C 2^29.18 [2^28.70, 2^29.58]; worst-of ratio to frontier 741.642
+  robust holders: 48: rho, 56: rho, 64: rho, 72: rho, 80: rho, 88: rho, 96: rho
+  crossovers: none

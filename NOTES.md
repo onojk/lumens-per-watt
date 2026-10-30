@@ -11765,3 +11765,37 @@ Both maps are scored.
 - **Not run:** sq and ps (no ruint / Montgomery price for their lumped ops); vl (a walk like td); race and arr (composites and families).
 - **Numbers:** fresh guarded seeds (balanced 9950000 + bits, θ 9951000 + bits), 96 per size at 48–96 in steps of 8.
 - **Smoke test:** on other seeds (9952000 / 9953000, 4 numbers, 48 and 56 bits), not on the measured numbers.
+
+## The frontier, measured (explore/frontier.py, bound rule fixed before the run; Oct 30; measurement only)
+
+**Outputs:** `results/frontier_table.md`, `results/frontier.png`, `results/frontier.json`.
+
+**The run:** 96 fresh guarded numbers per size at 48–96 bits, balanced and θ 0.20–0.30. Existing lamps, exact lampcore charges, no errors.
+
+**Balanced: QS holds the frontier at every size.**
+- **56–96 bits:** robustly, the minimum under all four worst-of pricings (worst-of ratio 1.00).
+- **48 bits:** the per-pricing holders differ. p − 1 with stage 2 (f 0.86) holds it under official and Montgomery, and QS under op-class, ruint and the scaled gcd price; QS's worst-of ratio is 1.26.
+- **The others' worst-of ratios to it, 48 → 96:**
+  - ECM 4.5 → 17;
+  - p − 1 + stage 2 2.2 → 53 at 88, then not defined at 96 (f 0.46);
+  - rho 5.0 → 581;
+  - td 760 at 48.
+- **Correction of 5cf550c's design note:** "ECM 3–11 × cheaper than rho" is right, but ECM is not the balanced frontier. QS is cheaper still, by 4.5–17 ×.
+
+**θ 0.20–0.30: rho holds the frontier at every size.**
+- **56–96 bits:** robustly (1.00).
+- **48 bits:** td holds it under op-class and the scaled gcd price, rho under the rest; rho's worst-of ratio is 1.98.
+- **ECM is closing:** 22 × at 48, 4.6 × at 96, so an ECM crossover may lie just beyond 96 bits (not measured).
+- **The others:** QS stays near 12–17 ×; p − 1 runs 8–72 ×.
+
+**Crossovers in 48–96:** none on either map.
+
+**What this means for the next family** (template §0):
+- **Balanced:** a new family must beat QS's cost at every chord size under the worst-of set to claim a level win, or grow more slowly than QS without being dearer at any size to claim a slope win.
+- **θ:** the bar is rho, with td at 48.
+- **Arrangement-v1's balanced pick** (rho-equivalent) would have been 25–145 × the frontier at 64–80 bits under this reference. Its results stay as recorded, scoped to rho.
+
+**What this does not establish:**
+- **Frozen genes only:** QS's reference genes are tuned at 54–96 and held below 54; ECM's and p − 1's are the frozen PRE genes. Other genes could move the 48-bit cell.
+- **The 48-bit holder is a pricing split,** not a robust one.
+- **CFRAC, sq and ps** cannot enter a worst-of frontier: their lumped op types have no ruint or Montgomery price.
