@@ -33,18 +33,41 @@ sweep the genes in order, evaluate every grid value of the gene (2 lampcore proc
 (ties keep the incumbent), until a sweep changes nothing (at most 4 sweeps). The best genome overall is the pair best
 with the highest fitness. Every pair's best is then run on all five sizes, and its per-number records are kept for
 the report (evolve/arr_report.py).
+Theta mode (Q5, design §8: the theta 0.20-0.30 sub-map; its genome answers Q5 and nothing else): training 48 per size
+at 64 and 80 bits, theta = log2 p / log2 N uniform in [0.20, 0.30), seeds 9925000 + bits (twilight2_search.numbers'
+draw with the band changed, as the harness's theta map). The design gives no separate ranking for it, so the
+balanced map's rule is used on the sizes it has: worst-of G_rho over the 64-80 chord against rho on the same numbers,
+under the same cost guard (robust cost ratio <= 1.25 at 64 and 80), the same budget (16 x rho's max per size), grid,
+start points and early drop.
+If no pair has a defined fitness, the record's "best" is null (no genome selected).
   python3 arr_search.py balanced          -> $LPW_SEARCH_OUT/arr_search_balanced.json, genome_<layout>_<rule>.json
+  python3 arr_search.py theta             -> $LPW_SEARCH_OUT/arr_search_theta.json, genome_<layout>_<rule>.json
   python3 arr_search.py selftest          the same on 20-32 bits, 16 per size, seeds 9929000 + bits (no training map)"""
 import os, sys
 ARGV = sys.argv[1:]
 sys.argv = sys.argv[:1]
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ".")
-import json, math, time
+import json, math, random, time
 from concurrent.futures import ThreadPoolExecutor
 import lamps
 import arr_price as V
 from fastlamps import semiprimes_pq
+from lamps import rand_prime
+
+def theta_numbers(bits, seed, n, lo=0.20, hi=0.30):
+    """twilight2_search.numbers' draw, band [lo, hi) (the harness's theta draw; training seeds only here)."""
+    rng, out = random.Random(seed), []
+    while len(out) < n:
+        pb = round(rng.uniform(lo, hi) * bits)
+        p, q = rand_prime(pb, rng), rand_prime(bits - pb + 1, rng)
+        N = p * q
+        if N.bit_length() != bits:
+            continue
+        p, q = min(p, q), max(p, q)
+        if lo <= math.log2(p) / math.log2(N) < hi:
+            out.append((N, p, q))
+    return out
 
 WORKERS = 2
 CAP_X = 16
@@ -71,9 +94,9 @@ class Invalid(Exception):
     """An error or aborted number (the early-exit audit): the genome is invalid and is never ranked."""
 
 class Search:
-    def __init__(self, sizes, per, seed0, chord, screen):
+    def __init__(self, sizes, per, seed0, chord, screen, draw=semiprimes_pq):
         self.sizes, self.per, self.chord, self.screen = sizes, per, chord, screen
-        self.nums = {b: semiprimes_pq(b, per, seed0 + b) for b in sizes}
+        self.nums = {b: draw(b, per, seed0 + b) for b in sizes}
         self.rho = {b: V.run(V.RHO, V.CAP, self.nums[b], b) for b in sizes}
         assert all(sum(r["ok"] for r in self.rho[b]) >= per // 2 for b in sizes), "rho fails the training map"
         self.cap = {b: CAP_X * max(r["ops"] for r in self.rho[b]) for b in sizes}
@@ -112,7 +135,7 @@ class Search:
         if key not in self.memo:
             self.evals += 1
             a, b = self.chord
-            order = (a, self.screen, b) + tuple(x for x in self.sizes if x not in (a, self.screen, b))
+            order = tuple(dict.fromkeys((a, self.screen, b) + tuple(self.sizes)))      # each size once
             R, ratios = {}, {}
             for s in order:
                 try:
@@ -167,10 +190,10 @@ def coordinate(S, pair, log):
                 break
     return genome(pair, genes), best
 
-def main(sizes, per, seed0, chord, screen, out_dir, tag):
+def main(sizes, per, seed0, chord, screen, out_dir, tag, draw=semiprimes_pq):
     t0 = time.time()
     log = lambda s: print(f"[{time.time() - t0:7.0f}s] {s}", flush=True)
-    S = Search(sizes, per, seed0, chord, screen)
+    S = Search(sizes, per, seed0, chord, screen, draw)
     log(f"map {tag}: sizes {sizes}, {per} per size, seeds {seed0} + bits; rho successes "
         + str({b: sum(r['ok'] for r in S.rho[b]) for b in sizes}) + f"; budget per number {CAP_X} x rho's max: {S.cap}")
     res = {}
@@ -179,11 +202,15 @@ def main(sizes, per, seed0, chord, screen, out_dir, tag):
         lamps.validate_genome(g)
         res[pair] = (g, f)
     best = max((p for p in PAIRS), key=lambda p: (res[p][1] is not None, res[p][1] or 0))
-    log(f"best overall: {best[0]} x {best[1]}, fitness {res[best][1]}; {S.evals} evaluations")
+    if res[best][1] is None:
+        best = None
+        log(f"best overall: none (no pair has a defined fitness); {S.evals} evaluations")
+    else:
+        log(f"best overall: {best[0]} x {best[1]}, fitness {res[best][1]}; {S.evals} evaluations")
     out = {"map": tag, "sizes": sizes, "per": per, "seeds": f"{seed0} + bits", "chord": chord, "screen": screen,
            "budget": {"x_rho_max": CAP_X, "per_size": S.cap}, "evaluations": S.evals,
            "numbers": {b: [[str(N), str(p), str(q)] for N, p, q in S.nums[b]] for b in sizes},
-           "rho": {"genome": V.RHO, "records": S.rho}, "best": f"{best[0]}_{best[1]}", "pairs": {},
+           "rho": {"genome": V.RHO, "records": S.rho}, "best": f"{best[0]}_{best[1]}" if best else None, "pairs": {},
            "evaluated": [{"genome": json.loads(k), **v} for k, v in S.memo.items()]}
     def final(pair):                      # every size in order, stopping where the genome is dropped (as the search)
         g = res[pair][0]
@@ -207,7 +234,7 @@ def main(sizes, per, seed0, chord, screen, out_dir, tag):
     log(f"wrote {path}")
 
 if __name__ == "__main__":
-    if not ARGV or ARGV[0] not in ("balanced", "selftest"):
+    if not ARGV or ARGV[0] not in ("balanced", "theta", "selftest"):
         sys.exit(__doc__)
     out_dir = os.environ.get("LPW_SEARCH_OUT")
     if ARGV[0] == "selftest":
@@ -216,4 +243,7 @@ if __name__ == "__main__":
     else:
         if not out_dir:
             sys.exit("LPW_SEARCH_OUT is not set: the search runs only inside tools/search_sandbox.sh")
-        main((48, 56, 64, 72, 80), 48, 9920000, (48, 80), 64, out_dir, "balanced")
+        if ARGV[0] == "balanced":
+            main((48, 56, 64, 72, 80), 48, 9920000, (48, 80), 64, out_dir, "balanced")
+        else:
+            main((64, 80), 48, 9925000, (64, 80), 64, out_dir, "theta", theta_numbers)
