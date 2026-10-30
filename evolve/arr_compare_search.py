@@ -5,7 +5,9 @@ Compared, in this order, stopping at the first difference: the training numbers;
 number of evaluations; the selected genome; per pair (in the record's order): the final genome, its fitness, its
 search entry and its per-number training records; then the sweep log lines (timestamps stripped). Fields the old
 code did not write are not compared, and are listed: the per-number "term" (the early-exit audit), the "invalid"
-flag, and the evaluated-genome list (absent from 39ffaf5's record).
+flag, and the evaluated-genome list (absent from 39ffaf5's record). When both records hold an evaluated-genome list
+(the theta reruns, Oct 30), it is compared too, in order, after the pairs and before the sweep log, termination and
+invalid flag included (both runs wrote them).
   python3 arr_compare_search.py OLD_RECORD OLD_LOG NEW_RECORD NEW_LOG   -> "identical" or the first difference"""
 import json, re, sys
 
@@ -60,6 +62,10 @@ def main(old_rec, old_log, new_rec, new_log):
         d = first_diff(strip(a.get(k)), strip(b.get(k)), k)
         if d:
             return d
+    if "evaluated" in a and "evaluated" in b:
+        d = first_diff(a["evaluated"], b["evaluated"], "evaluated")
+        if d:
+            return d
     la, lb = sweeps(old_log), sweeps(new_log)
     for i, (x, y) in enumerate(zip(la, lb)):
         if x != y:
@@ -72,7 +78,9 @@ if __name__ == "__main__":
     if len(sys.argv) != 5:
         sys.exit(__doc__)
     d = main(*sys.argv[1:])
+    both = all("evaluated" in json.load(open(p)) for p in (sys.argv[1], sys.argv[3]))
     print("compared: training numbers, rho's records, budget, evaluation count, selected genome, every pair's final genome, "
-          "fitness, search entry and per-number training records, and the sweep log; not compared (not written by the old "
-          "code): per-number termination, the invalid flag, the evaluated-genome list")
+          "fitness, search entry and per-number training records, " + ("the evaluated-genome list, " if both else "")
+          + "and the sweep log; not compared: per-number termination and the invalid flag in the pairs"
+          + ("" if both else ", and the evaluated-genome list (not in both records)"))
     print("identical" if d is None else f"FIRST DIFFERENCE: {d}")

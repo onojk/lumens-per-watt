@@ -1,0 +1,1 @@
+{"name": "stride_batch", "genome": [{"t": "arr", "layout": {"kind": "stride", "a": 0, "s": 1}, "detect": {"kind": "batch", "b": 1, "t": 1}}]}
