@@ -11504,3 +11504,33 @@ Both maps are scored.
 - **No genome beats rho by more than about 15–20% at this budget,** the resolution of 48 held-out numbers per size.
 - The non-map pairs (stride, fold, bins) were dropped at the bottom of each chord within the search's budget, so their growth is not established.
 - **Forecasts:** 15 genuine passes, 3 not falsified by default, 2 falsified (D-39, G-35). See `results/arrangement-v1_forecast_scores.md`.
+
+## Rulings for the next family (the user's, Oct 30; documentation only; written into `docs/planning/next_family_template.md`, frozen only when that family's predictions are sealed)
+
+1. **Fitness, a strengthened option (a):** a G_rho win counts only if the genome is no dearer than rho at every measured size of the chord. At no size may its robust cost-ratio interval lie entirely above 1.
+   - **The check:** the Q5 pick fails it (64 bits: 1.267 [1.077, 1.491], entirely above 1). The balanced pick passes at its measured sizes (0.993 [0.831, 1.180] at 64; 0.988 [0.807, 1.218] at 80).
+   - **The original (a) was not adopted:** it checks only the top size, so the Q5 pick passes it (80 bits: 0.990 [0.804, 1.227]).
+   - **(b) was not adopted:** it extrapolates, and a flatter padded curve projects as cheaper, so it would rank the Q5 pick higher.
+   - **What it needs:** the next harness must report cost-ratio intervals at every chord size; arrangement-v1's reports only 64 and 80.
+2. **Held-out sets:** about 600 numbers at 64 bits and 850 at 80, paired with rho, for ±5% on the cost ratio (the 1/√n model, 5f9131d). Training sets are unchanged.
+   - **Scoring-time estimate** (2 workers, 2.4 GHz cap; lampcore times measured here at 48 per size, bootstrap calls timed at n = 600 / 850): about 1.7 min of lampcore for the two 64/80 arms, 3–4 min of single-threaded bootstrap, 2 min for the other sizes, 2 min for a report re-run.
+   - **Total: about 8–10 min per scored rho-like genome;** a dearer genome takes proportionally longer.
+
+## Candidate next families (proposals only; none started)
+
+- **(1) Change the group: the exponent layout over other groups.**
+  - **Genes:** the group (Z_p^* as p − 1; Lucas sequences V_k as p + 1, Williams; small elliptic curves with fixed small parameters); stage 1's bound B1; a stage 2 (none, standard continuation with bound B2, or baby-step giant-step pairing); and the base or curve seed.
+  - **Why it might beat rho's slope:** these methods depend on the smoothness of the group order, not on √p. On numbers whose p ± 1 or curve orders are smooth they are far below p^(1/2), and over many curves the elliptic case is subexponential. It is the only family proposed here that can change the slope rather than the constant.
+  - **Rediscovery:** the group gene set to Z_p^* is the p − 1 lamp; elliptic curves with continuation are the existing ECM lamp, reported as known lamps.
+  - **Relevance:** MOVES "Change the group: p+1 card, untested".
+  - **Risk:** on balanced numbers (θ ≈ 0.5) at 48–80 bits the smooth-order chance is low, so it should be judged on the θ sub-map as well.
+- **(2) Half-size arithmetic: square-form walks (SQUFOF-like).**
+  - **Genes:** the multiplier k (a small-integer grid), the cycle-detection rule (the squares queue, or Floyd / Brent on the form sequence), and the batch size of the square test.
+  - **Why it might beat rho:** the slope is the same N^(1/4) exponent as rho's p^(1/2) on balanced numbers, but every step works on numbers about √N in size. At 48–80 bits that is one machine word, priced as `word` (55.6 op-class units) rather than `mul` (554.9). The win, if any, is a constant factor of up to about 10, which the strengthened rule (a) can still credit through the cost ratio at every size.
+  - **Rediscovery:** SQUFOF itself, not yet a lamp here (MOVES lists it only as a reopening condition), reported as a known method.
+  - **Needs:** a cost model for the half-size steps before code.
+- **(3) Shared-collision walks: several maps, one product.**
+  - **Genes:** the number of walks w, their constants c_i and seeds, a distinguished-point mask (or none), and a shared batch size for the product of differences across walks.
+  - **Why it might help:** the birthday bound keeps the slope at p^(1/2). But sharing one gcd across w walks' differences, and using distinguished points to find collisions between walks, cuts the gcd count and may lower the constant. It also tests whether the per-number cycle-length variance (0.64–2.16 against rho, `explore/brent_backtrack.py`) shrinks when the best of w walks wins.
+  - **Rediscovery:** w = 1 with no mask is rho / Brent (arrangement-v1's pick).
+  - **Expectation:** a constant-factor at best, not a slope change.
