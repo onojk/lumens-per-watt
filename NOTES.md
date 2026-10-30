@@ -11195,3 +11195,9 @@ Montgomery is read from calibrate.json at run time and reported. With official p
 - map + cycle detection ≈ √p dots (rho);
 - exponent ≈ the largest prime factor of p − 1;
 - bins: mod-p collisions are not exposed by the binning (the reviewer's amendment).
+
+## Ruling: the stride layout's step charge (the user's, Oct 29; recorded before the arr code; documentation only)
+
+**Option (i): keep one `word` per stride step.** The user's reason: the stride layout's x = a + s·i is an N-size residue, so each step is a real big-number add. td and the value line step a small machine counter, which is correctly uncharged. Their free stepping is no precedent for the stride layout.
+
+**The built-in check becomes exact:** stride(a = 2, s = 1) + per dot(t = 0) equals vl on gcds, tests, hits and factor, and **ops = vl ops + exactly one `word` per step** (dots − 1 words; x_0 is free). The cost model above (6062320) stands unchanged; this closes its open decision.
