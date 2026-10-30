@@ -11638,3 +11638,29 @@ Both maps are scored.
 - **Single multipliers** (48 / 64 bits): k = 1: 3.58 / 3.16; k = 3: 4.06 / 3.36; k = 5: 3.20 / 2.84; k = 7: 3.30 / 3.36; k = 11: 4.09 / 3.41.
 - A's distribution is heavy-tailed: means sit about 1.6 × above medians.
 - **Not measured:** Shanks's queue variant. It would skip the improper squares' reverse cycles, about one of the two attempts per number, so it could bring β down toward about 0.5.
+
+## Family (2), SQUFOF-like: go / no-go (Oct 30; model with measured inputs; documentation only)
+
+**The recomputation** (`wolfram/2026-10-30_squfof_go_nogo.wl`):
+- **Measured A** (S2: mean and 95% interval, de2dd03) and measured β.
+- **D per pricing** (7c96549): op-class v1 1; ruint and Montgomery 4.0 / 4.0 / 4.8; official 1.
+- **Per number:** about 2 gcd(N, P), which go on the small-k curve under the scaled price (P < 2^64), and one isqrt.
+- **rho:** its mean training cost per pricing.
+
+**Expected cost / rho** (A at its interval's low end / mean / high end):
+
+| N bits | official | ruint | Montgomery | op-class v1 | scaled gcd | **worst-of** |
+|---|---|---|---|---|---|---|
+| 48 | 11.1 / 12.4 / 13.8 | 0.47 / 0.52 / 0.58 | 1.41 / 1.57 / 1.75 | 1.10 / 1.23 / 1.36 | 1.10 / 1.23 / 1.37 | **1.41 / 1.57 / 1.75** |
+| 64 | 10.1 / 11.3 / 12.6 | 0.43 / 0.48 / 0.53 | 1.31 / 1.47 / 1.63 | 1.01 / 1.13 / 1.25 | 1.01 / 1.13 / 1.26 | **1.31 / 1.47 / 1.63** |
+| 80 | 10.1 / 12.2 / 14.5 | 0.46 / 0.55 / 0.66 | 1.40 / 1.68 / 2.01 | 1.01 / 1.21 / 1.44 | 1.01 / 1.21 / 1.44 | **1.40 / 1.68 / 2.01** |
+
+- **The binding pricing is Montgomery** at every size: its timed division (D ≈ 4–4.8, at 0.10 mul per word op) makes a form step cost about 1.0 mul.
+- **Break-even A under the worst-of set:** 2.25 (48), 2.14 (64), 2.18 (80). The measured intervals' low ends are 3.18, 2.80 and 3.06.
+
+**Verdict of the model: NO-GO.** SQUFOF cannot beat rho under the worst-of pricing, even at the low end of A's interval, at any of 48, 64 or 80 bits.
+- Only ruint favours it (0.43–0.66). Under the level-win rule that is a single-pricing win, i.e. a pricing artifact.
+- op-class v1 is at parity at best (1.01 at A's low end).
+- **Recommendation: park family (2).** No predictions and no code.
+- **The one unmeasured lever that could move A:** Shanks's queue, which skips improper squares' reverse cycles. A model estimate with β ≈ 0.5 gives A ≈ 1.5·α ≈ 2.5–2.9 for the measured α (1.64–1.90), still above the 2.14–2.25 break-even. It is a model, not measured, and it would not change the verdict unless α itself were lower.
+- **The conditions that would reopen it** are in MOVES: another pricing in the worst-of set, sizes where a mul costs more against a word (above 128 bits), or a measured A below about 2.1.

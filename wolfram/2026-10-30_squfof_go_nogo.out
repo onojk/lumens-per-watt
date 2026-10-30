@@ -1,0 +1,24 @@
+48 bits (A low / mean / high = {3.18, 3.55, 3.95}):
+   official: 11.070 / 12.350 / 13.750
+   ruint: 0.467 / 0.521 / 0.579
+   montgomery: 1.407 / 1.570 / 1.746
+   opclass_v1: 1.098 / 1.226 / 1.364
+   scaled: 1.104 / 1.233 / 1.372
+   worst-of (op-class, ruint, Montgomery, scaled): 1.407 / 1.570 / 1.746  (binding: montgomery)
+   break-even A under the worst-of: 2.25
+64 bits (A low / mean / high = {2.8, 3.13, 3.48}):
+   official: 10.140 / 11.340 / 12.600
+   ruint: 0.428 / 0.479 / 0.532
+   montgomery: 1.311 / 1.465 / 1.629
+   opclass_v1: 1.007 / 1.125 / 1.251
+   scaled: 1.010 / 1.130 / 1.256
+   worst-of (op-class, ruint, Montgomery, scaled): 1.311 / 1.465 / 1.629  (binding: montgomery)
+   break-even A under the worst-of: 2.14
+80 bits (A low / mean / high = {3.06, 3.67, 4.39}):
+   official: 10.130 / 12.150 / 14.530
+   ruint: 0.458 / 0.549 / 0.657
+   montgomery: 1.401 / 1.681 / 2.011
+   opclass_v1: 1.005 / 1.206 / 1.442
+   scaled: 1.006 / 1.206 / 1.443
+   worst-of (op-class, ruint, Montgomery, scaled): 1.401 / 1.681 / 2.011  (binding: montgomery)
+   break-even A under the worst-of: 2.18
