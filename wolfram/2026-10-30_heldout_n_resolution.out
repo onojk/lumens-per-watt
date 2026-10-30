@@ -1,0 +1,6 @@
+cost/rho at 64 bits, op-class v1: relative half-width at n = 48: 17.6%; n for +/-5%: 594; for +/-10%: 149
+cost/rho at 80 bits, op-class v1: relative half-width at n = 48: 21.1%; n for +/-5%: 853; for +/-10%: 214
+cost/rho at 64 bits, robust: relative half-width at n = 48: 17.6%; n for +/-5%: 595; for +/-10%: 149
+cost/rho at 80 bits, robust: relative half-width at n = 48: 20.8%; n for +/-5%: 835; for +/-10%: 209
+G_rho 48-80, worst-of: relative half-width at n = 48: 5.9%; n for +/-5%: 68; for +/-10%: 17
+D-44 band average (64, 80): relative half-width at n = 48: 13.8%; n for +/-5%: 364; for +/-10%: 91

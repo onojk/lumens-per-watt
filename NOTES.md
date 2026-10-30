@@ -11439,3 +11439,26 @@ Forecast scoring (Q1–Q6 against R-38..R-43, G-31..G-36 and D-38..D-43) is a se
 - **Unmeasured:** bin compare and the other non-map pairs. All were dropped at 48 bits within the search's budget, so their growth is not established either way.
 - **Forecasts** (`results/arrangement-v1_forecast_scores.md`): 16 not falsified (3 of them by default), D-39 falsified by 0.002 on the point value, Q5 unscored.
 - **Scope:** this family (arr layouts × detection rules, design §2's gene grid), this budget (16 × rho's largest training op count per number, cost guard 1.25), balanced numbers at 48–96 bits. The θ sub-map (Q5) has not run.
+
+## Round notes, arrangement-v1 balanced map (the user's, Oct 30; documentation only)
+
+**Forecast tally** (`results/arrangement-v1_forecast_scores.md`):
+- 13 genuine passes;
+- 3 not falsified by default (R-41, D-41, G-34: nothing non-map reached a measurable slope);
+- 1 falsified (D-39, by 0.002 on the point value, scored as written);
+- 3 pending Q5 (R-42, D-42, G-35).
+
+**Correction by note:** the commit message of 0549cbe says "3 of them not by default"; it should read "3 of them by default". The table file is correct. History is not rewritten.
+
+**The resolution statement:**
+- Per-number cost ratios against rho run 0.64–2.16. The genome's map is a different random walk from rho's, so its cycle lengths vary number by number. At 48 numbers per size, the held-out intervals are therefore about ±15–20%: cost / rho is ±17.6% at 64 bits and ±21.1% at 80 (op-class), and the D-44 band average is ±13.8%.
+- **The result therefore reads: no arrangement-v1 genome beats rho by more than about 15–20% at this budget.**
+
+**Held-out set size to resolve ±5%** (paired, the same numbers as rho; model `wolfram/2026-10-30_heldout_n_resolution.wl`):
+- Assumption: interval half-widths scale as 1/√n from f527a0a's 48-per-size intervals. This is a model, not a verdict.
+- **Cost / rho:** about **600 per size at 64 bits and 850 at 80** (op-class; robust 595 and 835). For ±10%: about 150 and 210.
+- **D-44's band average:** about 360.
+- **G_rho:** about 70. Its interval at 48 per size is already ±5.9%, because growth over a chord is steadier than cost at one size.
+- **Recorded for the next family's design:** size the held-out set by the metric that carries the verdict. At least about 850 per size if a cost ratio at 80 bits must resolve ±5%.
+
+**Protocol proposal (future rounds only; needs the user's approval before it applies; not retroactive):** a forecast's range must be at least as wide as the metric's stated resolution, for example ±4% for G_rho.
