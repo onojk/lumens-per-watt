@@ -11664,3 +11664,45 @@ Both maps are scored.
 - **Recommendation: park family (2).** No predictions and no code.
 - **The one unmeasured lever that could move A:** Shanks's queue, which skips improper squares' reverse cycles. A model estimate with β ≈ 0.5 gives A ≈ 1.5·α ≈ 2.5–2.9 for the measured α (1.64–1.90), still above the 2.14–2.25 break-even. It is a model, not measured, and it would not change the verdict unless α itself were lower.
 - **The conditions that would reopen it** are in MOVES: another pricing in the worst-of set, sizes where a mul costs more against a word (above 128 bits), or a measured A below about 2.1.
+
+## Cost model: family (1), change the group (pre-check; before any code; Oct 30)
+
+**The family:** the exponent layout over a choice of group, with stage 1 bound B1 and stage 2 bound B2.
+- **p − 1** (the group Z_p^*), **p + 1** (Williams, the Lucas group of order p − (D/p)), and **small fixed-parameter elliptic curves** (Montgomery form).
+- Two of the three already exist as lamps:
+  - `pm1`: stage 1 over prime powers, and the prime-gap stage 2;
+  - `ecm`: Montgomery curves, Suyama's parametrization, a BSGS stage 2.
+  A win by either is a **rediscovered known lamp**, never novelty. The family's new member is p + 1.
+
+**Prior evidence** (NOTES, "Stage 8: elliptic-curve card", measured):
+- ECM leads rho on balanced numbers from 54 bits (official ops, 2^13.53 against 2^14.26).
+- On unbalanced numbers rho leads at 24-bit p (2–3.5 ×), the two are level near 28-bit p, and ECM leads from 32-bit p.
+- The θ 0.20–0.30 sub-map has p of about 10–24 bits at 48–80 bits, rho's side of that crossover.
+
+**Charges, existing types only:**
+- **p − 1:** the `pm1` lamp's charges as they stand (`lamps.lamp_pm1`, `pm1_stage2`; NOTES "(A1)" and "p-1 stage 2 by prime-gap stepping").
+  - Stage 1: max(1, bitlen(q)) `mul` per prime power q ≤ B1, about 1.44·B1 in all.
+  - 1 `gcd` after stage 1.
+  - Stage 2 (B2 = c·B1): the gap table, X = a^(q1); per prime in (B1, B2], 2 `mul` + 3 `word`; a `gcd` every 64 primes and after the last; a gcd of N backtracks, charged.
+- **p + 1 (new):** Lucas V-sequence, V_1 = A, D = A² − 4.
+  - Stage 1: V_E for E = ∏ q (prime powers ≤ B1), by the ladder V_{2k} = V_k² − 2 and V_{2k+1} = V_k·V_{k+1} − V_1, per bit 2 `mul` + 2 `word` (the two subtractions). That is 2·bitlen(q) `mul` + 2·bitlen(q) `word` per prime power, about 2.88·B1 `mul` in all.
+  - 1 `gcd`(V_E − 2, N).
+  - Stage 2 by prime-gap stepping on V (V_{m+d} = V_m·V_d − V_{m−d}): per prime in (B1, B2], 2 `mul` + 3 `word` as p − 1's, and a `gcd` every 64 primes.
+  - **Seeds:** one stage per seed A. A seed finds p only when (D/p) = −1 (then the order is p + 1); otherwise it repeats p − 1. With random A that is each case about half the time, so pure p + 1 needs about 2 seeds per number, and every seed's stage is charged.
+- **Elliptic curves:** the `ecm` lamp's charges (ecm.py's docstring).
+  - setup_mul + setup_euclid_N per curve;
+  - stage 1, 5 + 11·(bitlen(q) − 1) `mul` per prime power;
+  - the BSGS stage 2;
+  - `word` per modular addition (4 per xDBL, 6 per xADD);
+  - 1 `gcd` after each stage.
+  - "Small fixed parameters" (a24 a small integer) would remove most of the setup, and could turn the a24 multiply (1 of xDBL's 5) into a word-size scalar multiply. Whether that multiply is priced `mul` (conservative) or `word` is an open decision. The pre-check measures the existing lamp and records the ceiling of that saving: at most 1/11 of stage 1.
+
+**Expected cost:** C = total spent over a size's numbers / successes, under each pricing. It is defined only when at least half the numbers factor (G_rho's minimum rule). A group method fails deterministically on a number whose group orders are not smooth: p − 1 has one order per factor, so there is no retry. Its success fraction f is therefore the whole question.
+- p + 1 gets a second order per factor (p + 1), at about 2 seeds' cost.
+- Curves retry, one new order per curve, which is ECM.
+
+**The pre-check measures (step 2, explore):**
+- p − 1 directly with the `pm1` lamp in lampcore, on a grid of B1 and B2: exact charges, f and C per pricing, against rho on the same numbers.
+- ECM with the `ecm` lamp: the frozen genes and a b1 grid.
+- p + 1 by smoothness: the largest and second-largest prime factors of p + 1 and q + 1 by trial division, charged by the model above, with 2 seeds.
+- On balanced and θ 0.20–0.30 training-like numbers at 48, 64 and 80 bits, with fresh guarded seeds.
