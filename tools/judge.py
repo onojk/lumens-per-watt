@@ -53,10 +53,11 @@ def pred_path(exp):
     return os.path.join(ROOT, "predictions", exp + ".md")
 
 def body_sha(exp):
-    """sha256 of the predictions' text above the first pin heading (the sealed text; pins are appended below it)."""
+    """sha256 of the predictions' text above the first pin heading (the sealed text; pins are appended below it),
+    trailing blank lines ignored: appending a pin, with or without a blank line before it, leaves the hash as it was."""
     text = open(pred_path(exp), "rb").read()
     i = text.find(("\n" + HEAD).encode())
-    return hashlib.sha256(text if i < 0 else text[:i + 1]).hexdigest()
+    return hashlib.sha256((text if i < 0 else text[:i + 1]).rstrip(b"\n") + b"\n").hexdigest()
 
 def expand(pats):
     import glob
