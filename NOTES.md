@@ -11534,3 +11534,60 @@ Both maps are scored.
   - **Why it might help:** the birthday bound keeps the slope at p^(1/2). But sharing one gcd across w walks' differences, and using distinguished points to find collisions between walks, cuts the gcd count and may lower the constant. It also tests whether the per-number cycle-length variance (0.64–2.16 against rho, `explore/brent_backtrack.py`) shrinks when the best of w walks wins.
   - **Rediscovery:** w = 1 with no mask is rho / Brent (arrangement-v1's pick).
   - **Expectation:** a constant-factor at best, not a slope change.
+
+## Rulings (the user's, Oct 30; documentation only)
+
+1. **A level win** (G_rho about 1) counts only if the genome's robust cost-ratio interval lies entirely below 1 at every measured chord size, under the worst-of pricing set. A level win under op-class alone is a pricing artifact. Slope wins stay under the strengthened rule (a). (Added to `docs/planning/next_family_template.md`.)
+2. **A harness requirement (recorded; no code yet):** report cost-ratio intervals at every chord size, including 48, as the fitness rules need. (In the template.)
+3. **The next family is (2), half-size square-form walks (SQUFOF-like).** First step: the cost model below, before any code.
+4. **Queue:** family (1), change the group, is queued for the θ sub-map after (2). Family (3), shared-collision walks, is parked.
+
+## Cost model: half-size square-form walks (SQUFOF-like), the next family (before any code; Oct 30)
+
+**The method:**
+- Shanks's square forms on k·N: the forward cycle (P_i, Q_i) until Q_i is a proper square (Shanks's queue of small Q's rejects the improper ones), then the reverse cycle from the square root until P repeats, then gcd(N, P).
+- On failure (no proper square within a bound, or a trivial gcd), the next multiplier k.
+
+**Which ops are word-size, and where that stops:**
+- Every P_i, Q_i, b and every intermediate product is below 2√(kN), and b·Q_i ≤ P0 + P_i < 2√(kN).
+- So all per-step arithmetic fits one 64-bit word while kN < 2^126. At 48–96 bits that holds for every multiplier k < 2^30.
+- **Word pricing stops** past about 126 bits of kN. There each step needs double-word arithmetic, priced as `mul`. That is outside this project's 40–100-bit scope at moderate k.
+- **N-size ops:** one isqrt(kN) per multiplier, charged 2 `mul` (a Newton step on a two-word number), and the final gcd(N, P), 1 `gcd`.
+
+**Charges per form step (existing types only; no new type and no new price):**
+- **The step:** 1 word division b = (P0 + P_i) div Q_i, charged as **D** `word` ops; 2 word multiplies and 4 word adds or subtracts, charged as 6 `word`.
+- **The square test,** on forward steps, every other step: a residue filter plus a word isqrt, 1 `root_test` (the existing word-size square test).
+- **Shanks's queue:** Q_i ≤ 2√(2√(kN)) is pushed (1 `word` compare per step, inside the 6). A candidate square is checked against the queue with 1 `sort_cmp` per queue entry; there are O(1) entries per cycle, so it is negligible but charged.
+- **The reverse cycle:** the same per-step charges, no square test, ending on the P_{i+1} = P_i compare (inside the 6).
+
+**The pricing decision for the user (open): D, the word division.**
+- op-class v1 is an instruction count, and a 64-bit DIV is one instruction. Under op-class, D ≈ 1 is what the meter would see.
+- ruint's and Montgomery's `word` prices come from the timed sieve update, a simple add. A 64-bit division costs roughly 20–40 cycles against about 1 for an add, so a cycle-honest D is about 20.
+- The choice moves the result by about 3.6 × (below), so it must be set, and if wanted measured (a callgrind and timing bench like `bench/gcdbench`), before code.
+
+**Expected cost ratio against rho** (`wolfram/2026-10-30_squfof_cost_model.wl`):
+- **Model:** steps per number S = A·(kN)^(1/4), k = 1, where A = α(1 + β); α is the forward steps to the first proper square over (kN)^(1/4), and β is the reverse cycle over the forward.
+- **rho's side** is measured: its mean training cost per number per pricing (re-run record, 48 per size), about 2.1 official ops per N^(1/4) at each size.
+- α and β are **not known here.** I do not trust the literature constants from memory. They are to be measured, unmetered, before predictions.
+
+| D | A | official 48 / 64 / 80 | ruint | Montgomery | op-class v1 |
+|---|---|---|---|---|---|
+| 1 | 1.5 | 5.3 / 5.5 / 5.0 | 0.16 / 0.17 / 0.15 | 0.49 / 0.51 / 0.47 | 0.52 / 0.54 / 0.50 |
+| 1 | 3 | 10.6 / 11.0 / 10.0 | 0.32 / 0.33 / 0.31 | 0.97 / 1.02 / 0.94 | 1.05 / 1.09 / 1.00 |
+| 1 | 6 | 21 / 22 / 20 | 0.64 / 0.67 / 0.61 | 1.93 / 2.05 / 1.87 | 2.09 / 2.18 / 1.99 |
+| 20 | 1.5 | 19 / 20 / 18 | 0.56 / 0.58 / 0.53 | 1.68 / 1.78 / 1.62 | 1.88 / 1.96 / 1.79 |
+| 20 | 3 | 38 / 39 / 36 | 1.11 / 1.16 / 1.06 | 3.35 / 3.55 / 3.25 | 3.76 / 3.92 / 3.58 |
+
+- **Break-even A at 80 bits** (ratio 1): op-class 3.0 (D = 1) or 0.84 (D = 20); Montgomery 3.2 or 0.92; ruint 9.8 or 2.8; official 0.30 or 0.08.
+
+**What the model says, and what it does not:**
+- **Correction of my family proposal (696c95b):** "a constant factor of up to about 10" was wrong. A form step is about 7 word ops plus half a square test, about 415 op-class units (D = 1), against about 1,110 for a rho iteration (2 muls). The real gain is at most about 2.4 × under op-class and Montgomery (A = 1.5, D = 1). It becomes a loss once A exceeds about 3 (D = 1) or about 0.85 (D = 20).
+- **The worst-of set** (op-class, ruint, Montgomery, scaled gcd) is bound by Montgomery and op-class.
+- **Official op counting** puts SQUFOF 5–40 × behind rho at every setting. It is reported, not a veto, for this family as for arrangement-v1.
+- **Slope:** the same as rho's on balanced numbers (N^(1/4) = p^(1/2)). On unbalanced numbers (θ < 0.5) rho's p^(1/2) is below N^(1/4), so SQUFOF loses ground there; the family is a balanced-map candidate.
+- **Not established:** α, β, the multipliers' effect (k^(1/4) more steps, against fewer failed cycles), D, and the real cost of the square test's filter. The model is a forecast input, never a verdict.
+
+**Next steps, before any code** (for the user):
+- (a) choose D, or order a division bench;
+- (b) an unmetered measurement of α and β on training-like numbers (an explore script), so the forecasters see A;
+- then the family's design (genes: the multiplier set, the square-test filter, the queue bound, the cycle-length cap) and its predictions.

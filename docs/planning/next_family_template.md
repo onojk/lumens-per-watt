@@ -12,8 +12,11 @@
 - **Why not the original options:**
   - (a), which checks only the top size of the chord, would pass the Q5 pick: at 80 it is 0.990 [0.804, 1.227].
   - (b), which ranks on projected cost at a fixed target size, extrapolates the slope. A flatter, padded curve projects as cheaper, so (b) would rank the Q5 pick higher, not lower.
+- **A LEVEL win** (G_rho about 1, i.e. the same growth and a claimed lower cost; the user's ruling, Oct 30) counts only if the genome's robust cost-ratio interval lies entirely below 1 at every measured chord size, under the worst-of pricing set. A level win under op-class alone (or any single pricing) is a pricing artifact, flagged and not adopted. Slope wins stay under the strengthened rule (a) above.
 - **What the harness must add:** robust cost-ratio intervals at **every** chord size. arrangement-v1's harness reports them only at 64 and 80. For a 48–80 chord: 48, 64 and 80, plus any intermediate size the design draws.
 - **In the search** (the proposer), the cost guard stays, made consistent with the rule: rank only genomes whose training robust ratio is ≤ 1.25 at every training size. That limits padding during the search; the rule above is the judge's.
+
+- **Harness requirement (recorded Oct 30; no code yet):** the scoring harness reports robust cost-ratio intervals (worst-of, paired bootstrap, the same numbers as rho) at every chord size including 48, as both win rules above need. The pinned arrangement-v1 harness does not; the next family's harness adds it before its predictions are sealed.
 
 ## 2. Held-out sets: sized for ±5% on the cost ratio (the user's ruling, Oct 30)
 
